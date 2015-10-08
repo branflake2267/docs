@@ -1,2 +1,2 @@
 # docs
-Home for new Sencha Documentaiton
+Home for new Sencha Documentation

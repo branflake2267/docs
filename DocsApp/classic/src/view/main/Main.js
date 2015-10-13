@@ -1,5 +1,6 @@
 Ext.define('DocsApp.view.main.Main', {
     extend: 'Ext.container.Container',
+    xtype: 'main',
     
     /*controller: 'main',
     viewModel: {
@@ -10,18 +11,37 @@ Ext.define('DocsApp.view.main.Main', {
     
     items: [{
         xtype: 'panel',
-        title: 'Panel 1'
+        title: 'Panel 1',
+        items: [{
+            xtype: 'button',
+            text: 'Menu?',
+            handler: function () {
+                var menu = this.up('main').down('panel[floating=true]');
+                var owner = this.up('panel');
+                
+                menu.show();
+            }
+        }, {
+            xtype: 'panel',
+            floating: true,
+            shadow: false,
+            height: 200,
+            width: 200,
+            title: 'Menu?',
+            beforeShow: function () {
+                var me = this;
+                me.ownerCt = me.ownerCt || me.up();
+                me.setHeight(me.ownerCt.getHeight());
+                me.setPosition({
+                    y: me.ownerCt.getY(),
+                    x: me.ownerCt.getX() - me.getWidth() / 2
+                });
+            }
+        }]
     }, {
         xtype: 'panel',
         title: 'Panel 2'
-    }],
-    
-    listeners: {
-        boxready: function () {
-            this.getLayout().next(true, true);
-        },
-        delay: 2000
-    }
+    }]
     
     
     /*items: [{

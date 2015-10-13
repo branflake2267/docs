@@ -9,53 +9,19 @@ Ext.define('DocsApp.view.main.Main', {
     extend: 'Ext.tab.Panel',
     xtype: 'app-main',
 
-    requires: [
-        'Ext.MessageBox',
-
-        'DocsApp.view.main.MainController',
-        'DocsApp.view.main.MainModel',
-        'DocsApp.view.main.List'
-    ],
-
-    controller: 'main',
-    viewModel: 'main',
-
-    defaults: {
-        tab: {
-            iconAlign: 'top'
-        },
-        styleHtmlContent: true
-    },
-
-    tabBarPosition: 'bottom',
-
     items: [
         {
             title: 'Home',
-            iconCls: 'x-fa fa-home',
-            layout: 'fit',
-            // The following grid shares a store with the classic version's grid as well!
-            items: [{
-                xtype: 'mainlist'
-            }]
+            iconCls: 'x-fa fa-home'
         },{
             title: 'Users',
-            iconCls: 'x-fa fa-user',
-            bind: {
-                html: '{loremIpsum}'
-            }
+            iconCls: 'x-fa fa-user'
         },{
             title: 'Groups',
-            iconCls: 'x-fa fa-users',
-            bind: {
-                html: '{loremIpsum}'
-            }
+            iconCls: 'x-fa fa-users'
         },{
             title: 'Settings',
-            iconCls: 'x-fa fa-cog',
-            bind: {
-                html: '{loremIpsum}'
-            }
+            iconCls: 'x-fa fa-cog'
         }
     ]
 });

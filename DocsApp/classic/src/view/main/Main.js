@@ -1,104 +1,203 @@
-/**
- * This class is the main view for the application. It is specified in app.js as the
- * "mainView" property. That setting automatically applies the "viewport"
- * plugin causing this view to become the body element (i.e., the viewport).
- *
- * TODO - Replace this content of this view to suite the needs of your application.
- */
 Ext.define('DocsApp.view.main.Main', {
-    extend: 'Ext.tab.Panel',
-    xtype: 'app-main',
-
-    requires: [
-        'Ext.plugin.Viewport',
-        'Ext.window.MessageBox',
-
-        'DocsApp.view.main.MainController',
-        'DocsApp.view.main.MainModel',
-        'DocsApp.view.main.List'
-    ],
-
-    controller: 'main',
-    viewModel: 'main',
-
-    ui: 'navigation',
-
-    tabBarHeaderPosition: 1,
-    titleRotation: 0,
-    tabRotation: 0,
-
-    header: {
-        layout: {
-            align: 'stretchmax'
-        },
-        title: {
-            bind: {
-                text: '{name}'
-            },
-            flex: 0
-        },
-        iconCls: 'fa-th-list'
-    },
-
-    tabBar: {
-        flex: 1,
-        layout: {
-            align: 'stretch',
-            overflowHandler: 'none'
-        }
-    },
-
-    responsiveConfig: {
-        tall: {
-            headerPosition: 'top'
-        },
-        wide: {
-            headerPosition: 'left'
-        }
-    },
-
-    defaults: {
-        bodyPadding: 20,
-        tabConfig: {
-            plugins: 'responsive',
-            responsiveConfig: {
-                wide: {
-                    iconAlign: 'left',
-                    textAlign: 'left'
-                },
-                tall: {
-                    iconAlign: 'top',
-                    textAlign: 'center',
-                    width: 120
-                }
-            }
-        }
-    },
-
+    extend: 'Ext.container.Container',
+    
+    /*controller: 'main',
+    viewModel: {
+        type: 'main'
+    },*/
+    
+    layout: 'card',
+    
     items: [{
-        title: 'Home',
-        iconCls: 'fa-home',
-        // The following grid shares a store with the classic version's grid as well!
+        xtype: 'panel',
+        title: 'Panel 1'
+    }, {
+        xtype: 'panel',
+        title: 'Panel 2'
+    }],
+    
+    listeners: {
+        boxready: function () {
+            this.getLayout().next(true, true);
+        },
+        delay: 2000
+    }
+    
+    
+    /*items: [{
+        xtype: 'panel',
+        tbar: [{
+            xtype: 'senchatitle'
+        }],
+        layout: 'anchor',
+        defaults: {
+            anchor: '100%'
+        },
         items: [{
-            xtype: 'mainlist'
+            xtype: 'productnav',
+            html: 'Ext JS'
+        }, {
+            xtype: 'container',
+            cls: 'docsapp-main-prod-links',
+            layout: {
+                type: 'hbox',
+                align: 'center',
+                pack: 'middle'
+            },
+            defaultType: 'subnav',
+            items: [{
+                html: 'API Docs'
+            }, {
+                html: 'Guides',
+                margin: '0 0 0 20'
+            }, {
+                html: 'Examples',
+                margin: '0 0 0 20'
+            }]
+            
+        }, {
+            xtype: 'component',
+            cls: 'docsapp-main-prod-title',
+            html: 'Cmd',
+            style: 'text-align: center;',
+            margin: '40 0 0 0'
+        }, {
+            xtype: 'container',
+            cls: 'docsapp-main-prod-links',
+            layout: {
+                type: 'hbox',
+                align: 'center',
+                pack: 'middle'
+            },
+            defaultType: 'subnav',
+            items: [{
+                html: 'Guides'
+            }]
+            
+        }, {
+            xtype: 'component',
+            cls: 'docsapp-main-prod-title',
+            html: 'IDE Plugins',
+            style: 'text-align: center;',
+            margin: '40 0 0 0'
+        }, {
+            xtype: 'container',
+            cls: 'docsapp-main-prod-links',
+            layout: {
+                type: 'hbox',
+                align: 'center',
+                pack: 'middle'
+            },
+            defaultType: 'subnav',
+            items: [{
+                html: 'Guides'
+            }]
+            
+        }, {
+            xtype: 'component',
+            cls: 'docsapp-main-prod-title',
+            html: 'Inspector',
+            style: 'text-align: center;',
+            margin: '40 0 0 0'
+        }, {
+            xtype: 'container',
+            cls: 'docsapp-main-prod-links',
+            layout: {
+                type: 'hbox',
+                align: 'center',
+                pack: 'middle'
+            },
+            defaultType: 'subnav',
+            items: [{
+                html: 'Guides'
+            }]
+            
+        }, {
+            xtype: 'component',
+            cls: 'docsapp-main-prod-title',
+            html: 'GXT',
+            style: 'text-align: center;',
+            margin: '40 0 0 0'
+        }, {
+            xtype: 'container',
+            cls: 'docsapp-main-prod-links',
+            layout: {
+                type: 'hbox',
+                align: 'center',
+                pack: 'middle'
+            },
+            defaultType: 'subnav',
+            items: [{
+                html: 'API Docs'
+            }, {
+                html: 'Guides',
+                margin: '0 0 0 20'
+            }, {
+                html: 'Examples',
+                margin: '0 0 0 20'
+            }]
         }]
+        
+        
     }, {
-        title: 'Users',
-        iconCls: 'fa-user',
-        bind: {
-            html: '{loremIpsum}'
-        }
+        xtype: 'contentct'
+        
+        
     }, {
-        title: 'Groups',
-        iconCls: 'fa-users',
-        bind: {
-            html: '{loremIpsum}'
-        }
-    }, {
-        title: 'Settings',
-        iconCls: 'fa-cog',
-        bind: {
-            html: '{loremIpsum}'
-        }
-    }]
+        xtype: 'panel',
+        tbar: [{
+            xtype: 'senchatitle'
+        }],
+        layout: {
+            type: 'vbox',
+            align: 'center'
+        },
+        items: [{
+            xtype: 'component',
+            cls: 'docsapp-product-title',
+            html: 'Ext JS'
+        }, {
+            xtype: 'container',
+            cls: 'docsapp-main-prod-links docsapp-product-page-links',
+            margin: '12 0 20 0',
+            layout: {
+                type: 'hbox',
+                align: 'center'
+            },
+            defaultType: 'subnav',
+            items: [{
+                html: 'API Docs'
+            }, {
+                html: 'Guides',
+                margin: '0 0 0 30'
+            }, {
+                html: 'Examples',
+                margin: '0 0 0 30'
+            }]
+        }, {
+            xtype: 'container',
+            flex: 1,
+            width: 700,
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'gridpanel',
+                flex: 1,
+                hideHeaders: true,
+                columns: [{
+                    text: 'Titles',
+                    dataIndex: 'text',
+                    flex: 1
+                }],
+                bind: '{extGuided}'
+            }, {
+                xtype: 'container',
+                flex: 1,
+                padding: 20,
+                html: 'Hover over a topic to see a summary of the content covered in the guide / tutorial.'
+            }]
+        }]
+    }]*/
 });

@@ -3,6 +3,8 @@
     <title>{{{name}}}</title>
     <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../styles.css">
+        <link rel="stylesheet" type="text/css" href="../css/treeview.css">
+        <script src="../js/treeview.js"></script>
 </head>
 <body>
     <h1 class='{{classType}}'>{{{name}}}
@@ -28,37 +30,63 @@
             <p class="list">{{{requires}}}</p>
             {{/if}}
         </div>
+    </div>
+    <div id="toolbar">
+        <div class="toolbarButton">
+            <a href="#configs">configs</a>
+        </div>
+        <div class="toolbarButton">
+            <a href="#properties">properties</a>
+        </div>
+        <div class="toolbarButton">
+            <a href="#methods">methods</a>
+        </div>
+        <div class="toolbarButton">
+            <a href="#static-methods">static methods</a>
+        </div>
+        <div class="toolbarButton">
+            <a href="#events">events</a>
+        </div>
+        <div class="toolbarButton">
+            <a href="#mixins">mixins</a>
+        </div>
         <div class="memberFilter">
             <input placeholder="Filter Members" type="text" id="box" name="box">
         </div>
-        <div class="classText"><h2>Summary</h2>{{{classText}}}</div>
     </div>
-    <div class="members">
-        {{#members}}
-            <h2 class="type">{{{$type}}}</h2>
-            {{#items}}
-            <div class="classmembers" data-member-name="{{{name}}}">
-                <a name="{{{name}}}"></a>
-                <h2>{{{name}}}
-                    {{#type}}
-                    <span class='memberType'>{{{.}}}</span>
-                    {{/type}}
-                    {{#access}}
-                    <span class='{{{.}}}'>{{{.}}}</span>
-                    {{/access}}
-                </h2>
-                {{#text}}
-                <p>{{{.}}}</p>
-                {{/text}}
-                {{#value}}
-                <p>Defaults to: {{{.}}}</p>
-                {{/value}}
-                {{#deprecatedMessage}}
-                <p>Deprecated: {{{.}}}</p>
-                {{/deprecatedMessage}}
+    <div id="centerContent">
+        <div id="tree"></div>
+        <div id="rightMembers">
+            <div class="classText"><h2>Summary</h2>{{{classText}}}</div>
+            <div class="members">
+                <a name="{{{$type}}}"></a>
+                {{#members}}
+                    <h2 class="type">{{{$type}}}</h2>
+                    {{#items}}
+                        <div class="classmembers" data-member-name="{{{name}}}">
+                            <a name="{{{name}}}"></a>
+                            <h2>{{{name}}}
+                                {{#type}}
+                                    <span class='memberType'>{{{.}}}</span>
+                                {{/type}}
+                                {{#access}}
+                                    <span class='{{{.}}}'>{{{.}}}</span>
+                                {{/access}}
+                            </h2>
+                            {{#text}}
+                                <p>{{{.}}}</p>
+                            {{/text}}
+                            {{#value}}
+                                <p>Defaults to: {{{.}}}</p>
+                            {{/value}}
+                            {{#deprecatedMessage}}
+                                <p>Deprecated: {{{.}}}</p>
+                            {{/deprecatedMessage}}
+                        </div>
+                    {{/items}}
+                {{/members}}
             </div>
-            {{/items}}
-        {{/members}}
+        </div>
     </div>
 </body>
 <script type="text/javascript">
@@ -117,6 +145,33 @@
             } else {
                 classmembers[i].style.display="none";
             }
+        }
+    }
+
+    var tree = new TreeView([
+        { name: 'Item 1', children: [] },
+        { name: 'Item 2', children: [
+            { name: 'Sub Item 1', children: [] },
+            { name: 'Sub Item 2', children: [] }
+        ]
+        }
+    ], 'tree');
+
+    window.onscroll = function (e) {
+        var vertical_position = 0;
+        if (pageYOffset)//usual
+            vertical_position = pageYOffset;
+        else if (document.documentElement.clientHeight)//ie
+            vertical_position = document.documentElement.scrollTop;
+        else if (document.body)//ie quirks
+            vertical_position = document.body.scrollTop;
+
+        var your_div = document.getElementById('tree');
+
+        if (vertical_position > 200) {
+            your_div.style.top = (55) + 'px';
+        } else {
+            your_div.style.top = (250) + 'px';
         }
     }
 </script>

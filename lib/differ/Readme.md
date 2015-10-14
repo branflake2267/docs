@@ -5,19 +5,14 @@ This node project is to find differences between two different versions. This is
 written in vanilla JavaScript (except the filesystem writing) as this may be
 shared with the docs app in the browser.
 
+This requires the `argv` node module. You can install it locally via:
+
+    cd lib/differ
+    npm install
+
 To run:
 
-    node index
-
-Within `index.js`, it executes an all test. There is also a test where you can
-run this only against an array of classes, used this for testing so I didn't
-have to run against a 155MB file. I will be having this work based on command
-line arguments of two files and their versions but current status is via
-hand coding in `index.js`.
-
-Currently, the `data` directory holds the two files. There are `current` and `old`
-directories to hold the different versions. When run, it will create files in
-an `output` directory in markdown.
+    node index ./json/current/classic-all-classes.json ./json/old/classic-all-classes.json --new=6.0.1 --old=6.0.0 --output=./output
 
 For reference, here are two current diffs from old tool:
 

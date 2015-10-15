@@ -5,13 +5,14 @@
  */
 Ext.define('DocsApp.Application', {
     extend: 'Ext.app.Application',
-    
+
     name: 'DocsApp',
+    defaultToken: '!/home',
 
     stores: [
         // TODO: add global / shared stores here
     ],
-    
+
     launch: function () {
         // TODO - Launch the application
     },

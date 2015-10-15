@@ -2,9 +2,9 @@
 <head>
     <title>{{{name}}}</title>
     <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="../styles.css">
-        <link rel="stylesheet" type="text/css" href="../css/treeview.css">
-        <script src="../js/treeview.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <link rel="stylesheet" type="text/css" href="css/treeview.css">
+        <script src="js/treeview.js"></script>
 </head>
 <body>
     <h1 class='{{classType}}'>{{{name}}}
@@ -61,7 +61,7 @@
             <div class="members">
                 <a name="{{{$type}}}"></a>
                 {{#members}}
-                    <h2 class="type">{{{$type}}}</h2>
+                    <h2 id="{{{$type}}}" class="type">{{{$type}}}</h2>
                     {{#items}}
                         <div class="classmembers" data-member-name="{{{name}}}">
                             <a name="{{{name}}}"></a>
@@ -105,12 +105,6 @@
         }
     }
     ExtL.onExpandToggleClick = function (dom) {
-        /*var parent  = dom.parentElement,
-         content = parent.lastElementChild,
-         height  = content.scrollHeight,
-         heightStyle = content.style.height;
-         //toggle
-         content.style.height = !heightStyle || heightStyle === '0px' ? height + 'px' : '0px';*/
         var parent = dom.parentElement,
         metaBody = parent.nextElementSibling,
         isExpanded = dom.innerHTML === 'collapse';
@@ -148,14 +142,7 @@
         }
     }
 
-    var tree = new TreeView([
-        { name: 'Item 1', children: [] },
-        { name: 'Item 2', children: [
-            { name: 'Sub Item 1', children: [] },
-            { name: 'Sub Item 2', children: [] }
-        ]
-        }
-    ], 'tree');
+    var tree = new TreeView({{{tree}}}, 'tree');
 
     window.onscroll = function (e) {
         var vertical_position = 0;

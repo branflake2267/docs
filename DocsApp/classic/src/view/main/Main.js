@@ -1,19 +1,17 @@
 Ext.define('DocsApp.view.main.Main', {
     extend: 'Ext.panel.Panel',
     xtype: 'main',
-    
+
     requires: [
         'DocsApp.view.carousel.Carousel',
         'DocsApp.view.products.MainLanding',
+        'DocsApp.view.main.MainController',
         'DocsApp.view.mainApp.Container',
         'DocsApp.view.products.ProductPage'
     ],
-    
-    /*controller: 'main',
-    viewModel: {
-        type: 'main'
-    },*/
-    
+
+    controller : 'docsapp-main-main',
+
     viewModel: {
         data: {
             products: [{
@@ -39,18 +37,18 @@ Ext.define('DocsApp.view.main.Main', {
             }]
         }
     },
-    
+
     layout: 'card',
-    
+
     tbar: [{
         xtype: 'component',
         html: 'SENCHA'
     }, {
         xtype: 'carousel',
+        reference: 'contextCarousel',
         direction: 'vertical',
         width: 300,
         height: 40,
-        itemId: 'contextCarousel',
         items: [{
             xtype: 'component'
         }, {
@@ -71,60 +69,35 @@ Ext.define('DocsApp.view.main.Main', {
         }]
     }, '->', {
         text: 'Main Landing',
+        reference: 'mainLandingButton',
         enableToggle: true,
         allowDepress: false,
         toggleGroup: 'topNav',
-        pressed: true,
-        toggleHandler: function (btn, pressed) {
-            if (pressed) {
-                var main = this.up('main');
-                main.getLayout().setActiveItem(0);
-                main.down('#contextCarousel').setActiveItem(0, true);
-            }
-        }
+        toggleHandler: 'goToMainLanding'
     }, {
         text: 'Product Page',
+        reference: 'productPageButton',
         enableToggle: true,
         allowDepress: false,
         toggleGroup: 'topNav',
-        toggleHandler: function (btn, pressed) {
-            if (pressed) {
-                var main = this.up('main');
-                main.getLayout().setActiveItem(1);
-                main.down('#contextCarousel').setActiveItem(1, true);
-            }
-        }
+        toggleHandler: 'goToProductPage'
     }, {
         text: 'Main App',
+        reference: 'mainAppButton',
         enableToggle: true,
         allowDepress: false,
         toggleGroup: 'topNav',
-        toggleHandler: function (btn, pressed) {
-            if (pressed) {
-                var main = this.up('main');
-                main.getLayout().setActiveItem(2);
-                main.down('#contextCarousel').setActiveItem(2, true);
-            }
-        }
+        toggleHandler: 'goToMainApp'
     }],
-    
+
     items: [{
         // main landing page when accessing the app
         xtype: 'products-landing'
-        
+    }, {
         // product-specific page
-    }, {
         xtype: 'product-page'
-        
-        // the main app view for docs, guides, and examples
     }, {
+        // the main app view for docs, guides, and examples
         xtype: 'mainapp-container'
-    }],
-    
-    listeners: {
-        boxready: function () {
-            //this.getLayout().setActiveItem(this.down('mainapp-container'), true);
-        },
-        delay: 2000
-    }
+    }]
 });

@@ -29,12 +29,11 @@ Has 3 cli args:
 
  - --new/-n The new version
  - --old/-o The old version
- - --destination/-d The destination location of the generated html.
+ - --destination/-d The destination location of the generated html. Defaults to `lib/output`
 
 Can use them like so:
 
-    node index diff --new=6.0.1 --old=6.0.0 --destination=./output /path/to/new-all-classes.json /path/to/old-all-classes.json
-    node index diff -n 6.0.1 -o 6.0.0 -d ./output /path/to/new-all-classes.json /path/to/old-all-classes.json
+    node index diff --new=6.0.1 --old=6.0.0 /path/to/new-all-classes.json /path/to/old-all-classes.json
+    node index diff -n 6.0.1 -o 6.0.0 /path/to/new-all-classes.json /path/to/old-all-classes.json
 
-Currently, destination arg is required. Will get it to default like in the json-parser module.
 The targets to the json files, order is new then old.

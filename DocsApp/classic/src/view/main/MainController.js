@@ -3,48 +3,74 @@ Ext.define('DocsApp.view.main.MainController', {
     alias  : 'controller.docsapp-main-main',
 
     routes : {
-        '!view/:id' : 'goToView'
+        '!:type:id' : {
+            action     : 'goToView',
+            conditions : {
+                ':type' : '(?:(?:\/){1}(.+))?',
+                ':id'   : '(?:(?:\/){1}(.+))?'
+            }
+        }
     },
 
-    goToView : function(id) {
-        var main = this.getView(),
+    info : {
+        'api' : {
+            button : 'mainAppButton',
+            idx    : 2
+        },
+        'example' : {
+            button : 'mainAppButton',
+            idx    : 2
+        },
+        'guide' : {
+            button : 'mainAppButton',
+            idx    : 2
+        },
+        'home' : {
+            button : 'mainLandingButton',
+            idx    : 0
+        },
+        'product' : {
+            button : 'productPageButton',
+            idx    : 1
+        }
+    },
+
+    goToView : function(type) {
+        var main    = this.getView(),
+            info    = this.info[type || 'home'],
             idx, button;
 
-        switch (id) {
-            case 'product' :
-                idx    = 1;
-                button = 'productPageButton';
-                break;
-            case 'main' :
-                idx    = 2;
-                button = 'mainAppButton';
-                break;
-            default :
-                idx    = 0;
-                button = 'mainLandingButton';
+        if (info) {
+            idx    = info.idx;
+            button = info.button;
+
+            if (Ext.isDefined(idx)) {
+                main.getLayout().setActiveItem(idx);
+
+                main.lookupReference('contextCarousel').setActiveItem(idx, true);
+            }
+
+            if (button) {
+                main.lookupReference(button).toggle(true, true);
+            }
         }
-
-        main.getLayout().setActiveItem(idx);
-
-        main.lookupReference('contextCarousel').setActiveItem(idx, true);
-        main.lookupReference(button).setPressed(true);
     },
 
     goToMainLanding : function(button, pressed) {
         if (pressed) {
-            this.redirectTo('!view/landing');
+            this.redirectTo('!/landing');
         }
     },
 
     goToProductPage : function(button, pressed) {
         if (pressed) {
-            this.redirectTo('!view/product');
+            this.redirectTo('!/product');
         }
     },
 
     goToMainApp : function(button, pressed) {
         if (pressed) {
-            this.redirectTo('!view/main');
+            this.redirectTo('!/api');
         }
     }
 });

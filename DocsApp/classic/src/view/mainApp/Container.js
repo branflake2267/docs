@@ -6,12 +6,13 @@
 Ext.define('DocsApp.view.mainApp.Container', {
     extend: 'Ext.container.Container',
     xtype: 'mainapp-container',
-    
+
     requires: ['DocsApp.view.mainApp.nav.Container'],
-    
+
     layout: 'border',
     items: [{
         xtype: 'mainapp-nav-container',
+        reference: 'mainapp-leftnav',
         region: 'west',
         split: true,
         width: 320

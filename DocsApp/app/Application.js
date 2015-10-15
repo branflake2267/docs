@@ -7,7 +7,7 @@ Ext.define('DocsApp.Application', {
     extend: 'Ext.app.Application',
 
     name: 'DocsApp',
-    defaultToken: '!view/landing',
+    defaultToken: '!/home',
 
     stores: [
         // TODO: add global / shared stores here

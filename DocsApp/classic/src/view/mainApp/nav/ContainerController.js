@@ -52,5 +52,22 @@ Ext.define('DocsApp.view.mainApp.nav.ContainerController', {
         }
 
         this.redirectTo('!/' + hash);
+    },
+
+    onTabResize: function (nav, width) {
+        nav.items.each(function (item) {
+            if (width < 320) {
+                if (!item.cacheTitle) {
+                    item.cacheTitle = item.getTitle();
+                }
+                item.setTitle('');
+                item.tab.setTooltip(item.cacheTitle);
+            } else {
+                if (item.cacheTitle) {
+                    item.setTitle(item.cacheTitle);
+                }
+                item.tab.setTooltip(null);
+            }
+        });
     }
 });

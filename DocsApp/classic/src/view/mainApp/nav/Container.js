@@ -10,6 +10,13 @@ Ext.define('DocsApp.view.mainApp.nav.Container', {
 
     controller : 'docsapp-mainapp-nav-container',
 
+    tabBar: {
+        defaults: {
+            flex: 1,
+            minWidth: 40
+        }
+    },
+
     items: [{
         xtype: 'mainapp-nav-docs-container'
     }, {
@@ -20,6 +27,7 @@ Ext.define('DocsApp.view.mainApp.nav.Container', {
     }],
 
     listeners: {
-        tabchange: 'onTabChange'
+        tabchange: 'onTabChange',
+        resize: 'onTabResize'
     }
 });

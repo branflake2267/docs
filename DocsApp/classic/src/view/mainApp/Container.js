@@ -4,30 +4,69 @@
  */
 
 Ext.define('DocsApp.view.mainApp.Container', {
-    extend: 'Ext.container.Container',
+    extend: 'DocsApp.view.carousel.Carousel',
     xtype: 'mainapp-container',
 
-    requires: ['DocsApp.view.mainApp.nav.Container'],
+    requires: [
+        'DocsApp.view.mainApp.nav.Container',
+        'DocsApp.view.mainApp.productVersion.ProductsMenu',
+        'DocsApp.view.mainApp.productVersion.ProductsMenu'
+    ],
 
-    layout: 'border',
+    controller: 'mainapp-controller',
+
+    activeItem: 1,
     items: [{
-        xtype: 'mainapp-nav-container',
-        reference: 'mainapp-leftnav',
-        region: 'west',
-        split: true,
-        width: 320
-    }, {
-        xtype: 'tabpanel',
-        region: 'center',
+        xtype: 'container',
+        width: 400,
+        layout: {
+            type: 'hbox',
+            align: 'stretch'
+        },
+        defaults: {
+            flex: 1
+        },
         items: [{
-            title: 'API Doc Proto',
-            iconCls: 'x-fa fa-code'
+            xtype: 'mainapp-productsmenu',
+            reference: 'productsMenu',
+            trackOver: true,
+            listeners: {
+                itemmouseenter: 'onProductEnter'
+            }
         }, {
-            title: 'Guide Proto',
-            iconCls: 'x-fa fa-book'
-        }, {
-            title: 'Example Proto',
-            iconCls: 'x-fa fa-desktop'
+            xtype: 'mainapp-versionsmenu',
+            reference: 'versionsMenu',
+            listeners: {
+                itemmouseenter: 'onVersionEnter'
+            }
         }]
+    }, {
+        xtype: 'container',
+        reference: 'mainapp-view',
+        layout: 'border',
+        items: [{
+            xtype: 'mainapp-nav-container',
+            reference: 'mainapp-leftnav',
+            region: 'west',
+            split: true,
+            width: 320
+        }, {
+            xtype: 'tabpanel',
+            region: 'center',
+            items: [{
+                title: 'API Doc Proto',
+                iconCls: 'x-fa fa-code'
+            }, {
+                title: 'Guide Proto',
+                iconCls: 'x-fa fa-book'
+            }, {
+                title: 'Example Proto',
+                iconCls: 'x-fa fa-desktop'
+            }]
+        }],
+
+        listeners: {
+            afterrender: 'onMainAppAfterrender'
+        }
     }]
 });

@@ -30,6 +30,57 @@ Ext.define('DocsApp.view.main.Main', {
                 }, {
                     displayName: 'Examples',
                     link: 'example'
+                }],
+                versions: [{
+                    name: '6.0.1 classic'
+                }, {
+                    name: '6.0.1 modern'
+                }, {
+                    name: '6.0.0 classic'
+                }, {
+                    name: '6.0.0 modern'
+                }, {
+                    name: '5.1.2'
+                }, {
+                    name: '5.1.1'
+                }, {
+                    name: '5.1.0'
+                }, {
+                    name: '5.0.1'
+                }, {
+                    name: '5.0.0'
+                }, {
+                    name: '4.2.4'
+                }, {
+                    name: '4.2.3'
+                }, {
+                    name: '4.2.2'
+                }, {
+                    name: '4.2.1'
+                }, {
+                    name: '4.2.0'
+                }, {
+                    name: '4.1.3'
+                }, {
+                    name: '4.1.2'
+                }, {
+                    name: '4.1.1'
+                }, {
+                    name: '4.0.7'
+                }, {
+                    name: '4.0.6'
+                }, {
+                    name: '4.0.5'
+                }, {
+                    name: '4.0.4'
+                }, {
+                    name: '4.0.3'
+                }, {
+                    name: '4.0.2'
+                }, {
+                    name: '4.0.1'
+                }, {
+                    name: '4.0.0'
                 }]
             }, {
                 name: 'Touch',
@@ -43,6 +94,31 @@ Ext.define('DocsApp.view.main.Main', {
                 }, {
                     displayName: 'Examples',
                     link: 'example'
+                }],
+                versions: [{
+                    name: '2.3.1'
+                }, {
+                    name: '2.3.0'
+                }, {
+                    name: '2.2.1'
+                }, {
+                    name: '2.2.0'
+                }, {
+                    name: '2.1.1'
+                }, {
+                    name: '2.1.0'
+                }, {
+                    name: '2.1.1'
+                }, {
+                    name: '2.0.2'
+                }, {
+                    name: '2.0.1'
+                }, {
+                    name: '2.0.0'
+                }, {
+                    name: '1.1.1'
+                }, {
+                    name: '1.1.0'
                 }]
             }]
         }
@@ -75,7 +151,12 @@ Ext.define('DocsApp.view.main.Main', {
             },
             items: [{
                 xtype: 'button',
-                text: 'Ext JS'
+                text: 'Ext JS',
+                handler: function () {
+                    var view = this.up('main').down('mainapp-container');
+                    view.setActiveItem(0, true);
+                    view.items.getAt(1).mask();
+                }
             }, {
                 xtype: 'button',
                 text: '6.0.1'
@@ -117,6 +198,7 @@ Ext.define('DocsApp.view.main.Main', {
         xtype: 'product-page'
     }, {
         // the main app view for docs, guides, and examples
-        xtype: 'mainapp-container'
+        xtype: 'mainapp-container',
+        reference: 'mainapp-container'
     }]
 });

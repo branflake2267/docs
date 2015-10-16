@@ -49,6 +49,9 @@ Ext.define('DocsApp.view.main.MainController', {
 
                 //main.lookupReference('contextCarousel').setActiveItem(idx, true);
                 main.lookupReference('contextCarousel').getLayout().setActiveItem(idx, true);
+
+                // make sure the main app's prod / ver menu is not open during main nav
+                this.showMainAppView();
             }
 
             if (button) {
@@ -80,5 +83,25 @@ Ext.define('DocsApp.view.main.MainController', {
         if (newVal.length) {
             //
         }
+    },
+
+    onMainAppAfterrender: function (view) {
+        var me = this,
+            el = view.getEl();
+
+        view.on({
+            element: 'el',
+            click: function (e) {
+                if (e.within(el) && view.isMasked() && e.getTarget('.x-mask')) {
+                    me.showMainAppView();
+                }
+            }
+        });
+    },
+
+    showMainAppView: function () {
+        var mainCt = this.getView().lookupReference('mainapp-container');
+        this.getView().lookupReference('mainapp-view').unmask();
+        mainCt.setActiveItem(1);
     }
 });

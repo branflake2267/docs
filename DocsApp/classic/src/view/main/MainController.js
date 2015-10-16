@@ -47,7 +47,8 @@ Ext.define('DocsApp.view.main.MainController', {
             if (Ext.isDefined(idx)) {
                 main.getLayout().setActiveItem(idx);
 
-                main.lookupReference('contextCarousel').setActiveItem(idx, true);
+                //main.lookupReference('contextCarousel').setActiveItem(idx, true);
+                main.lookupReference('contextCarousel').getLayout().setActiveItem(idx, true);
             }
 
             if (button) {
@@ -58,7 +59,7 @@ Ext.define('DocsApp.view.main.MainController', {
 
     goToMainLanding : function(button, pressed) {
         if (pressed) {
-            this.redirectTo('!/landing');
+            this.redirectTo('!/home');
         }
     },
 
@@ -71,6 +72,13 @@ Ext.define('DocsApp.view.main.MainController', {
     goToMainApp : function(button, pressed) {
         if (pressed) {
             this.redirectTo('!/api');
+        }
+    },
+
+    //
+    onSearchChange: function (field, newVal) {
+        if (newVal.length) {
+            //
         }
     }
 });

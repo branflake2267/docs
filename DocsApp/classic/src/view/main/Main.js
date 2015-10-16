@@ -7,7 +7,8 @@ Ext.define('DocsApp.view.main.Main', {
         'DocsApp.view.products.MainLanding',
         'DocsApp.view.main.MainController',
         'DocsApp.view.mainApp.Container',
-        'DocsApp.view.products.ProductPage'
+        'DocsApp.view.products.ProductPage',
+        'DocsApp.view.main.SearchField'
     ],
 
     controller : 'docsapp-main-main',
@@ -16,23 +17,32 @@ Ext.define('DocsApp.view.main.Main', {
         data: {
             products: [{
                 name: 'Ext JS',
+                ref: 'ext',
                 links: [{
-                    displayName: 'API Docs (classic)'
+                    displayName: 'API Docs (classic)',
+                    link: 'api'
                 }, {
-                    displayName: 'API Docs (modern)'
+                    displayName: 'API Docs (modern)',
+                    link: 'api'
                 }, {
-                    displayName: 'Guides'
+                    displayName: 'Guides',
+                    link: 'guide'
                 }, {
-                    displayName: 'Examples'
+                    displayName: 'Examples',
+                    link: 'example'
                 }]
             }, {
                 name: 'Touch',
+                ref: 'touch',
                 links: [{
-                    displayName: 'API DOCS'
+                    displayName: 'API DOCS',
+                    link: 'api'
                 }, {
-                    displayName: 'Guides'
+                    displayName: 'Guides',
+                    link: 'guide'
                 }, {
-                    displayName: 'Examples'
+                    displayName: 'Examples',
+                    link: 'example'
                 }]
             }]
         }
@@ -44,11 +54,15 @@ Ext.define('DocsApp.view.main.Main', {
         xtype: 'component',
         html: 'SENCHA'
     }, {
-        xtype: 'carousel',
+        xtype: 'container',
         reference: 'contextCarousel',
         direction: 'vertical',
         width: 300,
         height: 40,
+        layout: {
+            type: 'card',
+            orientation: 'vertical'
+        },
         items: [{
             xtype: 'component'
         }, {
@@ -88,6 +102,11 @@ Ext.define('DocsApp.view.main.Main', {
         allowDepress: false,
         toggleGroup: 'topNav',
         toggleHandler: 'goToMainApp'
+    }, {
+        xtype: 'main-searchfield',
+        listeners: {
+            change: 'onSearchChange'
+        }
     }],
 
     items: [{

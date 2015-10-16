@@ -1,10 +1,10 @@
 Ext.define('OVERRIDE.layout.container.Card', {
     override: 'Ext.layout.container.Card',
 
-    orientation: 'horizontal',
+    orientation: 'horizontal', // or 'vertical'
 
     resetOnWrap: true,
-    
+
     beginLayout: function (ownerContext) {
         this.callParent(arguments);
 
@@ -100,7 +100,7 @@ Ext.define('OVERRIDE.layout.container.Card', {
 
                 if (anim) {
                     me.isAnimating = true;
-                    
+
                     dirs = {
                         horizontal: {
                             forward: 'l',
@@ -126,23 +126,23 @@ Ext.define('OVERRIDE.layout.container.Card', {
                     direction = newIndex > oldIndex ? 'forward' : 'back';
                     dir = me.continueWrapping ? orientation.cont[direction] : orientation[direction];
                     other = orientation[(dir === 'l' || dir === 't') ? 'back' : 'forward'];
-                    
+
                     anim = Ext.isObject(anim) ? anim : {};
-                    
+
                     oldCardAnim = Ext.apply(Ext.apply({}, anim), {
                         listeners: {
                             afteranimate: {
                                 fn: function () {
                                     oldCard.alignTo(targetEl, 'br-tl');
                                     oldCard.hiddenByLayout = true;  // needed in the anim implementation?
-	                                oldCard.fireEvent('deactivate', oldCard, newCard);
+                                    oldCard.fireEvent('deactivate', oldCard, newCard);
                                     oldCard.hide();
                                 },
                                 single: true
                             }
                         }
                     });
-                    
+
                     newCardAnim = Ext.apply(Ext.apply({}, anim), {
                         listeners: {
                             afteranimate: {
@@ -154,7 +154,7 @@ Ext.define('OVERRIDE.layout.container.Card', {
                             }
                         }
                     });
-                    
+
                     oldCard.alignTo(targetEl, 'c-c');
                     oldCard.alignTo(targetEl, other + '-' + dir, null, oldCardAnim);
                     newCard.alignTo(targetEl, dir + '-' + other);
@@ -210,7 +210,7 @@ Ext.define('OVERRIDE.layout.container.Card', {
 
     next: function() {
         var me = this,
-        	anim = arguments[0],
+            anim = arguments[0],
             wrap = arguments[1],
             owner = me.owner,
             items = owner.items,
@@ -218,11 +218,11 @@ Ext.define('OVERRIDE.layout.container.Card', {
             activeIndex = items.indexOf(activeItem),
             next = me.getNext(wrap),
             nextIndex = items.indexOf(next);
-        
+
         if (wrap && !me.resetOnWrap && nextIndex === 0 && activeIndex === items.getCount() - 1) {
             me.continueWrapping = true;
         }
-        
+
         return this.setActiveItem(next, anim);
     }
 });

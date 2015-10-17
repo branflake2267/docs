@@ -15,7 +15,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             xtype: 'component',
             bind: {
                 // this doesn't work currently
-                html: '{doc.name}'
+                html: '{doc.name} alias: {doc.alias}'
             }
         }]
     }]

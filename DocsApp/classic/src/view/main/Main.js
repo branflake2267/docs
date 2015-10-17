@@ -134,6 +134,8 @@ Ext.define('DocsApp.view.main.Main', {
                         // hack to get to the class info
                         doc: Ext.decode(resp.responseText).global.items[0]
                     });
+
+                    console.log(main.lookupViewModel().data);
                 }
             });
         }

@@ -124,6 +124,21 @@ Ext.define('DocsApp.view.main.Main', {
         }
     },
 
+    // TODO:: temp listener to process an API Doc source during initial POC stage
+    listeners: {
+        afterrender: function (main) {
+            Ext.Ajax.request({
+                url: 'resources/data/docs/panel.json',
+                success: function (resp) {
+                    main.lookupViewModel().set({
+                        // hack to get to the class info
+                        doc: Ext.decode(resp.responseText).global.items[0]
+                    });
+                }
+            });
+        }
+    },
+
     layout: 'card',
 
     tbar: [{

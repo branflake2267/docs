@@ -11,7 +11,8 @@ Ext.define('DocsApp.view.mainApp.Container', {
         'DocsApp.view.mainApp.nav.Container',
         'DocsApp.view.mainApp.productVersion.ProductsMenu',
         'DocsApp.view.mainApp.productVersion.ProductsMenu',
-        'DocsApp.view.mainApp.guide.View'
+        'DocsApp.view.mainApp.guide.View',
+        'DocsApp.view.mainApp.doc.View'
     ],
 
     activeItem: 1,
@@ -53,8 +54,8 @@ Ext.define('DocsApp.view.mainApp.Container', {
             xtype: 'tabpanel',
             region: 'center',
             items: [{
-                title: 'API Doc Proto',
-                iconCls: 'x-fa fa-code'
+                xtype: 'mainapp-doc-view',
+                title: 'Ext.panel.Panel'
             }, {
                 xtype: 'mainapp-guide-view',
                 title: 'Memory Management'

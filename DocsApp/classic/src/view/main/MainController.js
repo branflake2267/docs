@@ -103,5 +103,16 @@ Ext.define('DocsApp.view.main.MainController', {
         var mainCt = this.getView().lookupReference('mainapp-container');
         this.getView().lookupReference('mainapp-view').unmask();
         mainCt.setActiveItem(1);
+    },
+
+    onProductEnter: function (view, rec, rowEl) {
+        var versionsMenu = this.getView().lookupReference('versionsMenu');
+
+        Ext.fly(rowEl).radioCls('da-prod-ver-item-enter');
+        versionsMenu.getStore().setData(rec.get('versions'));
+    },
+
+    onVersionEnter: function (view, rec, rowEl) {
+        Ext.fly(rowEl).radioCls('da-prod-ver-item-enter');
     }
 });

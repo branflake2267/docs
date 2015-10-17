@@ -10,10 +10,9 @@ Ext.define('DocsApp.view.mainApp.Container', {
     requires: [
         'DocsApp.view.mainApp.nav.Container',
         'DocsApp.view.mainApp.productVersion.ProductsMenu',
-        'DocsApp.view.mainApp.productVersion.ProductsMenu'
+        'DocsApp.view.mainApp.productVersion.ProductsMenu',
+        'DocsApp.view.mainApp.guide.View'
     ],
-
-    controller: 'mainapp-controller',
 
     activeItem: 1,
     items: [{
@@ -57,8 +56,8 @@ Ext.define('DocsApp.view.mainApp.Container', {
                 title: 'API Doc Proto',
                 iconCls: 'x-fa fa-code'
             }, {
-                title: 'Guide Proto',
-                iconCls: 'x-fa fa-book'
+                xtype: 'mainapp-guide-view',
+                title: 'Memory Management'
             }, {
                 title: 'Example Proto',
                 iconCls: 'x-fa fa-desktop'

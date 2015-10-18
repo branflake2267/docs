@@ -1,12 +1,16 @@
 Ext.define('DocsApp.view.mainApp.nav.docs.Container', {
     extend: 'Ext.panel.Panel',
     xtype: 'mainapp-nav-docs-container',
-    
+
+    viewModel: {
+        type: 'nav-docs'
+    },
+
     title: 'API Docs',
     iconCls: 'x-fa fa-code',
-    
+
     layout: 'border',
-    
+
     items: [{
         xtype: 'form',
         title: 'Package Selector',
@@ -42,39 +46,15 @@ Ext.define('DocsApp.view.mainApp.nav.docs.Container', {
             xtype: 'treepanel',
             title: 'by Package',
             rootVisible: false,
-            store: {
-                root: {
-                    expanded: true,
-                    children: [
-                        { text: 'detention', leaf: true },
-                        { text: 'homework', expanded: true, children: [
-                            { text: 'book report', leaf: true },
-                            { text: 'algebra', leaf: true}
-                        ] },
-                        { text: 'buy lottery tickets', leaf: true }
-                    ]
-                }
-            }
+            bind: '{package}'
         }, {
             xtype: 'treepanel',
             title: 'by Inheritance',
             rootVisible: false,
-            store: {
-                root: {
-                    expanded: true,
-                    children: [
-                        { text: 'detention', leaf: true },
-                        { text: 'homework', expanded: true, children: [
-                            { text: 'book report', leaf: true },
-                            { text: 'algebra', leaf: true}
-                        ] },
-                        { text: 'buy lottery tickets', leaf: true }
-                    ]
-                }
-            }
+            bind: '{inheritance}'
         }]
     }],
-    
+
     bbar: ['->', {
         xtype: 'checkboxfield',
         fieldLabel: 'Show Private Classes',

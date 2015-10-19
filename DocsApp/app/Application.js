@@ -11,6 +11,7 @@ Ext.define('DocsApp.Application', {
 
     stores: [
         // TODO: add global / shared stores here
+        'DocsApp.store.main.Main'
     ],
 
     launch: function () {

@@ -10,6 +10,9 @@ Ext.define('DocsApp.view.mainApp.nav.Container', {
 
     controller : 'docsapp-mainapp-nav-container',
 
+    title: 'Navigation Panel',
+    header: false,
+
     tabBar: {
         defaults: {
             flex: 1,

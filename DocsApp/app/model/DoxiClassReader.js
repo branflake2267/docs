@@ -48,6 +48,7 @@ Ext.define('DocsApp.model.DoxiClassReader', {
                 for(var j=0; j < container.items.length; j++) {
                     cls.classMembers.push(container.items[j]);
                     container.items[j].$type = names.type;
+                    container.items[j].text = marked(container.items[j].text || '');
                     delete container.items[j].src;
                 }
             }

@@ -53,9 +53,12 @@ Ext.define('DocsApp.view.mainApp.Container', {
         }, {
             xtype: 'tabpanel',
             region: 'center',
+            defaults : {
+                closable: true
+            },
             items: [{
                 xtype: 'mainapp-doc-view',
-                title: 'Ext.panel.Panel'
+                cls: 'Ext.panel.Panel'
             }, {
                 xtype: 'mainapp-guide-view',
                 title: 'Memory Management'

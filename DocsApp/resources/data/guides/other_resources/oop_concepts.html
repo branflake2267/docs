@@ -1,0 +1,711 @@
+<html>
+<head>
+    <title>Basics of OOP</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Basic OOP / Class-Based Programming Concepts</p>
+<p>JavaScript is a classless, <a href="http://en.wikipedia.org/wiki/Prototype-based_programming">prototype-oriented language</a> 
+and one of its most powerful features is flexibility. That said, 
+<a href="http://en.wikipedia.org/wiki/Class-based_programming">Class-based programming</a> is arguably 
+the most popular model of Object Oriented Programming (OOP).  This style generally 
+emphasizes strong-typing, encapsulation, and standard coding conventions.</p>
+<p>JavaScript’s flexibility comes with the cost of being unpredictable. Without a unified 
+structure, JavaScript code can be difficult to understand, maintain, and re-use. On the 
+other hand, class-based code is more likely to be predictable, extensible, and scalable 
+over time.</p>
+<p>Fortunately, Ext JS’ class system provides you with the best of both worlds.  You gain a 
+flexible, extensible, and scalable implementation of class-based programming with 
+JavaScript&#39;s flexibility.</p>
+<p>This guide is intended for any developer that wants to learn or review Ext JS&#39; concept of 
+OOP and class-based programming.  We will cover the following topics:</p>
+<ul>
+<li><p>Classes and Instances</p>
+</li>
+<li><p>Inheritance (polymorphism)</p>
+</li>
+<li><p>Encapsulation</p>
+</li>
+</ul>
+<h2 id="other_resources-_-oop_concepts_-_classes-and-instances">Classes and Instances</h2>
+<p>It is important to be able to clearly distinguish between classes and instances.  In simple 
+terms, a class is the blueprint of a concept, while an instance is the actualization of the 
+blueprint.  Let&#39;s look at some examples:</p>
+<ul>
+<li><p>&quot;Building&quot; is a class, while the Empire State Building is an instance of &quot;Building&quot;.</p>
+</li>
+<li><p>&quot;Dog&quot; is a class, while Lassie is an instance of &quot;Dog&quot;.</p>
+</li>
+<li><p>&quot;Computer&quot; is a class, while the computer you’re using is an instance of &quot;Computer&quot;.</p>
+</li>
+</ul>
+<p><img src="images/classes_instances.png" alt="image alt text"></p>
+<p>A class defines the base structure, properties, and behavior of its instances.  For example, 
+using the same classes described above:</p>
+<ul>
+<li><p>All instances of &quot;Building&quot; have a given number of floors (structure), an address, and 
+opening hours (properties).  Also, assuming these are &quot;smart buildings&quot;, they can close 
+and lock their main entrance as needed (behavior).</p>
+</li>
+<li><p>All instances of &quot;Dog&quot; have 4 legs and a tail (structure). They also have a name 
+(property) and are able to bark (behavior).</p>
+</li>
+<li><p>All instances of &quot;Computer&quot; have a CPU and some form of memory (structure), a model name 
+(property), and are able to be turned on and off (behavior).</p>
+</li>
+</ul>
+<p>Let&#39;s define a class that will serve as our base for exploring concepts of class-based 
+programming. We&#39;ll start with the &quot;Square&quot; class, which represents a square along with a 
+simple method for calculating its area.</p>
+<p>You can define the Square class with the following syntax:</p>
+<pre><code> // Define a new class named: &#39;Square&#39;
+ Ext.define(&#39;Square&#39;, {
+     // The side property represents the length of the side 
+     // It has a default value of 0
+     side: 0,
+
+     // It also has a method to calculate its area
+     getArea: function() {
+         // We access the &#39;side&#39; property to calculate area
+         return this.side * this.side;
+     }
+ });
+
+ // We use Ext.create to create an instance of our Square class
+ var sq = Ext.create(&#39;Square&#39;);
+
+ // The value of the &#39;side&#39; property
+ // This is not the best way to do this, which we&#39;ll discuss below
+ sq.side = 4;
+
+ // Display a message and show the result of this calculation
+ Ext.Msg.alert(&#39;Message&#39;, &#39;The area is: &#39; + sq.getArea());
+</code></pre><p>This is a bare-bones implementation of a class using Ext JS.  While it does meet our goals 
+of representing a square and providing a method to calculate its area, it is not ideal or 
+good practice.</p>
+<h3 id="other_resources-_-oop_concepts_-_constructors">Constructors</h3>
+<p>Let’s improve this example by utilizing a constructor.  A constructor is a special function 
+that gets called when a Class is instantiated. First, let&#39;s change the way we set the value 
+of Square&#39;s side.  By utilizing the constructor, we can remove the ‘ugly’ line from the 
+example above.</p>
+<pre><code> Ext.define(&#39;Square&#39;, {
+     side: 0,
+
+     // This is a special function that gets called 
+     // when the object is instantiated
+     constructor: function (side) {
+         // It receives the side as a parameter
+         // If defined, it is set as the square&#39;s side value
+         if (side) {
+             this.side = side;
+         }
+     },
+
+     getArea: function () {
+         return this.side * this.side;
+     }
+ });
+
+ // Thanks to the constructor, we can pass &#39;side&#39;s&#39; value 
+ // as an argument of Ext.create 
+ // This is a slightly more elegant approach.
+ var sq = Ext.create(&#39;Square&#39;, 4);
+
+ // The passed value is assigned to the square&#39;s side property
+ // Display a message to make sure everything is working
+ Ext.Msg.alert(&#39;Message&#39;, &#39;The area is: &#39; + sq.getArea());
+</code></pre><p>If you want to pass two or more property values to the constructor, you can do it using 
+an object literal as follows:</p>
+<pre><code> Ext.define(&#39;Square&#39;, {
+     side: 0,
+     // We have added two more configs
+     color: &#39;red&#39;,
+     border: true,
+
+     // Pass a config object, which contains &#39;side&#39;s&#39; value
+     constructor: function(config) {
+         // Once again, this is not yet the best syntax
+         // We&#39;ll get to that in the next example
+         if (config.side) {
+             this.side = config.side;
+         }
+         if (config.color) {
+             this.color = config.color;
+         }
+         // border is a boolean so we can skip the if block
+         this.border = config.border;
+     },
+
+     getArea: function() {
+         return this.side * this.side;
+     }
+ });
+
+ // We pass an object containing properties/values
+ var sq = Ext.create(&#39;Square&#39;, {
+     side: 4,
+     border: false
+ });
+
+ // Now display a message that uses the other two properties  
+ // Note that we&#39;re accessing them directly (i.e.: sq.color) 
+ // This will change in the next section
+ Ext.Msg.alert(&#39;Message&#39;, 
+      [&#39;The area of the&#39;,sq.color,&#39;square&#39;,
+      (sq.border?&#39;with a border&#39;:&#39;&#39;),&#39;is:&#39;,
+      sq.getArea()].join(&#39; &#39;)
+ );
+</code></pre><h3 id="other_resources-_-oop_concepts_-_apply">Apply</h3>
+<p>We can clean up the constructor further using <code>Ext.apply</code>.  Ext.apply copies all the 
+properties of config to the specified object. </p>
+<p><strong>Note</strong>: The constructor will change again in the inheritance section. </p>
+<pre><code> Ext.define(&#39;Square&#39;, {
+     side: 0,
+     color: &#39;red&#39;,
+     border: true,
+
+     constructor: function(config) {
+         // Use Ext.apply to not set each property manually 
+         // We&#39;ll change this again in the &quot;Inheritance&quot; section
+         Ext.apply(this,config);
+     },
+
+     getArea: function() {
+         return this.side * this.side;
+     }
+ });
+
+ var sq = Ext.create(&#39;Square&#39;, {
+     side: 4,
+     border: false
+ });
+
+ Ext.Msg.alert(&#39;Message&#39;, 
+      [&#39;The area of the&#39;,sq.color,&#39;square&#39;,
+      (sq.border?&#39;with a border&#39;:&#39;&#39;),&#39;is:&#39;,
+      sq.getArea()].join(&#39; &#39;)
+ );
+</code></pre><h3 id="other_resources-_-oop_concepts_-_defining-more-classes">Defining more classes</h3>
+<p>Let&#39;s add Circle and Rectangle classes in order to show a few slight deviations from the 
+Square example.  </p>
+<pre><code> Ext.define(&#39;Square&#39;, {
+     side: 0,
+     color: &#39;red&#39;,
+     border: true,
+
+     constructor: function(config) {
+         Ext.apply(this, config);
+     },
+
+     getArea: function() {
+         return this.side * this.side;
+     }
+ });
+
+ Ext.define(&#39;Rectangle&#39;, {
+     //Instead of side, a rectangle cares about base and height
+     base: 0,
+     height: 0,
+     color: &#39;green&#39;,
+     border: true,
+
+     constructor: function(config) {
+         Ext.apply(this, config);
+     },
+
+     getArea: function() {
+         // The formula is different
+         return this.base * this.height;
+     }
+ });
+
+ Ext.define(&#39;Circle&#39;, {
+     // A circle has no sides, but radius
+     radius: 0,
+     color: &#39;blue&#39;,
+     border: true,
+
+     constructor: function(config) {
+         Ext.apply(this, config);
+     },
+
+     getArea: function() {
+         // Just for this example, fix the precision of PI to 2
+         return Math.PI.toFixed(2) * Math.pow(this.radius, 2);
+     }
+ });
+
+ var square = Ext.create(&#39;Square&#39;, {
+             side: 4,
+             border: false
+         }),
+     rectangle = Ext.create(&#39;Rectangle&#39;, {
+             base: 4,
+             height: 3
+         }),
+     circle = Ext.create(&#39;Circle&#39;, {
+             radius: 3
+         });
+
+ // This message will now show a line for each object
+ Ext.Msg.alert(&#39;Message&#39;, [
+     [&#39;The area of the&#39;, square.color, &#39;square&#39;, 
+      (square.border ? &#39;with a border&#39; : &#39;&#39;), &#39;is:&#39;, 
+      square.getArea()].join(&#39; &#39;),
+
+     [&#39;The area of the&#39;, rectangle.color, &#39;rectangle&#39;, 
+     (rectangle.border ? &#39;with a border&#39; : &#39;&#39;), &#39;is:&#39;, 
+     rectangle.getArea()].join(&#39; &#39;),
+
+     [&#39;The area of the&#39;, circle.color, &#39;circle&#39;, 
+     (circle.border ? &#39;with a border&#39; : &#39;&#39;), &#39;is:&#39;, 
+     circle.getArea()].join(&#39; &#39;)
+ ].join(&#39;&lt;br /&gt;&#39;));
+</code></pre><h2 id="other_resources-_-oop_concepts_-_inheritance">Inheritance</h2>
+<p>Before diving into the concept of inheritance, let&#39;s review the following example.  As you 
+can see below, we’ve added an additional method to the Square class and changed the way the 
+test message is generated:</p>
+<pre><code> Ext.define(&#39;Square&#39;, {
+     side: 0,
+     color: &#39;red&#39;,
+     border: true,
+
+     constructor: function(config) {
+         Ext.apply(this, config);
+     },
+
+     getArea: function() {
+         return this.side * this.side;
+     },
+
+     // This function will return the name of this shape
+     getShapeName: function () {
+         return &#39;square&#39;;
+     }
+ });
+
+ //This function generates a sentence to display in the test dialog
+ function generateTestSentence(shape) {
+     return [&#39;The area of the&#39;, shape.color, shape.getShapeName(), 
+             (shape.border ? &#39;with a border&#39; : &#39;&#39;), 
+             &#39;is:&#39;, shape.getArea()].join(&#39; &#39;);
+ }
+
+ var square = Ext.create(&#39;Square&#39;, {
+     side: 4,
+     border: false
+ });
+
+ Ext.Msg.alert(&#39;Message&#39;, generateTestSentence(square));
+</code></pre><p>In the next example, we&#39;ll apply the same changes to the Rectangle and Circle classes:</p>
+<pre><code> Ext.define(&#39;Square&#39;, {
+     side: 0,
+     color: &#39;red&#39;,
+     border: true,
+
+     constructor: function(config) {
+         Ext.apply(this, config);
+     },
+
+     getArea: function() {
+         return this.side * this.side;
+     },
+
+     getShapeName: function () {
+         return &#39;square&#39;;
+     }
+ });
+
+ Ext.define(&#39;Rectangle&#39;, {
+     base: 0,
+     height: 0,
+     color: &#39;green&#39;,
+     border: true,
+
+     constructor: function(config) {
+         Ext.apply(this, config);
+     },
+
+     getArea: function() {
+         return this.base * this.height;
+     },
+
+     getShapeName: function () {
+         return &#39;rectangle&#39;;
+     }
+ });
+
+ Ext.define(&#39;Circle&#39;, {
+     radius: 0,
+     color: &#39;blue&#39;,
+     border: true,
+
+     constructor: function(config) {
+         Ext.apply(this, config);
+     },
+
+     getArea: function() {
+         return Math.PI.toFixed(2) * Math.pow(this.radius, 2);
+     },
+
+     getShapeName: function () {
+         return &#39;circle&#39;;
+     }
+ });
+
+ // Generates a sentence that will be displayed in the test dialog
+ function generateTestSentence(shape) {
+     return [&#39;The area of the&#39;, shape.color, shape.getShapeName(), 
+     (shape.border ? &#39;with a border&#39; : &#39;&#39;), &#39;is:&#39;, 
+     shape.getArea()].join(&#39; &#39;);
+ }
+
+ var square = Ext.create(&#39;Square&#39;, {
+             side: 4,
+             border: false
+         }),
+     rectangle = Ext.create(&#39;Rectangle&#39;, {
+             base: 4,
+             height: 3
+         }),
+     circle = Ext.create(&#39;Circle&#39;, {
+             radius: 3
+         });
+
+ Ext.Msg.alert(&#39;Message&#39;, [
+     generateTestSentence(square),
+     generateTestSentence(rectangle),
+     generateTestSentence(circle)
+ ].join(&#39;&lt;br /&gt;&#39;));
+</code></pre><p>If you carefully review the above example, you may notice a lot of repetition.  This can 
+make your code difficult to maintain and prone to errors. The concept of inheritance helps 
+us consolidate repetitive code and makes it easier to understand and maintain.</p>
+<h3 id="other_resources-_-oop_concepts_-_parent-and-child-classes">Parent and child classes</h3>
+<p>By applying the concept of inheritance, we can simplify and reduce the repetitive code by 
+giving child classes properties of a parent class:</p>
+<pre><code> // The shape class contains common code to each shape class
+ // This allows the passing of properties on child classes
+ Ext.define(&#39;Shape&#39;, {
+     // Let&#39;s define common properties here and set default values
+     color: &#39;gray&#39;,
+     border: true,
+
+     // Let&#39;s add a shapeName property and a method to return it
+     // This replaces unique getShapeName methods on each class
+     shapeName: &#39;shape&#39;,
+
+     constructor: function (config) {
+         Ext.apply(this, config);
+     },
+
+     getShapeName: function () {
+         return this.shapeName;
+     }
+ });
+
+ Ext.define(&#39;Square&#39;, {
+     // Square extends from Shape so it gains properties 
+     // defined on itself and its parent class
+     extend: &#39;Shape&#39;,
+
+     // These properties will &#39;override&#39; parent class properties
+     side: 0,
+     color: &#39;red&#39;,
+     shapeName: &#39;square&#39;,
+
+     getArea: function() {
+         return this.side * this.side;
+     }
+ });
+
+ //This function generates a sentence to display in the test dialog
+ function generateTestSentence(shape) {
+     return [&#39;The area of the&#39;, shape.color, shape.getShapeName(), 
+             (shape.border ? &#39;with a border&#39; : &#39;&#39;), 
+             &#39;is:&#39;, shape.getArea()].join(&#39; &#39;);
+ }
+
+ var square = Ext.create(&#39;Square&#39;, {
+     side: 4
+ });
+
+ // Since Square extends from Shape, this example will work since 
+ // all other properties are still defined, but now by &#39;Shape&#39;
+ Ext.Msg.alert(&#39;Message&#39;, 
+      [ generateTestSentence(square) ].join(&#39;&lt;br /&gt;&#39;));
+</code></pre><p>We can even move the <code>generateTestSentence()</code> method to the Shape class:</p>
+<pre><code> Ext.define(&#39;Shape&#39;, {
+     color: &#39;gray&#39;,
+     border: true,
+     shapeName: &#39;shape&#39;,
+
+     constructor: function (config) {
+         Ext.apply(this, config);
+     },
+
+     getShapeName: function () {
+         return this.shapeName;
+     },
+
+     // This function will generate the test sentence for this shape, 
+     // so no need to pass it as an argument
+     getTestSentence: function () {
+         return [&#39;The area of the&#39;, this.color, this.getShapeName(), 
+                 (this.border ? &#39;with a border&#39; : &#39;&#39;), 
+                 &#39;is:&#39;, this.getArea()].join(&#39; &#39;);
+     }
+ });
+
+ Ext.define(&#39;Square&#39;, {
+     extend: &#39;Shape&#39;,
+
+     side: 0,
+     color: &#39;red&#39;,
+     shapeName: &#39;square&#39;,
+
+     getArea: function() {
+         return this.side * this.side;
+     }
+ });
+
+ var square = Ext.create(&#39;Square&#39;, {
+     side: 4
+ });
+
+ // The generateTestSentence function doesn&#39;t exist anymore
+ // so use the one that comes with the shape
+ Ext.Msg.alert(&#39;Message&#39;, 
+               [ square.getTestSentence() ].join(&#39;&lt;br /&gt;&#39;));
+</code></pre><p>As you can see, the properties on the child class will override properties on the parent 
+class if they&#39;re both set.  For instance, the Shape&#39;s <code>shapeName</code> is &quot;shape&quot;.  However, since 
+<code>shapeName</code> is set on the Square class as well, it overrides the parent class&#39;s value.  If 
+the child class doesn&#39;t have a property set, it will inherit said property from the parent.</p>
+<h2 id="other_resources-_-oop_concepts_-_encapsulation">Encapsulation</h2>
+<p>In the previous examples, you may notice we’re accessing instance properties by calling 
+them directly.  For instance, getting square&#39;s color by accessing &quot;square.color&quot;. You can 
+set the value directly as well:</p>
+<pre><code> Ext.define(&#39;Shape&#39;, {
+     color: &#39;gray&#39;,
+     border: true,
+     shapeName: &#39;shape&#39;,
+
+     constructor: function (config) {
+         Ext.apply(this, config);
+     },
+
+     getShapeName: function () {
+         return this.shapeName;
+     },
+
+     getTestSentence: function () {
+         return [&#39;The area of the&#39;, this.color, this.getShapeName(), 
+                 (this.border ? &#39;with a border&#39; : &#39;&#39;), 
+                 &#39;is:&#39;, this.getArea()].join(&#39; &#39;);
+     }
+ });
+
+ Ext.define(&#39;Square&#39;, {
+     extend: &#39;Shape&#39;,
+
+     side: 0,
+     color: &#39;red&#39;,
+     shapeName: &#39;square&#39;,
+
+     getArea: function() {
+         return this.side * this.side;
+     }
+ });
+
+ var square = Ext.create(&#39;Square&#39;, {
+     side: 4
+ });
+
+ // Set the value of &#39;side&#39; to 5 instead of the initial 4 
+ // While not bad, this is something that should be avoided
+ square.side = 5;
+
+ // Set the value of &#39;side&#39; to a string instead of a number
+ // String is not a valid value. This is an example of why 
+ // direct access to the properties should be avoided.  
+ // Open access is prone to error.
+ square.side = &#39;five&#39;;
+
+ // The area will be reported as NaN
+ Ext.Msg.alert(&#39;Message&#39;, 
+               [ square.getTestSentence() ].join(&#39;&lt;br /&gt;&#39;));
+</code></pre><h2 id="other_resources-_-oop_concepts_-_config-block">Config Block</h2>
+<p>To prevent direct read/write of an object&#39;s properties, we’ll make use of Ext JS’ <code>config</code> 
+block.  This will automatically restrict access to the object&#39;s properties so they can only 
+be set and retrieved using accessor methods.  </p>
+<p>Accessor methods are automatically generated getters and setters for anything in a class&#39;s 
+config block.  For instance, if you have <code>shapeName</code> in a config block, you get <code>setShapeName()</code> 
+and <code>getShapeName()</code> by default.</p>
+<p><strong>Note</strong>: The config block should only include new configs unique to its class. You should 
+not include configs already defined in a parent class&#39;s config block.</p>
+<pre><code> Ext.define(&#39;Shape&#39;, {
+     // All properties inside the config block have 
+     // their accessor methods automatically generated
+     config: {
+         color: &#39;gray&#39;,     // creates getColor|setColor
+         border: true,      // creates getBorder|setBorder
+         shapeName: &#39;shape&#39; // creates getShapeName|setShapeName
+     },
+
+     constructor: function (config) {
+         Ext.apply(this, config);
+         // Initialize the config block for this class
+         // This auto-generates the accessor methods 
+         // More information on this in the next section
+         this.initConfig(config);
+     },
+
+     // We have removed the getShapeName method 
+     // It&#39;s auto-generated since shapeName is in the config block
+
+     // Now we can use the accessor methods instead 
+     // of accessing the properties directly
+     getTestSentence: function () {
+         return [&#39;The area of the&#39;, this.getColor(), 
+                 this.getShapeName(), 
+                 (this.getBorder() ? &#39;with a border&#39; : &#39;&#39;), &#39;is:&#39;, 
+                 this.getArea()].join(&#39; &#39;);
+     }
+ });
+
+ Ext.define(&#39;Square&#39;, {
+     extend: &#39;Shape&#39;,
+
+     // In a child class, the config block should only 
+     // contain new configs particular for this class
+     config: {
+         side: 0 //  getSide and setSide are now available
+     },
+
+     // Parent class properties are defined outside the config block
+     color: &#39;red&#39;,
+     shapeName: &#39;square&#39;,
+
+     getArea: function() {
+         // We&#39;re using the accessor methods of the &#39;side&#39; config
+         return this.getSide() * this.getSide();
+     }
+ });
+
+ var square = Ext.create(&#39;Square&#39;, {
+     side: 4
+ });
+
+ // The following line won&#39;t modify the value of &#39;side&#39; anymore
+ square.side = &#39;five&#39;;
+
+ // To modify it instead, we&#39;ll use the setSide method:
+ square.setSide(5);
+
+ // The area will be reported as 25
+ Ext.Msg.alert(&#39;Message&#39;, 
+                [ square.getTestSentence() ].join(&#39;&lt;br /&gt;&#39;));
+</code></pre><h2 id="other_resources-_-oop_concepts_-_ext-base-class">Ext.Base class</h2>
+<p>In Ext JS, all classes are children of a common base class unless explicitly specified. 
+This base class is <code>Ext.Base</code>.</p>
+<p>Just like our Square class extends from Shape, Shape automatically extends from Ext.Base.<br>Based on this logic, the following code:</p>
+<pre><code> Ext.define(&#39;Shape&#39;, {
+     // Properties and methods here
+ });
+</code></pre><p>is actually equivalent to this:</p>
+<pre><code> Ext.define(&#39;Shape&#39;, {
+     extend: &#39;Ext.Base&#39;
+     // Properties and methods here
+ });
+</code></pre><p>This is why we can use this.initConfig(config); in the constructor of Shape. <code>initConfig()</code> 
+is a method of Ext.Base and is inherited by anything extending from it. <code>initConfig()</code> 
+initializes the config block for its class and auto-generates the accessor methods. </p>
+<h3 id="other_resources-_-oop_concepts_-_real-property-encapsulation">Real property encapsulation</h3>
+<p>The main goal of encapsulation is to protect objects from unwanted and/or invalid property 
+modification.  These modifications would inevitably result in errors.</p>
+<p>For example, when using the <code>config</code> block to avoid direct property modification, nothing 
+is currently preventing invalid values from being passed to the accessor methods.  That is, 
+nothing prevents us from calling square.setSide(&#39;five&#39;), which would result in an error 
+since side expects a numeral.</p>
+<p>Let’s prevent this by using the apply method.  Apply is a template method which allows you 
+to test the proposed value before modification.  This method copies all of the properties 
+of config to the specified object.</p>
+<p>Since &#39;side&#39; is a property defined through the &#39;config&#39; block, we can make use of this 
+template method to act before the value is actually modified, such as checking if the new 
+value for &#39;side&#39; is indeed a number.</p>
+<pre><code> Ext.define(&#39;Shape&#39;, {
+     config: {
+         color: &#39;gray&#39;,
+         border: true,
+         shapeName: &#39;shape&#39;
+     },
+
+     constructor: function (config) {
+         Ext.apply(this, config);
+         this.initConfig(config);
+     },
+
+     getTestSentence: function () {
+         return [&#39;The area of the&#39;, this.getColor(), 
+                 this.getShapeName(), 
+                 (this.getBorder() ? &#39;with a border&#39; : &#39;&#39;), 
+                 &#39;is:&#39;, this.getArea()].join(&#39; &#39;);
+     }
+ });
+
+ Ext.define(&#39;Square&#39;, {
+     extend: &#39;Shape&#39;,
+     config: {
+         side: 0
+     },
+
+     color: &#39;red&#39;,
+     shapeName: &#39;square&#39;,
+
+     getArea: function() {
+         return this.getSide() * this.getSide();
+     },
+
+     // &#39;side&#39; is a property defined through the &#39;config&#39; block, 
+     // We can use this method before the value is modified
+     // For instance, checking that &#39;side&#39; is a number
+     applySide: function (newValue, oldValue) {
+         return (Ext.isNumber(newValue)? newValue : oldValue);
+     }
+ });
+
+ var square = Ext.create(&#39;Square&#39;, {
+     side: 4
+ });
+
+ // The following line won&#39;t modify the value of &#39;side&#39;
+ square.setSide(&#39;five&#39;);
+
+ // The area will be reported as 16
+ Ext.Msg.alert(&#39;Message&#39;, 
+               [ square.getTestSentence() ].join(&#39;&lt;br /&gt;&#39;));
+</code></pre><h2 id="other_resources-_-oop_concepts_-_conclusion">Conclusion</h2>
+<p>We hope that this guide clarifies the basic concepts of OOP and Class-based programming in 
+Ext JS.  Be sure to check out the <a href="../core_concepts/classes.html">Class System guide</a> for additional 
+information on how to leverage Ext JS’ class system when making your own applications.  As 
+always, if you have questions regarding guide content, be sure to ask on the 
+<a href="https://www.sencha.com/forum/">community forums</a> or by submitting a Support ticket through 
+the <a href="https://support.sencha.com">Support Portal</a> (<em><a href="http://www.sencha.com/support/">Sencha Support customer</a> 
+access only</em>).</p>
+</div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_classes-and-instances">Classes and Instances</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_constructors">Constructors</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_apply">Apply</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_defining-more-classes">Defining more classes</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_inheritance">Inheritance</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_parent-and-child-classes">Parent and child classes</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_encapsulation">Encapsulation</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_config-block">Config Block</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_ext-base-class">Ext.Base class</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_real-property-encapsulation">Real property encapsulation</a></div>
+        <div class="toc-item"><a href="#other_resources-_-oop_concepts_-_conclusion">Conclusion</a></div>
+    </div>
+</body>
+</html>

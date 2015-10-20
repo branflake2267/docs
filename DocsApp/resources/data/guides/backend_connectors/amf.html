@@ -1,0 +1,130 @@
+<html>
+<head>
+    <title>AMF Data Sources</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Using AMF Data in Ext JS</p>
+<p><a href="http://en.wikipedia.org/wiki/Action_Message_Format">Action Message Format</a> (AMF)
+is a compact binary format used by Adobe Flash/Flex to serialize ActionScript
+object graphs.  AMF is typically used to encode messages that are sent between
+an Adobe Flash client and a remote service.  AMF is only a serialization
+technology, not a transport, so AMF encoded binary data can be used with any
+transport such as HTTP or HTTPS.  This guide will show you how to use Ext JS and
+AJAX to consume AMF data sent over HTTP right inside a web browser, with no need
+for a Flash plugin.  This guide assumes you are already somewhat familiar with
+the Ext JS Data package and Grid component.</p>
+<p><strong>Note:</strong>  <em>This functionality is only available with the purchase of 
+Sencha Complete.  For more information about using this class, please visit 
+our <a href="https://www.sencha.com/products/complete/">Sencha Complete</a> product page.</em></p>
+<h2 id="backend_connectors-_-amf_-_working-with-amf-packets">Working with AMF Packets</h2>
+<p>AMF-encoded object graphs are typically formatted as an &quot;AMF Packet&quot;.  Multiple
+headers and messages are batched into a single AMF Packet.  Lets take a look at
+how to use Ext JS to decode an AMF Packet and access its headers and messages.
+First lets make an AJAX request to a url that returns binary AMF Packet data.</p>
+<pre><code>Ext.Ajax.request({
+    url: &#39;some/url&#39;,
+    binary: true,
+    success: function(response) {
+        console.log(response.responseBytes);
+    }
+});
+</code></pre><p>You should see a byte array in your console - either a Uint8Array if it is
+supported by your browser or just an Array of numbers.  These are the raw
+bytes that compose the AMF Packet. It is important to remember to set the
+[[ext:Ext.data.Connection#binary]] config to true on the AJAX request
+so that the response will be interpreted as binary data and the <code>responseBytes</code>
+property will be set on the response object.</p>
+<p>Now that we have the raw binary data we need to decode it so that we can do
+something useful with it.  To do this we use the [[ext:Ext.data.amf.Packet]]
+class.  Inside the success callback function add the following code to construct
+a new Packet:</p>
+<pre><code>var packet = Ext.create(&#39;Ext.data.amf.Packet&#39;);
+</code></pre><p>This gives us an empty AMF Packet object to work with.  The Packet class contains
+all the logic required to decode the binary AMF-formatted data. To decode the
+AMF byte array, simply pass it to the Packet&#39;s
+[[ext:Ext.data.amf.Packet#decode]] method:</p>
+<pre><code>packet.decode(response.responseBytes);
+</code></pre><p>We now have a fully decoded AMF Packet. The decoded data can be accessed using
+the following properties on the packet object:</p>
+<ul>
+<li>[[ext:Ext.data.amf.Packet#version]] - The Packet&#39;s AMF version</li>
+<li>[[ext:Ext.data.amf.Packet#headers]] - The Packet&#39;s headers</li>
+<li>[[ext:Ext.data.amf.Packet#messages]] - The Packet&#39;s messages</li>
+</ul>
+<h2 id="backend_connectors-_-amf_-_loading-records-into-a-grid">Loading Records into a Grid</h2>
+<p>Now that we know how to use the AMF Packet, lets learn how to load some
+AMF-encoded records into an Ext JS [[ext:Ext.data.Store]] using an
+[[ext:Ext.data.amf.Proxy]] and [[ext:Ext.data.amf.Reader]]
+and display those records in [[ext:Ext.grid.Panel]]. In this example we
+will load records from an AMF Packet containing a list of pangrams in several
+languages.  Start by defining the [[ext:Ext.data.Model]]:</p>
+<pre><code>Ext.define(&#39;Pangram&#39;, {
+    extend: &#39;Ext.data.Model&#39;,
+    fields: [
+        { name: &#39;language&#39;, type: &#39;string&#39; },
+        { name: &#39;text&#39;, type: &#39;string&#39; }
+    ]
+});
+</code></pre><p>Next create a [[ext:Ext.data.Store]] to contain the Model instances.
+Configure the store with an [[ext:Ext.data.amf.Proxy]].  The AMF Proxy
+uses an [[ext:Ext.data.amf.Reader]] by default so there is no need
+to explicitly configure the reader unless you need to change some of the reader&#39;s
+default configurations.</p>
+<pre><code>var store = Ext.create(&#39;Ext.data.Store&#39;, {
+    model: &#39;Pangram&#39;,
+    proxy: {
+        type: &#39;amf&#39;,
+        url: &#39;some/url&#39;,
+    },
+    autoLoad: true
+});
+</code></pre><p>Finally create a [[ext:Ext.grid.Panel]] that is bound to the store we just
+created:</p>
+<pre><code>Ext.create(&#39;Ext.grid.Panel&#39;, {
+    title: &#39;AMF0 Pangrams&#39;,
+    height: 350,
+    width: 700,
+    store: store,
+    columns: [
+        { text: &#39;Language&#39;, dataIndex: &#39;language&#39;, width: 130 },
+        { text: &#39;Pangram&#39;, dataIndex: &#39;text&#39;, flex: 1 }
+    ],
+    renderTo: Ext.getBody()
+});
+</code></pre><p><img src="images/amf-grid.png" alt="AMF Grid"/></p>
+<p>The above code makes some assumptions about where the raw record data are located
+within the packet.  By default [[ext:Ext.data.amf.Reader]] expects
+the Packet&#39;s first message body to be an array of objects containing the record
+data.  But this is not always the case - sometimes you need to tell the reader
+where to find the records in the message body.  This is done using the reader&#39;s
+[[ext:Ext.data.Reader#root]] configuration property:</p>
+<pre><code>proxy: {
+    type: &#39;amf&#39;,
+    url: &#39;some/url&#39;,
+    reader: {
+        type: &#39;amf&#39;,
+        root: &#39;foo.bar&#39;
+    }
+}
+</code></pre><p>This tells the reader that the message body is an object containing a property
+named &quot;foo&quot; which is an object containing a property named &quot;bar&quot;, and the value
+of &quot;bar&quot; is an array of raw record data objects.</p>
+<p>AMF Packets can contain multiple messages. You can configure which message the
+reader should look for the records in using the
+[[ext:Ext.data.amf.Reader#messageIndex]] config:</p>
+<pre><code>reader: {
+    type: &#39;amf&#39;,
+    messageIndex: 42
+}
+</code></pre><p>For a working example and full source code see <a href="http://dev.sencha.com/ext/5.0.0/examples/kitchensink/#amf-grid">AMF Grid
+Example</a></p>
+</div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#backend_connectors-_-amf_-_working-with-amf-packets">Working with AMF Packets</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-amf_-_loading-records-into-a-grid">Loading Records into a Grid</a></div>
+    </div>
+</body>
+</html>

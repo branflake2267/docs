@@ -12,10 +12,13 @@ Ext.define('DocsApp.view.mainApp.Container', {
         'DocsApp.view.mainApp.productVersion.ProductsMenu',
         'DocsApp.view.mainApp.productVersion.ProductsMenu',
         'DocsApp.view.mainApp.guide.View',
-        'DocsApp.view.mainApp.doc.View'
+        'DocsApp.view.mainApp.doc.View',
+        'DocsApp.view.mainApp.ContainerController'
     ],
 
     activeItem: 1,
+    controller: 'docsapp-mainapp-container',
+
     items: [{
         xtype: 'container',
         width: 400,
@@ -49,23 +52,21 @@ Ext.define('DocsApp.view.mainApp.Container', {
             reference: 'mainapp-leftnav',
             region: 'west',
             split: true,
-            width: 332
+            width: 320
         }, {
             xtype: 'tabpanel',
+            reference: 'mainapp-tabpanel',
             region: 'center',
-            activeTab: 1,
+            defaults : {
+                closable: true
+            },
             items: [{
-                iconCls: 'x-fa fa-star'
-            }, {
                 xtype: 'mainapp-doc-view',
-                title: 'Ext.panel.Panel'
-            }, {
-                xtype: 'mainapp-guide-view',
-                title: 'Memory Management'
-            /*}, {
-                title: 'Example Proto',
-                iconCls: 'x-fa fa-desktop'*/
-            }]
+                className: 'Ext.panel.Panel'
+            }],
+            listeners: {
+                tabchange : 'onTabChange'
+            }
         }],
 
         listeners: {

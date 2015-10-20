@@ -1,0 +1,324 @@
+<html>
+<head>
+    <title>Forms</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><h1 id="components-_-forms_-_forms">Forms</h1>
+<p>A [[ext:Ext.form.Panel Form Panel]] is nothing more than a basic [[ext:Ext.panel.Panel
+Panel]] with form handling abilities added.  Form Panels can be used throughout an Ext 
+[[ext:Ext#application application]] wherever there is a need to collect data from 
+the user.</p>
+<p>In addition, Form Panels can use any [[ext:Ext.layout.container.Container Container
+Layout]], providing a convenient and flexible way to handle the positioning of their
+fields.  Form Panels can also be bound to a [[ext:Ext.data.Model Model]], making it easy 
+to load data from and submit data back to the server.</p>
+<p>Under the hood a Form Panel wraps a [[ext:Ext.form.Basic Basic Form]] which handles all 
+of its input field management, validation, submission, and form loading services.  This 
+means that many of the config options of a Basic Form can be used directly on a Form 
+Panel.</p>
+<h2 id="components-_-forms_-_basic-form-panel">Basic Form Panel</h2>
+<p>To start off, here&#39;s how to create a simple Form that collects user data:</p>
+<pre><code>@example
+Ext.create(&#39;Ext.form.Panel&#39;, {
+    renderTo: document.body,
+    title: &#39;User Form&#39;,
+    height: 150,
+    width: 300,
+    bodyPadding: 10,
+    defaultType: &#39;textfield&#39;,
+    items: [
+        {
+            fieldLabel: &#39;First Name&#39;,
+            name: &#39;firstName&#39;
+        },
+        {
+            fieldLabel: &#39;Last Name&#39;,
+            name: &#39;lastName&#39;
+        },
+        {
+            xtype: &#39;datefield&#39;,
+            fieldLabel: &#39;Date of Birth&#39;,
+            name: &#39;birthDate&#39;
+        }
+    ]
+});
+</code></pre><p>This Form renders itself to the document body and has three [[ext:Ext.form.field.Field
+Field]]s - &quot;First Name&quot;, &quot;Last Name&quot;, and &quot;Date of Birth&quot;. Fields are added to the Form
+Panel using the [[ext:Ext.form.Panel#cfg-items items]] configuration.</p>
+<p>The [[ext:Ext.form.Labelable#cfg-fieldLabel fieldLabel]] configuration defines what text 
+will appear in the label next to the field, and the 
+[[ext:Ext.form.field.Base#cfg-name name]] configuration becomes the <code>name</code> attribute of 
+the underlying HTML field.</p>
+<p>Notice how this Form Panel has a [[ext:Ext.form.Panel#cfg-defaultType defaultType]] of
+<strong>&#39;textfield&#39;</strong>.  This means that any of its items that do not have an 
+[[ext:Ext.Component xtype]] specified (the &quot;First Name&quot; and &quot;Last Name&quot; fields in this 
+example), are [[ext:Ext.form.field.Text Text Field]]s.</p>
+<p>The &quot;Date of Birth&quot; field, on the other hand, has its <code>xtype</code> explicitly configured as
+<strong>&#39;datefield&#39;</strong>, which makes it a [[ext:Ext.form.field.Date Date Field]]. Date Fields 
+expect to only contain valid date data and come with a 
+[[ext:Ext.menu.DatePicker DatePicker]] for selecting a date.</p>
+<h2 id="components-_-forms_-_fields">Fields</h2>
+<h3 id="components-_-forms_-_field-types">Field Types</h3>
+<p>Ext JS provides a set of standard Field types out of the box. Any of the Fields in the
+<code>Ext.form.field</code> namespace can be used in a Form Panel. For more information see the API
+documentaion for each Field type:</p>
+<ul>
+<li>[[ext:Ext.form.field.Checkbox]]</li>
+<li>[[ext:Ext.form.field.ComboBox]]</li>
+<li>[[ext:Ext.form.field.Date]]</li>
+<li>[[ext:Ext.form.field.Display]]</li>
+<li>[[ext:Ext.form.field.File]]</li>
+<li>[[ext:Ext.form.field.Hidden]]</li>
+<li>[[ext:Ext.form.field.HtmlEditor]]</li>
+<li>[[ext:Ext.form.field.Number]]</li>
+<li>[[ext:Ext.form.field.Radio]]</li>
+<li>[[ext:Ext.form.field.Text]]</li>
+<li>[[ext:Ext.form.field.TextArea]]</li>
+<li>[[ext:Ext.form.field.Time]]</li>
+</ul>
+<h3 id="components-_-forms_-_validation">Validation</h3>
+<h4 id="components-_-forms_-_1-built-in-validations">1. Built-in Validations</h4>
+<p>Ext JS has built in support for validation on any type of Field, and some Fields have
+built in validation rules.</p>
+<p>For example, if a value is entered into a [[ext:Ext.form.field.Date Date Field]] and 
+that value cannot be converted into a <code>Date</code>, the Field will have the 
+<code>x-form-invalid-field</code> CSS class added to its HTML element.</p>
+<p>If necessary, this CSS class can be changed using the 
+[[ext:Ext.form.field.Base#cfg-invalidCls invalidCls]] configuration. Adding the 
+<code>invalidCls</code> adds a red border to the input field (as well as a red &quot;invalid underline&quot; 
+decoration when using the Classic theme):</p>
+<p><img src='images/invalid_field.png' alt='Invalid Field'/></p>
+<p>A Field containing invalid data will also display an error message. By default this
+message displays as a tool tip:</p>
+<p><img src='images/invalid_field_hover.png' alt='Invalid Field Hover'/></p>
+<p>It&#39;s easy to change the location of a Field&#39;s error message using the
+[[ext:Ext.form.Labelable#cfg-msgTarget msgTarget]] configuration, and the
+[[ext:Ext.form.field.Base#cfg-invalidText invalidText]] configuration changes the error
+message.</p>
+<p>Each Field provides its own implementation of <code>invalidText</code>, and many support token
+replacement in the error message.</p>
+<p>For example, in a Date Field&#39;s <code>invalidText</code>, any occurrences of &quot;{0}&quot; will be replaced
+with the Field&#39;s value, and any occurrences of &quot;{1}&quot; will be replaced with the required
+date [[ext:Ext.form.field.Date#cfg-format format]].</p>
+<p>The following code demonstrates placing the error message directly under the Field, and
+customizing the error message text:</p>
+<pre><code>{
+    xtype: &#39;datefield&#39;,
+    fieldLabel: &#39;Date of Birth&#39;,
+    name: &#39;birthDate&#39;,
+    msgTarget: &#39;under&#39;, // location of the error message
+    invalidText: &#39;&quot;{0}&quot; bad. &quot;{1}&quot; good.&#39; // custom error message text
+}
+</code></pre><p><img src='images/custom_error_message.png' alt='Custom Error Message'/></p>
+<h4 id="components-_-forms_-_2-custom-validations">2. Custom Validations</h4>
+<p>Some validation requirements cannot be met using the built-in validations. The simplest
+way to implement a custom validation is to use the [[ext:Ext.form.field.Text Text
+Field]]&#39;s [[ext:Ext.form.field.Text#cfg-regex regex]] configuration to apply validation 
+rules and the [[ext:Ext.form.field.Text#cfg-maskRe maskRe]] configuration to limit which 
+characters can be typed into the field. Here&#39;s an example of a Text Field that validates 
+a time.</p>
+<pre><code>{
+    xtype: &#39;textfield&#39;,
+    fieldLabel: &#39;Last Login Time&#39;,
+    name: &#39;loginTime&#39;,
+    regex: /^([1-9]|1[0-9]):([0-5][0-9])(\s[a|p]m)$/i,
+    maskRe: /[\d\s:amp]/i,
+    invalidText: &#39;Not a valid time.  Must be in the format &quot;12:34 PM&quot;.&#39;
+}
+</code></pre><p>While the above method works well for validating a single field, it is not practical for
+an application that has many fields that share the same custom validation.</p>
+<p>The [[ext:Ext.form.field.VTypes]] class provides a solution for creating reusable custom
+validations. Here&#39;s how a custom &quot;time&quot; validator can be created:</p>
+<pre><code>// custom Vtype for vtype:&#39;time&#39;
+var timeTest = /^([1-9]|1[0-9]):([0-5][0-9])(\s[a|p]m)$/i;
+Ext.apply(Ext.form.field.VTypes, {
+    //  vtype validation function
+    time: function(val, field) {
+        return timeTest.test(val);
+    },
+    // vtype Text property: The error text to display when the validation function returns false
+    timeText: &#39;Not a valid time.  Must be in the format &quot;12:34 PM&quot;.&#39;,
+    // vtype Mask property: The keystroke filter mask
+    timeMask: /[\d\s:amp]/i
+});
+</code></pre><p>Once a custom validator has been created it can be used on Text Fields throughout an
+application using the [[ext:Ext.form.field.Text#cfg-vtype vtype]] configuration:</p>
+<pre><code>{
+    fieldLabel: &#39;Last Login Time&#39;,
+    name: &#39;loginTime&#39;,
+    vtype: &#39;time&#39;
+}
+</code></pre><p>See <a href="http://dev.sencha.com/extjs/5.1.0/examples/kitchensink/#form-advtypes">Validation Example</a>
+for a working demo. For more information on custom validations, please refer to the API
+Documentation for [[ext:Ext.form.field.VTypes VTypes]].</p>
+<h2 id="components-_-forms_-_handling-data">Handling Data</h2>
+<h3 id="components-_-forms_-_submitting-a-form">Submitting a Form</h3>
+<p>The simplest way to submit data to the server is to use the 
+[[ext:Ext.form.Basic#cfg-url url]] configuration of [[ext:Ext.form.Basic Basic Form]]. 
+Since [[ext:Ext.form.Panel Form Panel]] wraps a Basic Form, we can use any of Basic 
+Form&#39;s configuration options directly on a Form Panel:</p>
+<pre><code>Ext.create(&#39;Ext.form.Panel&#39;, {
+    ...
+    url: &#39;add_user&#39;,
+    items: [
+        ...
+    ]
+});
+</code></pre><p>The Form&#39;s [[ext:Ext.form.Panel-method-submit submit]] method can be used to submit data 
+to the configured <code>url</code>:</p>
+<pre><code>Ext.create(&#39;Ext.form.Panel&#39;, {
+    ...
+    url: &#39;add_user&#39;,
+    items: [
+        ...
+    ],
+    buttons: [
+        {
+            text: &#39;Submit&#39;,
+            handler: function() {
+                var form = this.up(&#39;form&#39;); // get the form panel
+                if (form.isValid()) { // make sure the form contains valid data before submitting
+                    form.submit({
+                        success: function(form, action) {
+                           Ext.Msg.alert(&#39;Success&#39;, action.result.msg);
+                        },
+                        failure: function(form, action) {
+                            Ext.Msg.alert(&#39;Failed&#39;, action.result.msg);
+                        }
+                    });
+                } else { // display error alert if the data is invalid
+                    Ext.Msg.alert(&#39;Invalid Data&#39;, &#39;Please correct form errors.&#39;)
+                }
+            }
+        }
+    ]
+});
+</code></pre><p>In the above example, a button is configured with a 
+[[ext:Ext.button.Button-cfg-handler handler]] that handles form submission.  The handler 
+takes the following actions:</p>
+<ol>
+<li>First, a reference to the Form Panel must be acquired.</li>
+<li>Then the [[ext:Ext.form.Panel-method-isValid isValid]] method is called before 
+submission to verify that none of the Fields have validation errors.</li>
+<li>Finally the <code>submit</code> method is called, and two callback functions are passed -
+<code>success</code> and <code>failure</code>.  Within these callback functions, <code>action.result</code> refers to the
+parsed JSON response.</li>
+</ol>
+<p>The above example expects a JSON response that looks something like this:</p>
+<pre><code>{ &quot;success&quot;: true, &quot;msg&quot;: &quot;User added successfully&quot; }
+</code></pre><h3 id="components-_-forms_-_binding-a-form-to-a-model">Binding a Form to a Model</h3>
+<p>The [[ext:Ext.data.Model Model]] class is used throughout Ext JS for representing 
+various types of data as well as retrieving and updating data on the server.  A Model 
+representing a <strong>User</strong> would define the [[ext:Ext.data.Model-cfg-fields fields]] a 
+<strong>User</strong> has as well as a [[ext:Ext.data.proxy.Proxy proxy]] for loading and saving 
+data:</p>
+<pre><code>Ext.define(&#39;MyApp.model.User&#39;, {
+    extend: &#39;Ext.data.Model&#39;,
+    fields: [&#39;firstName&#39;, &#39;lastName&#39;, &#39;birthDate&#39;],
+    proxy: {
+        type: &#39;ajax&#39;,
+        api: {
+            read: &#39;data/get_user&#39;,
+            update: &#39;data/update_user&#39;
+        },
+        reader: {
+            type: &#39;json&#39;,
+            root: &#39;users&#39;
+        }
+    }
+});
+</code></pre><p>Data can be loaded into a [[ext:Ext.form.Panel Form Panel]] directly from a
+[[ext:Ext.data.Model Model]] using the [[ext:Ext.form.Panel#loadRecord loadRecord]]
+method:</p>
+<pre><code>MyApp.model.User.load(1, { // load user with ID of &quot;1&quot;
+    success: function(user) {
+        userForm.loadRecord(user); // when user is loaded successfully, load the data into the form
+    }
+});
+</code></pre><p>Finally, instead of using the [[ext:Ext.form.Panel-method-submit submit]] method to save 
+the data, Form Panel&#39;s [[ext:Ext.form.Panel-method-updateRecord updateRecord]] method is 
+used to update the record with the form data, and the Model&#39;s 
+[[ext:Ext.data.Model#save save]] method is called to save the data to the server:</p>
+<pre><code>Ext.create(&#39;Ext.form.Panel&#39;, {
+    ...
+    url: &#39;add_user&#39;,
+    items: [
+        ...
+    ],
+    buttons: [
+        {
+            text: &#39;Submit&#39;,
+            handler: function() {
+                var form = this.up(&#39;form&#39;), // get the form panel
+                    record = form.getRecord(); // get the underlying model instance
+                if (form.isValid()) { // make sure the form contains valid data before submitting
+                    form.updateRecord(record); // update the record with the form data
+                    record.save({ // save the record to the server
+                        success: function(user) {
+                            Ext.Msg.alert(&#39;Success&#39;, &#39;User saved successfully.&#39;)
+                        },
+                        failure: function(user) {
+                            Ext.Msg.alert(&#39;Failure&#39;, &#39;Failed to save user.&#39;)
+                        }
+                    });
+                } else { // display error alert if the data is invalid
+                    Ext.Msg.alert(&#39;Invalid Data&#39;, &#39;Please correct form errors.&#39;)
+                }
+            }
+        }
+    ]
+});
+</code></pre><p><a href="http://dev.sencha.com/ext/5.1.0/examples/kitchensink/#form-grid">Model Binding Example</a></p>
+<h2 id="components-_-forms_-_layouts">Layouts</h2>
+<p>Layouts are used to handle sizing and positioning of components in an Ext JS 
+application.  [[ext:Ext.form.Panel Form Panels]] can use any 
+[[ext:Ext.layout.container.Container Container Layout]]. For more information on Layouts 
+please refer to the <a href="../core_concepts/layouts.html">Layouts and Containers Guide</a>.</p>
+<p>For example, positioning Fields in a form horizontally can easily be done using an
+[[ext:Ext.layout.container.HBox HBox]] Layout:</p>
+<pre><code>@example
+Ext.create(&#39;Ext.form.Panel&#39;, {
+    renderTo: document.body,
+    title: &#39;User Form&#39;,
+    height: 120,
+    width: 585,
+    defaults: {
+        xtype: &#39;textfield&#39;,
+        labelAlign: &#39;top&#39;,
+        padding: 10
+    },
+    layout: &#39;hbox&#39;,
+    items: [
+        {
+            fieldLabel: &#39;First Name&#39;,
+            name: &#39;firstName&#39;
+        },
+        {
+            fieldLabel: &#39;Last Name&#39;,
+            name: &#39;lastName&#39;
+        },
+        {
+            xtype: &#39;datefield&#39;,
+            fieldLabel: &#39;Date of Birth&#39;,
+            name: &#39;birthDate&#39;
+        }
+    ]
+});
+</code></pre></div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#components-_-forms_-_basic-form-panel">Basic Form Panel</a></div>
+        <div class="toc-item"><a href="#components-_-forms_-_fields">Fields</a></div>
+        <div class="toc-item"><a href="#components-_-forms_-_field-types">Field Types</a></div>
+        <div class="toc-item"><a href="#components-_-forms_-_validation">Validation</a></div>
+        <div class="toc-item"><a href="#components-_-forms_-_1-built-in-validations">1. Built-in Validations</a></div>
+        <div class="toc-item"><a href="#components-_-forms_-_2-custom-validations">2. Custom Validations</a></div>
+        <div class="toc-item"><a href="#components-_-forms_-_handling-data">Handling Data</a></div>
+        <div class="toc-item"><a href="#components-_-forms_-_submitting-a-form">Submitting a Form</a></div>
+        <div class="toc-item"><a href="#components-_-forms_-_binding-a-form-to-a-model">Binding a Form to a Model</a></div>
+        <div class="toc-item"><a href="#components-_-forms_-_layouts">Layouts</a></div>
+    </div>
+</body>
+</html>

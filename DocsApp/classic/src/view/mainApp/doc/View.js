@@ -2,13 +2,18 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     extend: 'Ext.panel.Panel',
     xtype: 'mainapp-doc-view',
 
-    requires: ['DocsApp.view.mainApp.doc.MemberDataview'],
+    requires: [
+        'DocsApp.view.mainApp.doc.MemberDataview'
+    ],
+
+    config: {
+        className: null
+    },
 
     viewModel: 'mainapp-docmodel',
     controller: 'main-doc-controller',
 
     iconCls: 'x-fa fa-code',
-    closable: true,
     scrollable: true,
 
     layout: 'anchor',
@@ -31,7 +36,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             bind: {
                 data: '{classFile}'
             },
-            tpl: Ext.create('Ext.XTemplate', '{[this.aliasOut(values)]}', {
+            tpl: new Ext.XTemplate('{[this.aliasOut(values)]}', {
                 aliasOut: function (values) {
                     var alias = values.alias,
                         isWidget;
@@ -139,7 +144,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             bind: {
                 data: '{classFile}'
             },
-            tpl: '{[marked(values.text)]}'
+            tpl: '{[marked(values.text, { renderer: markedRenderer({ addHeaderId: false }) })]}'
         }, {
             xtype: 'component',
             width: 400,
@@ -157,7 +162,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 '</tpl>',
                 {
                     getRequires: function (values) {
-                        return values.requires.split(',').join('<br>');
+                        return values.requires.replace(',', '<br>');
                     }
                 }
             )
@@ -214,20 +219,14 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         bind: '{events}'
     }],
 
-    // TODO:: temp listener to process an API Doc source during initial POC stage
-    listeners: {
-        delay: 200,
-        boxready: function (docView) {
-            /*Ext.Ajax.request({
-                url: 'resources/data/docs/panel.json',
-                success: function (resp) {
-                    docView.lookupViewModel().set({
-                        // hack to get to the class info
-                        doc: Ext.decode(resp.responseText).global.items[0]
-                    });
-                }
-            });*/
-            //console.log(this.getViewModel().data['classFile'].getData());
+    updateClassName : function(name) {
+        if (name) {
+            this.setTitle(name);
+
+            this.getViewModel().linkTo('classFile', {
+                type: 'Class',
+                id: name
+            });
         }
     }
 });

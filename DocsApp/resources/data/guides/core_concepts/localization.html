@@ -1,0 +1,120 @@
+<html>
+<head>
+    <title>Localization</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Localization in Ext JS</p>
+<p>Communicating with users in a language that they understand and with conventions that 
+they&#39;re used to is vital. Ext JS comes bundled with a localization package that supports 
+over 40 languages ranging from Indonesian to Macedonian, and it&#39;s simple to implement.</p>
+<p>##Locales</p>
+<p>You&#39;ll find all of the bundled locale files in the override folder of the ext-locale 
+package.  Locale files are just overrides that tell Ext JS to replace the default 
+English values of certain components.  These are generally things like date formats, 
+month and day names, etc.</p>
+<p>The [[ext:Ext.picker.Date date picker]] is a perfect example.  Here&#39;s an excerpt from the 
+Spanish localization file:</p>
+<pre><code>Ext.define(&quot;Ext.locale.es.picker.Date&quot;, {
+    override: &quot;Ext.picker.Date&quot;,
+    todayText: &quot;Hoy&quot;,
+    minText: &quot;Esta fecha es anterior a la fecha mínima&quot;,
+    maxText: &quot;Esta fecha es posterior a la fecha máxima&quot;,
+    disabledDaysText: &quot;&quot;,
+    disabledDatesText: &quot;&quot;,
+    nextText: &#39;Mes Siguiente (Control+Right)&#39;,
+    prevText: &#39;Mes Anterior (Control+Left)&#39;,
+    monthYearText: &#39;Seleccione un mes (Control+Up/Down para desplazar el año)&#39;,
+    todayTip: &quot;{0} (Barra espaciadora)&quot;,
+    format: &quot;d/m/Y&quot;,
+    startDay: 1
+});
+</code></pre><p>##Localization with Sencha Cmd</p>
+<p>To implement localization, simply modify the <code>app.json</code> file in your Sencha Cmd generated
+application.  You&#39;ll want to add the &quot;ext-locale&quot; package to the requires block.  The 
+resulting addition should look like this:</p>
+<pre><code>/**
+ * The list of required packages (with optional versions; default is &quot;latest&quot;).
+ *
+ * For example,
+ *
+ *      &quot;requires&quot;: [
+ *          &quot;sencha-charts&quot;
+ *      ]
+ */
+&quot;requires&quot;: [
+    &quot;ext-locale&quot;
+],
+</code></pre><p>Your application is now ready for localization.  The next step is to determine the language
+that you are interested in including.  All you need to do is create a 
+locale setting.  Simply add the following line to your <code>app.json</code> file:</p>
+<pre><code>&quot;locale&quot;: &quot;es&quot;, 
+</code></pre><p><strong>Note:</strong>  The locale setting is not a default entry.  You will need to add this to your 
+<code>app.json</code> file manually.    </p>
+<p>Now that your <code>app.json</code> is updated, you can run <code>sencha app build</code> and Sencha Cmd will
+process the changes.  Upon refreshing, you should see that any component with English values
+now contains Spanish values.  </p>
+<p>##Localization without Sencha Cmd</p>
+<p>The simplest way to localize Ext JS without Sencha Cmd is to include the locale file in 
+your index file.</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;!-- Ensure we&#39;re using UTF-8 --&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;
+    &lt;title&gt;Localization example&lt;/title&gt;
+    &lt;!-- Main Ext JS files --&gt;
+    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;resources/ext-theme-neptune-all.css&quot;&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;ext-all.js&quot;&gt;&lt;/script&gt;      
+
+    &lt;!-- Include the translations --&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;ext-locale-es.js&quot;&gt;&lt;/script&gt;
+
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        Ext.onReady(function() {
+            Ext.create(&#39;Ext.picker.Date&#39;, {
+                renderTo: Ext.getBody()
+            });
+        });
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+</code></pre><p>##Localizing your Ext JS Extensions</p>
+<p>You&#39;ll want to ensure that you follow Ext JS best practices for localization when you write a 
+custom component or plug-in. At the very minimum, every text string that&#39;s shown to users 
+should be defined as a property:</p>
+<pre><code>Ext.define(&quot;Ext.ux.Weather&quot;, {
+    sunText: &quot;It&#39;s a nice sunny day&quot;,
+    rainText: &quot;Bad weather, don&#39;t go out&quot;,
+    // ...other code...
+});
+</code></pre><p>###Localizing Dates
+You&#39;ll want to pay extra care when working with dates.  Every language tends to have it&#39;s 
+own way of writing them.  When your extension renders a date, provide a config option to 
+specify the format. This way users of your extension can easily override the 
+locale-specific parts.</p>
+<p>###Native Localization
+You can avoid the need for most localization by using components with messages already 
+translated in Ext JS itself (e.g. use [[ext:Ext.MessageBox.buttonText]] when 
+rendering &quot;OK&quot; button). </p>
+<p>###Custom Localization
+If you have defined application classes with text fields, labels, or other localization codes, 
+you will need to override them with customized locale overrides.</p>
+<p>The first step is to create a directory in which you will place all your locale overrides. For example, 
+you may wish to put all language overrides in a &#39;locale&#39; directory within your application.  This directory 
+would contain subdirectories for each language, corresponding to the locale code (e.g. Spanish overrides in 
+locale/es, French in locale/fr, etc.).</p>
+<p>The most important part of this step is to ensure that you isolate each set of language overrides in a directory 
+that matches the value you specify as the <em>locale</em> property in your <code>app.json</code> file.</p>
+<p>Once you have created your locale directory structure and your overrides, you need to tell Sencha Cmd to 
+add these classes during the build process.</p>
+<p>If you&#39;ve followed the above convention, you can add the following configuration to your <code>app.json</code> 
+<em>overrides</em> property:</p>
+<pre><code>&quot;overrides&quot;: &quot;${app.dir}/overrides,${app.dir}/locale/${app.locale}&quot;,
+</code></pre><p>This will allow Sencha Cmd to recursively add all of the class files found under the locale/xx directory, where 
+<code>xx</code> is the locale code specified under <code>locale</code> in the <code>app.json</code> file.</p>
+</div>
+
+</body>
+</html>

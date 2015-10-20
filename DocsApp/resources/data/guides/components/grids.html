@@ -1,0 +1,317 @@
+<html>
+<head>
+    <title>Grids</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><h1 id="components-_-grids_-_grids">Grids</h1>
+<p>[[ext:Ext.grid.Panel]] is one of the centerpieces of Ext JS. It&#39;s an incredibly 
+versatile component that provides an easy way to display, sort, group, and edit data.</p>
+<h2 id="components-_-grids_-_basic-grid-panel">Basic Grid Panel</h2>
+<p><img src="./images/simple_grid.png" alt="Basic Grid Panel"/></p>
+<p>Let&#39;s get started by creating a basic [[ext:Ext.grid.Panel]].  Here&#39;s all you need to 
+know to get a simple grid up and running:</p>
+<h3 id="components-_-grids_-_model-and-store">Model and Store</h3>
+<p>[[ext:Ext.grid.Panel]] is simply a component that displays data contained in a
+[[ext:Ext.data.Store]]. [[ext:Ext.data.Store]] can be thought of as a collection of
+records, or [[ext:Ext.data.Model]] instances.</p>
+<p>The benefit of this setup is separating our concerns.  [[ext:Ext.grid.Panel]] is only
+concerned with displaying the data, while [[ext:Ext.data.Store]] takes care of fetching
+and saving the data using [[ext:Ext.data.proxy.Proxy]].</p>
+<p>First, we need to define a [[ext:Ext.data.Model]]. A model is just a collection of 
+[[ext:Ext.data.field.Field fields]] that represents a type of data.  Let&#39;s define a 
+model that represents a <strong>&quot;User&quot;</strong>:</p>
+<pre><code>Ext.define(&#39;User&#39;, {
+    extend: &#39;Ext.data.Model&#39;,
+    fields: [ &#39;name&#39;, &#39;email&#39;, &#39;phone&#39; ]
+});
+</code></pre><p>Next let&#39;s create a [[ext:Ext.data.Store]] that contains several <strong>&quot;User&quot;</strong> instances.</p>
+<pre><code>var userStore = Ext.create(&#39;Ext.data.Store&#39;, {
+    model: &#39;User&#39;,
+    data: [
+        { name: &#39;Lisa&#39;, email: &#39;lisa@simpsons.com&#39;, phone: &#39;555-111-1224&#39; },
+        { name: &#39;Bart&#39;, email: &#39;bart@simpsons.com&#39;, phone: &#39;555-222-1234&#39; },
+        { name: &#39;Homer&#39;, email: &#39;homer@simpsons.com&#39;, phone: &#39;555-222-1244&#39; },
+        { name: &#39;Marge&#39;, email: &#39;marge@simpsons.com&#39;, phone: &#39;555-222-1254&#39; }
+    ]
+});
+</code></pre><p>For sake of ease, we configured [[ext:Ext.data.Store]] to load its data inline.  In a 
+real world application, you would most likely configure the [[ext:Ext.data.Store]] to 
+use an [[ext:Ext.data.proxy.Proxy]] to load data from the server.</p>
+<h3 id="components-_-grids_-_grid-panel">Grid Panel</h3>
+<p>Now, we have a model, which defines our data structure.  We have also loaded several 
+model instances into an [[ext:Ext.data.Store]].  Now we&#39;re ready to display the data 
+using [[ext:Ext.grid.Panel]].</p>
+<p>In this example, we configured the Grid with [[ext:Ext.AbstractComponent#renderTo
+renderTo]] to immediately render the Grid into the HTML document. </p>
+<p>In many situations, the grid will be a descendant of [[ext:Ext.container.Viewport]], 
+which means rendering is already handled.</p>
+<pre><code>Ext.create(&#39;Ext.grid.Panel&#39;, {
+    renderTo: document.body,
+    store: userStore,
+    width: 400,
+    height: 200,
+    title: &#39;Application Users&#39;,
+    columns: [
+        {
+            text: &#39;Name&#39;,
+            width: 100,
+            sortable: false,
+            hideable: false,
+            dataIndex: &#39;name&#39;
+        },
+        {
+            text: &#39;Email Address&#39;,
+            width: 150,
+            dataIndex: &#39;email&#39;,
+            hidden: true
+        },
+        {
+            text: &#39;Phone Number&#39;,
+            flex: 1,
+            dataIndex: &#39;phone&#39;
+        }
+    ]
+});
+</code></pre><p>And that&#39;s all there is to it.  </p>
+<p>We just created an [[ext:Ext.grid.Panel]] that renders itself to the body element.  We 
+also told the Grid panel to get its data from the <code>userStore</code> that we previously 
+created.  </p>
+<p>Finally, we defined the Grid panel&#39;s columns and gave them a 
+[[ext:Ext.grid.column.Column#cfg-dataIndex dataIndex]] property.  This <code>dataIndex</code> 
+associates a field from our model to a column.</p>
+<p>The <strong>&quot;Name&quot;</strong> column has a fixed <code>width</code> of <strong>&quot;100px&quot;</strong> and has 
+[[ext:Ext.grid.column.Column#cfg-sortable sorting]] and 
+[[ext:Ext.grid.column.Column#cfg-hideable hiding]] disabled. The <strong>&quot;Email Address&quot;</strong> 
+column is hidden by default (it can be shown again by using the menu on any other column 
+header).  Finally, the <strong>&quot;Phone Number&quot;</strong> column 
+[[ext:Ext.grid.column.Column#cfg-flex flexes]] to fit the remainder of the Grid panel&#39;s 
+total width.</p>
+<p>For a larger example, see the <a href="http://dev.sencha.com/ext/5.1.0/examples/kitchensink/#array-grid">Array Grid
+Example</a>.</p>
+<h2 id="components-_-grids_-_renderers">Renderers</h2>
+<p>You can use the [[ext:Ext.grid.column.Column#cfg-renderer renderer]] property of the 
+column config to change the way in which data is displayed. A <code>renderer</code> is a function 
+that modifies the underlying value and returns a new value for display.  Some of the 
+most common renderers are included in [[ext:Ext.util.Format]], but you can write your 
+own as well:</p>
+<pre><code>columns: [
+    {
+        text: &#39;Birth Date&#39;,
+        dataIndex: &#39;birthDate&#39;,
+        // format the date using a renderer from the Ext.util.Format class
+        renderer: Ext.util.Format.dateRenderer(&#39;m/d/Y&#39;)
+    },
+    {
+        text: &#39;Email Address&#39;,
+        dataIndex: &#39;email&#39;,
+        // format the email address using a custom renderer
+        renderer: function(value) {
+            return Ext.String.format(&#39;&lt;a href=&quot;mailto:{0}&quot;&gt;{1}&lt;/a&gt;&#39;, value, value);
+        }
+    }
+]
+</code></pre><p>See the Kitchen Sink&#39;s <a href="http://dev.sencha.com/ext/5.1.0/examples/kitchensink/#array-grid">Array
+Grid</a> for a live demo
+that uses custom renderers.</p>
+<h2 id="components-_-grids_-_grouping">Grouping</h2>
+<p><img src="./images/grouping.png"/></p>
+<p>Organizing the rows into groups is easy.  First we specify a
+[[ext:Ext.data.Store#groupField groupField]] property on our store:</p>
+<pre><code>Ext.create(&#39;Ext.data.Store&#39;, {
+    model: &#39;Employee&#39;,
+    data: ...,
+    groupField: &#39;department&#39;
+});
+</code></pre><p>Next, we configure a Grid with [[ext:Ext.grid.feature.Grouping]] that will handle
+displaying the rows in groups:</p>
+<pre><code>Ext.create(&#39;Ext.grid.Panel&#39;, {
+    ...
+    features: [{ ftype: &#39;grouping&#39; }]
+});
+</code></pre><p>See the Kitchen Sink&#39;s <a href="http://dev.sencha.com/ext/5.1.0/examples/kitchensink/#grouped-grid">Grouping Grid
+Panel</a> for a live
+example.</p>
+<h2 id="components-_-grids_-_selection-models">Selection Models</h2>
+<p>Grid panels can be used to simply display data.  However, it is often necessary to
+interact with the Grid&#39;s data.  All Grid panels have an [[ext:Ext.selection.Model]], 
+which determines how data is selected. The two main types of Selection Model are
+[[ext:Ext.selection.RowModel]], where entire rows are selected, and
+[[ext:Ext.selection.CellModel]], where individual cells are selected.</p>
+<p>Grid panels use [[ext:Ext.selection.RowModel]] by default, but it&#39;s easy to switch to an
+[[ext:Ext.selection.CellModel]]:</p>
+<pre><code>Ext.create(&#39;Ext.grid.Panel&#39;, {
+    selType: &#39;cellmodel&#39;,
+    store: ...
+});
+</code></pre><p>Using [[ext:Ext.selection.CellModel]] changes a couple of things. Firstly, clicking on a
+cell now selects just that cell as opposed to the entire row.  Secondly, the keyboard
+navigation will walk from cell to cell instead of row to row. Cell-based selection 
+models are usually used in conjunction with editing.</p>
+<h2 id="components-_-grids_-_editing">Editing</h2>
+<p>Grid panel has built-in support for editing.  Let&#39;s look at the two main editing modes -
+row editing and cell editing.</p>
+<h3 id="components-_-grids_-_cell-editing">Cell Editing</h3>
+<p>[[ext:Ext.grid.plugin.CellEditing Cell editing]] allows you to edit the data in a Grid 
+panel one cell at a time.  The first step in implementing cell editing is to configure 
+an editor for each [[ext:Ext.grid.column.Column]] in your Grid Panel that should be 
+editable.  This is done using the [[ext:Ext.grid.column.Column#editor]] config.  The 
+simplest way is to specify just the <strong>xtype</strong> of the field you want to use as an editor:</p>
+<pre><code>Ext.create(&#39;Ext.grid.Panel&#39;, {
+    ...
+    columns: [
+        {
+            text: &#39;Email Address&#39;,
+            dataIndex: &#39;email&#39;,
+            editor: &#39;textfield&#39;
+       }
+    ]
+});
+</code></pre><p>If you need more control over how the editor field behaves, the
+[[ext:Ext.grid.column.Column#editor]] config can also take a config object for a Field. 
+For example, if we are using a [[ext:Ext.form.field.Text]] and we want to require a 
+value:</p>
+<pre><code>columns: [
+    text: &#39;Name&#39;,
+    dataIndex: &#39;name&#39;,
+    editor: {
+        xtype: &#39;textfield&#39;,
+        allowBlank: false
+    }
+[
+</code></pre><p>You can use any class in the <strong>&quot;Ext.form.field.*&quot;</strong> package as an editor field.  Lets 
+suppose we want to edit a column that contains dates.  We can use a 
+[[ext:Ext.form.field.Date]] editor:</p>
+<pre><code>columns: [
+    {
+        text: &#39;Birth Date&#39;,
+        dataIndex: &#39;birthDate&#39;,
+        editor: &#39;datefield&#39;
+    }
+]
+</code></pre><p>Any [[ext:Ext.grid.column.Column]] in a [[ext:Ext.grid.Panel]] that do not have a
+[[ext:Ext.grid.column.Column#editor]]] configured will not be editable.</p>
+<p>Now that we&#39;ve configured which columns we want to be editable, and the editor fields 
+that will be used to edit the data, the next step is to specify a selection model. 
+Let&#39;s use a [[ext:Ext.selection.CellModel]] in our [[ext:Ext.grid.Panel]] config:</p>
+<pre><code>Ext.create(&#39;Ext.grid.Panel&#39;, {
+    ...
+    selType: &#39;cellmodel&#39;
+});
+</code></pre><p>Finally, to enable editing we need to configure the [[ext:Ext.grid.Panel]] with a
+[[ext:Ext.grid.plugin.CellEditing]]:</p>
+<pre><code>Ext.create(&#39;Ext.grid.Panel&#39;, {
+    ...
+    selType: &#39;cellmodel&#39;,
+    plugins: [{
+        ptype: &#39;cellediting &#39;,
+        clicksToEdit: 1
+    }]
+});
+</code></pre><p>And that&#39;s all it takes to create an editable Grid using cell editing. See <a href="http://dev.sencha.com/ext/5.1.0/examples/kitchensink/#cell-editing">Cell
+Editing</a> for a 
+working example.</p>
+<p><img src="./images/cell_editing.png"/></p>
+<p>###Row Editing</p>
+<p>Row editing enables you to edit an entire row at a time, rather than editing cell by 
+cell.  Row editing works in exactly the same way as cell editing - all we need to do is 
+change the plugin type to [[ext:Ext.grid.plugin.RowEditing]] and set the selType to 
+<code>rowmodel</code>.</p>
+<pre><code>Ext.create(&#39;Ext.grid.Panel&#39;, {
+    ...
+    selType: &#39;rowmodel&#39;,
+    plugins: [{
+        ptype: &#39;rowediting&#39;,
+        clicksToEdit: 1
+    }]
+});
+</code></pre><p><img src="./images/row_editing.png"/></p>
+<p>See <a href="http://dev.sencha.com/ext/5.1.0/examples/grid/row-editing.html">Row Editing</a> for a
+working example.</p>
+<h2 id="components-_-grids_-_paging">Paging</h2>
+<p>Sometimes your data set is too large to display all on one page.  [[ext:Ext.grid.Panel]]
+supports displaying individual pages from the dataset using a 
+[[ext:Ext.toolbar.Paging]], which loads pages using previous/next buttons.</p>
+<h3 id="components-_-grids_-_store-setup">Store Setup</h3>
+<p>Before we can set up paging on a [[ext:Ext.grid.Panel]], we have to configure the 
+[[ext:Ext.data.Store]] to support paging.  In the below example we add 
+[[ext:Ext.data.Store#pageSize]] to the [[ext:Ext.data.Store]], and we configure our
+[[ext:Ext.data.reader.Reader]] with a [[ext:Ext.data.reader.Reader#totalProperty]]:</p>
+<pre><code>Ext.create(&#39;Ext.data.Store&#39;, {
+    model: &#39;User&#39;,
+    autoLoad: true,
+    pageSize: 4,
+    proxy: {
+        type: &#39;ajax&#39;,
+        url : &#39;data/users.json&#39;,
+        reader: {
+            type: &#39;json&#39;,
+            root: &#39;users&#39;,
+            totalProperty: &#39;total&#39;
+        }
+    }
+});
+</code></pre><p>The [[ext:Ext.data.reader.Reader#totalProperty]] config tells 
+[[ext:Ext.data.reader.Json]] where to get the total number of results in the JSON 
+response.  This [[ext:Ext.data.Store]] is configured to consume a JSON response that 
+looks something like this:</p>
+<pre><code>{
+    &quot;success&quot;: true,
+    &quot;total&quot;: 12,
+    &quot;users&quot;: [
+        { &quot;name&quot;: &quot;Lisa&quot;, &quot;email&quot;: &quot;lisa@simpsons.com&quot;, &quot;phone&quot;: &quot;555-111-1224&quot; },
+        { &quot;name&quot;: &quot;Bart&quot;, &quot;email&quot;: &quot;bart@simpsons.com&quot;, &quot;phone&quot;: &quot;555-222-1234&quot; },
+        { &quot;name&quot;: &quot;Homer&quot;, &quot;email&quot;: &quot;homer@simpsons.com&quot;, &quot;phone&quot;: &quot;555-222-1244&quot; },
+        { &quot;name&quot;: &quot;Marge&quot;, &quot;email&quot;: &quot;marge@simpsons.com&quot;, &quot;phone&quot;: &quot;555-222-1254&quot; }
+    ]
+}
+</code></pre><h3 id="components-_-grids_-_paging-toolbar">Paging Toolbar</h3>
+<p>Now that we&#39;ve set up our [[ext:Ext.data.Store]] to support paging, all that&#39;s left is 
+to configure a [[ext:Ext.toolbar.Paging]].  You could put the [[ext:Ext.toolbar.Paging]]
+anywhere in your application layout, but typically it is docked to the
+[[ext:Ext.grid.Panel]]:</p>
+<pre><code>Ext.create(&#39;Ext.grid.Panel&#39;, {
+    store: userStore,
+    columns: ...,
+    dockedItems: [{
+        xtype: &#39;pagingtoolbar&#39;,
+        store: userStore,   // same store GridPanel is using
+        dock: &#39;bottom&#39;,
+        displayInfo: true
+    }]
+});
+</code></pre><p><img src="./images/paging_toolbar.png"/></p>
+<p>See the <a href="http://dev.sencha.com/ext/5.1.0/examples/kitchensink/#paging-grid">Paging Grid</a>
+for a working example.</p>
+<h3 id="components-_-grids_-_buffered-rendering">Buffered Rendering</h3>
+<p>Grids enable buffered rendering of extremely large datasets as an alternative to using a
+paging toolbar.  Your users can scroll through thousands of records without the 
+performance penalties of renderering all the records on screen at once. The Grid should 
+be bound to a [[ext:Ext.data.BufferedStore]] with a pageSize specified.</p>
+<p>Only enough rows are rendered to fill the visible area of the Grid with a little
+[[ext:Ext.grid.Panel-cfg-leadingBufferZone]] overflow either side to allow scrolling. As 
+scrolling proceeds, new rows are rendered in the direction of scroll, and rows are 
+removed from the receding side of the table.</p>
+<p>Grids use buffered rendering by default, so you no longer need to add the plugin to your 
+Grid component.</p>
+<p>See <a href="http://dev.sencha.com/ext/5.1.0/examples/grid/buffer-grid.html">Buffered Renderer</a>
+for a working example.</p>
+</div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#components-_-grids_-_basic-grid-panel">Basic Grid Panel</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_model-and-store">Model and Store</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_grid-panel">Grid Panel</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_renderers">Renderers</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_grouping">Grouping</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_selection-models">Selection Models</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_editing">Editing</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_cell-editing">Cell Editing</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_paging">Paging</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_store-setup">Store Setup</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_paging-toolbar">Paging Toolbar</a></div>
+        <div class="toc-item"><a href="#components-_-grids_-_buffered-rendering">Buffered Rendering</a></div>
+    </div>
+</body>
+</html>

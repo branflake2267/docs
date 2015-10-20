@@ -1,0 +1,272 @@
+<html>
+<head>
+    <title>The Class System</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><h1 id="core_concepts-_-classes_-_class-system">Class System</h1>
+<h2 id="core_concepts-_-classes_-_overview">Overview</h2>
+<p>Ext JS ships with hundreds of classes. We have more than 2 million developers to date
+and they come from various backgrounds and locations. At that scale, we face a big
+challenge in providing a common code architecture that is:</p>
+<ul>
+<li>Familiar and simple to learn</li>
+<li>Fast to develop, easy to debug, and painless to deploy</li>
+<li>Organized, extensible, and maintainable</li>
+</ul>
+<p>Because JavaScript is a classless,
+<a href="http://en.wikipedia.org/wiki/Prototype-based_programming">prototype-oriented</a> language,
+one of its most powerful features is flexibility. There are multiple solutions to any
+problem using many different coding styles and techniques. However, this comes with the
+cost of being unpredictable. Without a unified structure, JavaScript code can be difficult
+to understand, maintain, and re-use.</p>
+<p><a href="http://en.wikipedia.org/wiki/Class-based_programming">Class-based programming</a>, on the
+other hand, is still the most popular model of Object Oriented Programming. <a href="http://en.wikipedia.org/wiki/Category:Class-based_programming_languages">Class-based
+languages</a>
+usually requires strong-typing, encapsulation, and standard coding conventions. By making
+developers adhere to a large set of principles, code is more likely to be predictable,
+extensible, and scalable over time. However, this model doesn&#39;t have JavaScript&#39;s dynamic
+capability.</p>
+<p>Each approach has pros and cons, but can we keep the good parts of both while hiding the
+bad parts? The answer is yes, and you can find the solution with Ext JS.</p>
+<h2 id="core_concepts-_-classes_-_naming-conventions">Naming Conventions</h2>
+<p>Using consistent naming conventions throughout your code base for classes, namespaces and
+filenames helps keep your code organized, structured and readable.</p>
+<h3 id="core_concepts-_-classes_-_classes">Classes</h3>
+<p>Class names may only contain <strong>alphanumeric</strong> characters. Numbers are permitted but
+discouraged, unless they belong to a technical term. Do not use underscores, hyphens, or
+any other non-alphanumeric character. For example:</p>
+<ul>
+<li><code>MyCompany.useful_util.Debug_Toolbar</code> is discouraged</li>
+<li><code>MyCompany.util.Base64</code> is best</li>
+</ul>
+<p>Class names should be grouped into packages when appropriate and properly namespaced using
+object property dot-notation (.). At a minimum, there should be one unique top-level
+namespace followed by the class name. For example:</p>
+<pre><code>MyCompany.data.CoolProxy
+MyCompany.Application
+</code></pre><p>The top-level namespaces and the actual class names should be CamelCased.  Everything else
+should be all lower-cased. For example:</p>
+<pre><code>MyCompany.form.action.AutoLoad
+</code></pre><p>Classes that are not distributed by Sencha should never use <code>Ext</code> as the top-level
+namespace.</p>
+<p>Acronyms should also follow CamelCased convention listed above. For example:</p>
+<ul>
+<li><code>Ext.data.JsonProxy</code> instead of <code>Ext.data.JSONProxy</code></li>
+<li><code>MyCompany.util.HtmlParser</code> instead of <code>MyCompary.parser.HTMLParser</code></li>
+<li><code>MyCompany.server.Http</code> instead of <code>MyCompany.server.HTTP</code></li>
+</ul>
+<h3 id="core_concepts-_-classes_-_source-files">Source Files</h3>
+<p>The names of the classes map directly to the file paths in which they are stored. As a
+result, there must only be one class per file. For example:</p>
+<ul>
+<li><code>Ext.util.Observable</code> is stored in <code>path/to/src/Ext/util/Observable.js</code></li>
+<li><code>Ext.form.action.Submit</code> is stored in <code>path/to/src/Ext/form/action/Submit.js</code></li>
+<li><code>MyCompany.chart.axis.Numeric</code> is stored in
+<code>path/to/src/MyCompany/chart/axis/Numeric.js</code></li>
+</ul>
+<p><code>path/to/src</code> is the directory of your application&#39;s classes. All classes should stay
+under this common root and should be properly namespaced for the best development,
+maintenance, and deployment experience.</p>
+<h3 id="core_concepts-_-classes_-_methods-and-variables">Methods and Variables</h3>
+<ul>
+<li>In a similar fashion to class names, method and variable names may only contain
+<strong>alphanumeric</strong> characters. Numbers are permitted but discouraged unless they belong to a
+technical term. Do not use underscores, hyphens, or any other non-alphanumeric character.</li>
+<li>Method and variable names should always be in camelCased. This also applies to acronyms.</li>
+</ul>
+<p>###Examples</p>
+<ul>
+<li><p>Acceptable method names:</p>
+<ul>
+<li>encodeUsingMd5()</li>
+<li>getHtml() instead of getHTML()</li>
+<li>getJsonResponse() instead of <code>getJSONResponse()</code></li>
+<li>parseXmlContent() instead of <code>parseXMLContent()</code></li>
+</ul>
+</li>
+<li><p>Acceptable variable names:</p>
+<ul>
+<li>var isGoodName</li>
+<li>var base64Encoder</li>
+<li>var xmlReader</li>
+<li>var httpServer</li>
+</ul>
+</li>
+</ul>
+<h3 id="core_concepts-_-classes_-_properties">Properties</h3>
+<ul>
+<li><p>Class property names follow the exact same convention except when they are static
+constants.</p>
+</li>
+<li><p>Static class properties that are constants should be all upper-cased. For example:</p>
+<ul>
+<li><code>Ext.MessageBox.YES = &quot;Yes&quot;</code></li>
+<li><code>Ext.MessageBox.NO  = &quot;No&quot;</code></li>
+<li><code>MyCompany.alien.Math.PI = &quot;4.13&quot;</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="core_concepts-_-classes_-_declaration">Declaration</h2>
+<p>You may use a single method for class creation: <code>Ext.define</code>. 
+Its basic syntax is as follows:</p>
+<pre><code>Ext.define(className, members, onClassCreated);
+</code></pre><ul>
+<li><code>className</code>: The class name</li>
+<li><code>members</code> is an object that represents a collection of class members in key-value pairs</li>
+<li><code>onClassCreated</code> is an optional function callback that is invoked when all dependencies
+of the defined class are ready and the class itself is fully created. Due to the
+asynchronous nature of class creation, this callback can be useful in many situations.
+These will be discussed further in <a href="#Errors_Handling__amp__Debugging">Section IV</a></li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code>Ext.define(&#39;My.sample.Person&#39;, {
+    name: &#39;Unknown&#39;,
+
+    constructor: function(name) {
+        if (name) {
+            this.name = name;
+        }
+    },
+
+    eat: function(foodType) {
+        alert(this.name + &quot; is eating: &quot; + foodType);
+    }
+});
+
+var bob = Ext.create(&#39;My.sample.Person&#39;, &#39;Bob&#39;);
+
+bob.eat(&quot;Salad&quot;); // alert(&quot;Bob is eating: Salad&quot;);
+</code></pre><p><strong>Note:</strong> We created a new instance of <code>My.sample.Person</code> using the <code>Ext.create()</code> method.
+ We could have used the <code>new</code> keyword (<code>new My.sample.Person()</code>).  However it is
+recommended to get in the habit of always using <code>Ext.create</code> since it allows you to take
+advantage of dynamic loading.  For more info on dynamic loading see the <a href="../getting_started/getting_started.html">Getting Started
+guide</a></p>
+<h3 id="core_concepts-_-classes_-_configuration">Configuration</h3>
+<p>There is also a dedicated <code>config</code> property that gets processed by the
+powerful Ext.Class pre-processors before the class is created. Features include:</p>
+<ul>
+<li>Configurations are completely encapsulated from other class members</li>
+<li>Getter and setter methods for every config property are automatically generated into
+the class prototype during class creation if methods are not already defined.</li>
+<li>The auto-generated setter method calls the apply method (if defined on the class) internally 
+before setting the value. You may override the apply method for a config property if you need to 
+run custom logic before setting the value. If your apply method does not return a value, the setter 
+will not set the value.  The update method (if defined) will also be called when a different value 
+is set.  Both the apply and update methods are passed the new value and the old value as params. </li>
+</ul>
+<p>For Ext classes that use the configs, you don&#39;t need to call <code>initConfig()</code> manually.
+However, for your own classes that extend <code>Ext.Base</code>, <code>initConfig()</code> still needs to be called.</p>
+<p>You can see configuration examples below.</p>
+<pre><code>Ext.define(&#39;My.own.Window&#39;, {
+   extend: &#39;Ext.Component&#39;,
+   /** @readonly */
+   isWindow: true,
+
+   config: {
+       title: &#39;Title Here&#39;,
+
+       bottomBar: {
+           height: 50,
+           resizable: false
+       }
+   },
+
+   applyTitle: function(title) {
+       if (!Ext.isString(title) || title.length === 0) {
+           alert(&#39;Error: Title must be a valid non-empty string&#39;);
+       }
+       else {
+           return title;
+       }
+   },
+
+   applyBottomBar: function(bottomBar) {
+       if (bottomBar) {
+           if (!this.bottomBar) {
+               return Ext.create(&#39;My.own.WindowBottomBar&#39;, bottomBar);
+           }
+           else {
+               this.bottomBar.setConfig(bottomBar);
+           }
+       }
+   }
+});
+
+/** A child component to complete the example. */
+Ext.define(&#39;My.own.WindowBottomBar&#39;, {
+   config: {
+       height: undefined,
+       resizable: true
+   }
+});
+</code></pre><p>And here&#39;s an example of how it can be used:</p>
+<pre><code>var myWindow = Ext.create(&#39;My.own.Window&#39;, {
+    title: &#39;Hello World&#39;,
+    bottomBar: {
+        height: 60
+    }
+});
+
+alert(myWindow.getTitle()); // alerts &quot;Hello World&quot;
+
+myWindow.setTitle(&#39;Something New&#39;);
+
+alert(myWindow.getTitle()); // alerts &quot;Something New&quot;
+
+myWindow.setTitle(null); // alerts &quot;Error: Title must be a valid non-empty string&quot;
+
+myWindow.setBottomBar({ height: 100 });
+
+alert(myWindow.getBottomBar().getHeight()); // alerts 100
+</code></pre><h3 id="core_concepts-_-classes_-_statics">Statics</h3>
+<p>Static members can be defined using the <code>statics</code> config</p>
+<pre><code>Ext.define(&#39;Computer&#39;, {
+    statics: {
+        instanceCount: 0,
+        factory: function(brand) {
+            // &#39;this&#39; in static methods refer to the class itself
+            return new this({brand: brand});
+        }
+    },
+
+    config: {
+        brand: null
+    }
+});
+
+var dellComputer = Computer.factory(&#39;Dell&#39;);
+var appleComputer = Computer.factory(&#39;Mac&#39;);
+
+alert(appleComputer.getBrand()); // using the auto-generated getter to get the value of a config property. Alerts &quot;Mac&quot;
+</code></pre><h2 id="core_concepts-_-classes_-_errors-handling-debugging">Errors Handling &amp; Debugging</h2>
+<p>Ext JS includes some useful features that will help you with debugging and error handling.</p>
+<ul>
+<li><p>You can use <code>Ext.getDisplayName()</code> to get the display name of any method.  This is
+especially useful for throwing errors that have the class name and method name in their
+description:</p>
+<pre><code>  throw new Error(&#39;[&#39;+ Ext.getDisplayName(arguments.callee) +&#39;] Some message here&#39;);
+</code></pre></li>
+<li><p>When an error is thrown in any method of any class defined using <code>Ext.define()</code>, you
+should see the method and class names in the call stack if you are using a WebKit based
+browser (Chrome or Safari).  For example, here is what it would look like in Chrome:</p>
+<p>  <img src="images/call-stack.png"/></p>
+</li>
+</ul>
+</div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_overview">Overview</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_naming-conventions">Naming Conventions</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_classes">Classes</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_source-files">Source Files</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_methods-and-variables">Methods and Variables</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_properties">Properties</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_declaration">Declaration</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_configuration">Configuration</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_statics">Statics</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-classes_-_errors-handling-debugging">Errors Handling &amp;amp; Debugging</a></div>
+    </div>
+</body>
+</html>

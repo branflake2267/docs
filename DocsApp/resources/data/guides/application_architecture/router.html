@@ -1,0 +1,275 @@
+<html>
+<head>
+    <title>Using the Router</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Controlling an Application with Router</p>
+<p>On a normal website, a user navigates to and from different pages as they click links or
+fill out forms.  However, in a single page application, a user&#39;s interaction doesn&#39;t load
+a new page.  Instead, it is handled within a single page and components react to that
+interaction. So how do you still allow users to use the browser&#39;s forward and back
+buttons? The answer is to digest URI hash changes with Ext JS 5&#39;s new Router.</p>
+<p>##What Routing Is Used For</p>
+<p>Routing can be used to track the application state through the use of the browser history
+stack.  Routing also allows for deep linking into the application which allows a direct
+link to a specific part of your application.</p>
+<p>##What Routing Is Not Used For</p>
+<p>Routing should not be used to store any data or session, data should be stored in a
+persistent data source such as a cookie or localstorage.  Routing is only a means of
+tracking the application&#39;s state.</p>
+<p>##What is the Hash?</p>
+<p>Browsers navigate the internet using a URI which consists of many parts. Let&#39;s look at a
+sample URI:</p>
+<pre><code>http://www.example.com/apps/users#user/1234
+</code></pre><p>This should look relatively familiar.  However, you may not recognize <code>#user=1234</code>.  This
+section of the URI is called the &quot;hash&quot; or fragment identifier. For more information on
+the hash, please read this resource <a href="http://en.wikipedia.org/wiki/Fragment_identifier">http://en.wikipedia.org/wiki/Fragment_identifier</a>. This
+hash provides a way for an application to control the history stack of the browser without
+reloading the current page.  As the hash changes, the browser adds that whole URI to the
+history stack, which then allows you to utilize the browser&#39;s forward / back buttons to
+traverse URIs including the hashes that may have changed. For instance, what happens if
+you update the hash to:</p>
+<pre><code>http://www.example.com/apps/users#user/5678
+</code></pre><p>The browser fires a <code>hashchange</code> event that we can then utilize within the application.<br>A user can then click the back button to go back to the <code>#user=1234</code> hash.  This
+notification then allows you to react to the change within your application. It is
+important to mention that the hash is not sent to the server.  The hash is typically
+digested within the client&#39;s interpretation of the URI.  The Ext Router relies on the
+browser&#39;s hash functionality to allow application state tracking and deep linking.</p>
+<p>##Implement Routing in your Application</p>
+<p>The Router class is a new addition to Ext JS 5 that was built to make hash change
+interpretation very simple in an MVC application.  We have always had Ext.util.History,
+which you could use to react to the hash changes.  However, this Ext.util.History offers a
+much more manual process and a proper Router class was needed.  The Router provides simple
+integration into an Ext JS 5 MVC application by defining routes in a view controller.  A
+route is a string that is matched to the hash and allows for deep linking within your Ext
+application.  Here is a basic example controller implementing Router:</p>
+<pre><code>Ext.define(&#39;MyApp.view.main.MainController&#39;, {
+    extend : &#39;Ext.app.ViewController&#39;,
+
+    routes : {
+        &#39;users&#39; : &#39;onUsers&#39;
+    },
+
+    onUsers : function() {
+        //...
+    }
+});
+</code></pre><p>This route will react to the <code>#users</code> hash and will execute the <code>onUsers</code> method scoped to
+the controller instance.  As you can see, the <code>routes</code> config is placed within the
+<code>config</code> object instead of on the root level.</p>
+<p>##Updating the Hash</p>
+<p>To update the hash, a controller has a redirectTo method.</p>
+<pre><code>this.redirectTo(&#39;user/1234&#39;);
+</code></pre><p>This will update the hash to be <code>&quot;#user/1234&quot;</code> and any routes configured to recognize the
+hash will be executed.  There may be times that the current hash is the same as the hash
+that is trying to be updated to. In this case, <code>redirectTo</code> will return <code>false</code> and the
+hash will not get updated which will then not execute any configured routes. <code>redirectTo</code>
+also accepts a second parameter to force the Router to react to this hash by passing
+<code>true</code></p>
+<pre><code>this.redirectTo(&#39;user/1234&#39;, true);
+</code></pre><p>Even if the current hash matches the hash being passed to <code>redirectTo</code>, the Router will
+still execute any matching routes.</p>
+<p>##Default Token</p>
+<p>When an application starts, it may be configured to add a default hash if one is not
+provided. For instance, if the application shows a dashboard when the <code>#home</code> hash is
+used, you may want to add the <code>#home</code> hash to the URI if no other hash exists.  To enable
+a default hash, you can use the <code>defaultToken</code> config in the <code>/app/view/Application.js</code>
+file, which can be found within your application:</p>
+<pre><code>Ext.define(&#39;MyApp.Application&#39;, {
+    extend : &#39;Ext.app.Application&#39;,
+
+    //...
+
+    defaultToken : &#39;home&#39;
+});
+</code></pre><p>When the application is started, it will check the current hash of the URI. If there is a
+hash defined, it will execute the route handlers. If no hash is found, it will add the
+<code>#home</code> hash and any route handlers will get executed to handle it appropriately.</p>
+<p>##Hashes with Parameters</p>
+<p>An application can also identify parameters within hashes.  A user ID is an example of a
+parameter you may want to include in a hash.  We mentioned using <code>#user/1234</code> as a hash
+earlier within the guide.  In this case, we may want the <code>1234</code> to be an id parameter. You
+would then set up your controller to react to the <code>#user/1234</code> hash:</p>
+<pre><code>Ext.define(&#39;MyApp.view.main.MainController&#39;, {
+    extend : &#39;Ext.app.ViewController&#39;,
+
+    routes : {
+        &#39;user/:id&#39; : &#39;onUser&#39;
+    },
+
+    onUser : function(id) {
+        //...
+    }
+});
+</code></pre><p>The route we used was <code>&#39;user/:id&#39;</code> and the colon, <code>:</code>.  This signifies that there is a
+parameter and your application will pass that parameter to the onUser method as an
+argument.  The method will receive the same number of arguments passed to it in the same
+order as specified in the route, which allows for easy inclusion of multiple parameters.</p>
+<p>##Hash Parameter Formatting</p>
+<p>The application may want to enforce a specific format for the user ID.  The ID is numeric
+In the case we&#39;ve explored so far.  You may also use the route to equate to an object by
+using the <code>conditions</code> config:</p>
+<pre><code>Ext.define(&#39;MyApp.view.main.MainController&#39;, {
+    extend : &#39;Ext.app.ViewController&#39;,
+
+    routes : {
+        &#39;user/:id&#39; : {
+            action     : &#39;onUser&#39;,
+            conditions : {
+                &#39;:id&#39; : &#39;([0-9]+)&#39;
+            }
+        }
+    },
+
+    onUser : function(id) {
+        //...
+    }
+});
+</code></pre><p>Let&#39;s walk through this example.  First, the &#39;onUser&#39; method is now moved to the action
+config.  This will work similarly to when we passed the string to the route. We then use
+the conditions config to provide an object. The key we want to control is the parameter
+name with the colon and we provide a Regular Expression string (not a Regular Expression
+object).  For the <code>:id</code> condition, we use <code>([0-9]+)</code>, which will allow numbers between 0
+and 9 with any length and will remember the match.  We use a string because a Regular
+Expression object is made to match the entire hash, so if there are multiple parameters in
+the route we need to concatenate the Regular Expression strings together into a single
+Regular Expression object. If you do not provide a condition for a parameter, it will
+default to:</p>
+<pre><code>([%a-zA-Z0-9\\-\\_\\s,]+)
+</code></pre><p>##Route Handling</p>
+<p>There may be times when an application needs to prevent the handling of a route.  In this
+case, we may want to check administrative rights to determine whether or not the current
+user is allowed to view a portion of the application. The route can be configured to use a
+before action, which may stop the current route, stop all routes or continue on with the
+route execution.</p>
+<p>This example will continue the route execution:</p>
+<pre><code>Ext.define(&#39;MyApp.view.main.MainController&#39;, {
+    extend : &#39;Ext.app.ViewController&#39;,
+
+    routes : {
+        &#39;user/:id&#39; : {
+            before  : &#39;onBeforeUser&#39;,
+            action  : &#39;onUser&#39;
+        }
+    },
+
+    onBeforeUser : function(id, action) {
+        Ext.Ajax.request({
+            url     : &#39;/security/user/&#39; + id,
+            success : function() {
+                action.resume();
+            }
+        });
+    },
+
+    onUser : function(id) {
+        //...
+    }
+});
+</code></pre><p>In the <code>onBeforeUser</code> method, the <code>:id</code> parameter is passed as an argument, but the last
+argument is an <code>action</code>. If you execute the <code>resume</code> method on the <code>action</code>, the route
+will continue to execute and the <code>onUser</code> method will then be called. Notice that we can
+wait for an AJAX request to complete before we need to continue the route execution.</p>
+<p>We can expand on this example by telling the application to stop current route execution
+by executing the <code>stop</code> method:</p>
+<pre><code>Ext.define(&#39;MyApp.view.main.MainController&#39;, {
+    extend : &#39;Ext.app.ViewController&#39;,
+
+    routes : {
+        &#39;user/:id&#39; : {
+            before  : &#39;onBeforeUser&#39;,
+            action  : &#39;onUser&#39;
+        }
+    },
+
+    onBeforeUser : function(id, action) {
+        Ext.Ajax.request({
+            url     : &#39;/security/user/&#39; + id,
+            success : function() {
+                action.resume();
+            },
+            failure : function() {
+                action.stop();
+            }
+        });
+    },
+
+    onUser : function(id) {
+        //...
+    }
+});
+</code></pre><p>Ext JS applications can be complex and there may be many controllers set up to listen to
+the same route.  However, only one controller is set up with a before action so there is
+only a single ajax request fired. If we pass <code>true</code> to the <code>stop</code> method of the <code>action</code>
+argument, we can then stop all queued routes from executing, not just the current route
+handling:</p>
+<pre><code>Ext.define(&#39;MyApp.view.main.MainController&#39;, {
+    extend : &#39;Ext.app.ViewController&#39;,
+
+    routes : {
+        &#39;user/:id&#39; : {
+            before  : &#39;onBeforeUser&#39;,
+            action  : &#39;onUser&#39;
+        }
+    },
+
+    onBeforeUser : function(id, action) {
+        Ext.Ajax.request({
+            url     : &#39;/security/user/&#39; + id,
+            success : function() {
+                action.resume();
+            },
+            failure : function() {
+                action.stop(true);
+            }
+        });
+    },
+
+    onUser : function(id) {
+        //...
+    }
+});
+</code></pre><p>Now, when the ajax request fails, we pass <code>true</code> to cancel all handlers for this route
+across all controllers.</p>
+<p><strong>Note:</strong> <em>If you do not execute the <code>resume</code> or <code>stop</code> method, routing is interrupted and will never
+be completed properly. It&#39;s important to execute either method at some point.</em></p>
+<p>##Handling Unmatched Routes</p>
+<p>If the hash was changed but there is no route that was found to match the hash, the Router
+will do nothing; the Router will not attempt to change the hash and will leave the
+unmatched hash alone.  The Router will fire the <code>unmatchedroute</code> event on the application
+instance which is listenable in the <code>Ext.application</code> call:</p>
+<pre><code>Ext.application({
+    name : &#39;MyApp&#39;,
+
+    listen : {
+        controller : {
+            &#39;#&#39; : {
+                unmatchedroute : &#39;onUnmatchedRoute&#39;
+            }
+        }
+    },
+
+    onUnmatchedRoute : function(hash) {
+        //...
+    }
+});
+</code></pre><p>##Using Multiple Routes in a Single Hash</p>
+<p>Since Ext JS applications can be complex, there may be times where we need to use multiple
+routes in a single hash. The Router is set up to handle this so there is no extra set up
+to the routes that are configured in the controllers. Instead, you can delimit the hash
+with a pipe: <code>|</code>. An example hash could be</p>
+<pre><code>`#user/1234|messages`
+</code></pre><p>In this case, we want to show user details for the user with an id of <code>1234</code>, but also
+show messages. Each route will execute in the order dictated by the hash.  They are then
+sandboxed from each other.  In simpler terms, if you stop the <code>user/1234</code> route, the
+<code>messages</code> route will continue execution.  It&#39;s important to note that the execution order
+of the individual routes is the same order as the routes are in the hash.  The <code>user/1234</code>
+route will always execute before the <code>messages</code> route for the above example.</p>
+<p>You may modify the delimiter, by changing the <code>Ext.app.route.Router.multipleToken</code>
+property.</p>
+</div>
+
+</body>
+</html>

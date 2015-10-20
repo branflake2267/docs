@@ -1,0 +1,297 @@
+<html>
+<head>
+    <title>SOAP Services</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#SOAP Services in Ext JS</p>
+<p>SOAP (Simple Object Access Protocol) is a Web Services standard built on HTTP and XML. 
+The SOAP [[ext:Ext.data.soap.Proxy]] and [[ext:Ext.data.soap.Reader]] provide a convenient
+way to create a SOAP request, and load the SOAP response into [[ext:Ext.data.Store]]. This
+guide will show you how to use the SOAP Proxy and Reader toload data from and save data to
+a fictional SOAP service that provides information about
+blenders. This guide assumes a basic knowledge of the Ext JS Data Package.
+This guide assumes you are already somewhat familiar with the Ext JS Data package.</p>
+<p><strong>Note:</strong>  <em>This functionality is only available with the purchase of 
+Sencha Complete.  For more information about using this class, please visit 
+our <a href="https://www.sencha.com/products/complete/">Sencha Complete</a> product page.</em></p>
+<h2 id="backend_connectors-_-soap_-_from-a-soap-service-to-a-store">From a SOAP Service to a Store</h2>
+<p>For starters, let&#39;s take a look at the simplest configuration required to get a
+[[ext:Ext.data.Store]] up and running with SOAP data.  </p>
+<p>First create a [[ext:Ext.data.Model]].</p>
+<pre><code>Ext.define(&#39;Blender&#39;, {
+    extend: &#39;Ext.data.Model&#39;,
+    fields: [
+        { name: &#39;id&#39;, type: &#39;int&#39; },
+        { name: &#39;name&#39;, type: &#39;string&#39; },
+        { name: &#39;price&#39;, type: &#39;float&#39; }
+    ]
+});
+</code></pre><p>Next create the store, proxy and reader.</p>
+<pre><code>var store = Ext.create(&#39;Ext.data.Store&#39;, {
+    model: &#39;Blender&#39;,
+    proxy: {
+        type: &#39;soap&#39;,
+        url: &#39;BlenderService/&#39;,
+        api: {
+            create: &#39;CreateBlender&#39;,
+            read: &#39;GetBlenders&#39;,
+            update: &#39;UpdateBlender&#39;,
+            destroy: &#39;DeleteBlender&#39;
+        },
+        soapAction: {
+            create: &#39;http://example.com/BlenderService/CreateBlender&#39;,
+            read: &#39;http://example.com/BlenderService/GetBlenders&#39;,
+            update: &#39;http://example.com/BlenderService/UpdateBlender&#39;,
+            destroy: &#39;http://example.com/BlenderService/DeleteBlender&#39;
+        },
+        operationParam: &#39;operation&#39;,
+        targetNamespace: &#39;http://example.com/&#39;,
+        reader: {
+            type: &#39;soap&#39;,
+            record: &#39;m|Blender&#39;,
+            namespace: &#39;m&#39;
+        }
+    }
+});
+</code></pre><p>Let&#39;s go over the configuration options we just specified.  We created a Store that
+will contain &quot;Blender&quot; model instances.  We configured the Store with a SOAP proxy.
+Lets review the proxy&#39;s options in a bit more detail:</p>
+<ul>
+<li>[[ext:Ext.data.soap.Proxy#url]] - The proxy will use this as the endpoint url for the
+SOAP service for all 4 CRUD (create, read, update, and destroy) actions.  Due to browsers&#39;
+<a href="http://en.wikipedia.org/wiki/Same_origin_policy">same-origin policy</a> this url must be on
+the same domain, protocol, and port as your Ext JS application. If you need to communicate
+with a remote SOAP service, you will have to create a server-side proxy on your server
+that
+fetches and returns the SOAP response from the remote server.</li>
+<li>[[ext:Ext.data.soap.Proxy#api]] - In a regular [[ext:Ext.data.proxy.Ajax]]
+the api configuration property specifies separate urls for each CRUD action. In a SOAP
+Proxy,
+however, the api property is used to configure a SOAP Operation for each CRUD action. 
+Note:
+you only need to specify an operation for each action that will actually be used in your
+application.  For example, if this proxy is only intended to load data and not to write
+data,
+you only need to configure the &#39;read&#39; action.</li>
+<li>[[ext:Ext.data.soap.Proxy#soapAction]] - The SOAP specification requires that
+every SOAP request contain a SOAPAction HTTP request header. The soapAction config
+specifies
+the SOAPAction header that will be sent with each CRUD action.  A soapAction must be
+specified for each SOAP operation that was configured using the api config.</li>
+<li><p>[[ext:Ext.data.soap.Proxy#operationParam]] - the name of the url parameter
+that contains the operation name.  For example, an operationParam of &#39;operation&#39; would
+result
+in a read request url that looks something like this:</p>
+<p>  <code>http://example.com/BlenderService/?operation=GetBlenders</code></p>
+</li>
+<li><p>[[ext:Ext.data.soap.Proxy#targetNamespace]] - the target namespace of the
+SOAP service.  This is needed to construct the SOAP envelope.</p>
+</li>
+<li>[[ext:Ext.data.soap.Proxy#reader]] - The SOAP [[ext:Ext.data.soap.Reader]]
+is responsible for extracting the records from the SOAP response and parsing them into
+[[ext:Ext.data.Model]]instances. The reader&#39;s [[ext:Ext.data.soap.Reader#record]]
+property is the tagName for the repeated XML
+element that contains the records in the SOAP response.  The reader&#39;s
+[[ext:Ext.data.soap.Reader#namespace]] property is the XML namepsace prefix for
+the elements containing the record&#39;s field data.</li>
+</ul>
+<h2 id="backend_connectors-_-soap_-_loading-records">Loading Records</h2>
+<p>Now that we have everything configured, loading data into the store is as easy as calling
+the store&#39;s load method.  Behind the scenes this will create a SOAP request to the
+operation
+specified by the <code>read</code> property in the proxy&#39;s api configuration property, which is
+&quot;GetBlenders&quot; in our example.  Let&#39;s assume that the GetBlenders SOAP operation requires
+a &quot;brand&quot; parameter.  We can pass the parameter directly to the store&#39;s load method, or
+if the parameter value is the same for every request we could configure it directly on the
+proxy using the [[ext:Ext.data.soap.Proxy#extraParams]] config.  For this example
+let&#39;s just pass it to the store&#39;s load method:</p>
+<pre><code>store.load({
+    params: {
+        brand: &#39;Blendtec&#39;
+    }
+});
+</code></pre><p>The above call should trigger a post to: </p>
+<p><code>http://example.com/BlenderService/?operation=GetBlenders</code></p>
+<p>Assume that the response to the above request looks like this:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;soap:Envelope xmlns:soap=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;
+    &lt;soap:Body&gt;
+        &lt;m:GetBlendersResponse xmlns:m=&quot;http://example.com/&quot;&gt;
+            &lt;m:Blender&gt;
+                &lt;m:id&gt;1&lt;/m:id&gt;
+                &lt;m:name&gt;Total Blender Classic WildSide&lt;/m:name&gt;
+                &lt;m:price&gt;454.95&lt;/m:price&gt;
+            &lt;/m:Blender&gt;
+            &lt;m:Blender&gt;
+                &lt;m:id&gt;2&lt;/m:id&gt;
+                &lt;m:name&gt;The Kitchen Mill&lt;/m:name&gt;
+                &lt;m:price&gt;179.95&lt;/m:price&gt;
+            &lt;/m:Blender&gt;
+        &lt;/m:GetBlendersResponse&gt;
+    &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;
+</code></pre><p>Let&#39;s pass a callback function to the load call so we can see what the store&#39;s records
+look like after it is loaded:</p>
+<pre><code>store.load({
+    params: {
+        brand: &#39;Blendtec&#39;
+    },
+    callback: function() {
+        console.log(store.getCount()); // 2 records were loaded.
+        console.log(store.getAt(0).get(&#39;name&#39;)); // get the name field of the first
+</code></pre><p>record.
+        }
+    });</p>
+<h2 id="backend_connectors-_-soap_-_customizing-the-soap-envelope-and-body">Customizing the SOAP Envelope and Body</h2>
+<p>Now, using the developer tools in your browser of choice, examine the outgoing XHR
+requests.
+You should see a HTTP POST to: </p>
+<p><code>http://example.com/BlenderService/?operation=GetBlenders</code></p>
+<p>Now examine the post body of this request.  You should see a SOAP envelope that looks
+something like this (formatted for readability):</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+&lt;soap:Envelope xmlns:soap=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;
+    &lt;soap:Body&gt;
+        &lt;GetBlenders xmlns=&quot;http://example.com/&quot;&gt;
+            &lt;brand&gt;Blendtec&lt;/brand&gt;
+        &lt;/GetBlenders&gt;
+    &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;
+</code></pre><p>This SOAP envelope was constructed using the [[ext:Ext.data.soap.Proxy#envelopeTpl]]
+template and the SOAP body was constructed using the
+[[ext:Ext.data.soap.Proxy#readBodyTpl]] template.  You may need to modify the body
+template if the SOAP service
+requires a different format. You won&#39;t typically need to modify the envelope template, but
+it is cusomizable as well.  These configurable templates can each be either an
+[[ext:Ext.XTemplate]] instance or an array of strings to form an XTemplate. The following
+illustrates
+using custom templates to change the &quot;soap&quot; envelope namespace prefix to &quot;s&quot;:</p>
+<pre><code>proxy: {
+    ...
+    envelopeTpl: [
+        &#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;&#39;,
+        &#39;&lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;&#39;,
+            &#39;{[values.bodyTpl.apply(values)]}&#39;,
+        &#39;&lt;/s:Envelope&gt;&#39;
+    ],
+    readBodyTpl: [
+        &#39;&lt;s:Body&gt;&#39;,
+            &#39;&lt;{operation} xmlns=&quot;{targetNamespace}&quot;&gt;&#39;,
+                &#39;&lt;tpl foreach=&quot;params&quot;&gt;&#39;,
+                    &#39;&lt;{$}&gt;{.}&lt;/{$}&gt;&#39;,
+                &#39;&lt;/tpl&gt;&#39;,
+            &#39;&lt;/{operation}&gt;&#39;,
+        &#39;&lt;/s:Body&gt;&#39;
+    ]
+}
+</code></pre><p>Call store.load() again and you should see the post body being generated from the new
+templates:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+&lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;
+    &lt;s:Body&gt;
+        &lt;GetBlenders xmlns=&quot;http://example.com/&quot;&gt;
+            &lt;brand&gt;Blendtec&lt;/brand&gt;
+        &lt;/GetBlenders&gt;
+    &lt;/s:Body&gt;
+&lt;/s:Envelope&gt;
+</code></pre><h2 id="backend_connectors-_-soap_-_create-update-and-destroy">Create, Update, and Destroy</h2>
+<p>Create, update, and destroy requests work almost the same as read requests with the
+exception
+of how the SOAP body is constructed.  The simple difference is this - read requests 
+construct the SOAP body using a set of paramters, while create, update, and destroy
+requests
+construct the SOAP body using a set of records.  By default the templates used to create
+the SOAP body for create, update, and destroy requests are all the same:</p>
+<pre><code>[
+    &#39;&lt;soap:Body&gt;&#39;,
+        &#39;&lt;{operation} xmlns=&quot;{targetNamespace}&quot;&gt;&#39;,
+            &#39;&lt;tpl for=&quot;records&quot;&gt;&#39;,
+                &#39;{% var recordName=values.modelName.split(&quot;.&quot;).pop(); %}&#39;,
+                &#39;&lt;{[recordName]}&gt;&#39;,
+                    &#39;&lt;tpl for=&quot;fields&quot;&gt;&#39;,
+                        &#39;&lt;{name}&gt;{[parent.get(values.name)]}&lt;/{name}&gt;&#39;,
+                    &#39;&lt;/tpl&gt;&#39;,
+                &#39;&lt;/{[recordName]}&gt;&#39;,
+            &#39;&lt;/tpl&gt;&#39;,
+        &#39;&lt;/{operation}&gt;&#39;,
+    &#39;&lt;/soap:Body&gt;&#39;
+]
+</code></pre><p>These templates can be customized using the [[ext:Ext.data.soap.Proxy#createBodyTpl]],
+[[ext:Ext.data.soap.Proxy#updateBodyTpl]], and
+[[ext:Ext.data.soap.Proxy#destroyBodyTpl]] configuration options as described
+in the above section on customizing the SOAP envelope and body, or the
+[[ext:Ext.data.soap.Proxy#writeBodyTpl]] configuration option can be used
+to apply the same template to all three actions.</p>
+<p>To issue a create request first we have to create a new record:</p>
+<pre><code>var blender = Ext.create(&#39;Blender&#39;, {
+    name: &#39;WildSide Jar&#39;,
+    price: 99
+});
+</code></pre><p>Then add the record to the store and call its sync method:</p>
+<pre><code>store.add(blender);
+store.sync();
+</code></pre><p>This will result in an HTTP POST being issued to the endpoint url with the create
+operation
+parameter: </p>
+<pre><code>`http://example.com/BlenderService/?operation=CreateBlender`
+</code></pre><p>If you examine the post body of this request you will see that the newly created record
+has
+been encoded into the SOAP body:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+&lt;soap:Envelope xmlns:soap=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;
+    &lt;soap:Body&gt;
+        &lt;CreateBlender xmlns=&quot;http://example.com/&quot;&gt;
+            &lt;Blender&gt;
+                &lt;id&gt;0&lt;/id&gt;
+                &lt;name&gt;WildSide Jar&lt;/name&gt;
+                &lt;price&gt;99&lt;/price&gt;
+            &lt;/Blender&gt;
+        &lt;/CreateBlender&gt;
+    &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;
+</code></pre><p>The response to a create request should include the record as created by the server, so
+that the record&#39;s id can be updated on the client side. For example:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;soap:Envelope xmlns:soap=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;
+    &lt;soap:Body&gt;
+        &lt;m:GetBlendersResponse xmlns:m=&quot;http://example.com/&quot;&gt;
+            &lt;m:Blender&gt;
+                &lt;m:id&gt;3&lt;/m:id&gt;
+                &lt;m:name&gt;WildSide Jar&lt;/m:name&gt;
+                &lt;m:price&gt;99&lt;/m:price&gt;
+            &lt;/m:Blender&gt;
+        &lt;/m:GetBlendersResponse&gt;
+    &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;
+</code></pre><p>We can verify that the record has the correct id by checking its id property after the 
+store has been successfully synchronized:</p>
+<pre><code>store.sync({
+    success: function() {
+        console.log(blender.getId()); // 3
+    }
+});
+</code></pre><p>To update a record just modify one of it&#39;s fields, and then synchronize the store:</p>
+<pre><code>store.getAt(0).set(&#39;price&#39;, 200);
+store.sync();
+</code></pre><p>To destroy a record, remove it from the store and then synchronize:</p>
+<pre><code>store.removeAt(1);
+store.sync();
+</code></pre><p>Just like create actions, if the server response to an update or destroy action includes
+the record(s) the client side record will be updated with the data in the response.</p>
+<p>And that&#39;s all you need to know to get up and running with SOAP and Ext JS.  For more
+details please refer to the API docs for the SOAP [[ext:Ext.data.soap.Proxy]] and
+[[ext:Ext.data.soap.Reader]].</p>
+<p>For a working example and full source code see <a href="http://dev.sencha.com/ext/5.0.0/examples/kitchensink/#soap-grid">SOAP Grid
+Example</a></p>
+</div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#backend_connectors-_-soap_-_from-a-soap-service-to-a-store">From a SOAP Service to a Store</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-soap_-_loading-records">Loading Records</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-soap_-_customizing-the-soap-envelope-and-body">Customizing the SOAP Envelope and Body</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-soap_-_create-update-and-destroy">Create, Update, and Destroy</a></div>
+    </div>
+</body>
+</html>

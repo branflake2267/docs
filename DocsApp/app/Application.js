@@ -10,8 +10,8 @@ Ext.define('DocsApp.Application', {
     defaultToken: '!/home',
 
     stores: [
-        // TODO: add global / shared stores here
-        'DocsApp.store.main.Main'
+        'DocsApp.store.main.Main',
+        'guide.Topical'
     ],
 
     launch: function () {

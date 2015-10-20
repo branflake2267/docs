@@ -1,0 +1,331 @@
+<html>
+<head>
+    <title>Data Package</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Data Package</p>
+<p>The data package is what loads and saves all of the data in your application.  It consists 
+of a multitude of classes, but there are three that are more important than all the others.  </p>
+<p>These classes are: </p>
+<ul>
+<li>[[ext:Ext.data.Model]]</li>
+<li>[[ext:Ext.data.Store Store]]</li>
+<li>[[ext:Ext.data.proxy.Proxy]]</li>
+</ul>
+<p>The above classes are used by almost every application.  They are supported by a number of 
+satellite classes.</p>
+<p><img src="images/data-model.png"/></p>
+<p>##Models
+The centerpiece of the data package is Ext.data.Model. A Model represents an entity in an 
+application.  For example, an e-commerce app might have models for Users, Products and 
+Orders. At the simplest level, a Model defines a set of fields and related business logic.  </p>
+<p>Let&#39;s look at a few of the principal parts of Model:</p>
+<ul>
+<li>[[ext:Ext.data.field.Field Fields]]</li>
+<li>[[ext:Ext.data.proxy.Proxy Proxies]]</li>
+<li>[[ext:Ext.data.Validation Validations]]</li>
+<li>Associations</li>
+</ul>
+<p><img src="images/model-breakdown.png"/></p>
+<p>###Creating a Model
+It is usually best to define your models starting with a common base class. This base class 
+allows you to easily configure certain aspects for all of your models in one place. It is 
+also a good place to configure the [[ext:Ext.data.schema.Schema schema]]. The schema is a 
+manager for all of the models in your application. For now we&#39;ll focus on two of its most 
+helpful configuration options:</p>
+<pre><code>Ext.define(&#39;MyApp.model.Base&#39;, {
+    extend: &#39;Ext.data.Model&#39;,
+
+    fields: [{
+        name: &#39;id&#39;,
+        type: &#39;int&#39;
+    }],
+
+    schema: {
+        namespace: &#39;MyApp.model&#39;,  // generate auto entityName
+
+        proxy: {     // Ext.util.ObjectTemplate
+            type: &#39;ajax&#39;,
+            url: &#39;{entityName}.json&#39;,
+            reader: {
+                type: &#39;json&#39;,
+                rootProperty: &#39;{entityName:lowercase}&#39;
+            }
+        }
+    }
+});
+</code></pre><p>The appropriate content for your model base class, especially its &quot;fields&quot;, will likely 
+differ between applications.</p>
+<p>###Proxies
+[[ext:Ext.data.proxy.Proxy Proxies]] are used by [[ext:Ext.data.Model Models]] and
+[[ext:Ext.data.Store Stores]] to handle the loading and saving of Model data. There are 
+two types of proxies: Client and Server. </p>
+<p>Proxies can be defined directly on the schema of the Model&#39;s base class (as seen above).</p>
+<p>####Client Proxy
+Examples of client proxies include [[ext:Ext.data.proxy.Memory Memory]] and 
+[[ext:Ext.data.proxy.LocalStorage Local Storage]], which uses the HTML5 localstorage 
+feature. Although older browsers don&#39;t support these new HTML5 APIs, they&#39;re so useful 
+that a lot of applications will benefit enormously from their presence.</p>
+<p>####Server Proxy
+Server proxies handle the marshaling of data to a remote server.  Examples of this type 
+of proxy include [[ext:Ext.data.proxy.Ajax AJAX]], [[ext:Ext.data.proxy.JsonP JSONP]] 
+and [[ext:Ext.data.proxy.Rest REST]].</p>
+<p>###Schema</p>
+<p>A [[ext:Ext.data.schema.Schema schema]] is a collection of entities that have associations 
+with one another. When a model specifies a &quot;schema&quot; config, that schema will be inherited 
+by all derived models. In the above example, the schema has been configured with two values 
+that establish the defaults for all models in that schema.</p>
+<p>The first of these configs is the &quot;namespace&quot;. By specifying this namespace all models gain 
+a shortened name call an &quot;entityName&quot;. This short name is primarily useful when defining 
+associations between models which we will see later.</p>
+<p>The example schema also defines a &quot;proxy&quot; config. This is an object template which is 
+similar to textual templates based on Ext.XTemplate. The difference is that the object 
+template produces objects when given its data. In this case, that data is used to automate 
+the definition of the &quot;proxy&quot; config for all models that do not explicitly define a proxy.</p>
+<p>This is very helpful since it&#39;s likely that every instance of model will need to load its 
+data the same way with slightly different values.  This avoids repetitive proxy definitions 
+for each Model. </p>
+<p>The <code>User.json</code> that we specify in the URL, <code>url: &#39;{entityName}.json&#39;</code>, should return a 
+JSON string.  </p>
+<p>For this example we&#39;ve used this:</p>
+<pre><code>{
+  &quot;success&quot;: &quot;true&quot;,
+  &quot;user&quot;: [
+    {
+      &quot;id&quot;: 1,
+      &quot;name&quot;: &quot;Philip J. Fry&quot;
+    },
+    {
+      &quot;id&quot;: 2,
+      &quot;name&quot;: &quot;Hubert Farnsworth&quot;
+    },
+    {
+      &quot;id&quot;: 3,
+      &quot;name&quot;: &quot;Turanga Leela&quot;
+    },
+    {
+      &quot;id&quot;: 4,
+      &quot;name&quot;: &quot;Amy Wong&quot;
+    }
+  ]
+}
+</code></pre><p>##Stores
+Models are typically used with a Store, which is basically a collection of records 
+(instances of a Model-derived class). Creating a Store and loading its data is simple:</p>
+<pre><code>var store = new Ext.data.Store ({
+    model: &#39;MyApp.model.User&#39;
+});
+
+store.load({
+    callback:function(){
+        var first_name = this.first().get(&#39;name&#39;);
+         console.log(first_name);
+    }
+});
+</code></pre><p>We are manually loading the store to receive a set of <code>MyApp.model.User</code> records.  The 
+records are then logged when the store load&#39;s callback function is fired (upon completion). </p>
+<p>###Inline data
+Stores can also load data in-line. Internally, Store converts each of the objects we pass 
+in as [[ext:Ext.data.Store#cfg-data data]] into records of the appropriate 
+[[ext:Ext.data.Model Model]] type:</p>
+<pre><code>new Ext.data.Store({
+    model: &#39;MyApp.model.User&#39;,
+    data: [{
+        id: 1,
+        name: &quot;Philip J. Fry&quot;
+    },{
+        id: 2,
+        name: &quot;Hubert Farnsworth&quot;
+    },{
+        id: 3,
+        name: &quot;Turanga Leela&quot;
+    },{
+        id: 4,
+        name: &quot;Amy Wong&quot;
+    }]
+});
+</code></pre><p>###Sorting and Grouping</p>
+<p>Stores are able to perform sorting, filtering and grouping locally and remotely.</p>
+<pre><code>new Ext.data.Store({
+    model: &#39;MyApp.model.User&#39;,
+
+    sorters: [&#39;name&#39;,&#39;id&#39;],
+    filters: {
+        property: &#39;name&#39;,
+        value   : &#39;Philip J. Fry&#39;
+    }
+});
+</code></pre><p>In this store, the data will be sorted first by name and then id.  The data will be 
+filtered to only include users with the name &#39;Philip J. Fry&#39;. It&#39;s easy to change the 
+attributes for these items at any time via the Store&#39;s API. </p>
+<p>##Associations
+Models can be linked together with the Associations API. Most applications deal with many 
+different Models and the Models are almost always related. A blog authoring application 
+might have models for User and Post. Each User creates Posts.  So in this case, a user can 
+have multiple posts, but a post will only have one User creating it.  This is known as a 
+ManyToOne relationship.  We can express this relationship like so:</p>
+<pre><code>Ext.define(&#39;MyApp.model.User&#39;, {
+    extend: &#39;MyApp.model.Base&#39;,
+
+    fields: [{
+        name: &#39;name&#39;,
+        type: &#39;string&#39;
+    }]
+});
+
+Ext.define(&#39;MyApp.model.Post&#39;, {
+    extend: &#39;MyApp.model.Base&#39;,
+
+    fields: [{
+        name: &#39;userId&#39;,
+        reference: &#39;User&#39;, // the entityName for MyApp.model.User
+        type: &#39;int&#39;
+    }, {
+        name: &#39;title&#39;,
+        type: &#39;string&#39;
+    }]
+});
+</code></pre><p>It&#39;s easy to express rich relationships between different Models in your application. 
+Each Model can have any number of associations with other Models.  Additionally, your 
+Models may be defined in any order. Once you have a record of this Model type, it&#39;s easy 
+to traverse the associated data.  For example, if you wanted to get all of the posts for 
+a user, you could do something like this:</p>
+<pre><code>// Loads User with ID 1 and related posts and comments
+// using User&#39;s Proxy
+MyApp.model.User.load(1, {
+    callback: function(user) {
+        console.log(&#39;User: &#39; + user.get(&#39;name&#39;));
+
+        user.posts(function(posts){
+            posts.each(function(post) {
+                console.log(&#39;Post: &#39; + post.get(&#39;title&#39;));
+            });
+        });
+    }
+});
+</code></pre><p>The above association results in a new function being added to the Model. Each User model 
+has many Posts, which added the <code>user.posts()</code> function that we used. Calling <code>user.posts()</code> 
+returns a [[ext:Ext.data.Store Store]] configured with the Post model. </p>
+<p>Associations aren&#39;t just helpful for loading data.  They&#39;re also quite useful for creating 
+new records:</p>
+<pre><code>user.posts().add({
+    userId: 1,
+    title: &#39;Post 10&#39;
+});
+
+user.posts().sync();
+</code></pre><p>This instantiates a new Post, which is automatically given the User&#39;s id in the userId 
+field. Calling <code>sync()</code> saves the new Post via its proxy (defined ultimately by the schema&#39;s 
+proxy config). This is an asynchronous operation to which you can pass a callback if you 
+want to be notified when the operation completed.</p>
+<p>The &quot;inverse&quot; of the association also generates new methods on the Post model:</p>
+<pre><code>MyApp.model.Post.load(1, {
+    callback: function(post) {
+
+        post.getUser(function(user) {
+            console.log(&#39;Got user from post: &#39; + user.get(&#39;name&#39;));
+        });                           
+    }
+});
+
+MyApp.model.Post.load(2, {
+    callback: function(post) {
+        post.setUser(100);                         
+    }
+});
+</code></pre><p>The loading function, <code>getUser()</code>, is asynchronous and requires a callback function to get 
+at the user instance. The <code>setUser()</code> method simply updates the <code>userId</code> (sometimes called 
+the &quot;foreign key&quot;) to 100 and saves the Post model. As usual, callbacks can be passed in 
+that will be triggered when the save operation has completed - whether successful or not.</p>
+<p>###Loading Nested Data
+When associations are defined, the act of loading a record can also load associated records 
+in a single request. For example, consider a server response like this:</p>
+<pre><code>{
+    &quot;success&quot;: true,
+    &quot;user&quot;: [{
+        &quot;id&quot;: 1,
+        &quot;name&quot;: &quot;Philip J. Fry&quot;,
+        &quot;posts&quot;: [{
+            &quot;title&quot;: &quot;Post 1&quot;
+        },{
+            &quot;title&quot;: &quot;Post 2&quot;
+        },{
+            &quot;title&quot;: &quot;Post 3&quot;
+        }]
+    }]
+}
+</code></pre><p>The framework can automatically parse out nested data in a single response such as the 
+above. Instead of making a request for the User data and another for the Posts data, we 
+can return all of the data in a single server response.</p>
+<p>##Validations
+Models also provide a bevy of support for validating data. To demonstrate, we&#39;re going to 
+build upon the example we used above. First let&#39;s add some validations to the User model:</p>
+<pre><code>Ext.define(&#39;MyApp.model.User&#39;, {
+    extend: &#39;Ext.data.Model&#39;,
+    fields: ...,
+
+    validators: {
+        name: [
+            &#39;presence&#39;,
+            { type: &#39;length&#39;, min: 7 },
+            { type: &#39;exclusion&#39;, list: [&#39;Bender&#39;] }
+        ]
+    }
+});
+</code></pre><p>Validators are defined as an object keyed by field name which map to the rules that define 
+a valid field. These rules are expressed as a validator object config or an array of these 
+configs. The validators in our example validate the name field, which should be at least 
+7 characters in length, and the value to be anything but &quot;Bender&quot;. </p>
+<p>Some validations take additional optional configuration - for example the length validation 
+can take min and max properties, format can take a matcher, etc. There are five validations 
+built into Ext JS and adding custom rules is easy. </p>
+<p>First, let&#39;s meet the ones built right in:</p>
+<ul>
+<li><strong>Presence</strong> - ensures that the field has a value. Zero counts as a valid value but empty 
+strings do not.</li>
+<li><strong>Length</strong> - ensures that a string is between a min and max length. Both constraints are 
+optional.</li>
+<li><strong>Format</strong> - ensures that a string matches a regular expression format. In the example 
+above we ensure that the age field consists only of numbers.</li>
+<li><strong>Inclusion</strong> - ensures that a value is within a specific set of values (e.g. ensuring 
+gender is either male or female).</li>
+<li><strong>Exclusion</strong> - ensures that a value is not one of the specific set of values (e.g. 
+blacklisting usernames like &#39;admin&#39;).</li>
+</ul>
+<p>Now that we have a grasp on the different validations, let&#39;s try using them against a User 
+instance. We&#39;ll create a user and run the validations against it, noting any failures:</p>
+<pre><code>// now lets try to create a new user with as many validation
+// errors as we can
+var newUser = new MyApp.model.User({
+    id: 10,
+    name: &#39;Bender&#39;
+});
+
+// run some validation on the new user we just created
+console.log(&#39;Is User valid?&#39;, newUser.isValid());
+
+//returns &#39;false&#39; as there were validation errors
+
+var errors = newUser.getValidation(),
+    error  = errors.get(&#39;name&#39;);
+
+console.log(&quot;Error is: &quot; + error);
+</code></pre><p>The key function here is getValidation(), which runs all of the configured validations and 
+returns a record populated by the first occurring error for each field or the boolean value 
+true for valid fields. The validation record is lazily created and is only updated when 
+requested.</p>
+<p>In this case, the first error shows us: &quot;Length must be greater than 7&quot; on the name field. </p>
+<p>So let&#39;s provide a name that contains more than 7 characters.</p>
+<pre><code>newUser.set(&#39;name&#39;, &#39;Bender Bending Rodriguez&#39;);
+errors = newUser.getValidation();
+</code></pre><p>This user record now fulfills all of the validations.  The record exists, it contains more 
+than 7 characters, and the name does not match Bender.</p>
+<p><code>newUser.isValid()</code> will now return true. When we call <code>getValidation()</code>, the validation 
+record will be updated and will no longer be dirty, and all of its fields will be set 
+to true.</p>
+</div>
+
+</body>
+</html>

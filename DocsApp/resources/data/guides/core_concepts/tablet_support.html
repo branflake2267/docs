@@ -1,0 +1,130 @@
+<html>
+<head>
+    <title>Tablet Support</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Tablet and Touch-Screen Support in Ext JS 5</p>
+<p>Ext JS offers support for devices withtouch-screen input, including tablets and 
+touch-screen laptops. The primary goal of this feature is to allow Ext JS applications 
+to run on touch-screen devices with little or no modification. This means that 
+developers can spend less time thinking about compatibility
+issues, and more time implementing great applications.</p>
+<p>##How Touch-Screen Support is Implemented</p>
+<p>Support for devices with touch-screens can be broken down into three categories.</p>
+<p>###Event Normalization</p>
+<p>Event normalization is the key to allowing Ext JS applications to run on touch-screen
+devices. This normalization occurs behind the scenes and is a simple translation from
+standard mouse events to their equivalent touch and pointer events.</p>
+<p>Pointer events are a w3c standard for dealing with events that target a specific set of
+coordinates on the screen, regardless of input device (mouse, touch, stylus, etc.)</p>
+<p>When your code requests a listener for a mouse event, the framework attaches a similar
+touch or pointer event as needed. For example, if the application attempts to attach a
+mousedown listener:</p>
+<pre><code>myElement.on(&#39;mousedown&#39;, someFunction);
+</code></pre><p>The event system translates this to touchstart in the case of a device that supports touch
+events:</p>
+<pre><code>myElement.on(&#39;touchstart&#39;, someFunction);
+</code></pre><p>Or, pointerdown in the case of a device that supports pointer events:</p>
+<pre><code>myElement.on(&#39;pointerdown&#39;, someFunction);
+</code></pre><p>This translation is in place so that you may achieve tablet and touch-screen support
+without any additional coding.</p>
+<p>In most cases the framework can transition seamlessly between mouse, touch, and pointer
+input. However, there are a few mouse interactions (such as mouseover) that do not
+translate easily into touch interactions. Such events will need to be handled on an
+individual basis and are addressed in a following section.</p>
+<p>###Gesture System</p>
+<p>In addition to standard DOM events, Elements also fire synthesized &quot;gesture&quot; events. Since
+the Sencha Touch event system forms the basis for the new event system in Ext JS 5, Sencha
+Touch users may already be familiar with this concept.</p>
+<p>From a browser&#39;s perspective, there are 3 primary types of pointer, touch, and mouse
+events - start, move, and end:</p>
+<table>
+    <tr>
+        <th>Event</th>
+        <th>Touch</th>
+        <th>Pointer</th>
+        <th>Mouse</th>
+    </tr>
+    <tr>
+        <th>Start</th>
+        <td>touchstart</td>
+        <td>pointerdown</td>
+        <td>mousedown</td>
+    </tr><br>    <tr>
+        <th>Move</th>
+        <td>touchmove</td>
+        <td>pointermove</td>
+        <td>mousemove</td>
+    </tr><br>    <tr>
+        <th>Stop</th>
+        <td>touchend</td>
+        <td>pointerup</td>
+        <td></td>
+    </tr><br></table>
+
+<p>Upon interpreting the sequence and timing of these events, the framework can synthesize
+more complex events such as <code>drag</code>, <code>swipe</code>, <code>longpress</code>, <code>pinch</code>, <code>rotate</code>, and <code>tap</code>.
+Ext JS applications can listen for gesture events just like any other event, for example:</p>
+<pre><code>Ext.get(&#39;myElement&#39;).on(&#39;longpress&#39;, handlerFunction);
+</code></pre><p>The original Sencha Touch gesture system was designed primarily with touch events in mind.
+By adding full support for pointer and mouse events to the Gesture system, Ext JS allows
+any gesture to respond to any type of input. This means not only that all gestures can be
+triggered using touch input, but all single-point gestures (tap, swipe, etc.) can be
+triggered using a mouse as well. This results in a gesture system that works seamlessly
+across devices regardless of input type.</p>
+<p>###Touch Scroller</p>
+<p>Native scrolling of elements with overflowing content leaves a lot to be desired in some
+mobile webkit browsers. The lack of momentum scrolling and scroll position indicators can
+make scrolling a tedious and unintuitive experience. The &#39;touch scroller&#39;, borrowed from
+Sencha Touch, solves this problem by implementing momentum scrolling with scroll
+indicators using JavaScript. Application developers typically won&#39;t need to do anything to
+turn the touch scroller on. It is enabled by default in browsers where native scrolling is
+less than optimal.</p>
+<p>##What Touch-Screen Support Means for Applications</p>
+<p>Normalized events and gesture recognition are active by default in Ext JS 5 applications.
+This means that, in most cases, no special actions are necessary to enable tablet and
+touch-screen support. However, there are two particular areas that may need special
+attention.</p>
+<p>The first deals with mouse events that don&#39;t have an obvious analog in the touch world. As
+of now, Ext JS 5 does not attempt to perform any normalization for the following mouse
+events:</p>
+<ul>
+<li>mouseover</li>
+<li>mouseout</li>
+<li>mousenter</li>
+<li>mouseleave</li>
+</ul>
+<p>Application functionality that responds to these events on desktop devices may have to be
+re-implemented separately for touch devices. Developers should keep this in mind when
+architecting applications. In order to ensure that important application functionality is
+accessible to touch screens, it may be necessary to provide an alternate implementation
+for these interactions. This often means substituting the mouse event with an appropriate
+touch gesture. Ext JS takes this approach internally in several places.</p>
+<p>One example is the grid component. On desktop devices, grid column header menus are shown
+in response to a click on the header&#39;s trigger element. However, the trigger only becomes
+visible in response to a mouseover of the column header. Since a gesture equivalent to
+&#39;mouseover&#39; does not exist on touch screens, the trigger never becomes visible and so
+cannot be touched. To ensure that the column header menu can be accessed, Ext JS displays
+the menu in response to a &#39;longpress&#39; if it detects that the grid is being used on a
+touch-screen device.</p>
+<p><strong>Note:</strong> <em>Developers of applications and custom components may need to make similar
+adjustments as needed.</em></p>
+<p>The second area that may require attention relates to some internal framework changes. In
+order to support Touch gestures, Ext JS 5+ switched to a delegated event model. Instead of
+attaching listeners directly to DOM elements, a single listener for each event type is
+attached at the top of the DOM (the window or document object). The Ext JS event system
+then dispatches event handlers based on the target elements of events that bubble up to
+the window object. Application developers who use only Ext JS APIs to listen for events
+will not experience any problems with this new approach.</p>
+<p>However, if DOM APIs are used to directly attach listeners (addEventListener or
+attachEvent), or if 3rd party JavaScript libraries are used, issues may occur with the
+timing of directly attached event handlers relative to the timing of their delegated
+counterparts.</p>
+<p><strong>Note:</strong> <em>Tablet and touch-screen support works with Safari, Chrome and IE10+.
+The Android browser is not supported.</em></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,455 @@
+<html>
+<head>
+    <title>View Models &amp; Data Binding</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#View Models and Data Binding</p>
+<p>Data binding and the ViewModel that powers it are powerful additions to Ext JS.<br>Together they enable you to do more with less code and write in a much more declarative
+style while helping you maintain a clean separation of concerns.</p>
+<p>A ViewModel is a class that manages a data object. It then allows those interested in 
+this data to bind to it and be notified when it changes. The ViewModel, like 
+ViewController, is owned by the view that references it.  Because ViewModels are 
+associated with a view, they are also able to link to a parent ViewModel owned by 
+ancestor components in the component hierarchy. This allows child views to simply 
+&quot;inherit&quot; the data of their parent ViewModel.</p>
+<p>Components have a <code>bind</code> config that allows them to associate many of their configs to 
+data from the ViewModel. Using bind, you can be sure that the appropriate component 
+config will have its setter method called whenever the bound value changes - no custom 
+event handlers needed.</p>
+<p>In this guide, we will walk through some examples that show the power of ViewModels and
+Data Binding.</p>
+<p>##Component Binding</p>
+<p>Probably the best way to understand binding and ViewModels is to look at the various 
+ways you can use bindings on components. This is because components are the primary 
+consumers of data binding and components are something familiar to Ext JS developers. 
+In order for binding to work, however, we do need a ViewModel so we will reference one 
+for now and define it later.</p>
+<p>###Binding and Configs</p>
+<p>Binding for components is the process of connecting data from a 
+[[ext:Ext.app.ViewModel]] to a component&#39;s config properties. Any configuration a 
+component possesses may be bound to, so long as it has a setter method. For instance, 
+since there&#39;s a <code>setTitle()</code> method on [[ext:Ext.panel.Panel]], you can bind to the 
+<code>title</code> configuration.</p>
+<p>In this example, we will set the <code>width</code> of a panel based on the results of our 
+ViewModel&#39;s <code>data</code>.  We can bind our data to <code>width</code> since <code>setWidth()</code> is a method that 
+<code>Ext.panel.Panel</code> may use.</p>
+<pre><code>Ext.create(&#39;Ext.panel.Panel&#39;, {
+    title: &#39;Simple Form&#39;,
+
+    viewModel: {
+        type: &#39;test&#39;  // we will define the &quot;test&quot; ViewModel soon
+    },
+
+    bind: {
+        html: &#39;&lt;p&gt;Hello {name}&lt;/p&gt;&#39;,
+        width: &#39;{someWidth}&#39;
+    }
+});
+</code></pre><p>The syntax used for bind values is very similar to [[ext:Ext.Template]]. You can put 
+text around tokens inside braces. You can use formatters as well, as with 
+<code>Ext.Template</code>. Unlike <code>Ext.Template</code>, however, when a template is a single token (like 
+&#39;{someWidth}&#39;) then its value is passed unmodified. That is, it is not converted to a 
+string.</p>
+<p>We will see later how the data for <code>name</code> and <code>someWidth</code> are defined. The above example
+simply shows how the data is consumed by a component.</p>
+<p>###Binding Boolean Configs</p>
+<p>Many configs you will want to bind are boolean values, such as visible (or <code>hidden</code>),
+<code>disabled</code>, <code>checked</code>, and <code>pressed</code>. Bind templates support boolean negation &quot;inline&quot; 
+in the template. Other forms of algebra are relegated to formulas (see below), but 
+boolean inversion is common enough there is special provision for it. For example:</p>
+<pre><code>Ext.create(&#39;Ext.panel.Panel&#39;, {
+    title: &#39;Simple Form&#39;,
+
+    viewModel: {
+        type: &#39;test&#39;
+    },
+
+    items: [{
+        xtype: &#39;button&#39;,
+        bind: {
+            hidden: &#39;{!name}&#39;  // negated
+        }
+    }]
+});
+</code></pre><p>This also highlights how values in single token templates are not converted to strings. 
+In the above, while &quot;name&quot; is a string value, it is negated using &quot;!&quot; and becomes a 
+boolean value and that is passed to the <code>setHidden</code> method on the button.</p>
+<p>###Binding and Priority</p>
+<p>Bound config properties will always overwrite configurations set statically on the
+component as soon as the bound result is available. In other words, bound data will 
+always take priority over static configuration values but may be delayed in order to 
+fetch that data.</p>
+<pre><code>Ext.create(&#39;Ext.panel.Panel&#39;, {
+    title: &#39;Simple Form&#39;,
+
+    viewModel: {
+        type: &#39;test&#39;
+    },
+
+    bind: {
+        title: &#39;Hello {name}&#39;
+    }
+});
+</code></pre><p>Once the binding for &quot;name&quot; is delivered, the &quot;Simple Form&quot; title will be replaced.</p>
+<p>###Binding and Child Components</p>
+<p>One of the most helpful parts of binding is that all of the children of the component 
+with a viewModel also have access to their container&#39;s data.</p>
+<p>In this example, you can see the children items of a form may be bound to their
+container&#39;s viewModel.</p>
+<pre><code>Ext.create(&#39;Ext.panel.Panel&#39;, {
+    title: &#39;Simple Form&#39;,
+
+    viewModel: {
+        type: &#39;test&#39;
+    },
+
+    layout: &#39;form&#39;,
+    defaultType: &#39;textfield&#39;,
+
+    items: [{
+        fieldLabel: &#39;First Name&#39;,
+        bind: &#39;{firstName}&#39; // uses &quot;test&quot; ViewModel from parent
+    },{
+        fieldLabel: &#39;Last Name&#39;,
+        bind: &#39;{lastName}&#39;
+    }]
+});
+</code></pre><p>###Two Way Binding</p>
+<p>The bind config also allows for two-way data binding, which translates to live
+synchronization of data between the view and the model.  Any data change made in the 
+view is automatically written back to the model.  This automatically updates any other
+components that may be bound to that same data.
+<strong>Note:</strong> Not all configs will publish their value to the ViewModel when changed.<br>Configs defined within the <code>publish</code> and <code>twoWayBindable</code> array will publish changes 
+back up to the ViewModel.  Values may also be published in Component / application logic 
+using the <code>publishState</code> method.</p>
+<p>In the above example, because the &quot;firstName&quot; and &quot;lastName&quot; properties were bound to 
+text fields, changes in the input would be written back to the ViewModel. To see how all 
+this connects, it is time to complete the example and define the ViewModel.</p>
+<pre><code>Ext.define(&#39;MyApp.view.TestViewModel&#39;, {
+    extend: &#39;Ext.app.ViewModel&#39;,
+
+    alias: &#39;viewmodel.test&#39;, // connects to viewModel/type below
+
+    data: {
+        firstName: &#39;John&#39;,
+        lastName: &#39;Doe&#39;
+    },
+
+    formulas: {
+        // We&#39;ll explain formulas in more detail soon.
+        name: function (get) {
+            var fn = get(&#39;firstName&#39;), ln = get(&#39;lastName&#39;);
+            return (fn &amp;&amp; ln) ? (fn + &#39; &#39; + ln) : (fn || ln || &#39;&#39;);
+        }
+    }
+});
+
+Ext.define(&#39;MyApp.view.TestView&#39;, {
+    extend: &#39;Ext.panel.Panel&#39;,
+    layout: &#39;form&#39;,
+
+    // Always use this form when defining a view class. This
+    // allows the creator of the component to pass data without
+    // erasing the ViewModel type that we want.
+    viewModel: {
+        type: &#39;test&#39;  // references alias &quot;viewmodel.test&quot;
+    },
+
+    bind: {
+        title: &#39;Hello {name}&#39;
+    },
+
+    defaultType: &#39;textfield&#39;,
+    items: [{
+        fieldLabel: &#39;First Name&#39;,
+        bind: &#39;{firstName}&#39;
+    },{
+        fieldLabel: &#39;Last Name&#39;,
+        bind: &#39;{lastName}&#39;
+    },{
+        xtype: &#39;button&#39;,
+        text: &#39;Submit&#39;,
+        bind: {
+            hidden: &#39;{!name}&#39;
+        }
+    }]
+});
+
+Ext.onReady(function () {
+    Ext.create(&#39;MyApp.view.TestView&#39;, {
+        renderTo: Ext.getBody(),
+        width: 400
+    });
+});
+</code></pre><p>When the above panel is displayed we can see that changes in the text fields are 
+reflected in the panel <code>title</code> as well as the <code>hidden</code> state of the &quot;Submit&quot; button.</p>
+<p>###Binding and Component State</p>
+<p>Sometimes a component&#39;s state, e.g. the <code>checked</code> state of a checkbox or the selected
+record of a grid, is interesting to other components. When a component is assigned a
+<code>reference</code> to identify it, that component will publish some of its key properties in 
+the ViewModel.</p>
+<p>In this example, we have the &quot;Admin Key&quot; textfield&#39;s disabled config bound to the the
+checked state of the checkbox. This results in the textfield being disabled until the
+checkbox is checked. This sort of behavior is well suited for dynamic forms like this:</p>
+<pre><code>Ext.create(&#39;Ext.panel.Panel&#39;, {
+    title: &#39;Sign Up Form&#39;,
+
+    viewModel: {
+        type: &#39;test&#39;
+    },
+
+    items: [{
+        xtype: &#39;checkbox&#39;,
+        boxLabel: &#39;Is Admin&#39;,
+        reference: &#39;isAdmin&#39;
+    },{
+        xtype: &#39;textfield&#39;,
+        fieldLabel: &#39;Admin Key&#39;,
+        bind: {
+            disabled: &#39;{!isAdmin.checked}&#39;
+        }
+    }]
+});
+</code></pre><p>###Bind Descriptors
+So far we&#39;ve seen three basic forms of bind descriptors:</p>
+<ul>
+<li><p><code>{firstName}</code> - A &quot;direct bind&quot; to some value in the ViewModel. This value is passed
+through unmodified and so may arrive as any type of data.</p>
+</li>
+<li><p><code>Hello {name}</code> - A &quot;bind template&quot; always produces a string by inserting the textual
+value of the various bind expressions. Bind templates can also use formatters as with a
+normal <code>Ext.Template</code>, for example: &#39;Hello {name:capitalize}&#39;.</p>
+</li>
+<li><p><code>{!isAdmin.checked}</code> - The negated form of a direct bind, useful for binding to 
+boolean config properties.</p>
+</li>
+</ul>
+<p>Beyond these basic forms, there are a few specialized forms of bind descriptors that you
+can use.</p>
+<p>####Multi-Bind</p>
+<p>If an object or array is given as a bind descriptor, the ViewModel will produce an 
+object or array of the same shape but with the various properties replaced by their bind 
+result.  For example:</p>
+<pre><code>Ext.create(&#39;Ext.Component&#39;, {
+    bind: {
+        data: {
+            fname: &#39;{firstName}&#39;,
+            lname: &#39;{lastName}&#39;
+        }
+    }
+});
+</code></pre><p>This sets the &quot;data&quot; config for the component to be an object with two properties whose
+values are set from the ViewModel.</p>
+<p>####Record Bind
+When a particular record is desired, say &quot;User&quot; with <code>id</code> of 42, the bind descriptor is 
+an object but with a &quot;reference&quot; property. For example:</p>
+<pre><code>Ext.create(&#39;Ext.Component&#39;, {
+    bind: {
+        data: {
+            reference: &#39;User&#39;,
+            id: 42
+        }
+    }
+});
+</code></pre><p>In this case, the component&#39;s <code>tpl</code> will receive the User record once it is loaded. This
+currently requires the use of an <code>Ext.data.Session</code>.</p>
+<p>####Association Bind
+Similar to a record bind, one can also bind to an association, say the User&#39;s Address
+record:</p>
+<pre><code>Ext.create(&#39;Ext.Component&#39;, {
+    bind: {
+        data: {
+            reference: &#39;User&#39;,
+            id: 42,
+            association: &#39;address&#39;
+        }
+    }
+});
+</code></pre><p>In this case, the component&#39;s <code>tpl</code> will receive the User&#39;s &quot;address&quot; record once it is
+loaded. This also currently requires the use of an <code>Ext.data.Session</code>.</p>
+<p>####Bind Options
+The final form of bind descriptor is used when you need to describe binding options. The
+following example shows how to receive only one value for a binding and then disconnect
+automatically.</p>
+<pre><code>Ext.create(&#39;Ext.Component&#39;, {
+    bind: {
+        data: {
+            bindTo: &#39;{name}&#39;,
+            single: true
+        }
+    }
+});
+</code></pre><p>The <code>bindTo</code> property is the second reserved name in a bind descriptor object (the first
+being <code>reference</code>). When present, it signifies that the value of <code>bindTo</code> is the actual
+bind descriptor and the other properties are configuration options for the binding.</p>
+<p>The other bind option currently supported is <code>deep</code>. This option is used when binding to
+an object so that the binding will be notified when any property of that object changes,
+not just the reference itself. This would be most useful when binding to the <code>data</code> 
+config of a component since these often receive objects.</p>
+<pre><code>Ext.create(&#39;Ext.Component&#39;, {
+    bind: {
+        data: {
+            bindTo: &#39;{someObject}&#39;,
+            deep: true
+        }
+    }
+});
+</code></pre><p>##Creating ViewModels
+Now that we&#39;ve gotten a taste for how components use ViewModels and gotten a glimpse of
+what ViewModels look like, it is time to learn more about ViewModels and what they offer.</p>
+<p>As stated previously, a ViewModel is a manager for an underlying <code>data</code> object. It is 
+the content of that object that is being consumed by bind statements. The inheritance of 
+data from a parent ViewModel to its child ViewModels leverages the JavaScript prototype 
+chain.  This is covered in more detail in the 
+<a href="./view_model_internals.html">View Model Internals</a> guide, but in a nutshell a child 
+ViewModel&#39;s <code>data</code> object has the <code>data</code> object of its parent ViewModel as its 
+prototype.</p>
+<p>###Formulas</p>
+<p>In addition to holding data and providing binding, ViewModels also offer a convenient 
+way to calculate data from other data called <code>formulas</code>.  Formulas allow you to 
+encapsulate data dependencies in the ViewModel and keep your views free to focus on 
+declaring their structure. </p>
+<p>In other words, the data is not changed in the ViewModel&#39;s data, but can be displayed
+differently by transforming it using formulas. This is similar to how the <code>convert</code>
+configuration works for fields of a traditional data model.</p>
+<p>We saw a simple &quot;name&quot; formula in the previous example.  In that case, the &quot;name&quot; 
+formula was simply a function that combined two other values from the ViewModel: 
+&quot;firstName&quot; and &quot;lastName&quot;.</p>
+<p>Formulas can also use the results of other formulas as if the result were just another
+data property. For example:</p>
+<pre><code>Ext.define(&#39;MyApp.view.TestViewModel2&#39;, {
+    extend: &#39;Ext.app.ViewModel&#39;,
+
+    alias: &#39;viewmodel.test2&#39;,
+
+    formulas: {
+        x2y: function (get) {
+            return get(&#39;x2&#39;) * get(&#39;y&#39;);
+        },
+
+        x2: function (get) {
+            return get(&#39;x&#39;) * 2;
+        }
+    }
+});
+</code></pre><p>The &quot;x2&quot; formulas uses an &quot;x&quot; property to define &quot;x2&quot; as &quot;x * 2&quot;. The &quot;x2y&quot; formulas 
+uses both &quot;x2&quot; and &quot;y&quot;. This definition means that if &quot;x&quot; changes, &quot;x2&quot; is recalculated 
+and then &quot;x2y&quot;. But if &quot;y&quot; changes, only &quot;x2y&quot; needs to be recalculated.</p>
+<p>####Formulas With Explicit Binding</p>
+<p>In the above examples, the dependencies for the formula were found via inspecting the 
+function, however this isn&#39;t always the best solution. An explicit bind statement can be 
+used, which will return a simple object when all the values in the bind have presented.</p>
+<pre><code>Ext.define(&#39;MyApp.view.TestViewModel2&#39;, {
+    extend: &#39;Ext.app.ViewModel&#39;,
+
+    alias: &#39;viewmodel.test2&#39;,
+
+    formulas: {
+        something: {
+            bind: {
+                x: &#39;{foo.bar.x}&#39;,
+                y: &#39;{bar.foo.thing.zip.y}&#39;
+            },
+
+            get: function (data) {
+                return data.x + data.y;
+            }
+        }
+    }
+});
+</code></pre><p>####Two-Way Formulas</p>
+<p>When a formula is invertible we can also define a <code>set</code> method to be called when the 
+value is set (say via two-way binding). Since the &quot;this&quot; pointer is the ViewModel, the 
+<code>set</code> method can call <code>this.set()</code> to set the appropriate properties in the ViewModel.</p>
+<p>A revised version of the TestViewModel below shows how &quot;name&quot; can be defined as a 
+two-way formula.</p>
+<pre><code>Ext.define(&#39;MyApp.view.TestViewModel&#39;, {
+    extend: &#39;Ext.app.ViewModel&#39;,
+
+    alias: &#39;viewmodel.test&#39;,
+
+    formulas: {
+        name: {
+            get: function (get) {
+                var fn = get(&#39;firstName&#39;), ln = get(&#39;lastName&#39;);
+                return (fn &amp;&amp; ln) ? (fn + &#39; &#39; + ln) : (fn || ln || &#39;&#39;);
+            },
+
+            set: function (value) {
+                var space = value.indexOf(&#39; &#39;),
+                    split = (space &lt; 0) ? value.length : space;
+
+                this.set({
+                    firstName: value.substring(0, split),
+                    lastName: value.substring(split + 1)
+                });
+            }
+        }
+    }
+});
+</code></pre><p>###Recommendations</p>
+<p>With all the power of ViewModels, formulas, and data binding, it can be easy to overuse 
+or abuse these mechanisms and create an application that is hard to understand or debug, 
+or is slow to update or leaks memory. To help avoid these issues and still get the most 
+out of ViewModels here are some recommended techniques:</p>
+<ul>
+<li><p><strong>Always use the following form when configuring your viewModel.</strong> This is important
+because of the way the Config System merges config values. With this form, the &quot;type&quot;
+property is preserved during the merge.</p>
+<pre><code>  Ext.define(&#39;MyApp.view.TestView&#39;, {
+      //...
+      viewModel: {
+          type: &#39;test&#39;
+      },
+  });
+</code></pre></li>
+<li><p><strong>Make names obvious</strong>, especially in high level ViewModels. In JavaScript we rely on
+textual searching so pick names that make finding usages possible. The more code that
+might use a property the more important it is to pick meaningful or even unique names.</p>
+</li>
+<li><p><strong>Don&#39;t nest data in objects more deeply than necessary.</strong> Multiple top-level objects 
+stored in the ViewModel will require less bookkeeping compared to one object with lots 
+of nested sub-objects. Further, this will help make dependencies on this information 
+more obvious than if many components depend on some large containing object. There are 
+reasons to share objects, but remember the ViewModel is just a managed object so you can 
+use its properties too.</p>
+</li>
+<li><p><strong>Use child ViewModels to allow data to be cleaned up</strong> with the components that 
+needed it.  If you put all data in high-level ViewModels, that data will likely never be 
+removed even when the child views that needed it have been destroyed. Instead, create 
+ViewModels for the child view and pass data into its ViewModel.</p>
+</li>
+<li><p><strong>Don&#39;t create child ViewModels unless they are actually needed.</strong> Each ViewModel
+instance takes time to create and memory to manage. If a child view does not need data
+unique to itself, it can simply use the ViewModel it inherits from its container. See 
+the previous recommendation though, because it is better to create child ViewModels when 
+they are needed than pollute a parent ViewModel and effectively leak memory.</p>
+</li>
+<li><p><strong>Use formulas instead of repeating binds.</strong> If you followed how formulas are ways to
+combine the results of several bound values you can probably see how using a formula 
+would help reduce the number of dependencies compared to directly using those same 
+values in many places. For example, one formula with 3 dependencies and 4 users make 
+<code>3 + 4 = 7</code> dependencies to track in the ViewModel. Compared to 4 users with those 3 
+dependencies on themselves we would have <code>3 * 4 = 12</code> dependencies. Fewer dependencies 
+to track means less memory used and time to process them.</p>
+</li>
+<li><p><strong>Don&#39;t chain formulas too deeply.</strong> This is not so much a run-time cost issue as a 
+code clarity issue. Chained formulas can mask the connections between data and 
+components making it hard to understand what is happening.</p>
+</li>
+<li><p><strong>Two-way formulas must be stable.</strong> Say formula &quot;foo&quot; is a calculation of value 
+&quot;bar&quot;.  When &quot;foo&quot; is set it will set &quot;bar&quot; by inverting the formula from its get 
+method. The result is stable if the get method will produce the exact same value for 
+&quot;foo&quot; that is now being set. If it does not, the process will cycle until it reaches a 
+stable point or it will continue indefinitely. Neither result is likely desirable.</p>
+</li>
+</ul>
+<p>#Further Reading
+For more information about the viewModels, please take a few minutes to check out our
+<a href="./view_model_internals.html">ViewModel Internals guide</a>.</p>
+</div>
+
+</body>
+</html>

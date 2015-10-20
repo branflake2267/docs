@@ -1,0 +1,161 @@
+<html>
+<head>
+    <title>Layouts and Containers</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><h1 id="core_concepts-_-layouts_-_layouts-and-containers">Layouts and Containers</h1>
+<p>The layout system is one of the most powerful parts of Ext JS. It handles the sizing and
+positioning of every [[ext:Ext.Component Component]] in your application. This guide
+covers the basics of how to get started with layouts.</p>
+<h2 id="core_concepts-_-layouts_-_containers">Containers</h2>
+<p>An Ext JS application UI is made up of [[ext:Ext.Component Component]]s (See the
+<a href="./components.html">Components Guide</a> for more on Components.  A
+[[ext:Ext.container.Container Container]] is a special type of Component that can contain
+other Components. A typical Ext JS application is made up of several layers of nested
+Components</p>
+<p><img src="images/component_architecture.png"/></p>
+<p>The most commonly used Container is [[ext:Ext.panel.Panel Panel]].  Let&#39;s take a look at
+how being a Container allows a Panel to contain other Components:</p>
+<pre><code>@example
+Ext.create(&#39;Ext.panel.Panel&#39;, {
+    renderTo: Ext.getBody(),
+    width: 400,
+    height: 300,
+    title: &#39;Container Panel&#39;,
+    items: [
+        {
+            xtype: &#39;panel&#39;,
+            title: &#39;Child Panel 1&#39;,
+            height: 100,
+            width: &#39;75%&#39;
+        },
+        {
+            xtype: &#39;panel&#39;,
+            title: &#39;Child Panel 2&#39;,
+            height: 100,
+            width: &#39;75%&#39;
+        }
+    ]
+});
+</code></pre><p>We just created a Panel that renders itself to the document body, and we used the
+[[ext:Ext.container.Container#cfg-items items]] config to add two child Panels to our
+Container Panel.</p>
+<h2 id="core_concepts-_-layouts_-_layouts">Layouts</h2>
+<p>Every [[ext:Ext.container.Container container]] has a [[ext:Ext.layout.container.Container
+layout]] that manages the sizing and positioning of its child [[ext:Ext.Component
+Component]]s.  In this section we&#39;re going to discuss how to configure a Container to use
+a specific type of Layout, and how the layout system keeps everything in sync.</p>
+<h3 id="core_concepts-_-layouts_-_using-layouts">Using Layouts</h3>
+<p>In the above example we did not specify a layout for the Container [[ext:Ext.panel.Panel
+Panel]]. Notice how the child Panels are laid out one after the other, just as normal
+block elements would be in the DOM. This happens because the default layout for all
+Containers is [[ext:Ext.layout.container.Auto Auto Layout]]. Auto Layout does not specify
+any special positioning or sizing rules for child elements.  Let&#39;s assume, for example, we
+want our two child Panels to be positioned side by side, and to each take up exactly 50%
+of the width of the Container - we can use a [[ext:Ext.layout.container.Column Column
+Layout]] simply by providing a [[ext:Ext.container.Container#cfg-layout layout]] config on the
+Container:</p>
+<pre><code>@example
+Ext.create(&#39;Ext.panel.Panel&#39;, {
+    renderTo: Ext.getBody(),
+    width: 400,
+    height: 200,
+    title: &#39;Container Panel&#39;,
+    layout: &#39;column&#39;,
+    items: [
+        {
+            xtype: &#39;panel&#39;,
+            title: &#39;Child Panel 1&#39;,
+            height: 100,
+            columnWidth: 0.5
+        },
+        {
+            xtype: &#39;panel&#39;,
+            title: &#39;Child Panel 2&#39;,
+            height: 100,
+            columnWidth: 0.5
+        }
+    ]
+});
+</code></pre><p>Ext JS comes with a full set of layouts and can accomodate almost any type of layout you
+can imagine.  See the <a href="http://dev.sencha.com/ext/5.0.0/examples/kitchensink/#layouts">Layout
+Section of the Kitchen Sink</a> to
+see different layouts in action.</p>
+<h3 id="core_concepts-_-layouts_-_how-the-layout-system-works">How the layout system works</h3>
+<p>A [[ext:Ext.container.Container Container]]&#39;s [[ext:Ext.layout.container.Container
+Layout]] is responsible for the initial positioning and sizing of all of the Container&#39;s
+children.  Internally the framework calls the Container&#39;s
+[[ext:Ext.container.Container#updateLayout updateLayout]] method which triggers the Layout to
+calculate the correct sizes and positions for all of the Container&#39;s children and update
+the DOM. The <code>updateLayout</code> method is fully recursive, so any of the Container&#39;s children will
+have their <code>updateLayout</code> method called as well. This continues until the bottom of the
+[[ext:Ext.Component Component]] hierarchy is reached. You typically will not have to ever
+call <code>updateLayout()</code> in your application code since the framework should handle it for you.</p>
+<p>A re-layout is triggered when the Container is [[ext:Ext.container.Container#setSize
+resized]], or when child Component [[ext:Ext.container.Container#cfg-items items]] are
+[[ext:Ext.container.Container#method-add added]] or
+[[ext:Ext.container.Container#method-remove removed]]. Normally we can just rely on the
+framework to handle updating the layout for us, but sometimes we want to prevent the
+framework from automatically laying out so we can batch multiple operations together and
+then manually trigger a layout when we&#39;re done.  To do this we use the
+[[ext:Ext.container.Container#cfg-suspendLayout suspendLayout]] flag on the Container to
+prevent it from laying out while we perform our operations that would normally trigger a
+layout (adding or removing items for example).  When we&#39;re done all we have to do is turn
+the <code>suspendLayout</code> flag off and manually trigger a layout by calling the Container&#39;s
+<code>updateLayout</code> method:</p>
+<pre><code>@example
+var containerPanel = Ext.create(&#39;Ext.panel.Panel&#39;, {
+    renderTo: Ext.getBody(),
+    width: 400,
+    height: 200,
+    title: &#39;Container Panel&#39;,
+    layout: &#39;column&#39;,
+    suspendLayout: true // Suspend automatic layouts while we do several different things that could trigger a layout on their own
+});
+
+// Add a couple of child items.  We could add these both at the same time by passing an array to add(),
+// but lets pretend we needed to add them separately for some reason.
+
+containerPanel.add({
+    xtype: &#39;panel&#39;,
+    title: &#39;Child Panel 1&#39;,
+    height: 100,
+    columnWidth: 0.5
+});
+
+containerPanel.add({
+    xtype: &#39;panel&#39;,
+    title: &#39;Child Panel 2&#39;,
+    height: 100,
+    columnWidth: 0.5
+});
+
+// Turn the suspendLayout flag off.
+containerPanel.suspendLayout = false;
+// Trigger a layout.
+containerPanel.updateLayout();
+</code></pre><h2 id="core_concepts-_-layouts_-_component-layout">Component Layout</h2>
+<p>Just like a [[ext:Ext.container.Container Container]]&#39;s
+[[ext:Ext.layout.container.Container Layout]] defines how a Container sizes and positions
+its [[ext:Ext.Component Component]] [[ext:Ext.container.Container#cfg-items items]], a
+Component also has a [[ext:Ext.layout.Layout Layout]] which defines how it sizes and
+positions its internal child items.  Component layouts are configured using the
+[[ext:Ext.Component#cfg-componentLayout componentLayout]] config option.</p>
+<p>Generally, you will not need to use this configuration unless you are writing a custom
+Component since all of the provided Components come with their own layout managers.  Most
+Components use [[ext:Ext.layout.container.Auto Auto Layout]], but more complex Components
+will require a custom component layout (for example a [[ext:Ext.panel.Panel Panel]] that
+has a header, footer, and toolbars).</p>
+</div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#core_concepts-_-layouts_-_containers">Containers</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-layouts_-_layouts">Layouts</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-layouts_-_using-layouts">Using Layouts</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-layouts_-_how-the-layout-system-works">How the layout system works</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-layouts_-_component-layout">Component Layout</a></div>
+    </div>
+</body>
+</html>

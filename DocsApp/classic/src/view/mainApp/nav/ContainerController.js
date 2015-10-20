@@ -6,8 +6,8 @@ Ext.define('DocsApp.view.mainApp.nav.ContainerController', {
         '!:type:sub' : {
             action     : 'goToView',
             conditions : {
-                ':type' : '(?:(?:\/){1}([a-z]+))?',
-                ':sub'  : '(?:(?:\/){1}([a-z]+))?'
+                ':type' : '(?:(?:\/){1}([a-z-_]+))?',
+                ':sub'  : '(?:(?:\/){1}([a-z-_]+))?'
             }
         }
     },
@@ -29,7 +29,9 @@ Ext.define('DocsApp.view.mainApp.nav.ContainerController', {
             info     = this.info[type];
 
         if (info) {
+            tabpanel.suspendEvents(false); //prevent tabchange event from firing
             tabpanel.setActiveItem(info.idx);
+            tabpanel.resumeEvents(true);
         }
     },
 

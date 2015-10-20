@@ -1,0 +1,318 @@
+<html>
+<head>
+    <title>Events and Gestures</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><h1 id="core_concepts-_-events_-_using-events">Using Events</h1>
+<p>The Components and Classes of Ext JS fire a broad range of events at various points 
+in their lifecycle. Events allow your code to react to changes around your application. 
+They are a key concept within Ext JS.</p>
+<h2 id="core_concepts-_-events_-_what-are-events-">What Are Events?</h2>
+<p>Events fire whenever something interesting happens to one of your Classes. 
+For example, when [[ext:Ext.Component]] renders to the screen, Ext JS fires an 
+event after the render completes. We can listen for that event 
+by configuring a simple <code>listeners</code> object:</p>
+<pre><code>@example
+Ext.create(&#39;Ext.Panel&#39;, {
+    html: &#39;My Panel&#39;,
+    renderTo: Ext.getBody(),
+    listeners: {
+        afterrender: function() {
+            Ext.Msg.alert(&#39;We have been rendered&#39;);
+        }
+    }
+});
+</code></pre><p>In this example, when you click the <b>Preview</b> button, the Panel 
+renders to the screen, followed by the defined alert message. All events 
+fired by a class are listed in the class&#39;s API page - for example,
+[[ext:Ext.panel.Panel]] currently has 45 events.</p>
+<h2 id="core_concepts-_-events_-_listening-to-events">Listening to Events</h2>
+<p>While [[ext:Ext.Component-event-afterrender]] is useful in some cases, you may use other
+events 
+more frequently. For instance, [[ext:Ext.button.Button]] fires click events
+when clicked:</p>
+<pre><code>@example
+Ext.create(&#39;Ext.Button&#39;, {
+    text: &#39;Click Me&#39;,
+    renderTo: Ext.getBody(),
+    listeners: {
+        click: function() {
+            Ext.Msg.alert(&#39;I was clicked!&#39;);
+        }
+    }
+});
+</code></pre><p>A component may contain as many event listeners as needed. In the following example, 
+we confound users by calling <code>this.hide()</code> inside our mouseover 
+listener to hide a Button. We then display the button again a second later. 
+When <code>this.hide()</code> is called, the Button is hidden and the <code>hide</code>
+event fires. The hide event triggers our <code>hide</code> listener, 
+which waits one second and displays the Button again:</p>
+<pre><code>@example
+Ext.create(&#39;Ext.Button&#39;, {
+    renderTo: Ext.getBody(),
+    text: &#39;My Button&#39;,
+    listeners: {
+        mouseover: function() {
+            this.hide();
+        },
+        hide: function() {
+            // Waits 1 second (1000ms), then shows the button again
+            Ext.defer(function() {
+                this.show();
+            }, 1000, this);
+        }
+    }
+ });
+</code></pre><p>Event listeners are called every time an event is fired, so you can continue hiding and 
+showing the button for as long as you desire.</p>
+<h2 id="core_concepts-_-events_-_adding-listeners-later">Adding Listeners Later</h2>
+<p>In previous examples, we passed listeners to the component when the class was
+instantiated.
+However, If we already have an instance, we can add listeners using the <code>on</code>
+function:</p>
+<pre><code>@example
+var button = Ext.create(&#39;Ext.Button&#39;, {
+    renderTo: Ext.getBody(),
+    text: &#39;My Button&#39;
+});
+
+button.on(&#39;click&#39;, function() {
+    Ext.Msg.alert(&#39;Event listener attached by .on&#39;);
+});
+</code></pre><p>You can also specify multiple listeners by using the <code>.on</code> method, 
+similar to using a listener configuration.  The following revisits 
+the previous example that set the button&#39;s visibility with a mouseover event:</p>
+<pre><code>@example
+var button = Ext.create(&#39;Ext.Button&#39;, {
+    renderTo: Ext.getBody(),
+    text: &#39;My Button&#39;
+});
+
+button.on({
+    mouseover: function() {
+        this.hide();
+    },
+    hide: function() {
+        Ext.defer(function() {
+            this.show();
+        }, 1000, this);
+    }
+});
+</code></pre><h2 id="core_concepts-_-events_-_removing-listeners">Removing Listeners</h2>
+<p>Just as we can add listeners at any time, we can also remove them. This time we use 
+the <code>un</code> function. To remove a listener, we need a reference to its function. 
+In the previous examples, we passed a function into the listener&#39;s 
+object or the <code>on</code> call. This time, we create the function earlier and link 
+it into a variable called <code>doSomething</code>, which contains our custom function.
+Since we initially pass the new <code>doSomething</code> function into our listeners 
+object, the code begins as before. With the eventual addition of 
+an [[ext:Ext-method-defer]] function, clicking the button in the first 
+3 seconds yields an alert message. However, after 3 
+seconds the listener is removed so nothing happens:</p>
+<pre><code>@example
+var doSomething = function() {
+    Ext.Msg.alert(&#39;listener called&#39;);
+};
+
+var button = Ext.create(&#39;Ext.Button&#39;, {
+    renderTo: Ext.getBody(),
+    text: &#39;My Button&#39;,
+    listeners: {
+        click: doSomething,
+    }
+});
+
+Ext.defer(function() {
+    button.un(&#39;click&#39;, doSomething);
+}, 3000);
+</code></pre><h2 id="core_concepts-_-events_-_scope-listener-option">Scope Listener Option</h2>
+<p>Scope sets the value of this inside your handler function. By default, this is set to the 
+instance of the class firing the event.  This is often, but not always, the functionality 
+that you want. This functionality allows us to 
+call <code>this.hide()</code> to hide the button in the 
+second example earlier in this guide.
+In the following example, we create a Button and a Panel.  We then listen to the Button&#39;s 
+click event with the handler running in Panel&#39;s scope. In order to do this, we need to 
+pass in an object instead of a handler function.  This object contains the function AND 
+the scope:</p>
+<pre><code>@example
+var panel = Ext.create(&#39;Ext.Panel&#39;, {
+    html: &#39;Panel HTML&#39;
+});
+
+var button = Ext.create(&#39;Ext.Button&#39;, {
+    renderTo: Ext.getBody(),
+    text: &#39;Click Me&#39;
+});
+
+button.on({
+    click: {
+        scope: panel,
+        fn: function() {
+            Ext.Msg.alert(this.getXType());
+        }
+    }
+});
+</code></pre><p>When you run this example, the value of the click handler&#39;s <code>this</code> is a reference to the
+Panel. To see 
+this illustrated, we alert the <code>xtype</code> of the scoped component. When the button is
+clicked, 
+we should see the Panel <code>xtype</code> being alerted.</p>
+<h2 id="core_concepts-_-events_-_listening-to-an-event-once">Listening to an Event Once</h2>
+<p>You may want to listen to one event only once. The event itself might fire any number of 
+times, but we only want to listen to it once. The following codes illustrates this 
+situation:</p>
+<pre><code>@example
+var button = Ext.create(&#39;Ext.Button&#39;, {
+    renderTo: Ext.getBody(),
+    text: &#39;Click Me&#39;,
+    listeners: {
+        click: {
+            single: true,
+            fn: function() {
+                Ext.Msg.alert(&#39;I will say this only once&#39;);
+            }
+        }
+    }
+});
+</code></pre><h2 id="core_concepts-_-events_-_using-a-buffer-configuration">Using a Buffer Configuration</h2>
+<p>For events that fire many times in short succession, we can reduce the number of times our</p>
+<p>listener is called by using a buffer configuration. In this case our button&#39;s click 
+listener is only invoked once every 2 seconds, regardless of how many times you click it:</p>
+<pre><code>@example
+var button = Ext.create(&#39;Ext.Button&#39;, {
+    renderTo: Ext.getBody(),
+    text: &#39;Click Me&#39;,
+    listeners: {
+        click: {
+            buffer: 2000,
+            fn: function() {
+                Ext.Msg.alert(&#39;I say this only once every 2 seconds&#39;);
+            }
+        }
+    }
+});
+</code></pre><h2 id="core_concepts-_-events_-_firing-custom-events">Firing Custom Events</h2>
+<p>Firing your own events is done by calling <code>fireEvent</code> with 
+an event name. In the following example we fire an event called myEvent that passes two
+arguments - the button itself and 
+a random number between 1 and 100:</p>
+<pre><code>@example
+var button = Ext.create(&#39;Ext.Button&#39;, {
+    renderTo: Ext.getBody(),
+    text: &quot;Just wait 2 seconds&quot;,
+    listeners: {
+        myEvent: function(button, points) {
+            Ext.Msg.alert(&#39;myEvent fired! You score &#39; + points + &#39; points&#39;);
+        }
+    }
+});
+
+Ext.defer(function() {
+    var number = Math.ceil(Math.random() * 100);
+
+    button.fireEvent(&#39;myEvent&#39;, button, number);
+}, 2000);
+</code></pre><p>Once again we used <code>Ext.defer</code> to delay the function that 
+fires our custom event, this time 
+by 2 seconds. When the event fires, the <code>myEvent</code> listener 
+picks up on it and displays the arguments we passed in.</p>
+<p>##Listening for DOM Events</p>
+<p>Not every ExtJS component raises every event.  However, by targeting the container&#39;s
+element, we can attach many native events to which the component can then listen. In this
+example, we target [[ext:Ext.container.Container]].  Containers do not have a click event.  Let&#39;s
+give it one!</p>
+<pre><code>@example
+var container = Ext.create(&#39;Ext.Container&#39;, {
+    renderTo: Ext.getBody(),
+    html: &#39;Click Me!&#39;,
+    listeners: {
+        click: function(){
+            Ext.Msg.alert(&#39;I have been clicked!&#39;)  
+        }
+    }
+});
+
+container.getEl().on(&#39;click&#39;, function(){ 
+    this.fireEvent(&#39;click&#39;, container); 
+}, container);
+</code></pre><p>Without the second block of code, the container&#39;s click listener would not fire.  Since we
+have targeted the container&#39;s element and attached a click listener, we have extended the
+container&#39;s event capabilities.  </p>
+<p>##Event Normalization</p>
+<p>Event normalization is the key to allowing Ext JS 5+ applications to run on touch-screen
+devices. This normalization occurs behind the scenes and is a simple translation from
+standard mouse events to their equivalent touch and pointer events.</p>
+<p>Pointer events are a w3c standard for dealing with events that target a specific set of
+coordinates on the screen, regardless of input device (mouse, touch, stylus, etc.)</p>
+<p>When your code requests a listener for a mouse event, the framework attaches a similar
+touch or pointer event as needed. For example, if the application attempts to attach a
+mousedown listener:</p>
+<pre><code>myElement.on(&#39;mousedown&#39;, someFunction);
+</code></pre><p>The event system translates this to touchstart in the case of a device that supports touch
+events:</p>
+<pre><code>myElement.on(&#39;touchstart&#39;, someFunction);
+</code></pre><p>Or, pointerdown in the case of a device that supports pointer events:</p>
+<pre><code>myElement.on(&#39;pointerdown&#39;, someFunction);
+</code></pre><p>This translation is in place so that you may achieve tablet and touch-screen support
+without any additional coding.</p>
+<p>In most cases the framework can transition seamlessly between mouse, touch, and pointer
+input. However, there are a few mouse interactions (such as mouseover) that do not
+translate easily into touch interactions. Such events will need to be handled on an
+individual basis and are addressed in a following section.</p>
+<p>##Gestures</p>
+<p>In addition to standard DOM events, Elements also fire synthesized &quot;gesture&quot; events. Since
+the Sencha Touch event system forms the basis for the Event System, Sencha
+Touch users may already be familiar with this concept.</p>
+<p>From a browser&#39;s perspective, there are 3 primary types of pointer, touch, and mouse
+events - start, move, and end:</p>
+<table>
+    <tr>
+        <th>Event</th>
+        <th>Touch</th>
+        <th>Pointer</th>
+        <th>Mouse</th>
+    </tr>
+    <tr>
+        <th>Start</th>
+        <td>touchstart</td>
+        <td>pointerdown</td>
+        <td>mousedown</td>
+    </tr><br>    <tr>
+        <th>Move</th>
+        <td>touchmove</td>
+        <td>pointermove</td>
+        <td>mousemove</td>
+    </tr><br>    <tr>
+        <th>Stop</th>
+        <td>touchend</td>
+        <td>pointerup</td>
+        <td></td>
+    </tr><br></table>
+
+<p>Upon interpreting the sequence and timing of these events, the framework can synthesize
+more complex events such as <code>drag</code>, <code>swipe</code>, <code>longpress</code>, <code>pinch</code>, <code>rotate</code>, and <code>tap</code>.
+Ext JS applications can listen for gesture events just like any other event, for example:</p>
+<pre><code>Ext.get(&#39;myElement&#39;).on(&#39;longpress&#39;, handlerFunction);
+</code></pre><p>The original Sencha Touch gesture system was designed primarily with touch events in mind.
+By adding full support for pointer and mouse events to the Gesture system, Ext JS 5 allows
+any gesture to respond to any type of input. This means not only that all gestures can be
+triggered using touch input, but all single-point gestures (tap, swipe, etc.) can be
+triggered using a mouse as well. This results in a gesture system that works seamlessly
+across devices regardless of input type.</p>
+</div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#core_concepts-_-events_-_what-are-events-">What Are Events?</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-events_-_listening-to-events">Listening to Events</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-events_-_adding-listeners-later">Adding Listeners Later</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-events_-_removing-listeners">Removing Listeners</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-events_-_scope-listener-option">Scope Listener Option</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-events_-_listening-to-an-event-once">Listening to an Event Once</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-events_-_using-a-buffer-configuration">Using a Buffer Configuration</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-events_-_firing-custom-events">Firing Custom Events</a></div>
+    </div>
+</body>
+</html>

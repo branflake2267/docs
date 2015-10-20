@@ -1,0 +1,330 @@
+<html>
+<head>
+    <title>Ext JS 5 to 6 - Upgrade Guide</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Ext JS 6.0 Upgrade Guide</p>
+<h2 id="upgrades_migrations-_-extjs_upgrade_guide_-_introduction">Introduction</h2>
+<p>With this release of Ext JS, we have worked hard to minimize the impact of changes on 
+existing code, but in some situations this was not completely achievable. This guide walks 
+through the most important changes and their potential impact on updating your Ext JS and 
+Touch applications.</p>
+<h2 id="upgrades_migrations-_-extjs_upgrade_guide_-_packaging">Packaging</h2>
+<p>Incorporating the components from Sencha Touch required reorganizing the framework sources 
+around a new concept we&#39;ve called a &quot;toolkit&quot;. The toolkit houses the visual layer of the 
+framework and sits above the core. All of these pieces use Sencha Cmd packages to contain 
+their JavaScript and theme code and other related resources.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_distribution">Distribution</h3>
+<p>The ZIP file produced had to be reorganized around these three (3) compartments: classic, 
+modern and common.</p>
+<p><img src="images/distribution.png" alt="image alt text"></p>
+<p>The build and examples folders are similar:</p>
+<p><img src="images/build.png" alt="image alt text">            </p>
+<p><img src="images/examples.png" alt="image alt text"></p>
+<p>The &quot;ext-all.js&quot; family of files is still present in the &quot;build&quot; folder. The &quot;ext-modern.js&quot; 
+family is equivalent to &quot;sencha-touch.js&quot; files but now based on the common core package.</p>
+<p>The &quot;kitchensink&quot; example is what we call a <strong>Universal Application</strong> - a single app 
+(web page) that has both classic and modern <strong>Build Profiles</strong>.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_package-names">Package Names</h3>
+<p>The &quot;ext-&quot; and &quot;sencha-&quot; prefixes for various packages have been removed. These were 
+originally used to differentiate between Sencha Touch, Ext JS, and common but now they are 
+all Ext JS. This means &quot;sencha-charts&quot; is now just &quot;charts&quot;. This will mostly be seen in 
+the names of Theme packages (&quot;ext-theme-neptune&quot; is now simply &quot;theme-neptune&quot;).</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_ext-ux-namespace">Ext.ux Namespace</h3>
+<p>Starting with Ext 6, the &quot;Ext.ux.*&quot; family of code has moved to the &quot;ux&quot; package. Prior to 
+this, these sources were automatically included into the Ext JS source tree when generating 
+a Sencha Cmd application.</p>
+<p>This means that, if an app is using code from the <code>Ext.ux</code> namespace, it will now need to add 
+the &quot;ux&quot; package to the Sencha Cmd generated <code>app.json</code> to resolve the code references.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_legacy-ext-charts">Legacy ext-charts</h3>
+<p>We have dropped the legacy &quot;ext-charts&quot; package from Ext JS 6. Anyone using &quot;ext-charts&quot; 
+will need to refactor their application to use the &quot;charts&quot; package 
+(formerly &quot;sencha-charts&quot; in Ext JS 5). To use the &quot;charts&quot; package, add &quot;charts&quot; to the 
+<code>requires</code> block in the Sencha Cmd generated <code>app.json</code>.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_legacy-accessibility-package">Legacy accessibility package</h3>
+<p>We have moved Accessibility and WAI-ARIA support to the core framework and dropped the
+legacy &quot;ext-aria&quot; package from Ext JS 6. Anyone using &quot;ext-aria&quot; will need to remove it
+from the <code>requires</code> block in the Sencha Cmd generated <code>app.json</code>.</p>
+<h2 id="upgrades_migrations-_-extjs_upgrade_guide_-_accessibility">Accessibility</h2>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_button">Button</h3>
+<p>Ext JS supports the <code>menu</code> config on the Button instances as well as other ways of 
+interaction with Buttons. Having both <code>menu</code> and a <code>handler</code>, or <code>href</code>, on a Button is 
+not compliant with WAI-ARIA 1.0 recommendations. The Button constructor will now check 
+for non-compliant Button configurations and issue a console error or warning when found.</p>
+<p>To disable the checks, set the <code>Ext.enableAriaButtons</code> property to <code>false</code> in your 
+<code>app.js</code>.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_split-button">Split button</h3>
+<h4 id="upgrades_migrations-_-extjs_upgrade_guide_-_two-tab-stops">Two tab stops</h4>
+<p>Split buttons are now rendered with an extra element that receives a <code>tabindex</code> 
+attribute to support keyboard interaction. Pressing the TAB key will move focus to the 
+Split  button&#39;s main element first, and next TAB key press will move focus to the arrow 
+element.</p>
+<p>Pressing the SPACE or ENTER key while the arrow element is focused will call the 
+<code>arrowHandler</code> method if present, as well as fire the <code>arrowclick</code> event. Pressing the 
+DOWN key will open the Split button menu if present.</p>
+<h4 id="upgrades_migrations-_-extjs_upgrade_guide_-_arrowhandler">arrowHandler</h4>
+<p>Ext JS historically supported assigning the <code>arrowHandler</code> config or <code>arrowclick</code> event 
+listener to a Split button instance, to be activated via pointer interaction. It is 
+possible to have both <code>menu</code> and <code>arrowHandler</code>.  Setting both results in confusing user 
+interaction when the arrow element is clicked or activated via keyboard.  This behavior 
+is also non-compliant with WAI-ARIA 1.0.</p>
+<p>The Split button constructor will now check for non-compliant configurations and issue a 
+console error or warning when found.</p>
+<p>To disable the checks, set the <code>Ext.enableAriaButtons</code> property to <code>false</code> in your 
+<code>app.js</code>.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_cycle-button">Cycle button</h3>
+<p>Cycle button widgets are not compliant with WAI-ARIA 1.0 requirements. It is not recommended
+to use these widgets if your application needs to support accessibility.</p>
+<p>The Cycle button constructor will now issue a console error or warning when a Cycle 
+button instance is created.</p>
+<p>To disable the checks, set the <code>Ext.enableAriaButtons</code> property to <code>false</code> in your 
+<code>app.js</code>.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_toolbar">Toolbar</h3>
+<p>In Ext JS, 5 Toolbar containers implemented WAI-ARIA 1.0 compliant behavior with regards 
+to keyboard navigation: pressing the TAB key will move focus into the toolbar and focus 
+the last visited item, and subsequent TAB key presses will move focus out of the Toolbar 
+to the next tabbable element. Pressing arrow keys while a Toolbar item is focused will 
+move focus among the Toolbar items.</p>
+<p>This behavior proved to be suboptimal when a Toolbar contains components that consume
+arrow key events, like form fields and Sliders.</p>
+<p>Starting with Ext JS 6, Toolbars will disable WAI-ARIA compliant behavior when at least one
+such Component is added. Every item in such Toolbar will participate in tab order.</p>
+<p>This behavior is not configurable.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_fieldset">FieldSet</h3>
+<p>Starting with Ext JS 6.0, FieldSets support collapsing and expanding via keyboard. The 
+collapse tool or checkbox will participate in tab order and react to SPACE and ENTER 
+keys by firing the corresponding action.</p>
+<p>Use the <code>descriptionText</code> and <code>expandText</code> config options to control the announcements 
+made by Assistive Technologies such as screen readers.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_window">Window</h3>
+<p>Starting with Ext JS 6.0, Window widgets will prevent focus from escaping the window. 
+Pressing the TAB key on the last tabbable element within a Window will move focus to the 
+first tabbable element, and vice versa. This is in accordance with WAI-ARIA 1.0 
+requirements.</p>
+<p>To turn off focus trapping, set the <code>tabGuard</code> config to <code>false</code> on the Window instance.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_panel">Panel</h3>
+<p>Starting with Ext JS 6.0, Panel header tools will participate in tab order and behave 
+like Buttons in a Toolbar.</p>
+<p>This behavior is not configurable.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_ext-img">Ext.Img</h3>
+<p>Ext.Img instances will now check for an <code>alt</code> config and issue a warning when it is 
+missing.  This is in accordance with WAI-ARIA 1.0 requirements.</p>
+<p>This behavior is not configurable.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_automatic-aria-regions">Automatic ARIA regions</h3>
+<p>Panel instances participating in a border layout will be assigned <code>ariaRole: ”region”</code> 
+automatically if <code>ariaRole</code> is not configured explicitly.</p>
+<h4 id="upgrades_migrations-_-extjs_upgrade_guide_-_aria-regions-should-have-a-title">ARIA regions should have a title</h4>
+<p>Panel instances have <code>ariaRole: “region”</code>, including automatically configured ones as 
+described above, are now checked to have the <code>title</code> property. This is in accordance 
+with WAI-ARIA 1.0 requirements for region elements to have a title element. A console 
+warning will be issued when creating a Panel with <code>ariaRole: &quot;region&quot;</code> but no configured 
+<code>title</code> property.</p>
+<p>To disable the checks, set the <code>Ext.enableAriaPanels</code> property to <code>false</code> in your 
+<code>app.js</code>.</p>
+<h4 id="upgrades_migrations-_-extjs_upgrade_guide_-_dynamic-aria-regions-in-border-layout-are-not-yet-supported">Dynamic ARIA regions in border layout are not yet supported</h4>
+<p>Border layout will set <code>ariaRole: &quot;region&quot;</code> on a component that has a region property
+on it. However if that component has already been rendered, ARIA attributes may not
+apply correctly.</p>
+<p>Most often this can happen with containers and panels that have <code>ariaRole: &quot;presentation&quot;</code>
+by default.</p>
+<p>To avoid this problem, configure border region components declaratively, or add them
+to the border container before they are rendered.</p>
+<h2 id="upgrades_migrations-_-extjs_upgrade_guide_-_charts">Charts</h2>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_events-">Events.</h3>
+<p>Chart&#39;s &#39;itemhighlight&#39; event listener signature has changed to include the chart itself as the first parameter.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_renderers-">Renderers.</h3>
+<p>The axis renderer first parameter is now the axis itself. This will <em>break</em> all code that uses axis renderers.</p>
+<p>Series tooltip renderer function signature has changed to include the tooltip itself as the first parameter.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_polar-series-">Polar series.</h3>
+<p>Polar series &#39;angleField&#39; and &#39;radiusField&#39; configs have replaced &#39;field&#39;/&#39;xField&#39; and &#39;lengthField&#39;/&#39;yField&#39; configs, respectively.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_ext-chart-markerholder">Ext.chart.MarkerHolder</h3>
+<p>The &#39;getBoundMarker&#39; method is now deprecated. Please use the &#39;getMarker&#39; method instead.</p>
+<p>The &#39;bindMarker&#39; method behavior has changed. Only a single marker can be bound under a 
+given name.  Subsequent calls to the method will override the marker under the given 
+name, instead of adding it to the list of markers under this name.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_ext-draw-sprite-text-improvements-">Ext.draw.sprite.Text improvements.</h3>
+<p>The font shorthand (&#39;font&#39; attribute of the Text sprite) is now parsed according to this spec:
+<a href="http://www.w3.org/TR/CSS21/fonts.html#font-shorthand">http://www.w3.org/TR/CSS21/fonts.html#font-shorthand</a></p>
+<p>Previously the parsing was not always correct. The text in your charts and drawings may look different now.</p>
+<p>The preferred order of font properties in the font shorthand is:
+fontStyle, fontVariant, fontWeight, fontSize, fontFamily.
+E.g.: <code>italic small-caps 900 x-large/110% &#39;Helvetica Neue&#39;</code></p>
+<p>The line height value has no meaning (as drawings have no hierarchy) and is ignored.
+For example, the above shorthand is the same as this one:
+<code>italic small-caps 900 x-large &#39;Helvetica Neue&#39;</code></p>
+<p>The <code>setAttributes</code> method of the Text sprite will now discard individual font 
+properties if both they and the font shorthand were provided.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_improvements-to-theming-of-text-elements-in-charts-">Improvements to theming of text elements in charts.</h3>
+<p>The above change to the <code>setAttributes</code> method of the Text sprite makes theming in 
+charts and in general more reliable.</p>
+<blockquote>
+<p><strong>Background:</strong></p>
+<p>Font shorthand is what determines the look of the text in a Text sprite (that&#39;s what&#39;s used for the Canvas context &#39;font&#39; property or the &#39;font&#39; style of the SVG &#39;text&#39; element by the renderers) . Each time you set individual font attributes, font shorthand is compiled from that. Each time you set the font shorthand, it is parsed into individual attributes. In both cases the sprite is updated.</p>
+<p><strong>Example:</strong></p>
+<p>A user provides a config for chart series labels (which are Text sprites), using the 
+font shorthand.  The shorthand is parsed into individual font properties and 
+corresponding sprite attributes are set. Then a theme is applied to the chart, and 
+individual font properties from the theme make up the new font shorthand.  That 
+overrides the previous user-defined font value. In other words, no matter what font the 
+user has specified, the theme font will be used.</p>
+<p>However, because the theme not only applies its values on top of user configs, but 
+merges with them (<em>where same properties of the user config take over theme values</em>), 
+both user specified font shorthand and individual font properties from the theme will be 
+in the resulting config of a label and the latter will be discarded by the label.</p>
+</blockquote>
+<p>As a result, font shorthands should <em>not</em> be used in themes.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_for-users-coming-from-sencha-touch-charts-">For users coming from Sencha Touch Charts.</h3>
+<p>Axis <code>transformed</code> event has been renamed to <code>visiblerangechange</code>.</p>
+<p>The <code>animation</code> config of the chart has replaced the <code>animate</code> config.</p>
+<p>The <code>innerPadding</code> config of polar charts should always be a number now.</p>
+<p>Custom sprites (chart&#39;s <code>sprites</code> config) no longer go into the &#39;overlay&#39; surface of the 
+chart, but the &#39;chart&#39; surface.</p>
+<p>The <code>rect</code> config of the Surface replaced the <code>region</code> config.</p>
+<p>The <code>customDurations</code> config of the Animation modifier replaces the <code>customDuration</code> 
+config.</p>
+<p>Signatures of various renderers have changed. Please refer to the documentation.</p>
+<h3 id="upgrades_migrations-_-extjs_upgrade_guide_-_other-notes-">Other notes.</h3>
+<p>Your code might break if it accidentally adds the same sprite or a sprite with the same 
+ID to a surface twice.  You also might get some unexpected behavior on chart 
+destruction, since some elements that didn&#39;t destroy properly previously now do.</p>
+<h2 id="upgrades_migrations-_-extjs_upgrade_guide_-_misc-api-changes">Misc API changes</h2>
+<ul>
+<li><p><strong>Ext.container.Container</strong></p>
+<ul>
+<li><code>doLayout</code> method has been removed. Use <code>updateLayout</code> instead.</li>
+<li><code>items</code> and <code>floatingItems</code> collections are destroyed and nulled during
+Container instance destruction. Trying to access these properties after the
+container has been destroyed will result in exception.</li>
+</ul>
+</li>
+<li><p><strong>Ext.panel.Panel</strong></p>
+<ul>
+<li><code>dockedItems</code> collection is destroyed and nulled during Panel instance destruction.
+Trying to access <code>dockedItems</code> on an already destroyed Panel will result in 
+exception.</li>
+</ul>
+</li>
+<li><p><strong>Ext.app.ViewController</strong></p>
+<ul>
+<li><code>fireViewEvent</code> will automatically insert the view as the first event parameter if
+it is not already present as the first parameter. This ensures that such events are
+consistent with normal view events.</li>
+</ul>
+</li>
+<li><p><strong>Ext.layout.container.Table</strong></p>
+<ul>
+<li><code>cellId</code> config has been removed. Use <code>cellCls</code> to provide styling.</li>
+</ul>
+</li>
+<li><p><strong>Ext.grid.feature.Summary</strong>, <strong>Ext.grid.feature.Grouping</strong></p>
+<ul>
+<li>Summary and Grouping features have been refactored not to depend on <code>rawData</code>
+property in Reader instances. This allowed setting the <code>keepRawData</code> config to
+<code>false</code> by default in <code>Ext.data.reader.Reader</code>.</li>
+</ul>
+</li>
+<li><p><strong>Ext.data.reader.Reader</strong></p>
+<ul>
+<li><code>rawData</code> property on the Reader instance is no longer retained by default.
+Use <code>keepRawData</code> config option to control this behavior if you need to process
+<code>rawData</code>; better yet, consider using <code>transform</code> option to process the data.
+Using <code>rawData</code> property may lead to memory leaks, especially with XML readers
+in Internet Explorer.</li>
+</ul>
+</li>
+<li><p><strong>Ext.data.writer.Json</strong></p>
+<ul>
+<li><code>getExpandedData</code> method has been removed. Override <code>writeRecords</code> to provide any 
+further customization.</li>
+</ul>
+</li>
+<li><p><strong>Ext.mixin.Observable</strong></p>
+<ul>
+<li><code>addListener</code> and <code>removeListener</code> no longer support an array of events.</li>
+</ul>
+</li>
+<li><p><strong>Ext.FocusManager</strong></p>
+<ul>
+<li>Legacy <code>Ext.FocusManager</code> has been removed from the framework.</li>
+</ul>
+</li>
+<li><p><strong>Ext.EventObject</strong></p>
+<ul>
+<li><p><code>Ext.EventObject</code> singleton has been removed in Ext JS 6. For compatibility
+with existing codebase we assign the current instance of <code>Ext.event.Event</code> to
+<code>Ext.EventObject</code> only during event propagation, and remove <code>Ext.EventObject</code>
+reference at the end of firing sequence to avoid potential for memory leaks.</p>
+</li>
+<li><p>Legacy code that uses <code>Ext.EventObject</code> key code properties will need to be
+changed to referencing similar properties in <code>Ext.event.Event</code>.</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Ext.view.AbstractView</strong></p>
+<ul>
+<li>The signature of the <code>itemremove</code> event has been made consistent with how
+<code>Ext.view.AbstractView#onRemove</code> fires it. Now the event is fired once for 
+every <em>block</em> of items removed, and the removed items are passed in an array.
+Before there were a few cases where the event was fired separately for every
+item removed.</li>
+</ul>
+</li>
+<li><p><strong>Ext.panel.Table</strong></p>
+<ul>
+<li><p>The <code>CellEditing</code> plugin, when used in a locked grid, no longer clones and
+adds a copy to both sub grids in the assembly. The instance you configure into
+the grid is the sole <code>CellEditing</code> instance and manages both grids. Navigation
+now takes place across the locking boundary.</p>
+</li>
+<li><p>It is no longer valid to configure <code>CellEditing</code> plugins on the subgrid
+configurations <code>lockedGridConfig</code> and <code>normalGridConfig</code>.</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Ext.direct.Manager</strong></p>
+<ul>
+<li><code>loadProvider</code> method was improved in maintenance release 6.0.1 to align
+better with the Ext Direct specification and other documentation. Note that
+this change was not present in 6.0.0. See also Release Notes for 6.0.1.</li>
+</ul>
+</li>
+</ul>
+</div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_introduction">Introduction</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_packaging">Packaging</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_distribution">Distribution</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_package-names">Package Names</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_ext-ux-namespace">Ext.ux Namespace</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_legacy-ext-charts">Legacy ext-charts</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_legacy-accessibility-package">Legacy accessibility package</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_accessibility">Accessibility</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_button">Button</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_split-button">Split button</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_two-tab-stops">Two tab stops</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_arrowhandler">arrowHandler</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_cycle-button">Cycle button</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_toolbar">Toolbar</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_fieldset">FieldSet</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_window">Window</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_panel">Panel</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_ext-img">Ext.Img</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_automatic-aria-regions">Automatic ARIA regions</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_aria-regions-should-have-a-title">ARIA regions should have a title</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_dynamic-aria-regions-in-border-layout-are-not-yet-supported">Dynamic ARIA regions in border layout are not yet supported</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_charts">Charts</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_events-">Events.</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_renderers-">Renderers.</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_polar-series-">Polar series.</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_ext-chart-markerholder">Ext.chart.MarkerHolder</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_ext-draw-sprite-text-improvements-">Ext.draw.sprite.Text improvements.</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_improvements-to-theming-of-text-elements-in-charts-">Improvements to theming of text elements in charts.</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_for-users-coming-from-sencha-touch-charts-">For users coming from Sencha Touch Charts.</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_other-notes-">Other notes.</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-extjs_upgrade_guide_-_misc-api-changes">Misc API changes</a></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<html>
+<head>
+    <title>Widgets and Widget Columns</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Widgets and the Widget Column</p>
+<p>The [[ext:Ext.Widget]] class, or just <strong>&quot;widget&quot;</strong>, is a lightweight class similar to
+[[ext:Ext.Component Component]], but consists solely of an [[ext:Ext.dom.Element]] and 
+associated listeners.  This makes a Widget quite different from a normal Component 
+because the Ext.Widget class does not derive from [[ext:Ext.Component]]. Component 
+provides robust life-cycle management, which adds a tremendous amount of functionality. 
+This functionality, however, comes at some cost.</p>
+<p>We have provided a few stock Widgets with Ext JS 5+.  These include:</p>
+<ul>
+<li><strong>Progress Bar</strong> ([[ext:Ext.ProgressBarWidget]] or &quot;progressbarwidget&quot;)</li>
+<li><strong>Slider</strong> ([[ext:Ext.slider.Widget]] or &quot;sliderwidget&quot;)</li>
+<li><strong>Sparklines</strong> (Ext.sparkline.*)<ul>
+<li>[[ext:Ext.sparkline.Line Line]] (&quot;sparklineline&quot;)</li>
+<li>[[ext:Ext.sparkline.Bar Bar]] (&quot;sparklinebar&quot;)</li>
+<li>[[ext:Ext.sparkline.Discrete Discrete]] (&quot;sparklinediscrete&quot;)</li>
+<li>[[ext:Ext.sparkline.Bullet Bullet]] (&quot;sparklinebullet&quot;)</li>
+<li>[[ext:Ext.sparkline.Pie Pie]] (&quot;sparklinepie&quot;)</li>
+<li>[[ext:Ext.sparkline.Box Box]] (&quot;sparklinebox&quot;)</li>
+<li>[[ext:Ext.sparkline.TriState TriState]] (&quot;sparklinetristate&quot;)</li>
+</ul>
+</li>
+</ul>
+<p>In this guide we will cover how to use and create Widgets. We will also explore our 
+newest creation, the Widget Column.</p>
+<p>##Using Widgets</p>
+<p>As with normal Components, Widgets can be added to the 
+[[ext:Ext.container.Container#cfg-items items]] of a Container. For example, we can add 
+a Sparkline to a [[ext:Ext.toolbar.Toolbar toolbar]]:</p>
+<pre><code>@example
+var panel = Ext.create({
+    xtype: &#39;panel&#39;,
+    title: &#39;Title&#39;,
+    frame: true,
+    renderTo: document.body,
+    width: 250, 
+    height: 150,
+    html: &#39;Some text&#39;,
+    tbar: [{
+        text: &#39;Button&#39;
+    }, &#39;-&gt;&#39;, {
+        xtype: &#39;sparklineline&#39;,
+        fillColor: &#39;#ddf&#39;,
+        width: 100,
+        height: 20,
+        values: [2, 3, 0, 4, -1]
+    }]
+});
+</code></pre><p>In the case of Sparklines, you must provide a size (both <code>width</code> and <code>height</code>) or use an 
+Ext JS [[ext:Ext.layout.container.Container layout]] manager to do so. This is because 
+the internal drawings have no natural size.</p>
+<p>##The Widget Column</p>
+<p>One of the more sought after bits of functionality in Ext JS has always been to easily 
+add Components to a [[ext:Ext.grid.Panel Grid]].  If this is something you&#39;ve always 
+wanted to do, then say hello to the [[ext:Ext.grid.column.Widget Widget Column]]!</p>
+<p>Widget Column allows you to easily render any Component or Widget into a Grid cell. 
+Adding a Widget Column couldn&#39;t be easier. Simply assign your column an <code>xtype</code> of 
+<strong>&quot;widgetcolumn&quot;</strong> and specify its [[ext:Ext.grid.column.Widget#cfg-widget widget]] 
+config. The <code>widget</code> config is an object that contains the <strong>xtype</strong> to create for each 
+cell.  This <code>xtype</code> can refer to any [[ext:Ext.Widget]] or [[ext:Ext.Component]] class.</p>
+<p>Using the Widget Column to add Sparkline widgets to a Grid, you can accomplish an 
+impressive amount of data visualization as you can see below.</p>
+<p><img src="images/KS-sparklines.jpeg"/></p>
+<p>For a live example of the above image, please visit the 
+<a href="[Paging Grid](http://dev.sencha.com/ext/5.1.0/examples/kitchensink/#widget-grid">Kitchen Sink</a>).</p>
+<p>Enough talk, let&#39;s see this thing in action.  In the following example, we create a 
+[[ext:Ext.data.Store store]] with a small set of records that populates a Grid with a 
+Widget Column.</p>
+<p>The Widget Column contains a Progress Bar widget, which is added to each row. </p>
+<pre><code>@example
+var store = Ext.create(&#39;Ext.data.Store&#39;, {
+    fields: [&#39;name&#39;,&#39;progress&#39;],
+    data: [
+        { name: &#39;Test 1&#39;, progress: 0.10 },
+        { name: &#39;Test 2&#39;, progress: 0.23 },
+        { name: &#39;Test 3&#39;, progress: 0.86 },
+        { name: &#39;Test 4&#39;, progress: 0.31 }
+    ]
+});
+
+Ext.create({
+    xtype: &#39;grid&#39;,
+    title: &#39;Widget Column Demo&#39;,
+    store: store,
+
+    columns: [{
+        text: &#39;Test Number&#39;,
+        dataIndex: &#39;name&#39;,
+        width: 100
+    }, {
+        xtype: &#39;widgetcolumn&#39;,
+        text: &#39;Progress&#39;,
+        width: 120,
+        dataIndex: &#39;progress&#39;,
+        widget: {
+            xtype: &#39;progressbarwidget&#39;,
+            textTpl: &#39;{value:percent}&#39;
+        }
+    }],
+
+    width: 220,
+    height: 250,
+    renderTo: document.body
+});
+</code></pre><p>###Understanding the &quot;widget&quot; Config
+The <code>widget</code> config of a Widget Column is used to create multiple instances of the 
+Widget.  Based on the <code>xtype</code> contained in the <code>widget</code> config, the Widget Column will 
+create an object that is either derived from [[ext:Ext.Widget]] or from 
+[[ext:Ext.Component]]. This config cannot be an instance already because Widget Column 
+needs one instance per rendered cell.</p>
+<p>While the <code>widget</code> config is used to create multiple instances of the desired Component 
+or Widget, each instance must be connected with a specific record and row in the Grid. 
+Over the lifetime of the Grid, the Widgets created for a row will be &quot;recycled&quot; and 
+connected to different records and rows.</p>
+<p>##Use Buffered Rendering</p>
+<p>Widgets are lighter weight than Components and using the <strong>progressbar</strong> or <strong>slider</strong> 
+Widget can make your Grid more responsive.  But, if the Grid has more than a handful of 
+rows having a Component or Widget per row could make for a slugish rendering and 
+scrolling experience.  Fortunately, the Grid uses 
+[[ext:Ext.grid.Panel#cfg-bufferedRenderer bufferedRendering]] by default.  The 
+[[ext:Ext.grid.plugin.BufferedRenderer bufferedrenderer]] creates a fixed number of 
+Components or Widgets.  Those items are then recycled from un-rendered rows and added to 
+newly created rows.</p>
+<p>##Custom Widgets</p>
+<p>While Ext JS 5 ships with a &quot;widget-ized&quot; version of the Slider and Progressbar as well 
+as the new Sparklines, there will most likely be situations in which you&#39;d like to 
+create your own Widgets. The decision of whether to derive from [[ext:Ext.Component]] vs
+[[ext:Ext.Widget]] really comes down to the complexity of the class being created.<br>Simple componentry can often avoid things like the Component life-cycle and layouts and 
+just map config properties to the associated elements while responding to element 
+events (<em>like &#39;click&#39;, &#39;dblclick&#39;, &#39;mouseover&#39;, etc.</em>).</p>
+<p>To create a Widget you extend [[ext:Ext.Widget]] and define your element template and 
+its [[ext:Ext.Widget#fg-listeners listeners]].</p>
+<pre><code>Ext.define(&#39;MyWidget&#39;, {
+    extend: &#39;Ext.Widget&#39;,
+
+    // The element template - passed to Ext.Element.create()
+    element: {
+        reference: &#39;element&#39;,
+        listeners: {
+            click: &#39;onClick&#39;
+        },
+        children: [{
+            reference: &#39;innerElement&#39;,
+            listeners: {
+                click: &#39;onInnerClick&#39;
+            }
+        }]
+    },
+
+    constructor: function(config) {
+        // Initializes our element from the template, and calls initConfig().
+        this.callParent([config]);
+
+        // After calling the superclass constructor, the Element is available and
+        // can safely be manipulated.  Reference Elements are instances of
+        // Ext.Element, and are cached on each Widget instance by reference name.
+    },
+
+    onClick: function() {
+       // Listeners use this Widget instance as their scope
+        console.log(&#39;element clicked&#39;, this);
+    },
+
+    onInnerClick: function() {
+        // Access the innerElement reference by name
+        console.log(&#39;inner element clicked&#39;, this.innerElement);
+    }
+});
+</code></pre><p>This will feel very familiar to those who have written a Sencha Touch Component. That is
+because [[ext:Ext.Widget]] is an enhanced version of <strong>Ext.AbstractComponent</strong> from 
+Sencha Touch.  The ability to add <code>listeners</code> to the <code>element</code> template is one of those 
+enhancements, but there are a handful of others. Refer to the documentation on 
+[[ext:Ext.Widget]] for more details.</p>
+</div>
+
+</body>
+</html>

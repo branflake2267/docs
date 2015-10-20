@@ -1,0 +1,651 @@
+<html>
+<head>
+    <title>Trees</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><h1 id="components-_-trees_-_trees">Trees</h1>
+<p>The [[ext:Ext.tree.Panel Tree Panel]] Component is one of the most versatile Components 
+in Ext JS and is an excellent tool for displaying hierarchical data in an 
+[[ext:Ext#application application]].  Tree Panel extends from the same class as 
+[[ext:Ext.grid.Panel Grid Panel]], so, most all of the benefits of Grid Panels - 
+features, extensions, and plugins can also be used on Tree Panels. Things like columns, 
+column resizing, dragging and dropping, renderers, sorting and filtering can be 
+expected to work similarly for both components. </p>
+<p>Let&#39;s start by creating a very simple Tree.</p>
+<pre><code>@example
+Ext.create(&#39;Ext.tree.Panel&#39;, {
+    renderTo: document.body,
+    title: &#39;Simple Tree&#39;,
+    width: 300,
+    height: 250,
+    root: {
+        text: &#39;Root&#39;,
+        expanded: true,
+        children: [
+            {
+                text: &#39;Child 1&#39;,
+                leaf: true
+            },
+            {
+                text: &#39;Child 2&#39;,
+                leaf: true
+            },
+            {
+                text: &#39;Child 3&#39;,
+                expanded: true,
+                children: [
+                    {
+                        text: &#39;Grandchild&#39;,
+                        leaf: true
+                    }
+                ]
+            }
+        ]
+    }
+});
+</code></pre><p>This Tree Panel renders itself to the document body.  We defined a root 
+[[ext:Ext.data.NodeInterface node]] that is expanded by default. The root node has three 
+children, the first two of which are leaf nodes which means they cannot have any 
+children.  The third node is not a leaf node and has has one child leaf node.  The 
+<code>text</code> property is used as the node&#39;s text label. </p>
+<p>Internally, a Tree Panel stores its data in a [[ext:Ext.data.TreeStore TreeStore]]. The
+above example uses the [[ext:Ext.tree.Panel#cfg-root root]] config as a shortcut for
+configuring a Store.  If we were to configure the Store separately, the code would look
+something like this:</p>
+<pre><code>var store = Ext.create(&#39;Ext.data.TreeStore&#39;, {
+    root: {
+        text: &#39;Root&#39;,
+        expanded: true,
+        children: [
+            {
+                text: &#39;Child 1&#39;,
+                leaf: true
+            },
+            {
+                text: &#39;Child 2&#39;,
+                leaf: true
+            },
+            ...
+        ]
+    }
+});
+
+Ext.create(&#39;Ext.tree.Panel&#39;, {
+    title: &#39;Simple Tree&#39;,
+    store: store,
+    ...
+});
+</code></pre><h2 id="components-_-trees_-_the-node-interface">The Node Interface</h2>
+<p>In the above examples, we set a couple of different properties on Tree nodes. But what 
+are nodes exactly? As mentioned before, the Tree Panel is bound to a 
+[[ext:Ext.data.TreeStore TreeStore]].  A Store in Ext JS manages a collection of 
+[[ext:Ext.data.Model Model]] instances. Tree nodes are simply Model instances that are 
+decorated with a [[ext:Ext.data.NodeInterface NodeInterface]].  Decorating a Model with 
+a NodeInterface gives the Model the fields, methods, and properties that are required 
+for it to be used in a Tree.  The following is a screenshot that shows the structure of 
+a node in the developer tools.</p>
+<p><img src='images/nodeinterface.png' alt='A model instance decorated with the
+NodeInterface'/></p>
+<p>In order to see the full set of fields, methods, and properties available on nodes, see 
+the API documentation for the [[ext:Ext.data.NodeInterface NodeInterface]] class.</p>
+<h2 id="components-_-trees_-_visually-changing-your-tree">Visually changing your tree</h2>
+<p>Let&#39;s try something simple. When you set the 
+[[ext:Ext.tree.Panel#cfg-useArrows useArrows]] configuration to true, the Tree Panel 
+hides the lines and uses arrows as expand and collapse icons.</p>
+<p><img src='images/arrows.png' alt='Arrows'/></p>
+<p>Setting the [[ext:Ext.tree.Panel#cfg-rootVisible rootVisible]] property to <strong>false</strong> 
+visually removes the root node. By doing this, the root node will automatically be 
+expanded. The following image shows the same tree with <code>rootVisible</code> set to <strong>false</strong> 
+and [[ext:Ext.tree.Panel#cfg-lines lines]] set to false.</p>
+<p><img src='images/root-lines.png' alt='Root not visible and no lines'/></p>
+<h2 id="components-_-trees_-_multiple-columns">Multiple columns</h2>
+<p>Since [[ext:Ext.tree.Panel Tree Panel]] extends from the same base class as
+[[ext:Ext.grid.Panel Grid Panel]] adding more columns is very easy to do.</p>
+<pre><code>@example
+var tree = Ext.create(&#39;Ext.tree.Panel&#39;, {
+    renderTo: document.body,
+    title: &#39;TreeGrid&#39;,
+    width: 300,
+    height: 150,
+    fields: [&#39;name&#39;, &#39;description&#39;],
+    columns: [{
+        xtype: &#39;treecolumn&#39;,
+        text: &#39;Name&#39;,
+        dataIndex: &#39;name&#39;,
+        width: 150,
+        sortable: true
+    }, {
+        text: &#39;Description&#39;,
+        dataIndex: &#39;description&#39;,
+        flex: 1,
+        sortable: true
+    }],
+    root: {
+        name: &#39;Root&#39;,
+        description: &#39;Root description&#39;,
+        expanded: true,
+        children: [{
+            name: &#39;Child 1&#39;,
+            description: &#39;Description 1&#39;,
+            leaf: true
+        }, {
+            name: &#39;Child 2&#39;,
+            description: &#39;Description 2&#39;,
+            leaf: true
+        }]
+    }
+});
+</code></pre><p>The [[ext:Ext.tree.Panel#cfg-columns columns]] configuration expects an array of
+[[ext:Ext.grid.column.Column]] configurations just like a 
+[[ext:Ext.grid.Panel Grid Panel]] would have.  The only difference is that a Tree Panel
+requires at least one Column with an <code>xtype</code> of &#39;treecolumn&#39;.  This type of column has 
+tree-specific visual effects like depth, lines, and expand and collapse icons. A typical 
+Tree Panel would have only one &#39;treecolumn&#39;.</p>
+<p>The <code>fields</code> configuration is passed on to the [[ext:Ext.data.Model]] that the
+internally created Store uses. Notice how the 
+[[ext:Ext.grid.column.Column#cfg-dataIndex dataIndex]] configurations on the columns map 
+to the fields we specified - <strong>name</strong> and <strong>description</strong>.</p>
+<p>It is also worth noting that when columns are not defined, the Tree will automatically
+create one single <code>treecolumn</code> with a <code>dataIndex</code> set to <strong>&#39;text&#39;</strong>. It also hides the 
+headers on the Tree. To show this header when using only a single column set the 
+<code>hideHeaders</code> configuration to <strong>false</strong>.</p>
+<h2 id="components-_-trees_-_adding-nodes-to-the-tree">Adding nodes to the tree</h2>
+<p>The root node for the Tree Panel does not have to be specified in the initial
+configuration.  We can always add it later:</p>
+<pre><code>var tree = Ext.create(&#39;Ext.tree.Panel&#39;);
+tree.setRootNode({
+    text: &#39;Root&#39;,
+    expanded: true,
+    children: [{
+        text: &#39;Child 1&#39;,
+        leaf: true
+    }, {
+        text: &#39;Child 2&#39;,
+        leaf: true
+    }]
+});
+</code></pre><p>Although this is useful for very small Trees with only a few static nodes, most Tree
+Panels will contain many more nodes. So let&#39;s take a look at how we can programmatically
+add new nodes to the Tree.</p>
+<pre><code>var root = tree.getRootNode();
+
+var parent = root.appendChild({
+    text: &#39;Parent 1&#39;
+});
+
+parent.appendChild({
+    text: &#39;Child 3&#39;,
+    leaf: true
+});
+
+parent.expand();
+</code></pre><p>Every node that is not a leaf node has an 
+[[ext:Ext.data.NodeInterface#method-appendChild appendChild]] method which accepts a 
+Node, or a config object for a Node, as its first parameter and returns the Node that 
+was appended. The above example also calls the
+[[ext:Ext.data.NodeInterface#method-expand expand]] method to expand the newly created
+parent.</p>
+<p><img src='images/append-children.png' alt='Appending to the tree'/></p>
+<p>Also useful is the ability to define children inline when creating the new parent nodes.
+The following code gives us the same result.</p>
+<pre><code>var parent = root.appendChild({
+    text: &#39;Parent 1&#39;,
+    expanded: true,
+    children: [{
+        text: &#39;Child 3&#39;,
+        leaf: true
+    }]
+});
+</code></pre><p>Sometimes we want to insert a node into a specific location in the Tree instead of
+appending it. Besides the <code>appendChild</code> method, [[ext:Ext.data.NodeInterface]] also
+provides [[ext:Ext.data.NodeInterface#insertBefore insertBefore]] and
+[[ext:Ext.data.NodeInterface#insertChild insertChild]] methods.</p>
+<pre><code>var child = parent.insertChild(0, {
+    text: &#39;Child 2.5&#39;,
+    leaf: true
+});
+
+parent.insertBefore({
+    text: &#39;Child 2.75&#39;,
+    leaf: true
+}, child.nextSibling);
+</code></pre><p>The <code>insertChild</code> method expects an index at which the child will be inserted. The
+<code>insertBefore</code> method expects a reference node. The new node will be inserted before the
+reference node.</p>
+<p><img src='images/insert-children.png' alt='Inserting children into the tree'/></p>
+<p>NodeInterface also provides several more properties on nodes that can be used to 
+reference other nodes.</p>
+<ul>
+<li>[[ext:Ext.data.NodeInterface#nextSibling nextSibling]]</li>
+<li>[[ext:Ext.data.NodeInterface#previousSibling previousSibling]]</li>
+<li>[[ext:Ext.data.NodeInterface#parentNode parentNode]]</li>
+<li>[[ext:Ext.data.NodeInterface#lastChild lastChild]]</li>
+<li>[[ext:Ext.data.NodeInterface#firstChild firstChild]]</li>
+<li>[[ext:Ext.data.NodeInterface#childNodes childNodes]]</li>
+</ul>
+<h2 id="components-_-trees_-_loading-and-saving-tree-data-using-a-proxy">Loading and Saving Tree Data using a Proxy</h2>
+<p>Loading and saving Tree data is somewhat more complex than dealing with flat data 
+because of all the fields that are required to represent the hierarchical structure of 
+the Tree.  This section will explain the intricacies of working with Tree data.</p>
+<h3 id="components-_-trees_-_nodeinterface-fields">NodeInterface Fields</h3>
+<p>The first and most important thing to understand when working with Tree data is how the
+[[ext:Ext.data.NodeInterface NodeInterface]] class&#39; fields work.  Every node in a Tree 
+is simply a [[ext:Ext.data.Model Model]] instance decorated with the NodeInterface&#39;s 
+fields and methods.  Assume for a moment that an application has a Model called 
+<strong>&quot;Person&quot;</strong>.  A Person only has two fields - <strong>&quot;id&quot;</strong> and <strong>&quot;name&quot;</strong>:</p>
+<pre><code>Ext.define(&#39;Person&#39;, {
+    extend: &#39;Ext.data.Model&#39;,
+    fields: [&#39;id&#39;, {
+        name: &#39;name&#39;,
+        type: &#39;string&#39;
+    }]
+});
+</code></pre><p>At this point, <strong>&quot;Person&quot;</strong> is just a plain vanilla Model.  If an instance is created, 
+it can easily be verified that it only has two fields by looking at its <code>fields</code> array:</p>
+<pre><code>var rec = Ext.create(&#39;Person&#39;);
+
+console.log(rec.getFields().length); // outputs &#39;2&#39;
+</code></pre><p>When the Person model is used in a TreeStore, something interesting happens.  Notice the
+field count now:</p>
+<pre><code>var store = Ext.create(&#39;Ext.data.TreeStore&#39;, {
+    model: &#39;Person&#39;,
+    root: {
+        name: &#39;Phil&#39;
+    }
+});
+
+console.log(store.getRoot().getFields().length); // outputs &#39;27&#39;
+</code></pre><p>The Person model&#39;s prototype got 25 extra fields added to it just by using it in a
+TreeStore.  All of these extra fields are defined on the 
+[[ext:Ext.data.NodeInterface NodeInterface]] class and are added to the Model&#39;s 
+prototype the first time an instance of that Model is used in a TreeStore 
+(<em>by setting it as the root node</em>).</p>
+<p>So what exactly are these 25 extra fields, and what do they do?  A quick look at the
+NodeInterface source code reveals that it decorates the Model with the following fields.
+These fields are used internally to store information relating to the tree&#39;s structure 
+and state:</p>
+<pre><code>{
+    name: &#39;parentId&#39;,
+    type: idType,
+    defaultValue: null,
+    useNull: idField.useNull
+}, {
+    name: &#39;index&#39;,
+    type: &#39;int&#39;,
+    defaultValue: -1,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;depth&#39;,
+    type: &#39;int&#39;,
+    defaultValue: 0,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;expanded&#39;,
+    type: &#39;bool&#39;,
+    defaultValue: false,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;expandable&#39;,
+    type: &#39;bool&#39;,
+    defaultValue: true,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;checked&#39;,
+    type: &#39;auto&#39;,
+    defaultValue: null,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;leaf&#39;,
+    type: &#39;bool&#39;,
+    defaultValue: false
+}, {
+    name: &#39;cls&#39;,
+    type: &#39;string&#39;,
+    defaultValue: &#39;&#39;,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;iconCls&#39;,
+    type: &#39;string&#39;,
+    defaultValue: &#39;&#39;,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;icon&#39;,
+    type: &#39;string&#39;,
+    defaultValue: &#39;&#39;,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;root&#39;,
+    type: &#39;boolean&#39;,
+    defaultValue: false,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;isLast&#39;,
+    type: &#39;boolean&#39;,
+    defaultValue: false,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;isFirst&#39;,
+    type: &#39;boolean&#39;,
+    defaultValue: false,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;allowDrop&#39;,
+    type: &#39;boolean&#39;,
+    defaultValue: true,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;allowDrag&#39;,
+    type: &#39;boolean&#39;,
+    defaultValue: true,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;loaded&#39;,
+    type: &#39;boolean&#39;,
+    defaultValue: false,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;loading&#39;,
+    type: &#39;boolean&#39;,
+    defaultValue: false,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;href&#39;,
+    type: &#39;string&#39;,
+    defaultValue: &#39;&#39;,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;hrefTarget&#39;,
+    type: &#39;string&#39;,
+    defaultValue: &#39;&#39;,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;qtip&#39;,
+    type: &#39;string&#39;,
+    defaultValue: &#39;&#39;,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;qtitle&#39;,
+    type: &#39;string&#39;,
+    defaultValue: &#39;&#39;,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;qshowDelay&#39;,
+    type: &#39;int&#39;,
+    defaultValue: 0,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;children&#39;,
+    type: &#39;auto&#39;,
+    defaultValue: null,
+    persist: false,
+    convert: null
+}, {
+    name: &#39;visible&#39;,
+    type: &#39;boolean&#39;,
+    defaultValue: true,
+    persist: false,
+}, {
+    name: &#39;text&#39;,
+    type: &#39;string&#39;,
+    persist: &#39;false
+}
+</code></pre><h4 id="components-_-trees_-_nodeinterface-fields-are-reserved-names">NodeInterface Fields are Reserved Names</h4>
+<p>It is important to note that all of the above field names should be treated as 
+&quot;reserved&quot; names.  For example, it is not allowed to have a field called &quot;parentId&quot;
+in a Model if that Model is intended to be used in a Tree, since the Model&#39;s field will
+override the NodeInterface field.  The exception to this rule is when there is a 
+legitimate need to override the persistence of a field.</p>
+<h4 id="components-_-trees_-_persistent-fields-vs-non-persistent-fields-and-overriding-the-persistence-of-fields">Persistent Fields vs Non-persistent Fields and Overriding the Persistence of Fields</h4>
+<p>Most of NodeInterface&#39;s fields default to <code>persist: false</code>.  This means they are
+non-persistent fields by default.  Non-persistent fields will not be saved via the Proxy 
+when calling the TreeStore&#39;s <code>sync</code> method or calling <code>save()</code> on the Model.  In most 
+cases, the majority of these fields can be left at their default persistence setting, 
+but there are cases where it is necessary to override the persistence of some fields.<br>The following example demonstrates how to override the <code>persistence</code> of a 
+NodeInterface field.  When overriding a NodeInterface field it is important to only 
+change the <code>persist</code> property.  The <code>name</code>, <code>type</code>, and <code>defaultValue</code> properties 
+should never be changed.</p>
+<pre><code>    // overriding the persistence of NodeInterface fields in a Model definition
+    Ext.define(&#39;Person&#39;, {
+        extend: &#39;Ext.data.Model&#39;,
+        fields: [
+            // Person fields
+            { name: &#39;id&#39;, type: &#39;int&#39; },
+            { name: &#39;name&#39;, type: &#39;string&#39; }
+
+            // override a non-persistent NodeInterface field to make it persistent
+            { name: &#39;iconCls&#39;, type: &#39;string&#39;,  defaultValue: null, persist: true },
+
+            // Make the index persistent, so that when reordering nodes, syncing to the server
+            // passes the new index as well as the parentId.
+            // (Note that if moved to the same index in a different parent, the index will
+still be sent in order to fully describe the operation)
+            { name: &#39;index&#39;, type: &#39;int&#39;, defaultValue: -1, persist: true}
+        ]
+    });
+</code></pre><p>Let&#39;s take a more in-depth look at each NodeInterface field and the scenarios in which it
+might be necessary to  override its <code>persist</code> property.  In each example below, it is 
+assumed that a [[ext:Ext.data.proxy.Server Server Proxy]] is being used unless otherwise 
+noted.</p>
+<p>Persistent by default:</p>
+<ul>
+<li><code>parentId</code> - used to store the id of a node&#39;s parent node.  This field should always 
+be persistent and should not be overridden.</li>
+<li><code>leaf</code> - used to indicate that the node is a leaf node and therefore cannot have
+children appended to it.  This field should not normally need to be overridden.</li>
+</ul>
+<p>Non-persistent by default:</p>
+<ul>
+<li><p><code>index</code> - used to store the order of nodes within their parent. When a node is
+[[ext:Ext.data.NodeInterface#insertBefore inserted]] or
+[[ext:Ext.data.NodeInterface#removeChild removed]], all of its sibling nodes after 
+the insertion or removal point will have their indexes updated.  If desired, the 
+application can use this field to persist the ordering of nodes.</p>
+<p>However, if the server uses a different method of storing order, it may be more 
+appropriate to leave the index field as non-persistent. When using a
+[[ext:Ext.data.proxy.WebStorage WebStorage Proxy]] if storing order is required, 
+this field must be overridden to be persistent.</p>
+<p>Also if client-side [[ext:Ext.data.TreeStore#method-sort sorting]] is being used it 
+is recommended for the <code>index</code> field to be left as non-persistent, since sorting 
+updates the indexes of all the sorted nodes, which would cause them to be persisted
+on next sync or save if the <code>persist</code> property is <strong>true</strong>.</p>
+</li>
+<li><p><code>depth</code> - used to store the depth of a node in the Tree hierarchy.  Override this 
+field to turn on persistence if the server needs to store the depth field.  When 
+using a [[ext:Ext.data.proxy.WebStorage WebStorage Proxy]] it is recommended to not
+override the persistence of the <code>depth</code> field since it is not needed to properly 
+store the Tree structure and will just take up extra space.</p>
+</li>
+<li><code>checked</code> - this field should be overridden to be persistent if the Tree is using 
+the <a href="http://dev.sencha.com/extjs/5.1.0/examples/kitchensink/#check-tree">checkbox feature</a></li>
+<li><code>expanded</code> - used to store the expanded/collapsed state of a node.  This field 
+should not normally need to be overridden.</li>
+<li><code>expandable</code> - used internally to indicate that this node is expandable.  Do not
+override the persistence of this field.</li>
+<li><code>cls</code> - used to apply a CSS class to the node when it is rendered in a TreePanel.
+Override this field to be persistent if desired.</li>
+<li><code>iconCls</code> - used to apply a css class to the node&#39;s icon when it is rendered in a
+TreePanel.  Override this field to be persistent if desired.</li>
+<li><code>icon</code> - used to apply a custom icon to the node node when it is rendered in a
+TreePanel.  Override this field to be persistent if desired.</li>
+<li><code>root</code> - used to indicate that this node is the root node.  This field should not be 
+overridden.</li>
+<li><code>isLast</code> - used to indicate that this node is the last of its siblings. This field
+should not normally need to be overridden.</li>
+<li><code>isFirst</code> - used to indicate that this node is the first of its siblings. This field
+should not normally need to be overridden.</li>
+<li><code>allowDrop</code> - used internally to deny dropping on the node.  Do not override the
+persistence of this field.</li>
+<li><code>allowDrag</code> - used internally to deny dragging the node.  Do not override the
+persistence of this field.</li>
+<li><code>loaded</code> - used internally to indicate that the node&#39;s children have been loaded.<br>Do not override the persistence of this field.</li>
+<li><code>loading</code> - used internally to indicate that the proxy is in the process of loading 
+the node&#39;s children. Do not override the persistence of this field.</li>
+<li><code>href</code> - used to specify a url that the node should be a link to.  Override to be
+persistent if desired.</li>
+<li><code>hrefTarget</code> - used to specify the target for the <code>href</code>.  Override to be persistent 
+if desired.</li>
+<li><code>qtip</code> - used to add a [[ext:Ext.tip.QuickTip tooltip]] text to the node.  Override 
+to be persistent if desired.</li>
+<li><code>qtitle</code> - used to specify the title for the <code>tooltip</code>.  Override to be persistent 
+if desired.</li>
+<li><code>children</code> - used internally when loading a node and its children all in one 
+request.  Do not override the persistence of this field.</li>
+</ul>
+<h3 id="components-_-trees_-_loading-data">Loading Data</h3>
+<p>There are two ways to load Tree data.  The first is to for the proxy to fetch the entire
+Tree all at once.  For larger Trees where loading everything at once is not ideal, it 
+may be preferable to use the second method - dynamically loading the children for each 
+node when it is expanded.</p>
+<h4 id="components-_-trees_-_loading-the-entire-tree">Loading the Entire Tree</h4>
+<p>Internally, the Tree only loads data in response to a node being expanded.  However the
+entire hierarchy can be loaded if the proxy retrieves a nested object containing the 
+whole Tree structure.  To accomplish this, initialize the TreeStore&#39;s root node to 
+<code>expanded</code>:</p>
+<pre><code>Ext.define(&#39;Person&#39;, {
+    extend: &#39;Ext.data.Model&#39;,
+    fields: [
+        { name: &#39;id&#39;, type: &#39;int&#39; },
+        { name: &#39;name&#39;, type: &#39;string&#39; }
+    ],
+    proxy: {
+        type: &#39;ajax&#39;,
+        api: {
+            create: &#39;createPersons&#39;,
+            read: &#39;readPersons&#39;,
+            update: &#39;updatePersons&#39;,
+            destroy: &#39;destroyPersons&#39;
+        }
+    }
+
+});
+
+var store = Ext.create(&#39;Ext.data.TreeStore&#39;, {
+    model: &#39;Person&#39;,
+    root: {
+        name: &#39;People&#39;,
+        expanded: true
+    }
+});
+
+Ext.create(&#39;Ext.tree.Panel&#39;, {
+    renderTo: document.body,
+    width: 300,
+    height: 200,
+    title: &#39;People&#39;,
+    store: store,
+    columns: [{
+        xtype: &#39;treecolumn&#39;, 
+        header: &#39;Name&#39;, 
+        dataIndex: &#39;name&#39;, 
+        flex: 1
+    }]
+});
+</code></pre><p>Assume that the <code>readPersons</code> url returns the following json object</p>
+<pre><code>{
+    &quot;success&quot;: true,
+    &quot;children&quot;: [
+        { &quot;id&quot;: 1, &quot;name&quot;: &quot;Phil&quot;, &quot;leaf&quot;: true },
+        { &quot;id&quot;: 2, &quot;name&quot;: &quot;Nico&quot;, &quot;expanded&quot;: true, &quot;children&quot;: [
+            { &quot;id&quot;: 3, &quot;name&quot;: &quot;Mitchell&quot;, &quot;leaf&quot;: true }
+        ]},
+        { &quot;id&quot;: 4, &quot;name&quot;: &quot;Sue&quot;, &quot;loaded&quot;: true }
+    ]
+}
+</code></pre><p>That&#39;s all that&#39;s needed to load the entire tree.</p>
+<p><img src='images/tree-bulk-load.png' alt='Tree with Bulk Loaded Data'/></p>
+<p>Important items to note:</p>
+<ul>
+<li>For all non-leaf nodes that do not have children (for example, Person with name Sue
+above), the server response MUST set the <code>loaded</code> property to <code>true</code>.  Otherwise the 
+proxy will attempt to load children for these nodes when they are expanded.</li>
+<li>The question then arises - if the server is allowed to set the <code>loaded</code> property on a
+node in the JSON response can it set any of the other non-persistent fields?
+The answer is yes - sometimes.  In the example above, the node with name &quot;Nico&quot; has its
+<code>expanded</code> field set to <code>true</code> so that it will be initially displayed as expanded in the 
+Tree Panel.  Caution should be exercised as there are cases where this is not
+appropriate and could cause serious problems, like setting the <code>root</code> property on a node 
+that is not the root node for example.  In general, <code>loaded</code> and <code>expanded</code> are the
+only cases where it is recommended for the server to set a non-persistent field in the 
+JSON response.</li>
+</ul>
+<h4 id="components-_-trees_-_dynamically-loading-children-when-a-node-is-expanded">Dynamically Loading Children When a Node is Expanded</h4>
+<p>For larger Trees it may be desirable to only load parts of the tree by loading child 
+nodes only when their parent node is expanded.  Suppose in the above example, that the 
+node with name &quot;Sue&quot; does not have its <code>loaded</code> field set to <code>true</code> by the server 
+response.  The Tree would display an expander icon next to the node.  When the node is 
+expanded, the proxy will make another request to the <code>readPersons</code> url that looks 
+something like this:</p>
+<pre><code>/readPersons?node=4
+</code></pre><p>This tells the server to retrieve the child nodes for the node with an <code>id</code> of 4.  The 
+data should be returned in the same format as the data that was used to load the root 
+node:</p>
+<pre><code>{
+    &quot;success&quot;: true,
+    &quot;children&quot;: [
+        { &quot;id&quot;: 5, &quot;name&quot;: &quot;Evan&quot;, &quot;leaf&quot;: true }
+    ]
+}
+</code></pre><p>Now the Tree looks something like this:</p>
+<p><img src='images/tree-dynamic-load.png' alt='Tree with Dynamically Loaded Node'/></p>
+<h3 id="components-_-trees_-_saving-data">Saving Data</h3>
+<p>Creating, updating, and deleting nodes is handled automatically and seamlessly by the
+Proxy.</p>
+<h4 id="components-_-trees_-_creating-a-new-node">Creating a New Node</h4>
+<pre><code>// Create a new node and append it to the tree:
+var newPerson = Ext.create(&#39;Person&#39;, { name: &#39;Nige&#39;, leaf: true });
+store.getNodeById(2).appendChild(newPerson);
+</code></pre><p>Since the proxy is defined directly on the Model, the Model&#39;s [[ext:Ext.data.Model#save
+save()]] method can be used to persist the data:</p>
+<pre><code>newPerson.save();
+</code></pre><h4 id="components-_-trees_-_updating-an-existing-node">Updating an Existing Node</h4>
+<pre><code>store.getNodeById(1).set(&#39;name&#39;, &#39;Philip&#39;);
+</code></pre><h4 id="components-_-trees_-_removing-a-node">Removing a Node</h4>
+<pre><code>store.getRootNode().lastChild.remove();
+</code></pre><h4 id="components-_-trees_-_bulk-operations">Bulk Operations</h4>
+<p>After creating, updating, and removing several nodes, they can all be persisted in one
+operation by calling the TreeStore&#39;s [[ext:Ext.data.TreeStore#sync sync()]] method:</p>
+<pre><code>store.sync();
+</code></pre></div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#components-_-trees_-_the-node-interface">The Node Interface</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_visually-changing-your-tree">Visually changing your tree</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_multiple-columns">Multiple columns</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_adding-nodes-to-the-tree">Adding nodes to the tree</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_loading-and-saving-tree-data-using-a-proxy">Loading and Saving Tree Data using a Proxy</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_nodeinterface-fields">NodeInterface Fields</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_nodeinterface-fields-are-reserved-names">NodeInterface Fields are Reserved Names</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_persistent-fields-vs-non-persistent-fields-and-overriding-the-persistence-of-fields">Persistent Fields vs Non-persistent Fields and Overriding the Persistence of Fields</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_loading-data">Loading Data</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_loading-the-entire-tree">Loading the Entire Tree</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_dynamically-loading-children-when-a-node-is-expanded">Dynamically Loading Children When a Node is Expanded</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_saving-data">Saving Data</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_creating-a-new-node">Creating a New Node</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_updating-an-existing-node">Updating an Existing Node</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_removing-a-node">Removing a Node</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_bulk-operations">Bulk Operations</a></div>
+    </div>
+</body>
+</html>

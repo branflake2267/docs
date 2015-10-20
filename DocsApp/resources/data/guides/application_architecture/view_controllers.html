@@ -1,0 +1,306 @@
+<html>
+<head>
+    <title>View Controllers</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#ViewControllers in Ext JS</p>
+<p>Ext JS delivers some exciting improvements for you to use in your application 
+architecture. We have added support for ViewModels and MVVM as well as ViewControllers 
+to enhance MVC applications. Best of all, these choices are not mutually exclusive, so 
+you can introduce these features incrementally or even blend them.</p>
+<p>##Application-level Controllers
+A Controller is a class derived from [[ext:Ext.app.Controller]]. These Controllers use 
+CSS-like selectors (called “Component Queries”) to match components and respond to their 
+events. They also use “refs” to select and retrieve component instances.</p>
+<p>These controllers are created at application launch and remain present for the life of 
+the application. During its lifetime, views of interest to a controller will come and go. 
+There may even be multiple instances of views that the controller manages.</p>
+<p>###Challenges
+For large applications, these techniques can create certain challenges.</p>
+<p>In such environments, views and controllers may be authored by multiple development 
+teams and integrated into the final application. Ensuring that controllers only react to 
+their intended views can be difficult. Further, it is common for developers to want to 
+limit the number of controllers created at application launch. While lazily creating 
+controllers is possible with some effort, they can’t be destroyed, so they remain even 
+if they are no longer needed.</p>
+<p>##ViewControllers
+While Ext JS 5+ is backwards compatible with legacy application-level controllers, it 
+introduces a new type of controller designed to handle these challenges: 
+[[ext:Ext.app.ViewController]]. ViewController does this in the following ways:</p>
+<ul>
+<li>Simplifies the connection to views using “listeners” and “reference” configs.</li>
+<li>Leverages the life cycle of views to automatically manage their associated 
+ViewController.</li>
+<li>Reduces complexity in the ViewController based on a one-to-one relationship with the 
+managed view.</li>
+<li>Provides encapsulation to make nesting views reliable.</li>
+<li>Retains the ability to select components and listen to their events at any level below 
+the associated view.</li>
+</ul>
+<p>###Listeners
+For the purposes of ViewControllers, we can look at just two examples. The first is a 
+basic use of a listeners config on a child item in a view:</p>
+<pre><code>Ext.define(&#39;MyApp.view.foo.Foo&#39;, {
+    extend: &#39;Ext.panel.Panel&#39;,
+    xtype: &#39;foo&#39;,
+    controller: &#39;foo&#39;,
+
+    items: [{
+        xtype: &#39;textfield&#39;,
+        fieldLabel: &#39;Bar&#39;,
+        listeners: {
+            change: &#39;onBarChange&#39;  // no scope given here
+        }
+    }]
+});
+
+Ext.define(&#39;MyApp.view.foo.FooController&#39;, {
+    extend: &#39;Ext.app.ViewController&#39;,
+    alias: &#39;controller.foo&#39;,
+
+    onBarChange: function (barTextField) {
+        // called by &#39;change&#39; event
+    }
+});
+</code></pre><p>The above use of listeners shows a named event handler (<code>onBarChange</code>) with no specified 
+“scope”. Internally, the event system resolves the default scope for the Bar textfield 
+to its owning ViewController.</p>
+<p>Historically, the listeners config was reserved for use by a component’s creator, so how 
+would a view listen to its own events, or perhaps those fired by its base class? The 
+answer is that we need to use an explicit scope:</p>
+<pre><code>Ext.define(&#39;MyApp.view.foo.Foo&#39;, {
+    extend: &#39;Ext.panel.Panel&#39;,
+    xtype: &#39;foo&#39;,
+    controller: &#39;foo&#39;,
+
+    listeners: {
+        collapse: &#39;onCollapse&#39;,
+        scope: &#39;controller&#39;
+    },
+
+    items: [{
+        ...
+    }]
+});
+</code></pre><p>The above example leverages two new features in Ext JS: named scopes and declarative 
+listeners. We’ll focus on the named scope here. There are two valid values for named 
+scope: “this” and “controller”. When writing MVC applications, we almost always use 
+“controller” which has the obvious result of looking on that view’s ViewController (not 
+the ViewController of the view that created the instance).</p>
+<p>Since a view is a type of [[ext:Ext.Component]], we have assigned this view an “xtype” 
+which enables other views to create an instance of our view in the same way this view 
+created its textfield. To see how this comes together, consider a view that uses this 
+one. For example:</p>
+<pre><code>Ext.define(&#39;MyApp.view.bar.Bar&#39;, {
+    extend: &#39;Ext.panel.Panel&#39;,
+    xtype: &#39;bar&#39;,
+    controller: &#39;bar&#39;,
+
+    items: [{
+        xtype: &#39;foo&#39;,
+        listeners: {
+            collapse: &#39;onCollapse&#39;
+        }
+    }]
+});
+</code></pre><p>In this case, the Bar view is creating an instance of the Foo view as one of its items. 
+Further, it is listening to the collapse event just like the Foo view. The listeners 
+declared by the Foo view will fire on Foo’s ViewController while the listeners declared 
+in the Bar view will fire on Bar’s ViewController.</p>
+<p>###Reference
+One of the most common loose ends when writing controller logic is getting ahold of the 
+necessary components to complete a particular action. Something as simple as:</p>
+<pre><code>Ext.define(&#39;MyApp.view.foo.Foo&#39;, {
+    extend: &#39;Ext.panel.Panel&#39;,
+    xtype: &#39;foo&#39;,
+    controller: &#39;foo&#39;,
+
+    tbar: [{
+        xtype: &#39;button&#39;,
+        text: &#39;Add&#39;,
+        handler: &#39;onAdd&#39;
+    }],
+
+    items: [{
+        xtype: &#39;grid&#39;,
+        ...
+    }]
+});
+
+Ext.define(&#39;MyApp.view.foo.FooController&#39;, {
+    extend: &#39;Ext.app.ViewController&#39;,
+    alias: &#39;controller.foo&#39;,
+
+    onAdd: function () {
+        // ... get the grid and add a record ...
+    }
+});
+</code></pre><p>But how should one acquire the grid component? All techniques require you to place some 
+recognizable property on the grid to allow it to be uniquely identified. Older 
+techniques used the “id” config (and [[ext:Ext.getCmp]]) or the “itemId” config (using 
+“refs” or some component query method). The advantage of “id” is fast lookup, but since 
+these identifiers must be unique across the entire application and the DOM as well, this 
+is not often desirable. Using “itemId” and some form of query is more flexible, but it’s 
+necessary to perform a search to find the desired component.</p>
+<p>Using the <code>reference</code> config, we simply add the “reference” to the grid and use 
+<code>lookupReference</code> to get at it:</p>
+<pre><code>Ext.define(&#39;MyApp.view.foo.Foo&#39;, {
+    extend: &#39;Ext.panel.Panel&#39;,
+    xtype: &#39;foo&#39;,
+    controller: &#39;foo&#39;,
+
+    tbar: [{
+        xtype: &#39;button&#39;,
+        text: &#39;Add&#39;,
+        handler: &#39;onAdd&#39;
+    }],
+
+    items: [{
+        xtype: &#39;grid&#39;,
+        reference: &#39;fooGrid&#39;
+        ...
+    }]
+});
+
+Ext.define(&#39;MyApp.view.foo.FooController&#39;, {
+    extend: &#39;Ext.app.ViewController&#39;,
+    alias: &#39;controller.foo&#39;,
+
+    onAdd: function () {
+        var grid = this.lookupReference(&#39;fooGrid&#39;);
+    }
+});
+</code></pre><p>This is similar to assigning an itemId of “fooGrid” and doing: “this.down(‘#fooGrid’)”. 
+The difference under the hood, however, is quite significant. First, a reference config 
+instructs the component to register itself with its owning view (identified by the 
+presence of a ViewController in this case). Second, the <code>lookupReference</code> method simply 
+consults the cache to see if references need to be refreshed (say due to add or remove 
+on a container). If all is well, it just returns the reference from the cache. Or, 
+in pseudo-code:</p>
+<pre><code>lookupReference: (reference) {
+    var cache = this.references;
+    if (!cache) {
+        Ext.fixReferences(); // fix all references
+        cache = this.references; // now the cache is valid
+    }
+    return cache[reference];
+}
+</code></pre><p>In other words, there is no search and the linkages damaged by adding or removing items 
+from containers are fixed in one go, when they are needed. As we will see below, this 
+approach has benefits other than efficiency.</p>
+<p>###Encapsulation
+The use of selectors along with the controller <code>refs</code> config was very flexible, but at 
+the same time had certain risks. The fact that these selectors “see” everything at all 
+levels of the component hierarchy is both powerful and prone to mistakes. For example, a 
+controller could be working 100% when it runs in isolation but then fails as soon as 
+other views are introduced because its selectors have undesired matches with the new 
+view.</p>
+<p>These problems can be managed by following certain practices, but when using listeners 
+and references with a ViewController these problems are simply not possible. This is 
+because the listeners and reference configs connect only with their owning 
+ViewController. Views are free to chose any reference value that is unique within that 
+view knowing that these names will not be exposed to the view’s creator.</p>
+<p>Likewise, listeners are resolved on their owning ViewController and cannot be 
+accidentally dispatched to event handlers in other controllers with errant selectors. 
+While listeners are often preferable to selectors, the two mechanisms play well together 
+for those situations where a selector-based approach is desired.</p>
+<p>To complete this model, views need to fire events that can be consumed by their owning 
+view’s ViewController. There is a helper method in ViewController for this purpose: 
+<code>fireViewEvent</code>. For example:</p>
+<pre><code>Ext.define(&#39;MyApp.view.foo.FooController&#39;, {
+    extend: &#39;Ext.app.ViewController&#39;,
+    alias: &#39;controller.foo&#39;,
+
+    onAdd: function () {
+        var record = new MyApp.model.Thing();
+        var grid = this.lookupReference(&#39;fooGrid&#39;);
+        grid.store.add(record);
+
+        this.fireViewEvent(&#39;addrecord&#39;, this, record);
+    }
+});
+</code></pre><p>This enables the standard form of listener for the creator of this view:</p>
+<pre><code>Ext.define(&#39;MyApp.view.bar.Bar&#39;, {
+    extend: &#39;Ext.panel.Panel&#39;,
+    xtype: &#39;bar&#39;,
+    controller: &#39;bar&#39;,
+
+    items: [{
+        xtype: &#39;foo&#39;,
+        listeners: {
+            collapse: &#39;onCollapse&#39;,
+            addrecord: &#39;onAddRecord&#39;
+        }
+    }]
+});
+</code></pre><p>###Listeners and Event Domains</p>
+<p>In Ext JS 4.2, the MVC event dispatcher was generalized with the introduction of event 
+domains. These event domains intercepted events as they were fired and dispatched them 
+to controllers controlled by selector matching. The “component” event domain had full 
+component query selectors while the other domains had more limited selectors.</p>
+<p>With Ext JS 5+, each ViewController creates an instance of a new type of event domain 
+called the “view” event domain. This event domain allows ViewControllers to use the 
+standard <code>listen</code> and <code>control</code> methods while limiting their scope implicitly to their 
+view. It also adds a special selector to match the view itself:</p>
+<pre><code>Ext.define(&#39;MyApp.view.foo.FooController&#39;, {
+    extend: &#39;Ext.app.ViewController&#39;,
+    alias: &#39;controller.foo&#39;,
+
+    control: {
+        &#39;#&#39;: {  // matches the view itself
+            collapse: &#39;onCollapse&#39;
+        },
+        button: {
+            click: &#39;onAnyButtonClick&#39;
+        }
+    }
+});
+</code></pre><p>The key difference between listeners and selectors can be seen above. The “button” 
+selector will match any button in this view or any child view, irrespective of depth, 
+even if that button belongs to a great-grandchild view. In other words, selector-based 
+handlers do not respect encapsulation boundaries. This behavior is consistent with 
+previous [[ext:Ext.app.Controller]] behavior and can be a useful technique in limited 
+situations.</p>
+<p>Lastly, these event domains respect nesting and effectively “bubble” an event up the 
+view hierarchy. That is to say, when an event fires, it’s first delivered to any 
+standard listeners. Then, it’s delivered to its owning ViewController, followed by its 
+parent ViewController (if any) on up the hierarchy. Eventually, the event is delivered 
+to the standard “component” event domain to be handled by Ext.app.Controller-derived 
+controllers.</p>
+<p>###Life cycle
+A common technique with large applications is to dynamically create controllers when 
+they are first needed. This could help reduce the load time of the application and help 
+runtime performance as well by not activating all potential controllers. The limitation 
+to this in previous versions was that, once created, these controllers would remain 
+active in the application. It was not possible to destroy them and release their 
+resources. Likewise, this did not change the reality that a controller could have any 
+number of associated views (including none).</p>
+<p>The ViewController, however, is created very early in the component’s lifecycle and is 
+bound to that view for its entire lifetime. When that view is destroyed, the 
+ViewController is likewise destroyed. This means that the ViewController is no longer 
+forced to manage states where there is no view or many views.</p>
+<p>This one-to-one relationship means reference tracking is simplified and no longer prone 
+to leaking destroyed components. A ViewController can implement any of these methods to 
+perform tasks at key points in its lifecycle:</p>
+<ul>
+<li>beforeInit - This method can be overridden in order to operate on the view prior to 
+its initComponent method being called. This method is called immediately after the 
+controller is created, which occurs during initConfig called from the Component 
+constructor.</li>
+<li>init - Called shortly after initComponent has been called on the view. This is the 
+typical time to perform initialization for the controller now that the view is 
+initialized.</li>
+<li>initViewModel - Called when the view’s ViewModel is created (if one is defined).</li>
+<li>destroy - Cleanup and return resources (be sure to call <code>callParent</code>).</li>
+</ul>
+<p>##Conclusion
+We think ViewControllers will greatly streamline your MVC applications. They also work 
+very well with ViewModels, so you can combine these approaches and their respective 
+strengths. We’re excited about the upcoming release and seeing these improvements at 
+work in your applications.</p>
+</div>
+
+</body>
+</html>

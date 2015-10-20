@@ -6,8 +6,8 @@ Ext.define('DocsApp.view.main.MainController', {
         '!:type:id' : {
             action     : 'goToView',
             conditions : {
-                ':type' : '(?:(?:\/){1}([a-z]+))?',
-                ':id'   : '(?:(?:\/){1}([a-z]+))?'
+                ':type' : '(?:(?:\/){1}([a-z-_]+))?',
+                ':id'   : '(?:(?:\/){1}([a-z-_]+))?'
             }
         }
     },
@@ -100,9 +100,9 @@ Ext.define('DocsApp.view.main.MainController', {
     },
 
     showMainAppView: function () {
-        var mainCt = this.getView().lookupReference('mainapp-container');
+        /*var mainCt = this.getView().lookupReference('mainapp-container');
         this.getView().lookupReference('mainapp-view').unmask();
-        mainCt.setActiveItem(1);
+        mainCt.setActiveItem(1);*/
     },
 
     onProductEnter: function (view, rec, rowEl) {

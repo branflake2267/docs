@@ -1,0 +1,208 @@
+<html>
+<head>
+    <title>Ext JS 6 - Pivot Grid Upgrade Guide</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Pivot Grid Upgrade Guide</p>
+<p>##Package Structure</p>
+<p>The <code>mzPivotGrid</code> and <code>mzPivotMatrix</code> packages have been merged into a single package called 
+<code>pivot</code>. The resulting structure looks like this:</p>
+<p><img src="images/pivot_structure.png" alt="PivotGrid File Structure"></p>
+<p>##Package Inclusion
+If you used the <code>mzPivotGrid</code> package in your MVC app, you will need to change your 
+<code>requires</code> block in the Sencha Cmd generated <code>app.json</code> file. Previously, it was named 
+<code>mzPivotGrid</code>. It should be updated to <code>pivot</code> and the <code>exporter</code> package should also be copied
+to the app packages folder since it is required by <code>pivot</code>.</p>
+<p>##Build Files
+If you used the built version of <code>mzPivotGrid</code>, be sure to change all paths to point towards 
+the compiled file in the package&#39;s build directory. </p>
+<p>For instance:</p>
+<pre><code> pivot/build/pivot{-debug}.js
+</code></pre><p>You will also need to utilize the appropriate CSS file that can also be found in the build 
+directory&#39;s theme folders.</p>
+<pre><code> pivot/build/{theme}/resources/pivot-{flavor}.js
+</code></pre><p>##Updated Namespace
+Several classes have been changed: </p>
+<ul>
+<li>Mz namespace has been moved to the Ext namespace.</li>
+<li>Mz.aggregate.<em> have been moved to Ext.pivot.</em>.</li>
+<li>All Abstract classes have been renamed to Base.</li>
+<li>Mz.pivot.plugin.ExcelExport is now Ext.pivot.plugin.Exporter and its ptype is <code>exporter</code>.</li>
+<li>Mz.pivot.dataexport.* have been dropped and the Excel classes are now part of the <code>exporter</code> package.</li>
+<li>Mz.pivot.plugin.drilldown.* have been dropped.</li>
+<li>All Sass variables for the pivot package have been reworked and are now prefixed with <code>pivot-grid</code>.</li>
+<li>Ext.pivot.MixedCollection and all Ext.pivot.plugin.configurator.* classes are now private.</li>
+<li>All plugins have new ptypes prefixed with <code>pivot</code>: <code>pivotconfigurator</code>, <code>pivotdrilldown</code>, <code>pivotrangeeditor</code> and <code>pivotexporter</code></li>
+</ul>
+<p>##Updated Configs
+The pivot grid component used to have <code>mzpivotgrid</code> as xtype which is now <code>pivotgrid</code>. <code>mzpivotgrid</code> 
+is still available but will be dropped in future versions.</p>
+<p>All Abstract (Base) classes have been changed to use factoriable configs. Ext.Factory is used
+now internally to instantiate objects instead of Ext.createByAlias. Previously the <code>mztype</code> config
+was used to identify the class that needed to be instantiated. Since version 6 you should use
+<code>type</code> instead of <code>mztype</code>.</p>
+<p>For instance:</p>
+<pre><code> {
+      xtype: &#39;mzpivotgrid&#39;,
+      matrixConfig: {
+           mztype: &#39;local&#39;,
+           store: &#39;storeId&#39;
+      },
+      //...
+ }
+</code></pre><p>Should be replaced with:</p>
+<pre><code> {
+      xtype: &#39;pivotgrid&#39;,
+      matrixConfig: {
+           type: &#39;local&#39;,
+           store: &#39;storeId&#39;
+      },
+      //...
+ }
+</code></pre><p>Since <code>mztype</code> is now <code>type</code>, the old <code>type</code> config in Ext.pivot.filter.Base became <code>operator</code>.
+All constants defined in the Base filter class were dropped and literals should
+be used to set the <code>operator</code>.</p>
+<p>For instance:</p>
+<pre><code> topAxis: [{
+      dataIndex:     &#39;year&#39;,
+      header:        &#39;Year&#39;,
+      filter: {
+           mztype:   &#39;label&#39;,
+           type:     Mz.aggregate.filter.Abstract.TypeBetween
+           from:     2010,
+           to:       2012
+      }
+ }]
+</code></pre><p>Should be replaced with:</p>
+<pre><code> topAxis: [{
+      dataIndex:     &#39;year&#39;,
+      header:        &#39;Year&#39;,
+      filter: {
+           type:     &#39;label&#39;,
+           operator: &#39;between&#39;,
+           value:    [2010, 2012]
+      }
+ }]
+</code></pre><p>Please take a look at the Ext.pivot.filter.* classes to see what other operators are available.</p>
+<p>##Remote calculations
+Matrix configs <code>keysSeparator</code> and <code>grandTotalKey</code> are sent to the server together
+will all configured dimensions and should be used on the server when the JSON response
+is generated.</p>
+<p>##Localization</p>
+<p><img src="images/pivot-locale_structure.png" alt="image alt text"></p>
+<p>All pivot grid locales have been moved to the <code>pivot-locale</code> package.</p>
+<p>##Export to Excel plugin
+This plugin has been refactored. The Mz.pivot.plugin.ExcelExport class has been renamed to
+Ext.pivot.plugin.Exporter which has now the <code>ptype: &quot;pivotexporter&quot;</code>.</p>
+<p>For instance:</p>
+<pre><code> {
+      xtype: &#39;mzpivotgrid&#39;,
+      plugins: [{
+           ptype: &#39;mzexcelexport&#39;,
+           pluginId: &#39;excel&#39;,
+           title: &#39;Excel export&#39;
+      }]
+ }
+
+ //somewhere on a button you might have something like this
+ var xml = grid.getPlugin(&#39;excel&#39;).getExcelData(true, true);
+ // and the xml content was either sent to the server or saved in the browser somehow
+</code></pre><p>Should be replaced with:</p>
+<pre><code> {
+      xtype: &#39;pivotgrid&#39;,
+      plugins: [{
+           ptype: &#39;pivotexporter&#39;
+      }]
+ }
+
+ // somewhere on a button you may have something like this
+ grid.saveDocumentAs({
+      type: &#39;excel&#39;,
+      title: &#39;Excel export&#39;,
+      onlyExpandedNodes: true, // that&#39;s the equivalent of the first param in the old getExcelData function
+      showSummary: false, // that&#39;s the equivalent of the 2nd param in the old getExcelData function
+      fileName: &#39;export.xml&#39;
+ });
+
+ // saveDocumentAs will try to save the file in the browser. If your browser is not supported then do this
+ var xml = grid.getDocumentData({
+       type: &#39;excel&#39;,
+       title: &#39;Excel export&#39;,
+       onlyExpandedNodes: true, // that&#39;s the equivalent of the first param in the old getExcelData function
+       showSummary: false // that&#39;s the equivalent of the 2nd param in the old getExcelData function
+  });
+ // and probably send the xml content to the server
+</code></pre><p>As you can see above the <code>pivotexporter</code> plugin adds two new methods to the pivot grid component. These methods
+accept a config object as parameter. </p>
+<p>A bunch of configs were available on the old plugin which allowed you to style the Excel output. These configs 
+do not exist anymore on the plugin level, instead a new set of configs can be passed to the <code>saveDocumentAs</code> 
+or <code>getDocumentData</code> methods. Reason is that you could implement your own Exporter class that extends
+Ext.exporter.Base which can have its own set of configs.</p>
+<p>Here is an example of how to map the old configs to the new Excel Exporter class.</p>
+<pre><code> grid.saveDocumentAs({
+      type: &#39;excel&#39;,
+      title: &#39;Excel export&#39;, // previously set on the plugin itself
+      defaultStyle: {
+           font: {
+                FontName: &#39;Calibri&#39;,     // previously known as `cellFontName`
+                Size: 11,                // previously known as `cellFontSize`
+                Family: &#39;Swiss&#39;,
+                Color: &#39;#000000&#39;
+           },
+           interior: {
+                Color: &#39;#ffffff&#39;         // previously known as `cellFillColor`
+           },
+           borders: [{
+                Position: &#39;Top&#39;,
+                Color: &#39;red&#39;             // previously known as `cellBorderColor`
+           }]
+      },
+
+      titleStyle: {
+           name: &#39;Title&#39;,
+           font: {
+                Size: 11                 // previously known as `titleFontSize`
+           },
+           interior: {
+                Color: &#39;#ffffff&#39;         // previously known as `titleFillColor`
+           }
+      },
+
+      tableHeaderStyle: {
+           name: &#39;Heading 1&#39;,
+           font: {
+                Size: 11                 // previously known as `headerFontSize`
+           },
+           interior: {
+                Color: &#39;#ffffff&#39;         // previously known as `headerFillColor`
+           }
+      },
+
+      groupHeaderStyle: {
+           name: &#39;Group header&#39;,
+           font: {
+                Size: 11                 // previously known as `groupHeaderFontSize`
+           },
+           interior: {
+                Color: &#39;#ffffff&#39;         // previously known as `groupHeaderFillColor`
+           }
+      },
+
+      groupFooterStyle: {
+           name: &#39;Group header&#39;,
+           font: {
+                Size: 11                 // previously known as `groupFooterFontSize`
+           },
+           interior: {
+                Color: &#39;#ffffff&#39;         // previously known as `groupFooterFillColor`
+           }
+      }
+ });
+</code></pre><p>In this new approach various other styling can be applied to the exported document. Check out
+the Ext.exporter.file.excel.Style class for more styling options.</p>
+</div>
+
+</body>
+</html>

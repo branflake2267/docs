@@ -3,8 +3,10 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
     xtype: 'mainapp-nav-guides-container',
 
     requires: [
-        'DocsApp.view.mainApp.nav.guides.GuidesVavModel'
+        'DocsApp.view.mainApp.nav.guides.ContainerController'
     ],
+
+    controller: 'docsapp-mainapp-nav-guides-container',
 
     viewModel: {
         type: 'nav-guides'
@@ -57,10 +59,11 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
         }
     }, {
         xtype: 'treepanel',
+        reference: 'topicalGuideTree',
         title: 'Topical View',
         rootVisible: false,
         hideHeaders: true,
-        bind: '{topical}',
+        store: 'guide.Topical',
         columns: [
             {
                 xtype: 'treecolumn',
@@ -74,7 +77,8 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
             }
         ],
         tbar: ['->', {
-            text: 'Expand All'
+            text: 'Expand All',
+            handler: 'expandAll'
         }]
     }, {
         title: 'Favorites'

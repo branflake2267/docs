@@ -1,0 +1,522 @@
+<html>
+<head>
+    <title>Introduction to Charting</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><h1 id="components-_-introduction_to_charting_-_introduction-to-charting">Introduction to Charting</h1>
+<p>The Chart package consists of a hierarchy of classes that provide data visualization 
+functionality. These include series, axes, interactions, and mechanisms for implementing 
+markers and legends. This guide provides an overview on how these classes are tied 
+together and what functionality is included in each class. The following sections cover 
+the specific axes, series, and interactions.</p>
+<p>##Installing Sencha Charts</p>
+<p>Sencha Charts are not included in the Ext JS library by default.  In order to include
+the charts package, simply add <strong>&quot;charts&quot;</strong> (<strong>&quot;sencha-charts&quot;</strong> if working with Ext JS 
+5.x) to the requires block in your Sencha Cmd generated application&#39;s 
+<code>{appRoot}/app.json</code> file.  Adding a package name to the requires array directs Cmd to 
+make the package available to your application.</p>
+<p>After making the inclusion, ensure that your application has been rebuilt.  Applications 
+may be rebuilt by manually issuing the following command:</p>
+<pre><code>sencha app build
+</code></pre><p>You may also activate &quot;app watch&quot;:</p>
+<pre><code>sencha app watch
+</code></pre><p>Sencha app watch monitors your application&#39;s assets and rebuilds when it detects change.</p>
+<p><strong>Note:</strong> For more information on generating and building apps with Sencha Cmd see the 
+<a href="../../../cmd/5.x/intro_to_cmd.html">Intro to Cmd guide</a>.</p>
+<p>##Using Sencha Charts without Sencha Cmd
+If you want to use charts, but do not want to use Sencha Cmd, you may simply add the 
+following inclusions to your app&#39;s index.html page.</p>
+<pre><code>// in Ext JS 5.x
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;{SDKLocation}/build/packages/sencha-charts/build/sencha-charts.js&quot;&gt;&lt;/script&gt;
+&lt;link type=&quot;text/css&quot; href=&quot;{SDKLocation}/build/packages/sencha-charts/build/{themeName}/resources/sencha-charts-all.css&quot;&gt;
+
+
+// in Ext JS 6.x
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;{SDKLocation}/build/packages/charts/{toolkitName}/charts.js&quot;&gt;&lt;/script&gt;
+&lt;link type=&quot;text/css&quot; href=&quot;{SDKLocation}/build/packages/charts/{toolkitName}/{themeName}/resources/charts-all.css&quot;&gt;
+</code></pre><p>##The Chart Component Class</p>
+<p>All types of Chart components are extended from the AbstractChart class, which extends 
+[[ext:Ext.draw.Container]]. A Chart component is the container for managing series and
+axes. It is responsible for laying out the series and axes every time the size is 
+changed.  An implementation of the abstract class must override the <code>performLayout</code> 
+method. For example, a Chart needs to respond to the changes of the thickness of the 
+axes and recalculate the series area.</p>
+<p>There are three types of charts:</p>
+<ul>
+<li><strong>cartesian/chart</strong> - Creates a Chart for series implementations that plot values 
+  using cartesian coordinates.  Examples of this include Bar, Area, Scatter, and Line 
+  charts.</li>
+<li><strong>polar</strong> - Creates a chart for series implementations that plot values using polar 
+  coordinates.  Examples of this include Pie and Radial charts.</li>
+<li><strong>spacefilling</strong> - Creates a chart that fills the entire area of the chart.</li>
+</ul>
+<p>The <strong>&quot;ext-charts&quot;</strong> package (<em>the legacy charts package from 4.x - available in 5.x and 
+retired with 6.x</em>) tried to automatically determine the Chart type by evaluating the 
+series type.  This allowed users to simply set the [[ext:Ext.Class#cfg-xtype xtype]] to 
+<strong>&#39;chart&#39;</strong>. However, <strong>&quot;sencha-charts&quot;</strong> (<em><strong>&quot;charts&quot;</strong></em> being the package name in 6.x) 
+needs a designated <code>xtype</code> in some circumstances.  Cartesian Charts are the most 
+commonly used and are mapped to the xtype of <strong>&#39;chart&#39;</strong>.  Setting an <code>xtype</code> of 
+<strong>&#39;chart&#39;</strong> makes the assumption that you want a <strong>Bar</strong>, <strong>Line</strong>, <strong>Scatter</strong>, or 
+<strong>Area</strong> Chart.  Other types of Charts will require an <code>xtype</code> designation of 
+<strong>&#39;polar&#39;</strong> or <strong>&#39;spacefilling&#39;</strong>.</p>
+<p>###Chart Component Management</p>
+<p>A Chart component manages the following items:</p>
+<ul>
+<li><strong>Axes</strong> - These are accessed through [[ext:Ext.chart.axis.Axis]] and represent all 
+  the axes being defined and drawn for this visualization. This is a mixed collection.</li>
+<li><strong>Series</strong> - These are accessed through [[ext:Ext.chart.series.Series]] and represent 
+  all the series being drawn for the chart. This could be line, bar, scatter, and so 
+  on.  This is also a mixed collection.</li>
+<li><strong>Interactions</strong> - These are controllers that directly manipulate the series and axes 
+  when certain events are recognized.</li>
+<li><strong>Legend Store</strong> - This represents the legend information collected from the series. 
+  Normally you can attach a data list to this store and get automatically updated on 
+  the legend information changes.</li>
+</ul>
+<p>###Axes
+We provide [[ext:Ext.chart.axis.Axis]] to represent all kinds of axes. The axis object 
+works differently according to the its docking position. </p>
+<ul>
+<li><strong>left/right</strong> - The axis is vertical.</li>
+<li><strong>top/bottom</strong> - The axis is horizontal.</li>
+</ul>
+<p>Axes help series to map data values into coordinates. They are bound to the type of data 
+that needs to be represented. </p>
+<ul>
+<li><strong>numeric</strong> - the data attached to this axis is numeric and continuous.</li>
+<li><strong>time</strong> - the data attached to this axis is (or gets converted into) a date/time 
+  value; it is continuous.</li>
+<li><strong>category</strong> - the data attached to this axis belongs to a finite set. The data points 
+  are evenly placed along the axis.</li>
+</ul>
+<p>The behavior of an axis can be easily changed by setting different types of axis 
+[[ext:Ext.chart.axis.Axis#cfg-layout layout]] and axis 
+[[ext:Ext.chart.axis.Axis#cfg-segmenter segmenter]] to the axis.</p>
+<p>###Series
+[[ext:Ext.chart.series.Series Series]] is an abstract class extended by concrete 
+visualizations, such as Line Series, Bar Series, or Scatter Series.</p>
+<p>The Series class itself contains code that is common to all of these series, such as 
+event handling, highlighting, markers, labels, and so on.</p>
+<p>The following sections describe available series types. It also shows a complete series 
+configuration example, including the Chart, Axis, and Series options. For more specific 
+information, see the Series documentation.</p>
+<p>####Area
+The [[ext:Ext.chart.series.Area Area]] series creates a stacked area Chart, which is 
+typically used to display multiple aggregated layers of information. Similar to other 
+series, the Area series must be added into the 
+[[ext:Ext.chart.AbstractChart#cfg-series series]] config of the Chart.</p>
+<p>You can specify multiple <strong>y</strong> fields on a stacked series such as Area series and Bar 
+series.  A typical configuration object for the Area series looks as in the following 
+code sample:</p>
+<pre><code>Ext.create(&#39;Ext.chart.CartesianChart&#39;, {
+    renderTo: document.body,
+    width: 500,
+    height: 300,
+    store: {
+        fields: [&#39;name&#39;, &#39;g1&#39;, &#39;g2&#39;],
+        data: [
+            {&quot;name&quot;: &quot;Item-0&quot;, &quot;g1&quot;: 18.34,&quot;g2&quot;: 0.04},
+            {&quot;name&quot;: &quot;Item-1&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 14.87},
+            {&quot;name&quot;: &quot;Item-2&quot;, &quot;g1&quot;: 1.90, &quot;g2&quot;: 5.72},
+            {&quot;name&quot;: &quot;Item-3&quot;, &quot;g1&quot;: 21.37,&quot;g2&quot;: 2.13},
+            {&quot;name&quot;: &quot;Item-4&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 8.53},
+            {&quot;name&quot;: &quot;Item-5&quot;, &quot;g1&quot;: 18.22,&quot;g2&quot;: 4.62},
+            {&quot;name&quot;: &quot;Item-6&quot;, &quot;g1&quot;: 28.51, &quot;g2&quot;: 12.43},
+            {&quot;name&quot;: &quot;Item-7&quot;, &quot;g1&quot;: 34.43, &quot;g2&quot;: 4.40},
+            {&quot;name&quot;: &quot;Item-8&quot;, &quot;g1&quot;: 21.65, &quot;g2&quot;: 13.87},
+            {&quot;name&quot;: &quot;Item-9&quot;, &quot;g1&quot;: 12.98, &quot;g2&quot;: 35.44},
+            {&quot;name&quot;: &quot;Item-10&quot;, &quot;g1&quot;: 22.96, &quot;g2&quot;: 38.70},
+            {&quot;name&quot;: &quot;Item-11&quot;, &quot;g1&quot;: 0.49, &quot;g2&quot;: 51.90},
+            {&quot;name&quot;: &quot;Item-12&quot;, &quot;g1&quot;: 20.87, &quot;g2&quot;: 62.07},
+            {&quot;name&quot;: &quot;Item-13&quot;, &quot;g1&quot;: 25.10, &quot;g2&quot;: 78.46},
+            {&quot;name&quot;: &quot;Item-14&quot;, &quot;g1&quot;: 16.87, &quot;g2&quot;: 56.80}
+        ]
+    },
+
+    interactions: {
+        type: &#39;panzoom&#39;
+    },
+
+    legend: {
+        docked: &#39;right&#39;
+    },
+
+    axes: [{
+        type: &#39;numeric&#39;,
+        position: &#39;left&#39;,
+        grid: true
+    }, {
+        type: &#39;category&#39;,
+        position: &#39;bottom&#39;,
+        visibleRange: [0, 0.4]
+    }],
+
+    series: [{
+        type: &#39;area&#39;,
+        xField: &#39;name&#39;,
+        yField: [&#39;g1&#39;, &#39;g2&#39;],
+        title: [&#39;G1&#39;, &#39;G2&#39;],
+        style: {
+            stroke: &#39;#666666&#39;,
+            fillOpacity: 0.8
+        }
+    }]
+});
+</code></pre><p>####Bar</p>
+<p>The [[ext:Ext.chart.series.Bar Bar]] series creates a stackable or group-able bar Chart, 
+which is typically used to display categorized numeric data that shows progression or 
+regression. Note that opposed to the old chart package, a Bar series refers to a 
+vertical bar series, or a column series. You can obtain the horizontal configuration by 
+setting [[ext:Ext.chart.CartesianChart#cfg-flipXY flipXY]] to <strong>true</strong> the Chart.</p>
+<p>A Bar series can either be stacked or grouped. You can set the 
+[[ext:Ext.chart.series.Bar-cfg-stacked stacked]] config on the series to <strong>false</strong> in 
+order to switch the series to the grouped mode.</p>
+<p>A sample Bar chart is shown in the following example:</p>
+<pre><code>Ext.create(&#39;Ext.chart.CartesianChart&#39;, {
+    renderTo: document.body,
+    width: 500,
+    height: 500,
+    flipXY: true,
+    store: {
+        fields: [&#39;name&#39;, &#39;g1&#39;, &#39;g2&#39;],
+        data: [
+            {&quot;name&quot;: &quot;Item-0&quot;, &quot;g1&quot;: 18.34,&quot;g2&quot;: 0.04},
+            {&quot;name&quot;: &quot;Item-1&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 14.87},
+            {&quot;name&quot;: &quot;Item-2&quot;, &quot;g1&quot;: 1.90, &quot;g2&quot;: 5.72},
+            {&quot;name&quot;: &quot;Item-3&quot;, &quot;g1&quot;: 21.37,&quot;g2&quot;: 2.13},
+            {&quot;name&quot;: &quot;Item-4&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 8.53},
+            {&quot;name&quot;: &quot;Item-5&quot;, &quot;g1&quot;: 18.22,&quot;g2&quot;: 4.62},
+            {&quot;name&quot;: &quot;Item-6&quot;, &quot;g1&quot;: 28.51, &quot;g2&quot;: 12.43},
+            {&quot;name&quot;: &quot;Item-7&quot;, &quot;g1&quot;: 34.43, &quot;g2&quot;: 4.40},
+            {&quot;name&quot;: &quot;Item-8&quot;, &quot;g1&quot;: 21.65, &quot;g2&quot;: 13.87},
+            {&quot;name&quot;: &quot;Item-9&quot;, &quot;g1&quot;: 12.98, &quot;g2&quot;: 35.44},
+            {&quot;name&quot;: &quot;Item-10&quot;, &quot;g1&quot;: 22.96, &quot;g2&quot;: 38.70},
+            {&quot;name&quot;: &quot;Item-11&quot;, &quot;g1&quot;: 0.49, &quot;g2&quot;: 51.90},
+            {&quot;name&quot;: &quot;Item-12&quot;, &quot;g1&quot;: 20.87, &quot;g2&quot;: 62.07},
+            {&quot;name&quot;: &quot;Item-13&quot;, &quot;g1&quot;: 25.10, &quot;g2&quot;: 78.46},
+            {&quot;name&quot;: &quot;Item-14&quot;, &quot;g1&quot;: 16.87, &quot;g2&quot;: 56.80}
+        ]
+    },  
+
+    //set legend configuration
+    legend: {
+        docked: &#39;right&#39;
+    },
+
+    //define the x and y-axis configuration.
+    axes: [{
+        type: &#39;numeric&#39;,
+        position: &#39;bottom&#39;,
+        grid: true,
+        minimum: 0
+    }, {
+        type: &#39;category&#39;,
+        position: &#39;left&#39;
+    }],
+
+    //define the actual bar series.
+    series: [{
+        type: &#39;bar&#39;,
+        xField: &#39;name&#39;,
+        yField: [&#39;g1&#39;, &#39;g2&#39;],
+        axis: &#39;bottom&#39;,
+        // Cycles the green and blue fill mode over 2008 and 2009
+        // subStyle parameters also override style parameters
+        subStyle: {
+            fill: [&quot;#115fa6&quot;, &quot;#94ae0a&quot;]
+        }
+    }]
+});
+</code></pre><p>####Line
+The [[ext:Ext.chart.series.Line Line]] series creates a line Chart, an alternative to a 
+bar Chart, for showing categorized numeric data that shows progression or regression. 
+The following example shows a typical configuration object for the Line series:</p>
+<pre><code>Ext.create(&#39;Ext.chart.CartesianChart&#39;, {
+    renderTo: document.body,
+    width: 500,
+    height: 500,
+    store: {
+        fields: [&#39;name&#39;, &#39;g1&#39;, &#39;g2&#39;],
+        data: [
+            {&quot;name&quot;: &quot;Item-0&quot;, &quot;g1&quot;: 18.34,&quot;g2&quot;: 0.04},
+            {&quot;name&quot;: &quot;Item-1&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 14.87},
+            {&quot;name&quot;: &quot;Item-2&quot;, &quot;g1&quot;: 1.90, &quot;g2&quot;: 5.72},
+            {&quot;name&quot;: &quot;Item-3&quot;, &quot;g1&quot;: 21.37,&quot;g2&quot;: 2.13},
+            {&quot;name&quot;: &quot;Item-4&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 8.53},
+            {&quot;name&quot;: &quot;Item-5&quot;, &quot;g1&quot;: 18.22,&quot;g2&quot;: 4.62},
+            {&quot;name&quot;: &quot;Item-6&quot;, &quot;g1&quot;: 28.51, &quot;g2&quot;: 12.43},
+            {&quot;name&quot;: &quot;Item-7&quot;, &quot;g1&quot;: 34.43, &quot;g2&quot;: 4.40},
+            {&quot;name&quot;: &quot;Item-8&quot;, &quot;g1&quot;: 21.65, &quot;g2&quot;: 13.87},
+            {&quot;name&quot;: &quot;Item-9&quot;, &quot;g1&quot;: 12.98, &quot;g2&quot;: 35.44},
+            {&quot;name&quot;: &quot;Item-10&quot;, &quot;g1&quot;: 22.96, &quot;g2&quot;: 38.70},
+            {&quot;name&quot;: &quot;Item-11&quot;, &quot;g1&quot;: 0.49, &quot;g2&quot;: 51.90},
+            {&quot;name&quot;: &quot;Item-12&quot;, &quot;g1&quot;: 20.87, &quot;g2&quot;: 62.07},
+            {&quot;name&quot;: &quot;Item-13&quot;, &quot;g1&quot;: 25.10, &quot;g2&quot;: 78.46},
+            {&quot;name&quot;: &quot;Item-14&quot;, &quot;g1&quot;: 16.87, &quot;g2&quot;: 56.80}
+        ]
+    },
+    interactions: [&#39;panzoom&#39;],
+
+    legend: {
+        docked: &#39;bottom&#39;
+    },
+
+    //define x and y axis.
+    axes: [{
+        type: &#39;numeric&#39;,
+        position: &#39;left&#39;
+    }, {
+        type: &#39;category&#39;,
+        visibleRange: [0, 1],
+        position: &#39;bottom&#39;
+    }],
+
+    //define the actual series
+    series: [{
+        type: &#39;line&#39;,
+        xField: &#39;name&#39;,
+        yField: &#39;g1&#39;,
+        title: &#39;Normal&#39;,
+        style: {
+            fill: &quot;#115fa6&quot;,
+            stroke: &quot;#115fa6&quot;,
+            fillOpacity: 0.6,
+            miterLimit: 3,
+            lineCap: &#39;miter&#39;,
+            lineWidth: 2
+        }
+    }, {
+        type: &#39;line&#39;,
+        xField: &#39;name&#39;,
+        yField: &#39;g2&#39;,
+        title: &#39;Smooth&#39;,
+        style: {
+            smooth: true,
+            stroke: &quot;#94ae0a&quot;,
+            fillOpacity: 0.6,
+            miterLimit: 3,
+            lineCap: &#39;miter&#39;,
+            lineWidth: 2
+        }
+    }]
+});
+</code></pre><p>####Pie</p>
+<p>The [[ext:Ext.chart.series.Pie Pie]] series creates a pie Chart, a great way to display 
+quantitative information for a number of categories that also have a meaning as a whole, 
+for example, all 12 months of a given year.</p>
+<p>A Pie chart example is given in the following code sample:</p>
+<pre><code>Ext.create(&#39;Ext.chart.PolarChart&#39;, {
+    renderTo: document.body,
+    width: 500,
+    height: 500,
+    store: {
+        fields: [&#39;name&#39;, &#39;g1&#39;, &#39;g2&#39;],
+        data: [
+            {&quot;name&quot;: &quot;Item-0&quot;, &quot;g1&quot;: 18.34,&quot;g2&quot;: 0.04},
+            {&quot;name&quot;: &quot;Item-1&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 14.87},
+            {&quot;name&quot;: &quot;Item-2&quot;, &quot;g1&quot;: 1.90, &quot;g2&quot;: 5.72},
+            {&quot;name&quot;: &quot;Item-3&quot;, &quot;g1&quot;: 21.37,&quot;g2&quot;: 2.13},
+            {&quot;name&quot;: &quot;Item-4&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 8.53},
+            {&quot;name&quot;: &quot;Item-5&quot;, &quot;g1&quot;: 18.22,&quot;g2&quot;: 4.62}
+        ]
+    },
+
+    interactions: [&#39;rotate&#39;],
+
+    //configure the legend.
+    legend: {
+        docked: &#39;bottom&#39;
+    },
+
+    //describe the actual pie series.
+    series: [{
+        type: &#39;pie&#39;,
+        xField: &#39;g1&#39;,
+        label: {
+            field: &#39;name&#39;,
+            display: &#39;rotate&#39;
+        },
+        donut: 25,
+        style: {
+            miterLimit: 10,
+            lineCap: &#39;miter&#39;,
+            lineWidth: 2
+        }
+    }]
+}); 
+</code></pre><p>####Radar</p>
+<p>The [[ext:Ext.chart.series.Radar Radar]] series creates a radar Chart, a great way to 
+display a comparison of different quantitative values for a constrained number of 
+categories. A Radar series example is illustrated by the following code:</p>
+<pre><code>Ext.create(&#39;Ext.chart.PolarChart&#39;, {
+    renderTo: document.body,
+    width: 500,
+    height: 500,
+    store: {
+        fields: [&#39;name&#39;, &#39;g1&#39;, &#39;g2&#39;],
+        data: [
+            {&quot;name&quot;: &quot;0&quot;, &quot;g1&quot;: 18.34},
+            {&quot;name&quot;: &quot;1&quot;, &quot;g1&quot;: 2.67},
+            {&quot;name&quot;: &quot;2&quot;, &quot;g1&quot;: 1.90},
+            {&quot;name&quot;: &quot;3&quot;, &quot;g1&quot;: 21.37},
+            {&quot;name&quot;: &quot;4&quot;, &quot;g1&quot;: 2.67},
+            {&quot;name&quot;: &quot;5&quot;, &quot;g1&quot;: 18.22},
+            {&quot;name&quot;: &quot;6&quot;, &quot;g1&quot;: 28.51},
+            {&quot;name&quot;: &quot;7&quot;, &quot;g1&quot;: 34.43},
+            {&quot;name&quot;: &quot;8&quot;, &quot;g1&quot;: 21.65},
+            {&quot;name&quot;: &quot;9&quot;, &quot;g1&quot;: 12.98},
+            {&quot;name&quot;: &quot;10&quot;, &quot;g1&quot;: 22.96},
+            {&quot;name&quot;: &quot;11&quot;, &quot;g1&quot;: 0.49},
+            {&quot;name&quot;: &quot;12&quot;, &quot;g1&quot;: 20.87},
+            {&quot;name&quot;: &quot;13&quot;, &quot;g1&quot;: 25.10},
+            {&quot;name&quot;: &quot;14&quot;, &quot;g1&quot;: 16.87}
+        ]
+    },
+
+    // Set rotation
+    interactions: [&#39;rotate&#39;],
+
+    // Define radial and angular axis for the radar chart.
+    axes: [{
+        type: &#39;numeric&#39;,
+        position: &#39;radial&#39;,
+        fields: &#39;g1&#39;,
+        grid: true,
+        label: {
+            fill: &#39;black&#39;,
+            y: -8
+        }
+    }, {
+        type: &#39;category&#39;,
+        position: &#39;angular&#39;,
+        fields: &#39;name&#39;,
+        grid: true,
+        label: {
+            fill: &#39;black&#39;
+        }
+    }],
+
+    series: [{
+        type: &#39;radar&#39;,
+        xField: &#39;name&#39;,
+        yField: &#39;g1&#39;
+    }]
+});
+</code></pre><p>####Scatter</p>
+<p>The [[ext:Ext.chart.series.Scatter Scatter]] series creates a scatter Chart, which 
+enables an application to display more than two variables in the same visualization. 
+These variables can be mapped onto <strong>x</strong>, <strong>y</strong> coordinates and also to an element&#39;s 
+properties, such as radius, size, color, and so on.</p>
+<pre><code>Ext.create(&#39;Ext.chart.CartesianChart&#39;, {
+    renderTo: document.body,
+    width: 500,
+    height: 500,
+    store: {
+        fields: [&#39;name&#39;, &#39;g1&#39;, &#39;g2&#39;],
+        data: [
+            {&quot;name&quot;: &quot;Item-0&quot;, &quot;g1&quot;: 18.34,&quot;g2&quot;: 0.04},
+            {&quot;name&quot;: &quot;Item-1&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 14.87},
+            {&quot;name&quot;: &quot;Item-2&quot;, &quot;g1&quot;: 1.90, &quot;g2&quot;: 5.72},
+            {&quot;name&quot;: &quot;Item-3&quot;, &quot;g1&quot;: 21.37,&quot;g2&quot;: 2.13},
+            {&quot;name&quot;: &quot;Item-4&quot;, &quot;g1&quot;: 2.67, &quot;g2&quot;: 8.53},
+            {&quot;name&quot;: &quot;Item-5&quot;, &quot;g1&quot;: 18.22,&quot;g2&quot;: 4.62},
+            {&quot;name&quot;: &quot;Item-6&quot;, &quot;g1&quot;: 28.51, &quot;g2&quot;: 12.43},
+            {&quot;name&quot;: &quot;Item-7&quot;, &quot;g1&quot;: 34.43, &quot;g2&quot;: 4.40},
+            {&quot;name&quot;: &quot;Item-8&quot;, &quot;g1&quot;: 21.65, &quot;g2&quot;: 13.87},
+            {&quot;name&quot;: &quot;Item-9&quot;, &quot;g1&quot;: 12.98, &quot;g2&quot;: 35.44},
+            {&quot;name&quot;: &quot;Item-10&quot;, &quot;g1&quot;: 22.96, &quot;g2&quot;: 38.70},
+            {&quot;name&quot;: &quot;Item-11&quot;, &quot;g1&quot;: 0.49, &quot;g2&quot;: 51.90},
+            {&quot;name&quot;: &quot;Item-12&quot;, &quot;g1&quot;: 20.87, &quot;g2&quot;: 62.07},
+            {&quot;name&quot;: &quot;Item-13&quot;, &quot;g1&quot;: 25.10, &quot;g2&quot;: 78.46},
+            {&quot;name&quot;: &quot;Item-14&quot;, &quot;g1&quot;: 16.87, &quot;g2&quot;: 56.80}
+        ]
+    },
+
+    axes: [{
+        type: &#39;numeric&#39;,
+        position: &#39;bottom&#39;
+    }, {
+        type: &#39;numeric&#39;,
+        position: &#39;left&#39;
+    }],
+    series: [{
+        type: &#39;scatter&#39;,
+        xField: &#39;g1&#39;,
+        yField: &#39;g2&#39;,
+        marker: {
+            radius: 4
+        },
+        highlight: {
+            fillStyle: &#39;yellow&#39;,
+            radius: 7,
+            lineWidth: 2
+        },
+    }]
+});
+</code></pre><p>####Gauge</p>
+<p>The [[ext:Ext.chart.series.Gauge Gauge]] series creates a gauge Chart, typically used to 
+show progress in a certain variable. In addition to using [[ext:Ext.data.Store stores]], 
+you can also set a [[ext:Ext.chart.series.Gauge#cfg-value value]] of the gauge series to 
+show the value.</p>
+<p>An example is given in the following code sample:</p>
+<pre><code>Ext.create(&#39;Ext.chart.PolarChart&#39;, {
+    renderTo: document.body,
+    width: 500,
+    height: 500,
+    series: [{
+        type: &#39;gauge&#39;,
+        minimum: 100,
+        maximum: 800,
+        value: 400,
+        donut: 30,
+        colors: [&quot;#115fa6&quot;, &quot;lightgrey&quot;]
+    }]
+});           
+</code></pre><p>###Interactions</p>
+<p>This section introduces the interaction features in the Sencha Charts package. By taking 
+advantage of these features, you can create highly interactive Charts that enable users 
+to visualize and navigate complex data sets.</p>
+<p>####Adding Interactions
+To add interactions to a Chart, set the 
+[[ext:Ext.chart.AbstractChart#cfg-interactions interactions]] config of the Chart to an 
+array of interaction config objects. Each object must be a string or must contain a type 
+property matching one of the interaction types described in the subsequent sections. 
+Each object may also contain additional config options that are appropriate for a 
+particular interaction.</p>
+<p>You can define your own interaction by extending the 
+[[ext:Ext.chart.interactions.Abstract]] class and registering the name using an alias 
+with the <strong>&quot;interaction&quot;</strong> prefix. For example, if you want to create an interaction 
+called <strong>&quot;remove&quot;</strong>, create an alias of the class named <strong>&quot;interaction.remove&quot;</strong>, then 
+set the <code>type: &#39;remove&#39;</code> in the interaction config.</p>
+<p>Here are a couple of examples of basic interactions.</p>
+<p>####Item Highlighting</p>
+<p>The <strong>&quot;itemhighlight&quot;</strong> interaction enables you to highlight individual data point items 
+on the chart.</p>
+<p>This interaction is implemented by the [[ext:Ext.chart.interactions.ItemHighlight]] 
+class.  See the class documentation for detailed configuration options.</p>
+<p>####Rotate
+The <strong>&quot;rotate&quot;</strong> interaction enables users to rotate a pie or a radar Chart, by default 
+the rotation being performed using a drag gesture. The following code snippet is an 
+example of how simple it is to add the <strong>rotate</strong> interaction to your pie or radar 
+Charts:</p>
+<pre><code>interactions: [&#39;rotate&#39;]
+</code></pre><p>This interaction is implemented by the [[ext:Ext.chart.interactions.Rotate]] class. See 
+the class documentation for detailed configuration options.</p>
+<p>###Legend Store</p>
+<p>The Chart exposes a store to represent legend information collected from series. 
+Technically, you can do anything with this store. Again, this architecture can help you 
+decouple the legend information from the legend component, so you can use any technology 
+and customization for showing the legend at any desired place.</p>
+<p>For you convenience, we also provide a default [[ext:Ext.chart.Legend Legend]] component 
+that already implements some common and basic functionality for displaying legends. The 
+Chart configuration object accepts a <code>legend</code> section to enable the default Legend 
+component and dock it in the Chart. The default Legend component contains a 
+[[ext:Ext.chart.Legend#cfg-dock dock]] config and it is docked on that side.</p>
+</div>
+
+</body>
+</html>

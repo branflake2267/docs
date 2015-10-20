@@ -1,0 +1,150 @@
+<html>
+<head>
+    <title>Right to Left in Ext JS</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+</head>
+<body>
+<div class="contents"><p>#Right-to-Left Support in Ext JS</p>
+<p>Ext JS has an extensive locale library with support for over 40 languages from around 
+the world.  Some of these languages are read from right to left. This makes right-to-left (RTL) 
+support a must.  Combining Ext JS&#39;s localization package with RTL support gives your 
+application a voice for the entire globe.</p>
+<p>In this guide, we will walk through enabling RTL support for your application.</p>
+<p><strong>Note:</strong> To enable localization in your application, please check out the Ext JS 
+<a href="./localization.html">locale guide</a>.</p>
+<h2 id="core_concepts-_-rtl_-_rtl-with-sencha-cmd">RTL with Sencha Cmd</h2>
+<p>Let&#39;s start by generating an application using Sencha Cmd.  Simply open your terminal and
+issue the following commands:</p>
+<pre><code>sencha generate app -ext MyApp ./app
+cd app
+sencha app watch
+</code></pre><p><strong>Note:</strong> If you are not familiar with what is happening above, please check out our 
+<a href="../getting_started/getting_started.html">Getting Started guide</a>.</p>
+<h3 id="core_concepts-_-rtl_-_enabling-rtl">Enabling RTL</h3>
+<p>It&#39;s incredibly simple to enable RTL in your Cmd generated app.  All you need to do is 
+require <code>Ext.rtl.*</code> and set <code>rtl: true</code>.  </p>
+<pre><code>Ext.define(&#39;MyApp.view.main.Main&#39;, {
+    extend: &#39;Ext.container.Container&#39;,
+    requires: [
+        &#39;Ext.rtl.*&#39;
+    ],
+    rtl: true,
+    ...
+</code></pre><p>In the case of our generated application, you would add the above code to your <code>Main.js</code>. 
+This can be found in your <code>app/view/main</code> folder.  This is the designated Viewport in this 
+instance.  If you are not using the generated application, you may also add it to your 
+top level container or Viewport. </p>
+<p>Upon adding the above code snippet, you can then rebuild your application:</p>
+<pre><code>sencha app build
+</code></pre><p>Once you refresh your application, you should see that your page elements are flipped 
+horizontally and your text is written from right to left.</p>
+<p>All children of your top level container with <code>rtl: true</code> will inherit the same 
+functionality.  You may indicate <code>rtl:false</code> on a child element to disable RTL for that 
+particular piece of your application.</p>
+<h3 id="core_concepts-_-rtl_-_locales-with-rtl">Locales with RTL</h3>
+<p>Using locales with RTL, such as Hebrew, will flip your application to RTL by default in 
+the near future.  However, at this time, that functionality is tied to Viewport and is not 
+activated when using <code>mainView</code> with a container other than [[ext:Ext.container.Viewport]].  </p>
+<p>In this case, you can enable RTL for your application as mentioned above.</p>
+<p>However, you may not want to hardcode RTL support into your application if you are 
+incorporating multiple locales.  In this case, you would need to add a locale override for 
+the language in your application&#39;s root directory.</p>
+<h4 id="core_concepts-_-rtl_-_rtl-locale-override">RTL Locale Override</h4>
+<p>In this section, we will discuss adding an override for the Hebrew locale.  This same logic
+will apply for any other locale needing an override for dynamic RTL support.  You would 
+simply replace the &quot;he&quot; with your locale&#39;s abbreviation.</p>
+<ol>
+<li><p>Create a folder named &quot;locale&quot; in the root of your application.  This 
+would appear at the same level as the app, build, ext, etc.</p>
+</li>
+<li><p>Add a folder with your locale&#39;s abbreviation inside of the locale folder.  In this
+case, we will create a folder called &quot;he&quot;.</p>
+</li>
+<li><p>Create a file called <code>Viewport.js</code> inside of your &quot;he&quot; folder.  The resulting file
+structure should look similar to this:</p>
+<p> <img src="images/locale-override-filesystem.jpg"/></p>
+<p> You can then add the following override to your <code>Viewport.js</code> override file:</p>
+<pre><code> Ext.define(&#39;MyApp.locale.he.Viewport&#39;, {
+     override: &#39;Ext.plugin.Viewport&#39;,
+     requires: &#39;Ext.rtl.*&#39;,
+     setCmp: function (cmp) {
+
+         this.callParent([cmp]);
+
+         cmp.rtl = true;
+     }    
+ })
+</code></pre></li>
+<li><p>Now that your override is in place you&#39;ll need to alert <code>app.json</code> to its presence so 
+that Cmd recognizes the override and compiles it within your next build.  Add the following 
+line to your <code>app.json</code> file:</p>
+<pre><code>&quot;overrides&quot;: &quot;${app.dir}/overrides,${app.dir}/locale/${app.locale},
+</code></pre></li>
+</ol>
+<p>This will tell Cmd that it should utilize any file located within your application&#39;s 
+overrides and locale folder.</p>
+<p>With this override in place, you should be better equipped to generate an application that
+supports multiple locales without having to hardcode RTL support into your parent container.</p>
+<h2 id="core_concepts-_-rtl_-_rtl-without-sencha-cmd">RTL without Sencha Cmd</h2>
+<p>While we encourage users to utilize the powerful tools within Sencha Cmd, we recognize 
+that some folks are not able to use Sencha Cmd.   This portion of the guide will walk you 
+through setting up RTL support without using Sencha Cmd.</p>
+<ol>
+<li><p>Update your <code>index.html</code> file to point to your particular flavor of RTL framework file, 
+included with all Ext JS framework downloads after Ext JS 4.2.0.  For example:</p>
+<pre><code> build/ext-all-rtl-debug.js
+ build/ext-all-rtl.js
+</code></pre><p> This will modify your application to load the RTL-specific library.</p>
+</li>
+<li><p>Update your index.html file to point to your selected theme&#39;s RTL CSS file, included 
+with all Ext JS framework downloads after Ext JS 4.2.0.  The default location for these 
+live here:</p>
+<pre><code>build/packages/ext-theme-{themename}/build/resources/ext-theme-{themename}-all-rtl.css
+</code></pre></li>
+<li><p>Lastly, add <code>rtl: true</code> to your Viewport</p>
+</li>
+</ol>
+<p>This is a sample index.html file using Neptune with RTL support enabled:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Hello RTL&lt;/title&gt;
+
+        &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;build/packages/ext-theme-neptune/build/resources/ext-theme-neptune-all-rtl.css&quot;&gt;
+        &lt;script type=&quot;text/javascript&quot; src=&quot;/releases/extjs/5.0.0/build/ext-all-rtl.js&quot;&gt;&lt;/script&gt;
+        &lt;script type=&quot;text/javascript&quot; src=&quot;build/packages/ext-theme-neptune/build/ext-theme-neptune.js&quot;&gt;&lt;/script&gt;
+
+        &lt;script&gt;
+
+            Ext.application({
+                name: &#39;MyApp&#39;,
+                launch: function() {
+
+                    Ext.create(&#39;Ext.container.Viewport&#39;, {
+                        renderTo: Ext.getBody(),
+                        rtl : true,
+                        html: &quot;hello I am a bunch of text&quot;
+                    });              
+
+                }
+            });
+
+        &lt;/script&gt;
+
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p><strong>Note:</strong>  Make sure to include the Theme override JS file as seen above</p>
+</div>
+
+    <div class="toc">
+        <div class="toc-item"><a href="#core_concepts-_-rtl_-_rtl-with-sencha-cmd">RTL with Sencha Cmd</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-rtl_-_enabling-rtl">Enabling RTL</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-rtl_-_locales-with-rtl">Locales with RTL</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-rtl_-_rtl-locale-override">RTL Locale Override</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-rtl_-_rtl-without-sencha-cmd">RTL without Sencha Cmd</a></div>
+    </div>
+</body>
+</html>

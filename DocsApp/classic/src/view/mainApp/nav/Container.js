@@ -24,9 +24,18 @@ Ext.define('DocsApp.view.mainApp.nav.Container', {
         xtype: 'mainapp-nav-docs-container'
     }, {
         xtype: 'mainapp-nav-guides-container'
-    }, {
+
+    // a dedicated tab for examples
+    /*}, {
+        xtype: 'tabpanel',
         title: 'Examples',
-        iconCls: 'x-fa fa-desktop'
+        iconCls: 'x-fa fa-desktop',
+        tabPosition: 'bottom',
+        items: [{
+            title: 'Topical'
+        }, {
+            title: 'Favorites'
+        }]*/
     }],
 
     listeners: {

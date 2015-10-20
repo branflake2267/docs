@@ -2,18 +2,13 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     extend: 'Ext.panel.Panel',
     xtype: 'mainapp-doc-view',
 
-    requires: [
-        'DocsApp.view.mainApp.doc.MemberDataview'
-    ],
-
-    config : {
-        cls : null
-    },
+    requires: ['DocsApp.view.mainApp.doc.MemberDataview'],
 
     viewModel: 'mainapp-docmodel',
     controller: 'main-doc-controller',
 
     iconCls: 'x-fa fa-code',
+    closable: true,
     scrollable: true,
 
     layout: 'anchor',
@@ -25,6 +20,9 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         xtype: 'toolbar',
         dock: 'top',
         items: [{
+            xtype: 'button',
+            iconCls: 'x-fa fa-star'
+        }, {
             xtype: 'component',
             bind: '{classFile.name}'
         }, {
@@ -33,14 +31,13 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             bind: {
                 data: '{classFile}'
             },
-            tpl: new Ext.XTemplate('{[this.aliasOut(values)]}', {
+            tpl: Ext.create('Ext.XTemplate', '{[this.aliasOut(values)]}', {
                 aliasOut: function (values) {
                     var alias = values.alias,
                         isWidget;
 
                     if (alias) {
                         isWidget = alias.indexOf('widget.') === 0;
-
                         return isWidget ? '<span data-qtip="alias: ' + alias + '">xtype: ' + alias.substr(7) + '</span>' : 'alias: ' + alias;
                     }
 
@@ -94,12 +91,22 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }, {
         xtype: 'toolbar',
         dock: 'left',
+        style: 'background-color: #1E97CC;',
         layout: {
             type: 'vbox',
             align: 'stretchmax'
         },
         items: [{
-            text: 'View as Tabs'
+            text: 'View as Tabs',
+            width: 114,
+            asTabs: true,
+            handler: function () {
+                var me = this,
+                    tabs = me.asTabs;
+
+                me.setText(tabs ? 'View Combined' : 'View as Tabs');
+                me.asTabs = !me.asTabs;
+            }
         }, {
             xtype: 'container',
             layout: {
@@ -132,7 +139,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             bind: {
                 data: '{classFile}'
             },
-            tpl: '{[marked(values.text, { renderer: markedRenderer({ addHeaderId: false }) })]}'
+            tpl: '{[marked(values.text)]}'
         }, {
             xtype: 'component',
             width: 400,
@@ -150,7 +157,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 '</tpl>',
                 {
                     getRequires: function (values) {
-                        return values.requires.replace(',', '<br>');
+                        return values.requires.split(',').join('<br>');
                     }
                 }
             )
@@ -210,7 +217,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     // TODO:: temp listener to process an API Doc source during initial POC stage
     listeners: {
         delay: 200,
-        boxready: function(docView) {
+        boxready: function (docView) {
             /*Ext.Ajax.request({
                 url: 'resources/data/docs/panel.json',
                 success: function (resp) {
@@ -220,18 +227,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                     });
                 }
             });*/
-            console.log(this.getViewModel().data['classFile'].getData());
-        }
-    },
-
-    updateCls : function(name) {
-        if (name) {
-            this.setTitle(name);
-
-            this.getViewModel().linkTo('classFile', {
-                type: 'Class',
-                id: name
-            });
+            //console.log(this.getViewModel().data['classFile'].getData());
         }
     }
 });

@@ -3,12 +3,8 @@ Ext.define('DocsApp.view.products.MainLandingController', {
     alias  : 'controller.docsapp-products-mainlanding',
 
     routes : {
-        '!:type:id' : {
-            action     : 'goToView',
-            conditions : {
-                ':type' : '(?:(?:\/){1}(.+))?',
-                ':id'   : '(?:(?:\/){1}(.+))?'
-            }
+        '!/:type' : {
+            action : 'goToView'
         }
     },
 
@@ -22,15 +18,17 @@ Ext.define('DocsApp.view.products.MainLandingController', {
     },
 
     goToView : function(type) {
-        var info = this.info[type],
-            detailPanel = this.lookupReference(info.ref + 'Detail');
+        if (this.info[type]) {
+            var info = this.info[type],
+                detailPanel = this.lookupReference(info.ref + 'Detail');
 
-        detailPanel.expand();
-        detailPanel.ownerCt.items.each(function (item) {
-            if (item !== detailPanel && item.collapse) {
-                item.collapse();
-            }
-        });
+            detailPanel.expand();
+            detailPanel.ownerCt.items.each(function (item) {
+                if (item !== detailPanel && item.collapse) {
+                    item.collapse();
+                }
+            });
+        }
 
 
         /*var info = this.info[type],

@@ -203,6 +203,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
 
     // TODO:: temp listener to process an API Doc source during initial POC stage
     listeners: {
+        delay: 200,
         boxready: function (docView) {
             /*Ext.Ajax.request({
                 url: 'resources/data/docs/panel.json',
@@ -214,7 +215,6 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             });*/
             console.log(this.getViewModel().data['classFile'].getData());
-        },
-        delay: 200
-    },
+        }
+    }
 });

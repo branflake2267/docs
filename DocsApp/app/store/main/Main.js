@@ -3,7 +3,5 @@ Ext.define('DocsApp.store.main.Main', {
 
     model: 'DocsApp.model.Class',
 
-    storeId: 'mainpanel',
-
-    autoLoad: true
+    storeId: 'mainpanel'
 });

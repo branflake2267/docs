@@ -2,13 +2,6 @@ Ext.define('DocsApp.view.mainApp.doc.DocModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.mainapp-docmodel',
 
-    links: {
-        classFile: {
-            type: 'Class',
-            id: 'Ext.panel.Panel'
-        }
-    },
-
     stores: {
         allMembers: {
             fields: [],

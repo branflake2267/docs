@@ -76,5 +76,7 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
         tbar: ['->', {
             text: 'Expand All'
         }]
+    }, {
+        title: 'Favorites'
     }]
 });

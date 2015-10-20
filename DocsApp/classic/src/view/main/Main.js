@@ -188,6 +188,10 @@ Ext.define('DocsApp.view.main.Main', {
         listeners: {
             change: 'onSearchChange'
         }
+    }, {
+        iconCls: 'x-fa fa-cog'
+    }, {
+        iconCls: 'x-fa fa-question-circle'
     }],
 
     items: [{

@@ -49,22 +49,22 @@ Ext.define('DocsApp.view.mainApp.Container', {
             reference: 'mainapp-leftnav',
             region: 'west',
             split: true,
-            width: 320
+            width: 332
         }, {
             xtype: 'tabpanel',
             region: 'center',
-            defaults : {
-                closable: true
-            },
+            activeTab: 1,
             items: [{
+                iconCls: 'x-fa fa-star'
+            }, {
                 xtype: 'mainapp-doc-view',
-                cls: 'Ext.panel.Panel'
+                title: 'Ext.panel.Panel'
             }, {
                 xtype: 'mainapp-guide-view',
                 title: 'Memory Management'
-            }, {
+            /*}, {
                 title: 'Example Proto',
-                iconCls: 'x-fa fa-desktop'
+                iconCls: 'x-fa fa-desktop'*/
             }]
         }],
 

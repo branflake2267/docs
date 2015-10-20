@@ -8,10 +8,6 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
 
     controller: 'docsapp-mainapp-nav-guides-container',
 
-    viewModel: {
-        type: 'nav-guides'
-    },
-
     title: 'Guides',
     iconCls: 'x-fa fa-book',
     tabPosition: 'bottom',
@@ -79,7 +75,10 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
         tbar: ['->', {
             text: 'Expand All',
             handler: 'expandAll'
-        }]
+        }],
+        listeners: {
+            itemclick: 'onGuideClick'
+        }
     }, {
         title: 'Favorites'
     }]

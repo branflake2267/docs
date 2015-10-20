@@ -56,7 +56,6 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
 
                 me.tocDock = me.addDocked({
                     xtype: 'component',
-                    reference: 'tocDock',
                     cls: 'da-guide-toc',
                     dock: 'right',
                     width: 340,

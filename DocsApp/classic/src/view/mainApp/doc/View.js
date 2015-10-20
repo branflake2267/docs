@@ -2,7 +2,13 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     extend: 'Ext.panel.Panel',
     xtype: 'mainapp-doc-view',
 
-    requires: ['DocsApp.view.mainApp.doc.MemberDataview'],
+    requires: [
+        'DocsApp.view.mainApp.doc.MemberDataview'
+    ],
+
+    config : {
+        cls : null
+    },
 
     viewModel: 'mainapp-docmodel',
     controller: 'main-doc-controller',
@@ -27,13 +33,14 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             bind: {
                 data: '{classFile}'
             },
-            tpl: Ext.create('Ext.XTemplate', '{[this.aliasOut(values)]}', {
+            tpl: new Ext.XTemplate('{[this.aliasOut(values)]}', {
                 aliasOut: function (values) {
                     var alias = values.alias,
                         isWidget;
 
                     if (alias) {
                         isWidget = alias.indexOf('widget.') === 0;
+
                         return isWidget ? '<span data-qtip="alias: ' + alias + '">xtype: ' + alias.substr(7) + '</span>' : 'alias: ' + alias;
                     }
 
@@ -143,7 +150,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 '</tpl>',
                 {
                     getRequires: function (values) {
-                        return values.requires.split(',').join('<br>');
+                        return values.requires.replace(',', '<br>');
                     }
                 }
             )
@@ -203,7 +210,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     // TODO:: temp listener to process an API Doc source during initial POC stage
     listeners: {
         delay: 200,
-        boxready: function (docView) {
+        boxready: function(docView) {
             /*Ext.Ajax.request({
                 url: 'resources/data/docs/panel.json',
                 success: function (resp) {
@@ -214,6 +221,17 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             });*/
             console.log(this.getViewModel().data['classFile'].getData());
+        }
+    },
+
+    updateCls : function(name) {
+        if (name) {
+            this.setTitle(name);
+
+            this.getViewModel().linkTo('classFile', {
+                type: 'Class',
+                id: name
+            });
         }
     }
 });

@@ -58,7 +58,7 @@ Ext.define('DocsApp.view.mainApp.Container', {
             },
             items: [{
                 xtype: 'mainapp-doc-view',
-                title: 'Ext.panel.Panel'
+                cls: 'Ext.panel.Panel'
             }, {
                 xtype: 'mainapp-guide-view',
                 title: 'Memory Management'

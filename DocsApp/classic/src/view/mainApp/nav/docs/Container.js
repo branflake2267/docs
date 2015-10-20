@@ -46,6 +46,7 @@ Ext.define('DocsApp.view.mainApp.nav.docs.Container', {
             xtype: 'treepanel',
             title: 'by Package',
             rootVisible: false,
+            displayField: 'name',
             bind: '{package}'
         }, {
             xtype: 'treepanel',

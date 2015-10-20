@@ -2,6 +2,10 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
     extend: 'Ext.panel.Panel',
     xtype: 'mainapp-guide-view',
 
+    config : {
+        guideId : null
+    },
+
     iconCls: 'x-fa fa-book',
 
     layout: {
@@ -47,7 +51,14 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
             renderer: function(loader, response, active) {
                 var text = response.responseText;
 
-                text = marked(text);
+                text = marked(text, {
+                    renderer: markedRenderer({
+                        //TODO when working off config
+                        /*addHeaderId : function(text, level, raw) {
+                            return node.path.replace(this.idRe, '-_-') + '_-_' + raw.toLowerCase().replace(this.idRe, '-');
+                        }*/
+                    })
+                });
                 // spacer for scroll
                 text += '<div class="da-guide-footer"></div>';
                 loader.getTarget().setHtml(text);
@@ -89,5 +100,11 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
         scrollable: true,
         width: 340,
         padding: 20
-    }]
+    }],
+
+    updateGuideId: function(id) {
+        if (id) {
+            console.log(id);
+        }
+    }
 });

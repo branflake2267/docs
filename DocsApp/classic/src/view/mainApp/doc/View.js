@@ -132,7 +132,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             bind: {
                 data: '{classFile}'
             },
-            tpl: '{[marked(values.text)]}'
+            tpl: '{[marked(values.text, { renderer: markedRenderer({ addHeaderId: false }) })]}'
         }, {
             xtype: 'component',
             width: 400,

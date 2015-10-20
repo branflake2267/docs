@@ -3,11 +3,12 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
     xtype: 'mainapp-guide-view',
 
     iconCls: 'x-fa fa-book',
-    closable: true,
+
     layout: {
         type: 'hbox',
         align: 'stretch'
     },
+
     items: [{
         xtype: 'container',
         cls: 'da-guide-body',

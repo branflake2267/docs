@@ -8,7 +8,6 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     controller: 'main-doc-controller',
 
     iconCls: 'x-fa fa-code',
-    closable: true,
     scrollable: true,
 
     layout: 'anchor',

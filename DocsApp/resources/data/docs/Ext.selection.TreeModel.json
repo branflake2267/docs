@@ -1,0 +1,4126 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/selection/TreeModel.js",
+    "../../../ext/classic/classic/src/selection/Model.js",
+    "../../../ext/classic/classic/src/selection/RowModel.js",
+    "../../../ext/packages/core/src/mixin/Observable.js",
+    "../../../ext/packages/core/src/class/Base.js",
+    "../../../ext/classic/classic/src/util/StoreHolder.js",
+    "../../../../docs/docs/js/primitives/Object.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "selection.treemodel",
+        "extended": "Ext.selection.RowModel,Ext.selection.DataViewModel,Ext.selection.Model,Ext.mixin.Observable,Ext.Mixin,Ext.Base,Object",
+        "extends": "Ext.selection.RowModel",
+        "name": "Ext.selection.TreeModel",
+        "text": "This selection model is created by default for {@link Ext.tree.Panel}.\n\nIt implements a row selection model.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "allowDeselect",
+                "text": "Allow users to deselect a record in a DataView, List or Grid.\nOnly applicable when the {@link #cfg!mode #mode} is 'SINGLE'.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,64,23",
+                  "text": "1,65,8,114",
+                  "type": "1,64,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "enableKeyNav",
+                "text": "\nTurns on/off keyboard navigation within the grid.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,51,23",
+                  "text": "2,52,8,51",
+                  "type": "2,51,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ignoreRightMouseSelection",
+                "optional": true,
+                "text": "True to ignore selections that are made when using the right mouse button if there are\nrecords that are already selected. If no records are selected, selection will continue\nas normal\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "1,105,24",
+                  "text": "1,106,8,184",
+                  "type": "1,105,14",
+                  "value": "1,105,50"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "listeners",
+                "text": "\nA config object containing one or more event handlers to be added to this object during initialization. This\nshould be a valid listeners config object as specified in the\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} example for attaching\nmultiple handlers at once.\n\n**DOM events from Ext JS {@link Ext.Component}**\n\nWhile _some_ Ext JS Component classes export selected DOM events (e.g. \"click\", \"mouseover\" etc), this is usually\nonly done when extra value can be added. For example the {@link Ext.view.View}'s **`{@link Ext.view.View#event!itemclick Ext.view.View#itemclick}`** event passing the node clicked on. To access DOM events directly from a\nchild element of a Component, we need to specify the `element` option to identify the Component property to add a\nDOM listener to:\n\n    new Ext.panel.Panel({\n        width: 400,\n        height: 200,\n        dockedItems: [{\n            xtype: 'toolbar'\n        }],\n        listeners: {\n            click: {\n                element: 'el', //bind to the underlying el property on the panel\n                fn: function(){ console.log('click el'); }\n            },\n            dblclick: {\n                element: 'body', //bind to the underlying body property on the panel\n                fn: function(){ console.log('dblclick body'); }\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "3,243,25",
+                  "text": "3,244,11,1325",
+                  "type": "3,243,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "mode",
+                "text": "Mode of selection.  Valid values are:\n\n- **\"SINGLE\"** - Only allows selecting one item at a time.  Use {@link #cfg!allowDeselect #allowDeselect} to allow\n  deselecting that item.  Also see {@link #cfg!toggleOnClick #toggleOnClick}. This is the default.\n- **\"SIMPLE\"** - Allows simple selection of multiple items one-by-one. Each click in grid will either\n  select or deselect an item.\n- **\"MULTI\"** - Allows complex selection of multiple items using Ctrl and Shift keys.\n",
+                "type": "\"SINGLE\"/\"SIMPLE\"/\"MULTI\"",
+                "src": {
+                  "name": "1,53,41",
+                  "text": "1,54,8,433",
+                  "type": "1,53,14"
+                }
+              },
+              {
+                "$type": "property",
+                "hide": true,
+                "name": "pruneRemoved",
+                "type": "Boolean",
+                "src": {
+                  "hide": "0,12,8",
+                  "name": "0,11,23",
+                  "type": "0,11,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "selected",
+                "text": "The {@link Ext.util.Collection} to use as the collection of selected records.\n",
+                "src": {
+                  "access": "1,38,12",
+                  "name": "1,41,0",
+                  "text": "1,39,12,78"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "selectOnExpanderClick",
+                "since": "5.1.0",
+                "text": "`true` to select the row when clicking on the icon to collapse or expand\na tree node.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,16,23",
+                  "since": "0,20,15",
+                  "text": "0,17,8,87",
+                  "type": "0,16,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "store",
+                "text": "The {@link Ext.data.Store} in which this selection model represents the selected subset.\n",
+                "src": {
+                  "access": "1,32,12",
+                  "name": "1,35,0",
+                  "text": "1,33,12,95"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "toggleOnClick",
+                "text": "`true` to toggle the selection state of an item when clicked.\nOnly applicable when the {@link #cfg!mode #mode} is 'SINGLE'.\nOnly applicable when the {@link #cfg!allowDeselect #allowDeselect} is 'true'.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,71,23",
+                  "text": "1,72,8,173",
+                  "type": "1,71,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "beforedeselect",
+                "text": "Fired before a record is deselected. If any listener returns false, the\ndeselection is cancelled.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.selection.RowModel",
+                    "src": {
+                      "name": "2,61,40",
+                      "type": "2,61,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The deselected record\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "2,62,32",
+                      "text": "2,62,39,22",
+                      "type": "2,62,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The row index deselected\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,63,24",
+                      "text": "2,63,30,25",
+                      "type": "2,63,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,58,15",
+                  "text": "2,59,8,98"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "beforeselect",
+                "text": "Fired before a record is selected. If any listener returns false, the\nselection is cancelled.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.selection.RowModel",
+                    "src": {
+                      "name": "2,70,40",
+                      "type": "2,70,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The selected record\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "2,71,32",
+                      "text": "2,71,39,20",
+                      "type": "2,71,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The row index selected\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,72,24",
+                      "text": "2,72,30,23",
+                      "type": "2,72,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,67,15",
+                  "text": "2,68,8,94"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "deselect",
+                "text": "Fired after a record is deselected\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.selection.RowModel",
+                    "src": {
+                      "name": "2,78,40",
+                      "type": "2,78,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The deselected record\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "2,79,32",
+                      "text": "2,79,39,22",
+                      "type": "2,79,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The row index deselected\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,80,24",
+                      "text": "2,80,30,25",
+                      "type": "2,80,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,76,15",
+                  "text": "2,77,8,35"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "focuschange",
+                "text": "Fired when a row is focused\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.selection.Model",
+                    "src": {
+                      "name": "1,122,37",
+                      "type": "1,122,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldFocused",
+                    "text": "The previously focused record\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "1,123,32",
+                      "text": "1,123,43,30",
+                      "type": "1,123,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newFocused",
+                    "text": "The newly focused record\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "1,124,32",
+                      "text": "1,124,43,25",
+                      "type": "1,124,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,120,15",
+                  "text": "1,121,8,28"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "select",
+                "text": "Fired after a record is selected\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.selection.RowModel",
+                    "src": {
+                      "name": "2,86,40",
+                      "type": "2,86,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The selected record\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "2,87,32",
+                      "text": "2,87,39,20",
+                      "type": "2,87,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The row index selected\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,88,24",
+                      "text": "2,88,30,23",
+                      "type": "2,88,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,84,15",
+                  "text": "2,85,8,33"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "selectionchange",
+                "text": "Fired after a selection change has occurred\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.selection.Model",
+                    "src": {
+                      "name": "1,115,37",
+                      "type": "1,115,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "selected",
+                    "text": "The selected records\n",
+                    "type": "Ext.data.Model[]",
+                    "src": {
+                      "name": "1,116,34",
+                      "text": "1,116,43,21",
+                      "type": "1,116,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,113,15",
+                  "text": "1,114,8,44"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_addDeclaredListeners",
+                "text": "Adds declarative listeners as nested arrays of listener objects.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,413,27",
+                      "type": "3,413,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if any listeners were added\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,414,30,35",
+                      "type": "3,414,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,412,12",
+                  "name": "3,416,0",
+                  "text": "3,411,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addAfterListener",
+                "text": "Alias for {@link #method!onAfter #onAfter}.\n",
+                "src": {
+                  "name": "3,1236,0",
+                  "text": "3,1234,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addBeforeListener",
+                "text": "Alias for {@link #method!onBefore #onBefore}.\n",
+                "src": {
+                  "name": "3,1230,0",
+                  "text": "3,1228,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addDeprecations",
+                "text": "This method applies a versioned, deprecation declaration to this class. This\nis typically called by the `deprecated` config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "deprecations",
+                    "src": {
+                      "name": "4,120,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,118,12",
+                  "name": "4,120,0",
+                  "text": "4,116,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addListener",
+                "text": "The {@link #method!on #on} method is shorthand for\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}.\n\nAppends an event handler to this object.  For example:\n\n    myGridPanel.on(\"itemclick\", this.onItemClick, this);\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple events. For example:\n\n    myGridPanel.on({\n        cellclick: this.onCellClick,\n        select: this.onSelect,\n        viewready: this.onViewReady,\n        scope: this // Important. Ensure \"this\" is correct during handler execution\n    });\n\nOne can also specify options for each event handler separately:\n\n    myGridPanel.on({\n        cellclick: {fn: this.onCellClick, scope: this, single: true},\n        viewready: {fn: panel.onViewReady, scope: panel}\n    });\n\n*Names* of methods in a specified scope may also be used:\n\n    myGridPanel.on({\n        cellclick: {fn: 'onCellClick', scope: this, single: true},\n        viewready: {fn: 'onViewReady', scope: panel}\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\nMay also be an object who's property names are event names.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "3,835,35",
+                      "text": "3,835,45,37:3,836,12,61",
+                      "type": "3,835,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "optional": true,
+                    "text": "The method the event invokes or the *name* of\nthe method within the specified `scope`.  Will be called with arguments\ngiven to {@link Ext.util.Observable#method!fireEvent Ext.util.Observable#fireEvent} plus the `options` parameter described\nbelow.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,838,38",
+                      "text": "3,838,42,46:3,839,12,166",
+                      "type": "3,838,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,843,29",
+                      "text": "3,843,36,62:3,844,12,73",
+                      "type": "3,843,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n\n**Note:** The options object will also be passed as the last argument to every\nevent handler.\n\nThis object may contain any of the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "  The scope (`this` reference) in which the handler function is executed. **If omitted,\n  defaults to the object which fired the event.**\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "3,853,36",
+                          "text": "3,854,12,139",
+                          "type": "3,853,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delay",
+                        "text": "  The number of milliseconds to delay the invocation of the handler after the event\n  fires.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,857,36",
+                          "text": "3,858,12,94",
+                          "type": "3,857,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "single",
+                        "text": "  True to add a handler to handle just the next firing of the event, and then remove\n  itself.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "3,861,37",
+                          "text": "3,862,12,96",
+                          "type": "3,861,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "buffer",
+                        "text": "  Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed\n  by the specified number of milliseconds. If the event fires again within that time,\n  the original handler is _not_ invoked, but the new handler is scheduled in its place.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,865,36",
+                          "text": "3,866,12,262",
+                          "type": "3,865,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onFrame",
+                        "text": "  Causes the handler to be scheduled to run at the next\n  {@link Ext.Function#method!requestAnimationFrame Ext.Function#requestAnimationFrame}. If the\n  event fires again before that time, the handler is not rescheduled - the handler\n  will only be called once when the next animation frame is fired, with the last set\n  of arguments passed.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,870,36",
+                          "text": "3,871,12,323",
+                          "type": "3,870,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "target",
+                        "text": "  Only call the handler if the event was fired on the target Observable, _not_ if the\n  event was bubbled up from a child Observable.\n",
+                        "type": "Ext.util.Observable",
+                        "src": {
+                          "name": "3,877,49",
+                          "text": "3,878,12,135",
+                          "type": "3,877,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "element",
+                        "text": "  **This option is only valid for listeners bound to {@link Ext.Component}.**\n  The name of a Component property which references an {@link Ext.dom.Element}\n  to add a listener to.\n\n  This option is useful during Component construction to add DOM event listeners to\n  elements of {@link Ext.Component} which will exist only after the\n  Component is rendered.\n\n  For example, to add a click listener to a Panel's body:\n\n      var panel = new Ext.panel.Panel({\n          title: 'The title',\n          listeners: {\n              click: this.handlePanelClick,\n              element: 'body'\n          }\n      });\n\nIn order to remove listeners attached using the element, you'll need to reference\nthe element itself as seen below.\n\n     panel.body.un(...)\n",
+                        "type": "String",
+                        "src": {
+                          "name": "3,881,36",
+                          "text": "3,882,12,781",
+                          "type": "3,881,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delegate",
+                        "optional": true,
+                        "text": "  A simple selector to filter the event target or look for a descendant of the target.\n\n  The \"delegate\" option is only available on Ext.dom.Element instances (or\n  when attaching a listener to a Ext.dom.Element via a Component using the\n  element option).\n\n  See the *delegate* example below.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "3,905,37",
+                          "text": "3,906,12,295",
+                          "type": "3,905,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopPropagation",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to {@link Ext.dom.Element}.**\n  `true` to call {@link Ext.event.Event#method!stopPropagation Ext.event.Event#stopPropagation} on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "3,914,38",
+                          "text": "3,915,12,212",
+                          "type": "3,914,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "preventDefault",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to {@link Ext.dom.Element}.**\n  `true` to call {@link Ext.event.Event#method!preventDefault Ext.event.Event#preventDefault} on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "3,919,38",
+                          "text": "3,920,12,210",
+                          "type": "3,919,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopEvent",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to {@link Ext.dom.Element}.**\n  `true` to call {@link Ext.event.Event#method!stopEvent Ext.event.Event#stopEvent} on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "3,924,38",
+                          "text": "3,925,12,200",
+                          "type": "3,924,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "args",
+                        "optional": true,
+                        "text": "  Optional arguments to pass to the handler function. Any additional arguments\n  passed to {@link Ext.util.Observable#method!fireEvent Ext.util.Observable#fireEvent} will be appended\n  to these arguments.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "3,929,36",
+                          "text": "3,930,12,179",
+                          "type": "3,929,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "destroyable",
+                        "optional": true,
+                        "text": "  When specified as `true`, the function returns a `destroyable` object. An object\n  which implements the `{@link #method!destroy destroy}` method which removes all listeners added in this call.\n  This syntax can be a helpful shortcut to using {@link #method!un #un}; particularly when\n  removing multiple listeners.  *NOTE* - not compatible when using the _element_\n  option.  See {@link #method!un #un} for the proper syntax for removing listeners added using the\n  _element_ config.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "3,934,38",
+                          "text": "3,935,12,441",
+                          "type": "3,934,20",
+                          "value": "3,934,50"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "priority",
+                        "optional": true,
+                        "text": "  An optional numeric priority that determines the order in which event handlers\n  are run. Event handlers with no priority will be run as if they had a priority\n  of 0. Handlers with a higher priority will be prioritized to run sooner than\n  those with a lower priority.  Negative numbers can be used to set a priority\n  lower than the default. Internally, the framework uses a range of 1000 or\n  greater, and -1000 or lesser for handlers that are intended to run before or\n  after all others, so it is recommended to stay within the range of -999 to 999\n  when setting the priority of event handlers in application-level code.\n  A priority must be an integer to be valid.  Fractional values are reserved for\n  internal framework use.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,942,37",
+                          "text": "3,943,12,737",
+                          "type": "3,942,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "order",
+                        "optional": true,
+                        "text": "  A legacy option that is provided for backward compatibility.\n  It is recommended to use the `priority` option instead.  Available options are:\n\n  - `'before'`: equal to a priority of `100`\n  - `'current'`: equal to a priority of `0` or default priority\n  - `'after'`: equal to a priority of `-100`\n",
+                        "type": "String",
+                        "value": "'current'",
+                        "src": {
+                          "name": "3,954,37",
+                          "text": "3,955,12,301",
+                          "type": "3,954,20",
+                          "value": "3,954,43"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "3,846,29",
+                      "text": "3,846,38,44:3,847,12,154",
+                      "type": "3,846,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "  A shortcut for the `order` event option.  Provided for backward compatibility.\n  Please use the `priority` event option instead.\n\n**Combining Options**\n\nUsing the options argument, it is possible to combine different types of listeners:\n\nA delayed, one-time listener.\n\n    myPanel.on('hide', this.handleClick, this, {\n        single: true,\n        delay: 100\n    });\n\n**Attaching multiple handlers in 1 call**\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple handlers and handler configs.\n\n    grid.on({\n        itemclick: 'onItemClick',\n        itemcontextmenu: grid.onItemContextmenu,\n        destroy: {\n            fn: function () {\n                // function called within the 'altCmp' scope instead of grid\n            },\n            scope: altCmp // unique scope for the destroy handler\n        },\n        scope: grid       // default scope - provided for example clarity\n    });\n\n**Delegate**\n\nThis is a configuration option that you can pass along when registering a handler for\nan event to assist with event delegation. By setting this configuration option\nto a simple selector, the target element will be filtered to look for a\ndescendant of the target. For example:\n\n    var panel = Ext.create({\n        xtype: 'panel',\n        renderTo: document.body,\n        title: 'Delegate Handler Example',\n        frame: true,\n        height: 220,\n        width: 220,\n        html: '<h1 class=\"myTitle\">BODY TITLE</h1>Body content'\n    });\n\n    // The click handler will only be called when the click occurs on the\n    // delegate: h1.myTitle (\"h1\" tag with class \"myTitle\")\n    panel.on({\n        click: function (e) {\n            console.log(e.getTarget().innerHTML);\n        },\n        element: 'body',\n        delegate: 'h1.myTitle'\n     });\n",
+                    "type": "String",
+                    "value": "'current'",
+                    "src": {
+                      "name": "3,962,29",
+                      "text": "3,963,12,1831",
+                      "type": "3,962,20",
+                      "value": "3,962,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `{@link #method!destroy destroy}` method which removes\n all listeners added in this call. For example:\n\n    this.btnListeners =  = myButton.on({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,1021,29,54:3,1022,12,516",
+                      "type": "3,1021,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1041,0",
+                  "text": "3,804,12,1008"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addManagedListener",
+                "text": "The addManagedListener method is used when some object (call it \"A\") is listening\nto an event on another observable object (\"B\") and you want to remove that listener\nfrom \"B\" when \"A\" is destroyed. This is not an issue when \"B\" is destroyed because\nall of its listeners will be removed at that time.\n\nExample:\n\n    Ext.define('Foo', {\n        extend: 'Ext.Component',\n\n        initComponent: function () {\n            this.addManagedListener(MyApp.SomeGlobalSharedMenu, 'show', this.doSomething);\n            this.callParent();\n        }\n    });\n\nAs you can see, when an instance of Foo is destroyed, it ensures that the 'show'\nlistener on the menu (`MyApp.SomeGlobalSharedMenu`) is also removed.\n\nAs of version 5.1 it is no longer necessary to use this method in most cases because\nlisteners are automatically managed if the scope object provided to\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} is an Observable instance.\nHowever, if the observable instance and scope are not the same object you\nstill need to use `{@link #method!mon mon}` or `{@link #method!addManagedListener addManagedListener}` if you want the listener to be\nmanaged.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item to which to add a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "3,456,56",
+                      "text": "3,456,61,47",
+                      "type": "3,456,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "3,457,34",
+                      "text": "3,457,40,63",
+                      "type": "3,457,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event\nname, this is the handler function or the name of a method on the specified\n`scope`.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,458,36",
+                      "text": "3,458,39,49:3,459,11,85",
+                      "type": "3,458,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,461,27",
+                      "text": "3,461,33,92:3,462,11,43",
+                      "type": "3,461,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} options.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,463,27",
+                      "text": "3,463,35,67:3,464,11,61",
+                      "type": "3,463,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `{@link #method!destroy destroy}` method which removes all listeners added in this call. For example:\n\n    this.btnListeners = myButton.mon({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,465,28,54:3,466,11,513",
+                      "type": "3,465,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,484,0",
+                  "text": "3,430,11,1093"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "beforeViewRender",
+                "template": true,
+                "text": "Allows multiple views to be controlled by one selection model.\nCalled by AbstractView's beforeRender method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "view",
+                    "text": "The View passes itself\n",
+                    "type": "Ext.view.View",
+                    "src": {
+                      "name": "1,1183,31",
+                      "text": "1,1183,36,23",
+                      "type": "1,1183,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1179,8",
+                  "name": "1,1185,0",
+                  "template": "1,1180,8",
+                  "text": "1,1181,8,109"
+                }
+              },
+              {
+                "$type": "method",
+                "abstract": true,
+                "name": "bindComponent",
+                "src": {
+                  "abstract": "1,1210,8",
+                  "name": "1,1212,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "bindStore",
+                "text": "Binds a store to this instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "optional": true,
+                    "text": "The store to bind or ID of the store.\nWhen no store given (or when `{@link null}` or `{@link undefined}` passed), unbinds the existing store.\n",
+                    "type": "Ext.data.AbstractStore/String",
+                    "src": {
+                      "name": "5,19,48",
+                      "text": "5,19,55,38:5,20,8,88",
+                      "type": "5,19,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,22,0",
+                  "text": "5,18,8,32"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "bindStoreListeners",
+                "text": "Binds listeners for this component to the store. By default it will add\nanything bound by the getStoreListeners method, however it can be overridden\nin a subclass to provide any more complicated handling.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The store to bind to\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "name": "5,93,40",
+                      "text": "5,93,46,21",
+                      "type": "5,93,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "5,92,8",
+                  "name": "5,95,0",
+                  "text": "5,89,8,205"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callParent",
+                "text": "Call the \"parent\" method of the current method. That is the method previously\noverridden by derivation or by an override (see {@link Ext#method!define Ext#define}).\n\n     Ext.define('My.Base', {\n         constructor: function (x) {\n             this.x = x;\n         },\n\n         statics: {\n             method: function (x) {\n                 return x;\n             }\n         }\n     });\n\n     Ext.define('My.Derived', {\n         extend: 'My.Base',\n\n         constructor: function () {\n             this.callParent([21]);\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // alerts 21\n\nThis can be used with an override as follows:\n\n     Ext.define('My.DerivedOverride', {\n         override: 'My.Derived',\n\n         constructor: function (x) {\n             this.callParent([x*2]); // calls original My.Derived constructor\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // now alerts 42\n\nThis also works with static and private methods.\n\n     Ext.define('My.Derived2', {\n         extend: 'My.Base',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Base.method\n             }\n         }\n     });\n\n     alert(My.Base.method(10));     // alerts 10\n     alert(My.Derived2.method(10)); // alerts 20\n\nLastly, it also works with overridden static methods.\n\n     Ext.define('My.Derived2Override', {\n         override: 'My.Derived2',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Derived2.method\n             }\n         }\n     });\n\n     alert(My.Derived2.method(10); // now alerts 40\n\nTo override a method and replace it and also call the superclass method, use\n{@link #method!callSuper #method-callSuper}. This is often done to patch a method to fix a bug.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callParent(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "4,1251,37",
+                      "text": "4,1251,42,57:4,1252,12,67",
+                      "type": "4,1251,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the parent method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1253,29,48",
+                      "type": "4,1253,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1250,12",
+                  "name": "4,1255,0",
+                  "text": "4,1175,12,1853"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callSuper",
+                "text": "This method is used by an **override** to call the superclass method but\nbypass any overridden method. This is often done to \"patch\" a method that\ncontains a bug but for whatever reason cannot be fixed directly.\n\nConsider:\n\n     Ext.define('Ext.some.Class', {\n         method: function () {\n             console.log('Good');\n         }\n     });\n\n     Ext.define('Ext.some.DerivedClass', {\n         extend: 'Ext.some.Class',\n\n         method: function () {\n             console.log('Bad');\n\n             // ... logic but with a bug ...\n\n             this.callParent();\n         }\n     });\n\nTo patch the bug in `Ext.some.DerivedClass.method`, the typical solution is to create an\noverride:\n\n     Ext.define('App.patches.DerivedClass', {\n         override: 'Ext.some.DerivedClass',\n\n         method: function () {\n             console.log('Fixed');\n\n             // ... logic but with bug fixed ...\n\n             this.callSuper();\n         }\n     });\n\nThe patch method cannot use {@link #method!callParent #method-callParent} to call the superclass\n`method` since that would call the overridden method containing the bug. In\nother words, the above patch would only produce \"Fixed\" then \"Good\" in the\nconsole log, whereas, using `callParent` would produce \"Fixed\" then \"Bad\"\nthen \"Good\".\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callSuper(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "4,1338,37",
+                      "text": "4,1338,42,57:4,1339,12,66",
+                      "type": "4,1338,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the superclass method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1340,29,52",
+                      "type": "4,1340,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1337,12",
+                  "name": "4,1342,0",
+                  "text": "4,1292,12,1266"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearListeners",
+                "text": "Removes all listeners for this object including the managed listeners\n",
+                "src": {
+                  "name": "3,1255,0",
+                  "text": "3,1253,11,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearManagedListeners",
+                "text": "Removes all managed listeners for this object.\n",
+                "src": {
+                  "name": "3,1291,0",
+                  "text": "3,1289,11,47"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clearSelections",
+                "text": "A fast reset of the selections without firing events, updating the ui, etc.\nFor private usage only.\n",
+                "src": {
+                  "access": "1,967,8",
+                  "name": "1,969,0",
+                  "text": "1,965,8,100"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to wrap.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "6,40,21",
+                      "text": "6,40,28,19",
+                      "type": "6,40,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "6,38,12",
+                  "text": "6,39,4,20"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createRelayer",
+                "text": "Creates an event handling function which re-fires the event from this object as the passed event name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newName",
+                    "text": "The name under which to re-fire the passed parameters.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1522,27",
+                      "text": "3,1522,35,55",
+                      "type": "3,1522,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "beginEnd",
+                    "text": "(optional) The caller can specify on which indices to slice.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,1523,26",
+                      "text": "3,1523,35,61",
+                      "type": "3,1523,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "3,1524,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1520,11",
+                  "name": "3,1526,0",
+                  "text": "3,1521,11,103"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "deselect",
+                "text": "Deselects a record instance by record instance or index.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "text": "An array of records or an index\n",
+                    "type": "Ext.data.Model[]/Number",
+                    "src": {
+                      "name": "1,553,41",
+                      "text": "1,553,49,32",
+                      "type": "1,553,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "optional": true,
+                    "text": "True to not fire a deselect event\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,554,26",
+                      "text": "1,554,47,34",
+                      "type": "1,554,16",
+                      "value": "1,554,40"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,556,0",
+                  "text": "1,552,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "deselectAll",
+                "text": "Deselects all records in the view.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "optional": true,
+                    "text": "True to suppress any deselect events\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,205,26",
+                      "text": "1,205,41,37",
+                      "type": "1,205,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,207,0",
+                  "text": "1,204,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "deselectRange",
+                "text": "Deselects a range of rows if the selection model {@link #method!isLocked #isLocked}.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "startRow",
+                    "text": "The record or index of the first row in the range\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "1,486,39",
+                      "text": "1,486,48,50",
+                      "type": "1,486,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "endRow",
+                    "text": "The record or index of the last row in the range\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "1,487,39",
+                      "text": "1,487,46,49",
+                      "type": "1,487,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,489,0",
+                  "text": "1,485,8,82"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "This method is called to cleanup an object and its resources. After calling\nthis method, the object should not be used any further.\n",
+                "src": {
+                  "name": "4,1626,0",
+                  "text": "4,1623,12,132"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doFireEvent",
+                "text": "Continue to fire event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "type": "String",
+                    "src": {
+                      "name": "3,761,27",
+                      "type": "3,761,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,762,26",
+                      "type": "3,762,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bubbles",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,763,28",
+                      "type": "3,763,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,759,11",
+                  "name": "3,765,0",
+                  "text": "3,758,11,24"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enableBubble",
+                "text": "Enables events fired by this Observable to bubble up an owner hierarchy by calling `this.getBubbleTarget()` if\npresent. There is no implementation in the Observable base class.\n\nThis is commonly used by Ext.Components to bubble events to owner Containers.\nSee {@link Ext.Component#method!getBubbleTarget Ext.Component#getBubbleTarget}. The default implementation in Ext.Component returns the\nComponent's immediate owner. But if a known target is required, this can be overridden to access the\nrequired target more quickly.\n\nExample:\n\n    Ext.define('Ext.overrides.form.field.Base', {\n        override: 'Ext.form.field.Base',\n\n        //  Add functionality to Field's initComponent to enable the change event to bubble\n        initComponent: function () {\n            this.callParent();\n            this.enableBubble('change');\n        }\n    });\n\n    var myForm = Ext.create('Ext.form.Panel', {\n        title: 'User Details',\n        items: [{\n            ...\n        }],\n        listeners: {\n            change: function() {\n                // Title goes red if form has been modified.\n                myForm.header.setStyle('color', 'red');\n            }\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventNames",
+                    "text": "The event name to bubble, or an Array of event names.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "3,1567,36",
+                      "text": "3,1567,47,54",
+                      "type": "3,1567,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1569,0",
+                  "text": "3,1534,11,1138"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use {@link #fireEventAction} instead.\n",
+                "deprecatedVersion": "5.5",
+                "name": "fireAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nBy default, the action function will be executed after any \"before\" event handlers\n(as specified using the `order` option of\n`{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}`), but before any other\nhandlers are fired.  This gives the \"before\" handlers an opportunity to\ncancel the event by returning `false`, and prevent the action function from\nbeing called.\n\nThe action can also be configured to run after normal handlers, but before any \"after\"\nhandlers (as specified using the `order` event option) by passing `'after'`\nas the `order` parameter.  This configuration gives any event handlers except\nfor \"after\" handlers the opportunity to cancel the event and prevent the action\nfunction from being called.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,640,28",
+                      "text": "3,640,38,31",
+                      "type": "3,640,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,641,27",
+                      "text": "3,641,32,58",
+                      "type": "3,641,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "3,642,30",
+                      "text": "3,642,33,21",
+                      "type": "3,642,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,643,29",
+                      "text": "3,643,36,62:3,644,12,72",
+                      "type": "3,643,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Event options for the action function.  Accepts any\nof the options of `{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}`\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,645,29",
+                      "text": "3,645,38,52:3,646,12,72",
+                      "type": "3,645,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "The order to call the action function relative\ntoo the event handlers (`'before'` or `'after'`).  Note that this option is\nsimply used to sort the action function relative to the event handlers by \"priority\".\nAn order of `'before'` is equivalent to a priority of `99.5`, while an order of\n`'after'` is equivalent to a priority of `-99.5`.  See the `priority` option\nof `{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}` for more details.\n",
+                    "type": "String",
+                    "value": "'before'",
+                    "src": {
+                      "name": "3,647,29",
+                      "text": "3,647,45,47:3,648,12,394",
+                      "type": "3,647,20",
+                      "value": "3,647,35"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "3,653,12",
+                  "deprecatedVersion": "3,653,12",
+                  "name": "3,655,0",
+                  "text": "3,626,12,802"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEvent",
+                "text": "Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed\nto {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}).\n\nAn event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#method!getBubbleTarget Ext.Component#getBubbleTarget}) by\ncalling {@link #method!enableBubble #enableBubble}.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,568,27",
+                      "text": "3,568,37,31",
+                      "type": "3,568,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Variable number of parameters are passed to handlers.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "3,569,30",
+                      "text": "3,569,35,54",
+                      "type": "3,569,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,570,29,77",
+                      "type": "3,570,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,572,0",
+                  "text": "3,562,11,310"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventArgs",
+                "text": "Fires the specified event with the passed parameter list.\n\nAn event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#method!getBubbleTarget Ext.Component#getBubbleTarget}) by\ncalling {@link #method!enableBubble #enableBubble}.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,605,27",
+                      "text": "3,605,37,31",
+                      "type": "3,605,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "An array of parameters which are passed to handlers.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "3,606,29",
+                      "text": "3,606,34,53",
+                      "type": "3,606,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,607,29,77",
+                      "type": "3,607,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,609,0",
+                  "text": "3,600,11,202"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventedAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nEvented Actions will automatically dispatch a 'before' event passing. This event will\nbe given a special controller that allows for pausing/resuming of the event flow.\n\nBy pausing the controller the updater and events will not run until resumed. Pausing,\nhowever, will not stop the processing of any other before events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,721,28",
+                      "text": "3,721,38,31",
+                      "type": "3,721,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,722,27",
+                      "text": "3,722,32,58",
+                      "type": "3,722,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,723,37",
+                      "text": "3,723,40,21",
+                      "type": "3,723,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,724,29",
+                      "text": "3,724,36,62:3,725,12,72",
+                      "type": "3,724,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fnArgs",
+                    "optional": true,
+                    "text": "Optional arguments for the action `fn`. If not\ngiven, the normal `args` will be used to call `fn`. If `false` is passed, the\n`args` are used but if the first argument is this instance it will be removed\nfrom the args passed to the action function.\n",
+                    "type": "Array/Boolean",
+                    "src": {
+                      "name": "3,726,36",
+                      "text": "3,726,44,47:3,727,12,201",
+                      "type": "3,726,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,731,0",
+                  "text": "3,714,12,409"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getBubbleParent",
+                "text": "Gets the bubbling parent for an Observable\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The bubble parent. null is returned if no bubble target exists\n",
+                    "type": "Ext.util.Observable",
+                    "src": {
+                      "text": "3,793,41,63",
+                      "type": "3,793,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,792,11",
+                  "name": "3,795,0",
+                  "text": "3,791,11,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getConfig",
+                "text": "Returns a specified config property value. If the name parameter is not passed,\nall current configuration options will be returned as key value pairs.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "The name of the config property to get.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1469,29",
+                      "text": "4,1469,35,40",
+                      "type": "4,1469,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "peek",
+                    "optional": true,
+                    "text": "`true` to peek at the raw value without calling the getter.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "4,1470,30",
+                      "text": "4,1470,42,60",
+                      "type": "4,1470,20",
+                      "value": "4,1470,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The config property value.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1471,29,27",
+                      "type": "4,1471,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1473,0",
+                  "text": "4,1466,12,151"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCount",
+                "text": "Returns the count of selected records.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The number of selected records\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "1,1053,25,31",
+                      "type": "1,1053,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1055,0",
+                  "text": "1,1052,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getCurrentConfig",
+                "src": {
+                  "access": "4,1506,12",
+                  "name": "4,1508,0"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use the {@link Ext.view.Table#getNavigationModel NavigationModel} instead.\n",
+                "deprecatedVersion": "5.0.1",
+                "name": "getCurrentPosition",
+                "text": "Returns position of the first selected cell in the selection in the format {row: row, column: column}\n",
+                "src": {
+                  "deprecatedMessage": "2,149,8",
+                  "deprecatedVersion": "2,149,8",
+                  "name": "2,151,0",
+                  "text": "2,148,8,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "7,75,25,3",
+                      "type": "7,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "7,77,0",
+                  "text": "7,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInitialConfig",
+                "text": "Returns the initial configuration passed to the constructor when\ninstantiating this class.\n\nGiven this example Ext.button.Button definition and instance:\n\n    Ext.define('MyApp.view.Button', {\n        extend: 'Ext.button.Button',\n        xtype: 'mybutton',\n\n        scale: 'large',\n        enableToggle: true\n    });\n\n    var btn = Ext.create({\n        xtype: 'mybutton',\n        renderTo: Ext.getBody(),\n        text: 'Test Button'\n    });\n\nCalling `btn.getInitialConfig()` would return an object including the config\noptions passed to the `{@link #static-method!create create}` method:\n\n    xtype: 'mybutton',\n    renderTo: // The document body itself\n    text: 'Test Button'\n\nCalling `btn.getInitialConfig('text')`returns **'Test Button'**.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "Name of the config option to return.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1551,29",
+                      "text": "4,1551,35,37",
+                      "type": "4,1551,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The full config object or a single config value\nwhen `name` parameter specified.\n",
+                    "type": "Object/Mixed",
+                    "src": {
+                      "text": "4,1552,35,48:4,1553,12,33",
+                      "type": "4,1552,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1555,0",
+                  "text": "4,1523,12,715"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getLastSelected",
+                "text": "Called by {@link Ext.panel.Table#updateBindSelection} when publishing the `selection` property.\nIt should yield the last record selected.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The last record selected. This is only available if the current selection type is cells or rows.\nIn the case of multiple selection, the *last* record added to the selection is returned.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "1,1221,37,97:1,1222,12,89",
+                      "type": "1,1221,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1218,12",
+                  "name": "1,1224,0",
+                  "text": "1,1219,12,138"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSelection",
+                "text": "Returns an array of the currently selected records.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The selected records\n",
+                    "type": "Ext.data.Model[]",
+                    "src": {
+                      "text": "1,787,35,21",
+                      "type": "1,787,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,789,0",
+                  "text": "1,786,8,52"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSelectionMode",
+                "text": "Returns the current selectionMode.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The selectionMode: 'SINGLE', 'MULTI' or 'SIMPLE'.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,795,25,50",
+                      "type": "1,795,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,797,0",
+                  "text": "1,794,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStore",
+                "text": "Gets the current store instance.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The store, null if one does not exist.\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "text": "5,58,41,39",
+                      "type": "5,58,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,60,0",
+                  "text": "5,57,8,33"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getStoreListeners",
+                "text": "Gets the listeners to bind to a new store.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The Store which is being bound to for which a listeners object should be returned.\n",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "name": "5,113,32",
+                      "text": "5,113,38,83",
+                      "type": "5,113,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The listeners to be bound to the store in object literal form. The scope\nmay be omitted, it is assumed to be the current instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "5,114,25,73:5,115,8,58",
+                      "type": "5,114,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "5,112,8",
+                  "name": "5,117,0",
+                  "text": "5,111,8,43"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "hasConfig",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "4,1516,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1515,12",
+                  "name": "4,1518,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasListener",
+                "text": "Checks to see if this object has any listeners for a specified event, or whether the event bubbles. The answer\nindicates whether the event needs firing or not.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to check for\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1334,27",
+                      "text": "3,1334,37,35",
+                      "type": "3,1334,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the event is being listened for or bubbles, else `false`\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,1335,29,67",
+                      "type": "3,1335,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1337,0",
+                  "text": "3,1331,11,161"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "6,100,20",
+                      "text": "6,100,25,34",
+                      "type": "6,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "6,101,22,57:6,102,4,15",
+                      "type": "6,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "6,53,12",
+                  "text": "6,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasSelection",
+                "text": "Returns true if there are any a selected records.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "1,864,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,866,0",
+                  "text": "1,863,8,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initConfig",
+                "text": "Initialize configuration for this class. a typical example:\n\n    Ext.define('My.awesome.Class', {\n        // The default config\n        config: {\n            name: 'Awesome',\n            isAwesome: true\n        },\n\n        constructor: function(config) {\n            this.initConfig(config);\n        }\n    });\n\n    var awesome = new My.awesome.Class({\n        name: 'Super Awesome'\n    });\n\n    alert(awesome.getName()); // 'Super Awesome'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1449,28",
+                      "type": "4,1449,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,1450,31,5",
+                      "type": "4,1450,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1448,12",
+                  "name": "4,1452,0",
+                  "text": "4,1428,12,441"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLocked",
+                "text": "Returns true if the selections are locked.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "1,814,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,816,0",
+                  "text": "1,813,8,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "6,148,20",
+                      "text": "6,148,30,71:6,149,4,18",
+                      "type": "6,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "6,150,20",
+                      "text": "6,150,27,50",
+                      "type": "6,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "6,151,22,56",
+                      "type": "6,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "6,106,12",
+                  "text": "6,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isRangeSelected",
+                "text": "Returns true if the specified row is selected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "from",
+                    "text": "The start of the range to check.\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "1,830,39",
+                      "text": "1,830,44,33",
+                      "type": "1,830,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "to",
+                    "text": "The end of the range to check.\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "1,831,39",
+                      "text": "1,831,42,31",
+                      "type": "1,831,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "1,832,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,834,0",
+                  "text": "1,829,8,47"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSelected",
+                "text": "Returns true if the specified row is selected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record or index of the record to check\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "1,854,39",
+                      "text": "1,854,46,43",
+                      "type": "1,854,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "1,855,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,857,0",
+                  "text": "1,853,8,47"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSuspended",
+                "text": "Checks if all events, or a specific event, is suspended.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "optional": true,
+                    "text": "The name of the specific event to check\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1344,29",
+                      "text": "3,1344,36,40",
+                      "type": "3,1344,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if events are suspended\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,1345,30,31",
+                      "type": "3,1345,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1347,0",
+                  "text": "3,1343,12,57"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "link",
+                "text": "Adds a \"destroyable\" object to an internal list of objects that will be destroyed\nwhen this instance is destroyed (via `{@link #method!destroy #destroy}`).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1571,28",
+                      "type": "4,1571,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1572,28",
+                      "type": "4,1572,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `value` passed.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1573,29,20",
+                      "type": "4,1573,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1574,12",
+                  "name": "4,1576,0",
+                  "text": "4,1569,12,140"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addManagedListener",
+                "name": "mon",
+                "text": "Shorthand for {@link #method!addManagedListener #addManagedListener}.\n",
+                "src": {
+                  "inheritdoc": "3,1787,12",
+                  "name": "3,1789,0",
+                  "text": "3,1786,12,43"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeManagedListener",
+                "name": "mun",
+                "text": "Shorthand for {@link #method!removeManagedListener #removeManagedListener}.\n",
+                "src": {
+                  "inheritdoc": "3,1793,12",
+                  "name": "3,1795,0",
+                  "text": "3,1792,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addListener",
+                "name": "on",
+                "src": {
+                  "inheritdoc": "3,1775,12",
+                  "name": "3,1777,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onAfter",
+                "text": "Appends an after-event handler.\n\nSame as {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} with `order` set\nto `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "3,1190,44",
+                      "text": "3,1190,54,37",
+                      "type": "3,1190,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,1191,37",
+                      "text": "3,1191,40,30",
+                      "type": "3,1191,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1192,29",
+                      "text": "3,1192,36,20",
+                      "type": "3,1192,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1193,29",
+                      "text": "3,1193,38,44",
+                      "type": "3,1193,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1195,0",
+                  "text": "3,1185,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onBefore",
+                "text": "Appends a before-event handler.  Returning `false` from the handler will stop the event.\n\nSame as {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} with `order` set\nto `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "3,1175,44",
+                      "text": "3,1175,54,37",
+                      "type": "3,1175,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,1176,37",
+                      "text": "3,1176,40,30",
+                      "type": "3,1176,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1177,29",
+                      "text": "3,1177,36,20",
+                      "type": "3,1177,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1178,29",
+                      "text": "3,1178,38,44",
+                      "type": "3,1178,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1180,0",
+                  "text": "3,1170,12,183"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onBindStore",
+                "text": "Template method, it is called when a new store is bound\nto the current instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The store being bound\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "name": "5,134,40",
+                      "text": "5,134,46,22",
+                      "type": "5,134,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "initial",
+                    "text": "True if this store is being bound as initialization of the instance.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "5,135,25",
+                      "text": "5,135,33,69",
+                      "type": "5,135,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "5,133,8",
+                  "name": "5,137,0",
+                  "text": "5,131,8,81"
+                }
+              },
+              {
+                "$type": "method",
+                "abstract": true,
+                "name": "onEditorKey",
+                "src": {
+                  "abstract": "1,1174,8",
+                  "name": "1,1176,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onHeaderClick",
+                "template": true,
+                "text": "Called by the owning grid's {@link Ext.grid.header.Container}\nwhen a column header is activated by the UI (clicked, or receives a `SPACE` or `ENTER` key event).\n",
+                "src": {
+                  "access": "1,1191,8",
+                  "name": "1,1196,0",
+                  "template": "1,1192,8",
+                  "text": "1,1193,8,178"
+                }
+              },
+              {
+                "$type": "method",
+                "abstract": true,
+                "name": "onSelectChange",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "src": {
+                      "name": "1,1159,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isSelected",
+                    "src": {
+                      "name": "1,1159,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "src": {
+                      "name": "1,1159,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "commitFn",
+                    "src": {
+                      "name": "1,1159,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "abstract": "1,1157,8",
+                  "name": "1,1159,0"
+                }
+              },
+              {
+                "$type": "method",
+                "abstract": true,
+                "access": "private",
+                "name": "onStoreLoad",
+                "src": {
+                  "abstract": "1,1151,8",
+                  "access": "1,1152,8",
+                  "name": "1,1154,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onUnbindStore",
+                "text": "Template method, it is called when an existing store is unbound\nfrom the current instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The store being unbound\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "name": "5,124,40",
+                      "text": "5,124,46,24",
+                      "type": "5,124,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "initial",
+                    "text": "True if this store is being bound as initialization of the instance.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "5,125,25",
+                      "text": "5,125,33,69",
+                      "type": "5,125,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "5,123,8",
+                  "name": "5,127,0",
+                  "text": "5,121,8,91"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "6,220,20",
+                      "text": "6,220,25,34",
+                      "type": "6,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "6,221,22,57:6,222,4,22",
+                      "type": "6,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "6,155,12",
+                  "text": "6,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "relayEvents",
+                "text": "Relays selected events from the specified Observable as if the events were fired by `this`.\n\nFor example if you are extending Grid, you might decide to forward some events from store.\nSo you can do this inside your initComponent:\n\n    this.relayEvents(this.getStore(), ['load']);\n\nThe grid instance will then have an observable 'load' event which will be passed\nthe parameters of the store's load event and any function fired with the grid's\nload event would have access to the grid using the this keyword (unless the event\nis handled by a controller's control/listen event listener in which case 'this'\nwill be the controller rather than the grid).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The Observable whose events this object is to relay.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1466,27",
+                      "text": "3,1466,34,53",
+                      "type": "3,1466,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "events",
+                    "text": "Array of event names to relay or an Object with key/value\npairs translating to ActualEventName/NewEventName respectively. For example:\n    this.relayEvents(this, {add:'push', remove:'pop'});\n\nWould now redispatch the add event of this as a push event and the remove event as a pop event.\n",
+                    "type": "String[]/Object",
+                    "src": {
+                      "name": "3,1467,36",
+                      "text": "3,1467,43,58:3,1468,11,231",
+                      "type": "3,1467,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prefix",
+                    "optional": true,
+                    "text": "A common prefix to prepend to the event names. For example:\n\n    this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nNow the grid will forward 'load' and 'clear' events of store as 'storeload' and 'storeclear'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1473,28",
+                      "text": "3,1473,36,60:3,1474,11,164",
+                      "type": "3,1473,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A `Destroyable` object. An object which implements the `{@link #method!destroy destroy}` method which, when destroyed, removes all relayers. For example:\n\n    this.storeRelayers = this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nCan be undone by calling\n\n    Ext.destroy(this.storeRelayers);\n\nor\n    this.store.relayers.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,1479,28,130:3,1480,11,192",
+                      "type": "3,1479,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1490,0",
+                  "text": "3,1453,11,651"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeAfterListener",
+                "text": "Alias for {@link #method!unAfter #unAfter}.\n",
+                "src": {
+                  "name": "3,1248,0",
+                  "text": "3,1246,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeBeforeListener",
+                "text": "Alias for {@link #method!unBefore #unBefore}.\n",
+                "src": {
+                  "name": "3,1242,0",
+                  "text": "3,1240,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeListener",
+                "text": "Removes an event handler.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The type of event the handler was associated with.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1102,28",
+                      "text": "3,1102,38,51",
+                      "type": "3,1102,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove. **This must be a reference to the function\npassed into the\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} call.**\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "3,1103,30",
+                      "text": "3,1103,33,66:3,1104,12,76",
+                      "type": "3,1103,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope originally specified for the handler. It\nmust be the same as the scope argument specified in the original call to\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} or the listener will not be removed.\n\n**Convenience Syntax**\n\nYou can use the {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}\n`destroyable: true` config option in place of calling un().  For example:\n\n    var listeners = cmp.on({\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide,\n        destroyable: true\n    });\n\n    // Remove listeners\n    listeners.destroy();\n    // or\n    cmp.un(\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide\n    );\n\n**Exception - DOM event handlers using the element config option**\n\nYou must go directly through the element to detach an event handler attached using\nthe {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} _element_ option.\n\n    panel.on({\n        element: 'body',\n        click: 'onBodyCLick'\n    });\n\n    panel.body.un({\n        click: 'onBodyCLick'\n    });\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1106,28",
+                      "text": "3,1106,34,62:3,1107,12,1017",
+                      "type": "3,1106,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1145,0",
+                  "text": "3,1100,12,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeManagedListener",
+                "text": "Removes listeners that were added by the {@link #method!mon #mon} method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item from which to remove a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "3,526,56",
+                      "text": "3,526,61,52",
+                      "type": "3,526,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "3,527,34",
+                      "text": "3,527,40,63",
+                      "type": "3,527,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the handler function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "3,528,29",
+                      "text": "3,528,32,85",
+                      "type": "3,528,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,529,27",
+                      "text": "3,529,33,92:3,530,11,43",
+                      "type": "3,529,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,532,0",
+                  "text": "3,524,11,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "removeManagedListenerItem",
+                "text": "Remove a single managed listener item\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "isClear",
+                    "text": "True if this is being called during a clear\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,1307,28",
+                      "text": "3,1307,36,44",
+                      "type": "3,1307,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "managedListener",
+                    "text": "The managed listener item\nSee removeManagedListener for other args\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1308,27",
+                      "text": "3,1308,43,26:3,1309,11,41",
+                      "type": "3,1308,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1306,11",
+                  "name": "3,1311,0",
+                  "text": "3,1305,11,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "resolveListenerScope",
+                "text": "Gets the default scope for firing late bound events (string names with\nno scope attached) at runtime.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "defaultScope",
+                    "optional": true,
+                    "text": "The default scope to return if none is found.\n",
+                    "type": "Object",
+                    "value": "this",
+                    "src": {
+                      "name": "3,579,29",
+                      "text": "3,579,48,46",
+                      "type": "3,579,20",
+                      "value": "3,579,42"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The default event scope\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,580,29,24",
+                      "type": "3,580,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,581,12",
+                  "name": "3,583,0",
+                  "text": "3,577,12,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvent",
+                "text": "Resumes firing of the named event(s).\n\nAfter calling this method to resume events, the events will fire when requested to fire.\n\n**Note that if the {@link #method!suspendEvent #suspendEvent} method is called multiple times for a certain event,\nthis converse method will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to resume.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "3,1409,32",
+                      "text": "3,1409,42,32",
+                      "type": "3,1409,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1411,0",
+                  "text": "3,1402,12,320"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvents",
+                "text": "Resumes firing events (see {@link #method!suspendEvents #suspendEvents}).\n\nIf events were suspended using the `queueSuspended` parameter, then all events fired\nduring event suspension will be sent to any listeners now.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "discardQueue",
+                    "optional": true,
+                    "text": "`true` to prevent any previously queued events from firing\nwhile we were suspended. See {@link #method!suspendEvents #suspendEvents}.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,1431,29",
+                      "text": "3,1431,43,59:3,1432,11,53",
+                      "type": "3,1431,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1434,0",
+                  "text": "3,1426,11,198"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "select",
+                "text": "Selects a record instance by record instance or index.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "text": "An array of records or an index\n",
+                    "type": "Ext.data.Model[]/Number",
+                    "src": {
+                      "name": "1,540,41",
+                      "text": "1,540,49,32",
+                      "type": "1,540,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "keepExisting",
+                    "optional": true,
+                    "text": "True to retain existing selections\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,541,26",
+                      "text": "1,541,46,35",
+                      "type": "1,541,16",
+                      "value": "1,541,39"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "optional": true,
+                    "text": "True to not fire a select event\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,542,26",
+                      "text": "1,542,47,32",
+                      "type": "1,542,16",
+                      "value": "1,542,40"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,544,0",
+                  "text": "1,539,8,55"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "selectAll",
+                "text": "Selects all records in the view.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "text": "True to suppress any select events\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,187,25",
+                      "text": "1,187,39,35",
+                      "type": "1,187,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,189,0",
+                  "text": "1,186,8,33"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "selectNext",
+                "text": "Selects the record immediately following the currently selected record.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "keepExisting",
+                    "optional": true,
+                    "text": "True to retain existing selections\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,167,26",
+                      "text": "2,167,40,35",
+                      "type": "2,167,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "optional": true,
+                    "text": "Set to false to not fire a select event\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,168,26",
+                      "text": "2,168,41,40",
+                      "type": "2,168,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if there is a next record, else `false`\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,169,26,47",
+                      "type": "2,169,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,171,0",
+                  "text": "2,166,8,72"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "selectPrevious",
+                "text": "Selects the record that precedes the currently selected record.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "keepExisting",
+                    "optional": true,
+                    "text": "True to retain existing selections\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,190,26",
+                      "text": "2,190,40,35",
+                      "type": "2,190,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "optional": true,
+                    "text": "Set to false to not fire a select event\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,191,26",
+                      "text": "2,191,41,40",
+                      "type": "2,191,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if there is a previous record, else `false`\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,192,26,51",
+                      "type": "2,192,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,194,0",
+                  "text": "2,189,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "selectRange",
+                "text": "Selects a range of rows if the selection model {@link #method!isLocked #isLocked}.\nAll rows in between startRow and endRow are also selected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "startRow",
+                    "text": "The record or index of the first row in the range\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "1,431,39",
+                      "text": "1,431,48,50",
+                      "type": "1,431,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "endRow",
+                    "text": "The record or index of the last row in the range\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "1,432,39",
+                      "text": "1,432,46,49",
+                      "type": "1,432,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "keepExisting",
+                    "text": "(optional) True to retain existing selections\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,433,25",
+                      "text": "1,433,38,46",
+                      "type": "1,433,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,435,0",
+                  "text": "1,429,8,139"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setConfig",
+                "text": "Sets a single/multiple configuration options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the property to set, or a set of key value pairs to set.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "4,1478,35",
+                      "text": "4,1478,40,69",
+                      "type": "4,1478,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to set for the name parameter.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1479,29",
+                      "text": "4,1479,36,41",
+                      "type": "4,1479,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,1480,31,5",
+                      "type": "4,1480,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1482,0",
+                  "text": "4,1476,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setListeners",
+                "text": "An alias for {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}.  In\nversions prior to 5.1, {@link #cfg!listeners #listeners} had a generated setter which could\nbe called to add listeners.  In 5.1 the listeners config is not processed\nusing the config system and has no generated setter, so this method is\nprovided for backward compatibility.  The preferred way of adding listeners\nis to use the {@link #method!on #on} method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "text": "The listeners\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1804,28",
+                      "text": "3,1804,38,14",
+                      "type": "3,1804,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1806,0",
+                  "text": "3,1798,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setLocked",
+                "text": "Locks the current selection and disables any changes from happening to the selection.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "locked",
+                    "text": "True to lock, false to unlock.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,822,25",
+                      "text": "1,822,32,31",
+                      "type": "1,822,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,824,0",
+                  "text": "1,821,8,86"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setSelectionMode",
+                "text": "Sets the current selectionMode.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selMode",
+                    "text": "'SINGLE', 'MULTI' or 'SIMPLE'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,803,24",
+                      "text": "1,803,32,31",
+                      "type": "1,803,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,805,0",
+                  "text": "1,802,8,32"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setStore",
+                "since": "5.0.0",
+                "text": "Sets the store to the specified store.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "src": {
+                      "name": "5,66,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,69,0",
+                  "since": "5,67,15",
+                  "text": "5,65,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "statics",
+                "text": "Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#property!self Ext.Base#self},\n`this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what\n`this` points to during run-time\n\n    Ext.define('My.Cat', {\n        statics: {\n            totalCreated: 0,\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            var statics = this.statics();\n\n            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to\n                                            // equivalent to: My.Cat.speciesName\n\n            alert(this.self.speciesName);   // dependent on 'this'\n\n            statics.totalCreated++;\n        },\n\n        clone: function() {\n            var cloned = new this.self();   // dependent on 'this'\n\n            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName\n\n            return cloned;\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n\n        statics: {\n            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'\n        },\n\n        constructor: function() {\n            this.callParent();\n        }\n    });\n\n    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'\n\n    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'\n    alert(clone.groupName);                 // alerts 'Cat'\n\n    alert(My.Cat.totalCreated);             // alerts 3\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Class",
+                    "src": {
+                      "type": "4,1161,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1160,12",
+                  "name": "4,1163,0",
+                  "text": "4,1107,12,1691"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvent",
+                "text": "Suspends firing of the named event(s).\n\nAfter calling this method to suspend events, the events will no longer fire when requested to fire.\n\n**Note that if this is called multiple times for a certain event, the converse method\n{@link #method!resumeEvent #resumeEvent} will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to suspend.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "3,1381,32",
+                      "text": "3,1381,42,33",
+                      "type": "3,1381,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1383,0",
+                  "text": "3,1374,12,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvents",
+                "text": "Suspends the firing of all events. (see {@link #method!resumeEvents #resumeEvents})\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "queueSuspended",
+                    "text": "`true` to queue up suspended events to be fired\nafter the {@link #method!resumeEvents #resumeEvents} call instead of discarding all suspended events.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,1363,28",
+                      "text": "3,1363,43,48:3,1364,11,81",
+                      "type": "3,1363,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1366,0",
+                  "text": "3,1361,11,64"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n`{@link Object}`'s `{@link #method!toLocaleString toLocaleString}` returns the result of calling `{@link #method!toString toString}`.\n\nThis function is provided to give objects a generic `{@link #method!toLocaleString toLocaleString}` method, even though not all\nmay use it. Currently, only `{@link Array}`, `{@link Number}`, and `{@link Date}` override `{@link #method!toLocaleString toLocaleString}`.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "6,235,21,32",
+                      "type": "6,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "6,226,12",
+                  "text": "6,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from `{@link Object}`.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom `{@link Object}`:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "6,297,21,32",
+                      "type": "6,297,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "6,239,12",
+                  "text": "6,240,4,2445"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeListener",
+                "name": "un",
+                "text": "Shorthand for {@link #method!removeListener #removeListener}.\n",
+                "src": {
+                  "inheritdoc": "3,1781,12",
+                  "name": "3,1783,0",
+                  "text": "3,1780,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unAfter",
+                "text": "Removes a before-event handler.\n\nSame as {@link #method!removeListener #removeListener} with `order` set to `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "3,1218,44",
+                      "text": "3,1218,54,55",
+                      "type": "3,1218,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,1219,37",
+                      "text": "3,1219,40,23",
+                      "type": "3,1219,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1220,29",
+                      "text": "3,1220,36,41",
+                      "type": "3,1220,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1221,29",
+                      "text": "3,1221,38,22",
+                      "type": "3,1221,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1223,0",
+                  "text": "3,1214,12,97"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unBefore",
+                "text": "Removes a before-event handler.\n\nSame as {@link #method!removeListener #removeListener} with `order` set to `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "3,1204,44",
+                      "text": "3,1204,54,55",
+                      "type": "3,1204,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,1205,37",
+                      "text": "3,1205,40,23",
+                      "type": "3,1205,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1206,29",
+                      "text": "3,1206,36,41",
+                      "type": "3,1206,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1207,29",
+                      "text": "3,1207,38,22",
+                      "type": "3,1207,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1209,0",
+                  "text": "3,1200,12,98"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "unbindStoreListeners",
+                "text": "Unbinds listeners from this component to the store. By default it will remove\nanything bound by the bindStoreListeners method, however it can be overridden\nin a subclass to provide any more complicated handling.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The store to unbind from\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "name": "5,78,40",
+                      "text": "5,78,46,25",
+                      "type": "5,78,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "5,77,8",
+                  "name": "5,80,0",
+                  "text": "5,74,8,212"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unlink",
+                "text": "Destroys a given set of `{@link #method!link #link}` objects. This is only needed if\nthe linked object is being destroyed before this instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "names",
+                    "text": "The names of the linked objects to destroy.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "4,1589,30",
+                      "text": "4,1589,36,44",
+                      "type": "4,1589,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,1590,31,5",
+                      "type": "4,1590,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1591,12",
+                  "name": "4,1593,0",
+                  "text": "4,1587,12,138"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateSelectedInstances",
+                "text": "Called when the store is refreshed.\nSelected records which are no longer present in the store are removed if {@link #cfg!pruneRemoved #pruneRemoved} is `true`.\n\nSelected records which are still present have their instances in the passed collection updated.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selected",
+                    "text": "A Collection representing the currently selected records.\n",
+                    "type": "Ext.util.Collection",
+                    "src": {
+                      "name": "1,1088,37",
+                      "text": "1,1088,46,58",
+                      "type": "1,1088,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1083,8",
+                  "name": "1,1090,0",
+                  "text": "1,1084,8,239"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the `{@link #method!valueOf valueOf}` method to convert an object to a primitive value. You rarely need to\ninvoke the `{@link #method!valueOf valueOf}` method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the `{@link #method!valueOf valueOf}` method is inherited by every object descended from `{@link Object}`. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, `{@link #method!valueOf valueOf}` returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use `{@link #method!valueOf valueOf}` within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default `{@link Object}` method.\n\nYou can create a function to be called in place of the default `{@link #method!valueOf valueOf}` method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a `{@link #method!valueOf valueOf}` method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's `{@link #method!valueOf valueOf}` method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the `{@link #method!toString toString}` method, which is different from\n`{@link String}` objects converting to string primitives using `{@link #method!valueOf valueOf}`. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "6,340,21,50",
+                      "type": "6,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "6,301,12",
+                  "text": "6,302,4,1821"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "vetoSelection",
+                "text": "Checks whether a selection should proceed based on the ignoreRightMouseSelection\noption.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event\n",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "1,291,33",
+                      "text": "1,291,35,10",
+                      "type": "1,291,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the selection should not proceed.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,292,26,44",
+                      "type": "1,292,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,290,8",
+                  "name": "1,294,0",
+                  "text": "1,288,8,89"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$className",
+                "src": {
+                  "access": "4,1049,13",
+                  "name": "4,1050,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configPrefixed",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` causes `config` values to be stored on instances using a\nproperty name prefixed with an underscore (\"_\") character. A value of `false`\nstores `config` values as properties using their exact name (no prefix).\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1066,12",
+                  "name": "4,1062,33",
+                  "since": "4,1067,19",
+                  "text": "4,1063,12,225",
+                  "type": "4,1062,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configStrict",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` instructs the `{@link #method!initConfig initConfig}` method to only honor values for\nproperties declared in the `config` block of a class. When `false`, properties\nthat are not declared in a `config` block will be placed on the instance.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1076,12",
+                  "name": "4,1072,33",
+                  "since": "4,1077,19",
+                  "text": "4,1073,12,229",
+                  "type": "4,1072,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$eventOptions",
+                "text": "Matches options property names within a listeners specification object  - property names which are never used as event names.\n",
+                "src": {
+                  "access": "3,389,12",
+                  "name": "3,392,0",
+                  "text": "3,390,12,126"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "6,346,14",
+                  "text": "6,347,3,1996"
+                }
+              },
+              {
+                "$type": "property",
+                "inheritdoc": true,
+                "name": "deselectOnContainerClick",
+                "src": {
+                  "inheritdoc": "2,94,8",
+                  "name": "2,96,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "destroyed",
+                "text": "This property is set to `true` after the `{@link #method!destroy destroy}` method is called.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1102,12",
+                  "name": "4,1100,32",
+                  "text": "4,1101,12,69",
+                  "type": "4,1100,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "eventsSuspended",
+                "text": "Initial suspended call count. Incremented when {@link #method!suspendEvents #suspendEvents} is called, decremented when {@link #method!resumeEvents #resumeEvents} is called.\n",
+                "src": {
+                  "access": "3,284,11",
+                  "name": "3,287,0",
+                  "text": "3,285,11,131"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created `{@link Ext.Factory}`.\n",
+                "type": "Object",
+                "src": {
+                  "name": "8,295,28",
+                  "text": "8,296,8,128",
+                  "type": "8,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hasListeners",
+                "readonly": true,
+                "text": "This object holds a key for any event that has a listener. The listener may be set\ndirectly on the instance, or on its class or a super class (via {@link #observe}) or\non the {@link Ext.app.EventBus}. The values of this object are truthy\n(a non-zero number) and falsy (0 or undefined). They do not represent an exact count\nof listeners. The value for an event is truthy if the event must be fired and is\nfalsy if there is no need to fire the event.\n\nThe intended use of this property is to avoid the expense of fireEvent calls when\nthere are no listeners. This can be particularly helpful when one would otherwise\nhave to call fireEvent hundreds or thousands of times. It is used like this:\n\n     if (this.hasListeners.foo) {\n         this.fireEvent('foo', this, arg1);\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "3,290,30",
+                  "readonly": "3,291,11",
+                  "text": "3,292,11,790",
+                  "type": "3,290,22"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isConfiguring",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` during the call to `{@link #method!initConfig initConfig}`.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1084,12",
+                  "name": "4,1082,32",
+                  "readonly": "4,1085,12",
+                  "since": "4,1086,19",
+                  "text": "4,1083,12,64",
+                  "type": "4,1082,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isFirstInstance",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` if this instance is the first of its class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1093,12",
+                  "name": "4,1091,32",
+                  "readonly": "4,1094,12",
+                  "since": "4,1095,19",
+                  "text": "4,1092,12,75",
+                  "type": "4,1091,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isInstance",
+                "readonly": true,
+                "text": "This value is `true` and is used to identify plain objects from instances of\na defined class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1056,12",
+                  "name": "4,1053,32",
+                  "readonly": "4,1057,12",
+                  "text": "4,1054,12,94",
+                  "type": "4,1053,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isObservable",
+                "text": "`true` in this class to identify an object as an instantiated Observable, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "3,278,31",
+                  "text": "3,279,11,95",
+                  "type": "3,278,22"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isSelectionModel",
+                "text": "`true` in this class to identify an object as an instantiated {@link Ext.selection.Model}, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,47,28",
+                  "text": "1,48,8,128",
+                  "type": "1,47,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "6,46,14",
+                  "text": "6,47,4,65"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "selected",
+                "readonly": true,
+                "text": "A MixedCollection that maintains all of the currently selected records.\n",
+                "type": "Ext.util.Collection",
+                "src": {
+                  "access": "1,79,8",
+                  "name": "1,80,40",
+                  "readonly": "1,82,8",
+                  "text": "1,81,8,72",
+                  "type": "1,80,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "self",
+                "text": "\nGet the reference to the current class from which this object was instantiated. Unlike {@link Ext.Base#method!statics Ext.Base#statics},\n`this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See {@link Ext.Base#method!statics Ext.Base#statics}\nfor a detailed comparison\n\n    Ext.define('My.Cat', {\n        statics: {\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            alert(this.self.speciesName); // dependent on 'this'\n        },\n\n        clone: function() {\n            return new this.self();\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n        statics: {\n            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'\n        }\n    });\n\n    var cat = new My.Cat();                     // alerts 'Cat'\n    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'\n",
+                "type": "Ext.Class",
+                "src": {
+                  "access": "4,1413,12",
+                  "name": "4,1379,34",
+                  "text": "4,1380,12,1011",
+                  "type": "4,1379,23"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addConfig",
+                "static": true,
+                "text": "Adds new config properties to this class. This is called for classes when they\nare declared, then for any mixins that class may define and finally for any\noverrides defined that target the class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,940,28",
+                      "type": "4,940,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "optional": true,
+                    "text": "The mixin class if the configs are from a mixin.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "4,941,32",
+                      "text": "4,941,44,49",
+                      "type": "4,941,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,942,12",
+                  "inheritable": "4,944,12",
+                  "name": "4,946,0",
+                  "static": "4,943,12",
+                  "text": "4,936,12,197"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addInheritableStatics",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,464,28",
+                      "type": "4,464,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,461,12",
+                  "inheritable": "4,463,12",
+                  "name": "4,466,0",
+                  "static": "4,462,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addMember",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "4,662,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "member",
+                    "src": {
+                      "name": "4,663,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,659,12",
+                  "inheritable": "4,661,12",
+                  "name": "4,665,0",
+                  "static": "4,660,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addMembers",
+                "static": true,
+                "text": "Add methods / properties to the prototype of this class.\n\n    Ext.define('My.awesome.Cat', {\n        constructor: function() {\n            ...\n        }\n    });\n\n     My.awesome.Cat.addMembers({\n         meow: function() {\n            alert('Meowww...');\n         }\n     });\n\n     var kitty = new My.awesome.Cat();\n     kitty.meow();\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The members to add to this class.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,522,28",
+                      "text": "4,522,36,34",
+                      "type": "4,522,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isStatic",
+                    "optional": true,
+                    "text": "Pass `true` if the members are static.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "4,523,30",
+                      "text": "4,523,46,39",
+                      "type": "4,523,20",
+                      "value": "4,523,39"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "privacy",
+                    "optional": true,
+                    "text": "Pass `true` if the members are private. This\nonly has meaning in debug mode and only for methods.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "4,524,30",
+                      "text": "4,524,45,45:4,525,12,53",
+                      "type": "4,524,20",
+                      "value": "4,524,38"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,527,12",
+                  "name": "4,529,0",
+                  "static": "4,526,12",
+                  "text": "4,505,12,335"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addStatics",
+                "static": true,
+                "text": "Add / override static properties of this class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.addStatics({\n        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'\n        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };\n        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,450,28",
+                      "type": "4,450,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,451,31,5",
+                      "type": "4,451,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,453,12",
+                  "name": "4,455,0",
+                  "static": "4,452,12",
+                  "text": "4,438,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "borrow",
+                "static": true,
+                "text": "Borrow another class' members to the prototype of this class.\n\n    Ext.define('Bank', {\n        money: '$$$',\n        printMoney: function() {\n            alert('$$$$$$$');\n        }\n    });\n\n    Ext.define('Thief', {\n        ...\n    });\n\n    Thief.borrow(Bank, ['money', 'printMoney']);\n\n    var steve = new Thief();\n\n    alert(steve.money); // alerts '$$$'\n    steve.printMoney(); // alerts '$$$$$$$'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fromClass",
+                    "text": "The class to borrow members from\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "name": "4,693,30",
+                      "text": "4,693,40,33",
+                      "type": "4,693,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The names of the members to borrow\n",
+                    "type": "Array/String",
+                    "src": {
+                      "name": "4,694,34",
+                      "text": "4,694,42,35",
+                      "type": "4,694,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,695,31,5",
+                      "type": "4,695,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,698,12",
+                  "inheritable": "4,697,12",
+                  "name": "4,700,0",
+                  "static": "4,696,12",
+                  "text": "4,673,12,404"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callParent",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "4,814,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,810,12",
+                  "inheritable": "4,812,12",
+                  "name": "4,814,0",
+                  "static": "4,811,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callSuper",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "4,828,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,824,12",
+                  "inheritable": "4,826,12",
+                  "name": "4,828,0",
+                  "static": "4,825,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "create",
+                "static": true,
+                "text": "Create a new instance of this Class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.create({\n        someConfig: true\n    });\n\nAll parameters are passed to the constructor of the class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "the created instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,107,29,22",
+                      "type": "4,107,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,109,12",
+                  "name": "4,111,0",
+                  "static": "4,108,12",
+                  "text": "4,95,12,214"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "createAlias",
+                "static": true,
+                "text": "Create aliases for existing prototype methods. Example:\n\n    Ext.define('My.cool.Class', {\n        method1: function() { ... },\n        method2: function() { ... }\n    });\n\n    var test = new My.cool.Class();\n\n    My.cool.Class.createAlias({\n        method3: 'method1',\n        method4: 'method2'\n    });\n\n    test.method3(); // test.method1()\n\n    My.cool.Class.createAlias('method5', 'method3');\n\n    test.method5(); // test.method3() -> test.method1()\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "text": "The new method name, or an object to set multiple aliases. See\n{@link Ext.Function#method!flexSetter Ext.Function#flexSetter}\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "4,1018,35",
+                      "text": "4,1018,41,63:4,1019,12,43",
+                      "type": "4,1018,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The original method name\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "4,1020,35",
+                      "text": "4,1020,42,25",
+                      "type": "4,1020,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,1022,12",
+                  "name": "4,1025,0",
+                  "static": "4,1021,12",
+                  "text": "4,998,12,456"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "extend",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "4,350,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,347,12",
+                  "inheritable": "4,349,12",
+                  "name": "4,352,0",
+                  "static": "4,348,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "getConfigurator",
+                "static": true,
+                "text": "Returns the `{@link Ext.Configurator}` for this class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Configurator",
+                    "src": {
+                      "type": "4,967,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,968,12",
+                  "inheritable": "4,970,12",
+                  "name": "4,972,0",
+                  "static": "4,969,12",
+                  "text": "4,965,12,48"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "getName",
+                "static": true,
+                "text": "Get the current class' name in string format.\n\n    Ext.define('My.cool.Class', {\n        constructor: function() {\n            alert(this.self.getName()); // alerts 'My.cool.Class'\n        }\n    });\n\n    My.cool.Class.getName(); // 'My.cool.Class'\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "className\n",
+                    "type": "String",
+                    "src": {
+                      "text": "4,989,29,10",
+                      "type": "4,989,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,991,12",
+                  "name": "4,993,0",
+                  "static": "4,990,12",
+                  "text": "4,979,12,249"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "mixin",
+                "static": true,
+                "text": "Used internally by the mixins pre-processor\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "4,844,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "src": {
+                      "name": "4,844,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,840,12",
+                  "inheritable": "4,842,12",
+                  "name": "4,844,0",
+                  "static": "4,841,12",
+                  "text": "4,839,12,44"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "onExtended",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "4,428,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "4,428,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,424,12",
+                  "inheritable": "4,426,12",
+                  "name": "4,428,0",
+                  "static": "4,425,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "override",
+                "static": true,
+                "text": "Override members of this class. Overridden methods can be invoked via\n{@link Ext.Base#callParent}.\n\n    Ext.define('My.Cat', {\n        constructor: function() {\n            alert(\"I'm a cat!\");\n        }\n    });\n\n    My.Cat.override({\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\n    var kitty = new My.Cat(); // alerts \"I'm going to be a cat!\"\n                              // alerts \"I'm a cat!\"\n                              // alerts \"Meeeeoooowwww\"\n\nDirect use of this method should be rare. Use {@link Ext#method!define Ext#define}\ninstead:\n\n    Ext.define('My.CatOverride', {\n        override: 'My.Cat',\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\nThe above accomplishes the same result but can be managed by the {@link Ext.Loader}\nwhich can properly order the override and its target class and the build process\ncan determine whether the override is needed based on the required state of the\ntarget class (My.Cat).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The properties to add to this class. This should be\nspecified as an object literal containing one or more properties.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,762,28",
+                      "text": "4,762,36,52:4,763,12,66",
+                      "type": "4,762,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this class\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,764,31,11",
+                      "type": "4,764,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,766,12",
+                  "name": "4,768,0",
+                  "static": "4,765,12",
+                  "text": "4,720,12,1180"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "triggerExtended",
+                "static": true,
+                "src": {
+                  "access": "4,402,12",
+                  "inheritable": "4,404,12",
+                  "name": "4,406,0",
+                  "static": "4,403,12"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "inheritable": true,
+                "name": "$onExtended",
+                "static": true,
+                "src": {
+                  "access": "4,395,12",
+                  "inheritable": "4,397,12",
+                  "name": "4,399,0",
+                  "static": "4,396,12"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,8,0",
+          "extends": "0,7,0",
+          "name": "0,6,0",
+          "text": "0,2,4,109"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

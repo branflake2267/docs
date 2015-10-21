@@ -1,0 +1,2151 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/toolbar/Breadcrumb.js",
+    "../../../ext/classic/theme-neutral/sass/var/toolbar/Breadcrumb.scss",
+    "../../../ext/classic/classic/src/util/FocusableContainer.js",
+    "../../../ext/packages/core/src/class/Base.js",
+    "../../../../docs/docs/js/primitives/Object.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "widget.breadcrumb",
+        "extended": "Ext.Container",
+        "extends": "Ext.Container",
+        "mixed": "Ext.util.FocusableContainer",
+        "mixins": "Ext.util.FocusableContainer",
+        "name": "Ext.toolbar.Breadcrumb",
+        "requires": "Ext.data.TreeStore,Ext.button.Split",
+        "text": "A toolbar that displays hierarchical data from a {@link Ext.data.TreeStore}\nas a trail of breadcrumb buttons.  Each button represents a node in the store.  A click\non a button will \"select\" that node in the tree.  Non-leaf nodes will display their\nchild nodes on a dropdown menu of the corresponding button in the breadcrumb trail,\nand a click on an item in the menu will trigger selection of the corresponding child\nnode.\n\nThe selection can be set programmatically  using {@link #method!setSelection #setSelection}, or retrieved\nusing {@link #method!getSelection #getSelection}.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "activeChildTabIndex",
+                "optional": true,
+                "text": "DOM tabIndex attribute to set on the\nactive Focusable child of this container when using the \"Roaming tabindex\"\ntechnique. Set this value to > 0 to precisely control the tabbing order\nof the components/containers on the page.\n",
+                "type": "Number",
+                "value": "0",
+                "src": {
+                  "name": "2,43,23",
+                  "text": "2,43,46,37:2,44,8,189",
+                  "type": "2,43,14",
+                  "value": "2,43,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "buttonUI",
+                "optional": true,
+                "text": "Button UI to use for breadcrumb items.  Use {@link #extjs-breadcrumb-ui} to\nadd special styling to the breadcrumb arrows\n",
+                "type": "String",
+                "value": "'plain-toolbar'",
+                "src": {
+                  "name": "0,31,27",
+                  "text": "0,32,12,121",
+                  "type": "0,31,18",
+                  "value": "0,31,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "displayField",
+                "text": "The name of the field in the data model to display in the navigation items of\nthis breadcrumb toolbar\n",
+                "type": "String",
+                "src": {
+                  "name": "0,42,0",
+                  "text": "0,39,12,102",
+                  "type": "0,38,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "enableFocusableContainer",
+                "optional": true,
+                "text": "Enable or disable\nnavigation with arrow keys for this FocusableContainer. This option may\nbe useful with nested FocusableContainers such as Grid column headers,\nwhen only the root container should handle keyboard events.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "2,35,24",
+                  "text": "2,35,55,18:2,36,8,203",
+                  "type": "2,35,14",
+                  "value": "2,35,49"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "inactiveChildTabIndex",
+                "optional": true,
+                "text": "DOM tabIndex attribute to set on\ninactive Focusable children of this container when using the \"Roaming tabindex\"\ntechnique. This value rarely needs to be changed from its default.\n",
+                "type": "Number",
+                "value": "-1",
+                "src": {
+                  "name": "2,51,23",
+                  "text": "2,51,49,33:2,52,8,147",
+                  "type": "2,51,14",
+                  "value": "2,51,45"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "overflowHandler",
+                "optional": true,
+                "text": "The overflowHandler for this Breadcrumb:\n\n- `{@link null}` - hidden overflow\n- `'scroller'` to render left/right scroller buttons on either side of the breadcrumb\n- `'menu'` to render the overflowing buttons as items of an overflow menu.\n",
+                "type": "String",
+                "value": "null",
+                "src": {
+                  "name": "0,45,27",
+                  "text": "0,46,12,230",
+                  "type": "0,45,18",
+                  "value": "0,45,43"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "selection",
+                "text": "The selected node, or `\"root\"` to select the root node\n",
+                "type": "Ext.data.TreeModel/String",
+                "src": {
+                  "accessor": "0,113,12",
+                  "name": "0,111,45",
+                  "text": "0,112,12,55",
+                  "type": "0,111,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showIcons",
+                "optional": true,
+                "text": "\nControls whether or not icons of tree nodes are displayed in the breadcrumb\nbuttons.  There are 3 possible values for this config:\n\n1. unspecified (`{@link null}`) - the default value. In this mode only icons that are\nspecified in the tree data using ({@link Ext.data.NodeInterface#cfg!icon Ext.data.NodeInterface#icon}\nor {@link Ext.data.NodeInterface#cfg!iconCls Ext.data.NodeInterface#iconCls} will be displayed, but the\ndefault \"folder\" and \"leaf\" icons will not be displayed.\n\n2. `true` - Icons specified in the tree data will be displayed, and the default\n\"folder\" and \"leaf\" icons will be displayed for nodes that do not specify\nan `icon` or `iconCls`.\n\n3. `false` - No icons will be displayed in the breadcrumb buttons, only text.\n",
+                "type": "Boolean",
+                "value": "null",
+                "src": {
+                  "name": "0,55,28",
+                  "text": "0,56,12,678",
+                  "type": "0,55,18",
+                  "value": "0,55,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showMenuIcons",
+                "optional": true,
+                "text": "\nControls whether or not icons of tree nodes are displayed in the breadcrumb\nmenu items. There are 3 possible values for this config:\n\n1. unspecified (`{@link null}`) - the default value. In this mode only icons that are\nspecified in the tree data using ({@link Ext.data.NodeInterface#cfg!icon Ext.data.NodeInterface#icon}\nor {@link Ext.data.NodeInterface#cfg!iconCls Ext.data.NodeInterface#iconCls} will be displayed, but the\ndefault \"folder\" and \"leaf\" icons will not be displayed.\n\n2. `true` - Icons specified in the tree data will be displayed, and the default\n\"folder\" and \"leaf\" icons will be displayed for nodes that do not specify\nan `icon` or `iconCls`.\n\n3. `false` - No icons will be displayed on the breadcrumb menu items, only text.\n",
+                "type": "Boolean",
+                "value": "null",
+                "src": {
+                  "name": "0,74,28",
+                  "text": "0,75,12,683",
+                  "type": "0,74,18",
+                  "value": "0,74,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "store",
+                "text": "The TreeStore that this breadcrumb toolbar should use as its data source\n",
+                "type": "Ext.data.TreeStore",
+                "src": {
+                  "name": "0,93,38",
+                  "text": "0,94,12,73",
+                  "type": "0,93,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "useSplitButtons",
+                "optional": true,
+                "text": "`false` to use regular {@link Ext.button.Button}s instead of {@link Ext.button.Split}.  When `true`, a click on the body of a button\nwill navigate to the specified node, and a click on the arrow will show a menu\ncontaining the the child nodes.  When `false`, the only mode of navigation is\nthe menu, since a click anywhere on the button will show the menu.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,99,28",
+                  "text": "0,100,12,378",
+                  "type": "0,99,18",
+                  "value": "0,99,44"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "change",
+                "text": "Fires when the user changes the selected record. In contrast to the {@link #event!selectionchange #selectionchange} event, this does\n*not* fire at render time, only in response to user activity.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.toolbar.Breadcrumb",
+                    "src": {
+                      "name": "0,336,48",
+                      "type": "0,336,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The selected node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,337,44",
+                      "text": "0,337,49,19",
+                      "type": "0,337,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prevNode",
+                    "text": "The previously selected node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,338,44",
+                      "text": "0,338,53,30",
+                      "type": "0,338,24"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,333,23",
+                  "text": "0,334,16,172"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "selectionchange",
+                "text": "Fires when the selected node changes. At render time, this event will fire\nindicating that the configured {@link #cfg!selection #selection} has been selected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.toolbar.Breadcrumb",
+                    "src": {
+                      "name": "0,325,44",
+                      "type": "0,325,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The selected node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,326,40",
+                      "text": "0,326,45,19",
+                      "type": "0,326,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prevNode",
+                    "text": "The previously selected node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,327,40",
+                      "text": "0,327,49,30",
+                      "type": "0,327,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,322,19",
+                  "text": "0,323,12,144"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_onButtonClick",
+                "text": "Handles a click on a breadcrumb button\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "button",
+                    "type": "Ext.button.Split",
+                    "src": {
+                      "name": "0,381,38",
+                      "type": "0,381,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "0,382,37",
+                      "type": "0,382,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,380,12",
+                  "name": "0,384,0",
+                  "text": "0,379,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_onMenuBeforeShow",
+                "text": "Handles the `beforeshow` event of a button menu\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "menu",
+                    "type": "Ext.menu.Menu",
+                    "src": {
+                      "name": "0,406,35",
+                      "type": "0,406,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,405,12",
+                  "name": "0,408,0",
+                  "text": "0,404,12,48"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_onMenuClick",
+                "text": "Handles a click on a button menu\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "menu",
+                    "type": "Ext.menu.Menu",
+                    "src": {
+                      "name": "0,393,35",
+                      "type": "0,393,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Ext.menu.Item",
+                    "src": {
+                      "name": "0,394,35",
+                      "type": "0,394,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "0,395,37",
+                      "type": "0,395,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,392,12",
+                  "name": "0,397,0",
+                  "text": "0,391,12,33"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addDeprecations",
+                "text": "This method applies a versioned, deprecation declaration to this class. This\nis typically called by the `deprecated` config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "deprecations",
+                    "src": {
+                      "name": "3,120,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,118,12",
+                  "name": "3,120,0",
+                  "text": "3,116,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callParent",
+                "text": "Call the \"parent\" method of the current method. That is the method previously\noverridden by derivation or by an override (see {@link Ext#method!define Ext#define}).\n\n     Ext.define('My.Base', {\n         constructor: function (x) {\n             this.x = x;\n         },\n\n         statics: {\n             method: function (x) {\n                 return x;\n             }\n         }\n     });\n\n     Ext.define('My.Derived', {\n         extend: 'My.Base',\n\n         constructor: function () {\n             this.callParent([21]);\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // alerts 21\n\nThis can be used with an override as follows:\n\n     Ext.define('My.DerivedOverride', {\n         override: 'My.Derived',\n\n         constructor: function (x) {\n             this.callParent([x*2]); // calls original My.Derived constructor\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // now alerts 42\n\nThis also works with static and private methods.\n\n     Ext.define('My.Derived2', {\n         extend: 'My.Base',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Base.method\n             }\n         }\n     });\n\n     alert(My.Base.method(10));     // alerts 10\n     alert(My.Derived2.method(10)); // alerts 20\n\nLastly, it also works with overridden static methods.\n\n     Ext.define('My.Derived2Override', {\n         override: 'My.Derived2',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Derived2.method\n             }\n         }\n     });\n\n     alert(My.Derived2.method(10); // now alerts 40\n\nTo override a method and replace it and also call the superclass method, use\n{@link #method!callSuper #method-callSuper}. This is often done to patch a method to fix a bug.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callParent(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "3,1251,37",
+                      "text": "3,1251,42,57:3,1252,12,67",
+                      "type": "3,1251,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the parent method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,1253,29,48",
+                      "type": "3,1253,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1250,12",
+                  "name": "3,1255,0",
+                  "text": "3,1175,12,1853"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callSuper",
+                "text": "This method is used by an **override** to call the superclass method but\nbypass any overridden method. This is often done to \"patch\" a method that\ncontains a bug but for whatever reason cannot be fixed directly.\n\nConsider:\n\n     Ext.define('Ext.some.Class', {\n         method: function () {\n             console.log('Good');\n         }\n     });\n\n     Ext.define('Ext.some.DerivedClass', {\n         extend: 'Ext.some.Class',\n\n         method: function () {\n             console.log('Bad');\n\n             // ... logic but with a bug ...\n\n             this.callParent();\n         }\n     });\n\nTo patch the bug in `Ext.some.DerivedClass.method`, the typical solution is to create an\noverride:\n\n     Ext.define('App.patches.DerivedClass', {\n         override: 'Ext.some.DerivedClass',\n\n         method: function () {\n             console.log('Fixed');\n\n             // ... logic but with bug fixed ...\n\n             this.callSuper();\n         }\n     });\n\nThe patch method cannot use {@link #method!callParent #method-callParent} to call the superclass\n`method` since that would call the overridden method containing the bug. In\nother words, the above patch would only produce \"Fixed\" then \"Good\" in the\nconsole log, whereas, using `callParent` would produce \"Fixed\" then \"Bad\"\nthen \"Good\".\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callSuper(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "3,1338,37",
+                      "text": "3,1338,42,57:3,1339,12,66",
+                      "type": "3,1338,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the superclass method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,1340,29,52",
+                      "type": "3,1340,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1337,12",
+                  "name": "3,1342,0",
+                  "text": "3,1292,12,1266"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to wrap.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,40,21",
+                      "text": "4,40,28,19",
+                      "type": "4,40,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,38,12",
+                  "text": "4,39,4,20"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "This method is called to cleanup an object and its resources. After calling\nthis method, the object should not be used any further.\n",
+                "src": {
+                  "name": "3,1626,0",
+                  "text": "3,1623,12,132"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getConfig",
+                "text": "Returns a specified config property value. If the name parameter is not passed,\nall current configuration options will be returned as key value pairs.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "The name of the config property to get.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1469,29",
+                      "text": "3,1469,35,40",
+                      "type": "3,1469,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "peek",
+                    "optional": true,
+                    "text": "`true` to peek at the raw value without calling the getter.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "3,1470,30",
+                      "text": "3,1470,42,60",
+                      "type": "3,1470,20",
+                      "value": "3,1470,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The config property value.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,1471,29,27",
+                      "type": "3,1471,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1473,0",
+                  "text": "3,1466,12,151"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getCurrentConfig",
+                "src": {
+                  "access": "3,1506,12",
+                  "name": "3,1508,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInitialConfig",
+                "text": "Returns the initial configuration passed to the constructor when\ninstantiating this class.\n\nGiven this example Ext.button.Button definition and instance:\n\n    Ext.define('MyApp.view.Button', {\n        extend: 'Ext.button.Button',\n        xtype: 'mybutton',\n\n        scale: 'large',\n        enableToggle: true\n    });\n\n    var btn = Ext.create({\n        xtype: 'mybutton',\n        renderTo: Ext.getBody(),\n        text: 'Test Button'\n    });\n\nCalling `btn.getInitialConfig()` would return an object including the config\noptions passed to the `{@link #static-method!create create}` method:\n\n    xtype: 'mybutton',\n    renderTo: // The document body itself\n    text: 'Test Button'\n\nCalling `btn.getInitialConfig('text')`returns **'Test Button'**.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "Name of the config option to return.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1551,29",
+                      "text": "3,1551,35,37",
+                      "type": "3,1551,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The full config object or a single config value\nwhen `name` parameter specified.\n",
+                    "type": "Object/Mixed",
+                    "src": {
+                      "text": "3,1552,35,48:3,1553,12,33",
+                      "type": "3,1552,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1555,0",
+                  "text": "3,1523,12,715"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSelection",
+                "text": "Returns the currently selected {@link Ext.data.TreeModel}.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "node The selected node (or null if there is no\nselection).\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "text": "0,186,37,47:0,187,8,12",
+                      "type": "0,186,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,184,16",
+                  "text": "0,185,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "hasConfig",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "3,1516,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1515,12",
+                  "name": "3,1518,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,100,20",
+                      "text": "4,100,25,34",
+                      "type": "4,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,101,22,57:4,102,4,15",
+                      "type": "4,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,53,12",
+                  "text": "4,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initConfig",
+                "text": "Initialize configuration for this class. a typical example:\n\n    Ext.define('My.awesome.Class', {\n        // The default config\n        config: {\n            name: 'Awesome',\n            isAwesome: true\n        },\n\n        constructor: function(config) {\n            this.initConfig(config);\n        }\n    });\n\n    var awesome = new My.awesome.Class({\n        name: 'Super Awesome'\n    });\n\n    alert(awesome.getName()); // 'Super Awesome'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1449,28",
+                      "type": "3,1449,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "3,1450,31,5",
+                      "type": "3,1450,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1448,12",
+                  "name": "3,1452,0",
+                  "text": "3,1428,12,441"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,148,20",
+                      "text": "4,148,30,71:4,149,4,18",
+                      "type": "4,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,150,20",
+                      "text": "4,150,27,50",
+                      "type": "4,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,151,22,56",
+                      "type": "4,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,106,12",
+                  "text": "4,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "link",
+                "text": "Adds a \"destroyable\" object to an internal list of objects that will be destroyed\nwhen this instance is destroyed (via `{@link #method!destroy #destroy}`).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1571,28",
+                      "type": "3,1571,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1572,28",
+                      "type": "3,1572,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `value` passed.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,1573,29,20",
+                      "type": "3,1573,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1574,12",
+                  "name": "3,1576,0",
+                  "text": "3,1569,12,140"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,220,20",
+                      "text": "4,220,25,34",
+                      "type": "4,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,221,22,57:4,222,4,22",
+                      "type": "4,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,155,12",
+                  "text": "4,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setConfig",
+                "text": "Sets a single/multiple configuration options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the property to set, or a set of key value pairs to set.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "3,1478,35",
+                      "text": "3,1478,40,69",
+                      "type": "3,1478,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to set for the name parameter.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1479,29",
+                      "text": "3,1479,36,41",
+                      "type": "3,1479,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "3,1480,31,5",
+                      "type": "3,1480,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1482,0",
+                  "text": "3,1476,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setSelection",
+                "text": "Selects the passed {@link Ext.data.TreeModel} in the breadcrumb component.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The node in the breadcrumb {@link #cfg!store #store} to\nselect as the active node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,193,36",
+                      "text": "0,193,41,45:0,194,8,27",
+                      "type": "0,193,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this The breadcrumb component\n",
+                    "type": "Ext.toolbar.Breadcrumb",
+                    "src": {
+                      "text": "0,195,41,30",
+                      "type": "0,195,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,191,16",
+                  "text": "0,192,8,80"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "statics",
+                "text": "Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#property!self Ext.Base#self},\n`this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what\n`this` points to during run-time\n\n    Ext.define('My.Cat', {\n        statics: {\n            totalCreated: 0,\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            var statics = this.statics();\n\n            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to\n                                            // equivalent to: My.Cat.speciesName\n\n            alert(this.self.speciesName);   // dependent on 'this'\n\n            statics.totalCreated++;\n        },\n\n        clone: function() {\n            var cloned = new this.self();   // dependent on 'this'\n\n            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName\n\n            return cloned;\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n\n        statics: {\n            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'\n        },\n\n        constructor: function() {\n            this.callParent();\n        }\n    });\n\n    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'\n\n    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'\n    alert(clone.groupName);                 // alerts 'Cat'\n\n    alert(My.Cat.totalCreated);             // alerts 3\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Class",
+                    "src": {
+                      "type": "3,1161,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1160,12",
+                  "name": "3,1163,0",
+                  "text": "3,1107,12,1691"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n`{@link Object}`'s `{@link #method!toLocaleString toLocaleString}` returns the result of calling `{@link #method!toString toString}`.\n\nThis function is provided to give objects a generic `{@link #method!toLocaleString toLocaleString}` method, even though not all\nmay use it. Currently, only `{@link Array}`, `{@link Number}`, and `{@link Date}` override `{@link #method!toLocaleString toLocaleString}`.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "4,235,21,32",
+                      "type": "4,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,226,12",
+                  "text": "4,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from `{@link Object}`.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom `{@link Object}`:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "4,297,21,32",
+                      "type": "4,297,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,239,12",
+                  "text": "4,240,4,2445"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unlink",
+                "text": "Destroys a given set of `{@link #method!link #link}` objects. This is only needed if\nthe linked object is being destroyed before this instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "names",
+                    "text": "The names of the linked objects to destroy.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "3,1589,30",
+                      "text": "3,1589,36,44",
+                      "type": "3,1589,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "3,1590,31,5",
+                      "type": "3,1590,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1591,12",
+                  "name": "3,1593,0",
+                  "text": "3,1587,12,138"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the `{@link #method!valueOf valueOf}` method to convert an object to a primitive value. You rarely need to\ninvoke the `{@link #method!valueOf valueOf}` method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the `{@link #method!valueOf valueOf}` method is inherited by every object descended from `{@link Object}`. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, `{@link #method!valueOf valueOf}` returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use `{@link #method!valueOf valueOf}` within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default `{@link Object}` method.\n\nYou can create a function to be called in place of the default `{@link #method!valueOf valueOf}` method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a `{@link #method!valueOf valueOf}` method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's `{@link #method!valueOf valueOf}` method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the `{@link #method!toString toString}` method, which is different from\n`{@link String}` objects converting to string primitives using `{@link #method!valueOf valueOf}`. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,340,21,50",
+                      "type": "4,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,301,12",
+                  "text": "4,302,4,1821"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$className",
+                "src": {
+                  "access": "3,1049,13",
+                  "name": "3,1050,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configPrefixed",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` causes `config` values to be stored on instances using a\nproperty name prefixed with an underscore (\"_\") character. A value of `false`\nstores `config` values as properties using their exact name (no prefix).\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "3,1066,12",
+                  "name": "3,1062,33",
+                  "since": "3,1067,19",
+                  "text": "3,1063,12,225",
+                  "type": "3,1062,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configStrict",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` instructs the `{@link #method!initConfig initConfig}` method to only honor values for\nproperties declared in the `config` block of a class. When `false`, properties\nthat are not declared in a `config` block will be placed on the instance.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "3,1076,12",
+                  "name": "3,1072,33",
+                  "since": "3,1077,19",
+                  "text": "3,1073,12,229",
+                  "type": "3,1072,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "buttons",
+                "text": "Internal cache of buttons that are re-purposed as the items of this container\nas navigation occurs.\n",
+                "type": "Ext.button.Split[]",
+                "src": {
+                  "access": "0,150,12",
+                  "name": "0,149,43",
+                  "text": "0,147,12,100",
+                  "type": "0,149,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "4,346,14",
+                  "text": "4,347,3,1996"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "destroyed",
+                "text": "This property is set to `true` after the `{@link #method!destroy destroy}` method is called.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "3,1102,12",
+                  "name": "3,1100,32",
+                  "text": "3,1101,12,69",
+                  "type": "3,1100,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isConfiguring",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` during the call to `{@link #method!initConfig initConfig}`.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "3,1084,12",
+                  "name": "3,1082,32",
+                  "readonly": "3,1085,12",
+                  "since": "3,1086,19",
+                  "text": "3,1083,12,64",
+                  "type": "3,1082,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isFirstInstance",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` if this instance is the first of its class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "3,1093,12",
+                  "name": "3,1091,32",
+                  "readonly": "3,1094,12",
+                  "since": "3,1095,19",
+                  "text": "3,1092,12,75",
+                  "type": "3,1091,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isInstance",
+                "readonly": true,
+                "text": "This value is `true` and is used to identify plain objects from instances of\na defined class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "3,1056,12",
+                  "name": "3,1053,32",
+                  "readonly": "3,1057,12",
+                  "text": "3,1054,12,94",
+                  "type": "3,1053,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "4,46,14",
+                  "text": "4,47,4,65"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "self",
+                "text": "\nGet the reference to the current class from which this object was instantiated. Unlike {@link Ext.Base#method!statics Ext.Base#statics},\n`this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See {@link Ext.Base#method!statics Ext.Base#statics}\nfor a detailed comparison\n\n    Ext.define('My.Cat', {\n        statics: {\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            alert(this.self.speciesName); // dependent on 'this'\n        },\n\n        clone: function() {\n            return new this.self();\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n        statics: {\n            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'\n        }\n    });\n\n    var cat = new My.Cat();                     // alerts 'Cat'\n    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'\n",
+                "type": "Ext.Class",
+                "src": {
+                  "access": "3,1413,12",
+                  "name": "3,1379,34",
+                  "text": "3,1380,12,1011",
+                  "type": "3,1379,23"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addConfig",
+                "static": true,
+                "text": "Adds new config properties to this class. This is called for classes when they\nare declared, then for any mixins that class may define and finally for any\noverrides defined that target the class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,940,28",
+                      "type": "3,940,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "optional": true,
+                    "text": "The mixin class if the configs are from a mixin.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "3,941,32",
+                      "text": "3,941,44,49",
+                      "type": "3,941,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,942,12",
+                  "inheritable": "3,944,12",
+                  "name": "3,946,0",
+                  "static": "3,943,12",
+                  "text": "3,936,12,197"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addInheritableStatics",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,464,28",
+                      "type": "3,464,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,461,12",
+                  "inheritable": "3,463,12",
+                  "name": "3,466,0",
+                  "static": "3,462,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addMember",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "3,662,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "member",
+                    "src": {
+                      "name": "3,663,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,659,12",
+                  "inheritable": "3,661,12",
+                  "name": "3,665,0",
+                  "static": "3,660,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addMembers",
+                "static": true,
+                "text": "Add methods / properties to the prototype of this class.\n\n    Ext.define('My.awesome.Cat', {\n        constructor: function() {\n            ...\n        }\n    });\n\n     My.awesome.Cat.addMembers({\n         meow: function() {\n            alert('Meowww...');\n         }\n     });\n\n     var kitty = new My.awesome.Cat();\n     kitty.meow();\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The members to add to this class.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,522,28",
+                      "text": "3,522,36,34",
+                      "type": "3,522,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isStatic",
+                    "optional": true,
+                    "text": "Pass `true` if the members are static.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "3,523,30",
+                      "text": "3,523,46,39",
+                      "type": "3,523,20",
+                      "value": "3,523,39"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "privacy",
+                    "optional": true,
+                    "text": "Pass `true` if the members are private. This\nonly has meaning in debug mode and only for methods.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "3,524,30",
+                      "text": "3,524,45,45:3,525,12,53",
+                      "type": "3,524,20",
+                      "value": "3,524,38"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "3,527,12",
+                  "name": "3,529,0",
+                  "static": "3,526,12",
+                  "text": "3,505,12,335"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addStatics",
+                "static": true,
+                "text": "Add / override static properties of this class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.addStatics({\n        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'\n        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };\n        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,450,28",
+                      "type": "3,450,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "3,451,31,5",
+                      "type": "3,451,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "3,453,12",
+                  "name": "3,455,0",
+                  "static": "3,452,12",
+                  "text": "3,438,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "borrow",
+                "static": true,
+                "text": "Borrow another class' members to the prototype of this class.\n\n    Ext.define('Bank', {\n        money: '$$$',\n        printMoney: function() {\n            alert('$$$$$$$');\n        }\n    });\n\n    Ext.define('Thief', {\n        ...\n    });\n\n    Thief.borrow(Bank, ['money', 'printMoney']);\n\n    var steve = new Thief();\n\n    alert(steve.money); // alerts '$$$'\n    steve.printMoney(); // alerts '$$$$$$$'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fromClass",
+                    "text": "The class to borrow members from\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "name": "3,693,30",
+                      "text": "3,693,40,33",
+                      "type": "3,693,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The names of the members to borrow\n",
+                    "type": "Array/String",
+                    "src": {
+                      "name": "3,694,34",
+                      "text": "3,694,42,35",
+                      "type": "3,694,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "3,695,31,5",
+                      "type": "3,695,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,698,12",
+                  "inheritable": "3,697,12",
+                  "name": "3,700,0",
+                  "static": "3,696,12",
+                  "text": "3,673,12,404"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callParent",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "3,814,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,810,12",
+                  "inheritable": "3,812,12",
+                  "name": "3,814,0",
+                  "static": "3,811,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callSuper",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "3,828,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,824,12",
+                  "inheritable": "3,826,12",
+                  "name": "3,828,0",
+                  "static": "3,825,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "create",
+                "static": true,
+                "text": "Create a new instance of this Class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.create({\n        someConfig: true\n    });\n\nAll parameters are passed to the constructor of the class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "the created instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,107,29,22",
+                      "type": "3,107,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "3,109,12",
+                  "name": "3,111,0",
+                  "static": "3,108,12",
+                  "text": "3,95,12,214"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "createAlias",
+                "static": true,
+                "text": "Create aliases for existing prototype methods. Example:\n\n    Ext.define('My.cool.Class', {\n        method1: function() { ... },\n        method2: function() { ... }\n    });\n\n    var test = new My.cool.Class();\n\n    My.cool.Class.createAlias({\n        method3: 'method1',\n        method4: 'method2'\n    });\n\n    test.method3(); // test.method1()\n\n    My.cool.Class.createAlias('method5', 'method3');\n\n    test.method5(); // test.method3() -> test.method1()\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "text": "The new method name, or an object to set multiple aliases. See\n{@link Ext.Function#method!flexSetter Ext.Function#flexSetter}\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "3,1018,35",
+                      "text": "3,1018,41,63:3,1019,12,43",
+                      "type": "3,1018,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The original method name\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "3,1020,35",
+                      "text": "3,1020,42,25",
+                      "type": "3,1020,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "3,1022,12",
+                  "name": "3,1025,0",
+                  "static": "3,1021,12",
+                  "text": "3,998,12,456"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "extend",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "3,350,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,347,12",
+                  "inheritable": "3,349,12",
+                  "name": "3,352,0",
+                  "static": "3,348,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "getConfigurator",
+                "static": true,
+                "text": "Returns the `{@link Ext.Configurator}` for this class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Configurator",
+                    "src": {
+                      "type": "3,967,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,968,12",
+                  "inheritable": "3,970,12",
+                  "name": "3,972,0",
+                  "static": "3,969,12",
+                  "text": "3,965,12,48"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "getName",
+                "static": true,
+                "text": "Get the current class' name in string format.\n\n    Ext.define('My.cool.Class', {\n        constructor: function() {\n            alert(this.self.getName()); // alerts 'My.cool.Class'\n        }\n    });\n\n    My.cool.Class.getName(); // 'My.cool.Class'\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "className\n",
+                    "type": "String",
+                    "src": {
+                      "text": "3,989,29,10",
+                      "type": "3,989,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "3,991,12",
+                  "name": "3,993,0",
+                  "static": "3,990,12",
+                  "text": "3,979,12,249"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "mixin",
+                "static": true,
+                "text": "Used internally by the mixins pre-processor\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "3,844,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "src": {
+                      "name": "3,844,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,840,12",
+                  "inheritable": "3,842,12",
+                  "name": "3,844,0",
+                  "static": "3,841,12",
+                  "text": "3,839,12,44"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "onExtended",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "3,428,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "3,428,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,424,12",
+                  "inheritable": "3,426,12",
+                  "name": "3,428,0",
+                  "static": "3,425,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "override",
+                "static": true,
+                "text": "Override members of this class. Overridden methods can be invoked via\n{@link Ext.Base#callParent}.\n\n    Ext.define('My.Cat', {\n        constructor: function() {\n            alert(\"I'm a cat!\");\n        }\n    });\n\n    My.Cat.override({\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\n    var kitty = new My.Cat(); // alerts \"I'm going to be a cat!\"\n                              // alerts \"I'm a cat!\"\n                              // alerts \"Meeeeoooowwww\"\n\nDirect use of this method should be rare. Use {@link Ext#method!define Ext#define}\ninstead:\n\n    Ext.define('My.CatOverride', {\n        override: 'My.Cat',\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\nThe above accomplishes the same result but can be managed by the {@link Ext.Loader}\nwhich can properly order the override and its target class and the build process\ncan determine whether the override is needed based on the required state of the\ntarget class (My.Cat).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The properties to add to this class. This should be\nspecified as an object literal containing one or more properties.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,762,28",
+                      "text": "3,762,36,52:3,763,12,66",
+                      "type": "3,762,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this class\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "3,764,31,11",
+                      "type": "3,764,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "3,766,12",
+                  "name": "3,768,0",
+                  "static": "3,765,12",
+                  "text": "3,720,12,1180"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "triggerExtended",
+                "static": true,
+                "src": {
+                  "access": "3,402,12",
+                  "inheritable": "3,404,12",
+                  "name": "3,406,0",
+                  "static": "3,403,12"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "inheritable": true,
+                "name": "$onExtended",
+                "static": true,
+                "src": {
+                  "access": "3,395,12",
+                  "inheritable": "3,397,12",
+                  "name": "3,399,0",
+                  "static": "3,396,12"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "vars",
+            "items": [
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-expanded-glyph",
+                "text": "Glyph for the \"expanded arrow\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-angle-down $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,116,1",
+                  "text": "1,114,4,90",
+                  "type": "1,113,10",
+                  "value": "1,116,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-expanded-glyph-color",
+                "text": "The color to use for the \"expanded arrow\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-arrow-glyph-color",
+                "src": {
+                  "name": "1,122,1",
+                  "text": "1,120,4,101",
+                  "type": "1,119,10",
+                  "value": "1,122,49"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-glyph",
+                "text": "Glyph for the \"arrow\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-angle-right $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,104,1",
+                  "text": "1,102,4,81",
+                  "type": "1,101,10",
+                  "value": "1,104,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-glyph-color",
+                "text": "The color to use for the \"arrow\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-glyph-color",
+                "src": {
+                  "name": "1,110,1",
+                  "text": "1,108,4,92",
+                  "type": "1,107,10",
+                  "value": "1,110,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-width",
+                "text": "The width of breadcrumb arrows when {@link #cfg!useSplitButtons #useSplitButtons} is `false`\n",
+                "type": "Number",
+                "value": "$button-small-split-width",
+                "src": {
+                  "name": "1,26,1",
+                  "text": "1,24,4,72",
+                  "type": "1,23,10",
+                  "value": "1,26,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-button-spacing",
+                "text": "The space between the breadcrumb buttons\n",
+                "type": "Number",
+                "value": "0px",
+                "src": {
+                  "name": "1,20,1",
+                  "text": "1,18,4,41",
+                  "type": "1,17,10",
+                  "value": "1,20,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-button-ui",
+                "text": "The UI of buttons that are used in the \"default\" breadcrumb UI\n",
+                "type": "String",
+                "value": "'default-toolbar'",
+                "src": {
+                  "name": "1,14,1",
+                  "text": "1,12,4,63",
+                  "type": "1,11,10",
+                  "value": "1,14,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-classic-scrollers",
+                "text": "`true` to use classic-style scroller buttons.  When `true` scroller buttons are given their\nhover state by changing their background-position,  When `false` scroller buttons are\ngiven their hover state by applying opacity.\n",
+                "type": "Boolean",
+                "value": "$toolbar-classic-scrollers",
+                "src": {
+                  "name": "1,232,1",
+                  "text": "1,228,4,223",
+                  "type": "1,227,10",
+                  "value": "1,232,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-glyph",
+                "text": "Glyph for the \"folder\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-folder-o $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,68,1",
+                  "text": "1,66,4,82",
+                  "type": "1,65,10",
+                  "value": "1,68,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-glyph-color",
+                "text": "The color to use for the \"folder\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-glyph-color",
+                "src": {
+                  "name": "1,74,1",
+                  "text": "1,72,4,93",
+                  "type": "1,71,10",
+                  "value": "1,74,41"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-icon",
+                "text": "The background-image for the default \"folder\" icon\n",
+                "type": "String",
+                "value": "'tree/folder'",
+                "src": {
+                  "name": "1,38,1",
+                  "text": "1,36,4,51",
+                  "type": "1,35,10",
+                  "value": "1,38,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-open-glyph",
+                "text": "Glyph for the \"open folder\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-folder-open-o $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,80,1",
+                  "text": "1,78,4,87",
+                  "type": "1,77,10",
+                  "value": "1,80,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-open-glyph-color",
+                "text": "The color to use for the \"open folder\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-folder-glyph-color",
+                "src": {
+                  "name": "1,86,1",
+                  "text": "1,84,4,98",
+                  "type": "1,83,10",
+                  "value": "1,86,46"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-open-icon",
+                "text": "The background-image for the default \"open folder\" icon\n",
+                "type": "String",
+                "value": "'tree/folder-open'",
+                "src": {
+                  "name": "1,44,1",
+                  "text": "1,42,4,56",
+                  "type": "1,41,10",
+                  "value": "1,44,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-glyph-color",
+                "text": "The color to use for breadcrumb icons when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "color",
+                "value": "$button-toolbar-glyph-color",
+                "src": {
+                  "name": "1,62,1",
+                  "text": "1,60,4,92",
+                  "type": "1,59,10",
+                  "value": "1,62,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-glyph-font-size",
+                "text": "The font size to use for breadcrumb icons when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "Number",
+                "value": "16px",
+                "src": {
+                  "name": "1,56,1",
+                  "text": "1,54,4,96",
+                  "type": "1,53,10",
+                  "value": "1,56,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-include-menu-active-arrow",
+                "text": "`true` to include a separate background-image for menu arrows when a breadcrumb button's\nmenu is open\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,129,1",
+                  "text": "1,126,4,102",
+                  "type": "1,125,10",
+                  "value": "1,129,48"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-include-split-over-arrow",
+                "text": "`true` to include a separate background-image for split arrows when a breadcrumb button's\narrow is hovered\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,136,1",
+                  "text": "1,133,4,107",
+                  "type": "1,132,10",
+                  "value": "1,136,47"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-leaf-glyph",
+                "text": "Glyph for the \"leaf\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-file-o $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,92,1",
+                  "text": "1,90,4,80",
+                  "type": "1,89,10",
+                  "value": "1,92,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-leaf-glyph-color",
+                "text": "The color to use for the \"leaf\" icon when {@link Global_CSS#var!$enable-font-icons Global_CSS#$enable-font-icons} is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-glyph-color",
+                "src": {
+                  "name": "1,98,1",
+                  "text": "1,96,4,91",
+                  "type": "1,95,10",
+                  "value": "1,98,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-leaf-icon",
+                "text": "The background-image for the default \"leaf\" icon\n",
+                "type": "String",
+                "value": "'tree/leaf'",
+                "src": {
+                  "name": "1,50,1",
+                  "text": "1,48,4,49",
+                  "type": "1,47,10",
+                  "value": "1,50,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-border-color",
+                "text": "The border-color of Breadcrumb scrollers\n",
+                "type": "color",
+                "value": "$toolbar-scroller-border-color",
+                "src": {
+                  "name": "1,154,1",
+                  "text": "1,152,4,41",
+                  "type": "1,151,10",
+                  "value": "1,154,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-border-width",
+                "text": "The border-width of Breadcrumb scrollers\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-border-width",
+                "src": {
+                  "name": "1,160,1",
+                  "text": "1,158,4,41",
+                  "type": "1,157,10",
+                  "value": "1,160,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-bottom-margin",
+                "text": "The margin of \"bottom\" Breadcrumb scroller buttons\n",
+                "type": "Number/list",
+                "value": "$toolbar-scroller-bottom-margin",
+                "src": {
+                  "name": "1,178,1",
+                  "text": "1,176,4,51",
+                  "type": "1,175,10",
+                  "value": "1,178,45"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-cursor",
+                "text": "The cursor of Breadcrumb scrollers\n",
+                "type": "String",
+                "value": "$toolbar-scroller-cursor",
+                "src": {
+                  "name": "1,190,1",
+                  "text": "1,188,4,35",
+                  "type": "1,187,10",
+                  "value": "1,190,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-cursor-disabled",
+                "text": "The cursor of disabled Breadcrumb scrollers\n",
+                "type": "String",
+                "value": "$toolbar-scroller-cursor-disabled",
+                "src": {
+                  "name": "1,196,1",
+                  "text": "1,194,4,44",
+                  "type": "1,193,10",
+                  "value": "1,196,47"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-height",
+                "text": "The height of Breadcrumb scrollers\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-height",
+                "src": {
+                  "name": "1,148,1",
+                  "text": "1,146,4,35",
+                  "type": "1,145,10",
+                  "value": "1,148,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-left-margin",
+                "text": "The margin of \"left\" Breadcrumb scroller buttons\n",
+                "type": "Number/list",
+                "value": "$toolbar-scroller-left-margin",
+                "src": {
+                  "name": "1,184,1",
+                  "text": "1,182,4,49",
+                  "type": "1,181,10",
+                  "value": "1,184,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-opacity",
+                "text": "The opacity of Breadcrumb scroller buttons. Only applicable when\n{@link #var!$breadcrumb-classic-scrollers #$breadcrumb-classic-scrollers} is `false`.\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-opacity",
+                "src": {
+                  "name": "1,203,1",
+                  "text": "1,200,4,116",
+                  "type": "1,199,10",
+                  "value": "1,203,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-opacity-disabled",
+                "text": "The opacity of disabled Breadcrumb scroller buttons. Only applicable when\n{@link #var!$breadcrumb-classic-scrollers #$breadcrumb-classic-scrollers} is `false`.\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-opacity-disabled",
+                "src": {
+                  "name": "1,224,1",
+                  "text": "1,221,4,125",
+                  "type": "1,220,10",
+                  "value": "1,224,48"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-opacity-over",
+                "text": "The opacity of hovered Breadcrumb scroller buttons. Only applicable when\n{@link #var!$breadcrumb-classic-scrollers #$breadcrumb-classic-scrollers} is `false`.\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-opacity-over",
+                "src": {
+                  "name": "1,210,1",
+                  "text": "1,207,4,124",
+                  "type": "1,206,10",
+                  "value": "1,210,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-opacity-pressed",
+                "text": "The opacity of pressed Breadcrumb scroller buttons. Only applicable when\n{@link #var!$breadcrumb-classic-scrollers #$breadcrumb-classic-scrollers} is `false`.\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-opacity-pressed",
+                "src": {
+                  "name": "1,217,1",
+                  "text": "1,214,4,124",
+                  "type": "1,213,10",
+                  "value": "1,217,47"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-right-margin",
+                "text": "The margin of \"right\" Breadcrumb scroller buttons\n",
+                "type": "Number/list",
+                "value": "$toolbar-scroller-right-margin",
+                "src": {
+                  "name": "1,172,1",
+                  "text": "1,170,4,50",
+                  "type": "1,169,10",
+                  "value": "1,172,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-top-margin",
+                "text": "The margin of \"top\" Breadcrumb scroller buttons\n",
+                "type": "Number/list",
+                "value": "$toolbar-scroller-top-margin",
+                "src": {
+                  "name": "1,166,1",
+                  "text": "1,164,4,48",
+                  "type": "1,163,10",
+                  "value": "1,166,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-width",
+                "text": "The width of Breadcrumb scrollers\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-width",
+                "src": {
+                  "name": "1,142,1",
+                  "text": "1,140,4,34",
+                  "type": "1,139,10",
+                  "value": "1,142,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-split-width",
+                "text": "The width of breadcrumb arrows when {@link #cfg!useSplitButtons #useSplitButtons} is `true`\n",
+                "type": "Number",
+                "value": "$button-small-split-width",
+                "src": {
+                  "name": "1,32,1",
+                  "text": "1,30,4,71",
+                  "type": "1,29,10",
+                  "value": "1,32,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$include-breadcrumb-default-ui",
+                "text": "`true` to include the \"default\" breadcrumb UI\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,238,1",
+                  "text": "1,236,4,46",
+                  "type": "1,235,10",
+                  "value": "1,238,41"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,14,0",
+          "extends": "0,13,0",
+          "mixins": "0,21,0",
+          "name": "1,1,12",
+          "requires": "0,16,0,0:0,17,0,0",
+          "text": "0,2,4,548"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

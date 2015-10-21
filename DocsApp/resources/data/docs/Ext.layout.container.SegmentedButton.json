@@ -1,0 +1,2181 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/layout/container/SegmentedButton.js",
+    "../../../ext/classic/classic/src/layout/Layout.js",
+    "../../../ext/classic/classic/src/util/ElementContainer.js",
+    "../../../ext/classic/classic/src/layout/container/Container.js",
+    "../../../ext/packages/core/src/class/Base.js",
+    "../../../../docs/docs/js/primitives/Object.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "alias": "layout.segmentedbutton",
+        "extended": "Ext.layout.container.Container,Ext.layout.Layout,Ext.Base,Object",
+        "extends": "Ext.layout.container.Container",
+        "name": "Ext.layout.container.SegmentedButton",
+        "text": "This class is used internally to manage the layout of `{@link Ext.button.Segmented}`.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "animatePolicy",
+                "since": "4.1.0",
+                "text": "An object that contains as keys the names of the properties that can be animated\nby child items as a consequence of a layout. This config is used internally by the\n{@link Ext.layout.container.Accordion} layout to cause the child panels\nto animate to their proper size and position after a collapse/expand event.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,233,8",
+                  "name": "1,228,22",
+                  "since": "1,234,15",
+                  "text": "1,229,8,322",
+                  "type": "1,228,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "childEls",
+                "text": "The canonical form of `{@link #cfg!childEls childEls}` is an object keyed by child's property name\nwith values that are objects with the following properties.\n\n- `itemId` - The id to combine with the Component's id that is the id of the\n  child element.\n- `id` - The id of the child element.\n- `leaf` - Set to `true` to ignore content when scanning for childEls. This\n should be set on things like the generated content for an `{@link Ext.view.View}`.\n- `select`: A selector that will be passed to {@link Ext.dom.Element#method!select Ext.dom.Element#method-select}.\n- `selectNode`: A selector that will be passed to {@link Ext.dom.Element#method!selectNode Ext.dom.Element#method-selectNode}.\n\nFor example:\n\n     childEls: {\n         button: true,\n         buttonText: 'text',\n         buttonImage: {\n             itemId: 'image'\n         }\n     }\n\nThe above is translated into the following complete form:\n\n     childEls: {\n         button: {\n             name: 'button',\n             itemId: 'button'\n         },\n         buttonText: {\n             name: 'buttonText',\n             itemId: 'text'\n         },\n         buttonImage: {\n             name: 'buttonImage',\n             itemId: 'image'\n         }\n     }\n\nThe above can be provided as an array like so:\n\n     childEls: [\n         'button',\n         { name: 'buttonText', itemId: 'text' },\n         { name: 'buttonImage', itemId: 'image' }\n     }\n\nFor example, a Component which renders a title and body text:\n\n    @example\n    Ext.create('Ext.Component', {\n        renderTo: Ext.getBody(),\n        renderTpl: [\n            '<h1 id=\"{id}-title\" data-ref=\"title\">{title}</h1>',\n            '<p>{msg}</p>',\n        ],\n        renderData: {\n            title: \"Error\",\n            msg: \"Something went wrong\"\n        },\n        childEls: [\"title\"],\n        listeners: {\n            afterrender: function(cmp){\n                // After rendering the component will have a title property\n                cmp.title.setStyle({color: \"red\"});\n            }\n        }\n    });\n\n**Note:** `childEl`s in the {@link Ext.Component#cfg!renderTpl Ext.Component#cfg-renderTpl}\nmust be referenced in a **data-ref** attribute.  Notice in the above example\nthat the \"title\" `childEl` is set in the `renderTpl` using\n**data-ref=\"title\"**.\n\nWhen using `select`, the property will be an instance of {@link Ext.dom.CompositeElement Ext.CompositeElement}.\nIn all other cases, the property will be an {@link Ext.dom.Element} or `{@link null}`\nif not found.\n\nCare should be taken when using `select` or `selectNode` to find child elements.\nThe following issues should be considered:\n\n- Performance: using selectors can be 10x slower than id lookup.\n- Over-selecting: selectors are applied after the DOM elements for all children\n  have been rendered, so selectors can match elements from child components\n  (including nested versions of the same component) accidentally.\n\nThis above issues are most important when using `select` since it returns multiple\nelements.\n",
+                "type": "Object/String[]/Object[]",
+                "src": {
+                  "name": "2,70,44",
+                  "text": "2,71,12,2854",
+                  "type": "2,70,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "itemCls",
+                "text": "An optional extra CSS class that will be added to the container. This can be useful for\nadding customized styles to the container or any of its children using standard CSS\nrules. See {@link Ext.Component}.{@link Ext.Component#cfg!componentCls Ext.Component#componentCls} also.\n",
+                "type": "String",
+                "src": {
+                  "name": "3,25,22",
+                  "text": "3,26,8,259",
+                  "type": "3,25,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addChildEl",
+                "since": "6.0.0",
+                "text": "Add a childEl specific to this instance. This must be called before render.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "childEl",
+                    "src": {
+                      "name": "2,231,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,232,12",
+                  "name": "2,235,0",
+                  "since": "2,233,19",
+                  "text": "2,230,12,76"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addDeprecations",
+                "text": "This method applies a versioned, deprecation declaration to this class. This\nis typically called by the `deprecated` config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "deprecations",
+                    "src": {
+                      "name": "4,120,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,118,12",
+                  "name": "4,120,0",
+                  "text": "4,116,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterClassMixedIn",
+                "text": "Called after the mixin is applied. We need to see if `{@link #cfg!childEls childEls}` were used by\nthe `targetClass` and apply them to the config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "targetClass",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "2,253,31",
+                      "type": "2,253,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,254,12",
+                  "name": "2,256,0",
+                  "text": "2,251,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterCollapse",
+                "text": "Called by an owning Panel after the Panel finishes its collapse process.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "src": {
+                      "name": "1,563,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "animated",
+                    "src": {
+                      "name": "1,563,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,560,8",
+                  "name": "1,563,0",
+                  "text": "1,561,8,73"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterExpand",
+                "text": "Called by an owning Panel after the Panel finishes its expand process.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "src": {
+                      "name": "1,573,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "animated",
+                    "src": {
+                      "name": "1,573,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,570,8",
+                  "name": "1,573,0",
+                  "text": "1,571,8,71"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "afterRemove",
+                "text": "Removes layout's itemCls and owning Container's itemCls.\nClears the managed dimensions flags\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "1,540,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,538,8",
+                  "name": "1,540,0",
+                  "text": "1,536,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "attachChildEls",
+                "text": "Sets references to elements inside the component.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "src": {
+                      "name": "2,274,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "src": {
+                      "name": "2,274,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,272,12",
+                  "name": "2,274,0",
+                  "text": "2,271,12,50"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beginLayout",
+                "text": "In addition to work done by our base classes, containers benefit from some extra\ncached data. The following properties are added to the ownerContext:\n\n - visibleItems: the result of {@link #method!getVisibleItems #getVisibleItems}\n - childItems: the ContextItem[] for each visible item\n - targetContext: the ContextItem for the {@link #method!getTarget #getTarget} element\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "src": {
+                      "name": "3,92,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,92,0",
+                  "text": "3,85,8,331"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beginLayoutCycle",
+                "text": "Called before any calculation cycles to reset DOM values and prepare for calculation.\n\nThis is a write phase and DOM reads should be strictly avoided when overridding\nthis method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "1,98,40",
+                      "text": "1,98,53,40:1,99,8,11",
+                      "type": "1,98,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,100,16",
+                  "text": "1,93,8,181"
+                }
+              },
+              {
+                "$type": "method",
+                "abstract": true,
+                "name": "calculate",
+                "text": "Called to perform the calculations for this layout. This method will be called at\nleast once and may be called repeatedly if the {@link #property!done #done} property is cleared\nbefore return to indicate that this layout is not yet done. The {@link #property!done #done} property\nis always set to `true` before entering this method.\n\nThis is a read phase and DOM writes should be strictly avoided in derived classes.\nInstead, DOM writes need to be written to {@link Ext.layout.ContextItem} objects to\n be flushed at the next opportunity.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "1,138,40",
+                      "text": "1,138,53,40:1,139,8,11",
+                      "type": "1,138,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "abstract": "1,141,8",
+                  "name": "1,140,16",
+                  "text": "1,129,8,509"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callParent",
+                "text": "Call the \"parent\" method of the current method. That is the method previously\noverridden by derivation or by an override (see {@link Ext#method!define Ext#define}).\n\n     Ext.define('My.Base', {\n         constructor: function (x) {\n             this.x = x;\n         },\n\n         statics: {\n             method: function (x) {\n                 return x;\n             }\n         }\n     });\n\n     Ext.define('My.Derived', {\n         extend: 'My.Base',\n\n         constructor: function () {\n             this.callParent([21]);\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // alerts 21\n\nThis can be used with an override as follows:\n\n     Ext.define('My.DerivedOverride', {\n         override: 'My.Derived',\n\n         constructor: function (x) {\n             this.callParent([x*2]); // calls original My.Derived constructor\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // now alerts 42\n\nThis also works with static and private methods.\n\n     Ext.define('My.Derived2', {\n         extend: 'My.Base',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Base.method\n             }\n         }\n     });\n\n     alert(My.Base.method(10));     // alerts 10\n     alert(My.Derived2.method(10)); // alerts 20\n\nLastly, it also works with overridden static methods.\n\n     Ext.define('My.Derived2Override', {\n         override: 'My.Derived2',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Derived2.method\n             }\n         }\n     });\n\n     alert(My.Derived2.method(10); // now alerts 40\n\nTo override a method and replace it and also call the superclass method, use\n{@link #method!callSuper #method-callSuper}. This is often done to patch a method to fix a bug.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callParent(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "4,1251,37",
+                      "text": "4,1251,42,57:4,1252,12,67",
+                      "type": "4,1251,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the parent method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1253,29,48",
+                      "type": "4,1253,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1250,12",
+                  "name": "4,1255,0",
+                  "text": "4,1175,12,1853"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callSuper",
+                "text": "This method is used by an **override** to call the superclass method but\nbypass any overridden method. This is often done to \"patch\" a method that\ncontains a bug but for whatever reason cannot be fixed directly.\n\nConsider:\n\n     Ext.define('Ext.some.Class', {\n         method: function () {\n             console.log('Good');\n         }\n     });\n\n     Ext.define('Ext.some.DerivedClass', {\n         extend: 'Ext.some.Class',\n\n         method: function () {\n             console.log('Bad');\n\n             // ... logic but with a bug ...\n\n             this.callParent();\n         }\n     });\n\nTo patch the bug in `Ext.some.DerivedClass.method`, the typical solution is to create an\noverride:\n\n     Ext.define('App.patches.DerivedClass', {\n         override: 'Ext.some.DerivedClass',\n\n         method: function () {\n             console.log('Fixed');\n\n             // ... logic but with bug fixed ...\n\n             this.callSuper();\n         }\n     });\n\nThe patch method cannot use {@link #method!callParent #method-callParent} to call the superclass\n`method` since that would call the overridden method containing the bug. In\nother words, the above patch would only produce \"Fixed\" then \"Good\" in the\nconsole log, whereas, using `callParent` would produce \"Fixed\" then \"Bad\"\nthen \"Good\".\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callSuper(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "4,1338,37",
+                      "text": "4,1338,42,57:4,1339,12,66",
+                      "type": "4,1338,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the superclass method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1340,29,52",
+                      "type": "4,1340,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1337,12",
+                  "name": "4,1342,0",
+                  "text": "4,1292,12,1266"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "completeLayout",
+                "text": "This method (if implemented) is called at the end of the cycle in which this layout\ncompletes (by not setting {@link #property!done #done} to `false` in {@link #method!calculate #calculate}). It is\npossible for the layout to complete and yet become invalid before the end of the cycle,\nin which case, this method will not be called. It is also possible for this method to\nbe called and then later the layout becomes invalidated. This will result in\n{@link #method!calculate #calculate} being called again, followed by another call to this method.\n\nThis is a read phase and DOM writes should be strictly avoided in derived classes.\nInstead, DOM writes need to be written to {@link Ext.layout.ContextItem} objects to\nbe flushed at the next opportunity.\n\nThis method need not be implemented by derived classes and, in fact, should only be\nimplemented when needed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "1,159,40",
+                      "text": "1,159,53,40:1,160,8,11",
+                      "type": "1,159,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,161,16",
+                  "text": "1,145,8,811"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "configureItem",
+                "text": "Adds layout's itemCls and owning Container's itemCls\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "3,156,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,154,8",
+                  "name": "3,156,0",
+                  "text": "3,153,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to wrap.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "5,40,21",
+                      "text": "5,40,28,19",
+                      "type": "5,40,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,38,12",
+                  "text": "5,39,4,20"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "destroy",
+                "text": "Destroys this layout. This method removes a `targetCls` from the `target`\nelement and calls `onDestroy`.\n\nA derived class can override either this method or `onDestroy` but in all\ncases must call the base class versions of these methods to allow the base class to\nperform its cleanup.\n\nThis method (or `onDestroy`) are overridden by subclasses most often to purge\nevent handlers or remove unmanged DOM nodes.\n",
+                "src": {
+                  "access": "1,590,8",
+                  "name": "1,592,0",
+                  "text": "1,580,8,410"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "finalizeLayout",
+                "text": "This method (if implemented) is called after all layouts have completed. In most\nways this is similar to {@link #method!completeLayout #completeLayout}. This call can cause this (or any\nlayout) to be become invalid (see {@link Ext.layout.Context#method!invalidate Ext.layout.Context#invalidate}), but this\nis best avoided. This method is intended to be where final reads are made and so it\nis best to avoid invalidating layouts at this point whenever possible. Even so, this\nmethod can be used to perform final checks that may require all other layouts to be\ncomplete and then invalidate some results.\n\nThis is a read phase and DOM writes should be strictly avoided in derived classes.\nInstead, DOM writes need to be written to {@link Ext.layout.ContextItem} objects to\nbe flushed at the next opportunity.\n\nThis method need not be implemented by derived classes and, in fact, should only be\nimplemented when needed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "1,180,40",
+                      "text": "1,180,53,40:1,181,8,11",
+                      "type": "1,180,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,182,16",
+                  "text": "1,165,8,857"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "finishedLayout",
+                "text": "This method is called after all layouts are complete and their calculations flushed\nto the DOM. No further layouts will be run and this method is only called once per\nlayout run. The base component layout caches `lastComponentSize`.\n\nThis is a write phase and DOM reads should be avoided if possible when overridding\nthis method.\n\nThis method need not be implemented by derived classes and, in fact, should only be\nimplemented when needed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "1,196,40",
+                      "text": "1,196,53,40:1,197,8,11",
+                      "type": "1,196,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,199,0",
+                  "text": "1,186,8,441"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getConfig",
+                "text": "Returns a specified config property value. If the name parameter is not passed,\nall current configuration options will be returned as key value pairs.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "The name of the config property to get.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1469,29",
+                      "text": "4,1469,35,40",
+                      "type": "4,1469,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "peek",
+                    "optional": true,
+                    "text": "`true` to peek at the raw value without calling the getter.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "4,1470,30",
+                      "text": "4,1470,42,60",
+                      "type": "4,1470,20",
+                      "value": "4,1470,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The config property value.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1471,29,27",
+                      "type": "4,1471,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1473,0",
+                  "text": "4,1466,12,151"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getContainerSize",
+                "text": "Returns the container size (that of the target). Only the fixed-sized dimensions can\nbe returned because the shrinkWrap dimensions are based on the contentWidth/Height\nas determined by the container layout.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The owner's context item.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "3,251,40",
+                      "text": "3,251,53,26",
+                      "type": "3,251,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "inDom",
+                    "optional": true,
+                    "text": "True if the container size must be in the DOM.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "3,252,26",
+                      "text": "3,252,39,47",
+                      "type": "3,252,16",
+                      "value": "3,252,32"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The size\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "width",
+                        "text": "The width\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,254,32",
+                          "text": "3,254,38,10",
+                          "type": "3,254,17"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "height",
+                        "text": "The height\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,255,32",
+                          "text": "3,255,39,11",
+                          "type": "3,255,17"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "text": "3,253,25,9",
+                      "type": "3,253,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,256,8",
+                  "name": "3,258,0",
+                  "text": "3,247,8,208"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getCurrentConfig",
+                "src": {
+                  "access": "4,1506,12",
+                  "name": "4,1508,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getElementTarget",
+                "text": "Returns the element into which extra functional DOM elements can be inserted. Defaults to the owner Component's encapsulating element.\n\nMay be overridden in Component layout managers which implement a {@link #method!getRenderTarget #getRenderTarget} which must only\ncontain child components.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "type": "3,397,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,399,0",
+                  "text": "3,393,8,292"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInitialConfig",
+                "text": "Returns the initial configuration passed to the constructor when\ninstantiating this class.\n\nGiven this example Ext.button.Button definition and instance:\n\n    Ext.define('MyApp.view.Button', {\n        extend: 'Ext.button.Button',\n        xtype: 'mybutton',\n\n        scale: 'large',\n        enableToggle: true\n    });\n\n    var btn = Ext.create({\n        xtype: 'mybutton',\n        renderTo: Ext.getBody(),\n        text: 'Test Button'\n    });\n\nCalling `btn.getInitialConfig()` would return an object including the config\noptions passed to the `{@link #static-method!create create}` method:\n\n    xtype: 'mybutton',\n    renderTo: // The document body itself\n    text: 'Test Button'\n\nCalling `btn.getInitialConfig('text')`returns **'Test Button'**.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "Name of the config option to return.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1551,29",
+                      "text": "4,1551,35,37",
+                      "type": "4,1551,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The full config object or a single config value\nwhen `name` parameter specified.\n",
+                    "type": "Object/Mixed",
+                    "src": {
+                      "text": "4,1552,35,48:4,1553,12,33",
+                      "type": "4,1552,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1555,0",
+                  "text": "4,1523,12,715"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getItemLayoutEl",
+                "text": "For a given item, returns the element that participates in the childNodes array\nof the layout's target element.  This is usually the component's \"el\", but can\nalso be a wrapper\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,430,31",
+                      "type": "1,430,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "HTMLElement",
+                    "src": {
+                      "type": "1,431,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,429,8",
+                  "name": "1,433,0",
+                  "text": "1,426,8,177"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getItemSizePolicy",
+                "text": "Returns an object describing how this layout manages the size of the given component.\nThis method must be implemented by any layout that manages components.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,245,31",
+                      "type": "1,245,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object describing the sizing done by the layout\nfor this item.\n",
+                    "type": "Ext.layout.SizePolicy",
+                    "src": {
+                      "text": "1,246,40,51:1,247,8,15",
+                      "type": "1,246,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,248,8",
+                  "name": "1,250,0",
+                  "text": "1,242,8,158"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getLayoutItems",
+                "text": "Returns an array of child components either for a render phase (Performed in the beforeLayout\nmethod of the layout's base class), or the layout phase (onLayout).\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "of child components\n",
+                    "type": "Ext.Component[]",
+                    "src": {
+                      "text": "3,338,34,20",
+                      "type": "3,338,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,340,0",
+                  "text": "3,336,8,162"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getRenderedItems",
+                "text": "Returns all items that are rendered\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "All matching items\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "3,360,24,19",
+                      "type": "3,360,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,358,8",
+                  "name": "3,362,0",
+                  "text": "3,359,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRenderTarget",
+                "text": "Returns the element into which rendering must take place. Defaults to the owner Container's\ntarget element.\n\nMay be overridden in layout managers which implement an inner element.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "type": "3,386,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,388,0",
+                  "text": "3,381,8,181"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTarget",
+                "text": "Returns the owner component's resize element.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "type": "3,476,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,478,0",
+                  "text": "3,475,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getVisibleItems",
+                "text": "Returns all items that are both rendered and visible\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "All matching items\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "3,485,24,19",
+                      "type": "3,485,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,483,8",
+                  "name": "3,487,0",
+                  "text": "3,484,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "hasConfig",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "4,1516,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1515,12",
+                  "name": "4,1518,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "5,100,20",
+                      "text": "5,100,25,34",
+                      "type": "5,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "5,101,22,57:5,102,4,15",
+                      "type": "5,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,53,12",
+                  "text": "5,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initConfig",
+                "text": "Initialize configuration for this class. a typical example:\n\n    Ext.define('My.awesome.Class', {\n        // The default config\n        config: {\n            name: 'Awesome',\n            isAwesome: true\n        },\n\n        constructor: function(config) {\n            this.initConfig(config);\n        }\n    });\n\n    var awesome = new My.awesome.Class({\n        name: 'Super Awesome'\n    });\n\n    alert(awesome.getName()); // 'Super Awesome'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1449,28",
+                      "type": "4,1449,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,1450,31,5",
+                      "type": "4,1450,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1448,12",
+                  "name": "4,1452,0",
+                  "text": "4,1428,12,441"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initLayout",
+                "text": "A one-time initialization method called just before rendering.\n",
+                "src": {
+                  "access": "1,506,8",
+                  "name": "1,508,0",
+                  "text": "1,505,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "5,148,20",
+                      "text": "5,148,30,71:5,149,4,18",
+                      "type": "5,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "5,150,20",
+                      "text": "5,150,27,50",
+                      "type": "5,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "5,151,22,56",
+                      "type": "5,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,106,12",
+                  "text": "5,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "isValidParent",
+                "text": "Validates item is in the proper place in the dom.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "1,409,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "src": {
+                      "name": "1,409,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "position",
+                    "src": {
+                      "name": "1,409,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,407,8",
+                  "name": "1,409,0",
+                  "text": "1,406,8,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "link",
+                "text": "Adds a \"destroyable\" object to an internal list of objects that will be destroyed\nwhen this instance is destroyed (via `{@link #method!destroy #destroy}`).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1571,28",
+                      "type": "4,1571,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1572,28",
+                      "type": "4,1572,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `value` passed.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1573,29,20",
+                      "type": "4,1573,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1574,12",
+                  "name": "4,1576,0",
+                  "text": "4,1569,12,140"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "moveItem",
+                "text": "Moves Component to the provided target instead.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "1,482,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "src": {
+                      "name": "1,482,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "position",
+                    "src": {
+                      "name": "1,482,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,480,8",
+                  "name": "1,482,0",
+                  "text": "1,479,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "notifyOwner",
+                "text": "Called for every layout in the layout context after all the layouts have been finally flushed\n",
+                "src": {
+                  "access": "3,233,8",
+                  "name": "3,236,0",
+                  "text": "3,234,8,94"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onContentChange",
+                "text": "This method is called when a child item changes in some way. By default this calls\n{@link Ext.Component#updateLayout} on this layout's owner.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "child",
+                    "text": "The child item that has changed.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,496,31",
+                      "text": "1,496,37,33",
+                      "type": "1,496,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if this layout has handled the content change.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,497,26,52",
+                      "type": "1,497,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,499,0",
+                  "text": "1,493,8,143"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "5,220,20",
+                      "text": "5,220,25,34",
+                      "type": "5,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "5,221,22,57:5,222,4,22",
+                      "type": "5,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,155,12",
+                  "text": "5,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "renderItem",
+                "text": "Renders the given Component into the target Element.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The Component to render\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,463,31",
+                      "text": "1,463,36,24",
+                      "type": "1,463,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The target Element\n",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "name": "1,464,33",
+                      "text": "1,464,40,19",
+                      "type": "1,464,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "position",
+                    "text": "The position within the target to render the item to\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "1,465,24",
+                      "text": "1,465,33,53",
+                      "type": "1,465,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,466,8",
+                  "name": "1,468,0",
+                  "text": "1,462,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "renderItems",
+                "text": "Iterates over all passed items, ensuring they are rendered.  If the items are already rendered,\nalso determines if the items are in the proper place in the dom.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "src": {
+                      "name": "1,382,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "src": {
+                      "name": "1,382,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,380,8",
+                  "name": "1,382,0",
+                  "text": "1,378,8,161"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setConfig",
+                "text": "Sets a single/multiple configuration options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the property to set, or a set of key value pairs to set.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "4,1478,35",
+                      "text": "4,1478,40,69",
+                      "type": "4,1478,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to set for the name parameter.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1479,29",
+                      "text": "4,1479,36,41",
+                      "type": "4,1479,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,1480,31,5",
+                      "type": "4,1480,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1482,0",
+                  "text": "4,1476,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setOwner",
+                "text": "Sets the layout owner\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "src": {
+                      "name": "1,516,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,513,8",
+                  "name": "1,516,0",
+                  "text": "1,514,8,22"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "statics",
+                "text": "Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#property!self Ext.Base#self},\n`this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what\n`this` points to during run-time\n\n    Ext.define('My.Cat', {\n        statics: {\n            totalCreated: 0,\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            var statics = this.statics();\n\n            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to\n                                            // equivalent to: My.Cat.speciesName\n\n            alert(this.self.speciesName);   // dependent on 'this'\n\n            statics.totalCreated++;\n        },\n\n        clone: function() {\n            var cloned = new this.self();   // dependent on 'this'\n\n            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName\n\n            return cloned;\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n\n        statics: {\n            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'\n        },\n\n        constructor: function() {\n            this.callParent();\n        }\n    });\n\n    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'\n\n    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'\n    alert(clone.groupName);                 // alerts 'Cat'\n\n    alert(My.Cat.totalCreated);             // alerts 3\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Class",
+                    "src": {
+                      "type": "4,1161,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1160,12",
+                  "name": "4,1163,0",
+                  "text": "4,1107,12,1691"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n`{@link Object}`'s `{@link #method!toLocaleString toLocaleString}` returns the result of calling `{@link #method!toString toString}`.\n\nThis function is provided to give objects a generic `{@link #method!toLocaleString toLocaleString}` method, even though not all\nmay use it. Currently, only `{@link Array}`, `{@link Number}`, and `{@link Date}` override `{@link #method!toLocaleString toLocaleString}`.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "5,235,21,32",
+                      "type": "5,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,226,12",
+                  "text": "5,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from `{@link Object}`.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom `{@link Object}`:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "5,297,21,32",
+                      "type": "5,297,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,239,12",
+                  "text": "5,240,4,2445"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unlink",
+                "text": "Destroys a given set of `{@link #method!link #link}` objects. This is only needed if\nthe linked object is being destroyed before this instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "names",
+                    "text": "The names of the linked objects to destroy.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "4,1589,30",
+                      "text": "4,1589,36,44",
+                      "type": "4,1589,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,1590,31,5",
+                      "type": "4,1590,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1591,12",
+                  "name": "4,1593,0",
+                  "text": "4,1587,12,138"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the `{@link #method!valueOf valueOf}` method to convert an object to a primitive value. You rarely need to\ninvoke the `{@link #method!valueOf valueOf}` method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the `{@link #method!valueOf valueOf}` method is inherited by every object descended from `{@link Object}`. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, `{@link #method!valueOf valueOf}` returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use `{@link #method!valueOf valueOf}` within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default `{@link Object}` method.\n\nYou can create a function to be called in place of the default `{@link #method!valueOf valueOf}` method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a `{@link #method!valueOf valueOf}` method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's `{@link #method!valueOf valueOf}` method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the `{@link #method!toString toString}` method, which is different from\n`{@link String}` objects converting to string primitives using `{@link #method!valueOf valueOf}`. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "5,340,21,50",
+                      "type": "5,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,301,12",
+                  "text": "5,302,4,1821"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$className",
+                "src": {
+                  "access": "4,1049,13",
+                  "name": "4,1050,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configPrefixed",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` causes `config` values to be stored on instances using a\nproperty name prefixed with an underscore (\"_\") character. A value of `false`\nstores `config` values as properties using their exact name (no prefix).\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1066,12",
+                  "name": "4,1062,33",
+                  "since": "4,1067,19",
+                  "text": "4,1063,12,225",
+                  "type": "4,1062,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configStrict",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` instructs the `{@link #method!initConfig initConfig}` method to only honor values for\nproperties declared in the `config` block of a class. When `false`, properties\nthat are not declared in a `config` block will be placed on the instance.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1076,12",
+                  "name": "4,1072,33",
+                  "since": "4,1077,19",
+                  "text": "4,1073,12,229",
+                  "type": "4,1072,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "activeItemCount",
+                "text": "tracks the number of child items that do not use \"liquid\" CSS layout\n",
+                "src": {
+                  "access": "3,60,8",
+                  "name": "3,63,0",
+                  "text": "3,61,8,69"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "animatePolicy",
+                "text": "An object which contains boolean properties specifying which properties are to be\nanimated upon flush of child Component ContextItems. For example, Accordion would\nhave:\n\n     {\n         y: true,\n         height: true\n     }\n",
+                "src": {
+                  "access": "3,55,8",
+                  "name": "3,57,0",
+                  "text": "3,46,8,226"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "beginCollapse",
+                "text": "Called by an owning Panel before the Panel begins its collapse process.\nMost layouts will not need to override the default Ext.emptyFn implementation.\n",
+                "src": {
+                  "access": "3,32,8",
+                  "name": "3,36,0",
+                  "text": "3,33,8,151"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "beginExpand",
+                "text": "Called by an owning Panel before the Panel begins its expand process.\nMost layouts will not need to override the default Ext.emptyFn implementation.\n",
+                "src": {
+                  "access": "3,39,8",
+                  "name": "3,43,0",
+                  "text": "3,40,8,149"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "5,346,14",
+                  "text": "5,347,3,1996"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "destroyed",
+                "text": "This property is set to `true` after the `{@link #method!destroy destroy}` method is called.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1102,12",
+                  "name": "4,1100,32",
+                  "text": "4,1101,12,69",
+                  "type": "4,1100,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "done",
+                "text": "Used only during a layout run, this value indicates that a\nlayout has finished its calculations. This flag is set to true prior to the call to\n{@link #method!calculate #calculate} and should be set to false if this layout has more work to do.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,75,28",
+                  "text": "1,75,33,59:1,76,8,166",
+                  "type": "1,75,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created `{@link Ext.Factory}`.\n",
+                "type": "Object",
+                "src": {
+                  "name": "6,295,28",
+                  "text": "6,296,8,128",
+                  "type": "6,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "getScrollerEl",
+                "text": "Returns the element that wraps the contents for the purposes of touch scrolling.\nOnly applicable when the layout adds the scroller element as part of its renderTpl\n(e.g. autocontainer and box)\n",
+                "src": {
+                  "access": "1,258,8",
+                  "name": "1,260,0",
+                  "text": "1,255,8,193"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isConfiguring",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` during the call to `{@link #method!initConfig initConfig}`.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1084,12",
+                  "name": "4,1082,32",
+                  "readonly": "4,1085,12",
+                  "since": "4,1086,19",
+                  "text": "4,1083,12,64",
+                  "type": "4,1082,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isFirstInstance",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` if this instance is the first of its class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1093,12",
+                  "name": "4,1091,32",
+                  "readonly": "4,1094,12",
+                  "since": "4,1095,19",
+                  "text": "4,1092,12,75",
+                  "type": "4,1091,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isInstance",
+                "readonly": true,
+                "text": "This value is `true` and is used to identify plain objects from instances of\na defined class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "4,1056,12",
+                  "name": "4,1053,32",
+                  "readonly": "4,1057,12",
+                  "text": "4,1054,12,94",
+                  "type": "4,1053,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isLayout",
+                "readonly": true,
+                "text": "`true` in this class to identify an object as an instantiated Layout, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,22,28",
+                  "readonly": "1,24,8",
+                  "text": "1,23,8,91",
+                  "type": "1,22,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "needsItemSize",
+                "text": "`true` if this layout may need to incorporate the dimensions of individual child\nitems into its layout calculations.  Layouts that handle the size of their children\nas a group (autocontainer, form) can set this to false for an additional performance\noptimization.  When `false` the layout system will not recurse into the child\nitems if {@link Ext.layout.container.Container#property!activeItemCount Ext.layout.container.Container#activeItemCount} is `0`, which will be the case if all child items\nuse \"liquid\" CSS layout, e.g. form fields.  (See Ext.Component#liquidLayout)\n",
+                "src": {
+                  "access": "1,31,8",
+                  "name": "1,39,0",
+                  "text": "1,32,8,519"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "5,46,14",
+                  "text": "5,47,4,65"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "self",
+                "text": "\nGet the reference to the current class from which this object was instantiated. Unlike {@link Ext.Base#method!statics Ext.Base#statics},\n`this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See {@link Ext.Base#method!statics Ext.Base#statics}\nfor a detailed comparison\n\n    Ext.define('My.Cat', {\n        statics: {\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            alert(this.self.speciesName); // dependent on 'this'\n        },\n\n        clone: function() {\n            return new this.self();\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n        statics: {\n            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'\n        }\n    });\n\n    var cat = new My.Cat();                     // alerts 'Cat'\n    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'\n",
+                "type": "Ext.Class",
+                "src": {
+                  "access": "4,1413,12",
+                  "name": "4,1379,34",
+                  "text": "4,1380,12,1011",
+                  "type": "4,1379,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "setsItemSize",
+                "text": "`true` if this layout may set the size of its child items.  Layouts that do not\nset the size of their child items (autocontainer, form) can set this to false\nfor an additional performance optimization.  When `true` the layout system will\nnot create a context item for children that use liquid layout, because there is\nno need for a context item if item size is neither read nor set by the owning layout.\n",
+                "src": {
+                  "access": "1,42,8",
+                  "name": "1,49,0",
+                  "text": "1,43,8,404"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addConfig",
+                "static": true,
+                "text": "Adds new config properties to this class. This is called for classes when they\nare declared, then for any mixins that class may define and finally for any\noverrides defined that target the class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,940,28",
+                      "type": "4,940,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "optional": true,
+                    "text": "The mixin class if the configs are from a mixin.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "4,941,32",
+                      "text": "4,941,44,49",
+                      "type": "4,941,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,942,12",
+                  "inheritable": "4,944,12",
+                  "name": "4,946,0",
+                  "static": "4,943,12",
+                  "text": "4,936,12,197"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addInheritableStatics",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,464,28",
+                      "type": "4,464,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,461,12",
+                  "inheritable": "4,463,12",
+                  "name": "4,466,0",
+                  "static": "4,462,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addMember",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "4,662,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "member",
+                    "src": {
+                      "name": "4,663,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,659,12",
+                  "inheritable": "4,661,12",
+                  "name": "4,665,0",
+                  "static": "4,660,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addMembers",
+                "static": true,
+                "text": "Add methods / properties to the prototype of this class.\n\n    Ext.define('My.awesome.Cat', {\n        constructor: function() {\n            ...\n        }\n    });\n\n     My.awesome.Cat.addMembers({\n         meow: function() {\n            alert('Meowww...');\n         }\n     });\n\n     var kitty = new My.awesome.Cat();\n     kitty.meow();\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The members to add to this class.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,522,28",
+                      "text": "4,522,36,34",
+                      "type": "4,522,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isStatic",
+                    "optional": true,
+                    "text": "Pass `true` if the members are static.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "4,523,30",
+                      "text": "4,523,46,39",
+                      "type": "4,523,20",
+                      "value": "4,523,39"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "privacy",
+                    "optional": true,
+                    "text": "Pass `true` if the members are private. This\nonly has meaning in debug mode and only for methods.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "4,524,30",
+                      "text": "4,524,45,45:4,525,12,53",
+                      "type": "4,524,20",
+                      "value": "4,524,38"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,527,12",
+                  "name": "4,529,0",
+                  "static": "4,526,12",
+                  "text": "4,505,12,335"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addStatics",
+                "static": true,
+                "text": "Add / override static properties of this class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.addStatics({\n        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'\n        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };\n        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,450,28",
+                      "type": "4,450,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,451,31,5",
+                      "type": "4,451,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,453,12",
+                  "name": "4,455,0",
+                  "static": "4,452,12",
+                  "text": "4,438,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "borrow",
+                "static": true,
+                "text": "Borrow another class' members to the prototype of this class.\n\n    Ext.define('Bank', {\n        money: '$$$',\n        printMoney: function() {\n            alert('$$$$$$$');\n        }\n    });\n\n    Ext.define('Thief', {\n        ...\n    });\n\n    Thief.borrow(Bank, ['money', 'printMoney']);\n\n    var steve = new Thief();\n\n    alert(steve.money); // alerts '$$$'\n    steve.printMoney(); // alerts '$$$$$$$'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fromClass",
+                    "text": "The class to borrow members from\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "name": "4,693,30",
+                      "text": "4,693,40,33",
+                      "type": "4,693,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The names of the members to borrow\n",
+                    "type": "Array/String",
+                    "src": {
+                      "name": "4,694,34",
+                      "text": "4,694,42,35",
+                      "type": "4,694,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,695,31,5",
+                      "type": "4,695,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,698,12",
+                  "inheritable": "4,697,12",
+                  "name": "4,700,0",
+                  "static": "4,696,12",
+                  "text": "4,673,12,404"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callParent",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "4,814,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,810,12",
+                  "inheritable": "4,812,12",
+                  "name": "4,814,0",
+                  "static": "4,811,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callSuper",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "4,828,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,824,12",
+                  "inheritable": "4,826,12",
+                  "name": "4,828,0",
+                  "static": "4,825,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "create",
+                "static": true,
+                "text": "Create a new instance of this Class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.create({\n        someConfig: true\n    });\n\nAll parameters are passed to the constructor of the class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "the created instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,107,29,22",
+                      "type": "4,107,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,109,12",
+                  "name": "4,111,0",
+                  "static": "4,108,12",
+                  "text": "4,95,12,214"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "createAlias",
+                "static": true,
+                "text": "Create aliases for existing prototype methods. Example:\n\n    Ext.define('My.cool.Class', {\n        method1: function() { ... },\n        method2: function() { ... }\n    });\n\n    var test = new My.cool.Class();\n\n    My.cool.Class.createAlias({\n        method3: 'method1',\n        method4: 'method2'\n    });\n\n    test.method3(); // test.method1()\n\n    My.cool.Class.createAlias('method5', 'method3');\n\n    test.method5(); // test.method3() -> test.method1()\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "text": "The new method name, or an object to set multiple aliases. See\n{@link Ext.Function#method!flexSetter Ext.Function#flexSetter}\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "4,1018,35",
+                      "text": "4,1018,41,63:4,1019,12,43",
+                      "type": "4,1018,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The original method name\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "4,1020,35",
+                      "text": "4,1020,42,25",
+                      "type": "4,1020,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,1022,12",
+                  "name": "4,1025,0",
+                  "static": "4,1021,12",
+                  "text": "4,998,12,456"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "extend",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "4,350,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,347,12",
+                  "inheritable": "4,349,12",
+                  "name": "4,352,0",
+                  "static": "4,348,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "getConfigurator",
+                "static": true,
+                "text": "Returns the `{@link Ext.Configurator}` for this class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Configurator",
+                    "src": {
+                      "type": "4,967,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,968,12",
+                  "inheritable": "4,970,12",
+                  "name": "4,972,0",
+                  "static": "4,969,12",
+                  "text": "4,965,12,48"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "getName",
+                "static": true,
+                "text": "Get the current class' name in string format.\n\n    Ext.define('My.cool.Class', {\n        constructor: function() {\n            alert(this.self.getName()); // alerts 'My.cool.Class'\n        }\n    });\n\n    My.cool.Class.getName(); // 'My.cool.Class'\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "className\n",
+                    "type": "String",
+                    "src": {
+                      "text": "4,989,29,10",
+                      "type": "4,989,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,991,12",
+                  "name": "4,993,0",
+                  "static": "4,990,12",
+                  "text": "4,979,12,249"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "mixin",
+                "static": true,
+                "text": "Used internally by the mixins pre-processor\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "4,844,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "src": {
+                      "name": "4,844,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,840,12",
+                  "inheritable": "4,842,12",
+                  "name": "4,844,0",
+                  "static": "4,841,12",
+                  "text": "4,839,12,44"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "onExtended",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "4,428,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "4,428,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,424,12",
+                  "inheritable": "4,426,12",
+                  "name": "4,428,0",
+                  "static": "4,425,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "override",
+                "static": true,
+                "text": "Override members of this class. Overridden methods can be invoked via\n{@link Ext.Base#callParent}.\n\n    Ext.define('My.Cat', {\n        constructor: function() {\n            alert(\"I'm a cat!\");\n        }\n    });\n\n    My.Cat.override({\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\n    var kitty = new My.Cat(); // alerts \"I'm going to be a cat!\"\n                              // alerts \"I'm a cat!\"\n                              // alerts \"Meeeeoooowwww\"\n\nDirect use of this method should be rare. Use {@link Ext#method!define Ext#define}\ninstead:\n\n    Ext.define('My.CatOverride', {\n        override: 'My.Cat',\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\nThe above accomplishes the same result but can be managed by the {@link Ext.Loader}\nwhich can properly order the override and its target class and the build process\ncan determine whether the override is needed based on the required state of the\ntarget class (My.Cat).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The properties to add to this class. This should be\nspecified as an object literal containing one or more properties.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,762,28",
+                      "text": "4,762,36,52:4,763,12,66",
+                      "type": "4,762,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this class\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "4,764,31,11",
+                      "type": "4,764,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "4,766,12",
+                  "name": "4,768,0",
+                  "static": "4,765,12",
+                  "text": "4,720,12,1180"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "triggerExtended",
+                "static": true,
+                "src": {
+                  "access": "4,402,12",
+                  "inheritable": "4,404,12",
+                  "name": "4,406,0",
+                  "static": "4,403,12"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "inheritable": true,
+                "name": "$onExtended",
+                "static": true,
+                "src": {
+                  "access": "4,395,12",
+                  "inheritable": "4,397,12",
+                  "name": "4,399,0",
+                  "static": "4,396,12"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,3,4",
+          "alias": "0,7,0",
+          "extends": "0,6,0",
+          "name": "0,5,0",
+          "text": "0,2,4,78"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

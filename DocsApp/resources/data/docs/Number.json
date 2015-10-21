@@ -1,0 +1,408 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../../docs/docs/js/primitives/Number.js",
+    "../../../../docs/docs/js/primitives/Object.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extended": "Object",
+        "extends": "Object",
+        "name": "Number",
+        "text": "\nCreates a wrapper object to allow you to work with numerical values.\n\nThe primary uses for the `{@link Number}` object are:\n\nIf the argument cannot be converted into a number, it returns `{@link #static-property!NaN NaN}`.\n\nIn a non-constructor context (i.e., without the `new` operator), `{@link Number}` can\nbe used to perform a type conversion.\n\n# Using the `{@link Number}` object to assign values to numeric variables\n\nThe following example uses the `{@link Number}` object's properties to assign values to\nseveral numeric variables:\n\n    biggestNum = Number.MAX_VALUE;\n    smallestNum = Number.MIN_VALUE;\n    infiniteNum = Number.POSITIVE_INFINITY;\n    negInfiniteNum = Number.NEGATIVE_INFINITY;\n    notANum = Number.NaN;\n\n# Using `{@link Number}` to convert a `{@link Date}` object\n\nThe following example converts the `{@link Date}` object to a numerical value using\n`{@link Number}` as a function:\n\n    var d = new Date(\"December 17, 1995 03:24:00\");\n    print(Number(d));\n\nThis displays \"819199440000\".\n\nThe following example converts the Date object to a numerical value using\n`{@link Number}` as a function:\n\n<div class=\"notice\">\nDocumentation for this class comes from <a href=\"https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Number\">MDN</a>\nand is available under <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">Creative Commons: Attribution-Sharealike license</a>.\n</div>\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Number object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The numeric value of the object being created.\n",
+                    "src": {
+                      "name": "0,46,11",
+                      "text": "0,47,4,47"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,44,12",
+                  "text": "0,45,4,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,100,20",
+                      "text": "1,100,25,34",
+                      "type": "1,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,101,22,57:1,102,4,15",
+                      "type": "1,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,53,12",
+                  "text": "1,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,148,20",
+                      "text": "1,148,30,71:1,149,4,18",
+                      "type": "1,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,150,20",
+                      "text": "1,150,27,50",
+                      "type": "1,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,151,22,56",
+                      "type": "1,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,106,12",
+                  "text": "1,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,220,20",
+                      "text": "1,220,25,34",
+                      "type": "1,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,221,22,57:1,222,4,22",
+                      "type": "1,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,155,12",
+                  "text": "1,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toExponential",
+                "text": "Returns a string representing the number in exponential notation.\n\nA string representing a `{@link Number}` object in exponential notation with one digit before the decimal\npoint, rounded to `fractionDigits` digits after the decimal point. If the `fractionDigits` argument\nis omitted, the number of digits after the decimal point defaults to the number of digits necessary\nto represent the value uniquely.\n\nIf you use the `{@link #method!toExponential toExponential}` method for a numeric literal and the numeric literal has no exponent\nand no decimal point, leave a space before the dot that precedes the method call to prevent the dot\nfrom being interpreted as a decimal point.\n\nIf a number has more digits that requested by the `fractionDigits` parameter, the number is rounded\nto the nearest number represented by `fractionDigits` digits. See the discussion of rounding in the\ndescription of the `{@link #method!toFixed toFixed}` method, which also applies to `{@link #method!toExponential toExponential}`.\n\n    var num=77.1234;\n\n    alert(\"num.toExponential() is \" + num.toExponential()); //displays 7.71234e+1\n\n    alert(\"num.toExponential(4) is \" + num.toExponential(4)); //displays 7.7123e+1\n\n    alert(\"num.toExponential(2) is \" + num.toExponential(2)); //displays 7.71e+1\n\n    alert(\"77.1234.toExponential() is \" + 77.1234.toExponential()); //displays 7.71234e+1\n\n    alert(\"77 .toExponential() is \" + 77 .toExponential()); //displays 7.7e+1\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fractionDigits",
+                    "text": "An integer specifying the number of digits after the decimal\npoint. Defaults to as many digits as necessary to specify the number.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,212,20",
+                      "text": "0,212,35,61:0,213,4,70",
+                      "type": "0,212,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Exponential notation of number.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,214,21,32",
+                      "type": "0,214,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,184,12",
+                  "text": "0,185,4,1361"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toFixed",
+                "text": "Returns a string representing the number in fixed-point notation.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "A string representation of `number` that does not use\nexponential notation and has exactly `digits` digits after the decimal place.\nThe number is rounded if necessary, and the fractional part is padded with\nzeros if necessary so that it has the specified length. If `number` is greater\nthan 1e+21, this method simply calls `Number.toString()` and returns a string\nin exponential notation.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,221,21,54:0,222,4,336",
+                      "type": "0,221,13"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "digits",
+                    "text": "The number of digits to appear after the decimal point; this may be a\nvalue between 0 and 20, inclusive, and implementations may optionally support a larger range of\nvalues. If this argument is omitted, it is treated as 0.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,228,20",
+                      "text": "0,228,27,70:0,229,4,153",
+                      "type": "0,228,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,218,12",
+                  "text": "0,219,4,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a human readable string representing the number using the locale of the\nenvironment. Overrides the `Object.prototype.toLocaleString` method.\n\nThis method available to numbers will convert the number into a string which is suitable for\npresentation in the given locale.\n\n    var number = 3500\n    console.log(number.toLocaleString()); // Displays \"3,500\" in English locale\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "String representing the number.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,244,21,32",
+                      "type": "0,244,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,234,12",
+                  "text": "0,235,4,381"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toPrecision",
+                "text": "Returns a string representing the number to a specified precision in fixed-\npoint or exponential notation.\n\nA string representing a `{@link Number}` object in fixed-point or\nexponential notation rounded to precision significant digits. See the\ndiscussion of rounding in the description of the `{@link #method!toFixed toFixed}` method, which also\napplies to `{@link #method!toPrecision toPrecision}`.\n\nIf the precision argument is omitted, behaves as Number.toString. If it is a\nnon-integer value, it is rounded to the nearest integer. After rounding, if\nthat value is not between 1 and 100 (inclusive), a RangeError is thrown.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "precision",
+                    "text": "An integer specifying the number of significant digits.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,261,20",
+                      "text": "0,261,30,56",
+                      "type": "0,261,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "String that represents `{@link Number}` object.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,262,21,40",
+                      "type": "0,262,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,248,12",
+                  "text": "0,249,4,568"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representing the specified object. Overrides the\n`Object.prototype.toString` method.\n\nThe `{@link Number}` object overrides the `{@link #method!toString toString}` method of the `{@link Object}` object; it does not inherit\n`Object.toString`. For `{@link Number}` objects, the toString method returns a string representation of the\nobject in the specified radix.\n\nThe `{@link #method!toString toString}` method parses its first argument, and attempts to return a string representation in\nthe specified radix (base). For radixes above 10, the letters of the alphabet indicate numerals\ngreater than 9. For example, for hexadecimal numbers (base 16), A through F are used.\n\nIf `{@link #method!toString toString}` is given a radix not between 2 and 36, an exception is thrown.\n\nIf the radix is not specified, JavaScript assumes the preferred radix is 10.\n\n    var count = 10;\n    print(count.toString());   // displays \"10\"\n    print((17).toString());    // displays \"17\"\n\n    var x = 7;\n    print(x.toString(2));      // displays \"111\"\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "radix",
+                    "text": "An integer between 2 and 36 specifying the base to use for representing\nnumeric values.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,289,20",
+                      "text": "0,289,26,72:0,290,4,16",
+                      "type": "0,289,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The number represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,291,21,36",
+                      "type": "0,291,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,266,12",
+                  "text": "0,267,4,951"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object. Overrides the\n`Object.prototype.valueOf` method.\n\nThe `{@link #method!valueOf valueOf}` method of `{@link Number}` returns the primitive value of a `{@link Number}` object as a number data\ntype.\n\nThis method is usually called internally by JavaScript and not explicitly in code.\n\n    var x = new Number();\n    print(x.valueOf());     // prints \"0\"\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The primitive value of the number.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,307,21,35",
+                      "type": "0,307,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,295,12",
+                  "text": "0,296,4,362"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "1,346,14",
+                  "text": "1,347,3,1996"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NEGATIVE_INFINITY",
+                "text": "Special value representing negative infinity; returned on overflow.\n\nThe value of `Number.NEGATIVE_INFINITY` is the same as the negative value of the global object's\nInfinity property.\n\nThis value behaves slightly differently than mathematical infinity:\n\n*   Any positive value, including POSITIVE_INFINITY, multiplied by NEGATIVE_INFINITY is NEGATIVE_INFINITY.\n*   Any negative value, including NEGATIVE_INFINITY, multiplied by NEGATIVE_INFINITY is\nPOSITIVE_INFINITY.\n*   Zero multiplied by NEGATIVE_INFINITY is NaN.\n*   NaN multiplied by NEGATIVE_INFINITY is NaN.\n*   NEGATIVE_INFINITY, divided by any negative value except NEGATIVE_INFINITY, is\nPOSITIVE_INFINITY.\n*   NEGATIVE_INFINITY, divided by any positive value except POSITIVE_INFINITY, is\nNEGATIVE_INFINITY.\n*   NEGATIVE_INFINITY, divided by either NEGATIVE_INFINITY or POSITIVE_INFINITY, is NaN.\n*   Any number divided by NEGATIVE_INFINITY is Zero.\n\nSeveral JavaScript methods (such as the `{@link Number}` constructor, `parseFloat`, and `parseInt`) return\n`{@link #static-property!NaN NaN}` if the value specified in the parameter is significantly lower than `Number.MIN_VALUE`.\n\nYou might use the `Number.NEGATIVE_INFINITY` property to indicate an error condition that returns a\nfinite number in case of success. Note, however, that `isFinite` would be more appropriate in such\na case.\n\nIn the following example, the variable smallNumber is assigned a value that is smaller than the\nminimum value. When the `if` statement executes, `smallNumber` has the value `\"-Infinity\"`, so\n`smallNumber` is set to a more manageable value before continuing.\n\n    var smallNumber = (-Number.MAX_VALUE) * 2\n    if (smallNumber == Number.NEGATIVE_INFINITY) {\n        smallNumber = returnFinite();\n    }\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,105,23",
+                  "text": "0,106,4,1713",
+                  "type": "0,105,15"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "POSITIVE_INFINITY",
+                "text": "Special value representing infinity; returned on overflow.\n\nThe value of `Number.POSITIVE_INFINITY` is the same as the value of the global object's Infinity\nproperty.\n\nThis value behaves slightly differently than mathematical infinity:\n\n*   Any positive value, including POSITIVE_INFINITY, multiplied by POSITIVE_INFINITY is\nPOSITIVE_INFINITY.\n*   Any negative value, including NEGATIVE_INFINITY, multiplied by POSITIVE_INFINITY is\nNEGATIVE_INFINITY.\n*   Zero multiplied by POSITIVE_INFINITY is NaN.\n*   NaN multiplied by POSITIVE_INFINITY is NaN.\n*   POSITIVE_INFINITY, divided by any negative value except NEGATIVE_INFINITY, is\nNEGATIVE_INFINITY.\n*   POSITIVE_INFINITY, divided by any positive value except POSITIVE_INFINITY, is\nPOSITIVE_INFINITY.\n*   POSITIVE_INFINITY, divided by either NEGATIVE_INFINITY or POSITIVE_INFINITY, is NaN.\n*   Any number divided by POSITIVE_INFINITY is Zero.\n\nSeveral JavaScript methods (such as the `{@link Number}` constructor, `parseFloat`, and `parseInt`) return\n`{@link #static-property!NaN NaN}` if the value specified in the parameter is significantly higher than `Number.MAX_VALUE`.\n\nYou might use the `Number.POSITIVE_INFINITY` property to indicate an error condition that returns a\nfinite number in case of success. Note, however, that `isFinite` would be more appropriate in such\na case.\n\nIn the following example, the variable `bigNumber` is assigned a value that is larger than the\nmaximum value. When the if statement executes, `bigNumber` has the value \"Infinity\", so `bigNumber`\nis set to a more manageable value before continuing.\n\n    var bigNumber = Number.MAX_VALUE * 2\n    if (bigNumber == Number.POSITIVE_INFINITY) {\n        bigNumber = returnFinite();\n    }\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,143,23",
+                  "text": "0,144,4,1677",
+                  "type": "0,143,15"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "1,46,14",
+                  "text": "1,47,4,65"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "MAX_VALUE",
+                "static": true,
+                "text": "The largest positive representable number. The largest negative representable\nnumber is `-MAX_VALUE`.\n\nThe `{@link #static-property!MAX_VALUE MAX_VALUE}` property has a value of approximately 1.79E+308. Values larger than `{@link #static-property!MAX_VALUE MAX_VALUE}` are\nrepresented as `\"Infinity\"`.\n\nBecause `{@link #static-property!MAX_VALUE MAX_VALUE}` is a static property of `{@link Number}`, you always use it as `Number.MAX_VALUE`,\nrather than as a property of a `{@link Number}` object you created.\n\nThe following code multiplies two numeric values. If the result is less than or equal to\n`{@link #static-property!MAX_VALUE MAX_VALUE}`, the `func1` function is called; otherwise, the `func2` function is called.\n\n    if (num1 * num2 <= Number.MAX_VALUE)\n        func1();\n    else\n        func2();\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,53,23",
+                  "static": "0,54,4",
+                  "text": "0,55,4,651",
+                  "type": "0,53,15"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "MIN_VALUE",
+                "static": true,
+                "text": "The smallest positive representable number -- that is, the positive number\nclosest to zero (without actually being zero). The smallest negative\nrepresentable number is `-MIN_VALUE`.\n\nThe `{@link #static-property!MIN_VALUE MIN_VALUE}` property is the number closest to 0, not the most negative number, that JavaScript\ncan represent.\n\n`{@link #static-property!MIN_VALUE MIN_VALUE}` has a value of approximately 5e-324. Values smaller than `{@link #static-property!MIN_VALUE MIN_VALUE}` (\"underflow\nvalues\") are converted to 0.\n\nBecause `{@link #static-property!MIN_VALUE MIN_VALUE}` is a static property of `{@link Number}`, you always use it as `Number.MIN_VALUE`,\nrather than as a property of a `{@link Number}` object you created.\n\nThe following code divides two numeric values. If the result is greater than or equal to\n`{@link #static-property!MIN_VALUE MIN_VALUE}`, the `func1` function is called; otherwise, the `func2` function is called.\n\n    if (num1 / num2 >= Number.MIN_VALUE)\n        func1()\n    else\n        func2()\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,74,23",
+                  "static": "0,75,4",
+                  "text": "0,76,4,837",
+                  "type": "0,74,15"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NaN",
+                "static": true,
+                "text": "Special \"not a number\" value.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,99,23",
+                  "static": "0,100,4",
+                  "text": "0,101,4,30",
+                  "type": "0,99,15"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "text": "0,3,4,1316"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

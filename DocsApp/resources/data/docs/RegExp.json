@@ -1,0 +1,368 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../../docs/docs/js/primitives/RegExp.js",
+    "../../../../docs/docs/js/primitives/Object.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extended": "Object",
+        "extends": "Object",
+        "name": "RegExp",
+        "text": "\nCreates a regular expression object for matching text according to a pattern.\n\nWhen using the constructor function, the normal string escape rules (preceding\nspecial characters with \\ when included in a string) are necessary. For\nexample, the following are equivalent:\n\n    var re = new RegExp(\"\\\\w+\");\n    var re = /\\w+/;\n\nNotice that the parameters to the literal format do not use quotation marks to\nindicate strings, while the parameters to the constructor function do use\nquotation marks. So the following expressions create the same regular\nexpression:\n\n    /ab+c/i;\n    new RegExp(\"ab+c\", \"i\");\n\n# Special characters in regular expressions\n\n|     Character    | Meaning\n|:-----------------|:--------------------------------------------------------------------------------------\n| `\\`              | For characters that are usually treated literally, indicates that the next character\n|                  | is special and not to be interpreted literally.\n|                  | For example, `/b/` matches the character 'b'. By placing a backslash in front of b, that\n|                  | is by using `/\\b/`, the character becomes special to mean match a word boundary.\n|                  |\n|                  | _or_\n|                  |\n|                  | For characters that are usually treated specially, indicates that the next character is\n|                  | not special and should be interpreted literally.\n|                  |\n|                  | For example, `*` is a special character that means 0 or more occurrences of the preceding\n|                  | character should be matched; for example, `/a*\\/` means match 0 or more \"a\"s. To match *\n|                  | literally, precede it with a backslash; for example, `/a\\*\\/` matches 'a*'.\n|                  |\n| `^`              | Matches beginning of input. If the multiline flag is set to true, also matches\n|                  | immediately after a line break character.\n|                  |\n|                  | For example, `/^A/` does not match the 'A' in \"an A\", but does match the first 'A' in\n|                  | \"An A\".\n|                  |\n| `$`              | Matches end of input. If the multiline flag is set to true, also matches immediately\n|                  | before a line break character.\n|                  |\n|                  | For example, `/t$/` does not match the 't' in \"eater\", but does match it in \"eat\".\n|                  |\n| `*`              | Matches the preceding item 0 or more times.\n|                  |\n|                  | For example, `/bo*\\/` matches 'boooo' in \"A ghost booooed\" and 'b' in \"A bird warbled\",\n|                  | but nothing in \"A goat grunted\".\n|                  |\n| `+`              | Matches the preceding item 1 or more times. Equivalent to `{1,}`.\n|                  |\n|                  | For example, `/a+/` matches the 'a' in \"candy\" and all the a's in \"caaaaaaandy\".\n|                  |\n| `?`              | Matches the preceding item 0 or 1 time.\n|                  |\n|                  | For example, `/e?le?/` matches the 'el' in \"angel\" and the 'le' in \"angle.\"\n|                  |\n|                  | If used immediately after any of the quantifiers `*`, `+`, `?`, or `{}`, makes the quantifier\n|                  | non-greedy (matching the minimum number of times), as opposed to the default, which is\n|                  | greedy (matching the maximum number of times).\n|                  |\n|                  | Also used in lookahead assertions, described under `(?=)`, `(?!)`, and `(?:)` in this table.\n|                  |\n| `.`              | (The decimal point) matches any single character except the newline characters: \\n \\r\n|                  | \\u2028 or \\u2029. (`[\\s\\S]` can be used to match any character including new lines.)\n|                  |\n|                  | For example, `/.n/` matches 'an' and 'on' in \"nay, an apple is on the tree\", but not 'nay'.\n|                  |\n| `(x)`            | Matches `x` and remembers the match. These are called capturing parentheses.\n|                  |\n|                  | For example, `/(foo)/` matches and remembers 'foo' in \"foo bar.\" The matched substring can\n|                  | be recalled from the resulting array's elements `[1], ..., [n]` or from the predefined RegExp\n|                  | object's properties `$1, ..., $9`.\n|                  |\n| `(?:x)`          | Matches `x` but does not remember the match. These are called non-capturing parentheses.\n|                  | The matched substring can not be recalled from the resulting array's elements `[1], ..., [n]`\n|                  | or from the predefined RegExp object's properties `$1, ..., $9`.\n|                  |\n| `x(?=y)`         | Matches `x` only if `x` is followed by `y`. For example, `/Jack(?=Sprat)/` matches 'Jack' only if\n|                  | it is followed by 'Sprat'. `/Jack(?=Sprat|Frost)/` matches 'Jack' only if it is followed by\n|                  | 'Sprat' or 'Frost'. However, neither 'Sprat' nor 'Frost' is part of the match results.\n|                  |\n| `x(?!y)`         | Matches `x` only if `x` is not followed by `y`. For example, `/\\d+(?!\\.)/` matches a number only\n|                  | if it is not followed by a decimal point.\n|                  |\n|                  | `/\\d+(?!\\.)/.exec(\"3.141\")` matches 141 but not 3.141.\n|                  |\n|<code>x&#124;y</code>| Matches either `x` or `y`.\n|                  |\n|                  | For example, `/green|red/` matches 'green' in \"green apple\" and 'red' in \"red apple.\"\n|                  |\n| `{n}`            | Where `n` is a positive integer. Matches exactly n occurrences of the preceding item.\n|                  |\n|                  | For example, `/a{2}/` doesn't match the 'a' in \"candy,\" but it matches all of the a's\n|                  | in \"caandy,\" and the first two a's in \"caaandy.\"\n|                  |\n| `{n,}`           | Where `n` is a positive integer. Matches at least n occurrences of the preceding item.\n|                  |\n|                  | For example, `/a{2,}/` doesn't match the 'a' in \"candy\", but matches all of the a's in\n|                  | \"caandy\" and in \"caaaaaaandy.\"\n|                  |\n| `{n,m}`          | Where `n` and `m` are positive integers. Matches at least `n` and at most `m` occurrences of the\n|                  | preceding item.\n|                  |\n|                  | For example, `/a{1,3}/` matches nothing in \"cndy\", the 'a' in \"candy,\" the first two a's\n|                  | in \"caandy,\" and the first three a's in \"caaaaaaandy\". Notice that when matching\n|                  | \"caaaaaaandy\", the match is \"aaa\", even though the original string had more a's in it.\n|                  |\n| `[xyz]`          | A character set. Matches any one of the enclosed characters. You can specify a range of\n|                  | characters by using a hyphen.\n|                  |\n|                  | For example, `[abcd]` is the same as `[a-d]`. They match the 'b' in \"brisket\" and the 'c'\n|                  | in \"chop\".\n|                  |\n| `[^xyz]`         | A negated or complemented character set. That is, it matches anything that is not\n|                  | enclosed in the brackets. You can specify a range of characters by using a hyphen.\n|                  |\n|                  | For example, `[^abc]` is the same as `[^a-c]`. They initially match 'r' in \"brisket\" and\n|                  | 'h' in \"chop.\"\n|                  |\n| `[\\b]`           | Matches a backspace. (Not to be confused with `\\b`.)\n|                  |\n| `\\b`             | Matches a word boundary, such as a space. (Not to be confused with `[\\b]`.)\n|                  |\n|                  | For example, `/\\bn\\w/` matches the 'no' in \"noonday\"; `/\\wy\\b/` matches the 'ly' in\n|                  | \"possibly yesterday.\"\n|                  |\n| `\\B`             | Matches a non-word boundary.\n|                  |\n|                  | For example, `/\\w\\Bn/` matches 'on' in \"noonday\", and `/y\\B\\w/` matches 'ye' in \"possibly\n|                  | yesterday.\"\n|                  |\n| `\\cX`            | Where X is a letter from A - Z. Matches a control character in a string.\n|                  |\n|                  | For example, `/\\cM/` matches control-M in a string.\n|                  |\n| `\\d`             | Matches a digit character in the basic Latin alphabet. Equivalent to `[0-9]`.\n|                  |\n|                  | For example, `/\\d/` or `/[0-9]/` matches '2' in \"B2 is the suite number.\"\n|                  |\n| `\\D`             | Matches any non-digit character in the basic Latin alphabet. Equivalent to `[^0-9]`.\n|                  |\n|                  | For example, `/\\D/` or `/[^0-9]/` matches 'B' in \"B2 is the suite number.\n|                  |\n| `\\f`             | Matches a form-feed.\n|                  |\n| `\\n`             | Matches a linefeed.\n|                  |\n| `\\r`             | Matches a carriage return.\n|                  |\n| `\\s`             | Matches a single white space character, including space, tab, form feed, line feed and\n|                  | other unicode spaces. Equivalent to:\n|                  |\n|                  | `[\\t\\n\\v\\f\\r \\u00a0\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u200b\\u2028\\u2029\\u3000]`\n|                  |\n|                  | For example, `/\\s\\w*\\/` matches ' bar' in \"foo bar.\"\n|                  |\n| `\\S`             | Matches a single character other than white space. Equivalent to:\n|                  |\n|                  | `[^\\t\\n\\v\\f\\r \\u00a0\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u200b\\u2028\\u2029\\u3000]`\n|                  |\n|                  | For example, `/\\S\\w*\\/` matches 'foo' in \"foo bar.\"\n|                  |\n| `\\t`             | Matches a tab.\n|                  |\n| `\\v`             | Matches a vertical tab.\n|                  |\n| `\\w`             | Matches any alphanumeric character from the basic Latin alphabet, including the\n|                  | underscore. Equivalent to `[A-Za-z0-9_]`.\n|                  |\n|                  | For example, `/\\w/` matches 'a' in \"apple,\" '5' in \"$5.28,\" and '3' in \"3D.\"\n|                  |\n| `\\W`             | Matches any character that is not a word character from the basic Latin alphabet. Equivalent\n|                  | to `[^A-Za-z0-9_]`.\n|                  |\n|                  | For example, `/\\W/` or `/[^A-Za-z0-9_]/` matches '%' in \"50%.\"\n|                  |\n| `\\n`             | Where `n` is a positive integer. A back reference to the last substring matching the n\n|                  | parenthetical in the regular expression (counting left parentheses).\n|                  |\n|                  | For example, `/apple(,)\\sorange\\1/` matches 'apple, orange,' in \"apple, orange, cherry,\n|                  | peach.\" A more complete example follows this table.\n|                  |\n| `\\0`             | Matches a NULL character. Do not follow this with another digit.\n|                  |\n| `\\xhh`           | Matches the character with the code `hh` (two hexadecimal digits)\n|                  |\n| `\\uhhhh`         | Matches the character with the Unicode value `hhhh` (four hexadecimal digits)\n\nThe literal notation provides compilation of the regular expression when the expression is evaluated. Use\nliteral notation when the regular expression will remain constant. For example, if you use literal notation\nto construct a regular expression used in a loop, the regular expression won't be recompiled on each iteration.\n\nThe constructor of the regular expression object, for example, new RegExp(\"ab+c\"), provides runtime\ncompilation of the regular expression. Use the constructor function when you know the regular expression\npattern will be changing, or you don't know the pattern and are getting it from another source, such as user input.\n\n<div class=\"notice\">\nDocumentation for this class comes from <a href=\"https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp\">MDN</a>\nand is available under <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">Creative Commons: Attribution-Sharealike license</a>.\n</div>\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new regular expression object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "pattern",
+                    "text": "The text of the regular expression.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,213,20",
+                      "text": "0,214,4,36",
+                      "type": "0,213,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "flags",
+                    "text": "If specified, flags can have any combination of the following values:\n\n- \"g\" - global match\n- \"i\" - ignore case\n- \"m\" - Treat beginning and end characters (^ and $) as working over multiple lines\n  (i.e., match the beginning or end of _each_ line (delimited by \\n or \\r), not\n  only the very beginning or end of the whole input string)\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,215,20",
+                      "text": "0,216,4,336",
+                      "type": "0,215,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,210,12",
+                  "text": "0,211,4,40"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "exec",
+                "text": "Executes a search for a match in its string parameter.\n\nIf the match succeeds, the `{@link #method!exec exec}` method returns an array and updates properties of the regular\nexpression object. The returned array has the matched text as the first item, and then one item for\neach capturing parenthesis that matched containing the text that was captured.  If the match fails,\nthe `{@link #method!exec exec}` method returns `{@link null}`.\n\nIf you are executing a match simply to find true or false, use the `{@link #method!test test}` method or the `String\nsearch` method.\n\nConsider the following example:\n\n    // Match one d followed by one or more b's followed by one d\n    // Remember matched b's and the following d\n    // Ignore case\n    var re = /d(b+)(d)/ig;\n    var result = re.exec(\"cdbBdbsbz\");\n\nThe following table shows the results for this script:\n\n| Object           | Property/Index | Description                                                          | Example\n|:-----------------|:---------------|:---------------------------------------------------------------------|:---------------------\n| `result`         |                | The content of myArray.                                              | `[\"dbBd\", \"bB\", \"d\"]`\n|                  | `index`        | The 0-based index of the match in the string                         | `1`\n|                  | `input`        | The original string.                                                 | `cdbDdbsbz`\n|                  | `[0]`          | The last matched characters.                                         | `dbBd`\n|                  | `[1], ...[n]`  | The parenthesized substring matches, if any. The number of possible  | `[1] = bB`\n|                  |                | parenthesized substrings is unlimited.                               | `[2] = d`\n| `re`             | `{@link #property!lastIndex lastIndex}`    | The index at which to start the next match.                          | `5`\n|                  | `{@link #property!ignoreCase ignoreCase}`   | Indicates the \"`i`\" flag was used to ignore case.                    | `true`\n|                  | `{@link #property!global global}`       | Indicates the \"`g`\" flag was used for a global match.                | `true`\n|                  | `{@link #property!multiline multiline}`    | Indicates the \"`m`\" flag was used to search in strings across        | `false`\n|                  |                | multiple lines.                                                      |\n|                  | `{@link #property!source source}`       | The text of the pattern.                                             | d(b+)(d)\n\nIf your regular expression uses the \"`g`\" flag, you can use the `{@link #method!exec exec}` method multiple times to find\nsuccessive matches in the same string. When you do so, the search starts at the substring of `str`\nspecified by the regular expression's `{@link #property!lastIndex lastIndex}` property (`{@link #method!test test}` will also advance the `{@link #property!lastIndex lastIndex}`\nproperty). For example, assume you have this script:\n\n    var myRe = /ab*\\/g;\n    var str = \"abbcdefabh\";\n    var myArray;\n    while ((myArray = myRe.exec(str)) != null)\n    {\n        var msg = \"Found \" + myArray[0] + \".  \";\n        msg += \"Next match starts at \" + myRe.lastIndex;\n    print(msg);\n    }\n\nThis script displays the following text:\n\n    Found abb. Next match starts at 3\n    Found ab. Next match starts at 9\n\nYou can also use `exec()` without creating a RegExp object:\n\n    var matches = /(hello \\S+)/.exec('This is a hello world!');\n    alert(matches[1]);\n\nThis will display an alert containing 'hello world!';\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "str",
+                    "text": "The string against which to match the regular expression.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,291,20",
+                      "text": "0,291,24,58",
+                      "type": "0,291,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Array of results or `NULL`.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,292,20,28",
+                      "type": "0,292,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,228,12",
+                  "text": "0,229,4,3374"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,100,20",
+                      "text": "1,100,25,34",
+                      "type": "1,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,101,22,57:1,102,4,15",
+                      "type": "1,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,53,12",
+                  "text": "1,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,148,20",
+                      "text": "1,148,30,71:1,149,4,18",
+                      "type": "1,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,150,20",
+                      "text": "1,150,27,50",
+                      "type": "1,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,151,22,56",
+                      "type": "1,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,106,12",
+                  "text": "1,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,220,20",
+                      "text": "1,220,25,34",
+                      "type": "1,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,221,22,57:1,222,4,22",
+                      "type": "1,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,155,12",
+                  "text": "1,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "test",
+                "text": "Tests for a match in its string parameter.\n\nWhen you want to know whether a pattern is found in a string use the test method (similar to the\n`String.search` method); for more information (but slower execution) use the exec method (similar to\nthe `String.match` method). As with exec (or in combination with it), test called multiple times on\nthe same global regular expression instance will advance past the previous match.\n\nThe following example prints a message which depends on the success of the test:\n\n    function testinput(re, str){\n        if (re.test(str))\n            midstring = \" contains \";\n        else\n            midstring = \" does not contain \";\n        document.write (str + midstring + re.source);\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "str",
+                    "text": "The string against which to match the regular expression.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,314,20",
+                      "text": "0,314,24,58",
+                      "type": "0,314,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "true if string contains any matches, otherwise returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,315,22,62",
+                      "type": "0,315,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,296,12",
+                  "text": "0,297,4,724"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n`{@link Object}`'s `{@link #method!toLocaleString toLocaleString}` returns the result of calling `{@link #method!toString toString}`.\n\nThis function is provided to give objects a generic `{@link #method!toLocaleString toLocaleString}` method, even though not all\nmay use it. Currently, only `{@link Array}`, `{@link Number}`, and `{@link Date}` override `{@link #method!toLocaleString toLocaleString}`.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,235,21,32",
+                      "type": "1,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,226,12",
+                  "text": "1,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representing the specified object. Overrides the `Object.prototype.toString`\nmethod.\n\nThe RegExp object overrides the `{@link #method!toString toString}` method of the `{@link Object}` object; it does not inherit\n`Object.toString`. For RegExp objects, the `{@link #method!toString toString}` method returns a string representation of the\nregular expression.\n\nThe following example displays the string value of a RegExp object:\n\n    myExp = new RegExp(\"a+b+c\");\n    alert(myExp.toString());       // displays \"/a+b+c/\"\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Regular expression as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,332,21,32",
+                      "type": "0,332,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,319,12",
+                  "text": "0,320,4,478"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the `{@link #method!valueOf valueOf}` method to convert an object to a primitive value. You rarely need to\ninvoke the `{@link #method!valueOf valueOf}` method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the `{@link #method!valueOf valueOf}` method is inherited by every object descended from `{@link Object}`. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, `{@link #method!valueOf valueOf}` returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use `{@link #method!valueOf valueOf}` within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default `{@link Object}` method.\n\nYou can create a function to be called in place of the default `{@link #method!valueOf valueOf}` method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a `{@link #method!valueOf valueOf}` method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's `{@link #method!valueOf valueOf}` method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the `{@link #method!toString toString}` method, which is different from\n`{@link String}` objects converting to string primitives using `{@link #method!valueOf valueOf}`. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,340,21,50",
+                      "type": "1,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,301,12",
+                  "text": "1,302,4,1821"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "1,346,14",
+                  "text": "1,347,3,1996"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "global",
+                "text": "Whether to test the regular expression against all possible matches in a\nstring, or only against the first.\n\n`{@link #property!global global}` is a property of an individual regular expression object.\n\nThe value of `{@link #property!global global}` is true if the \"`g`\" flag was used; otherwise, `false`. The \"`g`\" flag\nindicates that the regular expression should be tested against all possible matches in a string.\n\nYou cannot change this property directly.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,342,24",
+                  "text": "0,343,4,410",
+                  "type": "0,342,15"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ignoreCase",
+                "text": "Whether to ignore case while attempting a match in a string.\n\n`{@link #property!ignoreCase ignoreCase}` is a property of an individual regular expression object.\n\nThe value of `{@link #property!ignoreCase ignoreCase}` is true if the \"`i`\" flag was used; otherwise, false. The \"`i`\" flag indicates\nthat case should be ignored while attempting a match in a string.\n\nYou cannot change this property directly.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,355,24",
+                  "text": "0,356,4,348",
+                  "type": "0,355,15"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "lastIndex",
+                "text": "The index at which to start the next match. A read/write integer property that specifies the index\nat which to start the next match.\n\n`{@link #property!lastIndex lastIndex}` is a property of an individual regular expression object.\n\nThis property is set only if the regular expression used the \"`g`\" flag to indicate a global search.\nThe following rules apply:\n\n-   If `{@link #property!lastIndex lastIndex}` is greater than the length of the string, `regexp.test` and `regexp.exec` fail,\n    and `{@link #property!lastIndex lastIndex}` is set to 0.\n-   If `{@link #property!lastIndex lastIndex}` is equal to the length of the string and if the regular expression matches the\n    empty string, then the regular expression matches input starting at `{@link #property!lastIndex lastIndex}`.\n-   If `{@link #property!lastIndex lastIndex}` is equal to the length of the string and if the regular expression does not match\n    the empty string, then the regular expression mismatches input, and `{@link #property!lastIndex lastIndex}` is reset to 0.\n-   Otherwise, `{@link #property!lastIndex lastIndex}` is set to the next position following the most recent match.\n\nFor example, consider the following sequence of statements:\n\n-   `re = /(hi)?/g` Matches the empty string.\n-   `re(\"hi\")` Returns `[\"hi\", \"hi\"]` with `{@link #property!lastIndex lastIndex}` equal to 2.\n-   `re(\"hi\")` Returns `[\"\"]`, an empty array whose zeroth element is the match string. In this\n    case, the empty string because `{@link #property!lastIndex lastIndex}` was 2 (and still is 2) and \"`hi`\" has length 2.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,367,23",
+                  "text": "0,368,4,1303",
+                  "type": "0,367,15"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "multiline",
+                "text": "Whether or not to search in strings across multiple lines.\n\n`{@link #property!multiline multiline}` is a property of an individual regular expression object..\n\nThe value of `{@link #property!multiline multiline}` is true if the \"`m`\" flag was used; otherwise, `false`. The \"`m`\" flag\nindicates that a multiline input string should be treated as multiple lines. For example, if \"`m`\"\nis used, \"`^`\" and \"`$`\" change from matching at only the start or end of the entire string to the\nstart or end of any line within the string.\n\nYou cannot change this property directly.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,393,24",
+                  "text": "0,394,4,513",
+                  "type": "0,393,15"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "1,46,14",
+                  "text": "1,47,4,65"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "source",
+                "text": "The text of the pattern.\n\nA read-only property that contains the text of the pattern, excluding the forward slashes.\n\n`{@link #property!source source}` is a property of an individual regular expression object.\n\nYou cannot change this property directly.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,407,23",
+                  "text": "0,408,4,228",
+                  "type": "0,407,15"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "text": "0,3,4,12132"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

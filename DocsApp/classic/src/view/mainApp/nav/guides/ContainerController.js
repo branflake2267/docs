@@ -27,7 +27,8 @@ Ext.define('DocsApp.view.mainApp.nav.guides.ContainerController', {
 
             //expand the path and select the node
             tree.expandPath(node.getPath(), {
-                select : true
+                select : true,
+                focus: true
             });
         } else {
             store.on('load', Ext.Function.bind(this.onGuide, this, [id], false), this, {single: true});

@@ -7,7 +7,7 @@ Ext.define('DocsApp.view.main.MainController', {
             action     : 'goToView',
             conditions : {
                 ':type' : '(?:(?:\/){1}([a-z-_]+))?',
-                ':id'   : '(?:(?:\/){1}([a-z-_]+))?'
+                ':id'   : '(?:(?:\/){1}([A-Za-z-_.]+))?'
             }
         }
     },

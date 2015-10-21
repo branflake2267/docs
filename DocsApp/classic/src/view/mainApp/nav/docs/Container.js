@@ -2,6 +2,8 @@ Ext.define('DocsApp.view.mainApp.nav.docs.Container', {
     extend: 'Ext.panel.Panel',
     xtype: 'mainapp-nav-docs-container',
 
+    controller: 'docsapp-mainapp-nav-docs-containercontainer',
+
     viewModel: {
         type: 'nav-docs'
     },
@@ -58,10 +60,15 @@ Ext.define('DocsApp.view.mainApp.nav.docs.Container', {
         tabPosition: 'bottom',
         items: [{
             xtype: 'treepanel',
+            reference: 'packageDocTree',
             title: 'by Package',
             rootVisible: false,
             displayField: 'name',
-            bind: '{package}'
+            //bind: '{package}',
+            store: 'doc.Package',
+            listeners: {
+                itemclick: 'onApiClick'
+            }
         }, {
             xtype: 'treepanel',
             title: 'by Inheritance',

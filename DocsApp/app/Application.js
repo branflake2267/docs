@@ -11,7 +11,8 @@ Ext.define('DocsApp.Application', {
 
     stores: [
         'DocsApp.store.main.Main',
-        'guide.Topical'
+        'guide.Topical',
+        'doc.Package'
     ],
 
     launch: function () {

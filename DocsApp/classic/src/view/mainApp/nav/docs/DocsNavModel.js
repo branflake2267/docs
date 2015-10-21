@@ -1,9 +1,9 @@
-Ext.define('DocsApp.view.mainApp.nav.docs.DocsVavModel', {
+Ext.define('DocsApp.view.mainApp.nav.docs.DocsNavModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.nav-docs',
 
     stores: {
-        package: {
+        /*package: {
             type  : 'tree',
             root  : {
                 expanded : true
@@ -20,7 +20,7 @@ Ext.define('DocsApp.view.mainApp.nav.docs.DocsVavModel', {
                     value    : 'private'
                 }
             ]
-        },
+        },*/
         inheritance: {
             type: 'tree',
             root: {

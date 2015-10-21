@@ -1,0 +1,240 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../../docs/docs/js/primitives/Boolean.js",
+    "../../../../docs/docs/js/primitives/Object.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extended": "Object",
+        "extends": "Object",
+        "name": "Boolean",
+        "text": "\nThe `{@link Boolean}` object is an object wrapper for a boolean value.\n\nThe value passed as the first parameter is converted to a boolean value, if necessary. If value is\nomitted or is 0, -0, null, false, `NaN`, undefined, or the empty string (\"\"), the object has an\ninitial value of false. All other values, including any object or the string `\"false\"`, create an\nobject with an initial value of true.\n\nDo not confuse the primitive Boolean values true and false with the true and false values of the\nBoolean object.\n\nAny object whose value is not `{@link undefined}` or `{@link null}`, including a Boolean object whose value is false,\nevaluates to true when passed to a conditional statement. For example, the condition in the following\nif statement evaluates to true:\n\n    x = new Boolean(false);\n    if (x) {\n        // . . . this code is executed\n    }\n\nThis behavior does not apply to Boolean primitives. For example, the condition in the following if\nstatement evaluates to `false`:\n    x = false;\n    if (x) {\n        // . . . this code is not executed\n    }\n\nDo not use a `{@link Boolean}` object to convert a non-boolean value to a boolean value. Instead, use Boolean\nas a function to perform this task:\n\n    x = Boolean(expression);     // preferred\n    x = new Boolean(expression); // don't use\n\nIf you specify any object, including a Boolean object whose value is false, as the initial value of a\nBoolean object, the new Boolean object has a value of true.\n\n    myFalse = new Boolean(false);   // initial value of false\n    g = new Boolean(myFalse);       // initial value of true\n    myString = new String(\"Hello\"); // string object\n    s = new Boolean(myString);      // initial value of true\n\nDo not use a Boolean object in place of a Boolean primitive.\n\n# Creating Boolean objects with an initial value of false\n\n    bNoParam = new Boolean();\n    bZero = new Boolean(0);\n    bNull = new Boolean(null);\n    bEmptyString = new Boolean(\"\");\n    bfalse = new Boolean(false);\n\n# Creating Boolean objects with an initial value of true\n\n    btrue = new Boolean(true);\n    btrueString = new Boolean(\"true\");\n    bfalseString = new Boolean(\"false\");\n    bSuLin = new Boolean(\"Su Lin\");\n\n<div class=\"notice\">\nDocumentation for this class comes from <a href=\"https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean\">MDN</a>\nand is available under <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">Creative Commons: Attribution-Sharealike license</a>.\n</div>\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates a new boolean object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "Either a truthy or falsy value to create the corresponding Boolean object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,70,20",
+                      "text": "0,70,26,75",
+                      "type": "0,70,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,68,12",
+                  "text": "0,69,4,30"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,100,20",
+                      "text": "1,100,25,34",
+                      "type": "1,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,101,22,57:1,102,4,15",
+                      "type": "1,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,53,12",
+                  "text": "1,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,148,20",
+                      "text": "1,148,30,71:1,149,4,18",
+                      "type": "1,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,150,20",
+                      "text": "1,150,27,50",
+                      "type": "1,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,151,22,56",
+                      "type": "1,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,106,12",
+                  "text": "1,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,220,20",
+                      "text": "1,220,25,34",
+                      "type": "1,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,221,22,57:1,222,4,22",
+                      "type": "1,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,155,12",
+                  "text": "1,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n`{@link Object}`'s `{@link #method!toLocaleString toLocaleString}` returns the result of calling `{@link #method!toString toString}`.\n\nThis function is provided to give objects a generic `{@link #method!toLocaleString toLocaleString}` method, even though not all\nmay use it. Currently, only `{@link Array}`, `{@link Number}`, and `{@link Date}` override `{@link #method!toLocaleString toLocaleString}`.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,235,21,32",
+                      "type": "1,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,226,12",
+                  "text": "1,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string of either \"true\" or \"false\" depending upon the value of the object.\nOverrides the `Object.prototype.toString` method.\n\nThe Boolean object overrides the `{@link #method!toString toString}` method of the `{@link Object}` object; it does not inherit\n`Object.toString`. For Boolean objects, the `{@link #method!toString toString}` method returns a string representation of\nthe object.\n\nJavaScript calls the `{@link #method!toString toString}` method automatically when a Boolean is to be represented as a text\nvalue or when a Boolean is referred to in a string concatenation.\n\nFor Boolean objects and values, the built-in `{@link #method!toString toString}` method returns the string `\"true\"` or\n`\"false\"` depending on the value of the boolean object. In the following code, `flag.toString`\nreturns `\"true\"`.\n\n    var flag = new Boolean(true)\n    var myVar = flag.toString()\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The boolean value represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,94,21,43",
+                      "type": "0,94,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,76,12",
+                  "text": "0,77,4,781"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the `{@link Boolean}` object. Overrides the `Object.prototype.valueOf` method.\n\nThe `{@link #method!valueOf valueOf}` method of Boolean returns the primitive value of a Boolean object or literal Boolean\nas a Boolean data type.\n\nThis method is usually called internally by JavaScript and not explicitly in code.\n\n    x = new Boolean();\n    myVar = x.valueOf()      //assigns false to myVar\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The primitive value.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,109,22,21",
+                      "type": "0,109,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,98,12",
+                  "text": "0,99,4,389"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "1,346,14",
+                  "text": "1,347,3,1996"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "1,46,14",
+                  "text": "1,47,4,65"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "text": "0,3,4,2460"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

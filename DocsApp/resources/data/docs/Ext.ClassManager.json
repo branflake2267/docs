@@ -1,0 +1,1331 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/class/ClassManager.js",
+    "../../../../docs/docs/js/primitives/Object.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extended": "Object",
+        "extends": "Object",
+        "name": "Ext.ClassManager",
+        "singleton": true,
+        "text": "\nExt.ClassManager manages all classes and handles mapping from string class name to\nactual class objects throughout the whole framework. It is not generally accessed directly, rather through\nthese convenient shorthands:\n\n- {@link Ext#method!define Ext#define}\n- {@link Ext#method!create Ext#create}\n- {@link Ext#method!widget Ext#widget}\n- {@link Ext#method!getClass Ext#getClass}\n- {@link Ext#method!getClassName Ext#getClassName}\n\n# Basic syntax:\n\n    Ext.define(className, properties);\n\nin which `properties` is an object represent a collection of properties that apply to the class. See\n{@link Ext.ClassManager#method!create Ext.ClassManager#create} for more detailed instructions.\n\n    Ext.define('Person', {\n         name: 'Unknown',\n\n         constructor: function(name) {\n             if (name) {\n                 this.name = name;\n             }\n         },\n\n         eat: function(foodType) {\n             alert(\"I'm eating: \" + foodType);\n\n             return this;\n         }\n    });\n\n    var aaron = new Person(\"Aaron\");\n    aaron.eat(\"Sandwich\"); // alert(\"I'm eating: Sandwich\");\n\nExt.Class has a powerful set of extensible {@link Ext.Class#static-method!registerPreprocessor Ext.Class#registerPreprocessor} which takes care of\neverything related to class creation, including but not limited to inheritance, mixins, configuration, statics, etc.\n\n# Inheritance:\n\n    Ext.define('Developer', {\n         extend: 'Person',\n\n         constructor: function(name, isGeek) {\n             this.isGeek = isGeek;\n\n             // Apply a method from the parent class' prototype\n             this.callParent([name]);\n         },\n\n         code: function(language) {\n             alert(\"I'm coding in: \" + language);\n\n             this.eat(\"Bugs\");\n\n             return this;\n         }\n    });\n\n    var jacky = new Developer(\"Jacky\", true);\n    jacky.code(\"JavaScript\"); // alert(\"I'm coding in: JavaScript\");\n                              // alert(\"I'm eating: Bugs\");\n\nSee {@link Ext.Base#callParent} for more details on calling superclass' methods\n\n# Mixins:\n\n    Ext.define('CanPlayGuitar', {\n         playGuitar: function() {\n            alert(\"F#...G...D...A\");\n         }\n    });\n\n    Ext.define('CanComposeSongs', {\n         composeSongs: function() { ... }\n    });\n\n    Ext.define('CanSing', {\n         sing: function() {\n             alert(\"For he's a jolly good fellow...\")\n         }\n    });\n\n    Ext.define('Musician', {\n         extend: 'Person',\n\n         mixins: {\n             canPlayGuitar: 'CanPlayGuitar',\n             canComposeSongs: 'CanComposeSongs',\n             canSing: 'CanSing'\n         }\n    })\n\n    Ext.define('CoolPerson', {\n         extend: 'Person',\n\n         mixins: {\n             canPlayGuitar: 'CanPlayGuitar',\n             canSing: 'CanSing'\n         },\n\n         sing: function() {\n             alert(\"Ahem....\");\n\n             this.mixins.canSing.sing.call(this);\n\n             alert(\"[Playing guitar at the same time...]\");\n\n             this.playGuitar();\n         }\n    });\n\n    var me = new CoolPerson(\"Jacky\");\n\n    me.sing(); // alert(\"Ahem...\");\n               // alert(\"For he's a jolly good fellow...\");\n               // alert(\"[Playing guitar at the same time...]\");\n               // alert(\"F#...G...D...A\");\n\n# Config:\n\n    Ext.define('SmartPhone', {\n         config: {\n             hasTouchScreen: false,\n             operatingSystem: 'Other',\n             price: 500\n         },\n\n         isExpensive: false,\n\n         constructor: function(config) {\n             this.initConfig(config);\n         },\n\n         applyPrice: function(price) {\n             this.isExpensive = (price > 500);\n\n             return price;\n         },\n\n         applyOperatingSystem: function(operatingSystem) {\n             if (!(/^(iOS|Android|BlackBerry)$/i).test(operatingSystem)) {\n                 return 'Other';\n             }\n\n             return operatingSystem;\n         }\n    });\n\n    var iPhone = new SmartPhone({\n         hasTouchScreen: true,\n         operatingSystem: 'iOS'\n    });\n\n    iPhone.getPrice(); // 500;\n    iPhone.getOperatingSystem(); // 'iOS'\n    iPhone.getHasTouchScreen(); // true;\n\n    iPhone.isExpensive; // false;\n    iPhone.setPrice(600);\n    iPhone.getPrice(); // 600\n    iPhone.isExpensive; // true;\n\n    iPhone.setOperatingSystem('AlienOS');\n    iPhone.getOperatingSystem(); // 'Other'\n\n# Statics:\n\n    Ext.define('Computer', {\n         statics: {\n             factory: function(brand) {\n                // 'this' in static methods refer to the class itself\n                 return new this(brand);\n             }\n         },\n\n         constructor: function() { ... }\n    });\n\n    var dellComputer = Computer.factory('Dell');\n\nAlso see {@link Ext.Base#method!statics Ext.Base#statics} and {@link Ext.Base#property!self Ext.Base#self} for more details on accessing\nstatic properties within class methods\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "debugHooks",
+                "text": "A collection of diagnostic methods to decorate the real methods of the class. These\nmethods are applied as an `override` if this class has debug enabled as defined by\n`Ext.isDebugEnabled`.\n\nThese will be automatically removed by the Sencha Cmd compiler for production builds.\n\nExample usage:\n\n     Ext.define('Foo.bar.Class', {\n         foo: function (a, b, c) {\n             ...\n         },\n\n         bar: function (a, b) {\n             ...\n             return 42;\n         },\n\n         debugHooks: {\n             foo: function (a, b, c) {\n                 // check arguments...\n                 return this.callParent(arguments);\n             }\n         }\n     });\n\nIf you specify a `$enabled` property in the `{@link #cfg!debugHooks debugHooks}` object that will be used\nas the default enabled state for the hooks. If the `{@link Ext#cfg!manifest Ext#manifest}` contains\na `debug` object of if `{@link Ext#cfg!debugConfig Ext#debugConfig}` is specified, the `$enabled` flag\nwill override its \"*\" value.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,1228,22",
+                  "text": "0,1229,8,945",
+                  "type": "0,1228,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "deprecated",
+                "text": "The object given has properties that describe the versions at which the deprecations\napply.\n\nThe purpose of the `{@link #cfg!deprecated deprecated}` declaration is to enable development mode to give\nsuitable error messages when deprecated methods or properties are used. Methods can\nalways be injected to provide this feedback, but properties can only be handled on\nsome browsers (those that support `Object.defineProperty`).\n\nIn some cases, deprecated methods can be restored to their previous behavior or\nadded back if they have been removed.\n\nThe structure of a `{@link #cfg!deprecated deprecated}` declaration is this:\n\n     Ext.define('Foo.bar.Class', {\n         ...\n\n         deprecated: {\n             // Optional package name - default is the framework (ext or touch)\n             name: 'foobar',\n\n             '5.0': {\n                 methods: {\n                     // Throws: '\"removedMethod\" is deprecated.'\n                     removedMethod: null,\n\n                     // Throws: '\"oldMethod\" is deprecated. Please use \"newMethod\" instead.'\n                     oldMethod: 'newMethod',\n\n                     // When this block is enabled, this method is applied as an\n                     // override. Otherwise you get same as \"removeMethod\".\n                     method: function () {\n                         // Do what v5 \"method\" did. If \"method\" exists in newer\n                         // versions callParent can call it. If 5.1 has \"method\"\n                         // then it would be next in line, otherwise 5.2 and last\n                         // would be the current class.\n                     },\n\n                     moreHelpful: {\n                         message: 'Something helpful to do instead.',\n                         fn: function () {\n                             // The v5 \"moreHelpful\" method to use when enabled.\n                         }\n                     }\n                 },\n                 properties: {\n                     // Throws: '\"removedProp\" is deprecated.'\n                     removedProp: null,\n\n                     // Throws: '\"oldProp\" is deprecated. Please use \"newProp\" instead.'\n                     oldProp: 'newProp',\n\n                     helpful: {\n                         message: 'Something helpful message about what to do.'\n                     }\n                     ...\n                 },\n                 statics: {\n                     methods: {\n                         ...\n                     },\n                     properties: {\n                         ...\n                     },\n                 }\n             },\n\n             '5.1': {\n                 ...\n             },\n\n             '5.2': {\n                 ...\n             }\n         }\n     });\n\nThe primary content of `{@link #cfg!deprecated deprecated}` are the version number keys. These indicate\na version number where methods or properties were deprecated. These versions are\ncompared to the version reported by `Ext.getCompatVersion` to determine the action\nto take for each \"block\".\n\nWhen the compatibility version is set to a value less than a version number key,\nthat block is said to be \"enabled\". For example, if a method was deprecated in\nversion 5.0 but the desired compatibility level is 4.2 then the block is used to\npatch methods and (to some degree) restore pre-5.0 compatibility.\n\nWhen multiple active blocks have the same method name, each method is applied as\nan override in reverse order of version. In the above example, if a method appears\nin the \"5.0\", \"5.1\" and \"5.2\" blocks then the \"5.2\" method is applied as an override\nfirst, followed by the \"5.1\" method and finally the \"5.0\" method. This means that\nthe `callParent` from the \"5.0\" method calls the \"5.1\" method which calls the\n\"5.2\" method which can (if applicable) call the current version.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,1277,22",
+                  "text": "0,1278,8,3755",
+                  "type": "0,1277,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addListener",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "nameListeners",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,358,12",
+                  "name": "0,360,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addNameAliasMappings",
+                "text": "Adds a batch of class name to alias mappings.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "aliases",
+                    "text": "The set of mappings of the form.\nclassName : [values...]\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,594,28",
+                      "text": "0,594,36,33:0,595,12,24",
+                      "type": "0,594,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,597,0",
+                  "text": "0,593,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addNameAlternateMappings",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alternates",
+                    "text": "The set of mappings of the form\nclassName : [values...]\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,603,28",
+                      "text": "0,603,39,32:0,604,12,24",
+                      "type": "0,603,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,606,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addRootNamespaces",
+                "since": "6.0.0",
+                "text": "See `{@link Ext#method!addRootNamespaces Ext#addRootNamespaces}`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "namespaces",
+                    "src": {
+                      "name": "0,402,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,400,12",
+                  "name": "0,402,0",
+                  "since": "0,399,19",
+                  "text": "0,398,12,59"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clearNamespaceCache",
+                "since": "6.0.0",
+                "text": "Clears the namespace lookup cache. After application launch, this cache can\noften contain several hundred entries that are unlikely to be needed again.\nThese will be rebuilt as needed, so it is harmless to clear this cache even\nif its results will be used again.\n",
+                "src": {
+                  "access": "0,417,12",
+                  "name": "0,419,0",
+                  "since": "0,416,19",
+                  "text": "0,412,12,263"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to wrap.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,40,21",
+                      "text": "1,40,28,19",
+                      "type": "1,40,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,38,12",
+                  "text": "1,39,4,20"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "deprecatedMessage": "{@link Ext#define} instead, as that also supports creating overrides.\n",
+                "deprecatedVersion": "Use",
+                "name": "create",
+                "text": "Defines a class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,681,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "0,681,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "createdFn",
+                    "src": {
+                      "name": "0,681,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,679,12",
+                  "deprecatedMessage": "0,678,12",
+                  "deprecatedVersion": "0,678,12",
+                  "name": "0,681,0",
+                  "text": "0,677,12,17"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "dynInstantiate",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "0,944,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "0,945,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,943,12",
+                  "name": "0,947,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "get",
+                "text": "Retrieve a class by its name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,585,28",
+                      "type": "0,585,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "class\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,586,32,6",
+                      "type": "0,586,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,588,0",
+                  "text": "0,583,12,31"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getByAlias",
+                "text": "Get a reference to the class by its alias.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "type": "String",
+                    "src": {
+                      "name": "0,613,28",
+                      "type": "0,613,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "class\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,614,32,6",
+                      "type": "0,614,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,616,0",
+                  "text": "0,611,12,44"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getByConfig",
+                "text": "Get a component class name from a config object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "The config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,622,28",
+                      "text": "0,622,35,19",
+                      "type": "0,622,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "aliasPrefix",
+                    "optional": true,
+                    "text": "A prefix to use when getting\na class name by alias.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,623,29",
+                      "text": "0,623,42,29:0,624,12,23",
+                      "type": "0,623,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The class.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,625,32,11",
+                      "type": "0,625,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,627,12",
+                  "name": "0,629,0",
+                  "text": "0,621,12,49"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getClass",
+                "text": "Get the class of the provided object; returns null if it's not an instance\nof any class created with Ext.define. This is usually invoked by the\nshorthand {@link Ext#method!getClass Ext#getClass}.\n\n    var component = new Ext.Component();\n\n    Ext.getClass(component); // returns Ext.Component\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,669,28",
+                      "type": "0,669,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "class\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,670,32,6",
+                      "type": "0,670,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,672,0",
+                  "text": "0,661,12,274"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDisplayName",
+                "text": "Returns the displayName property or className or object. When all else fails, returns \"Anonymous\".\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1876,28",
+                      "type": "0,1876,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,1877,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1879,0",
+                  "text": "0,1875,12,99"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getInstantiator",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "length",
+                    "src": {
+                      "name": "0,956,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,955,12",
+                  "name": "0,958,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getName",
+                "text": "Get the name of the class by its reference or its instance. This is\nusually invoked by the shorthand {@link Ext#method!getClassName Ext#getClassName}.\n\n    Ext.ClassManager.getName(Ext.Action); // returns \"Ext.Action\"\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "type": "Ext.Class/Object",
+                    "src": {
+                      "name": "0,653,38",
+                      "type": "0,653,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "className\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,654,29,10",
+                      "type": "0,654,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,656,0",
+                  "text": "0,648,12,195"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getNamespaceEntry",
+                "since": "6.0.0",
+                "text": "Return the namespace cache entry for the given a class name or namespace (e.g.,\n\"Ext.grid.Panel\").\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "namespace",
+                    "text": "The namespace or class name to lookup.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,433,28",
+                      "text": "0,433,38,39",
+                      "type": "0,433,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The cache entry.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "name",
+                        "text": "The leaf name (\"Panel\" for \"Ext.grid.Panel\").\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,435,36",
+                          "text": "0,435,41,46",
+                          "type": "0,435,21"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "parent",
+                        "text": "The entry of the parent namespace (i.e., \"Ext.grid\").\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,436,36",
+                          "text": "0,436,43,54",
+                          "type": "0,436,21"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "The namespace object. This is only set for\ntop-level namespace entries to support renaming them for sandboxing (\"Ext6\" vs\n\"Ext\").\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,437,36",
+                          "text": "0,437,42,43:0,438,12,87",
+                          "type": "0,437,21"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "text": "0,434,29,17",
+                      "type": "0,434,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,441,12",
+                  "name": "0,443,0",
+                  "since": "0,440,19",
+                  "text": "0,430,12,100"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,100,20",
+                      "text": "1,100,25,34",
+                      "type": "1,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,101,22,57:1,102,4,15",
+                      "type": "1,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,53,12",
+                  "text": "1,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use Ext.create() instead.\n",
+                "deprecatedVersion": "5.0",
+                "name": "instantiate",
+                "text": "Instantiate a class by either full name, alias or alternate name\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,929,28",
+                      "type": "0,929,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Additional arguments after the name will be passed to the class' constructor.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,930,27",
+                      "text": "0,930,32,78",
+                      "type": "0,930,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "instance\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,931,29,9",
+                      "type": "0,931,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,932,12",
+                  "deprecatedVersion": "0,932,12",
+                  "name": "0,934,0",
+                  "text": "0,928,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "instantiateByAlias",
+                "text": "Instantiate a class by its alias. This is usually invoked by the\nshorthand {@link Ext#method!createByAlias Ext#createByAlias}.\n\nIf {@link Ext.Loader} is {@link Ext.Loader#property!setConfig Ext.Loader#setConfig} and the class\nhas not been defined yet, it will attempt to load the class via synchronous\nloading.\n\n    var window = Ext.createByAlias('widget.window', { width: 600, height: 800 });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "type": "String",
+                    "src": {
+                      "name": "0,905,28",
+                      "type": "0,905,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Additional arguments after the alias will be passed to the\nclass constructor.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,906,31",
+                      "text": "0,906,36,59:0,907,12,19",
+                      "type": "0,906,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "instance\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,908,29,9",
+                      "type": "0,908,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,910,0",
+                  "text": "0,896,12,348"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isCreated",
+                "text": "Checks if a class has already been created.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "type": "String",
+                    "src": {
+                      "name": "0,262,28",
+                      "type": "0,262,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "exist\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,263,30,6",
+                      "type": "0,263,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,265,0",
+                  "text": "0,260,12,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,148,20",
+                      "text": "1,148,30,71:1,149,4,18",
+                      "type": "1,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,150,20",
+                      "text": "1,150,27,50",
+                      "type": "1,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,151,22,56",
+                      "type": "1,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,106,12",
+                  "text": "1,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "lookupName",
+                "since": "6.0.0",
+                "text": "Return the value of the given \"dot path\" name. This supports remapping (for use\nin sandbox builds) as well as auto-creating of namespaces.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "namespace",
+                    "text": "The name of the namespace or class.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,475,28",
+                      "text": "0,475,38,36",
+                      "type": "0,475,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "autoCreate",
+                    "optional": true,
+                    "text": "Pass `true` to create objects for undefined names.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,476,30",
+                      "text": "0,476,42,51",
+                      "type": "0,476,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The object that is the namespace or class name.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,477,29,48",
+                      "type": "0,477,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,479,12",
+                  "name": "0,481,0",
+                  "since": "0,478,19",
+                  "text": "0,472,12,140"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "notify",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,328,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "src": {
+                      "name": "0,328,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "nameListeners",
+                    "src": {
+                      "name": "0,328,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,326,12",
+                  "name": "0,328,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onCreated",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "0,321,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "0,321,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,321,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,319,12",
+                  "name": "0,321,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,220,20",
+                      "text": "1,220,25,34",
+                      "type": "1,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,221,22,57:1,222,4,22",
+                      "type": "1,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,155,12",
+                  "text": "1,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "registerPostprocessor",
+                "text": "Register a post-processor function.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,997,28",
+                      "type": "0,997,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "postprocessor",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,998,30",
+                      "type": "0,998,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,996,12",
+                  "name": "0,1000,0",
+                  "text": "0,994,12,37"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "set",
+                "text": "Sets a name reference to a class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,566,28",
+                      "type": "0,566,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,567,28",
+                      "type": "0,567,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.ClassManager",
+                    "src": {
+                      "text": "0,568,39,5",
+                      "type": "0,568,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,570,0",
+                  "text": "0,564,12,35"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setDefaultPostprocessorPosition",
+                "text": "Insert this post-processor at a specific position in the stack, optionally relative to\nany existing post-processor\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The post-processor name. Note that it needs to be registered with\n{@link Ext.ClassManager#method!registerPostprocessor Ext.ClassManager#registerPostprocessor} before this\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1038,28",
+                      "text": "0,1038,33,66:0,1039,12,59",
+                      "type": "0,1038,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "offset",
+                    "text": "The insertion position. Four possible values are:\n'first', 'last', or: 'before', 'after' (relative to the name provided in the third argument)\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1040,28",
+                      "text": "0,1040,35,50:0,1041,12,93",
+                      "type": "0,1040,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "relativeName",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1042,28",
+                      "type": "0,1042,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.ClassManager",
+                    "src": {
+                      "text": "0,1043,39,5",
+                      "type": "0,1043,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1037,12",
+                  "name": "0,1045,0",
+                  "text": "0,1034,12,116"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setDefaultPostprocessors",
+                "text": "Set the default post processors array stack which are applied to every class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "postprocessors",
+                    "text": "The name of a registered post processor or an array of registered names.\n",
+                    "type": "String/Array",
+                    "src": {
+                      "name": "0,1024,34",
+                      "text": "0,1024,49,73",
+                      "type": "0,1024,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.ClassManager",
+                    "src": {
+                      "text": "0,1025,39,5",
+                      "type": "0,1025,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1023,12",
+                  "name": "0,1027,0",
+                  "text": "0,1021,12,79"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setNamespace",
+                "text": "Creates a namespace and assign the `value` to the created object.\n\n    Ext.ClassManager.setNamespace('MyCompany.pkg.Example', someObject);\n\n    alert(MyCompany.pkg.Example === someObject); // alerts true\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,517,28",
+                      "type": "0,517,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,518,28",
+                      "type": "0,518,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,520,0",
+                  "text": "0,511,12,205"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setXType",
+                "since": "6.0.1",
+                "text": "Changes the mapping of an `xtype` to map to the specified component class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cls",
+                    "text": "The class or class name to which `xtype` is mapped.\n",
+                    "type": "String/Ext.Class",
+                    "src": {
+                      "name": "0,535,38",
+                      "text": "0,535,42,52",
+                      "type": "0,535,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "xtype",
+                    "text": "The `xtype` to map or redefine as `cls`.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,536,28",
+                      "text": "0,536,34,41",
+                      "type": "0,536,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,538,12",
+                  "name": "0,540,0",
+                  "since": "0,537,19",
+                  "text": "0,534,12,75"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n`{@link Object}`'s `{@link #method!toLocaleString toLocaleString}` returns the result of calling `{@link #method!toString toString}`.\n\nThis function is provided to give objects a generic `{@link #method!toLocaleString toLocaleString}` method, even though not all\nmay use it. Currently, only `{@link Array}`, `{@link Number}`, and `{@link Date}` override `{@link #method!toLocaleString toLocaleString}`.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,235,21,32",
+                      "type": "1,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,226,12",
+                  "text": "1,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from `{@link Object}`.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom `{@link Object}`:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,297,21,32",
+                      "type": "1,297,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,239,12",
+                  "text": "1,240,4,2445"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "triggerCreated",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,312,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "src": {
+                      "name": "0,312,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,310,12",
+                  "name": "0,312,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "undefine",
+                "text": "Undefines a class defined using the #define method. Typically used\nfor unit testing where setting up and tearing down a class multiple\ntimes is required.  For example:\n\n    // define a class\n    Ext.define('Foo', {\n       ...\n    });\n\n    // run test\n\n    // undefine the class\n    Ext.undefine('Foo');\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "text": "The class name to undefine in string dot-namespaced format.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1837,28",
+                      "text": "0,1837,38,60",
+                      "type": "0,1837,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1838,12",
+                  "name": "0,1840,0",
+                  "text": "0,1824,12,303"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the `{@link #method!valueOf valueOf}` method to convert an object to a primitive value. You rarely need to\ninvoke the `{@link #method!valueOf valueOf}` method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the `{@link #method!valueOf valueOf}` method is inherited by every object descended from `{@link Object}`. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, `{@link #method!valueOf valueOf}` returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use `{@link #method!valueOf valueOf}` within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default `{@link Object}` method.\n\nYou can create a function to be called in place of the default `{@link #method!valueOf valueOf}` method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a `{@link #method!valueOf valueOf}` method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's `{@link #method!valueOf valueOf}` method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the `{@link #method!toString toString}` method, which is different from\n`{@link String}` objects converting to string primitives using `{@link #method!valueOf valueOf}`. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,340,21,50",
+                      "type": "1,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,301,12",
+                  "text": "1,302,4,1821"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$namespaceCache",
+                "text": "Supports namespace rewriting.\n",
+                "src": {
+                  "access": "0,393,12",
+                  "name": "0,395,0",
+                  "text": "0,392,12,30"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "classes",
+                "text": "All classes which were defined through the ClassManager. Keys are the\nname of the classes and the values are references to the classes.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,233,12",
+                  "name": "0,230,31",
+                  "text": "0,231,12,136",
+                  "type": "0,230,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "1,346,14",
+                  "text": "1,347,3,1996"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "createdListeners",
+                "src": {
+                  "access": "0,285,12",
+                  "name": "0,287,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "defaultPostprocessors",
+                "src": {
+                  "access": "0,989,12",
+                  "name": "0,991,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "existCache",
+                "src": {
+                  "access": "0,252,12",
+                  "name": "0,254,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "existsListeners",
+                "src": {
+                  "access": "0,295,12",
+                  "name": "0,297,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "instantiators",
+                "src": {
+                  "access": "0,256,13",
+                  "name": "0,257,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "nameCreatedListeners",
+                "src": {
+                  "access": "0,290,12",
+                  "name": "0,292,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "nameExistsListeners",
+                "src": {
+                  "access": "0,300,12",
+                  "name": "0,302,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "overrideMap",
+                "src": {
+                  "access": "0,305,12",
+                  "name": "0,307,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "postprocessors",
+                "src": {
+                  "access": "0,984,12",
+                  "name": "0,986,0"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "1,46,14",
+                  "text": "1,47,4,65"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,3,11",
+          "singleton": "0,190,4",
+          "text": "0,4,4,4734"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

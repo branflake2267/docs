@@ -1,0 +1,1783 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/ViewModel.js",
+    "../../../ext/packages/core/src/class/Base.js",
+    "../../../../docs/docs/js/primitives/Object.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "viewmodel.default",
+        "extended": "Ext.Base,Object",
+        "extends": "Ext.Base",
+        "mixed": "Ext.mixin.Factoryable,Ext.mixin.Identifiable",
+        "mixins": "Ext.mixin.Factoryable,Ext.mixin.Identifiable",
+        "name": "Ext.app.ViewModel",
+        "requires": "Ext.util.Scheduler,Ext.data.Session,Ext.app.bind.RootStub,Ext.app.bind.LinkStub,Ext.app.bind.Multi,Ext.app.bind.Formula,Ext.app.bind.TemplateBinding,Ext.data.ChainedStore",
+        "text": "This class manages arbitrary data and its relationship to data models. Instances of\n`ViewModel` are associated with some `Component` and then used by their child items\nfor the purposes of Data Binding.\n\n# Binding\n\nThe most commonly used aspect of a `ViewModel` is the `{@link #method!bind bind}` method. This method takes\na \"bind descriptor\" (see below) and a callback to call when the data indicated by the\nbind descriptor either becomes available or changes.\n\nThe `{@link #method!bind bind}` method, based on the bind descriptor given, will return different types of\n\"binding\" objects. These objects maintain the connection between the requested data and\nthe callback. Bindings ultimately derive from `{@link Ext.app.bind.BaseBinding}`\nwhich provides several methods to help manage the binding.\n\nPerhaps the most important method is `{@link #method!destroy destroy}`. When the binding is no longer needed\nit is important to remember to `{@link #method!destroy destroy}` it. Leaking bindings can cause performance\nproblems or worse when callbacks are called at unexpected times.\n\nThe types of bindings produced by `{@link #method!bind bind}` are:\n\n  * `{@link Ext.app.bind.Binding}`\n  * `{@link Ext.app.bind.Multi}`\n  * `{@link Ext.app.bind.TemplateBinding}`\n\n## Bind Descriptors\n\nA \"bind descriptor\" is a value (a String, an Object or an array of these) that describe\nthe desired data. Any piece of data in the `ViewModel` can be described by a bind\ndescriptor.\n\n### Textual Bind Descriptors\n\nThe simplest and most common form of bind descriptors are strings that look like an\n`{@link Ext.Template}` containing text and tokens surrounded by \"{}\" with dot notation inside\nto traverse objects and their properties.\n\nFor example:\n\n  * `'Hello {user.name}!'`\n  * `'You have selected \"{selectedItem.text}\".'`\n  * `'{user.groups}'`\n\nThe first two bindings are `{@link Ext.app.bind.TemplateBinding}`\nwhich use the familiar `{@link Ext.Template}` syntax with some slight differences. For more on\ntemplates see `{@link Ext.app.bind.Template}`.\n\nThe third bind descriptor is called a \"direct bind descriptor\". This special form of\nbind maps one-to-one to some piece of data in the `ViewModel` and is managed by the\n`{@link Ext.app.bind.Binding}` class.\n\n#### Two-Way Descriptors\n\nA direct bind descriptor may be able to write back a value to the `ViewModel` as well\nas retrieve one. When this is the case, they are said to be \"two-way\". For example:\n\n     var binding = viewModel.bind('{s}', function(x) { console.log('s=' + s); });\n\n     binding.setValue('abc');\n\nDirect use of `ViewModel` in this way is not commonly needed because `{@link Ext.Component}`\nautomates this process. For example, a `textfield` component understands when it is\ngiven a \"two-way\" binding and automatically synchronizes its value bidirectionally using\nthe above technique. For example:\n\n     Ext.widget({\n         items: [{\n             xtype: 'textfield',\n             bind: '{s}'  // a two-way / direct bind descriptor\n         }]\n     });\n\n### Object and Array Descriptors / Multi-Bind\n\nWith two exceptions (see below) an Object is interpreted as a \"shape\" to produce by\ntreating each of its properties as individual bind descriptors. An object of the same\nshape is passed as the value of the bind except that each property is populated with\nthe appropriate value. Of course, this definition is recursive, so these properties\nmay also be objects.\n\nFor example:\n\n     viewModel.bind({\n             x: '{x}',\n             foo: {\n                 bar: 'Hello {foo.bar}'\n             }\n         },\n         function (obj) {\n             //  obj = {\n             //      x: 42,\n             //      foo: {\n             //          bar: 'Hello foobar'\n             //      }\n             //  }\n         });\n\nArrays are handled in the same way. Each element of the array is considered a bind\ndescriptor (recursively) and the value produced for the binding is an array with each\nelement set to the bound property.\n\n### Bind Options\n\nOne exception to the \"object is a multi-bind\" rule is when that object contains a\n`bindTo` property. When an object contains a `bindTo` property the object is understood\nto contain bind options and the value of `bindTo` is considered the actual bind\ndescriptor.\n\nFor example:\n\n     viewModel.bind({\n             bindTo: '{x}',\n             single: true\n         },\n         function (x) {\n             console.log('x: ' + x); // only called once\n         });\n\nThe available bind options depend on the type of binding, but since all bindings\nderive from `{@link Ext.app.bind.BaseBinding}` its options are always applicable.\nFor a list of the other types of bindings, see above.\n\n#### Deep Binding\n\nWhen a direct bind is made and the bound property is an object, by default the binding\ncallback is only called when that reference changes. This is the most efficient way to\nunderstand a bind of this type, but sometimes you may need to be notified if any of the\nproperties of that object change.\n\nTo do this, we create a \"deep bind\":\n\n     viewModel.bind({\n             bindTo: '{someObject}',\n             deep: true\n         },\n         function (someObject) {\n             // called when reference changes or *any* property changes\n         });\n\n#### Binding Timings\n\nThe `ViewModel` has a {@link #cfg!scheduler #scheduler} attached that is used to coordinate the firing of bindings.\nIt serves 2 main purposes:\n- To coordinate dependencies between bindings. This means bindings will be fired in an order such that\nthe any dependencies for a binding are fired before the binding itself.\n- To batch binding firings. The scheduler runs on a short timer, so the following code will only trigger\na single binding (the last), the changes in between will never be triggered.\n\n    viewModel.bind('{val}', function(v) {\n        console.log(v);\n    });\n    viewModel.set('val', 1);\n    viewModel.set('val', 2);\n    viewModel.set('val', 3);\n    viewModel.set('val', 4);\n\nThe `ViewModel` can be forced to process by calling `{@link #method!notify #notify}`, which will force the\nscheduler to run immediately in the current state.\n\n    viewModel.bind('{val}', function(v) {\n        console.log(v);\n    });\n    viewModel.set('val', 1);\n    viewModel.notify();\n    viewModel.set('val', 2);\n    viewModel.notify();\n    viewModel.set('val', 3);\n    viewModel.notify();\n    viewModel.set('val', 4);\n    viewModel.notify();\n\n\n#### Models, Stores and Associations\n\nA {@link Ext.data.Session} manages model instances and their associations.\nThe `ViewModel` may be used with or without a `Session`. When a `Session` is attached, the\n`ViewModel` will always consult the `Session` to ask about records and stores. The `Session`\nensures that only a single instance of each model Type/Id combination is created. This is\nimportant when tracking changes in models so that we always have the same reference.\n\nA `ViewModel` provides functionality to easily consume the built in data package types\n{@link Ext.data.Model} and {@link Ext.data.Store}, as well as their associations.\n\n### Model Links\n\nA model can be described declaratively using a {@link #cfg!links #links}. In the example code below,\nWe ask the `ViewModel` to construct a record of type `User` with `id: 17`. The model will be loaded\nfrom the server and the bindings will trigger once the load has completed. Similarly, we could also\nattach a model instance to the `ViewModel` data directly.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: ['name']\n    });\n\n    var rec = new MyApp.model.User({\n        id: 12,\n        name: 'Foo'\n    });\n\n    var viewModel = new Ext.app.ViewModel({\n        links: {\n            theUser: {\n                type: 'User',\n                id: 17\n            }\n        },\n        data: {\n            otherUser: rec\n        }\n    });\n    viewModel.bind('{theUser.name}', function(v) {\n        console.log(v);\n    });\n    viewModel.bind('{otherUser.name}', function(v) {\n        console.log(v);\n    });\n\n### Model Fields\n\nBindings have the functionality to inspect the parent values and resolve the underlying\nvalue dynamically. This behavior allows model fields to be interrogated as part of a binding.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: ['name', 'age']\n    });\n\n    var viewModel = new Ext.app.ViewModel({\n        links: {\n            theUser: {\n                type: 'User',\n                id: 22\n            }\n        }\n    });\n\n    // Server responds with:\n    {\n        \"id\": 22,\n        \"name\": \"Foo\",\n        \"age\": 100\n    }\n\n    viewModel.bind('Hello {name}, you are {age} years old', function(v) {\n        console.log(v);\n    });\n\n### Associations\n\nIn the same way as fields, the bindings can also traverse associations in a bind statement.\nThe `ViewModel` will handle the asynchronous loading of data and only present the value once\nthe full path has been loaded. For more information on associations see {@link Ext.data.schema.OneToOne} and\n{@link Ext.data.schema.ManyToOne} associations.\n\n    Ext.define('User', {\n        extend: 'Ext.data.Model',\n        fields: ['name']\n    });\n\n    Ext.define('Order', {\n        extend: 'Ext.data.Model',\n        fields: ['date', {\n            name: 'userId',\n            reference: 'User'\n        }]\n    });\n\n    Ext.define('OrderItem', {\n        extend: 'Ext.data.Model',\n        fields: ['price', 'qty', {\n            name: 'orderId',\n            reference: 'Order'\n        }]\n    });\n\n    var viewModel = new Ext.app.ViewModel({\n        links: {\n            orderItem: {\n                type: 'OrderItem',\n                id: 13\n            }\n        }\n    });\n    // The viewmodel will handle both ways of loading the data:\n    // a) If the data is loaded inline in a nested fashion it will\n    //    not make requests for extra data\n    // b) Only loading a single model at a time. So the Order will be loaded once\n    //    the OrderItem returns. The User will be loaded once the Order loads.\n    viewModel.bind('{orderItem.order.user.name}', function(name) {\n        console.log(name);\n    });\n\n### Stores\n\nStores can be created as part of the `ViewModel` definition. The definitions are processed\nlike bindings which allows for very powerful dynamic functionality.\n\nIt is important to ensure that you name viewModel's data keys uniquely. If data is not named\nuniquely, binds and formulas may receive information from an unintended data source.\nThis applies to keys in the viewModel's data block, stores, and links configs.\n\n    var viewModel = new Ext.app.ViewModel({\n        stores: {\n            users: {\n                model: 'User',\n                autoLoad: true,\n                filters: [{\n                    property: 'createdDate',\n                    value: '{createdFilter}',\n                    operator: '>'\n                }]\n            }\n        }\n    });\n    // Later on in our code, we set the date so that the store is created.\n    viewModel.set('createdFilter', Ext.Date.subtract(new Date(), Ext.Date.DAY, 7));\n\nSee {@link #cfg!stores #stores} for more detail.\n\n#### Formulas\n\nFormulas allow for calculated `ViewModel` data values. The dependencies for these formulas\nare automatically determined so that the formula will not be processed until the required\ndata is present.\n\n    var viewModel = new Ext.app.ViewModel({\n        formulas: {\n            fullName: function(get) {\n                return get('firstName') + ' ' + get('lastName');\n            }\n        },\n        data: {firstName: 'John', lastName: 'Smith'}\n    });\n\n    viewModel.bind('{fullName}', function(v) {\n        console.log(v);\n    });\n\nSee {@link #cfg!formulas #formulas} for more detail.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "data",
+                "since": "5.0.0",
+                "text": "This object holds the arbitrary data that populates the `ViewModel` and is\nthen available for binding.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,377,26",
+                  "since": "0,380,19",
+                  "text": "0,378,12,103",
+                  "type": "0,377,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "formulas",
+                "since": "5.0.0",
+                "text": "An object that defines named values whose value is managed by function calls.\nThe names of the properties of this object are assigned as values in the\nViewModel.\n\nFor example:\n\n     formulas: {\n         xy: function (get) { return get('x') * get('y'); }\n     }\n\nFor more details about defining a formula, see `{@link Ext.app.bind.Formula}`.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,385,26",
+                  "since": "0,397,19",
+                  "text": "0,386,12,341",
+                  "type": "0,385,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "links",
+                "since": "5.0.0",
+                "text": "Links provide a way to assign a simple name to a more complex bind. The primary\nuse for this is to assign names to records in the data model.\n\n     links: {\n         theUser: {\n             type: 'User',\n             id: 12\n         }\n     }\n\nIt is also possible to force a new phantom record to be created by not specifying an\nid but passing `create: true` as part of the descriptor. This is often useful when\ncreating a new record for a child session.\n\n    links: {\n        newUser: {\n            type: 'User',\n            create: true\n        }\n    }\n\n`{@link #static-method!create create}` can also be an object containing initial data for the record.\n\n    links: {\n        newUser: {\n            type: 'User',\n            create: {\n                firstName: 'John',\n                lastName: 'Smith'\n            }\n        }\n    }\n\nWhile that is the typical use, the value of each property in `{@link #cfg!links links}` may also be\na bind descriptor (see `{@link #method!bind #method-bind}` for the various forms of bind\ndescriptors).\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,407,26",
+                  "since": "0,444,19",
+                  "text": "0,408,12,978",
+                  "type": "0,407,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "parent",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "The parent `ViewModel` of this `ViewModel`. Once set, this cannot be changed.\n",
+                "type": "Ext.app.ViewModel",
+                "src": {
+                  "name": "0,449,37",
+                  "readonly": "0,451,12",
+                  "since": "0,452,19",
+                  "text": "0,450,12,78",
+                  "type": "0,449,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "root",
+                "since": "5.0.0",
+                "text": "A reference to the root \"stub\" (an object that manages bindings).\n",
+                "type": "Ext.app.bind.RootStub",
+                "src": {
+                  "access": "0,459,12",
+                  "name": "0,457,41",
+                  "since": "0,460,19",
+                  "text": "0,458,12,66",
+                  "type": "0,457,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "scheduler",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "The scheduler used to schedule and manage the delivery of notifications for\nall connections to this `ViewModel` and any other attached to it. The normal\nprocess to initialize the `{@link #cfg!scheduler scheduler}` is to get the scheduler used by the\n`{@link #cfg!parent parent}` or `{@link #cfg!session session}` and failing either of those, create one.\n",
+                "type": "Ext.util.Scheduler",
+                "src": {
+                  "access": "0,471,12",
+                  "name": "0,465,38",
+                  "readonly": "0,470,12",
+                  "since": "0,472,19",
+                  "text": "0,466,12,290",
+                  "type": "0,465,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "schema",
+                "text": "The schema to use for getting information about entities.\n",
+                "type": "String/Ext.data.schema.Schema",
+                "src": {
+                  "name": "0,477,49",
+                  "text": "0,478,12,58",
+                  "type": "0,477,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "session",
+                "since": "5.0.0",
+                "text": "The session used to manage the data model (records and stores).\n",
+                "type": "Ext.data.Session",
+                "src": {
+                  "name": "0,483,36",
+                  "since": "0,485,19",
+                  "text": "0,484,12,64",
+                  "type": "0,483,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stores",
+                "since": "5.0.0",
+                "text": "A declaration of `{@link Ext.data.Store}` configurations that are first processed as\nbinds to produce an effective store configuration.\n\nA simple store definition. We can reference this in our bind statements using the\n`{users}` as we would with other data values.\n\n    new Ext.app.ViewModel({\n        stores: {\n            users: {\n                model: 'User',\n                autoLoad: true\n            }\n        }\n    });\n\nThis store definition contains a dynamic binding. The store will not be created until\nthe initial value for groupId is set. Once that occurs, the store is created with the appropriate\nfilter configuration. Subsequently, once we change the group value, the old filter will be\noverwritten with the new value.\n\n    var viewModel = new Ext.app.ViewModel({\n        stores: {\n            users: {\n                model: 'User',\n                filters: [{\n                    property: 'groupId',\n                    value: '{groupId}'\n                }]\n            }\n        }\n    });\n    viewModel.set('groupId', 1); // This will trigger the store creation with the filter.\n    viewModel.set('groupId', 2); // The filter value will be changed.\n\nThis store uses {@link Ext.data.ChainedStore} to create a store backed by the\ndata in another store. By specifying a string as the store, it will bind our creation and backing\nto the other store. This functionality is especially useful when wanting to display a different \"view\"\nof a store, for example a different sort order or different filters.\n\n    var viewModel = new Ext.app.ViewModel({\n        stores: {\n            allUsers: {\n                model: 'User',\n                autoLoad: true\n            },\n            children: {\n                source: '{allUsers}',\n                filters: [{\n                    property: 'age',\n                    value: 18,\n                    operator: '<'\n                }]\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,491,26",
+                  "since": "0,548,19",
+                  "text": "0,492,12,1933",
+                  "type": "0,491,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "view",
+                "since": "5.0.0",
+                "text": "The Container that owns this `ViewModel` instance.\n",
+                "type": "Ext.container.Container",
+                "src": {
+                  "name": "0,553,43",
+                  "since": "0,555,19",
+                  "text": "0,554,12,51",
+                  "type": "0,553,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addDeprecations",
+                "text": "This method applies a versioned, deprecation declaration to this class. This\nis typically called by the `deprecated` config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "deprecations",
+                    "src": {
+                      "name": "1,120,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,118,12",
+                  "name": "1,120,0",
+                  "text": "1,116,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "bind",
+                "text": "This method requests that data in this `ViewModel` be delivered to the specified\n`callback`. The data desired is given in a \"bind descriptor\" which is the first\nargument.\n\nA simple call might look like this:\n\n    var binding = vm.bind('{foo}', this.onFoo, this);\n\n    binding.destroy();  // when done with the binding\n\nOptions for the binding can be provided in the last argument:\n\n    var binding = vm.bind('{foo}', this.onFoo, this, {\n        deep: true\n    });\n\nAlternatively, bind options can be combined with the bind descriptor using only\nthe first argument:\n\n    var binding = vm.bind({\n        bindTo: '{foo}',  // the presence of bindTo identifies this form\n        deep: true\n    }, this.onFoo, this);\n\nSee the class documentation for more details on Bind Descriptors and options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "descriptor",
+                    "text": "The bind descriptor. See class description\nfor details.\n",
+                    "type": "String/Object/Array",
+                    "src": {
+                      "name": "0,677,37",
+                      "text": "0,677,48,43:0,678,8,13",
+                      "type": "0,677,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "The function to call with the value of the bound property.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,679,26",
+                      "text": "0,679,35,59",
+                      "type": "0,679,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` pointer) for the `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,680,25",
+                      "text": "0,680,32,47",
+                      "type": "0,680,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Additional options to configure the {@link Ext.app.bind.Binding}.\nIf this parameter is provided, the `bindTo` form of combining options and bind descriptor is not\nrecognized.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,681,25",
+                      "text": "0,681,34,74:0,682,8,109",
+                      "type": "0,681,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The binding.\n",
+                    "type": "Ext.app.bind.BaseBinding/Ext.app.bind.Binding",
+                    "src": {
+                      "text": "0,684,64,13",
+                      "type": "0,684,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,686,0",
+                  "text": "0,651,8,792"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callParent",
+                "text": "Call the \"parent\" method of the current method. That is the method previously\noverridden by derivation or by an override (see {@link Ext#method!define Ext#define}).\n\n     Ext.define('My.Base', {\n         constructor: function (x) {\n             this.x = x;\n         },\n\n         statics: {\n             method: function (x) {\n                 return x;\n             }\n         }\n     });\n\n     Ext.define('My.Derived', {\n         extend: 'My.Base',\n\n         constructor: function () {\n             this.callParent([21]);\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // alerts 21\n\nThis can be used with an override as follows:\n\n     Ext.define('My.DerivedOverride', {\n         override: 'My.Derived',\n\n         constructor: function (x) {\n             this.callParent([x*2]); // calls original My.Derived constructor\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // now alerts 42\n\nThis also works with static and private methods.\n\n     Ext.define('My.Derived2', {\n         extend: 'My.Base',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Base.method\n             }\n         }\n     });\n\n     alert(My.Base.method(10));     // alerts 10\n     alert(My.Derived2.method(10)); // alerts 20\n\nLastly, it also works with overridden static methods.\n\n     Ext.define('My.Derived2Override', {\n         override: 'My.Derived2',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Derived2.method\n             }\n         }\n     });\n\n     alert(My.Derived2.method(10); // now alerts 40\n\nTo override a method and replace it and also call the superclass method, use\n{@link #method!callSuper #method-callSuper}. This is often done to patch a method to fix a bug.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callParent(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "1,1251,37",
+                      "text": "1,1251,42,57:1,1252,12,67",
+                      "type": "1,1251,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the parent method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1253,29,48",
+                      "type": "1,1253,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1250,12",
+                  "name": "1,1255,0",
+                  "text": "1,1175,12,1853"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callSuper",
+                "text": "This method is used by an **override** to call the superclass method but\nbypass any overridden method. This is often done to \"patch\" a method that\ncontains a bug but for whatever reason cannot be fixed directly.\n\nConsider:\n\n     Ext.define('Ext.some.Class', {\n         method: function () {\n             console.log('Good');\n         }\n     });\n\n     Ext.define('Ext.some.DerivedClass', {\n         extend: 'Ext.some.Class',\n\n         method: function () {\n             console.log('Bad');\n\n             // ... logic but with a bug ...\n\n             this.callParent();\n         }\n     });\n\nTo patch the bug in `Ext.some.DerivedClass.method`, the typical solution is to create an\noverride:\n\n     Ext.define('App.patches.DerivedClass', {\n         override: 'Ext.some.DerivedClass',\n\n         method: function () {\n             console.log('Fixed');\n\n             // ... logic but with bug fixed ...\n\n             this.callSuper();\n         }\n     });\n\nThe patch method cannot use {@link #method!callParent #method-callParent} to call the superclass\n`method` since that would call the overridden method containing the bug. In\nother words, the above patch would only produce \"Fixed\" then \"Good\" in the\nconsole log, whereas, using `callParent` would produce \"Fixed\" then \"Bad\"\nthen \"Good\".\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callSuper(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "1,1338,37",
+                      "text": "1,1338,42,57:1,1339,12,66",
+                      "type": "1,1338,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the superclass method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1340,29,52",
+                      "type": "1,1340,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1337,12",
+                  "name": "1,1342,0",
+                  "text": "1,1292,12,1266"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to wrap.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,40,21",
+                      "text": "2,40,28,19",
+                      "type": "2,40,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,38,12",
+                  "text": "2,39,4,20"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "This method is called to cleanup an object and its resources. After calling\nthis method, the object should not be used any further.\n",
+                "src": {
+                  "name": "1,1626,0",
+                  "text": "1,1623,12,132"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "get",
+                "text": "Get a value from the data for this viewmodel.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "path",
+                    "text": "The path of the data to retrieve.\n\n   var value = vm.get('theUser.address.city');\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,819,24",
+                      "text": "0,819,29,34:0,820,8,49",
+                      "type": "0,819,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The data stored at the passed path.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,823,25,36",
+                      "type": "0,823,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,825,0",
+                  "text": "0,818,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getConfig",
+                "text": "Returns a specified config property value. If the name parameter is not passed,\nall current configuration options will be returned as key value pairs.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "The name of the config property to get.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,1469,29",
+                      "text": "1,1469,35,40",
+                      "type": "1,1469,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "peek",
+                    "optional": true,
+                    "text": "`true` to peek at the raw value without calling the getter.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,1470,30",
+                      "text": "1,1470,42,60",
+                      "type": "1,1470,20",
+                      "value": "1,1470,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The config property value.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1471,29,27",
+                      "type": "1,1471,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1473,0",
+                  "text": "1,1466,12,151"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getCurrentConfig",
+                "src": {
+                  "access": "1,1506,12",
+                  "name": "1,1508,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "3,75,25,3",
+                      "type": "3,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,77,0",
+                  "text": "3,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInitialConfig",
+                "text": "Returns the initial configuration passed to the constructor when\ninstantiating this class.\n\nGiven this example Ext.button.Button definition and instance:\n\n    Ext.define('MyApp.view.Button', {\n        extend: 'Ext.button.Button',\n        xtype: 'mybutton',\n\n        scale: 'large',\n        enableToggle: true\n    });\n\n    var btn = Ext.create({\n        xtype: 'mybutton',\n        renderTo: Ext.getBody(),\n        text: 'Test Button'\n    });\n\nCalling `btn.getInitialConfig()` would return an object including the config\noptions passed to the `{@link #static-method!create create}` method:\n\n    xtype: 'mybutton',\n    renderTo: // The document body itself\n    text: 'Test Button'\n\nCalling `btn.getInitialConfig('text')`returns **'Test Button'**.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "Name of the config option to return.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,1551,29",
+                      "text": "1,1551,35,37",
+                      "type": "1,1551,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The full config object or a single config value\nwhen `name` parameter specified.\n",
+                    "type": "Object/Mixed",
+                    "src": {
+                      "text": "1,1552,35,48:1,1553,12,33",
+                      "type": "1,1552,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1555,0",
+                  "text": "1,1523,12,715"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getRecord",
+                "text": "Get a record instance given a reference descriptor. Will ask\nthe session if one exists.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "text": "The model type.\n",
+                    "type": "String/Ext.Class",
+                    "src": {
+                      "name": "0,893,38",
+                      "text": "0,893,43,16",
+                      "type": "0,893,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The model id.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,894,28",
+                      "text": "0,894,31,14",
+                      "type": "0,894,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The model instance.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "0,895,37,20",
+                      "type": "0,895,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,896,12",
+                  "name": "0,898,0",
+                  "text": "0,891,12,88"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSession",
+                "text": "Gets the session attached to this (or a parent) ViewModel. See the {@link #cfg!session #session} configuration.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The session. `{@link null}` if no session exists.\n",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "text": "0,718,35,42",
+                      "type": "0,718,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,720,0",
+                  "text": "0,717,8,99"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStore",
+                "text": "Gets a store configured via the {@link #cfg!stores #stores} configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The name of the store.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,734,24",
+                      "text": "0,734,28,23",
+                      "type": "0,734,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The store. `{@link null}` if no store exists.\n",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "text": "0,735,33,38",
+                      "type": "0,735,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,737,0",
+                  "text": "0,733,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "hide": true,
+                "name": "getStores",
+                "src": {
+                  "hide": "0,749,8",
+                  "name": "0,748,16"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getStub",
+                "text": "This method looks up the `Stub` for a single bind descriptor.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "bindDescr",
+                    "text": "The bind descriptor.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,980,35",
+                      "text": "0,980,45,21",
+                      "type": "0,980,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `Stub` associated to the bind descriptor.\n",
+                    "type": "Ext.app.bind.AbstractStub",
+                    "src": {
+                      "text": "0,981,48,46",
+                      "type": "0,981,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,982,12",
+                  "name": "0,984,0",
+                  "text": "0,979,12,62"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "hasConfig",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "1,1516,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1515,12",
+                  "name": "1,1518,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,100,20",
+                      "text": "2,100,25,34",
+                      "type": "2,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,101,22,57:2,102,4,15",
+                      "type": "2,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,53,12",
+                  "text": "2,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initConfig",
+                "text": "Initialize configuration for this class. a typical example:\n\n    Ext.define('My.awesome.Class', {\n        // The default config\n        config: {\n            name: 'Awesome',\n            isAwesome: true\n        },\n\n        constructor: function(config) {\n            this.initConfig(config);\n        }\n    });\n\n    var awesome = new My.awesome.Class({\n        name: 'Super Awesome'\n    });\n\n    alert(awesome.getName()); // 'Super Awesome'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,1449,28",
+                      "type": "1,1449,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "1,1450,31,5",
+                      "type": "1,1450,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1448,12",
+                  "name": "1,1452,0",
+                  "text": "1,1428,12,441"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,148,20",
+                      "text": "2,148,30,71:2,149,4,18",
+                      "type": "2,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,150,20",
+                      "text": "2,150,27,50",
+                      "type": "2,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,151,22,56",
+                      "type": "2,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,106,12",
+                  "text": "2,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "link",
+                "text": "Adds a \"destroyable\" object to an internal list of objects that will be destroyed\nwhen this instance is destroyed (via `{@link #method!destroy #destroy}`).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "1,1571,28",
+                      "type": "1,1571,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,1572,28",
+                      "type": "1,1572,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `value` passed.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1573,29,20",
+                      "type": "1,1573,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1574,12",
+                  "name": "1,1576,0",
+                  "text": "1,1569,12,140"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "linkTo",
+                "text": "Create a link to a reference. See the {@link #cfg!links #links} configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The name for the link.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,754,24",
+                      "text": "0,754,28,23",
+                      "type": "0,754,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "reference",
+                    "text": "The reference descriptor.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,755,24",
+                      "text": "0,755,34,26",
+                      "type": "0,755,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,757,0",
+                  "text": "0,753,8,68"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "notify",
+                "text": "Forces all bindings in this ViewModel hierarchy to evaluate immediately. Use this to do a synchronous flush\nof all bindings.\n",
+                "src": {
+                  "name": "0,813,0",
+                  "text": "0,810,8,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,220,20",
+                      "text": "2,220,25,34",
+                      "type": "2,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,221,22,57:2,222,4,22",
+                      "type": "2,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,155,12",
+                  "text": "2,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "set",
+                "text": "Set  a value in the data for this viewmodel.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "path",
+                    "text": "The path of the value to set, or an object literal to set\nat the root of the viewmodel.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "0,831,31",
+                      "text": "0,831,36,58:0,832,8,30",
+                      "type": "0,831,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The data to set at the value. If the value is an object literal,\nany required paths will be created.\n\n    // Set a single property at the root level\n    viewModel.set('expiry', Ext.Date.add(new Date(), Ext.Date.DAY, 7));\n    console.log(viewModel.get('expiry'));\n    // Sets a single property in user.address, does not overwrite any hierarchy.\n    viewModel.set('user.address.city', 'London');\n    console.log(viewModel.get('user.address.city'));\n    // Sets 2 properties of \"user\". Overwrites any existing hierarchy.\n    viewModel.set('user', {firstName: 'Foo', lastName: 'Bar'});\n    console.log(viewModel.get('user.firstName'));\n    // Sets a single property at the root level. Overwrites any existing hierarchy.\n    viewModel.set({rootKey: 1});\n    console.log(viewModel.get('rootKey'));\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,833,24",
+                      "text": "0,833,30,65:0,834,8,727",
+                      "type": "0,833,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,849,0",
+                  "text": "0,830,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setConfig",
+                "text": "Sets a single/multiple configuration options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the property to set, or a set of key value pairs to set.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "1,1478,35",
+                      "text": "1,1478,40,69",
+                      "type": "1,1478,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to set for the name parameter.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,1479,29",
+                      "text": "1,1479,36,41",
+                      "type": "1,1479,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "1,1480,31,5",
+                      "type": "1,1480,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1482,0",
+                  "text": "1,1476,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "statics",
+                "text": "Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#property!self Ext.Base#self},\n`this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what\n`this` points to during run-time\n\n    Ext.define('My.Cat', {\n        statics: {\n            totalCreated: 0,\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            var statics = this.statics();\n\n            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to\n                                            // equivalent to: My.Cat.speciesName\n\n            alert(this.self.speciesName);   // dependent on 'this'\n\n            statics.totalCreated++;\n        },\n\n        clone: function() {\n            var cloned = new this.self();   // dependent on 'this'\n\n            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName\n\n            return cloned;\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n\n        statics: {\n            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'\n        },\n\n        constructor: function() {\n            this.callParent();\n        }\n    });\n\n    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'\n\n    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'\n    alert(clone.groupName);                 // alerts 'Cat'\n\n    alert(My.Cat.totalCreated);             // alerts 3\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Class",
+                    "src": {
+                      "type": "1,1161,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1160,12",
+                  "name": "1,1163,0",
+                  "text": "1,1107,12,1691"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n`{@link Object}`'s `{@link #method!toLocaleString toLocaleString}` returns the result of calling `{@link #method!toString toString}`.\n\nThis function is provided to give objects a generic `{@link #method!toLocaleString toLocaleString}` method, even though not all\nmay use it. Currently, only `{@link Array}`, `{@link Number}`, and `{@link Date}` override `{@link #method!toLocaleString toLocaleString}`.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "2,235,21,32",
+                      "type": "2,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,226,12",
+                  "text": "2,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from `{@link Object}`.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom `{@link Object}`:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "2,297,21,32",
+                      "type": "2,297,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,239,12",
+                  "text": "2,240,4,2445"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unlink",
+                "text": "Destroys a given set of `{@link #method!link #link}` objects. This is only needed if\nthe linked object is being destroyed before this instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "names",
+                    "text": "The names of the linked objects to destroy.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "1,1589,30",
+                      "text": "1,1589,36,44",
+                      "type": "1,1589,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "1,1590,31,5",
+                      "type": "1,1590,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1591,12",
+                  "name": "1,1593,0",
+                  "text": "1,1587,12,138"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the `{@link #method!valueOf valueOf}` method to convert an object to a primitive value. You rarely need to\ninvoke the `{@link #method!valueOf valueOf}` method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the `{@link #method!valueOf valueOf}` method is inherited by every object descended from `{@link Object}`. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, `{@link #method!valueOf valueOf}` returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use `{@link #method!valueOf valueOf}` within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default `{@link Object}` method.\n\nYou can create a function to be called in place of the default `{@link #method!valueOf valueOf}` method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a `{@link #method!valueOf valueOf}` method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's `{@link #method!valueOf valueOf}` method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the `{@link #method!toString toString}` method, which is different from\n`{@link String}` objects converting to string primitives using `{@link #method!valueOf valueOf}`. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,340,21,50",
+                      "type": "2,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,301,12",
+                  "text": "2,302,4,1821"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$className",
+                "src": {
+                  "access": "1,1049,13",
+                  "name": "1,1050,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configPrefixed",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` causes `config` values to be stored on instances using a\nproperty name prefixed with an underscore (\"_\") character. A value of `false`\nstores `config` values as properties using their exact name (no prefix).\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,1066,12",
+                  "name": "1,1062,33",
+                  "since": "1,1067,19",
+                  "text": "1,1063,12,225",
+                  "type": "1,1062,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configStrict",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` instructs the `{@link #method!initConfig initConfig}` method to only honor values for\nproperties declared in the `config` block of a class. When `false`, properties\nthat are not declared in a `config` block will be placed on the instance.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,1076,12",
+                  "name": "1,1072,33",
+                  "since": "1,1077,19",
+                  "text": "1,1073,12,229",
+                  "type": "1,1072,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "2,346,14",
+                  "text": "2,347,3,1996"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "data",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This object holds all of the properties of this `ViewModel`. It is\nprototype chained to the `{@link #property!linkData linkData}` which is, in turn, prototype chained\nto (if present) the `data` object of the parent `ViewModel`.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,1074,20",
+                  "name": "0,1070,39",
+                  "readonly": "0,1075,20",
+                  "since": "0,1076,27",
+                  "text": "0,1071,20,201",
+                  "type": "0,1070,31"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "destroyed",
+                "text": "This property is set to `true` after the `{@link #method!destroy destroy}` method is called.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,1102,12",
+                  "name": "1,1100,32",
+                  "text": "1,1101,12,69",
+                  "type": "1,1100,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created `{@link Ext.Factory}`.\n",
+                "type": "Object",
+                "src": {
+                  "name": "4,295,28",
+                  "text": "4,296,8,128",
+                  "type": "4,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isConfiguring",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` during the call to `{@link #method!initConfig initConfig}`.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,1084,12",
+                  "name": "1,1082,32",
+                  "readonly": "1,1085,12",
+                  "since": "1,1086,19",
+                  "text": "1,1083,12,64",
+                  "type": "1,1082,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isFirstInstance",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` if this instance is the first of its class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,1093,12",
+                  "name": "1,1091,32",
+                  "readonly": "1,1094,12",
+                  "since": "1,1095,19",
+                  "text": "1,1092,12,75",
+                  "type": "1,1091,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isInstance",
+                "readonly": true,
+                "text": "This value is `true` and is used to identify plain objects from instances of\na defined class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,1056,12",
+                  "name": "1,1053,32",
+                  "readonly": "1,1057,12",
+                  "text": "1,1054,12,94",
+                  "type": "1,1053,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "linkData",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This object is used to hold the result of a linked value. This is done\nso that the data object hasOwnProperty equates to whether or not this\nproperty is owned by this instance or inherited.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,1063,20",
+                  "name": "0,1059,39",
+                  "readonly": "0,1064,20",
+                  "since": "0,1065,27",
+                  "text": "0,1060,20,190",
+                  "type": "0,1059,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "2,46,14",
+                  "text": "2,47,4,65"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "self",
+                "text": "\nGet the reference to the current class from which this object was instantiated. Unlike {@link Ext.Base#method!statics Ext.Base#statics},\n`this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See {@link Ext.Base#method!statics Ext.Base#statics}\nfor a detailed comparison\n\n    Ext.define('My.Cat', {\n        statics: {\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            alert(this.self.speciesName); // dependent on 'this'\n        },\n\n        clone: function() {\n            return new this.self();\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n        statics: {\n            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'\n        }\n    });\n\n    var cat = new My.Cat();                     // alerts 'Cat'\n    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'\n",
+                "type": "Ext.Class",
+                "src": {
+                  "access": "1,1413,12",
+                  "name": "1,1379,34",
+                  "text": "1,1380,12,1011",
+                  "type": "1,1379,23"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addConfig",
+                "static": true,
+                "text": "Adds new config properties to this class. This is called for classes when they\nare declared, then for any mixins that class may define and finally for any\noverrides defined that target the class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,940,28",
+                      "type": "1,940,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "optional": true,
+                    "text": "The mixin class if the configs are from a mixin.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "1,941,32",
+                      "text": "1,941,44,49",
+                      "type": "1,941,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,942,12",
+                  "inheritable": "1,944,12",
+                  "name": "1,946,0",
+                  "static": "1,943,12",
+                  "text": "1,936,12,197"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addInheritableStatics",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,464,28",
+                      "type": "1,464,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,461,12",
+                  "inheritable": "1,463,12",
+                  "name": "1,466,0",
+                  "static": "1,462,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addMember",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "1,662,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "member",
+                    "src": {
+                      "name": "1,663,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,659,12",
+                  "inheritable": "1,661,12",
+                  "name": "1,665,0",
+                  "static": "1,660,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addMembers",
+                "static": true,
+                "text": "Add methods / properties to the prototype of this class.\n\n    Ext.define('My.awesome.Cat', {\n        constructor: function() {\n            ...\n        }\n    });\n\n     My.awesome.Cat.addMembers({\n         meow: function() {\n            alert('Meowww...');\n         }\n     });\n\n     var kitty = new My.awesome.Cat();\n     kitty.meow();\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The members to add to this class.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,522,28",
+                      "text": "1,522,36,34",
+                      "type": "1,522,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isStatic",
+                    "optional": true,
+                    "text": "Pass `true` if the members are static.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,523,30",
+                      "text": "1,523,46,39",
+                      "type": "1,523,20",
+                      "value": "1,523,39"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "privacy",
+                    "optional": true,
+                    "text": "Pass `true` if the members are private. This\nonly has meaning in debug mode and only for methods.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,524,30",
+                      "text": "1,524,45,45:1,525,12,53",
+                      "type": "1,524,20",
+                      "value": "1,524,38"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,527,12",
+                  "name": "1,529,0",
+                  "static": "1,526,12",
+                  "text": "1,505,12,335"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addStatics",
+                "static": true,
+                "text": "Add / override static properties of this class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.addStatics({\n        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'\n        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };\n        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,450,28",
+                      "type": "1,450,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "1,451,31,5",
+                      "type": "1,451,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,453,12",
+                  "name": "1,455,0",
+                  "static": "1,452,12",
+                  "text": "1,438,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "borrow",
+                "static": true,
+                "text": "Borrow another class' members to the prototype of this class.\n\n    Ext.define('Bank', {\n        money: '$$$',\n        printMoney: function() {\n            alert('$$$$$$$');\n        }\n    });\n\n    Ext.define('Thief', {\n        ...\n    });\n\n    Thief.borrow(Bank, ['money', 'printMoney']);\n\n    var steve = new Thief();\n\n    alert(steve.money); // alerts '$$$'\n    steve.printMoney(); // alerts '$$$$$$$'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fromClass",
+                    "text": "The class to borrow members from\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "name": "1,693,30",
+                      "text": "1,693,40,33",
+                      "type": "1,693,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The names of the members to borrow\n",
+                    "type": "Array/String",
+                    "src": {
+                      "name": "1,694,34",
+                      "text": "1,694,42,35",
+                      "type": "1,694,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "1,695,31,5",
+                      "type": "1,695,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,698,12",
+                  "inheritable": "1,697,12",
+                  "name": "1,700,0",
+                  "static": "1,696,12",
+                  "text": "1,673,12,404"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callParent",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "1,814,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,810,12",
+                  "inheritable": "1,812,12",
+                  "name": "1,814,0",
+                  "static": "1,811,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callSuper",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "1,828,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,824,12",
+                  "inheritable": "1,826,12",
+                  "name": "1,828,0",
+                  "static": "1,825,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "create",
+                "static": true,
+                "text": "Create a new instance of this Class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.create({\n        someConfig: true\n    });\n\nAll parameters are passed to the constructor of the class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "the created instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,107,29,22",
+                      "type": "1,107,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,109,12",
+                  "name": "1,111,0",
+                  "static": "1,108,12",
+                  "text": "1,95,12,214"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "createAlias",
+                "static": true,
+                "text": "Create aliases for existing prototype methods. Example:\n\n    Ext.define('My.cool.Class', {\n        method1: function() { ... },\n        method2: function() { ... }\n    });\n\n    var test = new My.cool.Class();\n\n    My.cool.Class.createAlias({\n        method3: 'method1',\n        method4: 'method2'\n    });\n\n    test.method3(); // test.method1()\n\n    My.cool.Class.createAlias('method5', 'method3');\n\n    test.method5(); // test.method3() -> test.method1()\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "text": "The new method name, or an object to set multiple aliases. See\n{@link Ext.Function#method!flexSetter Ext.Function#flexSetter}\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "1,1018,35",
+                      "text": "1,1018,41,63:1,1019,12,43",
+                      "type": "1,1018,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The original method name\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "1,1020,35",
+                      "text": "1,1020,42,25",
+                      "type": "1,1020,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,1022,12",
+                  "name": "1,1025,0",
+                  "static": "1,1021,12",
+                  "text": "1,998,12,456"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "extend",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "1,350,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,347,12",
+                  "inheritable": "1,349,12",
+                  "name": "1,352,0",
+                  "static": "1,348,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "getConfigurator",
+                "static": true,
+                "text": "Returns the `{@link Ext.Configurator}` for this class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Configurator",
+                    "src": {
+                      "type": "1,967,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,968,12",
+                  "inheritable": "1,970,12",
+                  "name": "1,972,0",
+                  "static": "1,969,12",
+                  "text": "1,965,12,48"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "getName",
+                "static": true,
+                "text": "Get the current class' name in string format.\n\n    Ext.define('My.cool.Class', {\n        constructor: function() {\n            alert(this.self.getName()); // alerts 'My.cool.Class'\n        }\n    });\n\n    My.cool.Class.getName(); // 'My.cool.Class'\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "className\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,989,29,10",
+                      "type": "1,989,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,991,12",
+                  "name": "1,993,0",
+                  "static": "1,990,12",
+                  "text": "1,979,12,249"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "mixin",
+                "static": true,
+                "text": "Used internally by the mixins pre-processor\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "1,844,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "src": {
+                      "name": "1,844,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,840,12",
+                  "inheritable": "1,842,12",
+                  "name": "1,844,0",
+                  "static": "1,841,12",
+                  "text": "1,839,12,44"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "onExtended",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "1,428,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "1,428,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,424,12",
+                  "inheritable": "1,426,12",
+                  "name": "1,428,0",
+                  "static": "1,425,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "override",
+                "static": true,
+                "text": "Override members of this class. Overridden methods can be invoked via\n{@link Ext.Base#callParent}.\n\n    Ext.define('My.Cat', {\n        constructor: function() {\n            alert(\"I'm a cat!\");\n        }\n    });\n\n    My.Cat.override({\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\n    var kitty = new My.Cat(); // alerts \"I'm going to be a cat!\"\n                              // alerts \"I'm a cat!\"\n                              // alerts \"Meeeeoooowwww\"\n\nDirect use of this method should be rare. Use {@link Ext#method!define Ext#define}\ninstead:\n\n    Ext.define('My.CatOverride', {\n        override: 'My.Cat',\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\nThe above accomplishes the same result but can be managed by the {@link Ext.Loader}\nwhich can properly order the override and its target class and the build process\ncan determine whether the override is needed based on the required state of the\ntarget class (My.Cat).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The properties to add to this class. This should be\nspecified as an object literal containing one or more properties.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,762,28",
+                      "text": "1,762,36,52:1,763,12,66",
+                      "type": "1,762,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this class\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "1,764,31,11",
+                      "type": "1,764,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,766,12",
+                  "name": "1,768,0",
+                  "static": "1,765,12",
+                  "text": "1,720,12,1180"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "triggerExtended",
+                "static": true,
+                "src": {
+                  "access": "1,402,12",
+                  "inheritable": "1,404,12",
+                  "name": "1,406,0",
+                  "static": "1,403,12"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "inheritable": true,
+                "name": "$onExtended",
+                "static": true,
+                "src": {
+                  "access": "1,395,12",
+                  "inheritable": "1,397,12",
+                  "name": "1,399,0",
+                  "static": "1,396,12"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,362,0",
+          "extends": "0,343,0",
+          "mixins": "0,345,0,0:0,346,0,0",
+          "name": "0,343,0",
+          "requires": "0,350,0,0:0,351,0,0:0,352,0,0:0,353,0,0:0,354,0,0:0,355,0,0:0,356,0,0:0,359,0,0",
+          "text": "0,2,4,11550"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

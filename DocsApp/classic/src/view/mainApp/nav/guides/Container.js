@@ -13,9 +13,44 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
     tabPosition: 'bottom',
 
     items: [{
+        xtype: 'treepanel',
+        reference: 'topicalGuideTree',
+        title: 'Topical View',
+        rootVisible: false,
+        hideHeaders: true,
+        store: 'guide.Topical',
+        columns: [
+            {
+                xtype: 'treecolumn',
+                flex: 1,
+                dataIndex: 'name',
+                renderer: function (text, meta, record) {
+                    var href = record.get('link');
+
+                    return href ? '<a href="' + href + '" target="_blank">' + text + '</a>' : text;
+                }
+            }
+        ],
+        tbar: [{
+            xtype: 'textfield',
+            emptyText: 'filter guides...',
+            flex: 1
+        }, {
+            text: 'Expand All',
+            handler: 'expandAll'
+        }],
+        listeners: {
+            itemclick: 'onGuideClick'
+        }
+    }, {
         xtype: 'gridpanel',
         title: 'Guided View',
         hideHeaders: true,
+        tbar: [{
+            xtype: 'textfield',
+            emptyText: 'filter guides...',
+            flex: 1
+        }],
         columns: [{
             text: 'Titles',
             dataIndex: 'text',
@@ -52,32 +87,6 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
             }, {
                 text: 'Full Application Walkthrough'
             }]
-        }
-    }, {
-        xtype: 'treepanel',
-        reference: 'topicalGuideTree',
-        title: 'Topical View',
-        rootVisible: false,
-        hideHeaders: true,
-        store: 'guide.Topical',
-        columns: [
-            {
-                xtype: 'treecolumn',
-                flex: 1,
-                dataIndex: 'name',
-                renderer: function(text, meta, record) {
-                    var href = record.get('link');
-
-                    return href ? '<a href="' + href + '" target="_blank">' + text + '</a>' : text;
-                }
-            }
-        ],
-        tbar: ['->', {
-            text: 'Expand All',
-            handler: 'expandAll'
-        }],
-        listeners: {
-            itemclick: 'onGuideClick'
         }
     }, {
         title: 'Favorites'

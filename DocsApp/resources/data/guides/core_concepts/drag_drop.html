@@ -5,11 +5,11 @@
     <link rel="stylesheet" type="text/css" href="../css/app.css">
 </head>
 <body>
-<div class="contents"><h1 id="core_concepts-_-drag_drop_-_drag-and-drop">Drag and Drop</h1>
+<div class="contents"><h1 id="core_concepts-_-drag_drop_-_drag_and_drop">Drag and Drop</h1>
 <p>One of the most powerful interaction design patterns available to developers is &quot;Drag and
 Drop.&quot; We utilize Drag and Drop without really giving it much thought - especially when
 its done right. Here are 5 easy steps to ensure an elegant implementation.</p>
-<h2 id="core_concepts-_-drag_drop_-_defining-drag-and-drop">Defining drag and drop</h2>
+<h2 id="core_concepts-_-drag_drop_-_defining_drag_and_drop">Defining drag and drop</h2>
 <p>A drag operation, essentially, is a click gesture on some UI element while the mouse
 button is held down and the mouse is moved. A drop operation occurs when the mouse button
 is released after a drag operation. From a high level, drag and drop decisions can be
@@ -19,7 +19,7 @@ summed up by the following flow chart.</p>
 basic decisions for us. In this guide, we will cover coding for the appearance and removal
 of the drop invitation, invalid drop repair and what happens when a successful drop
 occurs.</p>
-<h2 id="core_concepts-_-drag_drop_-_organizing-the-drag-and-drop-classes">Organizing the drag and drop classes</h2>
+<h2 id="core_concepts-_-drag_drop_-_organizing_the_drag_and_drop_classes">Organizing the drag and drop classes</h2>
 <p>A first glance of the classes in the Ext.dd documentation might seem a bit intimidating. 
 But, if we take a quick moment to look at the classes, we see that they all stem from the
 DragDrop class and most can be categorized into Drag or Drop groups.  With a bit more time
@@ -31,7 +31,7 @@ and drop interactions to DOM nodes.  To do this, we&#39;ll utilize the DD and DD
 classes, which provide the base implementations for their respective drag and drop
 behaviors. However, we need to discuss what our objectives are before we can start
 implementing drag and drop.</p>
-<h2 id="core_concepts-_-drag_drop_-_the-task-at-hand">The task at hand</h2>
+<h2 id="core_concepts-_-drag_drop_-_the_task_at_hand">The task at hand</h2>
 <p>Lets say we&#39;ve been asked to develop an application that will provide a rental car company
 the ability to place their cars and trucks in one of three states:  available, rented or
 in repair status.  The cars and trucks are only allowed to be placed in their respective
@@ -42,7 +42,7 @@ need to make the rented, repair and vehicle containers &quot;drop targets&quot;.
 DDTarget.  Lastly, we&#39;ll use different drag drop groups to help enforce the requirement
 that cars and trucks can only be dropped into their respective &quot;available&quot; containers. Now
 we can begin coding by adding drag operations to the cars and trucks.</p>
-<h2 id="core_concepts-_-drag_drop_-_step-1-starting-with-drag">Step 1: Starting with drag</h2>
+<h2 id="core_concepts-_-drag_drop_-_step_1_starting_with_drag">Step 1: Starting with drag</h2>
 <p>To configure the vehicle DIVs elements as dragable, we&#39;ll need to obtain a list and loop
 through it to instantiate new instances of DD.  Here&#39;s how we do it.</p>
 <pre><code>    Ext.onReady(function() {
@@ -82,7 +82,7 @@ is a handy way to add properties or methods to an existing object. Before we can
 with our implementation, we need to take a quick moment to analyze what happens when you
 drag an element on screen. With this understanding, the rest of the implementation will
 fall into place.</p>
-<h2 id="core_concepts-_-drag_drop_-_peeking-at-how-drag-nodes-are-affected">Peeking at how drag nodes are affected</h2>
+<h2 id="core_concepts-_-drag_drop_-_peeking_at_how_drag_nodes_are_affected">Peeking at how drag nodes are affected</h2>
 <p>The first thing you&#39;ll notice when dragging the car or truck elements around is that they
 will stick wherever they are dropped. This is OK for now because we&#39;ve just begun our
 implementation. What is important is to understand how the drag nodes are being affected.
@@ -98,7 +98,7 @@ updating while the node is being dragged around. After a the drag gesture comple
 style attribute remains along with the styles contained therein. This is what we have to
 clean up when we code for the repair of an invalid drop. Until we setup proper drop
 targets, all drop operations are considered invalid.</p>
-<h2 id="core_concepts-_-drag_drop_-_step-2-repairing-an-invalid-drop">Step 2: Repairing an invalid drop</h2>
+<h2 id="core_concepts-_-drag_drop_-_step_2_repairing_an_invalid_drop">Step 2: Repairing an invalid drop</h2>
 <p>The path of least resistance is to repair an invalid drop by reseting the style attribute
 that is applied during the drag operation. This means that the drag element would
 disappear from under the mouse and reappear where it originated and would be quite boring.
@@ -159,7 +159,7 @@ elasticOut easing to provide a cool and fun bouncy effect at end of the animatio
 <p><img src='images/dnd_camaro_repair.jpg' alt='Ext Drag and Drop'/></p>
 <p>OK, now we have the repair operation complete. In order for it to work on the drop
 invitation and valid drop operations, we need to setup the drop targets.</p>
-<h2 id="core_concepts-_-drag_drop_-_step-3-configuring-the-drop-targets">Step 3: Configuring the drop targets</h2>
+<h2 id="core_concepts-_-drag_drop_-_step_3_configuring_the_drop_targets">Step 3: Configuring the drop targets</h2>
 <p>Our requirements dictate that we will allow cars and trucks to be in be dropped in the
 rented and repair containers as well as their respective original containers. To do this,
 we&#39;ll need to instantiate instances of the DDTarget class. Here&#39;s how its done.</p>
@@ -189,7 +189,7 @@ That is, images can be dropped anywhere on a drop target and stay there. This me
 our drop implementation is not complete. To complete it, we need to actually code for the
 &quot;complete drop&quot; operation, by means of another override for the instances of DD that we
 created some time ago.</p>
-<h2 id="core_concepts-_-drag_drop_-_step-4-completing-the-drop">Step 4: Completing the drop</h2>
+<h2 id="core_concepts-_-drag_drop_-_step_4_completing_the_drop">Step 4: Completing the drop</h2>
 <p>To complete the drop, we will need to actually drag the element from its parent element to
 the drop target element using DOM tools. This is accomplished by overriding the DD
 onDragDrop method. Add the following method to the overrides object.</p>
@@ -228,7 +228,7 @@ we ensure a repair operation occurs by calling this.onInvalidDrop.</p>
 <p>Upon a successful drop, the drag elements will now will be moved from their parent element
 to the drop target. How does the user know if they are hovering above a valid drop target?
 We&#39;ll give the user some visual feedback by configuring the drop invitation.</p>
-<h2 id="core_concepts-_-drag_drop_-_step-5-adding-drop-invitation">Step 5: Adding drop invitation</h2>
+<h2 id="core_concepts-_-drag_drop_-_step_5_adding_drop_invitation">Step 5: Adding drop invitation</h2>
 <p>In order to make drag and drop a bit more useful, we need to provide feedback to the user
 on whether or not a drop operation can successfully occur. This means that we&#39;ll have to
 override the onDragEnter and onDragOut methods Add these last two methods to the overrides
@@ -264,7 +264,7 @@ drop target while in drag mode.</p>
 background of the drag element will turn green when the mouse cursor first intersects a
 valid drop target and will lose its green background when it leaves the drop target or is
 dropped. This completes our implementation of drag and drop with DOM elements.</p>
-<h2 id="core_concepts-_-drag_drop_-_it-doesn-t-stop-here">It doesn&#39;t stop here</h2>
+<h2 id="core_concepts-_-drag_drop_-_it_doesn_t_stop_here">It doesn&#39;t stop here</h2>
 <p>Drag and drop can be a can be applied to mostly everything in the Ext JS framework. Here
 are a few examples that you can use to learn how to implement drag and drop with various
 widgets:</p>
@@ -297,16 +297,16 @@ quality Sencha-based applications. Modus Create is a Sencha Premier partner.</p>
 </div>
 
     <div class="toc">
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_defining-drag-and-drop">Defining drag and drop</a></div>
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_organizing-the-drag-and-drop-classes">Organizing the drag and drop classes</a></div>
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_the-task-at-hand">The task at hand</a></div>
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step-1-starting-with-drag">Step 1: Starting with drag</a></div>
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_peeking-at-how-drag-nodes-are-affected">Peeking at how drag nodes are affected</a></div>
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step-2-repairing-an-invalid-drop">Step 2: Repairing an invalid drop</a></div>
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step-3-configuring-the-drop-targets">Step 3: Configuring the drop targets</a></div>
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step-4-completing-the-drop">Step 4: Completing the drop</a></div>
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step-5-adding-drop-invitation">Step 5: Adding drop invitation</a></div>
-        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_it-doesn-t-stop-here">It doesn&#x27;t stop here</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_defining_drag_and_drop">Defining drag and drop</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_organizing_the_drag_and_drop_classes">Organizing the drag and drop classes</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_the_task_at_hand">The task at hand</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step_1_starting_with_drag">Step 1: Starting with drag</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_peeking_at_how_drag_nodes_are_affected">Peeking at how drag nodes are affected</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step_2_repairing_an_invalid_drop">Step 2: Repairing an invalid drop</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step_3_configuring_the_drop_targets">Step 3: Configuring the drop targets</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step_4_completing_the_drop">Step 4: Completing the drop</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_step_5_adding_drop_invitation">Step 5: Adding drop invitation</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_it_doesn_t_stop_here">It doesn&#x27;t stop here</a></div>
         <div class="toc-item"><a href="#core_concepts-_-drag_drop_-_summary">Summary</a></div>
     </div>
 </body>

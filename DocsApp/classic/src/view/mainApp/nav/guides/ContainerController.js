@@ -1,37 +1,52 @@
 Ext.define('DocsApp.view.mainApp.nav.guides.ContainerController', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.docsapp-mainapp-nav-guides-container',
+    alias : 'controller.docsapp-mainapp-nav-guides-container',
 
     routes: {
-        '!/guide/:id' : 'onGuide'
+        '!/guide:guide:heading': {
+            action    : 'onGuide',
+            conditions: {
+                ':guide'  : '(?:(?:\/){1}([a-z_]+))?',
+                ':heading': '(?:(?:-){1}([a-z_]+))?'
+            }
+        }
     },
 
-    expandAll: function() {
+    expandAll: function () {
         var tree = this.lookupReference('topicalGuideTree');
 
         tree.expandAll();
     },
 
-    onGuideClick: function(treeView, node) {
+    onGuideClick: function (treeView, node) {
         if (node.isLeaf()) {
-            this.redirectTo('!/guide/' + node.getId());
+            //this.redirectTo('!/guide/' + node.getId());
+            this.redirectTo('!/guide/' + node.get('slug'));
         }
     },
 
-    onGuide: function(id) {
-        var store = Ext.getStore('guide.Topical');
+    onGuide: function (guide, heading) {
+        var store = Ext.getStore('guide.Topical'),
+            node, tree;
 
         if (store.isLoaded()) {
-            var node = store.getNodeById(id),
-                tree = this.lookupReference('topicalGuideTree');
+            node = store.getRoot().findChildBy(function (node) {
+                return node.isLeaf() && node.get('slug') === guide;
+            }, this, true);
+
+            if (!node) {
+                return;
+            }
+
+            tree = this.lookupReference('topicalGuideTree');
 
             //expand the path and select the node
             tree.expandPath(node.getPath(), {
-                select : true,
-                focus: true
+                select: true,
+                focus : true
             });
         } else {
-            store.on('load', Ext.Function.bind(this.onGuide, this, [id], false), this, {single: true});
+            store.on('load', Ext.Function.bind(this.onGuide, this, [guide, heading], false), this, {single: true});
         }
     }
 });

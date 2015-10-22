@@ -1,24 +1,24 @@
 Ext.define('DocsApp.view.mainApp.guide.View', {
     extend: 'Ext.panel.Panel',
-    xtype: 'mainapp-guide-view',
+    xtype : 'mainapp-guide-view',
 
-    config : {
+    config: {
         guideId: null,
-        route: null
+        route  : null
     },
 
-    cls: 'da-guide-body',
-    iconCls: 'x-fa fa-book',
-    padding: '2 20 20 20',
+    cls       : 'da-guide-body',
+    iconCls   : 'x-fa fa-book',
+    padding   : '2 20 20 20',
     scrollable: true,
 
-    destroy: function() {
+    destroy: function () {
         this.tocDock = null;
 
         this.callParent();
     },
 
-    updateGuideId: function(id) {
+    updateGuideId: function (id) {
         if (id) {
             var store = Ext.getStore('guide.Topical');
 
@@ -30,38 +30,53 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
         }
     },
 
-    handleNode: function(id) {
+    handleNode: function (id) {
         var me      = this,
             store   = Ext.getStore('guide.Topical'),
             node    = store.getNodeById(id),
             headers = node.get('headers');
 
         me.setTitle(node.get('name'));
-        me.setRoute('!/guide/' + id);
+        //me.setRoute('!/guide/' + id);
 
         Ext.Ajax
             .request({
-                url : 'resources/data/guides/' + node.get('path') + '.html'
+                url: 'resources/data/guides/' + node.get('path') + '.html'
             })
-            .then(function(response) {
+            .then(function (response) {
                 var div = document.createElement('div'),
                     el, contents;
 
                 div.innerHTML = response.responseText;
 
-                el       = new Ext.dom.Element(div);
-                contents = el.child('.contents');
+                el         = new Ext.dom.Element(div);
+                contents   = el.child('.contents');
 
                 me.update(contents.getHtml());
-
+                //console.log(headers[1].id.split('_-_'));
                 me.tocDock = me.addDocked({
                     xtype: 'component',
-                    cls: 'da-guide-toc',
-                    dock: 'right',
+                    cls  : 'da-guide-toc',
+                    dock : 'right',
                     width: 340,
-                    data: headers,
-                    tpl: '<tpl for="."><a class="da-guide-toc-{tag}" da-data="{name}">{name}</a></tpl>'
+                    data : headers,
+                    tpl  : new Ext.XTemplate(
+                        '<tpl for=".">',
+                            '<a class="da-guide-toc-{tag}" da-data="{name}" href="{[this.getHref(values)]}">{name}</a>',
+                        '</tpl>',
+                        {
+                            getHref: function (values) {
+                                var id = values.id,
+                                    parse = id.split('_-_'),
+                                    guide = parse[0].split('-_-').pop(),
+                                    header = parse.pop().replace(/-/g, '_');
+
+                                return '#!/guide/' + guide + '-' + header;
+                            }
+                        })
                 })[0];
+
+                me.fireEvent('loaded');
             });
     },
 

@@ -77,7 +77,7 @@ Ext.create(&#39;Ext.tree.Panel&#39;, {
     store: store,
     ...
 });
-</code></pre><h2 id="components-_-trees_-_the-node-interface">The Node Interface</h2>
+</code></pre><h2 id="components-_-trees_-_the_node_interface">The Node Interface</h2>
 <p>In the above examples, we set a couple of different properties on Tree nodes. But what 
 are nodes exactly? As mentioned before, the Tree Panel is bound to a 
 [[ext:Ext.data.TreeStore TreeStore]].  A Store in Ext JS manages a collection of 
@@ -90,7 +90,7 @@ a node in the developer tools.</p>
 NodeInterface'/></p>
 <p>In order to see the full set of fields, methods, and properties available on nodes, see 
 the API documentation for the [[ext:Ext.data.NodeInterface NodeInterface]] class.</p>
-<h2 id="components-_-trees_-_visually-changing-your-tree">Visually changing your tree</h2>
+<h2 id="components-_-trees_-_visually_changing_your_tree">Visually changing your tree</h2>
 <p>Let&#39;s try something simple. When you set the 
 [[ext:Ext.tree.Panel#cfg-useArrows useArrows]] configuration to true, the Tree Panel 
 hides the lines and uses arrows as expand and collapse icons.</p>
@@ -100,7 +100,7 @@ visually removes the root node. By doing this, the root node will automatically 
 expanded. The following image shows the same tree with <code>rootVisible</code> set to <strong>false</strong> 
 and [[ext:Ext.tree.Panel#cfg-lines lines]] set to false.</p>
 <p><img src='images/root-lines.png' alt='Root not visible and no lines'/></p>
-<h2 id="components-_-trees_-_multiple-columns">Multiple columns</h2>
+<h2 id="components-_-trees_-_multiple_columns">Multiple columns</h2>
 <p>Since [[ext:Ext.tree.Panel Tree Panel]] extends from the same base class as
 [[ext:Ext.grid.Panel Grid Panel]] adding more columns is very easy to do.</p>
 <pre><code>@example
@@ -151,7 +151,7 @@ to the fields we specified - <strong>name</strong> and <strong>description</stro
 create one single <code>treecolumn</code> with a <code>dataIndex</code> set to <strong>&#39;text&#39;</strong>. It also hides the 
 headers on the Tree. To show this header when using only a single column set the 
 <code>hideHeaders</code> configuration to <strong>false</strong>.</p>
-<h2 id="components-_-trees_-_adding-nodes-to-the-tree">Adding nodes to the tree</h2>
+<h2 id="components-_-trees_-_adding_nodes_to_the_tree">Adding nodes to the tree</h2>
 <p>The root node for the Tree Panel does not have to be specified in the initial
 configuration.  We can always add it later:</p>
 <pre><code>var tree = Ext.create(&#39;Ext.tree.Panel&#39;);
@@ -225,11 +225,11 @@ reference other nodes.</p>
 <li>[[ext:Ext.data.NodeInterface#firstChild firstChild]]</li>
 <li>[[ext:Ext.data.NodeInterface#childNodes childNodes]]</li>
 </ul>
-<h2 id="components-_-trees_-_loading-and-saving-tree-data-using-a-proxy">Loading and Saving Tree Data using a Proxy</h2>
+<h2 id="components-_-trees_-_loading_and_saving_tree_data_using_a_proxy">Loading and Saving Tree Data using a Proxy</h2>
 <p>Loading and saving Tree data is somewhat more complex than dealing with flat data 
 because of all the fields that are required to represent the hierarchical structure of 
 the Tree.  This section will explain the intricacies of working with Tree data.</p>
-<h3 id="components-_-trees_-_nodeinterface-fields">NodeInterface Fields</h3>
+<h3 id="components-_-trees_-_nodeinterface_fields">NodeInterface Fields</h3>
 <p>The first and most important thing to understand when working with Tree data is how the
 [[ext:Ext.data.NodeInterface NodeInterface]] class&#39; fields work.  Every node in a Tree 
 is simply a [[ext:Ext.data.Model Model]] instance decorated with the NodeInterface&#39;s 
@@ -411,13 +411,13 @@ and state:</p>
     type: &#39;string&#39;,
     persist: &#39;false
 }
-</code></pre><h4 id="components-_-trees_-_nodeinterface-fields-are-reserved-names">NodeInterface Fields are Reserved Names</h4>
+</code></pre><h4 id="components-_-trees_-_nodeinterface_fields_are_reserved_names">NodeInterface Fields are Reserved Names</h4>
 <p>It is important to note that all of the above field names should be treated as 
 &quot;reserved&quot; names.  For example, it is not allowed to have a field called &quot;parentId&quot;
 in a Model if that Model is intended to be used in a Tree, since the Model&#39;s field will
 override the NodeInterface field.  The exception to this rule is when there is a 
 legitimate need to override the persistence of a field.</p>
-<h4 id="components-_-trees_-_persistent-fields-vs-non-persistent-fields-and-overriding-the-persistence-of-fields">Persistent Fields vs Non-persistent Fields and Overriding the Persistence of Fields</h4>
+<h4 id="components-_-trees_-_persistent_fields_vs_non_persistent_fields_and_overriding_the_persistence_of_fields">Persistent Fields vs Non-persistent Fields and Overriding the Persistence of Fields</h4>
 <p>Most of NodeInterface&#39;s fields default to <code>persist: false</code>.  This means they are
 non-persistent fields by default.  Non-persistent fields will not be saved via the Proxy 
 when calling the TreeStore&#39;s <code>sync</code> method or calling <code>save()</code> on the Model.  In most 
@@ -513,12 +513,12 @@ if desired.</li>
 <li><code>children</code> - used internally when loading a node and its children all in one 
 request.  Do not override the persistence of this field.</li>
 </ul>
-<h3 id="components-_-trees_-_loading-data">Loading Data</h3>
+<h3 id="components-_-trees_-_loading_data">Loading Data</h3>
 <p>There are two ways to load Tree data.  The first is to for the proxy to fetch the entire
 Tree all at once.  For larger Trees where loading everything at once is not ideal, it 
 may be preferable to use the second method - dynamically loading the children for each 
 node when it is expanded.</p>
-<h4 id="components-_-trees_-_loading-the-entire-tree">Loading the Entire Tree</h4>
+<h4 id="components-_-trees_-_loading_the_entire_tree">Loading the Entire Tree</h4>
 <p>Internally, the Tree only loads data in response to a node being expanded.  However the
 entire hierarchy can be loaded if the proxy retrieves a nested object containing the 
 whole Tree structure.  To accomplish this, initialize the TreeStore&#39;s root node to 
@@ -590,7 +590,7 @@ that is not the root node for example.  In general, <code>loaded</code> and <cod
 only cases where it is recommended for the server to set a non-persistent field in the 
 JSON response.</li>
 </ul>
-<h4 id="components-_-trees_-_dynamically-loading-children-when-a-node-is-expanded">Dynamically Loading Children When a Node is Expanded</h4>
+<h4 id="components-_-trees_-_dynamically_loading_children_when_a_node_is_expanded">Dynamically Loading Children When a Node is Expanded</h4>
 <p>For larger Trees it may be desirable to only load parts of the tree by loading child 
 nodes only when their parent node is expanded.  Suppose in the above example, that the 
 node with name &quot;Sue&quot; does not have its <code>loaded</code> field set to <code>true</code> by the server 
@@ -609,43 +609,43 @@ node:</p>
 }
 </code></pre><p>Now the Tree looks something like this:</p>
 <p><img src='images/tree-dynamic-load.png' alt='Tree with Dynamically Loaded Node'/></p>
-<h3 id="components-_-trees_-_saving-data">Saving Data</h3>
+<h3 id="components-_-trees_-_saving_data">Saving Data</h3>
 <p>Creating, updating, and deleting nodes is handled automatically and seamlessly by the
 Proxy.</p>
-<h4 id="components-_-trees_-_creating-a-new-node">Creating a New Node</h4>
+<h4 id="components-_-trees_-_creating_a_new_node">Creating a New Node</h4>
 <pre><code>// Create a new node and append it to the tree:
 var newPerson = Ext.create(&#39;Person&#39;, { name: &#39;Nige&#39;, leaf: true });
 store.getNodeById(2).appendChild(newPerson);
 </code></pre><p>Since the proxy is defined directly on the Model, the Model&#39;s [[ext:Ext.data.Model#save
 save()]] method can be used to persist the data:</p>
 <pre><code>newPerson.save();
-</code></pre><h4 id="components-_-trees_-_updating-an-existing-node">Updating an Existing Node</h4>
+</code></pre><h4 id="components-_-trees_-_updating_an_existing_node">Updating an Existing Node</h4>
 <pre><code>store.getNodeById(1).set(&#39;name&#39;, &#39;Philip&#39;);
-</code></pre><h4 id="components-_-trees_-_removing-a-node">Removing a Node</h4>
+</code></pre><h4 id="components-_-trees_-_removing_a_node">Removing a Node</h4>
 <pre><code>store.getRootNode().lastChild.remove();
-</code></pre><h4 id="components-_-trees_-_bulk-operations">Bulk Operations</h4>
+</code></pre><h4 id="components-_-trees_-_bulk_operations">Bulk Operations</h4>
 <p>After creating, updating, and removing several nodes, they can all be persisted in one
 operation by calling the TreeStore&#39;s [[ext:Ext.data.TreeStore#sync sync()]] method:</p>
 <pre><code>store.sync();
 </code></pre></div>
 
     <div class="toc">
-        <div class="toc-item"><a href="#components-_-trees_-_the-node-interface">The Node Interface</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_visually-changing-your-tree">Visually changing your tree</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_multiple-columns">Multiple columns</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_adding-nodes-to-the-tree">Adding nodes to the tree</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_loading-and-saving-tree-data-using-a-proxy">Loading and Saving Tree Data using a Proxy</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_nodeinterface-fields">NodeInterface Fields</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_nodeinterface-fields-are-reserved-names">NodeInterface Fields are Reserved Names</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_persistent-fields-vs-non-persistent-fields-and-overriding-the-persistence-of-fields">Persistent Fields vs Non-persistent Fields and Overriding the Persistence of Fields</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_loading-data">Loading Data</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_loading-the-entire-tree">Loading the Entire Tree</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_dynamically-loading-children-when-a-node-is-expanded">Dynamically Loading Children When a Node is Expanded</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_saving-data">Saving Data</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_creating-a-new-node">Creating a New Node</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_updating-an-existing-node">Updating an Existing Node</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_removing-a-node">Removing a Node</a></div>
-        <div class="toc-item"><a href="#components-_-trees_-_bulk-operations">Bulk Operations</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_the_node_interface">The Node Interface</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_visually_changing_your_tree">Visually changing your tree</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_multiple_columns">Multiple columns</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_adding_nodes_to_the_tree">Adding nodes to the tree</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_loading_and_saving_tree_data_using_a_proxy">Loading and Saving Tree Data using a Proxy</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_nodeinterface_fields">NodeInterface Fields</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_nodeinterface_fields_are_reserved_names">NodeInterface Fields are Reserved Names</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_persistent_fields_vs_non_persistent_fields_and_overriding_the_persistence_of_fields">Persistent Fields vs Non-persistent Fields and Overriding the Persistence of Fields</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_loading_data">Loading Data</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_loading_the_entire_tree">Loading the Entire Tree</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_dynamically_loading_children_when_a_node_is_expanded">Dynamically Loading Children When a Node is Expanded</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_saving_data">Saving Data</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_creating_a_new_node">Creating a New Node</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_updating_an_existing_node">Updating an Existing Node</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_removing_a_node">Removing a Node</a></div>
+        <div class="toc-item"><a href="#components-_-trees_-_bulk_operations">Bulk Operations</a></div>
     </div>
 </body>
 </html>

@@ -29,7 +29,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             iconCls: 'x-fa fa-star'
         }, {
             xtype: 'component',
-            bind: '{classFile.name}'
+            bind: '{classFile.name}',
+            cls: 'da-class-name'
         }, {
             xtype: 'component',
             //bind: '{daAlias}'
@@ -93,10 +94,10 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         }, {
             fieldLabel: 'Removed'
         }]
-    }, {
+    /*}, {
         xtype: 'toolbar',
         dock: 'left',
-        style: 'background-color: #1E97CC;',
+        style: 'background-color: #4a4a4a;',
         layout: {
             type: 'vbox',
             align: 'stretchmax'
@@ -128,10 +129,38 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             }, {
                 text: 'Events'
             }]
-        }]
+        }]*/
     }],
 
     items: [{
+        xtype: 'toolbar',
+        //dock: 'left',
+        style: 'background-color: #4a4a4a;',
+        layout: {
+            type: 'hbox',
+            align: 'stretchmax'
+        },
+        items: [{
+            text: 'View as Tabs',
+            width: 114,
+            asTabs: true,
+            handler: function () {
+                var me = this,
+                    tabs = me.asTabs;
+
+                me.setText(tabs ? 'View Combined' : 'View as Tabs');
+                me.asTabs = !me.asTabs;
+            }
+        }, {
+            text: 'Configs'
+        }, {
+            text: 'Properties'
+        }, {
+            text: 'Methods'
+        }, {
+            text: 'Events'
+        }]
+    }, {
         xtype: 'container',
         //height: 1000,
         layout: {
@@ -141,6 +170,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         items: [{
             xtype: 'container',
             flex: 1,
+            padding: '0 20 20 20',
             bind: {
                 data: '{classFile}'
             },
@@ -162,7 +192,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 '</tpl>',
                 {
                     getRequires: function (values) {
-                        return values.requires.replace(',', '<br>');
+                        return values.requires.replace(/,/g, '<br>');
                     }
                 }
             )
@@ -175,6 +205,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         hidden: true
     }, {
         xtype: 'main-member-dataview',
+        reference: 'memberCfg',
         bind: '{configs}'
     }, {
         xtype: 'component',
@@ -184,6 +215,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         hidden: true
     }, {
         xtype: 'main-member-dataview',
+        reference: 'memberProperty',
         bind: '{properties}',
         itemTpl: new Ext.XTemplate(
             '<h3 class="{$type}">{name} : {type}',
@@ -207,6 +239,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         hidden: true
     }, {
         xtype: 'main-member-dataview',
+        reference: 'memberMethod',
         bind: '{methods}'
     }, {
         xtype: 'component',
@@ -216,7 +249,28 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         hidden: true
     }, {
         xtype: 'main-member-dataview',
+        reference: 'memberEvent',
         bind: '{events}'
+    }, {
+        xtype: 'component',
+        style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        reference: 'cssVarHeader',
+        html: 'Theme Vars',
+        hidden: true
+    }, {
+        xtype: 'main-member-dataview',
+        reference: 'memberCss_var',
+        bind: '{themevars}'
+    }, {
+        xtype: 'component',
+        style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        reference: 'cssMixinHeader',
+        html: 'Theme Mixins',
+        hidden: true
+    }, {
+        xtype: 'main-member-dataview',
+        reference: 'memberCss_mixin',
+        bind: '{thememixins}'
     }],
 
     updateClassName : function(name) {

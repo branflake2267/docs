@@ -51,8 +51,11 @@ Ext.define('DocsApp.view.mainApp.Container', {
             xtype: 'mainapp-nav-container',
             reference: 'mainapp-leftnav',
             region: 'west',
+            title: 'Navigation Panel',
+            header: false,
             split: true,
-            width: 320
+            width: 320,
+            collapsible: true
         }, {
             xtype: 'tabpanel',
             reference: 'mainapp-tabpanel',
@@ -61,6 +64,9 @@ Ext.define('DocsApp.view.mainApp.Container', {
                 closable: true
             },
             items: [{
+                iconCls: 'x-fa fa-star',
+                closable: false
+            }, {
                 xtype: 'mainapp-doc-view',
                 className: 'Ext.panel.Panel'
             }],

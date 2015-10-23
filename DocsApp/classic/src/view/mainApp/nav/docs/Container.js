@@ -75,7 +75,11 @@ Ext.define('DocsApp.view.mainApp.nav.docs.Container', {
             rootVisible: false,
             bind: '{inheritance}'
         }, {
-            title: 'Favorites'
+            xtype: 'mainapp-favorites-combined',
+            title: 'Favorites',
+            iconCls: null,
+            features: null,
+            bind: '{favoritedocs}'
         }],
 
         bbar: ['->', {

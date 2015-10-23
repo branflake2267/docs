@@ -36,5 +36,21 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         var empty = store.getCount() === 0;
 
         this.getView().lookupReference(type + 'Header').setVisible(!empty);
+    },
+
+    addFavorite: function (btn) {
+        var view = this.getView(),
+            className = view.getClassName(),
+            store = view.up('mainapp-container').lookupReference('favoritesCombined').getStore(),
+            rec = store.getById(className);
+
+        if (!rec) {
+            store.add({
+                name: className,
+                id: className,
+                hash: '!/api/' + className,
+                type: 'API docs'
+            });
+        }
     }
 });

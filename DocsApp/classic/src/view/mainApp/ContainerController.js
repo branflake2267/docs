@@ -171,5 +171,12 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
         if (route) {
             this.redirectTo(route);
         }
+    },
+
+    onFavoriteClick: function (view, rec, el, i, e) {
+        if (e.getTarget('.x-grid-cell-inner-action-col')) {
+            return;
+        }
+        this.redirectTo(rec.get('hash'));
     }
 });

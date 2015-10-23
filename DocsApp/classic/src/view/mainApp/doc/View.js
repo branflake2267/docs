@@ -25,8 +25,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         xtype: 'toolbar',
         dock: 'top',
         items: [{
-            xtype: 'button',
-            iconCls: 'x-fa fa-star'
+            iconCls: 'x-fa fa-star',
+            handler: 'addFavorite'
         }, {
             xtype: 'component',
             bind: '{classFile.name}',

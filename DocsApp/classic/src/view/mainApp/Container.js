@@ -13,8 +13,11 @@ Ext.define('DocsApp.view.mainApp.Container', {
         'DocsApp.view.mainApp.productVersion.ProductsMenu',
         'DocsApp.view.mainApp.guide.View',
         'DocsApp.view.mainApp.doc.View',
-        'DocsApp.view.mainApp.ContainerController'
+        'DocsApp.view.mainApp.ContainerController',
+        'DocsApp.view.mainApp.favorites.Combined'
     ],
+
+    viewModel: 'mainapp-container-model',
 
     activeItem: 1,
     controller: 'docsapp-mainapp-container',
@@ -64,7 +67,8 @@ Ext.define('DocsApp.view.mainApp.Container', {
                 closable: true
             },
             items: [{
-                iconCls: 'x-fa fa-star',
+                xtype: 'mainapp-favorites-combined',
+                reference: 'favoritesCombined',
                 closable: false
             }, {
                 xtype: 'mainapp-doc-view',

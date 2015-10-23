@@ -89,6 +89,10 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
             }]
         }
     }, {
-        title: 'Favorites'
+        xtype: 'mainapp-favorites-combined',
+        title: 'Favorites',
+        iconCls: null,
+        features: null,
+        bind: '{favoriteguides}'
     }]
 });

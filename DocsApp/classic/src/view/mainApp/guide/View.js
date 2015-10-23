@@ -2,6 +2,8 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
     extend: 'Ext.panel.Panel',
     xtype : 'mainapp-guide-view',
 
+    controller: 'main-guide-controller',
+
     config: {
         guideId: null,
         route  : null
@@ -11,6 +13,11 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
     iconCls   : 'x-fa fa-book',
     padding   : '2 20 20 20',
     scrollable: true,
+
+    lbar: [{
+        iconCls: 'x-fa fa-star',
+        handler: 'addFavorite'
+    }],
 
     destroy: function () {
         this.tocDock = null;

@@ -48,5 +48,12 @@ Ext.define('DocsApp.view.mainApp.nav.guides.ContainerController', {
         } else {
             store.on('load', Ext.Function.bind(this.onGuide, this, [guide, heading], false), this, {single: true});
         }
+    },
+
+    onFavoriteClick: function (view, rec, el, i, e) {
+        if (e.getTarget('.x-grid-cell-inner-action-col')) {
+            return;
+        }
+        this.redirectTo(rec.get('hash'));
     }
 });

@@ -52,5 +52,23 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
                 type: 'API docs'
             });
         }
+    },
+
+    onMemberClick: function (view, rec, el, i, e) {
+        var expander = e.getTarget('.da-expander-toggle');
+
+        if (expander) {
+            Ext.fly(el).toggleCls('da-member-expanded');
+            Ext.fly(expander).toggleCls('fa-compress');
+        }
+    },
+
+    toggleMemberCollapse: function (button, pressed) {
+        var items = this.getView().getEl().select('.da-member-item');
+
+        items[pressed ? 'addCls' : 'removeCls']('da-member-expanded');
+
+        button.setText(pressed ? 'Collapse All' : 'Expand All');
+        button.setIconCls(pressed ? 'x-fa fa-compress' : 'x-fa fa-expand');
     }
 });

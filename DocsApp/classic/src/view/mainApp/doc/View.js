@@ -66,10 +66,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             text: 'Expand All',
             iconCls: 'x-fa fa-expand',
             width: 110,
-            toggleHandler: function (button, pressed) {
-                button.setText(pressed ? 'Collapse All' : 'Expand All');
-                button.setIconCls(pressed ? 'x-fa fa-compress' : 'x-fa fa-expand');
-            }
+            toggleHandler: 'toggleMemberCollapse'
         }]
     }, {
         xtype: 'toolbar',
@@ -197,6 +194,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             )
         }]
+
+        // CONFIGS
     }, {
         xtype: 'component',
         style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
@@ -207,6 +206,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         xtype: 'main-member-dataview',
         reference: 'memberCfg',
         bind: '{configs}'
+
+        // PROPERTIES
     }, {
         xtype: 'component',
         style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
@@ -217,7 +218,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         xtype: 'main-member-dataview',
         reference: 'memberProperty',
         bind: '{properties}',
-        itemTpl: new Ext.XTemplate(
+        /*itemTpl: new Ext.XTemplate(
             '<h3 class="{$type}">{name} : {type}',
 
             '<tpl if="readonly"><span class="readonly">READONLY</span></tpl>',
@@ -230,7 +231,9 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             '</tpl></h3>',
 
             '<tpl if="text"><p>{text}</p></tpl>'
-        )
+        )*/
+
+        // METHODS
     }, {
         xtype: 'component',
         style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
@@ -241,6 +244,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         xtype: 'main-member-dataview',
         reference: 'memberMethod',
         bind: '{methods}'
+
+        // EVENTS
     }, {
         xtype: 'component',
         style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
@@ -251,6 +256,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         xtype: 'main-member-dataview',
         reference: 'memberEvent',
         bind: '{events}'
+
+        // VARS
     }, {
         xtype: 'component',
         style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
@@ -261,6 +268,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         xtype: 'main-member-dataview',
         reference: 'memberCss_var',
         bind: '{themevars}'
+
+        // MIXINS
     }, {
         xtype: 'component',
         style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',

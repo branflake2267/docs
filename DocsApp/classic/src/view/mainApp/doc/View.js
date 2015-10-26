@@ -217,7 +217,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }, {
         xtype: 'main-member-dataview',
         reference: 'memberProperty',
-        bind: '{properties}',
+        bind: '{properties}'
         /*itemTpl: new Ext.XTemplate(
             '<h3 class="{$type}">{name} : {type}',
 

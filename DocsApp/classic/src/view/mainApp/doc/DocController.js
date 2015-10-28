@@ -70,5 +70,34 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
 
         button.setText(pressed ? 'Collapse All' : 'Expand All');
         button.setIconCls(pressed ? 'x-fa fa-compress' : 'x-fa fa-expand');
+    },
+
+    onMemberViewRefresh: function (dataview) {
+        var store = dataview.getStore(),
+            count, vm, ref;
+
+        if (store.type === 'chained') {
+            count = store.getCount();
+            vm = this.getViewModel();
+            ref = dataview.reference;
+
+            if (!dataview.hasLoaded) {
+                dataview.hasLoaded = true;
+                vm.set(ref, count === 0);
+            }
+            vm.set(ref + 'Count', count);
+        }
+    },
+
+    onFilterChange: function (field, val) {
+
+    },
+
+    onMemberNavBtnClick: function (btn) {
+        var targetEl = this.lookupReference(btn.target).getEl(),
+            scroller = this.getView().getScrollable();
+
+        scroller.scrollTo(0, -1);
+        targetEl.scrollIntoView(scroller.getElement(), false, true, true);
     }
 });

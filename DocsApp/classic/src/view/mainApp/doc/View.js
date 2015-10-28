@@ -3,7 +3,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     xtype: 'mainapp-doc-view',
 
     requires: [
-        'DocsApp.view.mainApp.doc.MemberDataview'
+        'DocsApp.view.mainApp.doc.MemberDataview',
+        'DocsApp.view.button.BadgeButton'
     ],
 
     config: {
@@ -23,21 +24,21 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
 
     dockedItems: [{
         xtype: 'toolbar',
-        dock: 'top',
+        dock : 'top',
         items: [{
             iconCls: 'x-fa fa-star',
             handler: 'addFavorite'
         }, {
             xtype: 'component',
-            bind: '{classFile.name}',
-            cls: 'da-class-name'
+            bind : '{classFile.name}',
+            cls  : 'da-class-name'
         }, {
             xtype: 'component',
             //bind: '{daAlias}'
-            bind: {
+            bind : {
                 data: '{classFile}'
             },
-            tpl: new Ext.XTemplate('{[this.aliasOut(values)]}', {
+            tpl  : new Ext.XTemplate('{[this.aliasOut(values)]}', {
                 aliasOut: function (values) {
                     var alias = values.alias,
                         isWidget;
@@ -51,22 +52,81 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             })
         }, '->', {
-            xtype: 'textfield',
+            xtype    : 'textfield',
             emptyText: 'filter members...',
-            triggers: {
+            triggers : {
                 clear: {
-                    cls: 'x-form-clear-trigger',
+                    cls    : 'x-form-clear-trigger',
                     handler: function () {
                         this.reset();
                     }
                 }
+            },
+            listeners: {
+                change: 'onFilterChange'
             }
         }, {
-            enableToggle: true,
-            text: 'Expand All',
-            iconCls: 'x-fa fa-expand',
-            width: 110,
+            enableToggle : true,
+            text         : 'Expand All',
+            iconCls      : 'x-fa fa-expand',
+            width        : 110,
             toggleHandler: 'toggleMemberCollapse'
+        }]
+    }, {
+        xtype: 'toolbar',
+        dock: 'top',
+        style: 'background-color: #4a4a4a;',
+        layout: {
+            type: 'hbox',
+            align: 'stretchmax'
+        },
+        defaults: {
+            xtype: 'badgebutton',
+            margin: 10,
+            handler: 'onMemberNavBtnClick'
+        },
+        items: [{
+            text: 'Configs',
+            target: 'configsHeader',
+            bind: {
+                hidden: '{memberCfg}',
+                badge: '{memberCfgCount}'
+            }
+        }, {
+            text: 'Properties',
+            target: 'propertiesHeader',
+            bind: {
+                hidden: '{memberProperty}',
+                badge: '{memberPropertyCount}'
+            }
+        }, {
+            text: 'Methods',
+            target: 'methodsHeader',
+            bind: {
+                hidden: '{memberMethod}',
+                badge: '{memberMethodCount}'
+            }
+        }, {
+            text: 'Events',
+            target: 'eventsHeader',
+            bind: {
+                hidden: '{memberEvent}',
+                badge: '{memberEventCount}'
+            }
+        }, {
+            text: 'CSS Vars',
+            target: 'cssVarHeader',
+            bind: {
+                hidden: '{memberCss_var}',
+                badge: '{memberCss_varCount}'
+            }
+        }, {
+            text: 'CSS Mixins',
+            target: 'cssMixinHeader',
+            bind: {
+                hidden: '{memberCss_mixin}',
+                badge: '{memberCss_mixinCount}'
+            }
         }]
     }, {
         xtype: 'toolbar',
@@ -130,34 +190,6 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }],
 
     items: [{
-        xtype: 'toolbar',
-        //dock: 'left',
-        style: 'background-color: #4a4a4a;',
-        layout: {
-            type: 'hbox',
-            align: 'stretchmax'
-        },
-        items: [{
-            text: 'View as Tabs',
-            width: 114,
-            asTabs: true,
-            handler: function () {
-                var me = this,
-                    tabs = me.asTabs;
-
-                me.setText(tabs ? 'View Combined' : 'View as Tabs');
-                me.asTabs = !me.asTabs;
-            }
-        }, {
-            text: 'Configs'
-        }, {
-            text: 'Properties'
-        }, {
-            text: 'Methods'
-        }, {
-            text: 'Events'
-        }]
-    }, {
         xtype: 'container',
         //height: 1000,
         layout: {
@@ -205,7 +237,10 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }, {
         xtype: 'main-member-dataview',
         reference: 'memberCfg',
-        bind: '{configs}'
+        bind: '{configs}',
+        listeners: {
+            refresh: 'onMemberViewRefresh'
+        }
 
         // PROPERTIES
     }, {
@@ -217,21 +252,10 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }, {
         xtype: 'main-member-dataview',
         reference: 'memberProperty',
-        bind: '{properties}'
-        /*itemTpl: new Ext.XTemplate(
-            '<h3 class="{$type}">{name} : {type}',
-
-            '<tpl if="readonly"><span class="readonly">READONLY</span></tpl>',
-                '<tpl if="access">',
-                    "<tpl if='access == \"private\"'>" ,
-                        '<span class="private">PRIVATE</span>' ,
-                    "<tpl elseif='access == \"protected\"'>",
-                        '<span class="protected">PROTECTED</span>' ,
-                '</tpl>',
-            '</tpl></h3>',
-
-            '<tpl if="text"><p>{text}</p></tpl>'
-        )*/
+        bind: '{properties}',
+        listeners: {
+            refresh: 'onMemberViewRefresh'
+        }
 
         // METHODS
     }, {
@@ -243,7 +267,10 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }, {
         xtype: 'main-member-dataview',
         reference: 'memberMethod',
-        bind: '{methods}'
+        bind: '{methods}',
+        listeners: {
+            refresh: 'onMemberViewRefresh'
+        }
 
         // EVENTS
     }, {
@@ -255,7 +282,10 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }, {
         xtype: 'main-member-dataview',
         reference: 'memberEvent',
-        bind: '{events}'
+        bind: '{events}',
+        listeners: {
+            refresh: 'onMemberViewRefresh'
+        }
 
         // VARS
     }, {
@@ -267,7 +297,10 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }, {
         xtype: 'main-member-dataview',
         reference: 'memberCss_var',
-        bind: '{themevars}'
+        bind: '{themevars}',
+        listeners: {
+            refresh: 'onMemberViewRefresh'
+        }
 
         // MIXINS
     }, {
@@ -279,7 +312,10 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }, {
         xtype: 'main-member-dataview',
         reference: 'memberCss_mixin',
-        bind: '{thememixins}'
+        bind: '{thememixins}',
+        listeners: {
+            refresh: 'onMemberViewRefresh'
+        }
     }],
 
     updateClassName : function(name) {

@@ -39,24 +39,48 @@
         <div id="tree"></div>
         <div id="rightMembers">
             <div id="toolbar">
-                <div class="toolbarButton">
-                    <a href="#configs">configs</a>
-                </div>
-                <div class="toolbarButton">
-                    <a href="#properties">properties</a>
-                </div>
-                <div class="toolbarButton">
-                    <a href="#methods">methods</a>
-                </div>
-                <div class="toolbarButton">
-                    <a href="#static-methods">static methods</a>
-                </div>
-                <div class="toolbarButton">
-                    <a href="#events">events</a>
-                </div>
-                <div class="toolbarButton">
-                    <a href="#mixins">mixins</a>
-                </div>
+                {{#members}}
+                    {{#is $type "configs"}}
+                        <div class="toolbarButton">
+                            <a href="#configs">configs</a>
+                        </div>
+                    {{/is}}
+                    {{#is $type "properties"}}
+                        <div class="toolbarButton">
+                            <a href="#properties">properties</a>
+                        </div>
+                    {{/is}}
+                    {{#is $type "static-properties"}}
+                            <div class="toolbarButton">
+                                <a href="#static-properties">static-properties</a>
+                            </div>
+                    {{/is}}
+                    {{#is $type "methods"}}
+                        <div class="toolbarButton">
+                            <a href="#methods">methods</a>
+                        </div>
+                    {{/is}}
+                    {{#is $type "static-methods"}}
+                        <div class="toolbarButton">
+                            <a href="#static-methods">static methods</a>
+                        </div>
+                    {{/is}}
+                    {{#is $type "events"}}
+                        <div class="toolbarButton">
+                            <a href="#events">events</a>
+                        </div>
+                    {{/is}}
+                    {{#is $type "mixins"}}
+                        <div class="toolbarButton">
+                            <a href="#mixins">mixins</a>
+                        </div>
+                    {{/is}}
+                    {{#is $type "vars"}}
+                        <div class="toolbarButton">
+                            <a href="#vars">vars</a>
+                        </div>
+                    {{/is}}
+                {{/members}}
                 <div id="showlist" class="dropdown-check-list">
                     <span class="anchor">Show</span>
                     <ul id="checkeditems" class="items">
@@ -76,9 +100,9 @@
             <div class="classText"><h2>Summary</h2>{{{classText}}}</div>
             <a href="#" id="back-to-top" style="display: none;">Back to Top </a>
             <div class="members">
-                <a name="{{{$type}}}"></a>
                 {{#members}}
                     <h2 id="{{{$type}}}" class="type">{{{$type}}}</h2>
+                    <a name="{{{$type}}}"></a>
                     {{#items}}
                         <div class="classmembers" data-member-name="{{{name}}}"{{#access}} access="{{{.}}}"{{/access}}{{#accessor}} accessor{{/accessor}}{{#inheritdoc}} inherited{{/inheritdoc}}>
                             <a name="{{{name}}}"></a>

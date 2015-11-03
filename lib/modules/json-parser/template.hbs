@@ -81,18 +81,6 @@
                         </div>
                     {{/is}}
                 {{/members}}
-                <div id="showlist" class="dropdown-check-list">
-                    <span class="anchor">Show</span>
-                    <ul id="checkeditems" class="items">
-                        <li><input type="checkbox" checked/>Public</li>
-                        <li><input type="checkbox" />Protected</li>
-                        <li><input type="checkbox" />Private</li>
-                        <li><input type="checkbox" />Inherited </li>
-                        <li><input type="checkbox" />Accessor </li>
-                        <li><input type="checkbox" />Deprecated</li>
-                        <li><input type="checkbox" />Removed</li>
-                    </ul>
-                </div>
                 <div class="memberFilter">
                     <input placeholder="Filter Members" type="search" id="box" name="box">
                 </div>
@@ -104,10 +92,10 @@
                     <h2 id="{{{$type}}}" class="type">{{{$type}}}</h2>
                     <a name="{{{$type}}}"></a>
                     {{#items}}
-                        <div class="classmembers" data-member-name="{{{name}}}"{{#access}} access="{{{.}}}"{{/access}}{{#accessor}} accessor{{/accessor}}{{#inheritdoc}} inherited{{/inheritdoc}}>
+                        <div class="classmembers" data-member-name="{{{name}}}"{{#access}} data-access-level="{{{.}}}"{{/access}}{{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
                             <a name="{{{name}}}"></a>
                             <h2>
-                                <a href="#{{{name}}}" class="member-name">{{{name}}}</a>
+                                <a href="#{{{$type}}}-{{{name}}}" class="member-name">{{{name}}}</a>
                                 {{#type}}
                                     <span class='memberType'>{{{.}}}</span>
                                 {{/type}}

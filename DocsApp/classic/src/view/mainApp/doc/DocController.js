@@ -89,11 +89,42 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
                 vm.set(ref, count === 0);
             }
             vm.set(ref + 'Count', count);
+
+            dataview.previousSibling().setHidden(!count);
         }
     },
 
     onFilterChange: function (field, val) {
+        var memberViews = this.getView().query('main-member-dataview'),
+            len = memberViews.length,
+            i = 0,
+            view, store, target, rawText, nodes, nodesLen, j;
 
+        this.getViewModel().getStore('allMembers').addFilter([{
+            property: 'name',
+            value: val,
+            anyMatch: true
+        }]);
+
+        for (; i < len; i++) {
+            view = memberViews[i];
+            nodes = view.getNodes();
+            nodesLen = nodes.length;
+            j = 0;
+
+            for (; j < nodesLen; j++) {
+                target = Ext.get(nodes[j]).down('.da-member-name');
+                rawText = target.getHtml();
+
+                if (val.length) {
+                    target.setHtml(rawText.replace(new RegExp(val, 'i'), '<span class="da-member-name-highlighted">' + val + '</span>'));
+                } else {
+                    target.setHtml(Ext.util.Format.stripTags(rawText));
+                }
+            }
+        }
+
+        this.lookupReference('classDescription').setHidden(val.length);
     },
 
     onMemberNavBtnClick: function (btn) {
@@ -101,7 +132,8 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
             scroller = this.getView().getScrollable();
 
         scroller.scrollTo(0, -1);
-        targetEl.scrollIntoView(scroller.getElement(), false, true, true);
+        this.lookupReference('memberListMenu').hide();
+        targetEl.scrollIntoView(scroller.getElement(), false, false, true);
     },
 
     onMemberMenuOver: function (btn) {
@@ -153,7 +185,9 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
     },
 
     onMemberListItemClick: function (view, rec) {
+        var type = rec.get('$type');
+        type = (type === 'config') ? 'cfg' : type;
         this.lookupReference('memberListMenu').hide();
-        this.redirectTo('#!/api/' + this.getView().getClassName() + '-' + rec.get('$type') + '-' + rec.get('name'), true);
+        this.redirectTo('#!/api/' + this.getView().getClassName() + '-' + type + '-' + rec.get('name'), true);
     }
 });

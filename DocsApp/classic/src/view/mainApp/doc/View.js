@@ -147,7 +147,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             },
             listeners: {
-                change: 'onFilterChange'
+                change: 'onFilterChange',
+                buffer: 100
             }
         }, '-', {
             fieldLabel: 'Public'
@@ -167,13 +168,16 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }],
 
     items: [{
+        // floating, reusable ct for the list of members that shows below the member type button on hover
         xtype: 'memberlistmenu',
         reference: 'memberListMenu',
         listeners: {
             afterrender: 'onMemberListMenuRender'
         }
     }, {
+        // the class description and hierarchy view (class metadata)
         xtype: 'container',
+        reference: 'classDescription',
         //height: 1000,
         layout: {
             type: 'hbox',

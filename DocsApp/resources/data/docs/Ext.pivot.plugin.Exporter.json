@@ -10,101 +10,119 @@
         "$type": "class",
         "alias": "plugin.pivotexporter,plugin.mzexcelexport",
         "alternateClassNames": "Mz.pivot.plugin.ExcelExport",
-        "extended": "Ext.AbstractPlugin",
         "extends": "Ext.AbstractPlugin",
         "name": "Ext.pivot.plugin.Exporter",
         "requires": "Ext.exporter.Excel",
-        "text": "This plugin allows pivot grid data export using various exporters. Each exporter should extend\nthe {@link Ext.exporter.Base} class.\n\nTwo new methods are created on the pivot grid by this plugin:\n\n - saveDocumentAs(config): saves the document\n - getDocumentData(config): returns the document content\n\nExample usage:\n\n     {\n         xtype: 'pivot',\n         plugins: [{\n             ptype: 'pivotexporter'\n         }]\n     }\n\n     pivot.saveDocumentAs({\n         type: 'excel',\n         title: 'My export',\n         fileName: 'myExport.xml'\n     });\n",
+        "text": "This plugin allows pivot grid data export using various exporters. Each exporter should extend\nthe <a href='#!/api/Ext.exporter.Base'>Ext.exporter.Base</a> class.\n\nTwo new methods are created on the pivot grid by this plugin:\n\n - saveDocumentAs(config): saves the document\n - getDocumentData(config): returns the document content\n\nExample usage:\n\n     {\n         xtype: 'pivot',\n         plugins: [{\n             ptype: 'pivotexporter'\n         }]\n     }\n\n     pivot.saveDocumentAs({\n         type: 'excel',\n         title: 'My export',\n         fileName: 'myExport.xml'\n     });\n",
         "items": [
           {
             "$type": "methods",
             "items": [
               {
                 "$type": "method",
-                "access": "private",
-                "name": "extractGroups",
-                "text": "Extract data from left axis groups.\n",
+                "name": "saveDocumentAs",
+                "text": "Save the export file. This method is added to the grid panel as \"saveDocumentAs\".\n\nPass in exporter specific configs to the config parameter.\n",
                 "items": [
                   {
                     "$type": "param",
-                    "name": "items",
+                    "name": "config",
+                    "text": "Config object used to initialize the proper exporter\n",
+                    "type": "Ext.exporter.Base",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "type",
+                        "text": "Type of the exporter as defined in the exporter alias. Default is `excel`.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,82,31",
+                          "text": "0,82,36,75",
+                          "type": "0,82,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onlyExpandedNodes",
+                        "optional": true,
+                        "text": "True to export only what is visible in the grid. False to export everything.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,83,33",
+                          "text": "0,83,52,77",
+                          "type": "0,83,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "showSummary",
+                        "optional": true,
+                        "text": "True to export group summaries\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,84,33",
+                          "text": "0,84,46,31",
+                          "type": "0,84,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "title",
+                        "optional": true,
+                        "text": "Title added to the export document\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,85,32",
+                          "text": "0,85,39,35",
+                          "type": "0,85,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "author",
+                        "optional": true,
+                        "text": "Who exported the document?\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,86,32",
+                          "text": "0,86,40,27",
+                          "type": "0,86,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "fileName",
+                        "optional": true,
+                        "text": "Name of the exported file, including the extension\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,87,32",
+                          "text": "0,87,42,51",
+                          "type": "0,87,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "charset",
+                        "optional": true,
+                        "text": "Exported file's charset\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,88,32",
+                          "text": "0,88,41,24",
+                          "type": "0,88,16"
+                        }
+                      }
+                    ],
                     "src": {
-                      "name": "0,272,15"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "columns",
-                    "src": {
-                      "name": "0,273,15"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "type": "Object",
-                    "src": {
-                      "type": "0,275,18"
+                      "name": "0,81,35",
+                      "text": "0,81,42,53",
+                      "type": "0,81,16"
                     }
                   }
                 ],
                 "src": {
-                  "access": "0,277,8",
-                  "name": "0,279,0",
-                  "text": "0,270,8,37"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "getColumnHeaders",
-                "text": "Returns an array of column headers to be used in the export file\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "columns",
-                    "src": {
-                      "name": "0,222,15"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "type": "Array",
-                    "src": {
-                      "type": "0,224,18"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,226,8",
-                  "name": "0,228,0",
-                  "text": "0,220,8,66"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "getDataIndexColumns",
-                "text": "Find all columns that have a dataIndex\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "columns",
-                    "src": {
-                      "name": "0,249,15"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "type": "Array",
-                    "src": {
-                      "type": "0,251,18"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,253,8",
-                  "name": "0,255,0",
-                  "text": "0,247,8,40"
+                  "name": "0,91,0",
+                  "text": "0,77,8,143"
                 }
               },
               {
@@ -246,113 +264,6 @@
               },
               {
                 "$type": "method",
-                "name": "saveDocumentAs",
-                "text": "Save the export file. This method is added to the grid panel as \"saveDocumentAs\".\n\nPass in exporter specific configs to the config parameter.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "config",
-                    "text": "Config object used to initialize the proper exporter\n",
-                    "type": "Ext.exporter.Base",
-                    "items": [
-                      {
-                        "$type": "property",
-                        "name": "type",
-                        "text": "Type of the exporter as defined in the exporter alias. Default is `excel`.\n",
-                        "type": "String",
-                        "src": {
-                          "name": "0,82,31",
-                          "text": "0,82,36,75",
-                          "type": "0,82,16"
-                        }
-                      },
-                      {
-                        "$type": "property",
-                        "name": "onlyExpandedNodes",
-                        "optional": true,
-                        "text": "True to export only what is visible in the grid. False to export everything.\n",
-                        "type": "Boolean",
-                        "src": {
-                          "name": "0,83,33",
-                          "text": "0,83,52,77",
-                          "type": "0,83,16"
-                        }
-                      },
-                      {
-                        "$type": "property",
-                        "name": "showSummary",
-                        "optional": true,
-                        "text": "True to export group summaries\n",
-                        "type": "Boolean",
-                        "src": {
-                          "name": "0,84,33",
-                          "text": "0,84,46,31",
-                          "type": "0,84,16"
-                        }
-                      },
-                      {
-                        "$type": "property",
-                        "name": "title",
-                        "optional": true,
-                        "text": "Title added to the export document\n",
-                        "type": "String",
-                        "src": {
-                          "name": "0,85,32",
-                          "text": "0,85,39,35",
-                          "type": "0,85,16"
-                        }
-                      },
-                      {
-                        "$type": "property",
-                        "name": "author",
-                        "optional": true,
-                        "text": "Who exported the document?\n",
-                        "type": "String",
-                        "src": {
-                          "name": "0,86,32",
-                          "text": "0,86,40,27",
-                          "type": "0,86,16"
-                        }
-                      },
-                      {
-                        "$type": "property",
-                        "name": "fileName",
-                        "optional": true,
-                        "text": "Name of the exported file, including the extension\n",
-                        "type": "String",
-                        "src": {
-                          "name": "0,87,32",
-                          "text": "0,87,42,51",
-                          "type": "0,87,16"
-                        }
-                      },
-                      {
-                        "$type": "property",
-                        "name": "charset",
-                        "optional": true,
-                        "text": "Exported file's charset\n",
-                        "type": "String",
-                        "src": {
-                          "name": "0,88,32",
-                          "text": "0,88,41,24",
-                          "type": "0,88,16"
-                        }
-                      }
-                    ],
-                    "src": {
-                      "name": "0,81,35",
-                      "text": "0,81,42,53",
-                      "type": "0,81,16"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,91,0",
-                  "text": "0,77,8,143"
-                }
-              },
-              {
-                "$type": "method",
                 "access": "private",
                 "name": "setColumnsExpanded",
                 "text": "If we have to export everything then expand all top axis tree nodes temporarily\n",
@@ -376,6 +287,94 @@
                   "access": "0,201,8",
                   "name": "0,203,0",
                   "text": "0,196,8,81"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getColumnHeaders",
+                "text": "Returns an array of column headers to be used in the export file\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "columns",
+                    "src": {
+                      "name": "0,222,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,224,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,226,8",
+                  "name": "0,228,0",
+                  "text": "0,220,8,66"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getDataIndexColumns",
+                "text": "Find all columns that have a dataIndex\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "columns",
+                    "src": {
+                      "name": "0,249,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,251,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,253,8",
+                  "name": "0,255,0",
+                  "text": "0,247,8,40"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "extractGroups",
+                "text": "Extract data from left axis groups.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "src": {
+                      "name": "0,272,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "columns",
+                    "src": {
+                      "name": "0,273,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,275,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,277,8",
+                  "name": "0,279,0",
+                  "text": "0,270,8,37"
                 }
               }
             ]

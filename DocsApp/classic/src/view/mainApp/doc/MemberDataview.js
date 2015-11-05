@@ -12,7 +12,8 @@ Ext.define('DocsApp.view.mainApp.doc.MemberDataview', {
             '{[this.evalItems(values)]}',
             '</tpl>',
             '<div class="da-member-item">',
-            '<h3 class="da-member da-{$type}">{name} ',
+            '<h3 class="da-member da-{$type}">',
+            '<span class="da-member-name">{name}</span> ',
 
             '<tpl if="items">',
                 '<tpl if="myParams">',

@@ -147,7 +147,7 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
                     scroller.scrollTo(0, -1);
                     Ext.on({
                         idle  : function () {
-                            target.scrollIntoView(scroller.getElement(), false, true, true);
+                            target.scrollIntoView(scroller.getElement(), false, false, true);
                         },
                         single: true
                     });

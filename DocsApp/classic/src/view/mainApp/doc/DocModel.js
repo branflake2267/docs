@@ -20,7 +20,6 @@ Ext.define('DocsApp.view.mainApp.doc.DocModel', {
             type   : 'chained',
             model  : 'ClassMember',
             source : '{allMembers}',
-            //source: '{classFile.classMembers}',
             filters: [{
                 property: '$type',
                 value   : 'config'
@@ -29,7 +28,6 @@ Ext.define('DocsApp.view.mainApp.doc.DocModel', {
         events    : {
             type   : 'chained',
             source : '{allMembers}',
-            //source: '{classFile.classMembers}',
             filters: [{
                 property: '$type',
                 value   : 'event'
@@ -38,7 +36,6 @@ Ext.define('DocsApp.view.mainApp.doc.DocModel', {
         methods   : {
             type   : 'chained',
             source : '{allMembers}',
-            //source: '{classFile.classMembers}',
             filters: [{
                 property: '$type',
                 value   : 'method'
@@ -47,7 +44,6 @@ Ext.define('DocsApp.view.mainApp.doc.DocModel', {
         properties: {
             type   : 'chained',
             source : '{allMembers}',
-            //source: '{classFile.classMembers}',
             filters: [{
                 property: '$type',
                 value   : 'property'

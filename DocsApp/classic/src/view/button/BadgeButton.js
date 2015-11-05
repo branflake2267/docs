@@ -15,6 +15,8 @@ Ext.define('DocsApp.view.button.BadgeButton', {
 
     cls: 'da-badge-button',
 
+    disableOnEmptyBadge: true,
+
     initComponent: function () {
         this.renderTpl += '<span id="{id}-badgeEl" class="da-badgeElCls" data-ref="badgeEl">{badge}</span>';
 
@@ -28,8 +30,14 @@ Ext.define('DocsApp.view.button.BadgeButton', {
     },
 
     updateBadge: function (text) {
-        if (this.rendered) {
-            this.badgeEl.setHtml(text);
+        var me = this;
+
+        if (me.rendered) {
+            me.badgeEl.setHtml(text).setVisible(text);
+        }
+
+        if (me.disableOnEmptyBadge) {
+            me.setDisabled(!text);
         }
     }
 });

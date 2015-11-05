@@ -2,6 +2,9 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.main-doc-controller',
 
+    menuDelay: 200,
+    menuCanClose: true,
+
     initViewModel: function (vm) {
         var me = this;
 
@@ -99,5 +102,58 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
 
         scroller.scrollTo(0, -1);
         targetEl.scrollIntoView(scroller.getElement(), false, true, true);
+    },
+
+    onMemberMenuOver: function (btn) {
+        this.menuCanClose = false;
+    },
+
+    onMemberMenuOut: function (btn) {
+        this.menuCanClose = true;
+    },
+
+    hideMemberMenu: function () {
+        var menu = this.lookupReference('memberListMenu'),
+            view = this.lookupReference('memberListView');
+        menu.setHidden(this.menuCanClose);
+    },
+
+    onMemberMenuButtonRender: function (btn) {
+        var me = this,
+            btnEl = btn.getEl(),
+            btnBorder = btnEl.getBorderWidth('b')
+            doc = me.getView(),
+            docEl = doc.getEl(),
+            delay = me.menuDelay,
+            memberListMenu = me.lookupReference('memberListMenu');
+
+        btnEl.monitorMouseEnter(delay, function () {
+            memberListMenu
+                .setSize(docEl.getWidth(), Ext.getBody().getHeight() - btn.getEl().getBottom() + btnBorder)
+                .showAt(docEl.getLocalX(), btnEl.getBottom() - btn.ownerCt.getEl().getBottom() - btnBorder);
+
+            me.lookupReference('memberListView').setBind({
+                store: '{' + btn.relStore + '}'
+            });
+            me.getViewModel().notify();
+        });
+
+        btn.getEl().monitorMouseLeave(me.menuDelay, me.hideMemberMenu, me);
+    },
+
+    onMemberListMenuRender: function (menu) {
+        var me = this;
+
+        menu.getEl().monitorMouseLeave(me.menuDelay, me.hideMemberMenu, me);
+
+        menu.getEl().on({
+            mouseenter: 'onMemberMenuOver',
+            mouseleave: 'onMemberMenuOut'
+        });
+    },
+
+    onMemberListItemClick: function (view, rec) {
+        this.lookupReference('memberListMenu').hide();
+        this.redirectTo('#!/api/' + this.getView().getClassName() + '-' + rec.get('$type') + '-' + rec.get('name'), true);
     }
 });

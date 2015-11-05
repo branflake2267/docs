@@ -1,4 +1,4 @@
-Ext.define('OVERRIDE.layout.container.Card', {
+Ext.define('DocsApp.overrides.layout.container.Card', {
     override: 'Ext.layout.container.Card',
 
     orientation: 'horizontal', // or 'vertical'

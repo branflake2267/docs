@@ -4,7 +4,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
 
     requires: [
         'DocsApp.view.mainApp.doc.MemberDataview',
-        'DocsApp.view.button.BadgeButton'
+        'DocsApp.view.button.BadgeButton',
+        'DocsApp.view.mainApp.doc.MemberListMenu'
     ],
 
     config: {
@@ -29,104 +30,102 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             iconCls: 'x-fa fa-star',
             handler: 'addFavorite'
         }, {
-            xtype: 'component',
-            bind : '{classFile.name}',
-            cls  : 'da-class-name'
+            xtype: 'container',
+            layout: 'vbox',
+            items: [{
+                xtype: 'component',
+                bind: '{classFile.name}',
+                cls: 'da-class-name'
+            }, {
+                xtype: 'component',
+                margin: '0 0 0 12',
+                //bind: '{daAlias}'
+                bind: {
+                    data: '{classFile}'
+                },
+                tpl: new Ext.XTemplate('{[this.aliasOut(values)]}', {
+                    aliasOut: function (values) {
+                        var alias = values.alias,
+                            isWidget;
+
+                        if (alias) {
+                            isWidget = alias.indexOf('widget.') === 0;
+                            return isWidget ? '<span data-qtip="alias: ' + alias + '">xtype: ' + alias.substr(7) + '</span>' : 'alias: ' + alias;
+                        }
+
+                        return '';
+                    }
+                })
+            }]
         }, {
-            xtype: 'component',
-            //bind: '{daAlias}'
-            bind : {
-                data: '{classFile}'
-            },
-            tpl  : new Ext.XTemplate('{[this.aliasOut(values)]}', {
-                aliasOut: function (values) {
-                    var alias = values.alias,
-                        isWidget;
-
-                    if (alias) {
-                        isWidget = alias.indexOf('widget.') === 0;
-                        return isWidget ? '<span data-qtip="alias: ' + alias + '">xtype: ' + alias.substr(7) + '</span>' : 'alias: ' + alias;
-                    }
-
-                    return '';
-                }
-            })
-        }, '->', {
-            xtype    : 'textfield',
-            emptyText: 'filter members...',
-            triggers : {
-                clear: {
-                    cls    : 'x-form-clear-trigger',
-                    handler: function () {
-                        this.reset();
-                    }
+            xtype: 'container',
+            flex: 1,
+            layout: 'hbox',
+            defaults: {
+                xtype: 'badgebutton',
+                margin: 10,
+                handler: 'onMemberNavBtnClick',
+                listeners: {
+                    afterrender: 'onMemberMenuButtonRender',
+                    mouseover: 'onMemberMenuOver',
+                    mouseout: 'onMemberMenuOut'
                 }
             },
-            listeners: {
-                change: 'onFilterChange'
-            }
+            items: [{
+                text: 'Configs',
+                relStore: 'configs',
+                target: 'configsHeader',
+                bind: {
+                    hidden: '{memberCfg}',
+                    badge: '{memberCfgCount}'
+                }
+            }, {
+                text: 'Properties',
+                relStore: 'properties',
+                target: 'propertiesHeader',
+                bind: {
+                    hidden: '{memberProperty}',
+                    badge: '{memberPropertyCount}'
+                }
+            }, {
+                text: 'Methods',
+                relStore: 'methods',
+                target: 'methodsHeader',
+                bind: {
+                    hidden: '{memberMethod}',
+                    badge: '{memberMethodCount}'
+                }
+            }, {
+                text: 'Events',
+                relStore: 'events',
+                target: 'eventsHeader',
+                bind: {
+                    hidden: '{memberEvent}',
+                    badge: '{memberEventCount}'
+                }
+            }, {
+                text: 'CSS Vars',
+                relStore: 'themevars',
+                target: 'cssVarHeader',
+                bind: {
+                    hidden: '{memberCss_var}',
+                    badge: '{memberCss_varCount}'
+                }
+            }, {
+                text: 'CSS Mixins',
+                relStore: 'thememixins',
+                target: 'cssMixinHeader',
+                bind: {
+                    hidden: '{memberCss_mixin}',
+                    badge: '{memberCss_mixinCount}'
+                }
+            }]
         }, {
             enableToggle : true,
             text         : 'Expand All',
             iconCls      : 'x-fa fa-expand',
             width        : 110,
             toggleHandler: 'toggleMemberCollapse'
-        }]
-    }, {
-        xtype: 'toolbar',
-        dock: 'top',
-        style: 'background-color: #4a4a4a;',
-        layout: {
-            type: 'hbox',
-            align: 'stretchmax'
-        },
-        defaults: {
-            xtype: 'badgebutton',
-            margin: 10,
-            handler: 'onMemberNavBtnClick'
-        },
-        items: [{
-            text: 'Configs',
-            target: 'configsHeader',
-            bind: {
-                hidden: '{memberCfg}',
-                badge: '{memberCfgCount}'
-            }
-        }, {
-            text: 'Properties',
-            target: 'propertiesHeader',
-            bind: {
-                hidden: '{memberProperty}',
-                badge: '{memberPropertyCount}'
-            }
-        }, {
-            text: 'Methods',
-            target: 'methodsHeader',
-            bind: {
-                hidden: '{memberMethod}',
-                badge: '{memberMethodCount}'
-            }
-        }, {
-            text: 'Events',
-            target: 'eventsHeader',
-            bind: {
-                hidden: '{memberEvent}',
-                badge: '{memberEventCount}'
-            }
-        }, {
-            text: 'CSS Vars',
-            target: 'cssVarHeader',
-            bind: {
-                hidden: '{memberCss_var}',
-                badge: '{memberCss_varCount}'
-            }
-        }, {
-            text: 'CSS Mixins',
-            target: 'cssMixinHeader',
-            bind: {
-                hidden: '{memberCss_mixin}',
-                badge: '{memberCss_mixinCount}'
-            }
         }]
     }, {
         xtype: 'toolbar',
@@ -137,6 +136,20 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             xtype: 'checkboxfield'
         },
         items: [{
+            xtype: 'textfield',
+            emptyText: 'filter members...',
+            triggers: {
+                clear: {
+                    cls: 'x-form-clear-trigger',
+                    handler: function () {
+                        this.reset();
+                    }
+                }
+            },
+            listeners: {
+                change: 'onFilterChange'
+            }
+        }, '-', {
             fieldLabel: 'Public'
         }, {
             fieldLabel: 'Protected'
@@ -151,45 +164,15 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         }, {
             fieldLabel: 'Removed'
         }]
-    /*}, {
-        xtype: 'toolbar',
-        dock: 'left',
-        style: 'background-color: #4a4a4a;',
-        layout: {
-            type: 'vbox',
-            align: 'stretchmax'
-        },
-        items: [{
-            text: 'View as Tabs',
-            width: 114,
-            asTabs: true,
-            handler: function () {
-                var me = this,
-                    tabs = me.asTabs;
-
-                me.setText(tabs ? 'View Combined' : 'View as Tabs');
-                me.asTabs = !me.asTabs;
-            }
-        }, {
-            xtype: 'container',
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-            defaultType: 'button',
-            items: [{
-                text: 'Configs'
-            }, {
-                text: 'Properties'
-            }, {
-                text: 'Methods'
-            }, {
-                text: 'Events'
-            }]
-        }]*/
     }],
 
     items: [{
+        xtype: 'memberlistmenu',
+        reference: 'memberListMenu',
+        listeners: {
+            afterrender: 'onMemberListMenuRender'
+        }
+    }, {
         xtype: 'container',
         //height: 1000,
         layout: {

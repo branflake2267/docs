@@ -3,8 +3,6 @@
   "files": [
     "../../../ext/packages/ux/src/event/Driver.js",
     "../../../ext/packages/core/src/mixin/Observable.js",
-    "../../../ext/packages/core/src/class/Base.js",
-    "../../../../docs/docs/js/primitives/Object.js",
     "../../../ext/packages/core/src/mixin/Identifiable.js"
   ],
   "global": {
@@ -12,10 +10,9 @@
     "items": [
       {
         "$type": "class",
-        "extended": "Ext.util.Observable,Ext.mixin.Observable,Ext.Mixin,Ext.Base,Object",
         "extends": "Ext.util.Observable",
         "name": "Ext.ux.event.Driver",
-        "text": "This is the base class for {@link Ext.ux.event.Recorder} and {@link Ext.ux.event.Player}.\n",
+        "text": "This is the base class for <a href='#!/api/Ext.ux.event.Recorder'>Ext.ux.event.Recorder</a> and <a href='#!/api/Ext.ux.event.Player'>Ext.ux.event.Player</a>.\n",
         "items": [
           {
             "$type": "configs",
@@ -23,7 +20,7 @@
               {
                 "$type": "property",
                 "name": "listeners",
-                "text": "\nA config object containing one or more event handlers to be added to this object during initialization. This\nshould be a valid listeners config object as specified in the\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} example for attaching\nmultiple handlers at once.\n\n**DOM events from Ext JS {@link Ext.Component}**\n\nWhile _some_ Ext JS Component classes export selected DOM events (e.g. \"click\", \"mouseover\" etc), this is usually\nonly done when extra value can be added. For example the {@link Ext.view.View}'s **`{@link Ext.view.View#event!itemclick Ext.view.View#itemclick}`** event passing the node clicked on. To access DOM events directly from a\nchild element of a Component, we need to specify the `element` option to identify the Component property to add a\nDOM listener to:\n\n    new Ext.panel.Panel({\n        width: 400,\n        height: 200,\n        dockedItems: [{\n            xtype: 'toolbar'\n        }],\n        listeners: {\n            click: {\n                element: 'el', //bind to the underlying el property on the panel\n                fn: function(){ console.log('click el'); }\n            },\n            dblclick: {\n                element: 'body', //bind to the underlying body property on the panel\n                fn: function(){ console.log('dblclick body'); }\n            }\n        }\n    });\n",
+                "text": "\nA config object containing one or more event handlers to be added to this object during initialization. This\nshould be a valid listeners config object as specified in the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> example for attaching\nmultiple handlers at once.\n\n**DOM events from Ext JS <a href='#!/api/Ext.Component'>Ext.Component</a>**\n\nWhile _some_ Ext JS Component classes export selected DOM events (e.g. \"click\", \"mouseover\" etc), this is usually\nonly done when extra value can be added. For example the <a href='#!/api/Ext.view.View'>Ext.view.View</a>s **<a href='#!/api/Ext.view.View-event-itemclick'>Ext.view.View#itemclick</a>** event passing the node clicked on. To access DOM events directly from a\nchild element of a Component, we need to specify the `element` option to identify the Component property to add a\nDOM listener to:\n\n    new Ext.panel.Panel({\n        width: 400,\n        height: 200,\n        dockedItems: [{\n            xtype: 'toolbar'\n        }],\n        listeners: {\n            click: {\n                element: 'el', //bind to the underlying el property on the panel\n                fn: function(){ console.log('click el'); }\n            },\n            dblclick: {\n                element: 'body', //bind to the underlying body property on the panel\n                fn: function(){ console.log('dblclick body'); }\n            }\n        }\n    });\n",
                 "type": "Object",
                 "src": {
                   "name": "1,243,25",
@@ -115,7 +112,7 @@
               {
                 "$type": "method",
                 "name": "addAfterListener",
-                "text": "Alias for {@link #method!onAfter #onAfter}.\n",
+                "text": "Alias for <a href='#!/api/Ext.ux.event.Driver-method-onAfter'>onAfter</a>.\n",
                 "src": {
                   "name": "1,1236,0",
                   "text": "1,1234,12,28"
@@ -124,7 +121,7 @@
               {
                 "$type": "method",
                 "name": "addBeforeListener",
-                "text": "Alias for {@link #method!onBefore #onBefore}.\n",
+                "text": "Alias for <a href='#!/api/Ext.ux.event.Driver-method-onBefore'>onBefore</a>.\n",
                 "src": {
                   "name": "1,1230,0",
                   "text": "1,1228,12,29"
@@ -132,28 +129,8 @@
               },
               {
                 "$type": "method",
-                "access": "private",
-                "name": "addDeprecations",
-                "text": "This method applies a versioned, deprecation declaration to this class. This\nis typically called by the `deprecated` config.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "deprecations",
-                    "src": {
-                      "name": "2,120,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,118,12",
-                  "name": "2,120,0",
-                  "text": "2,116,12,125"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "addListener",
-                "text": "The {@link #method!on #on} method is shorthand for\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}.\n\nAppends an event handler to this object.  For example:\n\n    myGridPanel.on(\"itemclick\", this.onItemClick, this);\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple events. For example:\n\n    myGridPanel.on({\n        cellclick: this.onCellClick,\n        select: this.onSelect,\n        viewready: this.onViewReady,\n        scope: this // Important. Ensure \"this\" is correct during handler execution\n    });\n\nOne can also specify options for each event handler separately:\n\n    myGridPanel.on({\n        cellclick: {fn: this.onCellClick, scope: this, single: true},\n        viewready: {fn: panel.onViewReady, scope: panel}\n    });\n\n*Names* of methods in a specified scope may also be used:\n\n    myGridPanel.on({\n        cellclick: {fn: 'onCellClick', scope: this, single: true},\n        viewready: {fn: 'onViewReady', scope: panel}\n    });\n",
+                "text": "The <a href='#!/api/Ext.ux.event.Driver-method-on'>on</a> method is shorthand for\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.\n\nAppends an event handler to this object.  For example:\n\n    myGridPanel.on(\"itemclick\", this.onItemClick, this);\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple events. For example:\n\n    myGridPanel.on({\n        cellclick: this.onCellClick,\n        select: this.onSelect,\n        viewready: this.onViewReady,\n        scope: this // Important. Ensure \"this\" is correct during handler execution\n    });\n\nOne can also specify options for each event handler separately:\n\n    myGridPanel.on({\n        cellclick: {fn: this.onCellClick, scope: this, single: true},\n        viewready: {fn: panel.onViewReady, scope: panel}\n    });\n\n*Names* of methods in a specified scope may also be used:\n\n    myGridPanel.on({\n        cellclick: {fn: 'onCellClick', scope: this, single: true},\n        viewready: {fn: 'onViewReady', scope: panel}\n    });\n",
                 "items": [
                   {
                     "$type": "param",
@@ -170,7 +147,7 @@
                     "$type": "param",
                     "name": "fn",
                     "optional": true,
-                    "text": "The method the event invokes or the *name* of\nthe method within the specified `scope`.  Will be called with arguments\ngiven to {@link Ext.util.Observable#method!fireEvent Ext.util.Observable#fireEvent} plus the `options` parameter described\nbelow.\n",
+                    "text": "The method the event invokes or the *name* of\nthe method within the specified `scope`.  Will be called with arguments\ngiven to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> plus the `options` parameter described\nbelow.\n",
                     "type": "Function/String",
                     "src": {
                       "name": "1,838,38",
@@ -233,7 +210,7 @@
                       {
                         "$type": "property",
                         "name": "buffer",
-                        "text": "  Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed\n  by the specified number of milliseconds. If the event fires again within that time,\n  the original handler is _not_ invoked, but the new handler is scheduled in its place.\n",
+                        "text": "  Causes the handler to be scheduled to run in an <a href='#!/api/Ext.util.DelayedTask'>Ext.util.DelayedTask</a> delayed\n  by the specified number of milliseconds. If the event fires again within that time,\n  the original handler is _not_ invoked, but the new handler is scheduled in its place.\n",
                         "type": "Number",
                         "src": {
                           "name": "1,865,36",
@@ -244,7 +221,7 @@
                       {
                         "$type": "property",
                         "name": "onFrame",
-                        "text": "  Causes the handler to be scheduled to run at the next\n  {@link Ext.Function#method!requestAnimationFrame Ext.Function#requestAnimationFrame}. If the\n  event fires again before that time, the handler is not rescheduled - the handler\n  will only be called once when the next animation frame is fired, with the last set\n  of arguments passed.\n",
+                        "text": "  Causes the handler to be scheduled to run at the next\n  <a href='#!/api/Ext.Function-method-requestAnimationFrame'>Ext.Function#requestAnimationFrame</a>. If the\n  event fires again before that time, the handler is not rescheduled - the handler\n  will only be called once when the next animation frame is fired, with the last set\n  of arguments passed.\n",
                         "type": "Number",
                         "src": {
                           "name": "1,870,36",
@@ -266,7 +243,7 @@
                       {
                         "$type": "property",
                         "name": "element",
-                        "text": "  **This option is only valid for listeners bound to {@link Ext.Component}.**\n  The name of a Component property which references an {@link Ext.dom.Element}\n  to add a listener to.\n\n  This option is useful during Component construction to add DOM event listeners to\n  elements of {@link Ext.Component} which will exist only after the\n  Component is rendered.\n\n  For example, to add a click listener to a Panel's body:\n\n      var panel = new Ext.panel.Panel({\n          title: 'The title',\n          listeners: {\n              click: this.handlePanelClick,\n              element: 'body'\n          }\n      });\n\nIn order to remove listeners attached using the element, you'll need to reference\nthe element itself as seen below.\n\n     panel.body.un(...)\n",
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.Component'>Ext.Component</a>.**\n  The name of a Component property which references an <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>\n  to add a listener to.\n\n  This option is useful during Component construction to add DOM event listeners to\n  elements of <a href='#!/api/Ext.Component'>Ext.Component</a> which will exist only after the\n  Component is rendered.\n\n  For example, to add a click listener to a Panel's body:\n\n      var panel = new Ext.panel.Panel({\n          title: 'The title',\n          listeners: {\n              click: this.handlePanelClick,\n              element: 'body'\n          }\n      });\n\nIn order to remove listeners attached using the element, you'll need to reference\nthe element itself as seen below.\n\n     panel.body.un(...)\n",
                         "type": "String",
                         "src": {
                           "name": "1,881,36",
@@ -290,7 +267,7 @@
                         "$type": "property",
                         "name": "stopPropagation",
                         "optional": true,
-                        "text": "  **This option is only valid for listeners bound to {@link Ext.dom.Element}.**\n  `true` to call {@link Ext.event.Event#method!stopPropagation Ext.event.Event#stopPropagation} on the event object\n  before firing the handler.\n",
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopPropagation'>Ext.event.Event#stopPropagation</a> on the event object\n  before firing the handler.\n",
                         "type": "Boolean",
                         "src": {
                           "name": "1,914,38",
@@ -302,7 +279,7 @@
                         "$type": "property",
                         "name": "preventDefault",
                         "optional": true,
-                        "text": "  **This option is only valid for listeners bound to {@link Ext.dom.Element}.**\n  `true` to call {@link Ext.event.Event#method!preventDefault Ext.event.Event#preventDefault} on the event object\n  before firing the handler.\n",
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-preventDefault'>Ext.event.Event#preventDefault</a> on the event object\n  before firing the handler.\n",
                         "type": "Boolean",
                         "src": {
                           "name": "1,919,38",
@@ -314,7 +291,7 @@
                         "$type": "property",
                         "name": "stopEvent",
                         "optional": true,
-                        "text": "  **This option is only valid for listeners bound to {@link Ext.dom.Element}.**\n  `true` to call {@link Ext.event.Event#method!stopEvent Ext.event.Event#stopEvent} on the event object\n  before firing the handler.\n",
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopEvent'>Ext.event.Event#stopEvent</a> on the event object\n  before firing the handler.\n",
                         "type": "Boolean",
                         "src": {
                           "name": "1,924,38",
@@ -326,7 +303,7 @@
                         "$type": "property",
                         "name": "args",
                         "optional": true,
-                        "text": "  Optional arguments to pass to the handler function. Any additional arguments\n  passed to {@link Ext.util.Observable#method!fireEvent Ext.util.Observable#fireEvent} will be appended\n  to these arguments.\n",
+                        "text": "  Optional arguments to pass to the handler function. Any additional arguments\n  passed to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> will be appended\n  to these arguments.\n",
                         "type": "Array",
                         "src": {
                           "name": "1,929,36",
@@ -338,7 +315,7 @@
                         "$type": "property",
                         "name": "destroyable",
                         "optional": true,
-                        "text": "  When specified as `true`, the function returns a `destroyable` object. An object\n  which implements the `{@link #method!destroy destroy}` method which removes all listeners added in this call.\n  This syntax can be a helpful shortcut to using {@link #method!un #un}; particularly when\n  removing multiple listeners.  *NOTE* - not compatible when using the _element_\n  option.  See {@link #method!un #un} for the proper syntax for removing listeners added using the\n  _element_ config.\n",
+                        "text": "  When specified as `true`, the function returns a `destroyable` object. An object\n  which implements the `destroy` method which removes all listeners added in this call.\n  This syntax can be a helpful shortcut to using <a href='#!/api/Ext.ux.event.Driver-method-un'>un</a>; particularly when\n  removing multiple listeners.  *NOTE* - not compatible when using the _element_\n  option.  See <a href='#!/api/Ext.ux.event.Driver-method-un'>un</a> for the proper syntax for removing listeners added using the\n  _element_ config.\n",
                         "type": "Boolean",
                         "value": "false",
                         "src": {
@@ -397,7 +374,7 @@
                   },
                   {
                     "$type": "return",
-                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `{@link #method!destroy destroy}` method which removes\n all listeners added in this call. For example:\n\n    this.btnListeners =  = myButton.on({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes\n all listeners added in this call. For example:\n\n    this.btnListeners =  = myButton.on({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
                     "type": "Object",
                     "src": {
                       "text": "1,1021,29,54:1,1022,12,516",
@@ -413,7 +390,7 @@
               {
                 "$type": "method",
                 "name": "addManagedListener",
-                "text": "The addManagedListener method is used when some object (call it \"A\") is listening\nto an event on another observable object (\"B\") and you want to remove that listener\nfrom \"B\" when \"A\" is destroyed. This is not an issue when \"B\" is destroyed because\nall of its listeners will be removed at that time.\n\nExample:\n\n    Ext.define('Foo', {\n        extend: 'Ext.Component',\n\n        initComponent: function () {\n            this.addManagedListener(MyApp.SomeGlobalSharedMenu, 'show', this.doSomething);\n            this.callParent();\n        }\n    });\n\nAs you can see, when an instance of Foo is destroyed, it ensures that the 'show'\nlistener on the menu (`MyApp.SomeGlobalSharedMenu`) is also removed.\n\nAs of version 5.1 it is no longer necessary to use this method in most cases because\nlisteners are automatically managed if the scope object provided to\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} is an Observable instance.\nHowever, if the observable instance and scope are not the same object you\nstill need to use `{@link #method!mon mon}` or `{@link #method!addManagedListener addManagedListener}` if you want the listener to be\nmanaged.\n",
+                "text": "The addManagedListener method is used when some object (call it \"A\") is listening\nto an event on another observable object (\"B\") and you want to remove that listener\nfrom \"B\" when \"A\" is destroyed. This is not an issue when \"B\" is destroyed because\nall of its listeners will be removed at that time.\n\nExample:\n\n    Ext.define('Foo', {\n        extend: 'Ext.Component',\n\n        initComponent: function () {\n            this.addManagedListener(MyApp.SomeGlobalSharedMenu, 'show', this.doSomething);\n            this.callParent();\n        }\n    });\n\nAs you can see, when an instance of Foo is destroyed, it ensures that the 'show'\nlistener on the menu (`MyApp.SomeGlobalSharedMenu`) is also removed.\n\nAs of version 5.1 it is no longer necessary to use this method in most cases because\nlisteners are automatically managed if the scope object provided to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> is an Observable instance.\nHowever, if the observable instance and scope are not the same object you\nstill need to use <a href='#!/api/Ext.ux.event.Driver-method-mon'>mon</a> or <a href='#!/api/Ext.ux.event.Driver-method-addManagedListener'>addManagedListener</a> if you want the listener to be\nmanaged.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -462,7 +439,7 @@
                   {
                     "$type": "param",
                     "name": "options",
-                    "text": "(optional) If the `ename` parameter was an event name, this is the\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} options.\n",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> options.\n",
                     "type": "Object",
                     "src": {
                       "name": "1,463,27",
@@ -472,7 +449,7 @@
                   },
                   {
                     "$type": "return",
-                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `{@link #method!destroy destroy}` method which removes all listeners added in this call. For example:\n\n    this.btnListeners = myButton.mon({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes all listeners added in this call. For example:\n\n    this.btnListeners = myButton.mon({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
                     "type": "Object",
                     "src": {
                       "text": "1,465,28,54:1,466,11,513",
@@ -483,72 +460,6 @@
                 "src": {
                   "name": "1,484,0",
                   "text": "1,430,11,1093"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "name": "callParent",
-                "text": "Call the \"parent\" method of the current method. That is the method previously\noverridden by derivation or by an override (see {@link Ext#method!define Ext#define}).\n\n     Ext.define('My.Base', {\n         constructor: function (x) {\n             this.x = x;\n         },\n\n         statics: {\n             method: function (x) {\n                 return x;\n             }\n         }\n     });\n\n     Ext.define('My.Derived', {\n         extend: 'My.Base',\n\n         constructor: function () {\n             this.callParent([21]);\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // alerts 21\n\nThis can be used with an override as follows:\n\n     Ext.define('My.DerivedOverride', {\n         override: 'My.Derived',\n\n         constructor: function (x) {\n             this.callParent([x*2]); // calls original My.Derived constructor\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // now alerts 42\n\nThis also works with static and private methods.\n\n     Ext.define('My.Derived2', {\n         extend: 'My.Base',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Base.method\n             }\n         }\n     });\n\n     alert(My.Base.method(10));     // alerts 10\n     alert(My.Derived2.method(10)); // alerts 20\n\nLastly, it also works with overridden static methods.\n\n     Ext.define('My.Derived2Override', {\n         override: 'My.Derived2',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Derived2.method\n             }\n         }\n     });\n\n     alert(My.Derived2.method(10); // now alerts 40\n\nTo override a method and replace it and also call the superclass method, use\n{@link #method!callSuper #method-callSuper}. This is often done to patch a method to fix a bug.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "args",
-                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callParent(arguments)`\n",
-                    "type": "Array/Arguments",
-                    "src": {
-                      "name": "2,1251,37",
-                      "text": "2,1251,42,57:2,1252,12,67",
-                      "type": "2,1251,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "Returns the result of calling the parent method\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,1253,29,48",
-                      "type": "2,1253,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1250,12",
-                  "name": "2,1255,0",
-                  "text": "2,1175,12,1853"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "name": "callSuper",
-                "text": "This method is used by an **override** to call the superclass method but\nbypass any overridden method. This is often done to \"patch\" a method that\ncontains a bug but for whatever reason cannot be fixed directly.\n\nConsider:\n\n     Ext.define('Ext.some.Class', {\n         method: function () {\n             console.log('Good');\n         }\n     });\n\n     Ext.define('Ext.some.DerivedClass', {\n         extend: 'Ext.some.Class',\n\n         method: function () {\n             console.log('Bad');\n\n             // ... logic but with a bug ...\n\n             this.callParent();\n         }\n     });\n\nTo patch the bug in `Ext.some.DerivedClass.method`, the typical solution is to create an\noverride:\n\n     Ext.define('App.patches.DerivedClass', {\n         override: 'Ext.some.DerivedClass',\n\n         method: function () {\n             console.log('Fixed');\n\n             // ... logic but with bug fixed ...\n\n             this.callSuper();\n         }\n     });\n\nThe patch method cannot use {@link #method!callParent #method-callParent} to call the superclass\n`method` since that would call the overridden method containing the bug. In\nother words, the above patch would only produce \"Fixed\" then \"Good\" in the\nconsole log, whereas, using `callParent` would produce \"Fixed\" then \"Bad\"\nthen \"Good\".\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "args",
-                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callSuper(arguments)`\n",
-                    "type": "Array/Arguments",
-                    "src": {
-                      "name": "2,1338,37",
-                      "text": "2,1338,42,57:2,1339,12,66",
-                      "type": "2,1338,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "Returns the result of calling the superclass method\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,1340,29,52",
-                      "type": "2,1340,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1337,12",
-                  "name": "2,1342,0",
-                  "text": "2,1292,12,1266"
                 }
               },
               {
@@ -567,29 +478,6 @@
                 "src": {
                   "name": "1,1291,0",
                   "text": "1,1289,11,47"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "constructor",
-                "text": "Creates new Object.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "value",
-                    "optional": true,
-                    "text": "The value to wrap.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "3,40,21",
-                      "text": "3,40,28,19",
-                      "type": "3,40,12"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,38,12",
-                  "text": "3,39,4,20"
                 }
               },
               {
@@ -636,15 +524,6 @@
               },
               {
                 "$type": "method",
-                "name": "destroy",
-                "text": "This method is called to cleanup an object and its resources. After calling\nthis method, the object should not be used any further.\n",
-                "src": {
-                  "name": "2,1626,0",
-                  "text": "2,1623,12,132"
-                }
-              },
-              {
-                "$type": "method",
                 "access": "private",
                 "name": "doFireEvent",
                 "text": "Continue to fire event.\n",
@@ -686,7 +565,7 @@
               {
                 "$type": "method",
                 "name": "enableBubble",
-                "text": "Enables events fired by this Observable to bubble up an owner hierarchy by calling `this.getBubbleTarget()` if\npresent. There is no implementation in the Observable base class.\n\nThis is commonly used by Ext.Components to bubble events to owner Containers.\nSee {@link Ext.Component#method!getBubbleTarget Ext.Component#getBubbleTarget}. The default implementation in Ext.Component returns the\nComponent's immediate owner. But if a known target is required, this can be overridden to access the\nrequired target more quickly.\n\nExample:\n\n    Ext.define('Ext.overrides.form.field.Base', {\n        override: 'Ext.form.field.Base',\n\n        //  Add functionality to Field's initComponent to enable the change event to bubble\n        initComponent: function () {\n            this.callParent();\n            this.enableBubble('change');\n        }\n    });\n\n    var myForm = Ext.create('Ext.form.Panel', {\n        title: 'User Details',\n        items: [{\n            ...\n        }],\n        listeners: {\n            change: function() {\n                // Title goes red if form has been modified.\n                myForm.header.setStyle('color', 'red');\n            }\n        }\n    });\n",
+                "text": "Enables events fired by this Observable to bubble up an owner hierarchy by calling `this.getBubbleTarget()` if\npresent. There is no implementation in the Observable base class.\n\nThis is commonly used by Ext.Components to bubble events to owner Containers.\nSee <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>. The default implementation in Ext.Component returns the\nComponent's immediate owner. But if a known target is required, this can be overridden to access the\nrequired target more quickly.\n\nExample:\n\n    Ext.define('Ext.overrides.form.field.Base', {\n        override: 'Ext.form.field.Base',\n\n        //  Add functionality to Field's initComponent to enable the change event to bubble\n        initComponent: function () {\n            this.callParent();\n            this.enableBubble('change');\n        }\n    });\n\n    var myForm = Ext.create('Ext.form.Panel', {\n        title: 'User Details',\n        items: [{\n            ...\n        }],\n        listeners: {\n            change: function() {\n                // Title goes red if form has been modified.\n                myForm.header.setStyle('color', 'red');\n            }\n        }\n    });\n",
                 "items": [
                   {
                     "$type": "param",
@@ -707,10 +586,10 @@
               },
               {
                 "$type": "method",
-                "deprecatedMessage": "Use {@link #fireEventAction} instead.\n",
+                "deprecatedMessage": "Use <a href='#!/api/Ext.ux.event.Driver-fireEventAction'>fireEventAction</a> instead.\n",
                 "deprecatedVersion": "5.5",
                 "name": "fireAction",
-                "text": "Fires the specified event with the passed parameters and executes a function (action).\nBy default, the action function will be executed after any \"before\" event handlers\n(as specified using the `order` option of\n`{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}`), but before any other\nhandlers are fired.  This gives the \"before\" handlers an opportunity to\ncancel the event by returning `false`, and prevent the action function from\nbeing called.\n\nThe action can also be configured to run after normal handlers, but before any \"after\"\nhandlers (as specified using the `order` event option) by passing `'after'`\nas the `order` parameter.  This configuration gives any event handlers except\nfor \"after\" handlers the opportunity to cancel the event and prevent the action\nfunction from being called.\n",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nBy default, the action function will be executed after any \"before\" event handlers\n(as specified using the `order` option of\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>), but before any other\nhandlers are fired.  This gives the \"before\" handlers an opportunity to\ncancel the event by returning `false`, and prevent the action function from\nbeing called.\n\nThe action can also be configured to run after normal handlers, but before any \"after\"\nhandlers (as specified using the `order` event option) by passing `'after'`\nas the `order` parameter.  This configuration gives any event handlers except\nfor \"after\" handlers the opportunity to cancel the event and prevent the action\nfunction from being called.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -761,7 +640,7 @@
                     "$type": "param",
                     "name": "options",
                     "optional": true,
-                    "text": "Event options for the action function.  Accepts any\nof the options of `{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}`\n",
+                    "text": "Event options for the action function.  Accepts any\nof the options of <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n",
                     "type": "Object",
                     "src": {
                       "name": "1,645,29",
@@ -773,7 +652,7 @@
                     "$type": "param",
                     "name": "order",
                     "optional": true,
-                    "text": "The order to call the action function relative\ntoo the event handlers (`'before'` or `'after'`).  Note that this option is\nsimply used to sort the action function relative to the event handlers by \"priority\".\nAn order of `'before'` is equivalent to a priority of `99.5`, while an order of\n`'after'` is equivalent to a priority of `-99.5`.  See the `priority` option\nof `{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}` for more details.\n",
+                    "text": "The order to call the action function relative\ntoo the event handlers (`'before'` or `'after'`).  Note that this option is\nsimply used to sort the action function relative to the event handlers by \"priority\".\nAn order of `'before'` is equivalent to a priority of `99.5`, while an order of\n`'after'` is equivalent to a priority of `-99.5`.  See the `priority` option\nof <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> for more details.\n",
                     "type": "String",
                     "value": "'before'",
                     "src": {
@@ -794,7 +673,7 @@
               {
                 "$type": "method",
                 "name": "fireEvent",
-                "text": "Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed\nto {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}).\n\nAn event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#method!getBubbleTarget Ext.Component#getBubbleTarget}) by\ncalling {@link #method!enableBubble #enableBubble}.\n",
+                "text": "Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed\nto <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>).\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.ux.event.Driver-method-enableBubble'>enableBubble</a>.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -836,7 +715,7 @@
               {
                 "$type": "method",
                 "name": "fireEventArgs",
-                "text": "Fires the specified event with the passed parameter list.\n\nAn event may be set to bubble up an Observable parent hierarchy (See {@link Ext.Component#method!getBubbleTarget Ext.Component#getBubbleTarget}) by\ncalling {@link #method!enableBubble #enableBubble}.\n",
+                "text": "Fires the specified event with the passed parameter list.\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.ux.event.Driver-method-enableBubble'>enableBubble</a>.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -967,61 +846,6 @@
               },
               {
                 "$type": "method",
-                "name": "getConfig",
-                "text": "Returns a specified config property value. If the name parameter is not passed,\nall current configuration options will be returned as key value pairs.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "optional": true,
-                    "text": "The name of the config property to get.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "2,1469,29",
-                      "text": "2,1469,35,40",
-                      "type": "2,1469,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "peek",
-                    "optional": true,
-                    "text": "`true` to peek at the raw value without calling the getter.\n",
-                    "type": "Boolean",
-                    "value": "false",
-                    "src": {
-                      "name": "2,1470,30",
-                      "text": "2,1470,42,60",
-                      "type": "2,1470,20",
-                      "value": "2,1470,35"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The config property value.\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,1471,29,27",
-                      "type": "2,1471,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "2,1473,0",
-                  "text": "2,1466,12,151"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "getCurrentConfig",
-                "src": {
-                  "access": "2,1506,12",
-                  "name": "2,1508,0"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "getId",
                 "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
                 "items": [
@@ -1030,46 +854,14 @@
                     "text": "id\n",
                     "type": "String",
                     "src": {
-                      "text": "4,75,25,3",
-                      "type": "4,75,17"
+                      "text": "2,75,25,3",
+                      "type": "2,75,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "4,77,0",
-                  "text": "4,74,8,93"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getInitialConfig",
-                "text": "Returns the initial configuration passed to the constructor when\ninstantiating this class.\n\nGiven this example Ext.button.Button definition and instance:\n\n    Ext.define('MyApp.view.Button', {\n        extend: 'Ext.button.Button',\n        xtype: 'mybutton',\n\n        scale: 'large',\n        enableToggle: true\n    });\n\n    var btn = Ext.create({\n        xtype: 'mybutton',\n        renderTo: Ext.getBody(),\n        text: 'Test Button'\n    });\n\nCalling `btn.getInitialConfig()` would return an object including the config\noptions passed to the `{@link #static-method!create create}` method:\n\n    xtype: 'mybutton',\n    renderTo: // The document body itself\n    text: 'Test Button'\n\nCalling `btn.getInitialConfig('text')`returns **'Test Button'**.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "optional": true,
-                    "text": "Name of the config option to return.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "2,1551,29",
-                      "text": "2,1551,35,37",
-                      "type": "2,1551,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The full config object or a single config value\nwhen `name` parameter specified.\n",
-                    "type": "Object/Mixed",
-                    "src": {
-                      "text": "2,1552,35,48:2,1553,12,33",
-                      "type": "2,1552,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "2,1555,0",
-                  "text": "2,1523,12,715"
+                  "name": "2,77,0",
+                  "text": "2,74,8,93"
                 }
               },
               {
@@ -1079,24 +871,6 @@
                 "src": {
                   "name": "0,62,0",
                   "text": "0,60,8,59"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "hasConfig",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "config",
-                    "src": {
-                      "name": "2,1516,19"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1515,12",
-                  "name": "2,1518,0"
                 }
               },
               {
@@ -1128,110 +902,6 @@
                 "src": {
                   "name": "1,1337,0",
                   "text": "1,1331,11,161"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "hasOwnProperty",
-                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "prop",
-                    "text": "The name of the property to test.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "3,100,20",
-                      "text": "3,100,25,34",
-                      "type": "3,100,12"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "3,101,22,57:3,102,4,15",
-                      "type": "3,101,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,53,12",
-                  "text": "3,54,4,1520"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "name": "initConfig",
-                "text": "Initialize configuration for this class. a typical example:\n\n    Ext.define('My.awesome.Class', {\n        // The default config\n        config: {\n            name: 'Awesome',\n            isAwesome: true\n        },\n\n        constructor: function(config) {\n            this.initConfig(config);\n        }\n    });\n\n    var awesome = new My.awesome.Class({\n        name: 'Super Awesome'\n    });\n\n    alert(awesome.getName()); // 'Super Awesome'\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "config",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,1449,28",
-                      "type": "2,1449,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,1450,31,5",
-                      "type": "2,1450,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1448,12",
-                  "name": "2,1452,0",
-                  "text": "2,1428,12,441"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "isPrototypeOf",
-                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "prototype",
-                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "3,148,20",
-                      "text": "3,148,30,71:3,149,4,18",
-                      "type": "3,148,12"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "object",
-                    "text": "the object whose prototype chain will be searched\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "3,150,20",
-                      "text": "3,150,27,50",
-                      "type": "3,150,12"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "Returns true if object is a prototype and false if not.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "3,151,22,56",
-                      "type": "3,151,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,106,12",
-                  "text": "3,107,4,1084"
                 }
               },
               {
@@ -1268,49 +938,9 @@
               },
               {
                 "$type": "method",
-                "access": "private",
-                "name": "link",
-                "text": "Adds a \"destroyable\" object to an internal list of objects that will be destroyed\nwhen this instance is destroyed (via `{@link #method!destroy #destroy}`).\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "type": "String",
-                    "src": {
-                      "name": "2,1571,28",
-                      "type": "2,1571,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "value",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,1572,28",
-                      "type": "2,1572,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The `value` passed.\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,1573,29,20",
-                      "type": "2,1573,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1574,12",
-                  "name": "2,1576,0",
-                  "text": "2,1569,12,140"
-                }
-              },
-              {
-                "$type": "method",
                 "inheritdoc": "Ext.util.Observable#addManagedListener",
                 "name": "mon",
-                "text": "Shorthand for {@link #method!addManagedListener #addManagedListener}.\n",
+                "text": "Shorthand for <a href='#!/api/Ext.ux.event.Driver-method-addManagedListener'>addManagedListener</a>.\n",
                 "src": {
                   "inheritdoc": "1,1787,12",
                   "name": "1,1789,0",
@@ -1321,7 +951,7 @@
                 "$type": "method",
                 "inheritdoc": "Ext.util.Observable#removeManagedListener",
                 "name": "mun",
-                "text": "Shorthand for {@link #method!removeManagedListener #removeManagedListener}.\n",
+                "text": "Shorthand for <a href='#!/api/Ext.ux.event.Driver-method-removeManagedListener'>removeManagedListener</a>.\n",
                 "src": {
                   "inheritdoc": "1,1793,12",
                   "name": "1,1795,0",
@@ -1340,7 +970,7 @@
               {
                 "$type": "method",
                 "name": "onAfter",
-                "text": "Appends an after-event handler.\n\nSame as {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} with `order` set\nto `'after'`.\n",
+                "text": "Appends an after-event handler.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'after'`.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1397,7 +1027,7 @@
               {
                 "$type": "method",
                 "name": "onBefore",
-                "text": "Appends a before-event handler.  Returning `false` from the handler will stop the event.\n\nSame as {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} with `order` set\nto `'before'`.\n",
+                "text": "Appends a before-event handler.  Returning `false` from the handler will stop the event.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'before'`.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1453,37 +1083,6 @@
               },
               {
                 "$type": "method",
-                "name": "propertyIsEnumerable",
-                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "prop",
-                    "text": "The name of the property to test.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "3,220,20",
-                      "text": "3,220,25,34",
-                      "type": "3,220,12"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "3,221,22,57:3,222,4,22",
-                      "type": "3,221,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,155,12",
-                  "text": "3,156,4,2313"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "relayEvents",
                 "text": "Relays selected events from the specified Observable as if the events were fired by `this`.\n\nFor example if you are extending Grid, you might decide to forward some events from store.\nSo you can do this inside your initComponent:\n\n    this.relayEvents(this.getStore(), ['load']);\n\nThe grid instance will then have an observable 'load' event which will be passed\nthe parameters of the store's load event and any function fired with the grid's\nload event would have access to the grid using the this keyword (unless the event\nis handled by a controller's control/listen event listener in which case 'this'\nwill be the controller rather than the grid).\n",
                 "items": [
@@ -1523,7 +1122,7 @@
                   },
                   {
                     "$type": "return",
-                    "text": "A `Destroyable` object. An object which implements the `{@link #method!destroy destroy}` method which, when destroyed, removes all relayers. For example:\n\n    this.storeRelayers = this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nCan be undone by calling\n\n    Ext.destroy(this.storeRelayers);\n\nor\n    this.store.relayers.destroy();\n",
+                    "text": "A `Destroyable` object. An object which implements the `destroy` method which, when destroyed, removes all relayers. For example:\n\n    this.storeRelayers = this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nCan be undone by calling\n\n    Ext.destroy(this.storeRelayers);\n\nor\n    this.store.relayers.destroy();\n",
                     "type": "Object",
                     "src": {
                       "text": "1,1479,28,130:1,1480,11,192",
@@ -1539,7 +1138,7 @@
               {
                 "$type": "method",
                 "name": "removeAfterListener",
-                "text": "Alias for {@link #method!unAfter #unAfter}.\n",
+                "text": "Alias for <a href='#!/api/Ext.ux.event.Driver-method-unAfter'>unAfter</a>.\n",
                 "src": {
                   "name": "1,1248,0",
                   "text": "1,1246,12,28"
@@ -1548,7 +1147,7 @@
               {
                 "$type": "method",
                 "name": "removeBeforeListener",
-                "text": "Alias for {@link #method!unBefore #unBefore}.\n",
+                "text": "Alias for <a href='#!/api/Ext.ux.event.Driver-method-unBefore'>unBefore</a>.\n",
                 "src": {
                   "name": "1,1242,0",
                   "text": "1,1240,12,29"
@@ -1573,7 +1172,7 @@
                   {
                     "$type": "param",
                     "name": "fn",
-                    "text": "The handler to remove. **This must be a reference to the function\npassed into the\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} call.**\n",
+                    "text": "The handler to remove. **This must be a reference to the function\npassed into the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> call.**\n",
                     "type": "Function",
                     "src": {
                       "name": "1,1103,30",
@@ -1584,7 +1183,7 @@
                   {
                     "$type": "param",
                     "name": "scope",
-                    "text": "(optional) The scope originally specified for the handler. It\nmust be the same as the scope argument specified in the original call to\n{@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} or the listener will not be removed.\n\n**Convenience Syntax**\n\nYou can use the {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}\n`destroyable: true` config option in place of calling un().  For example:\n\n    var listeners = cmp.on({\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide,\n        destroyable: true\n    });\n\n    // Remove listeners\n    listeners.destroy();\n    // or\n    cmp.un(\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide\n    );\n\n**Exception - DOM event handlers using the element config option**\n\nYou must go directly through the element to detach an event handler attached using\nthe {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener} _element_ option.\n\n    panel.on({\n        element: 'body',\n        click: 'onBodyCLick'\n    });\n\n    panel.body.un({\n        click: 'onBodyCLick'\n    });\n",
+                    "text": "(optional) The scope originally specified for the handler. It\nmust be the same as the scope argument specified in the original call to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> or the listener will not be removed.\n\n**Convenience Syntax**\n\nYou can use the <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n`destroyable: true` config option in place of calling un().  For example:\n\n    var listeners = cmp.on({\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide,\n        destroyable: true\n    });\n\n    // Remove listeners\n    listeners.destroy();\n    // or\n    cmp.un(\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide\n    );\n\n**Exception - DOM event handlers using the element config option**\n\nYou must go directly through the element to detach an event handler attached using\nthe <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> _element_ option.\n\n    panel.on({\n        element: 'body',\n        click: 'onBodyCLick'\n    });\n\n    panel.body.un({\n        click: 'onBodyCLick'\n    });\n",
                     "type": "Object",
                     "src": {
                       "name": "1,1106,28",
@@ -1601,7 +1200,7 @@
               {
                 "$type": "method",
                 "name": "removeManagedListener",
-                "text": "Removes listeners that were added by the {@link #method!mon #mon} method.\n",
+                "text": "Removes listeners that were added by the <a href='#!/api/Ext.ux.event.Driver-method-mon'>mon</a> method.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1727,7 +1326,7 @@
               {
                 "$type": "method",
                 "name": "resumeEvent",
-                "text": "Resumes firing of the named event(s).\n\nAfter calling this method to resume events, the events will fire when requested to fire.\n\n**Note that if the {@link #method!suspendEvent #suspendEvent} method is called multiple times for a certain event,\nthis converse method will have to be called the same number of times for it to resume firing.**\n",
+                "text": "Resumes firing of the named event(s).\n\nAfter calling this method to resume events, the events will fire when requested to fire.\n\n**Note that if the <a href='#!/api/Ext.ux.event.Driver-method-suspendEvent'>suspendEvent</a> method is called multiple times for a certain event,\nthis converse method will have to be called the same number of times for it to resume firing.**\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1749,13 +1348,13 @@
               {
                 "$type": "method",
                 "name": "resumeEvents",
-                "text": "Resumes firing events (see {@link #method!suspendEvents #suspendEvents}).\n\nIf events were suspended using the `queueSuspended` parameter, then all events fired\nduring event suspension will be sent to any listeners now.\n",
+                "text": "Resumes firing events (see <a href='#!/api/Ext.ux.event.Driver-method-suspendEvents'>suspendEvents</a>).\n\nIf events were suspended using the `queueSuspended` parameter, then all events fired\nduring event suspension will be sent to any listeners now.\n",
                 "items": [
                   {
                     "$type": "param",
                     "name": "discardQueue",
                     "optional": true,
-                    "text": "`true` to prevent any previously queued events from firing\nwhile we were suspended. See {@link #method!suspendEvents #suspendEvents}.\n",
+                    "text": "`true` to prevent any previously queued events from firing\nwhile we were suspended. See <a href='#!/api/Ext.ux.event.Driver-method-suspendEvents'>suspendEvents</a>.\n",
                     "type": "Boolean",
                     "src": {
                       "name": "1,1431,29",
@@ -1771,51 +1370,8 @@
               },
               {
                 "$type": "method",
-                "name": "setConfig",
-                "text": "Sets a single/multiple configuration options.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "text": "The name of the property to set, or a set of key value pairs to set.\n",
-                    "type": "String/Object",
-                    "src": {
-                      "name": "2,1478,35",
-                      "text": "2,1478,40,69",
-                      "type": "2,1478,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "value",
-                    "optional": true,
-                    "text": "The value to set for the name parameter.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,1479,29",
-                      "text": "2,1479,36,41",
-                      "type": "2,1479,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,1480,31,5",
-                      "type": "2,1480,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "2,1482,0",
-                  "text": "2,1476,12,46"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "setListeners",
-                "text": "An alias for {@link Ext.util.Observable#method!addListener Ext.util.Observable#addListener}.  In\nversions prior to 5.1, {@link #cfg!listeners #listeners} had a generated setter which could\nbe called to add listeners.  In 5.1 the listeners config is not processed\nusing the config system and has no generated setter, so this method is\nprovided for backward compatibility.  The preferred way of adding listeners\nis to use the {@link #method!on #on} method.\n",
+                "text": "An alias for <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.  In\nversions prior to 5.1, <a href='#!/api/Ext.ux.event.Driver-cfg-listeners'>listeners</a> had a generated setter which could\nbe called to add listeners.  In 5.1 the listeners config is not processed\nusing the config system and has no generated setter, so this method is\nprovided for backward compatibility.  The preferred way of adding listeners\nis to use the <a href='#!/api/Ext.ux.event.Driver-method-on'>on</a> method.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1845,26 +1401,6 @@
               },
               {
                 "$type": "method",
-                "access": "protected",
-                "name": "statics",
-                "text": "Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#property!self Ext.Base#self},\n`this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what\n`this` points to during run-time\n\n    Ext.define('My.Cat', {\n        statics: {\n            totalCreated: 0,\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            var statics = this.statics();\n\n            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to\n                                            // equivalent to: My.Cat.speciesName\n\n            alert(this.self.speciesName);   // dependent on 'this'\n\n            statics.totalCreated++;\n        },\n\n        clone: function() {\n            var cloned = new this.self();   // dependent on 'this'\n\n            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName\n\n            return cloned;\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n\n        statics: {\n            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'\n        },\n\n        constructor: function() {\n            this.callParent();\n        }\n    });\n\n    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'\n\n    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'\n    alert(clone.groupName);                 // alerts 'Cat'\n\n    alert(My.Cat.totalCreated);             // alerts 3\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "type": "Ext.Class",
-                    "src": {
-                      "type": "2,1161,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1160,12",
-                  "name": "2,1163,0",
-                  "text": "2,1107,12,1691"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "stop",
                 "text": "Stops this object. If this object is not started, nothing happens.\n",
                 "src": {
@@ -1875,7 +1411,7 @@
               {
                 "$type": "method",
                 "name": "suspendEvent",
-                "text": "Suspends firing of the named event(s).\n\nAfter calling this method to suspend events, the events will no longer fire when requested to fire.\n\n**Note that if this is called multiple times for a certain event, the converse method\n{@link #method!resumeEvent #resumeEvent} will have to be called the same number of times for it to resume firing.**\n",
+                "text": "Suspends firing of the named event(s).\n\nAfter calling this method to suspend events, the events will no longer fire when requested to fire.\n\n**Note that if this is called multiple times for a certain event, the converse method\n<a href='#!/api/Ext.ux.event.Driver-method-resumeEvent'>resumeEvent</a> will have to be called the same number of times for it to resume firing.**\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1897,12 +1433,12 @@
               {
                 "$type": "method",
                 "name": "suspendEvents",
-                "text": "Suspends the firing of all events. (see {@link #method!resumeEvents #resumeEvents})\n",
+                "text": "Suspends the firing of all events. (see <a href='#!/api/Ext.ux.event.Driver-method-resumeEvents'>resumeEvents</a>)\n",
                 "items": [
                   {
                     "$type": "param",
                     "name": "queueSuspended",
-                    "text": "`true` to queue up suspended events to be fired\nafter the {@link #method!resumeEvents #resumeEvents} call instead of discarding all suspended events.\n",
+                    "text": "`true` to queue up suspended events to be fired\nafter the <a href='#!/api/Ext.ux.event.Driver-method-resumeEvents'>resumeEvents</a> call instead of discarding all suspended events.\n",
                     "type": "Boolean",
                     "src": {
                       "name": "1,1363,28",
@@ -1918,49 +1454,9 @@
               },
               {
                 "$type": "method",
-                "name": "toLocaleString",
-                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n`{@link Object}`'s `{@link #method!toLocaleString toLocaleString}` returns the result of calling `{@link #method!toString toString}`.\n\nThis function is provided to give objects a generic `{@link #method!toLocaleString toLocaleString}` method, even though not all\nmay use it. Currently, only `{@link Array}`, `{@link Number}`, and `{@link Date}` override `{@link #method!toLocaleString toLocaleString}`.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "Object represented as a string.\n",
-                    "type": "String",
-                    "src": {
-                      "text": "3,235,21,32",
-                      "type": "3,235,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,226,12",
-                  "text": "3,227,4,384"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "toString",
-                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from `{@link Object}`.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom `{@link Object}`:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "Object represented as a string.\n",
-                    "type": "String",
-                    "src": {
-                      "text": "3,297,21,32",
-                      "type": "3,297,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,239,12",
-                  "text": "3,240,4,2445"
-                }
-              },
-              {
-                "$type": "method",
                 "inheritdoc": "Ext.util.Observable#removeListener",
                 "name": "un",
-                "text": "Shorthand for {@link #method!removeListener #removeListener}.\n",
+                "text": "Shorthand for <a href='#!/api/Ext.ux.event.Driver-method-removeListener'>removeListener</a>.\n",
                 "src": {
                   "inheritdoc": "1,1781,12",
                   "name": "1,1783,0",
@@ -1970,7 +1466,7 @@
               {
                 "$type": "method",
                 "name": "unAfter",
-                "text": "Removes a before-event handler.\n\nSame as {@link #method!removeListener #removeListener} with `order` set to `'after'`.\n",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.ux.event.Driver-method-removeListener'>removeListener</a> with `order` set to `'after'`.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -2027,7 +1523,7 @@
               {
                 "$type": "method",
                 "name": "unBefore",
-                "text": "Removes a before-event handler.\n\nSame as {@link #method!removeListener #removeListener} with `order` set to `'before'`.\n",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.ux.event.Driver-method-removeListener'>removeListener</a> with `order` set to `'before'`.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -2080,106 +1576,12 @@
                   "name": "1,1209,0",
                   "text": "1,1200,12,98"
                 }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "unlink",
-                "text": "Destroys a given set of `{@link #method!link #link}` objects. This is only needed if\nthe linked object is being destroyed before this instance.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "names",
-                    "text": "The names of the linked objects to destroy.\n",
-                    "type": "String[]",
-                    "src": {
-                      "name": "2,1589,30",
-                      "text": "2,1589,36,44",
-                      "type": "2,1589,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,1590,31,5",
-                      "type": "2,1590,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1591,12",
-                  "name": "2,1593,0",
-                  "text": "2,1587,12,138"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "valueOf",
-                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the `{@link #method!valueOf valueOf}` method to convert an object to a primitive value. You rarely need to\ninvoke the `{@link #method!valueOf valueOf}` method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the `{@link #method!valueOf valueOf}` method is inherited by every object descended from `{@link Object}`. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, `{@link #method!valueOf valueOf}` returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use `{@link #method!valueOf valueOf}` within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default `{@link Object}` method.\n\nYou can create a function to be called in place of the default `{@link #method!valueOf valueOf}` method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a `{@link #method!valueOf valueOf}` method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's `{@link #method!valueOf valueOf}` method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the `{@link #method!toString toString}` method, which is different from\n`{@link String}` objects converting to string primitives using `{@link #method!valueOf valueOf}`. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "Returns value of the object or the object itself.\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "3,340,21,50",
-                      "type": "3,340,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,301,12",
-                  "text": "3,302,4,1821"
-                }
               }
             ]
           },
           {
             "$type": "properties",
             "items": [
-              {
-                "$type": "property",
-                "access": "private",
-                "name": "$className",
-                "src": {
-                  "access": "2,1049,13",
-                  "name": "2,1050,0"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "private",
-                "name": "$configPrefixed",
-                "optional": true,
-                "since": "5.0.0",
-                "text": "The value `true` causes `config` values to be stored on instances using a\nproperty name prefixed with an underscore (\"_\") character. A value of `false`\nstores `config` values as properties using their exact name (no prefix).\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1066,12",
-                  "name": "2,1062,33",
-                  "since": "2,1067,19",
-                  "text": "2,1063,12,225",
-                  "type": "2,1062,23"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "private",
-                "name": "$configStrict",
-                "optional": true,
-                "since": "5.0.0",
-                "text": "The value `true` instructs the `{@link #method!initConfig initConfig}` method to only honor values for\nproperties declared in the `config` block of a class. When `false`, properties\nthat are not declared in a `config` block will be placed on the instance.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1076,12",
-                  "name": "2,1072,33",
-                  "since": "2,1077,19",
-                  "text": "2,1073,12,229",
-                  "type": "2,1072,23"
-                }
-              },
               {
                 "$type": "property",
                 "access": "private",
@@ -2193,31 +1595,9 @@
               },
               {
                 "$type": "property",
-                "name": "constructor",
-                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
-                "src": {
-                  "name": "3,346,14",
-                  "text": "3,347,3,1996"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "protected",
-                "name": "destroyed",
-                "text": "This property is set to `true` after the `{@link #method!destroy destroy}` method is called.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1102,12",
-                  "name": "2,1100,32",
-                  "text": "2,1101,12,69",
-                  "type": "2,1100,23"
-                }
-              },
-              {
-                "$type": "property",
                 "access": "private",
                 "name": "eventsSuspended",
-                "text": "Initial suspended call count. Incremented when {@link #method!suspendEvents #suspendEvents} is called, decremented when {@link #method!resumeEvents #resumeEvents} is called.\n",
+                "text": "Initial suspended call count. Incremented when <a href='#!/api/Ext.ux.event.Driver-method-suspendEvents'>suspendEvents</a> is called, decremented when <a href='#!/api/Ext.ux.event.Driver-method-resumeEvents'>resumeEvents</a> is called.\n",
                 "src": {
                   "access": "1,284,11",
                   "name": "1,287,0",
@@ -2228,62 +1608,13 @@
                 "$type": "property",
                 "name": "hasListeners",
                 "readonly": true,
-                "text": "This object holds a key for any event that has a listener. The listener may be set\ndirectly on the instance, or on its class or a super class (via {@link #observe}) or\non the {@link Ext.app.EventBus}. The values of this object are truthy\n(a non-zero number) and falsy (0 or undefined). They do not represent an exact count\nof listeners. The value for an event is truthy if the event must be fired and is\nfalsy if there is no need to fire the event.\n\nThe intended use of this property is to avoid the expense of fireEvent calls when\nthere are no listeners. This can be particularly helpful when one would otherwise\nhave to call fireEvent hundreds or thousands of times. It is used like this:\n\n     if (this.hasListeners.foo) {\n         this.fireEvent('foo', this, arg1);\n     }\n",
+                "text": "This object holds a key for any event that has a listener. The listener may be set\ndirectly on the instance, or on its class or a super class (via <a href='#!/api/Ext.ux.event.Driver-observe'>observe</a>) or\non the <a href='#!/api/Ext.app.EventBus'>Ext.app.EventBus</a>. The values of this object are truthy\n(a non-zero number) and falsy (0 or undefined). They do not represent an exact count\nof listeners. The value for an event is truthy if the event must be fired and is\nfalsy if there is no need to fire the event.\n\nThe intended use of this property is to avoid the expense of fireEvent calls when\nthere are no listeners. This can be particularly helpful when one would otherwise\nhave to call fireEvent hundreds or thousands of times. It is used like this:\n\n     if (this.hasListeners.foo) {\n         this.fireEvent('foo', this, arg1);\n     }\n",
                 "type": "Object",
                 "src": {
                   "name": "1,290,30",
                   "readonly": "1,291,11",
                   "text": "1,292,11,790",
                   "type": "1,290,22"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "protected",
-                "name": "isConfiguring",
-                "readonly": true,
-                "since": "5.0.0",
-                "text": "This property is set to `true` during the call to `{@link #method!initConfig initConfig}`.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1084,12",
-                  "name": "2,1082,32",
-                  "readonly": "2,1085,12",
-                  "since": "2,1086,19",
-                  "text": "2,1083,12,64",
-                  "type": "2,1082,23"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "protected",
-                "name": "isFirstInstance",
-                "readonly": true,
-                "since": "5.0.0",
-                "text": "This property is set to `true` if this instance is the first of its class.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1093,12",
-                  "name": "2,1091,32",
-                  "readonly": "2,1094,12",
-                  "since": "2,1095,19",
-                  "text": "2,1092,12,75",
-                  "type": "2,1091,23"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "protected",
-                "name": "isInstance",
-                "readonly": true,
-                "text": "This value is `true` and is used to identify plain objects from instances of\na defined class.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1056,12",
-                  "name": "2,1053,32",
-                  "readonly": "2,1057,12",
-                  "text": "2,1054,12,94",
-                  "type": "2,1053,23"
                 }
               },
               {
@@ -2296,562 +1627,11 @@
                   "text": "1,279,11,95",
                   "type": "1,278,22"
                 }
-              },
-              {
-                "$type": "property",
-                "name": "prototype",
-                "text": "Allows the addition of properties to all objects of type Object.\n",
-                "src": {
-                  "name": "3,46,14",
-                  "text": "3,47,4,65"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "protected",
-                "name": "self",
-                "text": "\nGet the reference to the current class from which this object was instantiated. Unlike {@link Ext.Base#method!statics Ext.Base#statics},\n`this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See {@link Ext.Base#method!statics Ext.Base#statics}\nfor a detailed comparison\n\n    Ext.define('My.Cat', {\n        statics: {\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            alert(this.self.speciesName); // dependent on 'this'\n        },\n\n        clone: function() {\n            return new this.self();\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n        statics: {\n            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'\n        }\n    });\n\n    var cat = new My.Cat();                     // alerts 'Cat'\n    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'\n",
-                "type": "Ext.Class",
-                "src": {
-                  "access": "2,1413,12",
-                  "name": "2,1379,34",
-                  "text": "2,1380,12,1011",
-                  "type": "2,1379,23"
-                }
               }
             ]
           },
           {
-            "$type": "static-methods",
-            "items": [
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "addConfig",
-                "static": true,
-                "text": "Adds new config properties to this class. This is called for classes when they\nare declared, then for any mixins that class may define and finally for any\noverrides defined that target the class.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "config",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,940,28",
-                      "type": "2,940,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "mixinClass",
-                    "optional": true,
-                    "text": "The mixin class if the configs are from a mixin.\n",
-                    "type": "Ext.Class",
-                    "src": {
-                      "name": "2,941,32",
-                      "text": "2,941,44,49",
-                      "type": "2,941,20"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,942,12",
-                  "inheritable": "2,944,12",
-                  "name": "2,946,0",
-                  "static": "2,943,12",
-                  "text": "2,936,12,197"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "addInheritableStatics",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,464,28",
-                      "type": "2,464,20"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,461,12",
-                  "inheritable": "2,463,12",
-                  "name": "2,466,0",
-                  "static": "2,462,12"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "addMember",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "src": {
-                      "name": "2,662,19"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "member",
-                    "src": {
-                      "name": "2,663,19"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,659,12",
-                  "inheritable": "2,661,12",
-                  "name": "2,665,0",
-                  "static": "2,660,12"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "addMembers",
-                "static": true,
-                "text": "Add methods / properties to the prototype of this class.\n\n    Ext.define('My.awesome.Cat', {\n        constructor: function() {\n            ...\n        }\n    });\n\n     My.awesome.Cat.addMembers({\n         meow: function() {\n            alert('Meowww...');\n         }\n     });\n\n     var kitty = new My.awesome.Cat();\n     kitty.meow();\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "text": "The members to add to this class.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,522,28",
-                      "text": "2,522,36,34",
-                      "type": "2,522,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "isStatic",
-                    "optional": true,
-                    "text": "Pass `true` if the members are static.\n",
-                    "type": "Boolean",
-                    "value": "false",
-                    "src": {
-                      "name": "2,523,30",
-                      "text": "2,523,46,39",
-                      "type": "2,523,20",
-                      "value": "2,523,39"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "privacy",
-                    "optional": true,
-                    "text": "Pass `true` if the members are private. This\nonly has meaning in debug mode and only for methods.\n",
-                    "type": "Boolean",
-                    "value": "false",
-                    "src": {
-                      "name": "2,524,30",
-                      "text": "2,524,45,45:2,525,12,53",
-                      "type": "2,524,20",
-                      "value": "2,524,38"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,527,12",
-                  "name": "2,529,0",
-                  "static": "2,526,12",
-                  "text": "2,505,12,335"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "addStatics",
-                "static": true,
-                "text": "Add / override static properties of this class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.addStatics({\n        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'\n        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };\n        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };\n    });\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,450,28",
-                      "type": "2,450,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,451,31,5",
-                      "type": "2,451,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,453,12",
-                  "name": "2,455,0",
-                  "static": "2,452,12",
-                  "text": "2,438,12,402"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "borrow",
-                "static": true,
-                "text": "Borrow another class' members to the prototype of this class.\n\n    Ext.define('Bank', {\n        money: '$$$',\n        printMoney: function() {\n            alert('$$$$$$$');\n        }\n    });\n\n    Ext.define('Thief', {\n        ...\n    });\n\n    Thief.borrow(Bank, ['money', 'printMoney']);\n\n    var steve = new Thief();\n\n    alert(steve.money); // alerts '$$$'\n    steve.printMoney(); // alerts '$$$$$$$'\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "fromClass",
-                    "text": "The class to borrow members from\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "name": "2,693,30",
-                      "text": "2,693,40,33",
-                      "type": "2,693,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "text": "The names of the members to borrow\n",
-                    "type": "Array/String",
-                    "src": {
-                      "name": "2,694,34",
-                      "text": "2,694,42,35",
-                      "type": "2,694,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,695,31,5",
-                      "type": "2,695,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,698,12",
-                  "inheritable": "2,697,12",
-                  "name": "2,700,0",
-                  "static": "2,696,12",
-                  "text": "2,673,12,404"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "inheritable": true,
-                "name": "callParent",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "args",
-                    "src": {
-                      "name": "2,814,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,810,12",
-                  "inheritable": "2,812,12",
-                  "name": "2,814,0",
-                  "static": "2,811,12"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "inheritable": true,
-                "name": "callSuper",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "args",
-                    "src": {
-                      "name": "2,828,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,824,12",
-                  "inheritable": "2,826,12",
-                  "name": "2,828,0",
-                  "static": "2,825,12"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "create",
-                "static": true,
-                "text": "Create a new instance of this Class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.create({\n        someConfig: true\n    });\n\nAll parameters are passed to the constructor of the class.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "the created instance.\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,107,29,22",
-                      "type": "2,107,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,109,12",
-                  "name": "2,111,0",
-                  "static": "2,108,12",
-                  "text": "2,95,12,214"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "createAlias",
-                "static": true,
-                "text": "Create aliases for existing prototype methods. Example:\n\n    Ext.define('My.cool.Class', {\n        method1: function() { ... },\n        method2: function() { ... }\n    });\n\n    var test = new My.cool.Class();\n\n    My.cool.Class.createAlias({\n        method3: 'method1',\n        method4: 'method2'\n    });\n\n    test.method3(); // test.method1()\n\n    My.cool.Class.createAlias('method5', 'method3');\n\n    test.method5(); // test.method3() -> test.method1()\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "alias",
-                    "text": "The new method name, or an object to set multiple aliases. See\n{@link Ext.Function#method!flexSetter Ext.Function#flexSetter}\n",
-                    "type": "String/Object",
-                    "src": {
-                      "name": "2,1018,35",
-                      "text": "2,1018,41,63:2,1019,12,43",
-                      "type": "2,1018,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "origin",
-                    "text": "The original method name\n",
-                    "type": "String/Object",
-                    "src": {
-                      "name": "2,1020,35",
-                      "text": "2,1020,42,25",
-                      "type": "2,1020,20"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,1022,12",
-                  "name": "2,1025,0",
-                  "static": "2,1021,12",
-                  "text": "2,998,12,456"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "extend",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "config",
-                    "src": {
-                      "name": "2,350,19"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,347,12",
-                  "inheritable": "2,349,12",
-                  "name": "2,352,0",
-                  "static": "2,348,12"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "getConfigurator",
-                "static": true,
-                "text": "Returns the `{@link Ext.Configurator}` for this class.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "type": "Ext.Configurator",
-                    "src": {
-                      "type": "2,967,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,968,12",
-                  "inheritable": "2,970,12",
-                  "name": "2,972,0",
-                  "static": "2,969,12",
-                  "text": "2,965,12,48"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "getName",
-                "static": true,
-                "text": "Get the current class' name in string format.\n\n    Ext.define('My.cool.Class', {\n        constructor: function() {\n            alert(this.self.getName()); // alerts 'My.cool.Class'\n        }\n    });\n\n    My.cool.Class.getName(); // 'My.cool.Class'\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "className\n",
-                    "type": "String",
-                    "src": {
-                      "text": "2,989,29,10",
-                      "type": "2,989,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,991,12",
-                  "name": "2,993,0",
-                  "static": "2,990,12",
-                  "text": "2,979,12,249"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "mixin",
-                "static": true,
-                "text": "Used internally by the mixins pre-processor\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "src": {
-                      "name": "2,844,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "mixinClass",
-                    "src": {
-                      "name": "2,844,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,840,12",
-                  "inheritable": "2,842,12",
-                  "name": "2,844,0",
-                  "static": "2,841,12",
-                  "text": "2,839,12,44"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "onExtended",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "fn",
-                    "src": {
-                      "name": "2,428,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "scope",
-                    "src": {
-                      "name": "2,428,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,424,12",
-                  "inheritable": "2,426,12",
-                  "name": "2,428,0",
-                  "static": "2,425,12"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "override",
-                "static": true,
-                "text": "Override members of this class. Overridden methods can be invoked via\n{@link Ext.Base#callParent}.\n\n    Ext.define('My.Cat', {\n        constructor: function() {\n            alert(\"I'm a cat!\");\n        }\n    });\n\n    My.Cat.override({\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\n    var kitty = new My.Cat(); // alerts \"I'm going to be a cat!\"\n                              // alerts \"I'm a cat!\"\n                              // alerts \"Meeeeoooowwww\"\n\nDirect use of this method should be rare. Use {@link Ext#method!define Ext#define}\ninstead:\n\n    Ext.define('My.CatOverride', {\n        override: 'My.Cat',\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\nThe above accomplishes the same result but can be managed by the {@link Ext.Loader}\nwhich can properly order the override and its target class and the build process\ncan determine whether the override is needed based on the required state of the\ntarget class (My.Cat).\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "text": "The properties to add to this class. This should be\nspecified as an object literal containing one or more properties.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,762,28",
-                      "text": "2,762,36,52:2,763,12,66",
-                      "type": "2,762,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this class\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,764,31,11",
-                      "type": "2,764,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,766,12",
-                  "name": "2,768,0",
-                  "static": "2,765,12",
-                  "text": "2,720,12,1180"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "triggerExtended",
-                "static": true,
-                "src": {
-                  "access": "2,402,12",
-                  "inheritable": "2,404,12",
-                  "name": "2,406,0",
-                  "static": "2,403,12"
-                }
-              }
-            ]
-          },
-          {
-            "$type": "static-properties",
-            "items": [
-              {
-                "$type": "property",
-                "access": "private",
-                "inheritable": true,
-                "name": "$onExtended",
-                "static": true,
-                "src": {
-                  "access": "2,395,12",
-                  "inheritable": "2,397,12",
-                  "name": "2,399,0",
-                  "static": "2,396,12"
-                }
-              }
-            ]
+            "$type": "static-methods"
           }
         ],
         "src": {

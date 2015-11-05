@@ -10,25 +10,13 @@
         "$type": "class",
         "access": "private",
         "alias": "plugin.bufferedrenderer",
-        "extended": "Ext.AbstractPlugin",
         "extends": "Ext.AbstractPlugin",
         "name": "Ext.grid.plugin.BufferedRenderer",
-        "text": "Implements buffered rendering of a grid, allowing users to scroll\nthrough thousands of records without the performance penalties of\nrendering all the records into the DOM at once.\n\nThe number of rows rendered outside the visible area can be controlled by configuring the plugin.\n\nUsers should not instantiate this class. It is instantiated automatically\nand applied to all grids.\n\n## Implementation notes\n\nThis class monitors scrolling of the {@link Ext.view.Table} within a {@link Ext.grid.Panel} to render a small section of\nthe dataset.\n",
+        "text": "Implements buffered rendering of a grid, allowing users to scroll\nthrough thousands of records without the performance penalties of\nrendering all the records into the DOM at once.\n\nThe number of rows rendered outside the visible area can be controlled by configuring the plugin.\n\nUsers should not instantiate this class. It is instantiated automatically\nand applied to all grids.\n\n## Implementation notes\n\nThis class monitors scrolling of the <a href='#!/api/Ext.view.Table'>Ext.view.Table</a> within a <a href='#!/api/Ext.grid.Panel'>Ext.grid.Panel</a> to render a small section of\nthe dataset.\n",
         "items": [
           {
             "$type": "configs",
             "items": [
-              {
-                "$type": "property",
-                "name": "leadingBufferZone",
-                "text": "The number of extra rows to render on the leading side of scrolling\n**outside the {@link #cfg!numFromEdge #numFromEdge}** buffer as scrolling proceeds.\n",
-                "type": "Number",
-                "src": {
-                  "name": "0,50,0",
-                  "text": "0,47,8,135",
-                  "type": "0,46,14"
-                }
-              },
               {
                 "$type": "property",
                 "name": "numFromEdge",
@@ -42,20 +30,31 @@
               },
               {
                 "$type": "property",
-                "name": "scrollToLoadBuffer",
-                "text": "This is the time in milliseconds to buffer load requests when the store is a {@link Ext.data.BufferedStore}\nand a page required for rendering is not present in the store's cache and needs loading.\n",
+                "name": "trailingBufferZone",
+                "text": "The number of extra rows to render on the trailing side of scrolling\n**outside the <a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a>** buffer as scrolling proceeds.\n",
                 "type": "Number",
                 "src": {
-                  "name": "0,70,0",
-                  "text": "0,67,8,212",
-                  "type": "0,66,14"
+                  "name": "0,43,0",
+                  "text": "0,40,8,136",
+                  "type": "0,39,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "leadingBufferZone",
+                "text": "The number of extra rows to render on the leading side of scrolling\n**outside the <a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a>** buffer as scrolling proceeds.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,50,0",
+                  "text": "0,47,8,135",
+                  "type": "0,46,14"
                 }
               },
               {
                 "$type": "property",
                 "name": "synchronousRender",
                 "optional": true,
-                "text": "By default, on detection of a scroll event which brings the end of the rendered table within\n`{@link #cfg!numFromEdge #numFromEdge}` rows of the grid viewport, if the required rows are available in the Store,\nthe BufferedRenderer will render rows from the Store *immediately* before returning from the event handler.\nThis setting helps avoid the impression of whitespace appearing during scrolling.\n\nSet this to `false` to defer the render until the scroll event handler exits. This allows for faster\nscrolling, but also allows whitespace to be more easily scrolled into view.\n",
+                "text": "By default, on detection of a scroll event which brings the end of the rendered table within\n<a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a> rows of the grid viewport, if the required rows are available in the Store,\nthe BufferedRenderer will render rows from the Store *immediately* before returning from the event handler.\nThis setting helps avoid the impression of whitespace appearing during scrolling.\n\nSet this to `false` to defer the render until the scroll event handler exits. This allows for faster\nscrolling, but also allows whitespace to be more easily scrolled into view.\n",
                 "type": "Boolean",
                 "value": "true",
                 "src": {
@@ -67,13 +66,13 @@
               },
               {
                 "$type": "property",
-                "name": "trailingBufferZone",
-                "text": "The number of extra rows to render on the trailing side of scrolling\n**outside the {@link #cfg!numFromEdge #numFromEdge}** buffer as scrolling proceeds.\n",
+                "name": "scrollToLoadBuffer",
+                "text": "This is the time in milliseconds to buffer load requests when the store is a <a href='#!/api/Ext.data.BufferedStore'>Ext.data.BufferedStore</a>\nand a page required for rendering is not present in the store's cache and needs loading.\n",
                 "type": "Number",
                 "src": {
-                  "name": "0,43,0",
-                  "text": "0,40,8,136",
-                  "type": "0,39,14"
+                  "name": "0,70,0",
+                  "text": "0,67,8,212",
+                  "type": "0,66,14"
                 }
               }
             ]
@@ -81,28 +80,6 @@
           {
             "$type": "methods",
             "items": [
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "afterTableLayout",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "ownerContext",
-                    "text": "The view's layout context\nCalled when a view's layout run is complete.\n",
-                    "type": "Ext.layout.ContextItem",
-                    "src": {
-                      "name": "0,339,40",
-                      "text": "0,339,53,26:0,340,8,45",
-                      "type": "0,339,16"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,338,8",
-                  "name": "0,342,0"
-                }
-              },
               {
                 "$type": "method",
                 "access": "private",
@@ -128,108 +105,30 @@
               {
                 "$type": "method",
                 "access": "private",
-                "name": "getLastVisibleRowIndex",
-                "text": "Returns the index of the last row in your table view deemed to be visible.\n",
+                "name": "afterTableLayout",
                 "items": [
                   {
-                    "$type": "return",
-                    "type": "Number",
-                    "src": {
-                      "type": "0,1561,17"
-                    }
-                  },
-                  {
                     "$type": "param",
-                    "name": "startRow",
+                    "name": "ownerContext",
+                    "text": "The view's layout context\nCalled when a view's layout run is complete.\n",
+                    "type": "Ext.layout.ContextItem",
                     "src": {
-                      "name": "0,1564,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "endRow",
-                    "src": {
-                      "name": "0,1564,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "viewportTop",
-                    "src": {
-                      "name": "0,1564,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "viewportBottom",
-                    "src": {
-                      "name": "0,1564,0"
+                      "name": "0,339,40",
+                      "text": "0,339,53,26:0,340,8,45",
+                      "type": "0,339,16"
                     }
                   }
                 ],
                 "src": {
-                  "access": "0,1562,8",
-                  "name": "0,1564,0",
-                  "text": "0,1560,8,75"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "getViewRange",
-                "text": "TableView's getViewRange delegates the operation to this method if buffered rendering is present.\n",
-                "src": {
-                  "access": "0,568,8",
-                  "name": "0,571,0",
-                  "text": "0,569,8,98"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "onReplace",
-                "text": "Handles the Store replace event, producing a correct buffered view after the replace operation.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "store",
-                    "src": {
-                      "name": "0,616,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "startIndex",
-                    "src": {
-                      "name": "0,616,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "oldRecords",
-                    "src": {
-                      "name": "0,616,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "newRecords",
-                    "src": {
-                      "name": "0,616,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,613,8",
-                  "name": "0,616,0",
-                  "text": "0,614,8,96"
+                  "access": "0,338,8",
+                  "name": "0,342,0"
                 }
               },
               {
                 "$type": "method",
                 "access": "private",
                 "name": "onViewResize",
-                "text": "Called directly from {@link Ext.view.Table#method!onResize Ext.view.Table#onResize}. Reacts to View changing height by\nrecalculating the size of the rendered block, and either trimming it or adding to it.\n",
+                "text": "Called directly from <a href='#!/api/Ext.view.Table-method-onResize'>Ext.view.Table#onResize</a>. Reacts to View changing height by\nrecalculating the size of the rendered block, and either trimming it or adding to it.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -296,28 +195,60 @@
               {
                 "$type": "method",
                 "access": "private",
-                "name": "refreshView",
-                "text": "Refreshes the current rendered range if possible.\nOptionally refreshes starting at the specified index.\n",
+                "name": "getViewRange",
+                "text": "TableView's getViewRange delegates the operation to this method if buffered rendering is present.\n",
+                "src": {
+                  "access": "0,568,8",
+                  "name": "0,571,0",
+                  "text": "0,569,8,98"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onReplace",
+                "text": "Handles the Store replace event, producing a correct buffered view after the replace operation.\n",
                 "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "src": {
+                      "name": "0,616,0"
+                    }
+                  },
                   {
                     "$type": "param",
                     "name": "startIndex",
                     "src": {
-                      "name": "0,1005,0"
+                      "name": "0,616,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldRecords",
+                    "src": {
+                      "name": "0,616,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newRecords",
+                    "src": {
+                      "name": "0,616,0"
                     }
                   }
                 ],
                 "src": {
-                  "access": "0,1001,8",
-                  "name": "0,1005,0",
-                  "text": "0,1002,8,104"
+                  "access": "0,613,8",
+                  "name": "0,616,0",
+                  "text": "0,614,8,96"
                 }
               },
               {
                 "$type": "method",
                 "access": "private",
                 "name": "scrollTo",
-                "text": "Scrolls to and optionally selects the specified row index **in the total dataset**.\n\nThis is a private method for internal usage by the framework.\n\nUse the grid's {@link Ext.panel.Table#method!ensureVisible Ext.panel.Table#ensureVisible} method to scroll a particular\nrecord or record index into view.\n",
+                "text": "Scrolls to and optionally selects the specified row index **in the total dataset**.\n\nThis is a private method for internal usage by the framework.\n\nUse the grid's <a href='#!/api/Ext.panel.Table-method-ensureVisible'>Ext.panel.Table#ensureVisible</a> method to scroll a particular\nrecord or record index into view.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -469,6 +400,74 @@
                   "name": "0,732,0",
                   "text": "0,711,8,280"
                 }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "refreshView",
+                "text": "Refreshes the current rendered range if possible.\nOptionally refreshes starting at the specified index.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "startIndex",
+                    "src": {
+                      "name": "0,1005,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1001,8",
+                  "name": "0,1005,0",
+                  "text": "0,1002,8,104"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getLastVisibleRowIndex",
+                "text": "Returns the index of the last row in your table view deemed to be visible.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,1561,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "startRow",
+                    "src": {
+                      "name": "0,1564,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "endRow",
+                    "src": {
+                      "name": "0,1564,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "viewportTop",
+                    "src": {
+                      "name": "0,1564,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "viewportBottom",
+                    "src": {
+                      "name": "0,1564,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1562,8",
+                  "name": "0,1564,0",
+                  "text": "0,1560,8,75"
+                }
               }
             ]
           },
@@ -488,13 +487,11 @@
               },
               {
                 "$type": "property",
-                "name": "position",
-                "text": "Current pixel scroll position of the associated {@link Ext.view.Table}.\n",
-                "type": "Number",
+                "access": "private",
+                "name": "viewSize",
                 "src": {
-                  "name": "0,82,27",
-                  "text": "0,83,8,77",
-                  "type": "0,82,19"
+                  "access": "0,73,8",
+                  "name": "0,75,0"
                 }
               },
               {
@@ -508,11 +505,13 @@
               },
               {
                 "$type": "property",
-                "access": "private",
-                "name": "viewSize",
+                "name": "position",
+                "text": "Current pixel scroll position of the associated <a href='#!/api/Ext.view.Table'>Ext.view.Table</a>.\n",
+                "type": "Number",
                 "src": {
-                  "access": "0,73,8",
-                  "name": "0,75,0"
+                  "name": "0,82,27",
+                  "text": "0,83,8,77",
+                  "type": "0,82,19"
                 }
               }
             ]

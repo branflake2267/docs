@@ -2,9 +2,7 @@
   "$type": "doxi",
   "files": [
     "../../../ext/packages/core/src/data/Validation.js",
-    "../../../ext/packages/core/src/data/Model.js",
-    "../../../ext/packages/core/src/class/Base.js",
-    "../../../../docs/docs/js/primitives/Object.js"
+    "../../../ext/packages/core/src/data/Model.js"
   ],
   "global": {
     "$type": "namespace",
@@ -12,11 +10,10 @@
       {
         "$type": "class",
         "access": "private",
-        "extended": "Ext.data.Model,Ext.Base,Object",
         "extends": "Ext.data.Model",
         "name": "Ext.data.Validation",
         "since": "5.0.0",
-        "text": "This class is used to hold validation errors for a record. The results of the record's\n`{@link Ext.data.Model#cfg!validators Ext.data.Model#validators}` are stored as the field values of this\nrecord. The first failed validation is all that is stored per field unless the Model\nclass has defined a `{@link #cfg!validationSeparator validationSeparator}` config.\n\nApplication code will not need to interact with this class specifically but rather just\nview the validation as a record.\n",
+        "text": "This class is used to hold validation errors for a record. The results of the record's\n<a href='#!/api/Ext.data.Model-cfg-validators'>Ext.data.Model#validators</a> are stored as the field values of this\nrecord. The first failed validation is all that is stored per field unless the Model\nclass has defined a <a href='#!/api/Ext.data.Validation-cfg-validationSeparator'>validationSeparator</a> config.\n\nApplication code will not need to interact with this class specifically but rather just\nview the validation as a record.\n",
         "items": [
           {
             "$type": "configs",
@@ -24,7 +21,7 @@
               {
                 "$type": "property",
                 "name": "associations",
-                "text": "An array of {@link Ext.data.schema.Association} for this model.\n",
+                "text": "An array of <a href='#!/api/Ext.data.schema.Association'>Ext.data.schema.Association</a> for this model.\n",
                 "type": "Object[]",
                 "src": {
                   "name": "1,835,24",
@@ -47,7 +44,7 @@
                 "$type": "property",
                 "name": "clientIdProperty",
                 "optional": true,
-                "text": "The name of the property a server will use to send back a client-generated id in a\n`{@link #static-method!create create}` or `update` `{@link Ext.data.operation.Operation}`.\n\nIf specified, this property cannot have the same name as any other field.\n\nFor example:\n\n     Ext.define('Person', {\n         idProperty: 'id',  // this is the default value (for clarity)\n\n         clientIdProperty: 'clientId',\n\n         identifier: 'negative', // to generate -1, -2 etc on the client\n\n         fields: [ 'name' ]\n     });\n\n     var person = new Person({\n         // no id provided, so -1 is generated\n         name: 'Clark Kent'\n     });\n\nThe server is given this data during the `{@link #static-method!create create}`:\n\n     {\n         id: -1,\n         name: 'Clark Kent'\n     }\n\nThe server allocates a real id and responds like so:\n\n     {\n         id: 427,\n         clientId: -1\n     }\n\nThis property is most useful when creating multiple entities in a single call to\nthe server in a `{@link Ext.data.operation.Create}`. Alternatively,\nthe server could respond with records that correspond one-to-one to those sent in\nthe `operation`.\n\nFor example the client could send a `{@link #static-method!create create}` with this data:\n\n     [ { id: -1, name: 'Clark Kent' },\n       { id: -2, name: 'Peter Parker' },\n       { id: -3, name: 'Bruce Banner' } ]\n\nAnd the server could respond in the same order:\n\n     [ { id: 427 },      // updates id = -1\n       { id: 428 },      // updates id = -2\n       { id: 429 } ]     // updates id = -3\n\nOr using `{@link #cfg!clientIdProperty clientIdProperty}` the server could respond in arbitrary order:\n\n     [ { id: 427, clientId: -3 },\n       { id: 428, clientId: -1 },\n       { id: 429, clientId: -2 } ]\n\n**IMPORTANT:** When upgrading from previous versions be aware that this property\nused to perform the role of `{@link Ext.data.writer.Writer#cfg!clientIdProperty Ext.data.writer.Writer#clientIdProperty}` as\nwell as that described above. To continue send a client-generated id as other than\nthe `{@link #cfg!idProperty idProperty}`, set `{@link #cfg!clientIdProperty clientIdProperty}` on the `writer`. A better solution, however,\nis most likely a properly configured `{@link #cfg!identifier identifier}` as that would work better with\nassociations.\n",
+                "text": "The name of the property a server will use to send back a client-generated id in a\n`create` or `update` <a href='#!/api/Ext.data.operation.Operation'>Ext.data.operation.Operation</a>.\n\nIf specified, this property cannot have the same name as any other field.\n\nFor example:\n\n     Ext.define('Person', {\n         idProperty: 'id',  // this is the default value (for clarity)\n\n         clientIdProperty: 'clientId',\n\n         identifier: 'negative', // to generate -1, -2 etc on the client\n\n         fields: [ 'name' ]\n     });\n\n     var person = new Person({\n         // no id provided, so -1 is generated\n         name: 'Clark Kent'\n     });\n\nThe server is given this data during the `create`:\n\n     {\n         id: -1,\n         name: 'Clark Kent'\n     }\n\nThe server allocates a real id and responds like so:\n\n     {\n         id: 427,\n         clientId: -1\n     }\n\nThis property is most useful when creating multiple entities in a single call to\nthe server in a <a href='#!/api/Ext.data.operation.Create'>Ext.data.operation.Create</a>. Alternatively,\nthe server could respond with records that correspond one-to-one to those sent in\nthe `operation`.\n\nFor example the client could send a `create` with this data:\n\n     [ { id: -1, name: 'Clark Kent' },\n       { id: -2, name: 'Peter Parker' },\n       { id: -3, name: 'Bruce Banner' } ]\n\nAnd the server could respond in the same order:\n\n     [ { id: 427 },      // updates id = -1\n       { id: 428 },      // updates id = -2\n       { id: 429 } ]     // updates id = -3\n\nOr using <a href='#!/api/Ext.data.Validation-cfg-clientIdProperty'>clientIdProperty</a> the server could respond in arbitrary order:\n\n     [ { id: 427, clientId: -3 },\n       { id: 428, clientId: -1 },\n       { id: 429, clientId: -2 } ]\n\n**IMPORTANT:** When upgrading from previous versions be aware that this property\nused to perform the role of <a href='#!/api/Ext.data.writer.Writer-cfg-clientIdProperty'>Ext.data.writer.Writer#clientIdProperty</a> as\nwell as that described above. To continue send a client-generated id as other than\nthe <a href='#!/api/Ext.data.Validation-cfg-idProperty'>idProperty</a>, set <a href='#!/api/Ext.data.Validation-cfg-clientIdProperty'>clientIdProperty</a> on the `writer`. A better solution, however,\nis most likely a properly configured <a href='#!/api/Ext.data.Validation-cfg-identifier'>identifier</a> as that would work better with\nassociations.\n",
                 "type": "String",
                 "src": {
                   "name": "1,470,23",
@@ -59,7 +56,7 @@
                 "$type": "property",
                 "name": "convertOnSet",
                 "optional": true,
-                "text": "Set to `false` to prevent any converters from being called on fields specified in\na {@link Ext.data.Model#method!set Ext.data.Model#set} operation.\n\n**Note:** Setting the config to `false` will only prevent the convert / calculate\ncall when the set `fieldName` param matches the field's `{@link #name}`.  In the\nfollowing example the calls to set `salary` will not execute the convert method\non `{@link #method!set set}` while the calls to set `vested` will execute the convert method on the\ninitial read as well as on `{@link #method!set set}`.\n\nExample model definition:\n\n    Ext.define('MyApp.model.Employee', {\n        extend: 'Ext.data.Model',\n        fields: ['yearsOfService', {\n            name: 'salary',\n            convert: function (val) {\n                var startingBonus = val * .1;\n                return val + startingBonus;\n            }\n        }, {\n            name: 'vested',\n            convert: function (val, record) {\n                return record.get('yearsOfService') >= 4;\n            },\n            depends: 'yearsOfService'\n        }],\n        convertOnSet: false\n    });\n\n    var tina = Ext.create('MyApp.model.Employee', {\n        salary: 50000,\n        yearsOfService: 3\n    });\n\n    console.log(tina.get('salary')); // logs 55000\n    console.log(tina.get('vested')); // logs false\n\n    tina.set({\n        salary: 60000,\n        yearsOfService: 4\n    });\n    console.log(tina.get('salary')); // logs 60000\n    console.log(tina.get('vested')); // logs true\n",
+                "text": "Set to `false` to prevent any converters from being called on fields specified in\na <a href='#!/api/Ext.data.Model-method-set'>Ext.data.Model#set</a> operation.\n\n**Note:** Setting the config to `false` will only prevent the convert / calculate\ncall when the set `fieldName` param matches the field's <a href='#!/api/Ext.data.Validation-name'>name</a>.  In the\nfollowing example the calls to set `salary` will not execute the convert method\non <a href='#!/api/Ext.data.Validation-method-set'>set</a> while the calls to set `vested` will execute the convert method on the\ninitial read as well as on <a href='#!/api/Ext.data.Validation-method-set'>set</a>.\n\nExample model definition:\n\n    Ext.define('MyApp.model.Employee', {\n        extend: 'Ext.data.Model',\n        fields: ['yearsOfService', {\n            name: 'salary',\n            convert: function (val) {\n                var startingBonus = val * .1;\n                return val + startingBonus;\n            }\n        }, {\n            name: 'vested',\n            convert: function (val, record) {\n                return record.get('yearsOfService') >= 4;\n            },\n            depends: 'yearsOfService'\n        }],\n        convertOnSet: false\n    });\n\n    var tina = Ext.create('MyApp.model.Employee', {\n        salary: 50000,\n        yearsOfService: 3\n    });\n\n    console.log(tina.get('salary')); // logs 55000\n    console.log(tina.get('vested')); // logs false\n\n    tina.set({\n        salary: 60000,\n        yearsOfService: 4\n    });\n    console.log(tina.get('salary')); // logs 60000\n    console.log(tina.get('vested')); // logs true\n",
                 "type": "Boolean",
                 "value": "true",
                 "src": {
@@ -72,7 +69,7 @@
               {
                 "$type": "property",
                 "name": "fields",
-                "text": "An Array of `{@link Ext.data.field.Field}` config objects, simply the field\n{@link Ext.data.field.Field#cfg!name Ext.data.field.Field#name}, or a mix of config objects and strings.\nIf just a name is given, the field type defaults to `auto`.\n\nIn a {@link Ext.data.field.Field} config object you may pass the alias of\nthe `Ext.data.field.*` type using the `type` config option.\n\n    // two fields are set:\n    // - an 'auto' field with a name of 'firstName'\n    // - and an Ext.data.field.Integer field with a name of 'age'\n    fields: ['firstName', {\n        type: 'int',\n        name: 'age'\n    }]\n\nFields will automatically be created at read time for any for any keys in the\ndata passed to the Model's {@link #cfg!proxy #proxy}\n{@link Ext.data.reader.Reader} whose name is not explicitly configured in\nthe `fields` config.\n\nExtending a Model class will inherit all the `fields` from the superclass /\nancestor classes.\n",
+                "text": "An Array of <a href='#!/api/Ext.data.field.Field'>Ext.data.field.Field</a> config objects, simply the field\n<a href='#!/api/Ext.data.field.Field-cfg-name'>Ext.data.field.Field#name</a>, or a mix of config objects and strings.\nIf just a name is given, the field type defaults to `auto`.\n\nIn a <a href='#!/api/Ext.data.field.Field'>Ext.data.field.Field</a> config object you may pass the alias of\nthe `Ext.data.field.*` type using the `type` config option.\n\n    // two fields are set:\n    // - an 'auto' field with a name of 'firstName'\n    // - and an Ext.data.field.Integer field with a name of 'age'\n    fields: ['firstName', {\n        type: 'int',\n        name: 'age'\n    }]\n\nFields will automatically be created at read time for any for any keys in the\ndata passed to the Model's <a href='#!/api/Ext.data.Validation-cfg-proxy'>proxy</a>\n<a href='#!/api/Ext.data.reader.Reader'>Ext.data.reader.Reader</a> whose name is not explicitly configured in\nthe `fields` config.\n\nExtending a Model class will inherit all the `fields` from the superclass /\nancestor classes.\n",
                 "type": "Object[]/String[]",
                 "src": {
                   "name": "1,654,33",
@@ -93,20 +90,9 @@
               },
               {
                 "$type": "property",
-                "name": "identifier",
-                "text": "The id generator to use for this model. The `{@link #cfg!identifier identifier}` generates values for the\n{@link #cfg!idProperty #idProperty} when no value is given. Records with client-side generated\nvalues for {@link #cfg!idProperty #idProperty} are called {@link #property!phantom #phantom} records since they are\nnot yet known to the server.\n\nThis can be overridden at the model level to provide a custom generator for a model.\nThe simplest form of this would be:\n\n     Ext.define('MyApp.data.MyModel', {\n         extend: 'Ext.data.Model',\n         requires: ['Ext.data.identifier.Sequential'],\n         identifier: 'sequential',\n         ...\n     });\n\nThe above would generate {@link Ext.data.identifier.Sequential} id's such\nas 1, 2, 3 etc..\n\nAnother useful id generator is {@link Ext.data.identifier.Uuid}:\n\n     Ext.define('MyApp.data.MyModel', {\n         extend: 'Ext.data.Model',\n         requires: ['Ext.data.identifier.Uuid'],\n         identifier: 'uuid',\n         ...\n     });\n\nAn id generator can also be further configured:\n\n     Ext.define('MyApp.data.MyModel', {\n         extend: 'Ext.data.Model',\n         identifier: {\n             type: 'sequential',\n             seed: 1000,\n             prefix: 'ID_'\n         }\n     });\n\nThe above would generate id's such as ID_1000, ID_1001, ID_1002 etc..\n\nIf multiple models share an id space, a single generator can be shared:\n\n     Ext.define('MyApp.data.MyModelX', {\n         extend: 'Ext.data.Model',\n         identifier: {\n             type: 'sequential',\n             id: 'xy'\n         }\n     });\n\n     Ext.define('MyApp.data.MyModelY', {\n         extend: 'Ext.data.Model',\n         identifier: {\n             type: 'sequential',\n             id: 'xy'\n         }\n     });\n\nFor more complex, shared id generators, a custom generator is the best approach.\nSee {@link Ext.data.identifier.Generator} for details on creating custom id generators.\n",
-                "type": "String/Object",
-                "src": {
-                  "name": "1,587,29",
-                  "text": "1,588,8,1844",
-                  "type": "1,587,14"
-                }
-              },
-              {
-                "$type": "property",
                 "name": "idProperty",
                 "optional": true,
-                "text": "The name of the field treated as this Model's unique id.\n\nIf changing the idProperty in a subclass, the generated id field will replace the one\ngenerated by the superclass, for example;\n\n     Ext.define('Super', {\n         extend: 'Ext.data.Model',\n         fields: ['name']\n     });\n\n     Ext.define('Sub', {\n         extend: 'Super',\n         idProperty: 'customId'\n     });\n\n     var fields = Super.getFields();\n     // Has 2 fields, \"name\" & \"id\"\n     console.log(fields[0].name, fields[1].name, fields.length);\n\n     fields = Sub.getFields();\n     // Has 2 fields, \"name\" & \"customId\", \"id\" is replaced\n     console.log(fields[0].name, fields[1].name, fields.length);\n\nThe data values for this field must be unique or there will be id value collisions\nin the {@link Ext.data.Store}.\n",
+                "text": "The name of the field treated as this Model's unique id.\n\nIf changing the idProperty in a subclass, the generated id field will replace the one\ngenerated by the superclass, for example;\n\n     Ext.define('Super', {\n         extend: 'Ext.data.Model',\n         fields: ['name']\n     });\n\n     Ext.define('Sub', {\n         extend: 'Super',\n         idProperty: 'customId'\n     });\n\n     var fields = Super.getFields();\n     // Has 2 fields, \"name\" & \"id\"\n     console.log(fields[0].name, fields[1].name, fields.length);\n\n     fields = Sub.getFields();\n     // Has 2 fields, \"name\" & \"customId\", \"id\" is replaced\n     console.log(fields[0].name, fields[1].name, fields.length);\n\nThe data values for this field must be unique or there will be id value collisions\nin the <a href='#!/api/Ext.data.Store'>Ext.data.Store</a>.\n",
                 "type": "String",
                 "value": "'id'",
                 "src": {
@@ -118,8 +104,19 @@
               },
               {
                 "$type": "property",
+                "name": "identifier",
+                "text": "The id generator to use for this model. The <a href='#!/api/Ext.data.Validation-cfg-identifier'>identifier</a> generates values for the\n<a href='#!/api/Ext.data.Validation-cfg-idProperty'>idProperty</a> when no value is given. Records with client-side generated\nvalues for <a href='#!/api/Ext.data.Validation-cfg-idProperty'>idProperty</a> are called <a href='#!/api/Ext.data.Validation-property-phantom'>phantom</a> records since they are\nnot yet known to the server.\n\nThis can be overridden at the model level to provide a custom generator for a model.\nThe simplest form of this would be:\n\n     Ext.define('MyApp.data.MyModel', {\n         extend: 'Ext.data.Model',\n         requires: ['Ext.data.identifier.Sequential'],\n         identifier: 'sequential',\n         ...\n     });\n\nThe above would generate <a href='#!/api/Ext.data.identifier.Sequential'>Ext.data.identifier.Sequential</a> id's such\nas 1, 2, 3 etc..\n\nAnother useful id generator is <a href='#!/api/Ext.data.identifier.Uuid'>Ext.data.identifier.Uuid</a>:\n\n     Ext.define('MyApp.data.MyModel', {\n         extend: 'Ext.data.Model',\n         requires: ['Ext.data.identifier.Uuid'],\n         identifier: 'uuid',\n         ...\n     });\n\nAn id generator can also be further configured:\n\n     Ext.define('MyApp.data.MyModel', {\n         extend: 'Ext.data.Model',\n         identifier: {\n             type: 'sequential',\n             seed: 1000,\n             prefix: 'ID_'\n         }\n     });\n\nThe above would generate id's such as ID_1000, ID_1001, ID_1002 etc..\n\nIf multiple models share an id space, a single generator can be shared:\n\n     Ext.define('MyApp.data.MyModelX', {\n         extend: 'Ext.data.Model',\n         identifier: {\n             type: 'sequential',\n             id: 'xy'\n         }\n     });\n\n     Ext.define('MyApp.data.MyModelY', {\n         extend: 'Ext.data.Model',\n         identifier: {\n             type: 'sequential',\n             id: 'xy'\n         }\n     });\n\nFor more complex, shared id generators, a custom generator is the best approach.\nSee <a href='#!/api/Ext.data.identifier.Generator'>Ext.data.identifier.Generator</a> for details on creating custom id generators.\n",
+                "type": "String/Object",
+                "src": {
+                  "name": "1,587,29",
+                  "text": "1,588,8,1844",
+                  "type": "1,587,14"
+                }
+              },
+              {
+                "$type": "property",
                 "name": "manyToMany",
-                "text": "A config object for a {@link Ext.data.schema.ManyToMany} association.\nSee the class description for {@link Ext.data.schema.ManyToMany} for\nconfiguration examples.\n",
+                "text": "A config object for a <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a> association.\nSee the class description for <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a> for\nconfiguration examples.\n",
                 "type": "Object",
                 "src": {
                   "name": "1,579,22",
@@ -130,7 +127,7 @@
               {
                 "$type": "property",
                 "name": "proxy",
-                "text": "The {@link Ext.data.proxy.Proxy} to use for this class.\n",
+                "text": "The <a href='#!/api/Ext.data.proxy.Proxy'>Ext.data.proxy.Proxy</a> to use for this class.\n",
                 "type": "String/Object/Ext.data.proxy.Proxy",
                 "src": {
                   "name": "1,730,50",
@@ -142,7 +139,7 @@
                 "$type": "property",
                 "name": "schema",
                 "optional": true,
-                "text": "The name of the {@link Ext.data.schema.Schema} to which this entity and its\nassociations belong. For details on custom schemas see `{@link Ext.data.schema.Schema}`.\n",
+                "text": "The name of the <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a> to which this entity and its\nassociations belong. For details on custom schemas see <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a>.\n",
                 "type": "String/Object",
                 "value": "'default'",
                 "src": {
@@ -156,7 +153,7 @@
                 "$type": "property",
                 "name": "validationSeparator",
                 "optional": true,
-                "text": "If specified this property is used to concatenate multiple errors for each field\nas reported by the `{@link #cfg!validators validators}`.\n",
+                "text": "If specified this property is used to concatenate multiple errors for each field\nas reported by the <a href='#!/api/Ext.data.Validation-cfg-validators'>validators</a>.\n",
                 "type": "String",
                 "value": "null",
                 "src": {
@@ -169,7 +166,7 @@
               {
                 "$type": "property",
                 "name": "validators",
-                "text": "An array of {@link Ext.data.validator.Validator} for this model.\n",
+                "text": "An array of <a href='#!/api/Ext.data.validator.Validator'>Ext.data.validator.Validator</a> for this model.\n",
                 "type": "Object[]",
                 "src": {
                   "name": "1,774,24",
@@ -197,7 +194,7 @@
               {
                 "$type": "method",
                 "name": "abort",
-                "text": "Aborts a pending {@link #load} operation. If the record is not loading, this does nothing.\n",
+                "text": "Aborts a pending <a href='#!/api/Ext.data.Validation-load'>load</a> operation. If the record is not loading, this does nothing.\n",
                 "src": {
                   "name": "1,1873,0",
                   "text": "1,1871,8,91"
@@ -206,29 +203,9 @@
               {
                 "$type": "method",
                 "access": "private",
-                "name": "addDeprecations",
-                "text": "This method applies a versioned, deprecation declaration to this class. This\nis typically called by the `deprecated` config.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "deprecations",
-                    "src": {
-                      "name": "2,120,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,118,12",
-                  "name": "2,120,0",
-                  "text": "2,116,12,125"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
                 "name": "attach",
                 "since": "5.0.0",
-                "text": "Attaches this instance to its associated `{@link #property!record record}`.\n",
+                "text": "Attaches this instance to its associated <a href='#!/api/Ext.data.Validation-property-record'>record</a>.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -252,7 +229,7 @@
               {
                 "$type": "method",
                 "name": "beginEdit",
-                "text": "Begins an edit. While in edit mode, no events (e.g.. the `update` event) are\nrelayed to the containing store. When an edit has begun, it must be followed by\neither `{@link #method!endEdit endEdit}` or `{@link #method!cancelEdit cancelEdit}`.\n",
+                "text": "Begins an edit. While in edit mode, no events (e.g.. the `update` event) are\nrelayed to the containing store. When an edit has begun, it must be followed by\neither <a href='#!/api/Ext.data.Validation-method-endEdit'>endEdit</a> or <a href='#!/api/Ext.data.Validation-method-cancelEdit'>cancelEdit</a>.\n",
                 "src": {
                   "name": "1,852,0",
                   "text": "1,848,8,191"
@@ -262,7 +239,7 @@
                 "$type": "method",
                 "access": "private",
                 "name": "callJoined",
-                "text": "Helper function used by afterEdit, afterReject and afterCommit. Calls the given\nmethod on the `{@link Ext.data.Store}` that this instance has {@link #method!join #join}, if any.\nThe store function will always be called with the model instance as its single\nargument. If this model is joined to a Ext.data.NodeStore, then this method calls\nthe given method on the NodeStore and the associated Ext.data.TreeStore.\n",
+                "text": "Helper function used by afterEdit, afterReject and afterCommit. Calls the given\nmethod on the <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> that this instance has <a href='#!/api/Ext.data.Validation-method-join'>join</a>, if any.\nThe store function will always be called with the model instance as its single\nargument. If this model is joined to a Ext.data.NodeStore, then this method calls\nthe given method on the NodeStore and the associated Ext.data.TreeStore.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -296,72 +273,6 @@
               },
               {
                 "$type": "method",
-                "access": "protected",
-                "name": "callParent",
-                "text": "Call the \"parent\" method of the current method. That is the method previously\noverridden by derivation or by an override (see {@link Ext#method!define Ext#define}).\n\n     Ext.define('My.Base', {\n         constructor: function (x) {\n             this.x = x;\n         },\n\n         statics: {\n             method: function (x) {\n                 return x;\n             }\n         }\n     });\n\n     Ext.define('My.Derived', {\n         extend: 'My.Base',\n\n         constructor: function () {\n             this.callParent([21]);\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // alerts 21\n\nThis can be used with an override as follows:\n\n     Ext.define('My.DerivedOverride', {\n         override: 'My.Derived',\n\n         constructor: function (x) {\n             this.callParent([x*2]); // calls original My.Derived constructor\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // now alerts 42\n\nThis also works with static and private methods.\n\n     Ext.define('My.Derived2', {\n         extend: 'My.Base',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Base.method\n             }\n         }\n     });\n\n     alert(My.Base.method(10));     // alerts 10\n     alert(My.Derived2.method(10)); // alerts 20\n\nLastly, it also works with overridden static methods.\n\n     Ext.define('My.Derived2Override', {\n         override: 'My.Derived2',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Derived2.method\n             }\n         }\n     });\n\n     alert(My.Derived2.method(10); // now alerts 40\n\nTo override a method and replace it and also call the superclass method, use\n{@link #method!callSuper #method-callSuper}. This is often done to patch a method to fix a bug.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "args",
-                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callParent(arguments)`\n",
-                    "type": "Array/Arguments",
-                    "src": {
-                      "name": "2,1251,37",
-                      "text": "2,1251,42,57:2,1252,12,67",
-                      "type": "2,1251,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "Returns the result of calling the parent method\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,1253,29,48",
-                      "type": "2,1253,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1250,12",
-                  "name": "2,1255,0",
-                  "text": "2,1175,12,1853"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "name": "callSuper",
-                "text": "This method is used by an **override** to call the superclass method but\nbypass any overridden method. This is often done to \"patch\" a method that\ncontains a bug but for whatever reason cannot be fixed directly.\n\nConsider:\n\n     Ext.define('Ext.some.Class', {\n         method: function () {\n             console.log('Good');\n         }\n     });\n\n     Ext.define('Ext.some.DerivedClass', {\n         extend: 'Ext.some.Class',\n\n         method: function () {\n             console.log('Bad');\n\n             // ... logic but with a bug ...\n\n             this.callParent();\n         }\n     });\n\nTo patch the bug in `Ext.some.DerivedClass.method`, the typical solution is to create an\noverride:\n\n     Ext.define('App.patches.DerivedClass', {\n         override: 'Ext.some.DerivedClass',\n\n         method: function () {\n             console.log('Fixed');\n\n             // ... logic but with bug fixed ...\n\n             this.callSuper();\n         }\n     });\n\nThe patch method cannot use {@link #method!callParent #method-callParent} to call the superclass\n`method` since that would call the overridden method containing the bug. In\nother words, the above patch would only produce \"Fixed\" then \"Good\" in the\nconsole log, whereas, using `callParent` would produce \"Fixed\" then \"Bad\"\nthen \"Good\".\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "args",
-                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callSuper(arguments)`\n",
-                    "type": "Array/Arguments",
-                    "src": {
-                      "name": "2,1338,37",
-                      "text": "2,1338,42,57:2,1339,12,66",
-                      "type": "2,1338,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "Returns the result of calling the superclass method\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,1340,29,52",
-                      "type": "2,1340,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1337,12",
-                  "name": "2,1342,0",
-                  "text": "2,1292,12,1266"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "cancelEdit",
                 "text": "Cancels all changes made in the current edit operation.\n",
                 "src": {
@@ -372,7 +283,7 @@
               {
                 "$type": "method",
                 "name": "clone",
-                "text": "Creates a clone of this record. States like `{@link #property!dropped dropped}`, `{@link #property!phantom phantom}` and `{@link #property!dirty dirty}` are\nall preserved in the cloned record.\n",
+                "text": "Creates a clone of this record. States like <a href='#!/api/Ext.data.Validation-property-dropped'>dropped</a>, <a href='#!/api/Ext.data.Validation-property-phantom'>phantom</a> and <a href='#!/api/Ext.data.Validation-property-dirty'>dirty</a> are\nall preserved in the cloned record.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -404,7 +315,7 @@
               {
                 "$type": "method",
                 "name": "commit",
-                "text": "Usually called by the {@link Ext.data.Store} which owns the model instance. Commits all changes made to the\ninstance since either creation or the last commit operation.\n\nDevelopers should subscribe to the {@link Ext.data.Store#event!update Ext.data.Store#event-update} event to have their code notified of commit\noperations.\n",
+                "text": "Usually called by the <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> which owns the model instance. Commits all changes made to the\ninstance since either creation or the last commit operation.\n\nDevelopers should subscribe to the <a href='#!/api/Ext.data.Store-event-update'>Ext.data.Store#event-update</a> event to have their code notified of commit\noperations.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -424,7 +335,7 @@
                     "$type": "param",
                     "name": "modifiedFieldNames",
                     "optional": true,
-                    "text": "Array of field names changed during sync with server if known.\nOmit or pass `{@link null}` if unknown. An empty array means that it is known that no fields were modified\nby the server's response.\nDefaults to false.\n",
+                    "text": "Array of field names changed during sync with server if known.\nOmit or pass <a href='#!/api/null'>null</a> if unknown. An empty array means that it is known that no fields were modified\nby the server's response.\nDefaults to false.\n",
                     "type": "String[]",
                     "src": {
                       "name": "1,1286,27",
@@ -440,37 +351,14 @@
               },
               {
                 "$type": "method",
-                "name": "constructor",
-                "text": "Creates new Object.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "value",
-                    "optional": true,
-                    "text": "The value to wrap.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "3,40,21",
-                      "text": "3,40,28,19",
-                      "type": "3,40,12"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,38,12",
-                  "text": "3,39,4,20"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "copy",
-                "text": "Creates a clean copy of this record. The returned record will not consider any its\nfields as modified.\n\nTo generate a phantom instance with a new id pass `{@link null}`:\n\n    var rec = record.copy(null); // clone the record but no id (one is generated)\n",
+                "text": "Creates a clean copy of this record. The returned record will not consider any its\nfields as modified.\n\nTo generate a phantom instance with a new id pass <a href='#!/api/null'>null</a>:\n\n    var rec = record.copy(null); // clone the record but no id (one is generated)\n",
                 "items": [
                   {
                     "$type": "param",
                     "name": "newId",
                     "optional": true,
-                    "text": "A new id, defaults to the id of the instance being copied.\nSee `{@link Ext.data.Model#cfg!idProperty Ext.data.Model#idProperty}`.\n",
+                    "text": "A new id, defaults to the id of the instance being copied.\nSee <a href='#!/api/Ext.data.Model-cfg-idProperty'>Ext.data.Model#idProperty</a>.\n",
                     "type": "String",
                     "src": {
                       "name": "1,1453,25",
@@ -538,18 +426,9 @@
               },
               {
                 "$type": "method",
-                "name": "destroy",
-                "text": "This method is called to cleanup an object and its resources. After calling\nthis method, the object should not be used any further.\n",
-                "src": {
-                  "name": "2,1626,0",
-                  "text": "2,1623,12,132"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "drop",
                 "since": "5.0.0",
-                "text": "Marks this record as `{@link #property!dropped dropped}` and waiting to be deleted on the server. When a\nrecord is dropped, it is automatically removed from all association stores and\nany child records associated to this record are also dropped (a \"cascade delete\")\ndepending on the `cascade` parameter.\n",
+                "text": "Marks this record as <a href='#!/api/Ext.data.Validation-property-dropped'>dropped</a> and waiting to be deleted on the server. When a\nrecord is dropped, it is automatically removed from all association stores and\nany child records associated to this record are also dropped (a \"cascade delete\")\ndepending on the `cascade` parameter.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -610,7 +489,7 @@
               {
                 "$type": "method",
                 "inheritdoc": "#method-load",
-                "localDoc": "Destroys the model using the configured proxy.  The erase action is\nasynchronous.  Any processing of the erased record should be done in a callback.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n\n    // pass the phantom record data to the server to be saved\n    user.save({\n        success: function(record, operation) {\n            // do something if the save succeeded\n            // erase the created record\n            record.erase({\n                failure: function(record, operation) {\n                    // do something if the erase failed\n                },\n                success: function(record, operation) {\n                    // do something if the erase succeeded\n                },\n                callback: function(record, operation, success) {\n                    // do something if the erase succeeded or failed\n                }\n            });\n        }\n    });\n\n**NOTE:** If a {@link #phantom} record is erased it will not be processed via the\nproxy.  However, any passed `success` or `callback` functions will be called.\n\nThe options param is an {@link Ext.data.operation.Destroy} config object\ncontaining success, failure and callback functions, plus optional scope.\n",
+                "localDoc": "Destroys the model using the configured proxy.  The erase action is\nasynchronous.  Any processing of the erased record should be done in a callback.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n\n    // pass the phantom record data to the server to be saved\n    user.save({\n        success: function(record, operation) {\n            // do something if the save succeeded\n            // erase the created record\n            record.erase({\n                failure: function(record, operation) {\n                    // do something if the erase failed\n                },\n                success: function(record, operation) {\n                    // do something if the erase succeeded\n                },\n                callback: function(record, operation, success) {\n                    // do something if the erase succeeded or failed\n                }\n            });\n        }\n    });\n\n**NOTE:** If a <a href='#!/api/Ext.data.Validation-phantom'>phantom</a> record is erased it will not be processed via the\nproxy.  However, any passed `success` or `callback` functions will be called.\n\nThe options param is an <a href='#!/api/Ext.data.operation.Destroy'>Ext.data.operation.Destroy</a> config object\ncontaining success, failure and callback functions, plus optional scope.\n",
                 "name": "erase",
                 "items": [
                   {
@@ -782,7 +661,7 @@
               {
                 "$type": "method",
                 "name": "getChanges",
-                "text": "Gets an object of only the fields that have been modified since this record was\ncreated or committed. Only persistent fields are tracked in the `{@link #property!modified modified}` set so\nthis method will only return changes to persistent fields.\n\nFor more control over the returned data, see `{@link #method!getData #getData}`.\n",
+                "text": "Gets an object of only the fields that have been modified since this record was\ncreated or committed. Only persistent fields are tracked in the <a href='#!/api/Ext.data.Validation-property-modified'>modified</a> set so\nthis method will only return changes to persistent fields.\n\nFor more control over the returned data, see <a href='#!/api/Ext.data.Validation-method-getData'>getData</a>.\n",
                 "items": [
                   {
                     "$type": "return",
@@ -795,52 +674,6 @@
                 "src": {
                   "name": "1,1619,0",
                   "text": "1,1612,8,287"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getConfig",
-                "text": "Returns a specified config property value. If the name parameter is not passed,\nall current configuration options will be returned as key value pairs.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "optional": true,
-                    "text": "The name of the config property to get.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "2,1469,29",
-                      "text": "2,1469,35,40",
-                      "type": "2,1469,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "peek",
-                    "optional": true,
-                    "text": "`true` to peek at the raw value without calling the getter.\n",
-                    "type": "Boolean",
-                    "value": "false",
-                    "src": {
-                      "name": "2,1470,30",
-                      "text": "2,1470,42,60",
-                      "type": "2,1470,20",
-                      "value": "2,1470,35"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The config property value.\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,1471,29,27",
-                      "type": "2,1471,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "2,1473,0",
-                  "text": "2,1466,12,151"
                 }
               },
               {
@@ -863,15 +696,6 @@
               },
               {
                 "$type": "method",
-                "access": "private",
-                "name": "getCurrentConfig",
-                "src": {
-                  "access": "2,1506,12",
-                  "name": "2,1508,0"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "getData",
                 "text": "Gets all values for each field in this model and returns an object containing the\ncurrent data. This can be tuned by passing an `options` object with various\nproperties describing the desired result. Passing `true` simply returns all fields\n*and* all associated record data.\n",
                 "items": [
@@ -886,7 +710,7 @@
                         "$type": "property",
                         "name": "associated",
                         "optional": true,
-                        "text": "Pass `true` to include associated data.\nThis is equivalent to pass `true` as the only argument. See `{@link #method!getAssociatedData getAssociatedData}`.\n",
+                        "text": "Pass `true` to include associated data.\nThis is equivalent to pass `true` as the only argument. See <a href='#!/api/Ext.data.Validation-method-getAssociatedData'>getAssociatedData</a>.\n",
                         "type": "Boolean",
                         "value": "false",
                         "src": {
@@ -993,7 +817,7 @@
               {
                 "$type": "method",
                 "name": "getId",
-                "text": "Returns the unique ID allocated to this model instance as defined by `{@link #cfg!idProperty idProperty}`.\n",
+                "text": "Returns the unique ID allocated to this model instance as defined by <a href='#!/api/Ext.data.Validation-cfg-idProperty'>idProperty</a>.\n",
                 "items": [
                   {
                     "$type": "return",
@@ -1032,40 +856,8 @@
               },
               {
                 "$type": "method",
-                "name": "getInitialConfig",
-                "text": "Returns the initial configuration passed to the constructor when\ninstantiating this class.\n\nGiven this example Ext.button.Button definition and instance:\n\n    Ext.define('MyApp.view.Button', {\n        extend: 'Ext.button.Button',\n        xtype: 'mybutton',\n\n        scale: 'large',\n        enableToggle: true\n    });\n\n    var btn = Ext.create({\n        xtype: 'mybutton',\n        renderTo: Ext.getBody(),\n        text: 'Test Button'\n    });\n\nCalling `btn.getInitialConfig()` would return an object including the config\noptions passed to the `{@link #static-method!create create}` method:\n\n    xtype: 'mybutton',\n    renderTo: // The document body itself\n    text: 'Test Button'\n\nCalling `btn.getInitialConfig('text')`returns **'Test Button'**.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "optional": true,
-                    "text": "Name of the config option to return.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "2,1551,29",
-                      "text": "2,1551,35,37",
-                      "type": "2,1551,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The full config object or a single config value\nwhen `name` parameter specified.\n",
-                    "type": "Object/Mixed",
-                    "src": {
-                      "text": "2,1552,35,48:2,1553,12,33",
-                      "type": "2,1552,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "2,1555,0",
-                  "text": "2,1523,12,715"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "getModified",
-                "text": "Returns the original value of a modified field. If there is no modified value,\n`{@link undefined}` will be return. Also see {@link #method!isModified #isModified}.\n",
+                "text": "Returns the original value of a modified field. If there is no modified value,\n<a href='#!/api/undefined'>undefined</a> will be return. Also see <a href='#!/api/Ext.data.Validation-method-isModified'>isModified</a>.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1103,7 +895,7 @@
                     "$type": "param",
                     "name": "old",
                     "optional": true,
-                    "text": "The saved data from `{@link #method!beginEdit beginEdit}`.\n",
+                    "text": "The saved data from <a href='#!/api/Ext.data.Validation-method-beginEdit'>beginEdit</a>.\n",
                     "type": "Object",
                     "src": {
                       "name": "1,2737,29",
@@ -1131,7 +923,7 @@
                 "$type": "method",
                 "access": "protected",
                 "name": "getObservableId",
-                "text": "Return a unique observable ID. Model is not observable but tree nodes (`{@link Ext.data.NodeInterface}`) are, so\nthey must be globally unique within the {@link #observableType}.\n",
+                "text": "Return a unique observable ID. Model is not observable but tree nodes (<a href='#!/api/Ext.data.NodeInterface'>Ext.data.NodeInterface</a>) are, so\nthey must be globally unique within the <a href='#!/api/Ext.data.Validation-observableType'>observableType</a>.\n",
                 "src": {
                   "access": "1,951,8",
                   "name": "1,953,0",
@@ -1146,7 +938,7 @@
                   {
                     "$type": "param",
                     "name": "fieldName",
-                    "text": "The field's {@link Ext.data.field.Field#cfg!name Ext.data.field.Field#name}.\n",
+                    "text": "The field's <a href='#!/api/Ext.data.field.Field-cfg-name'>Ext.data.field.Field#name</a>.\n",
                     "type": "String",
                     "src": {
                       "name": "1,969,24",
@@ -1156,7 +948,7 @@
                   },
                   {
                     "$type": "return",
-                    "text": "The value of the given field prior to its current value. `{@link undefined}`\nif there is no previous value;\n",
+                    "text": "The value of the given field prior to its current value. <a href='#!/api/undefined'>undefined</a>\nif there is no previous value;\n",
                     "type": "Object",
                     "src": {
                       "text": "1,970,25,69:1,971,8,31",
@@ -1213,13 +1005,13 @@
                 "$type": "method",
                 "name": "getValidation",
                 "since": "5.0.0",
-                "text": "Returns the `{@link Ext.data.Validation}` record holding the results of this record's\n`{@link #cfg!validators validators}`. This record is lazily created on first request and is then kept on\nthis record to be updated later.\n\nSee the class description for more about `{@link #cfg!validators validators}`.\n",
+                "text": "Returns the <a href='#!/api/Ext.data.Validation'>Ext.data.Validation</a> record holding the results of this record's\n<a href='#!/api/Ext.data.Validation-cfg-validators'>validators</a>. This record is lazily created on first request and is then kept on\nthis record to be updated later.\n\nSee the class description for more about <a href='#!/api/Ext.data.Validation-cfg-validators'>validators</a>.\n",
                 "items": [
                   {
                     "$type": "param",
                     "name": "refresh",
                     "optional": true,
-                    "text": "Pass `false` to not call the `{@link #method!refresh refresh}` method on the\nvalidation instance prior to returning it. Pass `true` to force a `{@link #method!refresh refresh}` of the\nvalidation instance. By default the returned record is only refreshed if changes\nhave been made to this record.\n",
+                    "text": "Pass `false` to not call the <a href='#!/api/Ext.data.Validation-method-refresh'>refresh</a> method on the\nvalidation instance prior to returning it. Pass `true` to force a <a href='#!/api/Ext.data.Validation-method-refresh'>refresh</a> of the\nvalidation instance. By default the returned record is only refreshed if changes\nhave been made to this record.\n",
                     "type": "Boolean",
                     "src": {
                       "name": "1,1490,26",
@@ -1241,86 +1033,6 @@
                   "name": "1,1497,0",
                   "since": "1,1495,15",
                   "text": "1,1484,8,249"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "hasConfig",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "config",
-                    "src": {
-                      "name": "2,1516,19"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1515,12",
-                  "name": "2,1518,0"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "hasOwnProperty",
-                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from `{@link Object}` inherits the `{@link #method!hasOwnProperty hasOwnProperty}` method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "prop",
-                    "text": "The name of the property to test.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "3,100,20",
-                      "text": "3,100,25,34",
-                      "type": "3,100,12"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "3,101,22,57:3,102,4,15",
-                      "type": "3,101,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,53,12",
-                  "text": "3,54,4,1520"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "name": "initConfig",
-                "text": "Initialize configuration for this class. a typical example:\n\n    Ext.define('My.awesome.Class', {\n        // The default config\n        config: {\n            name: 'Awesome',\n            isAwesome: true\n        },\n\n        constructor: function(config) {\n            this.initConfig(config);\n        }\n    });\n\n    var awesome = new My.awesome.Class({\n        name: 'Super Awesome'\n    });\n\n    alert(awesome.getName()); // 'Super Awesome'\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "config",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,1449,28",
-                      "type": "2,1449,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,1450,31,5",
-                      "type": "2,1450,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1448,12",
-                  "name": "2,1452,0",
-                  "text": "2,1428,12,441"
                 }
               },
               {
@@ -1370,7 +1082,7 @@
               {
                 "$type": "method",
                 "name": "isLoading",
-                "text": "Checks whether this model is loading data from the {@link #cfg!proxy #proxy}.\n",
+                "text": "Checks whether this model is loading data from the <a href='#!/api/Ext.data.Validation-cfg-proxy'>proxy</a>.\n",
                 "items": [
                   {
                     "$type": "return",
@@ -1390,12 +1102,12 @@
               {
                 "$type": "method",
                 "name": "isModified",
-                "text": "Returns true if the passed field name has been `{@link #property!modified #modified}` since the load or last commit.\n",
+                "text": "Returns true if the passed field name has been <a href='#!/api/Ext.data.Validation-property-modified'>modified</a> since the load or last commit.\n",
                 "items": [
                   {
                     "$type": "param",
                     "name": "fieldName",
-                    "text": "The field's {@link Ext.data.field.Field#cfg!name Ext.data.field.Field#name}.\n",
+                    "text": "The field's <a href='#!/api/Ext.data.field.Field-cfg-name'>Ext.data.field.Field#name</a>.\n",
                     "type": "String",
                     "src": {
                       "name": "1,980,24",
@@ -1414,48 +1126,6 @@
                 "src": {
                   "name": "1,983,0",
                   "text": "1,979,8,98"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "isPrototypeOf",
-                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n`{@link #method!isPrototypeOf isPrototypeOf}` allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "prototype",
-                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "3,148,20",
-                      "text": "3,148,30,71:3,149,4,18",
-                      "type": "3,148,12"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "object",
-                    "text": "the object whose prototype chain will be searched\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "3,150,20",
-                      "text": "3,150,27,50",
-                      "type": "3,150,12"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "Returns true if object is a prototype and false if not.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "3,151,22,56",
-                      "type": "3,151,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,106,12",
-                  "text": "3,107,4,1084"
                 }
               },
               {
@@ -1500,47 +1170,7 @@
               },
               {
                 "$type": "method",
-                "access": "private",
-                "name": "link",
-                "text": "Adds a \"destroyable\" object to an internal list of objects that will be destroyed\nwhen this instance is destroyed (via `{@link #method!destroy #destroy}`).\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "type": "String",
-                    "src": {
-                      "name": "2,1571,28",
-                      "type": "2,1571,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "value",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,1572,28",
-                      "type": "2,1572,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The `value` passed.\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,1573,29,20",
-                      "type": "2,1573,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1574,12",
-                  "name": "2,1576,0",
-                  "text": "2,1569,12,140"
-                }
-              },
-              {
-                "$type": "method",
-                "localDoc": "Loads the model instance using the configured proxy.  The load action\nis asynchronous.  Any processing of the loaded record should be done in a\ncallback.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User();\n    user.load({\n        scope: this,\n        failure: function(record, operation) {\n            // do something if the load failed\n        },\n        success: function(record, operation) {\n            // do something if the load succeeded\n        },\n        callback: function(record, operation, success) {\n            // do something whether the load succeeded or failed\n        }\n    });\n\nThe options param is an {@link Ext.data.operation.Read} config object containing\nsuccess, failure and callback functions, plus optional scope.\n",
+                "localDoc": "Loads the model instance using the configured proxy.  The load action\nis asynchronous.  Any processing of the loaded record should be done in a\ncallback.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User();\n    user.load({\n        scope: this,\n        failure: function(record, operation) {\n            // do something if the load failed\n        },\n        success: function(record, operation) {\n            // do something if the load succeeded\n        },\n        callback: function(record, operation, success) {\n            // do something whether the load succeeded or failed\n        }\n    });\n\nThe options param is an <a href='#!/api/Ext.data.operation.Read'>Ext.data.operation.Read</a> config object containing\nsuccess, failure and callback functions, plus optional scope.\n",
                 "name": "load",
                 "items": [
                   {
@@ -1704,7 +1334,7 @@
                 "access": "protected",
                 "name": "onLoad",
                 "template": true,
-                "text": "This method is called by the {@link Ext.data.reader.Reader} after loading a model from\nthe server. This is after processing any inline associations that are available.\n",
+                "text": "This method is called by the <a href='#!/api/Ext.data.reader.Reader'>Ext.data.reader.Reader</a> after loading a model from\nthe server. This is after processing any inline associations that are available.\n",
                 "src": {
                   "access": "1,1645,8",
                   "name": "1,1643,16",
@@ -1714,41 +1344,10 @@
               },
               {
                 "$type": "method",
-                "name": "propertyIsEnumerable",
-                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a `{@link #method!propertyIsEnumerable propertyIsEnumerable}` method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of `{@link #method!propertyIsEnumerable propertyIsEnumerable}` on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "prop",
-                    "text": "The name of the property to test.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "3,220,20",
-                      "text": "3,220,25,34",
-                      "type": "3,220,12"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "3,221,22,57:3,222,4,22",
-                      "type": "3,221,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,155,12",
-                  "text": "3,156,4,2313"
-                }
-              },
-              {
-                "$type": "method",
                 "access": "private",
                 "name": "refresh",
                 "since": "5.0.0",
-                "text": "This method updates the state of this record against its associated `{@link #property!record record}`. This\nmethod should not need to be called directly as it is internally called when this\nrecord is returned by `{@link Ext.data.Model#method!getValidation Ext.data.Model#getValidation}`.\n",
+                "text": "This method updates the state of this record against its associated <a href='#!/api/Ext.data.Validation-property-record'>record</a>. This\nmethod should not need to be called directly as it is internally called when this\nrecord is returned by <a href='#!/api/Ext.data.Model-method-getValidation'>Ext.data.Model#getValidation</a>.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1775,7 +1374,7 @@
               {
                 "$type": "method",
                 "name": "reject",
-                "text": "Usually called by the {@link Ext.data.Store} to which this model instance has been {@link #method!join #join}. Rejects\nall changes made to the model instance since either creation, or the last commit operation. Modified fields are\nreverted to their original values.\n\nDevelopers should subscribe to the {@link Ext.data.Store#event!update Ext.data.Store#event-update} event to have their code notified of reject\noperations.\n",
+                "text": "Usually called by the <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> to which this model instance has been <a href='#!/api/Ext.data.Validation-method-join'>join</a>. Rejects\nall changes made to the model instance since either creation, or the last commit operation. Modified fields are\nreverted to their original values.\n\nDevelopers should subscribe to the <a href='#!/api/Ext.data.Store-event-update'>Ext.data.Store#event-update</a> event to have their code notified of reject\noperations.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1800,12 +1399,12 @@
               {
                 "$type": "method",
                 "inheritdoc": "#method-load",
-                "localDoc": "Saves the model instance using the configured proxy.  The save action\nis asynchronous.  Any processing of the saved record should be done in a callback.\n\nCreate example:\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n\n    // pass the phantom record data to the server to be saved\n    user.save({\n        failure: function(record, operation) {\n            // do something if the save failed\n        },\n        success: function(record, operation) {\n            // do something if the save succeeded\n        },\n        callback: function(record, operation, success) {\n            // do something whether the save succeeded or failed\n        }\n    });\n\nThe response from a create operation should include the ID for the newly created\nrecord:\n\n    // sample response\n    {\n        success: true,\n        id: 1\n    }\n\n    // the id may be nested if the proxy's reader has a rootProperty config\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        proxy: {\n            type: 'ajax',\n            url: 'server.url',\n            reader: {\n                type: 'ajax',\n                rootProperty: 'data'\n            }\n        }\n    });\n\n    // sample nested response\n    {\n        success: true,\n        data: {\n            id: 1\n        }\n    }\n\n(Create + ) Update example:\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n    user.save({\n        success: function(record, operation) {\n            record.set('name', 'Bar');\n            // updates the remote record via the proxy\n            record.save();\n        }\n    });\n\n(Create + ) Destroy example - see also {@link #erase}:\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n    user.save({\n        success: function(record, operation) {\n            record.drop();\n            // destroys the remote record via the proxy\n            record.save();\n        }\n    });\n\n**NOTE:** If a {@link #phantom} record is {@link #drop dropped} and subsequently\nsaved it will not be processed via the proxy.  However, any passed `success`\nor `callback` functions will be called.\n\nThe options param is an Operation config object containing success, failure and\ncallback functions, plus optional scope.  The type of Operation depends on the\nstate of the model being saved.\n\n - {@link #phantom} model - {@link Ext.data.operation.Create}\n - {@link #isModified modified} model - {@link Ext.data.operation.Update}\n - {@link #dropped} model - {@link Ext.data.operation.Destroy}\n",
+                "localDoc": "Saves the model instance using the configured proxy.  The save action\nis asynchronous.  Any processing of the saved record should be done in a callback.\n\nCreate example:\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n\n    // pass the phantom record data to the server to be saved\n    user.save({\n        failure: function(record, operation) {\n            // do something if the save failed\n        },\n        success: function(record, operation) {\n            // do something if the save succeeded\n        },\n        callback: function(record, operation, success) {\n            // do something whether the save succeeded or failed\n        }\n    });\n\nThe response from a create operation should include the ID for the newly created\nrecord:\n\n    // sample response\n    {\n        success: true,\n        id: 1\n    }\n\n    // the id may be nested if the proxy's reader has a rootProperty config\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        proxy: {\n            type: 'ajax',\n            url: 'server.url',\n            reader: {\n                type: 'ajax',\n                rootProperty: 'data'\n            }\n        }\n    });\n\n    // sample nested response\n    {\n        success: true,\n        data: {\n            id: 1\n        }\n    }\n\n(Create + ) Update example:\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n    user.save({\n        success: function(record, operation) {\n            record.set('name', 'Bar');\n            // updates the remote record via the proxy\n            record.save();\n        }\n    });\n\n(Create + ) Destroy example - see also <a href='#!/api/Ext.data.Validation-erase'>erase</a>:\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n    user.save({\n        success: function(record, operation) {\n            record.drop();\n            // destroys the remote record via the proxy\n            record.save();\n        }\n    });\n\n**NOTE:** If a <a href='#!/api/Ext.data.Validation-phantom'>phantom</a> record is <a href='#!/api/Ext.data.Validation-drop'>dropped</a> and subsequently\nsaved it will not be processed via the proxy.  However, any passed `success`\nor `callback` functions will be called.\n\nThe options param is an Operation config object containing success, failure and\ncallback functions, plus optional scope.  The type of Operation depends on the\nstate of the model being saved.\n\n - <a href='#!/api/Ext.data.Validation-phantom'>phantom</a> model - <a href='#!/api/Ext.data.operation.Create'>Ext.data.operation.Create</a>\n - <a href='#!/api/Ext.data.Validation-isModified'>modified</a> model - <a href='#!/api/Ext.data.operation.Update'>Ext.data.operation.Update</a>\n - <a href='#!/api/Ext.data.Validation-dropped'>dropped</a> model - <a href='#!/api/Ext.data.operation.Destroy'>Ext.data.operation.Destroy</a>\n",
                 "name": "save",
                 "items": [
                   {
                     "$type": "return",
-                    "text": "The operation instance for saving this model.  The type of operation returned\ndepends on the model state at the time of the action.\n\n - {@link #property!phantom #phantom} model - {@link Ext.data.operation.Create}\n - {@link #method!isModified #isModified} model - {@link Ext.data.operation.Update}\n - {@link #property!dropped #dropped} model - {@link Ext.data.operation.Destroy}\n",
+                    "text": "The operation instance for saving this model.  The type of operation returned\ndepends on the model state at the time of the action.\n\n - <a href='#!/api/Ext.data.Validation-property-phantom'>phantom</a> model - <a href='#!/api/Ext.data.operation.Create'>Ext.data.operation.Create</a>\n - <a href='#!/api/Ext.data.Validation-method-isModified'>isModified</a> model - <a href='#!/api/Ext.data.operation.Update'>Ext.data.operation.Update</a>\n - <a href='#!/api/Ext.data.Validation-property-dropped'>dropped</a> model - <a href='#!/api/Ext.data.operation.Destroy'>Ext.data.operation.Destroy</a>\n",
                     "type": "Ext.data.operation.Create/Ext.data.operation.Update/Ext.data.operation.Destroy",
                     "src": {
                       "text": "1,2159,8,332",
@@ -1829,7 +1428,7 @@
               {
                 "$type": "method",
                 "name": "set",
-                "text": "Sets the given field to the given value. For example:\n\n     record.set('name', 'value');\n\nThis method can also be passed an object containing multiple values to set at once.\nFor example:\n\n     record.set({\n         name: 'value',\n         age: 42\n     });\n\nThe following store events are fired when the modified record belongs to a store:\n\n - {@link Ext.data.Store#event!beginupdate Ext.data.Store#event-beginupdate}\n - {@link Ext.data.Store#event!update Ext.data.Store#event-update}\n - {@link Ext.data.Store#event!endupdate Ext.data.Store#event-endupdate}\n",
+                "text": "Sets the given field to the given value. For example:\n\n     record.set('name', 'value');\n\nThis method can also be passed an object containing multiple values to set at once.\nFor example:\n\n     record.set({\n         name: 'value',\n         age: 42\n     });\n\nThe following store events are fired when the modified record belongs to a store:\n\n - <a href='#!/api/Ext.data.Store-event-beginupdate'>Ext.data.Store#event-beginupdate</a>\n - <a href='#!/api/Ext.data.Store-event-update'>Ext.data.Store#event-update</a>\n - <a href='#!/api/Ext.data.Store-event-endupdate'>Ext.data.Store#event-endupdate</a>\n",
                 "items": [
                   {
                     "$type": "param",
@@ -1878,7 +1477,7 @@
                         "$type": "property",
                         "name": "dirty",
                         "optional": true,
-                        "text": "Pass `false` if the field values are to be\nunderstood as non-dirty (fresh from the server). When `true`, this change will be\nreflected in the `{@link #property!modified modified}` collection.\n",
+                        "text": "Pass `false` if the field values are to be\nunderstood as non-dirty (fresh from the server). When `true`, this change will be\nreflected in the <a href='#!/api/Ext.data.Validation-property-modified'>modified</a> collection.\n",
                         "type": "Boolean",
                         "value": "true",
                         "src": {
@@ -1892,7 +1491,7 @@
                         "$type": "property",
                         "name": "commit",
                         "optional": true,
-                        "text": "Pass `true` to call the {@link #method!commit #commit} method\nafter setting fields. If this option is passed, the usual after change processing will\nbe bypassed. {@link #method!commit #commit} will be called even if there are no field changes.\n",
+                        "text": "Pass `true` to call the <a href='#!/api/Ext.data.Validation-method-commit'>commit</a> method\nafter setting fields. If this option is passed, the usual after change processing will\nbe bypassed. <a href='#!/api/Ext.data.Validation-method-commit'>commit</a> will be called even if there are no field changes.\n",
                         "type": "Boolean",
                         "value": "false",
                         "src": {
@@ -1940,49 +1539,6 @@
               },
               {
                 "$type": "method",
-                "name": "setConfig",
-                "text": "Sets a single/multiple configuration options.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "text": "The name of the property to set, or a set of key value pairs to set.\n",
-                    "type": "String/Object",
-                    "src": {
-                      "name": "2,1478,35",
-                      "text": "2,1478,40,69",
-                      "type": "2,1478,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "value",
-                    "optional": true,
-                    "text": "The value to set for the name parameter.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,1479,29",
-                      "text": "2,1479,36,41",
-                      "type": "2,1479,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,1480,31,5",
-                      "type": "2,1480,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "2,1482,0",
-                  "text": "2,1476,12,46"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "setId",
                 "text": "Sets the model instance's id field to the given id.\n",
                 "items": [
@@ -2001,7 +1557,7 @@
                     "$type": "param",
                     "name": "options",
                     "optional": true,
-                    "text": "See {@link #method!set #set}.\n",
+                    "text": "See <a href='#!/api/Ext.data.Validation-method-set'>set</a>.\n",
                     "type": "Object",
                     "src": {
                       "name": "1,960,25",
@@ -2037,66 +1593,6 @@
                   "access": "1,2597,-1",
                   "name": "1,2718,0",
                   "text": "1,2715,12,33"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "name": "statics",
-                "text": "Get the reference to the class from which this object was instantiated. Note that unlike {@link Ext.Base#property!self Ext.Base#self},\n`this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what\n`this` points to during run-time\n\n    Ext.define('My.Cat', {\n        statics: {\n            totalCreated: 0,\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            var statics = this.statics();\n\n            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to\n                                            // equivalent to: My.Cat.speciesName\n\n            alert(this.self.speciesName);   // dependent on 'this'\n\n            statics.totalCreated++;\n        },\n\n        clone: function() {\n            var cloned = new this.self();   // dependent on 'this'\n\n            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName\n\n            return cloned;\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n\n        statics: {\n            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'\n        },\n\n        constructor: function() {\n            this.callParent();\n        }\n    });\n\n    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'\n\n    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'\n    alert(clone.groupName);                 // alerts 'Cat'\n\n    alert(My.Cat.totalCreated);             // alerts 3\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "type": "Ext.Class",
-                    "src": {
-                      "type": "2,1161,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1160,12",
-                  "name": "2,1163,0",
-                  "text": "2,1107,12,1691"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "toLocaleString",
-                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n`{@link Object}`'s `{@link #method!toLocaleString toLocaleString}` returns the result of calling `{@link #method!toString toString}`.\n\nThis function is provided to give objects a generic `{@link #method!toLocaleString toLocaleString}` method, even though not all\nmay use it. Currently, only `{@link Array}`, `{@link Number}`, and `{@link Date}` override `{@link #method!toLocaleString toLocaleString}`.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "Object represented as a string.\n",
-                    "type": "String",
-                    "src": {
-                      "text": "3,235,21,32",
-                      "type": "3,235,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,226,12",
-                  "text": "3,227,4,384"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "toString",
-                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from `{@link Object}`.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom `{@link Object}`:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "Object represented as a string.\n",
-                    "type": "String",
-                    "src": {
-                      "text": "3,297,21,32",
-                      "type": "3,297,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,239,12",
-                  "text": "3,240,4,2445"
                 }
               },
               {
@@ -2143,43 +1639,10 @@
               },
               {
                 "$type": "method",
-                "access": "private",
-                "name": "unlink",
-                "text": "Destroys a given set of `{@link #method!link #link}` objects. This is only needed if\nthe linked object is being destroyed before this instance.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "names",
-                    "text": "The names of the linked objects to destroy.\n",
-                    "type": "String[]",
-                    "src": {
-                      "name": "2,1589,30",
-                      "text": "2,1589,36,44",
-                      "type": "2,1589,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,1590,31,5",
-                      "type": "2,1590,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,1591,12",
-                  "name": "2,1593,0",
-                  "text": "2,1587,12,138"
-                }
-              },
-              {
-                "$type": "method",
                 "deprecatedMessage": "Use `getValidation` instead.\n",
                 "deprecatedVersion": "5.0",
                 "name": "validate",
-                "text": "Validates the current data against all of its configured {@link #cfg!validators #validators}. The\nreturned collection holds an object for each reported problem from a `validator`.\n",
+                "text": "Validates the current data against all of its configured <a href='#!/api/Ext.data.Validation-cfg-validators'>validators</a>. The\nreturned collection holds an object for each reported problem from a `validator`.\n",
                 "items": [
                   {
                     "$type": "return",
@@ -2197,95 +1660,12 @@
                   "name": "1,1520,0",
                   "text": "1,1514,8,165"
                 }
-              },
-              {
-                "$type": "method",
-                "name": "valueOf",
-                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the `{@link #method!valueOf valueOf}` method to convert an object to a primitive value. You rarely need to\ninvoke the `{@link #method!valueOf valueOf}` method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the `{@link #method!valueOf valueOf}` method is inherited by every object descended from `{@link Object}`. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, `{@link #method!valueOf valueOf}` returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use `{@link #method!valueOf valueOf}` within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default `{@link Object}` method.\n\nYou can create a function to be called in place of the default `{@link #method!valueOf valueOf}` method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a `{@link #method!valueOf valueOf}` method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's `{@link #method!valueOf valueOf}` method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the `{@link #method!toString toString}` method, which is different from\n`{@link String}` objects converting to string primitives using `{@link #method!valueOf valueOf}`. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "Returns value of the object or the object itself.\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "3,340,21,50",
-                      "type": "3,340,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "3,301,12",
-                  "text": "3,302,4,1821"
-                }
               }
             ]
           },
           {
             "$type": "properties",
             "items": [
-              {
-                "$type": "property",
-                "access": "private",
-                "name": "$className",
-                "src": {
-                  "access": "2,1049,13",
-                  "name": "2,1050,0"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "private",
-                "name": "$configPrefixed",
-                "optional": true,
-                "since": "5.0.0",
-                "text": "The value `true` causes `config` values to be stored on instances using a\nproperty name prefixed with an underscore (\"_\") character. A value of `false`\nstores `config` values as properties using their exact name (no prefix).\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1066,12",
-                  "name": "2,1062,33",
-                  "since": "2,1067,19",
-                  "text": "2,1063,12,225",
-                  "type": "2,1062,23"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "private",
-                "name": "$configStrict",
-                "optional": true,
-                "since": "5.0.0",
-                "text": "The value `true` instructs the `{@link #method!initConfig initConfig}` method to only honor values for\nproperties declared in the `config` block of a class. When `false`, properties\nthat are not declared in a `config` block will be placed on the instance.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1076,12",
-                  "name": "2,1072,33",
-                  "since": "2,1077,19",
-                  "text": "2,1073,12,229",
-                  "type": "2,1072,23"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "constructor",
-                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their `{@link #property!prototype prototype}`:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
-                "src": {
-                  "name": "3,346,14",
-                  "text": "3,347,3,1996"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "protected",
-                "name": "destroyed",
-                "text": "This property is set to `true` after the `{@link #method!destroy destroy}` method is called.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1102,12",
-                  "name": "2,1100,32",
-                  "text": "2,1101,12,69",
-                  "type": "2,1100,23"
-                }
-              },
               {
                 "$type": "property",
                 "name": "dirty",
@@ -2303,7 +1683,7 @@
                 "$type": "property",
                 "name": "dropped",
                 "readonly": true,
-                "text": "True if this record is pending delete on the server. This is set by the `{@link #method!drop drop}`\nmethod and transmitted to the server by the `{@link #method!save save}` method.\n",
+                "text": "True if this record is pending delete on the server. This is set by the <a href='#!/api/Ext.data.Validation-method-drop'>drop</a>\nmethod and transmitted to the server by the <a href='#!/api/Ext.data.Validation-method-save'>save</a> method.\n",
                 "type": "Boolean",
                 "src": {
                   "name": "1,454,28",
@@ -2328,7 +1708,7 @@
               {
                 "$type": "property",
                 "name": "entityName",
-                "text": "The short name of this entity class. This name is derived from the `namespace` of\nthe associated `schema` and this class name. By default, a class is not given a\nshortened name.\n\nAll entities in a given `schema` must have a unique `{@link #property!entityName entityName}`.\n\nFor more details see \"Relative Naming\" in {@link Ext.data.schema.Schema}.\n",
+                "text": "The short name of this entity class. This name is derived from the `namespace` of\nthe associated `schema` and this class name. By default, a class is not given a\nshortened name.\n\nAll entities in a given `schema` must have a unique <a href='#!/api/Ext.data.Validation-property-entityName'>entityName</a>.\n\nFor more details see \"Relative Naming\" in <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a>.\n",
                 "type": "String",
                 "src": {
                   "name": "1,422,27",
@@ -2340,7 +1720,7 @@
                 "$type": "property",
                 "name": "erased",
                 "readonly": true,
-                "text": "True if this record has been erased on the server. This flag is set of the `{@link #method!erase erase}`\nmethod.\n",
+                "text": "True if this record has been erased on the server. This flag is set of the <a href='#!/api/Ext.data.Validation-method-erase'>erase</a>\nmethod.\n",
                 "type": "Boolean",
                 "src": {
                   "name": "1,462,28",
@@ -2396,23 +1776,6 @@
               },
               {
                 "$type": "property",
-                "access": "protected",
-                "name": "isConfiguring",
-                "readonly": true,
-                "since": "5.0.0",
-                "text": "This property is set to `true` during the call to `{@link #method!initConfig initConfig}`.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1084,12",
-                  "name": "2,1082,32",
-                  "readonly": "2,1085,12",
-                  "since": "2,1086,19",
-                  "text": "2,1083,12,64",
-                  "type": "2,1082,23"
-                }
-              },
-              {
-                "$type": "property",
                 "name": "isEntity",
                 "readonly": true,
                 "text": "The value `true` to identify this class and its subclasses.\n",
@@ -2422,38 +1785,6 @@
                   "readonly": "1,333,8",
                   "text": "1,332,8,60",
                   "type": "1,331,19"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "protected",
-                "name": "isFirstInstance",
-                "readonly": true,
-                "since": "5.0.0",
-                "text": "This property is set to `true` if this instance is the first of its class.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1093,12",
-                  "name": "2,1091,32",
-                  "readonly": "2,1094,12",
-                  "since": "2,1095,19",
-                  "text": "2,1092,12,75",
-                  "type": "2,1091,23"
-                }
-              },
-              {
-                "$type": "property",
-                "access": "protected",
-                "name": "isInstance",
-                "readonly": true,
-                "text": "This value is `true` and is used to identify plain objects from instances of\na defined class.\n",
-                "type": "Boolean",
-                "src": {
-                  "access": "2,1056,12",
-                  "name": "2,1053,32",
-                  "readonly": "2,1057,12",
-                  "text": "2,1054,12,94",
-                  "type": "2,1053,23"
                 }
               },
               {
@@ -2472,7 +1803,7 @@
               {
                 "$type": "property",
                 "name": "modified",
-                "text": "A hash of field values which holds the initial values of fields before a set of edits\nare {@link #method!commit #commit}.\n",
+                "text": "A hash of field values which holds the initial values of fields before a set of edits\nare <a href='#!/api/Ext.data.Validation-method-commit'>commit</a>.\n",
                 "type": "Object",
                 "src": {
                   "name": "1,714,28",
@@ -2483,7 +1814,7 @@
               {
                 "$type": "property",
                 "name": "phantom",
-                "text": "True when the record does not yet exist in a server-side database. Any record which\nhas a real database identity set as its `{@link #cfg!idProperty idProperty}` is NOT a phantom -- it's real.\n",
+                "text": "True when the record does not yet exist in a server-side database. Any record which\nhas a real database identity set as its <a href='#!/api/Ext.data.Validation-cfg-idProperty'>idProperty</a> is NOT a phantom -- it's real.\n",
                 "type": "Boolean",
                 "src": {
                   "name": "1,542,28",
@@ -2496,7 +1827,7 @@
                 "access": "private",
                 "name": "previousValues",
                 "readonly": true,
-                "text": "This object is similar to the `{@link #property!modified modified}` object except it holds the data values as\nthey were prior to the most recent change.\n",
+                "text": "This object is similar to the <a href='#!/api/Ext.data.Validation-property-modified'>modified</a> object except it holds the data values as\nthey were prior to the most recent change.\n",
                 "type": "Object",
                 "src": {
                   "access": "1,724,8",
@@ -2504,15 +1835,6 @@
                   "readonly": "1,723,8",
                   "text": "1,721,8,126",
                   "type": "1,720,19"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "prototype",
-                "text": "Allows the addition of properties to all objects of type Object.\n",
-                "src": {
-                  "name": "3,46,14",
-                  "text": "3,47,4,65"
                 }
               },
               {
@@ -2534,7 +1856,7 @@
                 "$type": "property",
                 "name": "schema",
                 "readonly": true,
-                "text": "The `{@link Ext.data.schema.Schema}` to which this entity and its associations belong.\n",
+                "text": "The <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a> to which this entity and its associations belong.\n",
                 "type": "Ext.data.schema.Schema",
                 "src": {
                   "name": "1,741,43",
@@ -2545,22 +1867,9 @@
               },
               {
                 "$type": "property",
-                "access": "protected",
-                "name": "self",
-                "text": "\nGet the reference to the current class from which this object was instantiated. Unlike {@link Ext.Base#method!statics Ext.Base#statics},\n`this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See {@link Ext.Base#method!statics Ext.Base#statics}\nfor a detailed comparison\n\n    Ext.define('My.Cat', {\n        statics: {\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            alert(this.self.speciesName); // dependent on 'this'\n        },\n\n        clone: function() {\n            return new this.self();\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n        statics: {\n            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'\n        }\n    });\n\n    var cat = new My.Cat();                     // alerts 'Cat'\n    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'\n",
-                "type": "Ext.Class",
-                "src": {
-                  "access": "2,1413,12",
-                  "name": "2,1379,34",
-                  "text": "2,1380,12,1011",
-                  "type": "2,1379,23"
-                }
-              },
-              {
-                "$type": "property",
                 "name": "session",
                 "readonly": true,
-                "text": "The {@link Ext.data.Session} for this record.\n",
+                "text": "The <a href='#!/api/Ext.data.Session'>Ext.data.Session</a> for this record.\n",
                 "type": "Ext.data.Session",
                 "src": {
                   "name": "1,447,37",
@@ -2572,7 +1881,7 @@
               {
                 "$type": "property",
                 "name": "store",
-                "text": "The {@link Ext.data.Store} to which this instance belongs.\n\n**Note:** If this instance is bound to multiple stores, this property\nwill reference only the first.\n",
+                "text": "The <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> to which this instance belongs.\n\n**Note:** If this instance is bound to multiple stores, this property\nwill reference only the first.\n",
                 "type": "Ext.data.Store",
                 "src": {
                   "name": "1,1375,42",
@@ -2586,7 +1895,7 @@
                 "name": "syncGeneration",
                 "readonly": true,
                 "since": "5.0.0",
-                "text": "This is a capture of the `{@link Ext.data.Model#property!generation Ext.data.Model#generation}` value from the last\ntime the validation state was refreshed. This is used to determine if this object\nis potentially out-of-date with its associated `{@link #property!record record}`.\n",
+                "text": "This is a capture of the <a href='#!/api/Ext.data.Model-property-generation'>Ext.data.Model#generation</a> value from the last\ntime the validation state was refreshed. This is used to determine if this object\nis potentially out-of-date with its associated <a href='#!/api/Ext.data.Validation-property-record'>record</a>.\n",
                 "type": "Number",
                 "src": {
                   "access": "0,22,8",
@@ -2602,44 +1911,6 @@
           {
             "$type": "static-methods",
             "items": [
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "addConfig",
-                "static": true,
-                "text": "Adds new config properties to this class. This is called for classes when they\nare declared, then for any mixins that class may define and finally for any\noverrides defined that target the class.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "config",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,940,28",
-                      "type": "2,940,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "mixinClass",
-                    "optional": true,
-                    "text": "The mixin class if the configs are from a mixin.\n",
-                    "type": "Ext.Class",
-                    "src": {
-                      "name": "2,941,32",
-                      "text": "2,941,44,49",
-                      "type": "2,941,20"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,942,12",
-                  "inheritable": "2,944,12",
-                  "name": "2,946,0",
-                  "static": "2,943,12",
-                  "text": "2,936,12,197"
-                }
-              },
               {
                 "$type": "method",
                 "access": "protected",
@@ -2668,299 +1939,6 @@
                   "since": "1,2220,19",
                   "static": "1,2218,12",
                   "text": "1,2212,12,63"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "addInheritableStatics",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,464,28",
-                      "type": "2,464,20"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,461,12",
-                  "inheritable": "2,463,12",
-                  "name": "2,466,0",
-                  "static": "2,462,12"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "addMember",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "src": {
-                      "name": "2,662,19"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "member",
-                    "src": {
-                      "name": "2,663,19"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,659,12",
-                  "inheritable": "2,661,12",
-                  "name": "2,665,0",
-                  "static": "2,660,12"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "addMembers",
-                "static": true,
-                "text": "Add methods / properties to the prototype of this class.\n\n    Ext.define('My.awesome.Cat', {\n        constructor: function() {\n            ...\n        }\n    });\n\n     My.awesome.Cat.addMembers({\n         meow: function() {\n            alert('Meowww...');\n         }\n     });\n\n     var kitty = new My.awesome.Cat();\n     kitty.meow();\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "text": "The members to add to this class.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,522,28",
-                      "text": "2,522,36,34",
-                      "type": "2,522,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "isStatic",
-                    "optional": true,
-                    "text": "Pass `true` if the members are static.\n",
-                    "type": "Boolean",
-                    "value": "false",
-                    "src": {
-                      "name": "2,523,30",
-                      "text": "2,523,46,39",
-                      "type": "2,523,20",
-                      "value": "2,523,39"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "privacy",
-                    "optional": true,
-                    "text": "Pass `true` if the members are private. This\nonly has meaning in debug mode and only for methods.\n",
-                    "type": "Boolean",
-                    "value": "false",
-                    "src": {
-                      "name": "2,524,30",
-                      "text": "2,524,45,45:2,525,12,53",
-                      "type": "2,524,20",
-                      "value": "2,524,38"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,527,12",
-                  "name": "2,529,0",
-                  "static": "2,526,12",
-                  "text": "2,505,12,335"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "addStatics",
-                "static": true,
-                "text": "Add / override static properties of this class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.addStatics({\n        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'\n        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };\n        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };\n    });\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,450,28",
-                      "type": "2,450,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,451,31,5",
-                      "type": "2,451,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,453,12",
-                  "name": "2,455,0",
-                  "static": "2,452,12",
-                  "text": "2,438,12,402"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "borrow",
-                "static": true,
-                "text": "Borrow another class' members to the prototype of this class.\n\n    Ext.define('Bank', {\n        money: '$$$',\n        printMoney: function() {\n            alert('$$$$$$$');\n        }\n    });\n\n    Ext.define('Thief', {\n        ...\n    });\n\n    Thief.borrow(Bank, ['money', 'printMoney']);\n\n    var steve = new Thief();\n\n    alert(steve.money); // alerts '$$$'\n    steve.printMoney(); // alerts '$$$$$$$'\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "fromClass",
-                    "text": "The class to borrow members from\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "name": "2,693,30",
-                      "text": "2,693,40,33",
-                      "type": "2,693,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "text": "The names of the members to borrow\n",
-                    "type": "Array/String",
-                    "src": {
-                      "name": "2,694,34",
-                      "text": "2,694,42,35",
-                      "type": "2,694,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,695,31,5",
-                      "type": "2,695,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,698,12",
-                  "inheritable": "2,697,12",
-                  "name": "2,700,0",
-                  "static": "2,696,12",
-                  "text": "2,673,12,404"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "inheritable": true,
-                "name": "callParent",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "args",
-                    "src": {
-                      "name": "2,814,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,810,12",
-                  "inheritable": "2,812,12",
-                  "name": "2,814,0",
-                  "static": "2,811,12"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "protected",
-                "inheritable": true,
-                "name": "callSuper",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "args",
-                    "src": {
-                      "name": "2,828,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,824,12",
-                  "inheritable": "2,826,12",
-                  "name": "2,828,0",
-                  "static": "2,825,12"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "create",
-                "static": true,
-                "text": "Create a new instance of this Class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.create({\n        someConfig: true\n    });\n\nAll parameters are passed to the constructor of the class.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "the created instance.\n",
-                    "type": "Object",
-                    "src": {
-                      "text": "2,107,29,22",
-                      "type": "2,107,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,109,12",
-                  "name": "2,111,0",
-                  "static": "2,108,12",
-                  "text": "2,95,12,214"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "createAlias",
-                "static": true,
-                "text": "Create aliases for existing prototype methods. Example:\n\n    Ext.define('My.cool.Class', {\n        method1: function() { ... },\n        method2: function() { ... }\n    });\n\n    var test = new My.cool.Class();\n\n    My.cool.Class.createAlias({\n        method3: 'method1',\n        method4: 'method2'\n    });\n\n    test.method3(); // test.method1()\n\n    My.cool.Class.createAlias('method5', 'method3');\n\n    test.method5(); // test.method3() -> test.method1()\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "alias",
-                    "text": "The new method name, or an object to set multiple aliases. See\n{@link Ext.Function#method!flexSetter Ext.Function#flexSetter}\n",
-                    "type": "String/Object",
-                    "src": {
-                      "name": "2,1018,35",
-                      "text": "2,1018,41,63:2,1019,12,43",
-                      "type": "2,1018,20"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "origin",
-                    "text": "The original method name\n",
-                    "type": "String/Object",
-                    "src": {
-                      "name": "2,1020,35",
-                      "text": "2,1020,42,25",
-                      "type": "2,1020,20"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,1022,12",
-                  "name": "2,1025,0",
-                  "static": "2,1021,12",
-                  "text": "2,998,12,456"
                 }
               },
               {
@@ -2997,52 +1975,6 @@
                   "inheritable": "1,2340,12",
                   "name": "1,2342,0",
                   "static": "1,2339,12"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "extend",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "config",
-                    "src": {
-                      "name": "2,350,19"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,347,12",
-                  "inheritable": "2,349,12",
-                  "name": "2,352,0",
-                  "static": "2,348,12"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "getConfigurator",
-                "static": true,
-                "text": "Returns the `{@link Ext.Configurator}` for this class.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "type": "Ext.Configurator",
-                    "src": {
-                      "type": "2,967,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,968,12",
-                  "inheritable": "2,970,12",
-                  "name": "2,972,0",
-                  "static": "2,969,12",
-                  "text": "2,965,12,48"
                 }
               },
               {
@@ -3118,30 +2050,6 @@
               {
                 "$type": "method",
                 "inheritable": true,
-                "name": "getName",
-                "static": true,
-                "text": "Get the current class' name in string format.\n\n    Ext.define('My.cool.Class', {\n        constructor: function() {\n            alert(this.self.getName()); // alerts 'My.cool.Class'\n        }\n    });\n\n    My.cool.Class.getName(); // 'My.cool.Class'\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "className\n",
-                    "type": "String",
-                    "src": {
-                      "text": "2,989,29,10",
-                      "type": "2,989,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,991,12",
-                  "name": "2,993,0",
-                  "static": "2,990,12",
-                  "text": "2,979,12,249"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
                 "name": "getProxy",
                 "static": true,
                 "text": "Returns the configured Proxy for this Model.\n",
@@ -3185,7 +2093,7 @@
                     "$type": "param",
                     "name": "options",
                     "optional": true,
-                    "text": "The options param is an\n{@link Ext.data.operation.Read} config object containing success, failure and\ncallback functions, plus optional scope.\n",
+                    "text": "The options param is an\n<a href='#!/api/Ext.data.operation.Read'>Ext.data.operation.Read</a> config object containing success, failure and\ncallback functions, plus optional scope.\n",
                     "type": "Object",
                     "items": [
                       {
@@ -3353,101 +2261,6 @@
               },
               {
                 "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "mixin",
-                "static": true,
-                "text": "Used internally by the mixins pre-processor\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "src": {
-                      "name": "2,844,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "mixinClass",
-                    "src": {
-                      "name": "2,844,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,840,12",
-                  "inheritable": "2,842,12",
-                  "name": "2,844,0",
-                  "static": "2,841,12",
-                  "text": "2,839,12,44"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "onExtended",
-                "static": true,
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "fn",
-                    "src": {
-                      "name": "2,428,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "scope",
-                    "src": {
-                      "name": "2,428,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "2,424,12",
-                  "inheritable": "2,426,12",
-                  "name": "2,428,0",
-                  "static": "2,425,12"
-                }
-              },
-              {
-                "$type": "method",
-                "inheritable": true,
-                "name": "override",
-                "static": true,
-                "text": "Override members of this class. Overridden methods can be invoked via\n{@link Ext.Base#callParent}.\n\n    Ext.define('My.Cat', {\n        constructor: function() {\n            alert(\"I'm a cat!\");\n        }\n    });\n\n    My.Cat.override({\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\n    var kitty = new My.Cat(); // alerts \"I'm going to be a cat!\"\n                              // alerts \"I'm a cat!\"\n                              // alerts \"Meeeeoooowwww\"\n\nDirect use of this method should be rare. Use {@link Ext#method!define Ext#define}\ninstead:\n\n    Ext.define('My.CatOverride', {\n        override: 'My.Cat',\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\nThe above accomplishes the same result but can be managed by the {@link Ext.Loader}\nwhich can properly order the override and its target class and the build process\ncan determine whether the override is needed based on the required state of the\ntarget class (My.Cat).\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "members",
-                    "text": "The properties to add to this class. This should be\nspecified as an object literal containing one or more properties.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "2,762,28",
-                      "text": "2,762,36,52:2,763,12,66",
-                      "type": "2,762,20"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this class\n",
-                    "type": "Ext.Base",
-                    "src": {
-                      "text": "2,764,31,11",
-                      "type": "2,764,21"
-                    }
-                  }
-                ],
-                "src": {
-                  "inheritable": "2,766,12",
-                  "name": "2,768,0",
-                  "static": "2,765,12",
-                  "text": "2,720,12,1180"
-                }
-              },
-              {
-                "$type": "method",
                 "access": "protected",
                 "inheritable": true,
                 "name": "removeFields",
@@ -3522,7 +2335,7 @@
                 "inheritable": true,
                 "name": "setProxy",
                 "static": true,
-                "text": "Sets the Proxy to use for this model. Accepts any options that can be accepted by\n{@link Ext#method!createByAlias Ext#createByAlias}.\n",
+                "text": "Sets the Proxy to use for this model. Accepts any options that can be accepted by\n<a href='#!/api/Ext-method-createByAlias'>Ext#createByAlias</a>.\n",
                 "items": [
                   {
                     "$type": "param",
@@ -3549,39 +2362,11 @@
                   "static": "1,2428,12",
                   "text": "1,2424,12,127"
                 }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "inheritable": true,
-                "name": "triggerExtended",
-                "static": true,
-                "src": {
-                  "access": "2,402,12",
-                  "inheritable": "2,404,12",
-                  "name": "2,406,0",
-                  "static": "2,403,12"
-                }
               }
             ]
           },
           {
-            "$type": "static-properties",
-            "items": [
-              {
-                "$type": "property",
-                "access": "private",
-                "inheritable": true,
-                "name": "$onExtended",
-                "static": true,
-                "src": {
-                  "access": "2,395,12",
-                  "inheritable": "2,397,12",
-                  "name": "2,399,0",
-                  "static": "2,396,12"
-                }
-              }
-            ]
+            "$type": "static-properties"
           }
         ],
         "src": {

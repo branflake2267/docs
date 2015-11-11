@@ -38,10 +38,21 @@ JSON structure to be used as a menu for the guides.
 
 ### Notes
 
-The **`--input`** option should be the product directory. In the *sencha-documentation* repo, it would be `/sencha-documentation/markdown/src/main/markdown/extjs/`.
+The **`--input`** option should be the product directory. In the *sencha-documentation* repo,
+it would be `/sencha-documentation/markdown/src/main/markdown/extjs/`. The directory structure would then be:
+
+ - `/sencha-documentation/markdown/src/main/markdown/extjs/`
+    - `5.0`
+    - `5.1`
+    - `6.0`
+    - `config.json`
 
 It is expected to have a `config.json` file to describe what guides should be parsed. This should be in the **`--input`**
-option path next to the version directories. A sample `config.json` file is:
+option path next to the version directories:
+
+    node index guide-parser -i /path/to/sencha-documentation/markdown/src/main/markdown/extjs
+
+A sample `config.json` file is:
 
     {
         "versions" : [

@@ -7,7 +7,10 @@ Ext.define('DocsApp.model.Class', {
 
     hasMany: {
         model: 'ClassMember',
-        name: 'classMembers'
+        name: 'classMembers',
+        storeConfig: {
+            remoteFilter: false
+        }
     },
 
     proxy: {

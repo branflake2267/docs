@@ -2,6 +2,8 @@ Ext.define('DocsApp.view.products.MainLanding', {
     extend: 'Ext.container.Container',
     xtype: 'products-landing',
 
+    requires: ['DocsApp.view.products.MainLandingController'],
+
     controller: 'docsapp-products-mainlanding',
 
     /*bind: {

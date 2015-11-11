@@ -2,6 +2,11 @@ Ext.define('DocsApp.view.mainApp.nav.docs.Container', {
     extend: 'Ext.panel.Panel',
     xtype: 'mainapp-nav-docs-container',
 
+    requires: [
+        'DocsApp.view.mainApp.nav.docs.ContainerController',
+        'DocsApp.view.mainApp.nav.docs.DocsNavModel'
+    ],
+
     controller: 'docsapp-mainapp-nav-docs-containercontainer',
 
     viewModel: {

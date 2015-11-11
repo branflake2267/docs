@@ -17,11 +17,11 @@ Ext.define('DocsApp.view.button.BadgeButton', {
 
     disableOnEmptyBadge: true,
 
-    initComponent: function () {
+    /*initComponent: function () {
         this.renderTpl += '<span id="{id}-badgeEl" class="da-badgeElCls" data-ref="badgeEl">{badge}</span>';
 
         this.callParent();
-    },
+    },*/
 
     initRenderData: function () {
         return Ext.apply(this.callParent(), {
@@ -40,4 +40,6 @@ Ext.define('DocsApp.view.button.BadgeButton', {
             me.setDisabled(!text);
         }
     }
+}, function (BadgeButton) {
+    BadgeButton.prototype.renderTpl += '<span id="{id}-badgeEl" class="da-badgeElCls" data-ref="badgeEl">{badge}</span>';
 });

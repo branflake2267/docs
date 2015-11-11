@@ -150,7 +150,7 @@ Ext.define('DocsApp.view.mainApp.doc.MemberDataview', {
                     for (; i < len; i++) {
                         rec = root.findChild('className', links[i].replace(/\[\]/g, ''), true);
                         if (rec) {
-                            out.push('<a href="!/api/' + links[i] + '">' + links[i] + '</a>');
+                            out.push(('<a href="#!/api/' + links[i] + '">' + links[i] + '</a>').replace('[]', ''));
                         } else {
                             out.push(links[i]);
                         }

@@ -11,7 +11,9 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     ],
 
     config: {
-        className: null
+        className  : null,
+        memberType : null,
+        focusMember: null
     },
 
     viewModel : 'mainapp-docmodel',
@@ -344,5 +346,21 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 id  : name
             });
         }
+    },
+
+    getRoute: function () {
+        var str = '#!/api/' + this.getClassName(),
+            memberType = this.getMemberType(),
+            focusMember = this.getFocusMember();
+
+        if (memberType) {
+            str += '-' + memberType;
+        }
+
+        if (focusMember) {
+            str += '-' + focusMember;
+        }
+
+        return str;
     }
 });

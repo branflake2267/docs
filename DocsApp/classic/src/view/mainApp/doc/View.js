@@ -1,24 +1,28 @@
 Ext.define('DocsApp.view.mainApp.doc.View', {
     extend: 'Ext.panel.Panel',
-    xtype: 'mainapp-doc-view',
+    xtype : 'mainapp-doc-view',
 
     requires: [
         'DocsApp.view.mainApp.doc.MemberDataview',
         'DocsApp.view.button.BadgeButton',
-        'DocsApp.view.mainApp.doc.MemberListMenu'
+        'DocsApp.view.mainApp.doc.MemberListMenu',
+        'DocsApp.view.mainApp.doc.DocController',
+        'DocsApp.view.mainApp.doc.DocModel'
     ],
 
     config: {
-        className: null
+        className  : null,
+        memberType : null,
+        focusMember: null
     },
 
-    viewModel: 'mainapp-docmodel',
+    viewModel : 'mainapp-docmodel',
     controller: 'main-doc-controller',
 
-    iconCls: 'x-fa fa-code',
+    iconCls   : 'x-fa fa-code',
     scrollable: true,
 
-    layout: 'anchor',
+    layout  : 'anchor',
     defaults: {
         anchor: '100%'
     },
@@ -30,20 +34,20 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             iconCls: 'x-fa fa-star',
             handler: 'addFavorite'
         }, {
-            xtype: 'container',
+            xtype : 'container',
             layout: 'vbox',
-            items: [{
+            items : [{
                 xtype: 'component',
-                bind: '{classFile.name}',
-                cls: 'da-class-name'
+                bind : '{classFile.name}',
+                cls  : 'da-class-name'
             }, {
-                xtype: 'component',
+                xtype : 'component',
                 margin: '0 0 0 12',
                 //bind: '{daAlias}'
-                bind: {
+                bind  : {
                     data: '{classFile}'
                 },
-                tpl: new Ext.XTemplate('{[this.aliasOut(values)]}', {
+                tpl   : new Ext.XTemplate('{[this.aliasOut(values)]}', {
                     aliasOut: function (values) {
                         var alias = values.alias,
                             isWidget;
@@ -58,66 +62,66 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 })
             }]
         }, {
-            xtype: 'container',
-            flex: 1,
-            layout: 'hbox',
+            xtype   : 'container',
+            flex    : 1,
+            layout  : 'hbox',
             defaults: {
-                xtype: 'badgebutton',
-                margin: 10,
-                handler: 'onMemberNavBtnClick',
+                xtype    : 'badgebutton',
+                margin   : 10,
+                handler  : 'onMemberNavBtnClick',
                 listeners: {
                     afterrender: 'onMemberMenuButtonRender',
-                    mouseover: 'onMemberMenuOver',
-                    mouseout: 'onMemberMenuOut'
+                    mouseover  : 'onMemberMenuOver',
+                    mouseout   : 'onMemberMenuOut'
                 }
             },
-            items: [{
-                text: 'Configs',
+            items   : [{
+                text    : 'Configs',
                 relStore: 'configs',
-                target: 'configsHeader',
-                bind: {
+                target  : 'configsHeader',
+                bind    : {
                     hidden: '{memberCfg}',
-                    badge: '{memberCfgCount}'
+                    badge : '{memberCfgCount}'
                 }
             }, {
-                text: 'Properties',
+                text    : 'Properties',
                 relStore: 'properties',
-                target: 'propertiesHeader',
-                bind: {
+                target  : 'propertiesHeader',
+                bind    : {
                     hidden: '{memberProperty}',
-                    badge: '{memberPropertyCount}'
+                    badge : '{memberPropertyCount}'
                 }
             }, {
-                text: 'Methods',
+                text    : 'Methods',
                 relStore: 'methods',
-                target: 'methodsHeader',
-                bind: {
+                target  : 'methodsHeader',
+                bind    : {
                     hidden: '{memberMethod}',
-                    badge: '{memberMethodCount}'
+                    badge : '{memberMethodCount}'
                 }
             }, {
-                text: 'Events',
+                text    : 'Events',
                 relStore: 'events',
-                target: 'eventsHeader',
-                bind: {
+                target  : 'eventsHeader',
+                bind    : {
                     hidden: '{memberEvent}',
-                    badge: '{memberEventCount}'
+                    badge : '{memberEventCount}'
                 }
             }, {
-                text: 'CSS Vars',
+                text    : 'CSS Vars',
                 relStore: 'themevars',
-                target: 'cssVarHeader',
-                bind: {
+                target  : 'cssVarHeader',
+                bind    : {
                     hidden: '{memberCss_var}',
-                    badge: '{memberCss_varCount}'
+                    badge : '{memberCss_varCount}'
                 }
             }, {
-                text: 'CSS Mixins',
+                text    : 'CSS Mixins',
                 relStore: 'thememixins',
-                target: 'cssMixinHeader',
-                bind: {
+                target  : 'cssMixinHeader',
+                bind    : {
                     hidden: '{memberCss_mixin}',
-                    badge: '{memberCss_mixinCount}'
+                    badge : '{memberCss_mixinCount}'
                 }
             }]
         }, {
@@ -128,19 +132,19 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             toggleHandler: 'toggleMemberCollapse'
         }]
     }, {
-        xtype: 'toolbar',
-        dock: 'right',
+        xtype   : 'toolbar',
+        dock    : 'right',
         //layout: 'vbox',
         defaults: {
             anchor: '100%',
-            xtype: 'checkboxfield'
+            xtype : 'checkboxfield'
         },
-        items: [{
-            xtype: 'textfield',
+        items   : [{
+            xtype    : 'textfield',
             emptyText: 'filter members...',
-            triggers: {
+            triggers : {
                 clear: {
-                    cls: 'x-form-clear-trigger',
+                    cls    : 'x-form-clear-trigger',
                     handler: function () {
                         this.reset();
                     }
@@ -151,60 +155,88 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 buffer: 100
             }
         }, '-', {
-            fieldLabel: 'Public'
+            fieldLabel: 'Public',
+            bind      : '{catFilters.public}',
+            listeners : {
+                change: 'onAccessFilterChange'
+            }
         }, {
-            fieldLabel: 'Protected'
+            fieldLabel: 'Protected',
+            bind      : '{catFilters.protected}',
+            listeners : {
+                change: 'onAccessFilterChange'
+            }
         }, {
-            fieldLabel: 'Private'
+            fieldLabel: 'Private',
+            bind      : '{catFilters.private}',
+            listeners : {
+                change: 'onAccessFilterChange'
+            }
         }, '-', {
-            fieldLabel: 'Inherited'
+            fieldLabel: 'Inherited',
+            bind      : '{catFilters.inherited}',
+            listeners : {
+                change: 'onAccessFilterChange'
+            }
         }, {
-            fieldLabel: 'Accessor'
+            fieldLabel: 'Accessor',
+            bind      : '{catFilters.accessor}',
+            listeners : {
+                change: 'onAccessFilterChange'
+            }
         }, {
-            fieldLabel: 'Deprecated'
+            fieldLabel: 'Deprecated',
+            bind      : '{catFilters.deprecated}',
+            listeners : {
+                change: 'onAccessFilterChange'
+            }
         }, {
-            fieldLabel: 'Removed'
+            fieldLabel: 'Removed',
+            bind      : '{catFilters.removed}',
+            listeners : {
+                change: 'onAccessFilterChange'
+            }
         }]
     }],
 
     items: [{
         // floating, reusable ct for the list of members that shows below the member type button on hover
-        xtype: 'memberlistmenu',
+        xtype    : 'memberlistmenu',
         reference: 'memberListMenu',
         listeners: {
             afterrender: 'onMemberListMenuRender'
         }
     }, {
         // the class description and hierarchy view (class metadata)
-        xtype: 'container',
+        xtype    : 'container',
         reference: 'classDescription',
         //height: 1000,
-        layout: {
-            type: 'hbox',
+        layout   : {
+            type : 'hbox',
             align: 'stretchmax'
         },
-        items: [{
-            xtype: 'container',
-            flex: 1,
+        items    : [{
+            xtype  : 'container',
+            flex   : 1,
             padding: '0 20 20 20',
-            bind: {
+            bind   : {
                 data: '{classFile}'
             },
-            tpl: '{[marked(values.text, { addHeaderId: false })]}'
+            tpl    : '{[marked(values.text, { addHeaderId: false })]}'
         }, {
             xtype: 'component',
             width: 400,
             split: true,
-            bind: '{classFile}',
-            tpl: new Ext.XTemplate(
+            bind : '{classFile}',
+            tpl  : new Ext.XTemplate(
                 '<tpl if="alternateClassNames">',
-                    '<div>Alternate Class Names</div><div>{alternateClassNames}</div>',
+                '<div>Alternate Class Names</div><div>{alternateClassNames}</div>',
                 '</tpl>',
                 '<tpl if="mixins">',
-                    '<div>Mixins</div><div>{mixins}</div>',
+                '<div>Mixins</div><div>{mixins}</div>',
                 '</tpl>',
                 '<tpl if="requires">',
-                    '<div>Requires</div><div>{[this.getRequires(values)]}</div>',
+                '<div>Requires</div><div>{[this.getRequires(values)]}</div>',
                 '</tpl>',
                 {
                     getRequires: function (values) {
@@ -216,103 +248,119 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
 
         // CONFIGS
     }, {
-        xtype: 'component',
-        style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        xtype    : 'component',
+        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
         reference: 'configsHeader',
-        html: 'Configs',
-        hidden: true
+        html     : 'Configs',
+        hidden   : true
     }, {
-        xtype: 'main-member-dataview',
+        xtype    : 'main-member-dataview',
         reference: 'memberCfg',
-        bind: '{configs}',
+        bind     : '{configs}',
         listeners: {
             refresh: 'onMemberViewRefresh'
         }
 
         // PROPERTIES
     }, {
-        xtype: 'component',
-        style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        xtype    : 'component',
+        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
         reference: 'propertiesHeader',
-        html: 'Properties',
-        hidden: true
+        html     : 'Properties',
+        hidden   : true
     }, {
-        xtype: 'main-member-dataview',
+        xtype    : 'main-member-dataview',
         reference: 'memberProperty',
-        bind: '{properties}',
+        bind     : '{properties}',
         listeners: {
             refresh: 'onMemberViewRefresh'
         }
 
         // METHODS
     }, {
-        xtype: 'component',
-        style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        xtype    : 'component',
+        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
         reference: 'methodsHeader',
-        html: 'Methods',
-        hidden: true
+        html     : 'Methods',
+        hidden   : true
     }, {
-        xtype: 'main-member-dataview',
+        xtype    : 'main-member-dataview',
         reference: 'memberMethod',
-        bind: '{methods}',
+        bind     : '{methods}',
         listeners: {
             refresh: 'onMemberViewRefresh'
         }
 
         // EVENTS
     }, {
-        xtype: 'component',
-        style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        xtype    : 'component',
+        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
         reference: 'eventsHeader',
-        html: 'Events',
-        hidden: true
+        html     : 'Events',
+        hidden   : true
     }, {
-        xtype: 'main-member-dataview',
+        xtype    : 'main-member-dataview',
         reference: 'memberEvent',
-        bind: '{events}',
+        bind     : '{events}',
         listeners: {
             refresh: 'onMemberViewRefresh'
         }
 
         // VARS
     }, {
-        xtype: 'component',
-        style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        xtype    : 'component',
+        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
         reference: 'cssVarHeader',
-        html: 'Theme Vars',
-        hidden: true
+        html     : 'Theme Vars',
+        hidden   : true
     }, {
-        xtype: 'main-member-dataview',
+        xtype    : 'main-member-dataview',
         reference: 'memberCss_var',
-        bind: '{themevars}',
+        bind     : '{themevars}',
         listeners: {
             refresh: 'onMemberViewRefresh'
         }
 
         // MIXINS
     }, {
-        xtype: 'component',
-        style: 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        xtype    : 'component',
+        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
         reference: 'cssMixinHeader',
-        html: 'Theme Mixins',
-        hidden: true
+        html     : 'Theme Mixins',
+        hidden   : true
     }, {
-        xtype: 'main-member-dataview',
+        xtype    : 'main-member-dataview',
         reference: 'memberCss_mixin',
-        bind: '{thememixins}',
+        bind     : '{thememixins}',
         listeners: {
             refresh: 'onMemberViewRefresh'
         }
     }],
 
-    updateClassName : function(name) {
+    updateClassName: function (name) {
         if (name) {
             this.setTitle(name);
 
             this.getViewModel().linkTo('classFile', {
                 type: 'Class',
-                id: name
+                id  : name
             });
         }
+    },
+
+    getRoute: function () {
+        var str = '#!/api/' + this.getClassName(),
+            memberType = this.getMemberType(),
+            focusMember = this.getFocusMember();
+
+        if (memberType) {
+            str += '-' + memberType;
+        }
+
+        if (focusMember) {
+            str += '-' + focusMember;
+        }
+
+        return str;
     }
 });

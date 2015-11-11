@@ -2,6 +2,18 @@ Ext.define('DocsApp.view.mainApp.ContainerModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.mainapp-container-model',
 
+    data: {
+        catFilters: {
+            "public": true,
+            "protected": false,
+            "private": false,
+            "inherited": false,
+            accessor: false,
+            deprecated: false,
+            removed: false
+        }
+    },
+
     stores: {
         favorites: {
             fields: [],

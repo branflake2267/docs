@@ -110,9 +110,19 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
 
             if (!tab) {
                 tab = tabpanel.add({
-                    xtype    : 'mainapp-doc-view',
-                    className: cls
+                    xtype      : 'mainapp-doc-view',
+                    className  : cls,
+                    memberType : type,
+                    focusMember: member
                 });
+            }
+
+            if (type) {
+                tab.setMemberType(type);
+            }
+
+            if (member) {
+                tab.setFocusMember(member);
             }
 
             //memberStore = tab.lookupViewModel().get('allMembers');

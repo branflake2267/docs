@@ -14,7 +14,9 @@ Ext.define('DocsApp.view.mainApp.Container', {
         'DocsApp.view.mainApp.guide.View',
         'DocsApp.view.mainApp.doc.View',
         'DocsApp.view.mainApp.ContainerController',
-        'DocsApp.view.mainApp.favorites.Combined'
+        'DocsApp.view.mainApp.favorites.Combined',
+        'DocsApp.view.mainApp.ContainerModel',
+        'DocsApp.view.mainApp.productVersion.VersionsMenu'
     ],
 
     viewModel: 'mainapp-container-model',

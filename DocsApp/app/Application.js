@@ -9,6 +9,8 @@ Ext.define('DocsApp.Application', {
     name: 'DocsApp',
     defaultToken: '!/home',
 
+    models: ['DocsApp.model.Base'],
+
     stores: [
         'DocsApp.store.main.Main',
         'guide.Topical',

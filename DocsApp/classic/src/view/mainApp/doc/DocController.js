@@ -10,6 +10,10 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
 
         me.callParent([vm]);
 
+        vm.bind('{classFile}', function (classFile) {
+            vm.set('allMembers', classFile.classMembers());
+        });
+
         vm.bind('{configs}', function (store) {
             me.memberStoreBound(store, 'configs');
         });
@@ -26,13 +30,6 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
 
     memberStoreBound: function (store, type) {
         this.hideShowMemberInfo(store, type);
-        store.on({
-            // we'll update the member list / count on the member type button / tab
-            // on each filter call
-            datachanged: function () {
-                // show the member count / members on the type tab / button used for nav
-            }
-        });
     },
 
     hideShowMemberInfo: function (store, type) {
@@ -98,14 +95,16 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         var memberViews = this.getView().query('main-member-dataview'),
             len = memberViews.length,
             i = 0,
-            view, store, target, rawText, nodes, nodesLen, j;
+            store = this.getViewModel().get('allMembers'),
+            view, target, rawText, nodes, nodesLen, j;
 
-        this.getViewModel().getStore('allMembers').addFilter([{
+        store.addFilter([{
             property: 'name',
             value: val,
             anyMatch: true
         }]);
 
+        // highlight the portion of the member name matching the filter text
         for (; i < len; i++) {
             view = memberViews[i];
             nodes = view.getNodes();
@@ -124,8 +123,45 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
             }
         }
 
+        // hide / show the member section title based on whether any members were found by the filter
         this.lookupReference('classDescription').setHidden(val.length);
     },
+
+    onAccessFilterChange: Ext.Function.createBuffered(function () {
+        var me = this,
+        vm = me.getViewModel(),
+            store = vm.get('allMembers'),
+            cats = vm.get('catFilters'),
+            filterId = 'catFilter';
+
+        if (!store) {
+            vm.bind('allMembers', me.onAccessFilterChange, me, {
+                single: true
+            });
+            return;
+        }
+
+        store.addFilter({
+            filterFn: function (item) {
+                var access = item.get('access'),
+                    itemInherited  = item.get('isInherited'),
+                    itemDeprecated = item.get('deprecatedMessage'),
+                    itemRemoved    = item.get('removedMessage'),
+                    isPublic, isProtected, isPrivate, isInherited, isAccessor, isDeprecated, isRemoved;
+
+                isPublic = (cats.public & !access);
+                isProtected = (cats.protected & access === 'protected');
+                isPrivate   = (cats.private & access === 'private');
+                isInherited = (!itemInherited || cats.inherited == itemInherited) ? 1 : 0;
+                //isAccessor = (cats.inherited & item.get('accessor'));
+                isDeprecated = (!itemDeprecated || cats.deprecated == !!itemDeprecated) ? 1 : 0;
+                isRemoved    = (!itemRemoved || cats.removed & !!itemRemoved) ? 1 : 0;
+
+                return ((isPublic | isProtected | isPrivate) & isInherited & isDeprecated & isRemoved);
+            },
+            id      : filterId
+        });
+    }, 10),
 
     onMemberNavBtnClick: function (btn) {
         var targetEl = this.lookupReference(btn.target).getEl(),

@@ -16,7 +16,8 @@ Ext.define('DocsApp.model.Class', {
     proxy: {
         type: 'rest',
         format: 'json',
-        url : '/docs/DocsApp/resources/data/docs/',
+        //url : '/docs/DocsApp/resources/data/docs/',
+        url: './resources/data/docs/',
         reader: {
             type: 'doxi'
         }

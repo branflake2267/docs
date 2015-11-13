@@ -32,6 +32,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         dock : 'top',
         items: [{
             iconCls: 'x-fa fa-star',
+            ui: 'favorite',
             handler: 'addFavorite'
         }, {
             xtype : 'container',
@@ -67,6 +68,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             layout  : 'hbox',
             defaults: {
                 xtype    : 'badgebutton',
+                ui       : 'default-toolbar',
                 margin   : 10,
                 handler  : 'onMemberNavBtnClick',
                 listeners: {
@@ -134,6 +136,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
     }, {
         xtype   : 'toolbar',
         dock    : 'right',
+        cls: 'da-class-categories-ct',
         //layout: 'vbox',
         defaults: {
             anchor: '100%',
@@ -157,42 +160,49 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         }, '-', {
             fieldLabel: 'Public',
             bind      : '{catFilters.public}',
+            margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, {
             fieldLabel: 'Protected',
             bind      : '{catFilters.protected}',
+            margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, {
             fieldLabel: 'Private',
             bind      : '{catFilters.private}',
+            margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, '-', {
             fieldLabel: 'Inherited',
             bind      : '{catFilters.inherited}',
+            margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, {
             fieldLabel: 'Accessor',
             bind      : '{catFilters.accessor}',
+            margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, {
             fieldLabel: 'Deprecated',
             bind      : '{catFilters.deprecated}',
+            margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, {
             fieldLabel: 'Removed',
             bind      : '{catFilters.removed}',
+            margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
@@ -210,7 +220,6 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         // the class description and hierarchy view (class metadata)
         xtype    : 'container',
         reference: 'classDescription',
-        //height: 1000,
         layout   : {
             type : 'hbox',
             align: 'stretchmax'
@@ -226,21 +235,53 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         }, {
             xtype: 'component',
             width: 400,
+            cls: 'da-class-meta-ct',
             split: true,
             bind : '{classFile}',
             tpl  : new Ext.XTemplate(
                 '<tpl if="alternateClassNames">',
-                '<div>Alternate Class Names</div><div>{alternateClassNames}</div>',
+                '<div class="ad-class-meta-header ad-class-meta-header-top">Alternate Class Names</div><div class="da-class-meta-list-body">{[this.splitItems(values, "alternateClassNames")]}</div>',
                 '</tpl>',
                 '<tpl if="mixins">',
-                '<div>Mixins</div><div>{mixins}</div>',
+                '<div class="ad-class-meta-header">Mixins</div><div class="da-class-meta-list-body">{[this.splitItems(values, "mixins")]}</div>',
                 '</tpl>',
                 '<tpl if="requires">',
-                '<div>Requires</div><div>{[this.getRequires(values)]}</div>',
+                '<div class="ad-class-meta-header">Requires</div><div class="da-class-meta-list-body">{[this.splitItems(values, "requires")]}</div>',
                 '</tpl>',
                 {
-                    getRequires: function (values) {
-                        return values.requires.replace(/,/g, '<br>');
+                    splitItems: function (values, node) {
+                        var arr = values[node].split(','),
+                            len = arr.length,
+                            i = 0;
+
+                        for (;i < len; i++) {
+                            arr[i] = this.makeLinks(arr[i]);
+                        }
+
+                        return arr.join('<br>');
+                    },
+                    makeLinks: function (link) {
+                        link      = link.replace(/\|/g, '/');
+                        var links = link.split('/'),
+                            len   = links.length,
+                            out   = [],
+                            i     = 0,
+                            root, rec;
+
+                        //this.classStore = this.classStore || me.up('mainapp-container').down('mainapp-nav-docs-container').lookupReference('packageDocTree').getStore();
+                        this.classStore = this.classStore || Ext.ComponentQuery.query('mainapp-container')[0].down('mainapp-nav-docs-container').lookupReference('packageDocTree').getStore();
+                        root            = this.classStore.getRoot();
+
+                        for (; i < len; i++) {
+                            rec = root.findChild('className', links[i].replace(/\[\]/g, ''), true);
+                            if (rec) {
+                                out.push(('<a href="#!/api/' + links[i] + '">' + links[i] + '</a>').replace('[]', ''));
+                            } else {
+                                out.push(links[i]);
+                            }
+                        }
+
+                        return out.join('/');
                     }
                 }
             )
@@ -249,7 +290,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         // CONFIGS
     }, {
         xtype    : 'component',
-        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        cls      : 'da-class-member-section-header',
         reference: 'configsHeader',
         html     : 'Configs',
         hidden   : true
@@ -264,7 +305,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         // PROPERTIES
     }, {
         xtype    : 'component',
-        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        cls      : 'da-class-member-section-header',
         reference: 'propertiesHeader',
         html     : 'Properties',
         hidden   : true
@@ -279,7 +320,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         // METHODS
     }, {
         xtype    : 'component',
-        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        cls      : 'da-class-member-section-header',
         reference: 'methodsHeader',
         html     : 'Methods',
         hidden   : true
@@ -294,7 +335,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         // EVENTS
     }, {
         xtype    : 'component',
-        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        cls      : 'da-class-member-section-header',
         reference: 'eventsHeader',
         html     : 'Events',
         hidden   : true
@@ -309,7 +350,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         // VARS
     }, {
         xtype    : 'component',
-        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        cls      : 'da-class-member-section-header',
         reference: 'cssVarHeader',
         html     : 'Theme Vars',
         hidden   : true
@@ -324,7 +365,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         // MIXINS
     }, {
         xtype    : 'component',
-        style    : 'color: red; font-size: 30px; line-height: 30px; font-weight: bold;',
+        cls      : 'da-class-member-section-header',
         reference: 'cssMixinHeader',
         html     : 'Theme Mixins',
         hidden   : true

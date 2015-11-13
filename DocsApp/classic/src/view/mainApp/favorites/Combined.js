@@ -6,6 +6,9 @@ Ext.define('DocsApp.view.mainApp.favorites.Combined', {
     xtype: 'mainapp-favorites-combined',
 
     iconCls: 'x-fa fa-star',
+    tabConfig: {
+        ui: 'favorite'
+    },
     hideHeaders: true,
     features: [{
         ftype:'grouping',

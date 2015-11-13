@@ -18,48 +18,62 @@ Ext.define('DocsApp.view.mainApp.nav.docs.Container', {
 
     layout: 'border',
 
-    items: [{
+    tbar: [{
         xtype: 'container',
-        region: 'north',
-        layout: 'hbox',
+        layout: 'anchor',
+        defaults: {
+            anchor: '100%'
+        },
         items: [{
-            xtype: 'radiogroup',
-            width: 250,
-            margin: '0 0 0 12',
-            fieldLabel: 'Toolkit',
-            labelWidth: 70,
-            columns: 2,
+            xtype: 'toolbar',
+            region: 'north',
+            layout: 'hbox',
             items: [{
-                name: 'doc-nav-toolkit',
-                boxLabel: 'classic',
-                checked: true
-            }, {
-                name: 'doc-nav-toolkit',
-                boxLabel: 'classic'
+                xtype: 'radiogroup',
+                width: 250,
+                margin: '0 0 0 12',
+                fieldLabel: 'Toolkit',
+                labelWidth: 70,
+                columns: 2,
+                items: [{
+                    name: 'doc-nav-toolkit',
+                    boxLabel: 'classic',
+                    checked: true
+                }, {
+                    name: 'doc-nav-toolkit',
+                    boxLabel: 'classic'
+                }]
+            }]
+        }, {
+            xtype: 'toolbar',
+            region: 'north',
+            items: [{
+                xtype: 'tagfield',
+                fieldLabel: 'Packages',
+                labelWidth: 70,
+                flex: 1,
+                margin: '0 0 0 12',
+                displayField: 'name',
+                valueField: 'id',
+                value: ['ext', 'charts', 'ux'],
+                store: {
+                    fields: [],
+                    data: [{
+                        name: 'ext',
+                        id: 'ext'
+                    }, {
+                        name: 'charts',
+                        id: 'charts'
+                    }, {
+                        name: 'ux',
+                        id: 'ux'
+                    }]
+                }
             }]
         }]
-    }, {
-        xtype: 'tagfield',
-        region: 'north',
-        fieldLabel: 'Packages',
-        margin: '0 0 0 12',
-        displayField: 'name',
-        valueField: 'id',
-        value: ['ext', 'charts', 'ux'],
-        store: {
-            fields: [],
-            data: [{
-                name: 'ext',
-                id: 'ext'
-            }, {
-                name: 'charts',
-                id: 'charts'
-            }, {
-                name: 'ux',
-                id: 'ux'
-            }]
-        }
-    }, {
+    }],
+
+    items: [{
         xtype: 'tabpanel',
         region: 'center',
         tabPosition: 'bottom',

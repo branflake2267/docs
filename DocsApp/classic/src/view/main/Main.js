@@ -128,7 +128,8 @@ Ext.define('DocsApp.view.main.Main', {
 
     tbar: [{
         xtype: 'component',
-        html: 'SENCHA'
+        html: 'SENCHA',
+        style: 'font-size: 22px;line-height: 22px;color: #1e97cc;'
     }, {
         xtype: 'container',
         reference: 'contextCarousel',

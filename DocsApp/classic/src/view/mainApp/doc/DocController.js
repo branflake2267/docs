@@ -131,7 +131,7 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         var me = this,
         vm = me.getViewModel(),
             store = vm.get('allMembers'),
-            cats = vm.get('catFilters'),
+            cats = vm.get('catFilters') || {},
             filterId = 'catFilter';
 
         if (!store) {
@@ -182,8 +182,13 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
 
     hideMemberMenu: function () {
         var menu = this.lookupReference('memberListMenu'),
-            view = this.lookupReference('memberListView');
-        menu.setHidden(this.menuCanClose);
+            canCLose = this.menuCanClose,
+            btn = menu.listMenuBtn;
+
+        menu.setHidden(canCLose);
+        if (btn && canCLose) {
+            btn.removeCls('da-class-member-nav-btn-active');
+        }
     },
 
     onMemberMenuButtonRender: function (btn) {
@@ -197,13 +202,19 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
 
         btnEl.monitorMouseEnter(delay, function () {
             memberListMenu
-                .setSize(docEl.getWidth(), Ext.getBody().getHeight() - btn.getEl().getBottom() + btnBorder)
-                .showAt(docEl.getLocalX(), btnEl.getBottom() - btn.ownerCt.getEl().getBottom() - btnBorder);
+                .setSize(doc.body.getWidth(), doc.body.getHeight() + (btn.ownerCt.ownerCt.getEl().getBottom() - btn.getEl().getBottom()))
+                .showAt(docEl.getLocalX(), 0 - (btn.ownerCt.ownerCt.getEl().getBottom() - btn.getEl().getBottom()) - btnBorder - 1);
 
             me.lookupReference('memberListView').setBind({
                 store: '{' + btn.relStore + '}'
             });
             me.getViewModel().notify();
+            btn.addCls('da-class-member-nav-btn-active');
+
+            if (memberListMenu.listMenuBtn && memberListMenu.listMenuBtn !== btn) {
+                memberListMenu.listMenuBtn.removeCls('da-class-member-nav-btn-active');
+            }
+            memberListMenu.listMenuBtn = btn;
         });
 
         btn.getEl().monitorMouseLeave(me.menuDelay, me.hideMemberMenu, me);

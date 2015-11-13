@@ -1,0 +1,4 @@
+# docs-app-theme/sass/etc
+
+This folder contains miscellaneous SASS files. Unlike `"docs-app-theme/sass/etc"`, these files
+need to be used explicitly.

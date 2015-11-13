@@ -16,5 +16,13 @@ Ext.define('DocsApp.view.mainApp.doc.MemberListMenu', {
         bodyPadding: 20*/
         xtype: 'memberlistview',
         reference: 'memberListView'
-    }]
+    }],
+
+    onDestroy: function () {
+        if (this.listMenuBtn) {
+            delete menu.listMenuBtn;
+        }
+
+        this.callParent();
+    }
 });

@@ -58,13 +58,14 @@ Ext.define('DocsApp.view.mainApp.doc.MemberListView', {
 
     layoutMemberItems: function () {
         var me = this,
+            el = me.getEl(),
             store = me.getStore(),
             tempTpl = new Ext.XTemplate(me.tplInner),
             tmp = Ext.getBody().appendChild({}),
             tm = Ext.util.TextMetrics,
             i = 0,
-            width = me.getWidth() - Ext.getScrollbarSize().width,
-            height = me.getHeight(),
+            width = el.getWidth(true) - Ext.getScrollbarSize().width,
+            height = el.getHeight(true),
             itemWidth = 0,
             itemHeight = 0,
             recs = store.getRange(),

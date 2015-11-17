@@ -1,3 +1,5 @@
+var myCount = 0;
+
 Ext.define('DocsApp.view.mainApp.doc.MemberDataview', {
     extend: 'Ext.view.View',
     xtype : 'main-member-dataview',
@@ -11,7 +13,10 @@ Ext.define('DocsApp.view.mainApp.doc.MemberDataview', {
             '<tpl if="items">',
                 '{[this.evalItems(values)]}',
             '</tpl>',
-            '<div class="da-member-item">',
+            //'<div class="da-member-item">',
+            '<tpl>',
+            '<div class="{[this.applyCategories(values.access, values.isInherited, values.deprecatedMessage, values.removedVersion)]}">',
+            '</tpl>',
 
                 '<h3 class="da-member da-{$type}">',
                     '<span class="da-member-name">{name}</span> ',
@@ -134,8 +139,31 @@ Ext.define('DocsApp.view.mainApp.doc.MemberDataview', {
                             values.myReturn = items[i];
                         }
                     }
-                }
-            }, {
+                },
+                applyCategories: function (access, isInherited, deprecatedMessage, removedVersion) {
+                    var list = ['da-member-item'],
+                        prefix = 'da-class-member-';
+
+                    if (!access) {
+                        list.push(prefix + 'public');
+                    } else {
+                        list.push(prefix + access);
+                    }
+
+                    if (isInherited) {
+                        list.push(prefix + 'inherited');
+                    }
+
+                    if (deprecatedMessage) {
+                        list.push(prefix + 'deprecated');
+                    }
+
+                    if (removedVersion) {
+                        list.push(prefix + 'removed');
+                    }
+
+                    return list.join(' ');
+                },
                 makeLinks: function (link) {
                     link      = link.replace(/\|/g, '/');
                     var links = link.split('/'),

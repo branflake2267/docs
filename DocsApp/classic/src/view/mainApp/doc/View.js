@@ -79,7 +79,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             },
             items   : [{
                 text    : 'Configs',
-                relStore: 'configs',
+                //relStore: 'configs',
+                viewRef: 'memberCfg',
                 target  : 'configsHeader',
                 bind    : {
                     hidden: '{memberCfg}',
@@ -87,7 +88,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             }, {
                 text    : 'Properties',
-                relStore: 'properties',
+                //relStore: 'properties',
+                viewRef: 'memberProperty',
                 target  : 'propertiesHeader',
                 bind    : {
                     hidden: '{memberProperty}',
@@ -95,7 +97,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             }, {
                 text    : 'Methods',
-                relStore: 'methods',
+                //relStore: 'methods',
+                viewRef: 'memberMethod',
                 target  : 'methodsHeader',
                 bind    : {
                     hidden: '{memberMethod}',
@@ -103,7 +106,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             }, {
                 text    : 'Events',
-                relStore: 'events',
+                //relStore: 'events',
+                viewRef: 'memberEvent',
                 target  : 'eventsHeader',
                 bind    : {
                     hidden: '{memberEvent}',
@@ -111,7 +115,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             }, {
                 text    : 'CSS Vars',
-                relStore: 'themevars',
+                //relStore: 'themevars',
+                viewRef: 'memberCss_var',
                 target  : 'cssVarHeader',
                 bind    : {
                     hidden: '{memberCss_var}',
@@ -119,7 +124,8 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             }, {
                 text    : 'CSS Mixins',
-                relStore: 'thememixins',
+                //relStore: 'thememixins',
+                viewRef: 'memberCss_mixin',
                 target  : 'cssMixinHeader',
                 bind    : {
                     hidden: '{memberCss_mixin}',
@@ -144,6 +150,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         },
         items   : [{
             xtype    : 'textfield',
+            reference: 'memberFilter',
             emptyText: 'filter members...',
             triggers : {
                 clear: {
@@ -159,21 +166,21 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             }
         }, '-', {
             fieldLabel: 'Public',
-            bind      : '{catFilters.public}',
+            bind      : '{catFilters.pub}',
             margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, {
             fieldLabel: 'Protected',
-            bind      : '{catFilters.protected}',
+            bind      : '{catFilters.prot}',
             margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, {
             fieldLabel: 'Private',
-            bind      : '{catFilters.private}',
+            bind      : '{catFilters.pri}',
             margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'

@@ -72,27 +72,27 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         button.setIconCls(pressed ? 'x-fa fa-compress' : 'x-fa fa-expand');
     },
 
-    onMemberViewRefresh: function (dataview) {
-        var store = dataview.getStore(),
+    onMemberViewRefresh: function (view) {
+        var store = view.getStore(),
             count, vm, ref;
 
         if (store.type === 'chained') {
-            count = store.getCount();
+            count = (!Ext.isEmpty(view.filteredCount)) ? view.filteredCount : store.getCount();
             vm = this.getViewModel();
-            ref = dataview.reference;
+            ref = view.reference;
 
-            if (!dataview.hasLoaded) {
-                dataview.hasLoaded = true;
+            if (!view.hasLoaded) {
+                view.hasLoaded = true;
                 vm.set(ref, count === 0);
             }
             vm.set(ref + 'Count', count);
 
-            dataview.previousSibling().setHidden(!count);
+            view.previousSibling().setHidden(!count);
         }
     },
 
     onFilterChange: function (field, val) {
-        var memberViews = this.getView().query('main-member-dataview'),
+        /*var memberViews = this.getView().query('main-member-dataview'),
             len = memberViews.length,
             i = 0,
             store = this.getViewModel().get('allMembers'),
@@ -124,11 +124,12 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         }
 
         // hide / show the member section title based on whether any members were found by the filter
-        this.lookupReference('classDescription').setHidden(val.length);
+        this.lookupReference('classDescription').setHidden(val.length);*/
+        this.doFilter();
     },
 
     onAccessFilterChange: Ext.Function.createBuffered(function () {
-        var me = this,
+        /*var me = this,
         vm = me.getViewModel(),
             store = vm.get('allMembers'),
             cats = vm.get('catFilters') || {},
@@ -160,8 +161,112 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
                 return ((isPublic | isProtected | isPrivate) & isInherited & isDeprecated & isRemoved);
             },
             id      : filterId
-        });
+        });*/
+        var me = this,
+            vm = me.getViewModel();
+
+        if (!vm.get('allMembers')) {
+            vm.bind('allMembers', me.onAccessFilterChange, me, {
+                single: true
+            });
+            return;
+        }
+
+        me.doFilter();
     }, 10),
+
+    doFilter: function () {
+        /*var vm = this.getViewModel(),
+            cats = vm.get('catFilters'),
+            memberViews = this.getView().query('main-member-dataview'),
+            len = memberViews.length,
+            i = 0,
+            prefix = 'da-class-member-',
+            view, el;
+
+        for (;i < len; i++) {
+            view = memberViews[i];
+            el = view.getEl();
+
+            el.toggleCls(prefix + 'isPublic', cats.pub);
+            el.toggleCls(prefix + 'isProtected', cats.prot);
+            el.toggleCls(prefix + 'isPrivate', cats.pri);
+            el.toggleCls(prefix + 'isInherited', cats.inherited);
+            el.toggleCls(prefix + 'isDeprecated', cats.deprecated);
+            el.toggleCls(prefix + 'isRemoved', cats.removed);
+        }*/
+
+        var vm          = this.getViewModel(),
+            filterVal   = this.lookupReference('memberFilter').getValue() || '',
+            cats        = vm.get('catFilters'),
+            memberViews = this.getView().query('main-member-dataview'),
+            len         = memberViews.length,
+            i           = 0,
+            view, store, count;
+
+        for (;i < len; i++) {
+            view  = memberViews[i];
+            store = view.getStore();
+            view.filteredRecords = [];
+            count = 0;
+
+            Ext.suspendLayouts();
+            store.each(function (rec) {
+                var node = Ext.get(view.getNode(rec)),
+                    name = rec.get('name'),
+                    access         = rec.get('access'),
+                    accessor       = rec.get('accessor'),
+                    itemInherited  = rec.get('isInherited'),
+                    itemAccessor   = rec.get('accessor'),
+                    itemDeprecated = rec.get('deprecatedVersion'),
+                    itemRemoved    = rec.get('removedVersion'),
+                    isMatched, isPublic, isProtected, isPrivate, isInherited, isAccessor, isDeprecated, isRemoved,
+                    target, rawText;
+
+                isMatched    = (filterVal.length === 0 | name.search(new RegExp(filterVal, 'i')) !== -1);
+                isPublic     = (cats.pub & !access);
+                isProtected  = (cats.pro & access === 'protected');
+                isPrivate    = (cats.pri & access === 'private');
+                isInherited  = (!itemInherited || cats.inherited == itemInherited) ? 1 : 0;
+                isAccessor   = (!itemAccessor || cats.accessor & rec.get('accessor'));
+                isDeprecated = (!itemDeprecated || cats.deprecated == !!itemDeprecated) ? 1 : 0;
+                isRemoved    = (!itemRemoved || cats.removed & !!itemRemoved) ? 1 : 0;
+
+                target = node.down('.da-member-name');
+
+                if (filterVal.length) {
+                    target.setHtml(Ext.util.Format.stripTags(target.getHtml()));
+                    rawText = target.getHtml();
+                    target.setHtml(rawText.replace(new RegExp(filterVal, 'i'), '<span class="da-member-name-highlighted">' + filterVal + '</span>'));
+                } else {
+                    target.setHtml(Ext.util.Format.stripTags(target.getHtml()));
+                }
+
+                if ((isPublic | isProtected | isPrivate) & isMatched & isAccessor & isInherited & isDeprecated & isRemoved) {
+                    node.show();
+                    // if we push the whole record it make for a major slowdown it seems when it comes to showing the
+                    // member list / filtered member list
+                    view.filteredRecords.push({
+                        name             : name,
+                        access           : access,
+                        deprecatedVersion: itemDeprecated,
+                        removedVersion   : itemRemoved,
+                        readOnly         : rec.get('readOnly'),
+                        template         : rec.get('template'),
+                        "static"         : rec.get('static'),
+                        preventable      : rec.get('preventable')
+                    });
+                    count++;
+                } else {
+                    node.setVisibilityMode(Ext.dom.Element.DISPLAY).hide();
+                }
+            });
+            view.previousSibling().setHidden(!count);
+            view.filteredCount = count;
+            view.fireEvent('refresh', view);
+            Ext.resumeLayouts(true);
+        }
+    },
 
     onMemberNavBtnClick: function (btn) {
         var targetEl = this.lookupReference(btn.target).getEl(),
@@ -194,21 +299,26 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
     onMemberMenuButtonRender: function (btn) {
         var me = this,
             btnEl = btn.getEl(),
-            btnBorder = btnEl.getBorderWidth('b')
+            btnBorder = btnEl.getBorderWidth('b'),
             doc = me.getView(),
             docEl = doc.getEl(),
             delay = me.menuDelay,
-            memberListMenu = me.lookupReference('memberListMenu');
+            memberListMenu = me.lookupReference('memberListMenu'),
+            memberListStore = me.lookupReference('memberListView').getStore(),
+            view = me.lookupReference(btn.viewRef);
 
         btnEl.monitorMouseEnter(delay, function () {
             memberListMenu
                 .setSize(doc.body.getWidth(), doc.body.getHeight() + (btn.ownerCt.ownerCt.getEl().getBottom() - btn.getEl().getBottom()))
                 .showAt(docEl.getLocalX(), 0 - (btn.ownerCt.ownerCt.getEl().getBottom() - btn.getEl().getBottom()) - btnBorder - 1);
 
-            me.lookupReference('memberListView').setBind({
+            /*me.lookupReference('memberListView').setBind({
                 store: '{' + btn.relStore + '}'
             });
-            me.getViewModel().notify();
+            me.getViewModel().notify();*/
+            memberListStore.removeAll();
+            memberListStore.add(view.filteredRecords || []);
+
             btn.addCls('da-class-member-nav-btn-active');
 
             if (memberListMenu.listMenuBtn && memberListMenu.listMenuBtn !== btn) {

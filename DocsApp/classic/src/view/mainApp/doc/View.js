@@ -144,6 +144,7 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         },
         items   : [{
             xtype    : 'textfield',
+            reference: 'memberFilter',
             emptyText: 'filter members...',
             triggers : {
                 clear: {
@@ -159,21 +160,21 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             }
         }, '-', {
             fieldLabel: 'Public',
-            bind      : '{catFilters.public}',
+            bind      : '{catFilters.pub}',
             margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, {
             fieldLabel: 'Protected',
-            bind      : '{catFilters.protected}',
+            bind      : '{catFilters.prot}',
             margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
         }, {
             fieldLabel: 'Private',
-            bind      : '{catFilters.private}',
+            bind      : '{catFilters.pri}',
             margin: '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'

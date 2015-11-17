@@ -92,7 +92,7 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
     },
 
     onFilterChange: function (field, val) {
-        var memberViews = this.getView().query('main-member-dataview'),
+        /*var memberViews = this.getView().query('main-member-dataview'),
             len = memberViews.length,
             i = 0,
             store = this.getViewModel().get('allMembers'),
@@ -124,11 +124,12 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         }
 
         // hide / show the member section title based on whether any members were found by the filter
-        this.lookupReference('classDescription').setHidden(val.length);
+        this.lookupReference('classDescription').setHidden(val.length);*/
+        this.doFilter();
     },
 
     onAccessFilterChange: Ext.Function.createBuffered(function () {
-        var me = this,
+        /*var me = this,
         vm = me.getViewModel(),
             store = vm.get('allMembers'),
             cats = vm.get('catFilters') || {},
@@ -160,8 +161,97 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
                 return ((isPublic | isProtected | isPrivate) & isInherited & isDeprecated & isRemoved);
             },
             id      : filterId
-        });
+        });*/
+        var me = this,
+            vm = me.getViewModel();
+
+        if (!vm.get('allMembers')) {
+            vm.bind('allMembers', me.onAccessFilterChange, me, {
+                single: true
+            });
+            return;
+        }
+
+        me.doFilter();
     }, 10),
+
+    doFilter: function () {
+        /*var vm = this.getViewModel(),
+            cats = vm.get('catFilters'),
+            memberViews = this.getView().query('main-member-dataview'),
+            len = memberViews.length,
+            i = 0,
+            prefix = 'da-class-member-',
+            view, el;
+
+        for (;i < len; i++) {
+            view = memberViews[i];
+            el = view.getEl();
+
+            el.toggleCls(prefix + 'isPublic', cats.pub);
+            el.toggleCls(prefix + 'isProtected', cats.prot);
+            el.toggleCls(prefix + 'isPrivate', cats.pri);
+            el.toggleCls(prefix + 'isInherited', cats.inherited);
+            el.toggleCls(prefix + 'isDeprecated', cats.deprecated);
+            el.toggleCls(prefix + 'isRemoved', cats.removed);
+        }*/
+
+        var vm          = this.getViewModel(),
+            filterVal   = this.lookupReference('memberFilter').getValue() || '',
+            cats        = vm.get('catFilters'),
+            memberViews = this.getView().query('main-member-dataview'),
+            len         = memberViews.length,
+            i           = 0,
+            view, store, count;
+
+        for (;i < len; i++) {
+            view  = memberViews[i];
+            store = view.getStore();
+            count = 0;
+
+            Ext.suspendLayouts();
+            store.each(function (item) {
+                var node = Ext.get(view.getNode(item)),
+                    name = item.get('name'),
+                    access         = item.get('access'),
+                    accessor       = item.get('accessor'),
+                    itemInherited  = item.get('isInherited'),
+                    itemAccessor   = item.get('accessor'),
+                    itemDeprecated = item.get('deprecatedMessage'),
+                    itemRemoved    = item.get('removedVersion'),
+                    isMatched, isPublic, isProtected, isPrivate, isInherited, isAccessor, isDeprecated, isRemoved,
+                    target, rawText;
+
+                isMatched    = (filterVal.length === 0 | name.search(new RegExp(filterVal, 'i')) !== -1);
+                isPublic     = (cats.pub & !access);
+                isProtected  = (cats.pro & access === 'protected');
+                isPrivate    = (cats.pri & access === 'private');
+                isInherited  = (!itemInherited || cats.inherited == itemInherited) ? 1 : 0;
+                isAccessor   = (!itemAccessor || cats.accessor & item.get('accessor'));
+                isDeprecated = (!itemDeprecated || cats.deprecated == !!itemDeprecated) ? 1 : 0;
+                isRemoved    = (!itemRemoved || cats.removed & !!itemRemoved) ? 1 : 0;
+
+                target = node.down('.da-member-name');
+
+                if (filterVal.length) {
+                    target.setHtml(Ext.util.Format.stripTags(target.getHtml()));
+                    rawText = target.getHtml();
+                    target.setHtml(rawText.replace(new RegExp(filterVal, 'i'), '<span class="da-member-name-highlighted">' + filterVal + '</span>'));
+                } else {
+                    target.setHtml(Ext.util.Format.stripTags(target.getHtml()));
+                }
+
+                if ((isPublic | isProtected | isPrivate) & isMatched & isAccessor & isInherited & isDeprecated & isRemoved) {
+                    node.show();
+                    count++;
+                } else {
+                    node.setVisibilityMode(Ext.dom.Element.DISPLAY).hide();
+                }
+            });
+            view.previousSibling().setHidden(!count);
+            Ext.resumeLayouts(true);
+        }
+    },
 
     onMemberNavBtnClick: function (btn) {
         var targetEl = this.lookupReference(btn.target).getEl(),

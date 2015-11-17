@@ -4,9 +4,9 @@ Ext.define('DocsApp.view.mainApp.ContainerModel', {
 
     data: {
         catFilters: {
-            "public": true,
-            "protected": false,
-            "private": false,
+            pub: true,
+            prot: false,
+            pri: false,
             "inherited": false,
             accessor: false,
             deprecated: false,

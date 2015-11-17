@@ -7,11 +7,12 @@ Ext.define('DocsApp.view.mainApp.doc.MemberListView', {
 
     scrollable: true,
     itemSelector: 'div.da-member-list-item',
-    //itemWidth: 0,
-    //itemHeight: 0,
+    store: {
+        fields: []
+    },
     cls: 'da-member-list-ct',
-    //scrollWidth: Ext.getScrollbarSize().width,
-    tpl: new Ext.XTemplate(''),
+    tpl: new Ext.XTemplate('{name}'),
+    itemTpl: '{name}',
     trackOver: true,
     overItemCls: 'da-member-list-item-hover',
     tplInner:
@@ -44,15 +45,18 @@ Ext.define('DocsApp.view.mainApp.doc.MemberListView', {
         '</div>'
     ,
 
-    onBindStore: function (store, oldStore) {
-        this.callParent([store, oldStore]);
+    afterRender: function () {
+        var me = this;
 
-        if (store.type === 'chained') {
-            this.layoutMemberItems();
-        }
+        me.callParent();
+
+        me.getStore().on({
+            datachanged: me.layoutMemberItems,
+            scope: me
+        });
     },
 
-    onResize: function (width, height) {
+    onResize: function () {
         this.layoutMemberItems();
     },
 

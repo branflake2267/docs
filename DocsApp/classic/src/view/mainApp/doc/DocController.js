@@ -72,22 +72,22 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         button.setIconCls(pressed ? 'x-fa fa-compress' : 'x-fa fa-expand');
     },
 
-    onMemberViewRefresh: function (dataview) {
-        var store = dataview.getStore(),
+    onMemberViewRefresh: function (view) {
+        var store = view.getStore(),
             count, vm, ref;
 
         if (store.type === 'chained') {
-            count = store.getCount();
+            count = (!Ext.isEmpty(view.filteredCount)) ? view.filteredCount : store.getCount();
             vm = this.getViewModel();
-            ref = dataview.reference;
+            ref = view.reference;
 
-            if (!dataview.hasLoaded) {
-                dataview.hasLoaded = true;
+            if (!view.hasLoaded) {
+                view.hasLoaded = true;
                 vm.set(ref, count === 0);
             }
             vm.set(ref + 'Count', count);
 
-            dataview.previousSibling().setHidden(!count);
+            view.previousSibling().setHidden(!count);
         }
     },
 
@@ -207,18 +207,19 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         for (;i < len; i++) {
             view  = memberViews[i];
             store = view.getStore();
+            view.filteredRecords = [];
             count = 0;
 
             Ext.suspendLayouts();
-            store.each(function (item) {
-                var node = Ext.get(view.getNode(item)),
-                    name = item.get('name'),
-                    access         = item.get('access'),
-                    accessor       = item.get('accessor'),
-                    itemInherited  = item.get('isInherited'),
-                    itemAccessor   = item.get('accessor'),
-                    itemDeprecated = item.get('deprecatedMessage'),
-                    itemRemoved    = item.get('removedVersion'),
+            store.each(function (rec) {
+                var node = Ext.get(view.getNode(rec)),
+                    name = rec.get('name'),
+                    access         = rec.get('access'),
+                    accessor       = rec.get('accessor'),
+                    itemInherited  = rec.get('isInherited'),
+                    itemAccessor   = rec.get('accessor'),
+                    itemDeprecated = rec.get('deprecatedVersion'),
+                    itemRemoved    = rec.get('removedVersion'),
                     isMatched, isPublic, isProtected, isPrivate, isInherited, isAccessor, isDeprecated, isRemoved,
                     target, rawText;
 
@@ -227,7 +228,7 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
                 isProtected  = (cats.pro & access === 'protected');
                 isPrivate    = (cats.pri & access === 'private');
                 isInherited  = (!itemInherited || cats.inherited == itemInherited) ? 1 : 0;
-                isAccessor   = (!itemAccessor || cats.accessor & item.get('accessor'));
+                isAccessor   = (!itemAccessor || cats.accessor & rec.get('accessor'));
                 isDeprecated = (!itemDeprecated || cats.deprecated == !!itemDeprecated) ? 1 : 0;
                 isRemoved    = (!itemRemoved || cats.removed & !!itemRemoved) ? 1 : 0;
 
@@ -243,12 +244,26 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
 
                 if ((isPublic | isProtected | isPrivate) & isMatched & isAccessor & isInherited & isDeprecated & isRemoved) {
                     node.show();
+                    // if we push the whole record it make for a major slowdown it seems when it comes to showing the
+                    // member list / filtered member list
+                    view.filteredRecords.push({
+                        name             : name,
+                        access           : access,
+                        deprecatedVersion: itemDeprecated,
+                        removedVersion   : itemRemoved,
+                        readOnly         : rec.get('readOnly'),
+                        template         : rec.get('template'),
+                        "static"         : rec.get('static'),
+                        preventable      : rec.get('preventable')
+                    });
                     count++;
                 } else {
                     node.setVisibilityMode(Ext.dom.Element.DISPLAY).hide();
                 }
             });
             view.previousSibling().setHidden(!count);
+            view.filteredCount = count;
+            view.fireEvent('refresh', view);
             Ext.resumeLayouts(true);
         }
     },
@@ -284,21 +299,26 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
     onMemberMenuButtonRender: function (btn) {
         var me = this,
             btnEl = btn.getEl(),
-            btnBorder = btnEl.getBorderWidth('b')
+            btnBorder = btnEl.getBorderWidth('b'),
             doc = me.getView(),
             docEl = doc.getEl(),
             delay = me.menuDelay,
-            memberListMenu = me.lookupReference('memberListMenu');
+            memberListMenu = me.lookupReference('memberListMenu'),
+            memberListStore = me.lookupReference('memberListView').getStore(),
+            view = me.lookupReference(btn.viewRef);
 
         btnEl.monitorMouseEnter(delay, function () {
             memberListMenu
                 .setSize(doc.body.getWidth(), doc.body.getHeight() + (btn.ownerCt.ownerCt.getEl().getBottom() - btn.getEl().getBottom()))
                 .showAt(docEl.getLocalX(), 0 - (btn.ownerCt.ownerCt.getEl().getBottom() - btn.getEl().getBottom()) - btnBorder - 1);
 
-            me.lookupReference('memberListView').setBind({
+            /*me.lookupReference('memberListView').setBind({
                 store: '{' + btn.relStore + '}'
             });
-            me.getViewModel().notify();
+            me.getViewModel().notify();*/
+            memberListStore.removeAll();
+            memberListStore.add(view.filteredRecords || []);
+
             btn.addCls('da-class-member-nav-btn-active');
 
             if (memberListMenu.listMenuBtn && memberListMenu.listMenuBtn !== btn) {

@@ -1,0 +1,170 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/util/TSV.js",
+    "../../../ext/packages/core/src/util/DelimitedValue.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.util.DelimitedValue",
+        "name": "Ext.util.TSV",
+        "since": "5.1.0",
+        "singleton": true,
+        "text": "This class contains utility methods for dealing with TSV (Tab Separated Values) as\nspecified in <a href=\"http://tools.ietf.org/html/rfc4180\">RFC 4180</a>.\n\nFor details see <a href='#!/api/Ext.util.DelimitedValue'>Ext.util.DelimitedValue</a>.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "dateFormat",
+                "text": "The <a href='#!/api/Ext.Date-method-format'>Ext.Date#format</a> to use for dates\n",
+                "type": "String",
+                "src": {
+                  "name": "1,41,22",
+                  "text": "1,42,8,52",
+                  "type": "1,41,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "delimiter",
+                "text": "The string used to separate the values in a row. Common values for this config\nare comma (\",\") and tab (\"\\t\"). See <a href='#!/api/Ext.util.CSV'>Ext.util.CSV</a> and  <a href='#!/api/Ext.util.TSV'>Ext.util.TSV</a>\nfor pre-configured instances of these formats.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,47,22",
+                  "text": "1,48,8,213",
+                  "type": "1,47,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "lineBreak",
+                "text": "The string used by <a href='#!/api/Ext.util.TSV-method-encode'>encode</a> to separate each row. The <a href='#!/api/Ext.util.TSV-method-decode'>decode</a>\nmethod accepts all forms of line break.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,55,22",
+                  "text": "1,56,8,121",
+                  "type": "1,55,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "quote",
+                "text": "The character to use as to quote values that contain the special <a href='#!/api/Ext.util.TSV-cfg-delimiter'>delimiter</a>\nor <a href='#!/api/Ext.util.TSV-cfg-lineBreak'>lineBreak</a> characters.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,62,22",
+                  "text": "1,63,8,113",
+                  "type": "1,62,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "decode",
+                "text": "Decodes a string of encoded values into an array of rows. Each row is an array of\nstrings.\n\nNote that this function does not convert the string values in each column into\nother data types. To do that, use an <a href='#!/api/Ext.data.reader.Array'>Ext.data.reader.Array</a>.\n\nFor example:\n\n    Ext.util.CSV.decode('\"foo \"\"bar\"\", bletch\",Normal String,2010-01-01T21:45:32.004Z\\u000a3.141592653589793,1,false');\n\nproduces the following array of string arrays:\n\n    [\n        ['foo \"bar\", bletch','Normal String', '2010-01-01T21:45:32.004Z'],\n        ['3.141592653589793', '1', 'false']\n    ]\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "input",
+                    "text": "The string to parse.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,97,24",
+                      "text": "1,97,30,21",
+                      "type": "1,97,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "delimiter",
+                    "optional": true,
+                    "text": "The column delimiter to use if the default value\nof <a href='#!/api/Ext.util.TSV-cfg-delimiter'>cfg-delimiter</a> is not desired.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,99,25",
+                      "text": "1,99,36,49:1,100,8,53",
+                      "type": "1,99,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An array of rows where each row is an array of Strings.\n",
+                    "type": "String[][]",
+                    "src": {
+                      "text": "1,102,29,56",
+                      "type": "1,102,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,104,0",
+                  "text": "1,80,8,567"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encode",
+                "text": "Converts a two-dimensional array into an encoded string.\n\nFor example:\n\n    Ext.util.CSV.encode([\n        ['foo \"bar\", bletch', 'Normal String', new Date()],\n        [Math.PI, 1, false]\n    ]);\n\nThe above produces the following string:\n\n    '\"foo \"\"bar\"\", bletch\",Normal String,2010-01-01T21:45:32.004Z\\u000a3.141592653589793,1,false'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "input",
+                    "text": "An array of row data arrays.\n",
+                    "type": "Mixed[][]",
+                    "src": {
+                      "name": "1,186,27",
+                      "text": "1,186,33,29",
+                      "type": "1,186,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "delimiter",
+                    "optional": true,
+                    "text": "The column delimiter to use if the default value\nof <a href='#!/api/Ext.util.TSV-cfg-delimiter'>cfg-delimiter</a> is not desired.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,188,25",
+                      "text": "1,188,36,49:1,189,8,53",
+                      "type": "1,188,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A string in which data items are separated by <a href='#!/api/Ext.util.TSV-cfg-delimiter'>delimiter</a>\ncharacters, and rows are separated by <a href='#!/api/Ext.util.TSV-cfg-lineBreak'>lineBreak</a> characters.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,191,25,65:1,192,8,69",
+                      "type": "1,191,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,194,0",
+                  "text": "1,173,8,336"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,10,0",
+          "name": "0,9,0",
+          "since": "0,7,11",
+          "singleton": "0,12,0",
+          "text": "0,2,4,208"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

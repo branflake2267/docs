@@ -1,0 +1,211 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/mixin/Container.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "extends": "Ext.Mixin",
+        "name": "Ext.mixin.Container",
+        "text": "Common methods for both classic & modern containers\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "referenceHolder",
+                "text": "If `true`, this container will be marked as being a point in the hierarchy where\nreferences to items with a specified `reference` config will be held. The container\nwill automatically become a referenceHolder if a <a href='#!/api/Ext.mixin.Container-controller'>controller</a> is specified.\n\nSee the introductory docs for <a href='#!/api/Ext.container.Container'>Ext.container.Container</a> for more information\nabout references & reference holders.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,20,27",
+                  "text": "0,21,12,370",
+                  "type": "0,20,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "attachReference",
+                "text": "Sets up a component reference.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "component",
+                    "text": "The component to reference.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,92,35",
+                      "text": "0,92,45,28",
+                      "type": "0,92,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,93,12",
+                  "name": "0,95,0",
+                  "text": "0,91,12,31"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clearReference",
+                "text": "Clear a component reference.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "component",
+                    "text": "The component to remove.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,116,35",
+                      "text": "0,116,45,25",
+                      "type": "0,116,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,117,12",
+                  "name": "0,119,0",
+                  "text": "0,115,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clearReferences",
+                "text": "Invalidates the references collection. Typically called when\nremoving a container from this container, since it's difficult\nto know what references got removed.\n",
+                "src": {
+                  "access": "0,163,12",
+                  "name": "0,165,0",
+                  "text": "0,159,12,162"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getReferences",
+                "since": "5.0.0",
+                "text": "Returns an object holding the descendants of this view keyed by their\n<a href='#!/api/Ext.Component-cfg-reference'>Ext.Component#cfg-reference</a>. This object should not be held\npast the scope of the function calling this method. It will not be valid if items\nare added or removed from this or any sub-container.\n\nThe intended usage is shown here (assume there are 3 components with reference\nvalues of \"foo\", \"bar\" and \"baz\" at some level below this container):\n\n     onClick: function () {\n         var refs = this.getReferences();\n\n         // using \"refs\" we can access any descendant by its \"reference\"\n\n         refs.foo.getValue() + refs.bar.getValue() + refs.baz.getValue();\n     }\n\nIf `this` component has a <a href='#!/api/Ext.Component-cfg-reference'>Ext.Component#cfg-reference</a> assigned\nto it, that is **not** included in this object. That reference is understood to\nbelong to the ancestor container configured as the <a href='#!/api/Ext.mixin.Container-cfg-referenceHolder'>referenceHolder</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "An object with each child reference. This will be <a href='#!/api/null'>null</a> if this\ncontainer has no descendants with a <a href='#!/api/Ext.Component-cfg-reference'>Ext.Component#cfg-reference</a>\nspecified.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,52,25,65:0,53,8,95",
+                      "type": "0,52,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,57,0",
+                  "since": "0,55,15",
+                  "text": "0,32,8,897"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookup",
+                "since": "6.0.1",
+                "text": "Gets a reference to the component with the specified <a href='#!/api/Ext.mixin.Container-reference'>reference</a> value.\n\nThe method is a short-hand for the <a href='#!/api/Ext.mixin.Container-method-lookupReference'>lookupReference</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The name of the reference to lookup.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,67,24",
+                      "text": "0,67,28,37",
+                      "type": "0,67,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The referenced component or <a href='#!/api/null'>null</a> if it is not found.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "0,68,32,55",
+                      "type": "0,68,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,71,0",
+                  "since": "0,69,15",
+                  "text": "0,63,8,149"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupReference",
+                "since": "5.0",
+                "text": "Gets a reference to the component with the specified <a href='#!/api/Ext.mixin.Container-reference'>reference</a> value.\n\nThe <a href='#!/api/Ext.mixin.Container-method-lookup'>lookup</a> method is a short-hand version of this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The name of the reference to lookup.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,81,24",
+                      "text": "0,81,28,37",
+                      "type": "0,81,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The referenced component or <a href='#!/api/null'>null</a> if it is not found.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "0,82,32,55",
+                      "type": "0,82,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,85,0",
+                  "since": "0,83,15",
+                  "text": "0,77,8,148"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "isContainer",
+                "text": "`true` in this class to identify an object as an instantiated Container, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,13,28",
+                  "text": "0,14,8,94",
+                  "type": "0,13,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,2,4",
+          "extends": "0,6,0",
+          "name": "0,5,0",
+          "text": "0,3,4,52"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

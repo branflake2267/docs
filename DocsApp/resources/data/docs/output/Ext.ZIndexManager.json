@@ -1,0 +1,442 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/ZIndexManager.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.WindowGroup",
+        "name": "Ext.ZIndexManager",
+        "requires": "Ext.util.SorterCollection,Ext.util.FilterCollection,Ext.GlobalEvents",
+        "text": "A class that manages a group of <a href='#!/api/Ext.Component-cfg-floating'>Ext.Component#cfg-floating</a> Components and\nprovides z-order management, and Component activation behavior, including masking\nbelow the active (topmost) Component.\n\n<a href='#!/api/Ext.Component-cfg-floating'>Ext.Component#cfg-floating</a> Components which are rendered directly\ninto the document (such as <a href='#!/api/Ext.window.Window'>Ext.window.Window</a>s) which are\n<a href='#!/api/Ext.Component-method-show'>Ext.Component#method-show</a>n are managed by a\n<a href='#!/api/Ext.WindowManager'>Ext.WindowManager</a>.\n\n<a href='#!/api/Ext.Component-cfg-floating'>Ext.Component#cfg-floating</a> Components which are descendants of\n<a href='#!/api/Ext.Component-cfg-floating'>Ext.Component#cfg-floating</a> *Containers* (for example a\n<a href='#!/api/Ext.view.BoundList'>Ext.view.BoundList</a> within an <a href='#!/api/Ext.window.Window'>Ext.window.Window</a>,\nor a <a href='#!/api/Ext.menu.Menu'>Ext.menu.Menu</a>), are managed by a ZIndexManager owned by that floating Container. Therefore\nComboBox dropdowns within Windows will have managed z-indices guaranteed to be correct, relative to the Window.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "constructor",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "container",
+                    "src": {
+                      "name": "0,34,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,32,8",
+                  "name": "0,34,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onCollectionSort",
+                "text": "Called whenever the zIndexStack is sorted.\nThat happens in reaction to the activeCounter time being set, or the alwaysOnTop config being set.\n",
+                "src": {
+                  "access": "0,121,8",
+                  "name": "0,125,0",
+                  "text": "0,122,8,142"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onComponentUpdate",
+                "text": "Called from <a href='#!/api/Ext.util.Floating'>Ext.util.Floating</a> updater methods when a config which affects the stack order is\nupdated in a Component.\n\neg <a href='#!/api/Ext.Component-cfg-alwaysOnTop'>Ext.Component#alwaysOnTop</a> or <a href='#!/api/Ext.Component-cfg-activeCounter'>Ext.Component#activeCounter</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "src": {
+                      "name": "0,197,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,191,8",
+                  "name": "0,197,0",
+                  "text": "0,192,8,228"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onComponentShowHide",
+                "text": "Called when the global hide and show events are fired. If it is one of our components, we must re-sort.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "src": {
+                      "name": "0,211,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,208,8",
+                  "name": "0,211,0",
+                  "text": "0,209,8,104"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "register",
+                "text": "Registers a floating <a href='#!/api/Ext.Component'>Ext.Component</a> with this ZIndexManager. This should not\nneed to be called under normal circumstances. Floating Components (such as Windows,\nBoundLists and Menus) are automatically registered with a\n<a href='#!/api/Ext.Component-property-zIndexManager'>Ext.Component#zIndexManager</a> at render time.\n\nWhere this may be useful is moving Windows between two ZIndexManagers. For example,\nto bring the Ext.MessageBox dialog under the same manager as the Desktop's\nZIndexManager in the desktop sample app:\n\n    MyDesktop.getDesktop().getManager().register(Ext.MessageBox);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "text": "The Component to register.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,233,31",
+                      "text": "0,233,36,27",
+                      "type": "0,233,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,235,0",
+                  "text": "0,222,8,561"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unregister",
+                "text": "Unregisters a <a href='#!/api/Ext.Component'>Ext.Component</a> from this ZIndexManager. This should not\nneed to be called. Components are automatically unregistered upon destruction.\nSee <a href='#!/api/Ext.ZIndexManager-method-register'>register</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "text": "The Component to unregister.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,256,31",
+                      "text": "0,256,36,29",
+                      "type": "0,256,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,258,0",
+                  "text": "0,253,8,179"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "get",
+                "text": "Gets a registered Component by id.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the Component or a <a href='#!/api/Ext.Component'>Ext.Component</a> instance\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,269,31",
+                      "text": "0,269,34,60",
+                      "type": "0,269,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.Component",
+                    "src": {
+                      "type": "0,270,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,272,0",
+                  "text": "0,268,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "bringToFront",
+                "text": "Brings the specified Component to the front of any other active Components in this ZIndexManager.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "text": "The id of the Component or a <a href='#!/api/Ext.Component'>Ext.Component</a> instance.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,278,31",
+                      "text": "0,278,36,61",
+                      "type": "0,278,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "preventFocus",
+                    "text": "Pass `true` to prevent the component being focused when moved to front.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,279,25",
+                      "text": "0,279,38,72",
+                      "type": "0,279,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the component was brought to the front, else false\nif it was already in front, or another component remains at the front due to configuration (eg\n<a href='#!/api/Ext.util.Floating-cfg-alwaysOnTop'>Ext.util.Floating#alwaysOnTop</a>, or if the component was not found.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,280,26,59:0,281,8,169",
+                      "type": "0,280,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,284,0",
+                  "text": "0,277,8,98"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "sendToBack",
+                "text": "Sends the specified Component to the back of other active Components in this ZIndexManager.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "text": "The id of the Component or a <a href='#!/api/Ext.Component'>Ext.Component</a> instance\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,311,31",
+                      "text": "0,311,36,60",
+                      "type": "0,311,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The Component\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "0,312,32,14",
+                      "type": "0,312,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,314,0",
+                  "text": "0,310,8,92"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hideAll",
+                "text": "Hides all Components managed by this ZIndexManager.\n",
+                "src": {
+                  "name": "0,325,0",
+                  "text": "0,323,8,52"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "hide",
+                "text": "Temporarily hides all currently visible managed Components. This is for when\ndragging a Window which may manage a set of floating descendants in its ZIndexManager;\nthey should all be hidden just for the duration of the drag.\n",
+                "src": {
+                  "access": "0,338,8",
+                  "name": "0,343,0",
+                  "text": "0,339,8,225"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "show",
+                "text": "Restores temporarily hidden managed Components to visibility.\n",
+                "src": {
+                  "access": "0,364,8",
+                  "name": "0,367,0",
+                  "text": "0,365,8,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getActive",
+                "text": "Gets the currently-active Component in this ZIndexManager.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The active Component\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "0,388,32,21",
+                      "type": "0,388,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,390,0",
+                  "text": "0,387,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getBy",
+                "text": "Returns zero or more Components in this ZIndexManager using the custom search function passed to this method.\nThe function should accept a single <a href='#!/api/Ext.Component'>Ext.Component</a> reference as its only argument and should\nreturn true if the Component matches the search criteria, otherwise it should return false.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The search function\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,398,26",
+                      "text": "0,398,29,20",
+                      "type": "0,398,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the function is executed.\nDefaults to the Component being tested. That gets passed to the function if not specified.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,399,25",
+                      "text": "0,399,32,64:0,400,8,91",
+                      "type": "0,399,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An array of zero or more matching floating components.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,401,24,55",
+                      "type": "0,401,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,403,0",
+                  "text": "0,395,8,302"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "each",
+                "text": "Executes the specified function once for every Component in this ZIndexManager, passing each\nComponent as the only parameter. Returning false from the function will stop the iteration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to execute for each item\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,410,26",
+                      "text": "0,410,29,38",
+                      "type": "0,410,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (this reference) in which the function\nis executed. Defaults to the current Component in the iteration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,411,25",
+                      "text": "0,411,32,49:0,412,8,65",
+                      "type": "0,411,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,414,0",
+                  "text": "0,408,8,185"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "eachBottomUp",
+                "text": "Executes the specified function once for every Component in this ZIndexManager, passing each\nComponent as the only parameter. Returning false from the function will stop the iteration.\nThe components are passed to the function starting at the bottom and proceeding to the top.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to execute for each item\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,422,26",
+                      "text": "0,422,29,38",
+                      "type": "0,422,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope (this reference) in which the function\nis executed. Defaults to the current Component in the iteration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,423,24",
+                      "text": "0,423,30,60:0,424,8,65",
+                      "type": "0,423,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,426,0",
+                  "text": "0,419,8,277"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "eachTopDown",
+                "text": "Executes the specified function once for every Component in this ZIndexManager, passing each\nComponent as the only parameter. Returning false from the function will stop the iteration.\nThe components are passed to the function starting at the top and proceeding to the bottom.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to execute for each item\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,444,26",
+                      "text": "0,444,29,38",
+                      "type": "0,444,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (this reference) in which the function\nis executed. Defaults to the current Component in the iteration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,445,25",
+                      "text": "0,445,32,49:0,446,8,65",
+                      "type": "0,445,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,448,0",
+                  "text": "0,441,8,277"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,18,0",
+          "name": "0,17,0",
+          "requires": "0,21,0,0:0,22,0,0:0,23,0,0",
+          "text": "0,2,4,913"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

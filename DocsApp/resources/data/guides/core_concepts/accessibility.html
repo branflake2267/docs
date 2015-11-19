@@ -10,7 +10,7 @@
 providing the tools that developers need to achieve <a href="http://www.section508.gov/">Section 508</a> and <a href="http://www.w3.org/WAI/intro/aria">ARIA compliance</a>. Ext JS 
 makes it easy for application developers to create UIs that are usable by people using assistive 
 technologies to navigate the web.</p>
-<p>##Overview of Accessibility</p>
+<h2 id="core_concepts-_-accessibility_-_overview_of_accessibility">Overview of Accessibility</h2>
 <p>What does software accessibility mean? In general, accessibility means that the functionality 
 and content of an application is available and navigable to:</p>
 <ul>
@@ -28,7 +28,7 @@ them to reach a larger number of users. Web applications can make significant st
 achieving compliance with Section 508 by following the guidelines spelled out in the 
 <a href="http://www.w3.org/WAI/">Web Accessibility Initiative&#39;s</a> &quot;Accessible Rich Internet Applications Suite&quot;, 
 otherwise known as <a href="http://www.w3.org/WAI/intro/aria">WAI-ARIA</a> or just &quot;ARIA&quot;.</p>
-<p>##Accessibility in Ext JS</p>
+<h2 id="core_concepts-_-accessibility_-_accessibility_in_ext_js">Accessibility in Ext JS</h2>
 <p>Thanks to Ext JS&#39;s built-in tab indexing and focus-ability, your browser should tab and 
 focus as you would expect. With this approach, we are able to translate components into 
 items that the browser understands for default keyboard navigable behavior.</p>
@@ -39,7 +39,7 @@ the class-level property known as <code>focusable</code>. This allows all keyboa
 to interact with the user when tabbed into.  </p>
 <p>What this all really means is that focus is part of every application without any additional 
 modifications needed by the developer.</p>
-<p>###Focus styling</p>
+<h3 id="core_concepts-_-accessibility_-_focus_styling">Focus styling</h3>
 <p>Focus styling is a method of visually indicating that an element is 
 prepared to accept keyboard events or other user inputs. This is valuable (and necessary) 
 for accessibility and power users that heavily rely upon keyboard navigation.</p>
@@ -47,7 +47,7 @@ for accessibility and power users that heavily rely upon keyboard navigation.</p
 as the focused component is changed. This indication will generally be seen as an inner 
 border and/or body border on the focused element. This may vary slightly depending on your 
 application&#39;s theme. To give you control over these visual aspects, you may modify<br>multiple SASS variables and mixin parameters related to focus.</p>
-<p>####Buttons</p>
+<h4 id="core_concepts-_-accessibility_-_buttons">Buttons</h4>
 <p>In previous releases, button focus styling was identical to hover styling.  It tended to be a source 
 of confusion for some users.  In 5.0.1+, we  changed buttons to use &quot;inner&quot; bordering to 
 indicate focus.  This takes the form of a 1px solid border 
@@ -59,7 +59,7 @@ inner element, similar to the classic &quot;Windows&quot; look.</p>
 <p>You may need to control the styling of a focused button when it is hovered or 
 pressed separately from the default hover state.  To accommodate this, we&#39;ve added SASS 
 variables for 2 additional button states - &quot;focus-over&quot; and &quot;focus-pressed&quot;.</p>
-<p>####Tabs</p>
+<h4 id="core_concepts-_-accessibility_-_tabs">Tabs</h4>
 <p>Tabs have not historically had a visual indication of focus. In Ext JS 5.0.1+, 
 Tabs are treated similarly to Buttons.  Focus comes in the form of a solid inner border in 
 Neptune/Crisp themes and a dotted body outline in Classic.</p>
@@ -69,12 +69,12 @@ Neptune/Crisp themes and a dotted body outline in Classic.</p>
 <p><img src="images/classic_tab.jpeg"/></p>
 <p>Just as with Buttons, Tabs have SASS variables for controlling two additional 
 focus states - &quot;focus-over&quot; and &quot;focus-active&quot;.</p>
-<p>####Grids</p>
+<h4 id="core_concepts-_-accessibility_-_grids">Grids</h4>
 <p>The focused grid cell also contains a distinct focus border as seen below:</p>
 <p><img src="images/row_focus.jpeg"/></p>
 <p>Additionally, grid column headers can also be independently focused as seen below:</p>
 <p><img src="images/header_focus.jpeg"/></p>
-<p>####Customizing Focus Styling</p>
+<h4 id="core_concepts-_-accessibility_-_customizing_focus_styling">Customizing Focus Styling</h4>
 <p>We expect support for keyboard navigation to be a welcome change for many 
 applications, making them more accessible to more users.  At the same time, we understand 
 that all applications have different needs and requirements. In some cases, the default 
@@ -88,7 +88,7 @@ the &quot;CSS Variables&quot; section.  </p>
 use the <code>$button-default-inner-border-color-focus</code> SASS variable.  For more information 
 on how to use SASS in your application please refer to the 
 <a href="./theming.html">Theming Guide</a></p>
-<p>###Keyboard Navigation</p>
+<h3 id="core_concepts-_-accessibility_-_keyboard_navigation">Keyboard Navigation</h3>
 <p>Your application&#39;s focusable components are fully navigable using the keyboard without 
 mouse interaction. In terms of Ext JS, this means that pressing tab key will advance focus 
 beginning with the URL bar to the next focusable item within your application document&#39;s body. </p>
@@ -114,12 +114,12 @@ the framework will restore focus to the previously focused button. This creates 
 state within your toolbar and other focusable containers.</p>
 <p><strong>Note:</strong> Upon entering an input field, arrow key navigation will only operate within said 
 field. tab or shift-tab key press will then be necessary to exit the field.</p>
-<p>###DOM attributes 
-A Component&#39;s DOM elements should use attributes that provide semantic information regarding 
+<h3 id="core_concepts-_-accessibility_-_dom_attributes">DOM attributes</h3>
+<p>A Component&#39;s DOM elements should use attributes that provide semantic information regarding 
 the elements&#39; type, state, and description. These attributes are used by assistive technologies, 
 such as screen readers, to provide verbal cues to the user and can be categorized into 
 two separate groups:</p>
-<p>####ARIA Roles </p>
+<h4 id="core_concepts-_-accessibility_-_aria_roles">ARIA Roles</h4>
 <p><a href="http://www.w3.org/TR/wai-aria/roles">ARIA roles</a> are the main indicator of a Component or 
 Element&#39;s type. Roles are constant and do not change as the user interacts with a 
 Component. The most commonly used ARIA Roles in Ext JS are Widget Roles. Many of these 
@@ -133,15 +133,15 @@ components. Some examples of widget roles are:</p>
 <li>Buttons</li>
 <li>Breadcrumb Groups</li>
 </ul>
-<p>####ARIA States and Properties </p>
+<h4 id="core_concepts-_-accessibility_-_aria_states_and_properties">ARIA States and Properties</h4>
 <p>DOM attributes are attributes that may change in response to user interaction or application 
 state. An example of an <a href="http://www.w3.org/TR/wai-aria/states_and_properties">ARIA State</a> is the 
 &quot;aria-checked&quot; attribute that is applied to a checkbox component when it is checked by the 
 user. Likewise, an example of an ARIA Property is the &quot;aria-invalid&quot; property of a form field, 
 which may be dynamically changed based on validation or user input.</p>
 <p>We&#39;ll talk about enabling ARIA States and Properties in the ARIA package section below.</p>
-<p>##ARIA Package
-As of Ext JS 6+, ARIA functionality integrates directly into the component life-cycle. 
+<h2 id="core_concepts-_-accessibility_-_aria_package">ARIA Package</h2>
+<p>As of Ext JS 6+, ARIA functionality integrates directly into the component life-cycle. 
 This means you won’t need a special “aria” package to get correct ARIA behavior. 
 Applications will now support screen readers (like JAWS) without the need for special 
 inclusion.</p>
@@ -160,7 +160,7 @@ utilizing &quot;ext-theme-aria&quot; in Ext JS 5 or &quot;theme-aria&quot; in Ex
 default.  We&#39;ll discuss implementing ARIA theme in the next section.</p>
 <p><strong>Note:</strong> If you&#39;re not familiar with building an application as described above, please 
 visit our <a href="../getting_started/getting_started.html">Getting Started guide</a> for more information.</p>
-<p>##ARIA Theme</p>
+<h2 id="core_concepts-_-accessibility_-_aria_theme">ARIA Theme</h2>
 <p>The ARIA theme is a high-contrast theme that makes applications easier for visually 
 impaired users to view. It can be used out of the box or extended to create a customized 
 look and feel.</p>
@@ -183,12 +183,28 @@ application should be utilizing the ARIA theme theme as seen below:</p>
 <p>For information about custom theming, please check out the Ext JS Theming Guide.</p>
 <p><strong>Note:</strong> If you&#39;re not familiar with building an application as described above, please 
 visit our <a href="../getting_started/getting_started.html">Getting Started guide</a> for more information.</p>
-<p>##Conclusion</p>
+<h2 id="core_concepts-_-accessibility_-_conclusion">Conclusion</h2>
 <p>Ext JS 5.0.1+ contains core functionality to support accessibility with 
 our new focus and keyboard navigation additions. The ARIA package (included by default in Ext JS 6) and ARIA theme 
 provides you with a much simpler path to creating an accessible application. We are working 
 towards expanding functionality to provide more robust accessibility support in future releases.</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_overview_of_accessibility">Overview of Accessibility</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_accessibility_in_ext_js">Accessibility in Ext JS</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_focus_styling">Focus styling</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_buttons">Buttons</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_tabs">Tabs</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_grids">Grids</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_customizing_focus_styling">Customizing Focus Styling</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_keyboard_navigation">Keyboard Navigation</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_dom_attributes">DOM attributes</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_aria_roles">ARIA Roles</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_aria_states_and_properties">ARIA States and Properties</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_aria_package">ARIA Package</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_aria_theme">ARIA Theme</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-accessibility_-_conclusion">Conclusion</a></div>
+    </div>
 </body>
 </html>

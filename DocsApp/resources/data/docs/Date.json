@@ -1,13 +1,16 @@
 {
   "$type": "doxi",
   "files": [
-    "../../../../docs/docs/js/primitives/Date.js"
+    "../../../../docs/docs/js/primitives/Date.js",
+    "../../../../docs/docs/js/primitives/Object.js"
   ],
   "global": {
     "$type": "namespace",
     "items": [
       {
         "$type": "class",
+        "extended": "Object",
+        "extends": "Object",
         "name": "Date",
         "text": "\nCreates <a href='#!/api/Date'>Date</a> instances which let you work with dates and times.\n\nIf you supply no arguments, the constructor creates a <a href='#!/api/Date'>Date</a> object for today's\ndate and time according to local time. If you supply some arguments but not\nothers, the missing arguments are set to 0. If you supply any arguments, you\nmust supply at least the year, month, and day. You can omit the hours, minutes,\nseconds, and milliseconds.\n\nThe date is measured in milliseconds since midnight 01 January, 1970 UTC. A day\nholds 86,400,000 milliseconds. The <a href='#!/api/Date'>Date</a> object range is -100,000,000 days to\n100,000,000 days relative to 01 January, 1970 UTC.\n\nThe <a href='#!/api/Date'>Date</a> object provides uniform behavior across platforms.\n\nThe <a href='#!/api/Date'>Date</a> object supports a number of UTC (universal) methods, as well as\nlocal time methods. UTC, also known as Greenwich Mean Time (GMT), refers to the\ntime as set by the World Time Standard. The local time is the time known to the\ncomputer where JavaScript is executed.\n\nInvoking <a href='#!/api/Date'>Date</a> in a non-constructor context (i.e., without the `new` operator)\nwill return a string representing the current time.\n\nNote that <a href='#!/api/Date'>Date</a> objects can only be instantiated by calling <a href='#!/api/Date'>Date</a> or using it\nas a constructor; unlike other JavaScript object types, <a href='#!/api/Date'>Date</a> objects have no\nliteral syntax.\n\n# Several ways to assign dates\n\nThe following example shows several ways to assign dates:\n\n    today = new Date();\n    birthday = new Date(\"December 19, 1989 03:24:00\");\n    birthday = new Date(1989,11,19);\n    birthday = new Date(1989,11,17,3,24,0);\n\n# Calculating elapsed time\n\nThe following examples show how to determine the elapsed time between two dates:\n\n    // using static methods\n    var start = Date.now();\n    // the event you'd like to time goes here:\n    doSomethingForALongTime();\n    var end = Date.now();\n    var elapsed = end - start; // time in milliseconds\n\n    // if you have Date objects\n    var start = new Date();\n    // the event you'd like to time goes here:\n    doSomethingForALongTime();\n    var end = new Date();\n    var elapsed = end.getTime() - start.getTime(); // time in milliseconds\n\n    // if you want to test a function and get back its return\n    function printElapsedTime (fTest) {\n        var nStartTime = Date.now(), vReturn = fTest(), nEndTime = Date.now();\n        alert(\"Elapsed time: \" + String(nEndTime - nStartTime) + \"\n        milliseconds\");\n        return vReturn;\n    }\n\n    yourFunctionReturn = printElapsedTime(yourFunction);\n\n# ISO 8601 formatted dates\n\nThe following example shows how to formate a date in an ISO 8601 format using\nUTC:\n\n    // use a function for the exact format desired...\n    function ISODateString(d){\n    function pad(n){return n<10 ? '0'+n : n}\n    return d.getUTCFullYear()+'-'\n        + pad(d.getUTCMonth()+1)+'-'\n        + pad(d.getUTCDate())+'T'\n        + pad(d.getUTCHours())+':'\n        + pad(d.getUTCMinutes())+':'\n        + pad(d.getUTCSeconds())+'Z'}\n\n    var d = new Date();\n    print(ISODateString(d)); // prints something like 2009-09-28T19:03:12Z\n\n<div class=\"notice\">\nDocumentation for this class comes from <a href=\"https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date\">MDN</a>\nand is available under <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">Creative Commons: Attribution-Sharealike license</a>.\n</div>\n",
         "items": [
@@ -467,6 +470,110 @@
                 "src": {
                   "name": "0,491,12",
                   "text": "0,492,4,237"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from <a href='#!/api/Object'>Object</a> inherits the <a href='#!/api/Date-method-hasOwnProperty'>hasOwnProperty</a> method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,100,20",
+                      "text": "1,100,25,34",
+                      "type": "1,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,101,22,57:1,102,4,15",
+                      "type": "1,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,53,12",
+                  "text": "1,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n<a href='#!/api/Date-method-isPrototypeOf'>isPrototypeOf</a> allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,148,20",
+                      "text": "1,148,30,71:1,149,4,18",
+                      "type": "1,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,150,20",
+                      "text": "1,150,27,50",
+                      "type": "1,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,151,22,56",
+                      "type": "1,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,106,12",
+                  "text": "1,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a <a href='#!/api/Date-method-propertyIsEnumerable'>propertyIsEnumerable</a> method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of <a href='#!/api/Date-method-propertyIsEnumerable'>propertyIsEnumerable</a> on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,220,20",
+                      "text": "1,220,25,34",
+                      "type": "1,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,221,22,57:1,222,4,22",
+                      "type": "1,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,155,12",
+                  "text": "1,156,4,2313"
                 }
               },
               {
@@ -1154,6 +1261,26 @@
               },
               {
                 "$type": "method",
+                "name": "toJSON",
+                "text": "Returns a JSON representation of the Date object.\n\nDate instances refer to a specific point in time. Calling `toJSON()`\nreturns a JSON formatted string representing the Date object's\nvalue.  This method is generally intended to, by default, usefully\nserialize Date objects during JSON serialization.\n\n    var jsonDate = (new Date()).toJSON();\n    var backToDate = new Date(jsonDate);\n\n    console.log(\"Serialized date object: \" + jsonDate);\n    // Serialized date object: 2013-01-17T12:59:08.449Z\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Date value in `YYYY-MM-DDTHH-MM-SS.MMMZ` format.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,1021,21,49",
+                      "type": "0,1021,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1005,12",
+                  "text": "0,1006,4,559"
+                }
+              },
+              {
+                "$type": "method",
                 "name": "toLocaleDateString",
                 "text": "Returns the \"date\" portion of the Date as a string, using the current locale's\nconventions.\n\nThe <a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> method relies on the underlying operating system in formatting dates. It\nconverts the date to a string using the formatting convention of the operating system where the\nscript is running. For example, in the United States, the month appears before the date (04/15/98),\nwhereas in Germany the date appears before the month (15.04.98). If the operating system is not\nyear-2000 compliant and does not use the full year for years before 1900 or over 2000,\n<a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> returns a string that is not year-2000 compliant. <a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> behaves\nsimilarly to <a href='#!/api/Date-method-toString'>toString</a> when converting a year that the operating system does not properly format.\n\nMethods such as <a href='#!/api/Date-method-getDate'>getDate</a>, <a href='#!/api/Date-method-getMonth'>getMonth</a>, and <a href='#!/api/Date-method-getFullYear'>getFullYear</a> give more portable results than\n<a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a>. Use <a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> when the intent is to display to the user a string\nformatted using the regional format chosen by the user. Be aware that this method, due to its\nnature, behaves differently depending on the operating system and on the user's settings.\n\nIn the following example, `today` is a <a href='#!/api/Date'>Date</a> object:\n\n    today = new Date(95,11,18,17,28,35) //months are represented by 0 to 11\n    today.toLocaleDateString()\n\nIn this example, <a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> returns a string value that is similar to the following form.\nThe exact format depends on the platform, locale and user's settings.\n\n    12/18/95\n\nYou shouldn't use this method in contexts where you rely on a particular format or locale.\n\n    \"Last visit: \" + someDate.toLocaleDateString(); // Good example\n    \"Last visit was at \" + someDate.toLocaleDateString(); // Bad example\n",
                 "items": [
@@ -1291,25 +1418,28 @@
                   "name": "0,985,12",
                   "text": "0,986,4,492"
                 }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their <a href='#!/api/Date-property-prototype'>prototype</a>:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "1,346,14",
+                  "text": "1,347,3,1996"
+                }
               },
               {
-                "$type": "method",
-                "name": "toJSON",
-                "text": "Returns a JSON representation of the Date object.\n\nDate instances refer to a specific point in time. Calling `toJSON()`\nreturns a JSON formatted string representing the Date object's\nvalue.  This method is generally intended to, by default, usefully\nserialize Date objects during JSON serialization.\n\n    var jsonDate = (new Date()).toJSON();\n    var backToDate = new Date(jsonDate);\n\n    console.log(\"Serialized date object: \" + jsonDate);\n    // Serialized date object: 2013-01-17T12:59:08.449Z\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "text": "Date value in `YYYY-MM-DDTHH-MM-SS.MMMZ` format.\n",
-                    "type": "String",
-                    "src": {
-                      "text": "0,1021,21,49",
-                      "type": "0,1021,13"
-                    }
-                  }
-                ],
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
                 "src": {
-                  "name": "0,1005,12",
-                  "text": "0,1006,4,559"
+                  "name": "1,46,14",
+                  "text": "1,47,4,65"
                 }
               }
             ]

@@ -1,0 +1,1772 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/charts/src/draw/Matrix.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.draw.Matrix",
+        "text": "Ext.draw.Matix is a utility class used to calculate\n[affine transformation](http://en.wikipedia.org/wiki/Affine_transformation) matrix.\nThe matrix class is used to apply transformations to existing\n<a href='#!/api/Ext.draw.sprite.Sprite'>Ext.draw.sprite.Sprite</a> using a number of convenience transform\nmethods.\n\nTransformations configured directly on a sprite are processed in the following order:\nscaling, rotation, and translation.  The matrix class offers additional flexibility.\nOnce a sprite is created, you can use the matrix class's transform methods as many\ntimes as needed and in any order you choose.\n\nTo demonstrate, we'll start with a simple <a href='#!/api/Ext.draw.sprite.Rect'>Ext.draw.sprite.Rect</a> sprite\nwith the intent of rotating it 180 degrees with the bottom right corner being the\ncenter of rotation.  To begin, let's look at the initial, untransformed sprite:\n\n    @example\n    var drawContainer = new Ext.draw.Container({\n        renderTo: Ext.getBody(),\n        width: 380,\n        height: 380,\n        sprites: [{\n            type: 'rect',\n            width: 100,\n            height: 100,\n            fillStyle: 'red'\n        }]\n    });\n\nNext, we'll use the <a href='#!/api/Ext.draw.Matrix-method-rotate'>rotate</a> and <a href='#!/api/Ext.draw.Matrix-method-translate'>translate</a> methods from our matrix\nclass to position the rect sprite.\n\n    @example\n    var drawContainer = new Ext.draw.Container({\n        renderTo: Ext.getBody(),\n        width: 380,\n        height: 380,\n        sprites: [{\n            type: 'rect',\n            width: 100,\n            height: 100,\n            fillStyle: 'red'\n        }]\n    });\n\n    var main = drawContainer.getSurface();\n    var rect = main.getItems()[0];\n\n    var m = new Ext.draw.Matrix().translate(100, 100).\n    rotate(Math.PI).\n    translate(-100, - 100);\n\n    rect.setTransform(m);\n    main.renderFrame();\n\nIn the previous example we perform the following steps in order to achieve our\ndesired rotated output:\n\n - translate the rect to the right and down by 100\n - rotate by 180 degrees\n - translate the rect to the right and down by 100\n\n**Note:** A couple of things to note at this stage; 1) the rotation center point is\nthe upper left corner of the sprite by default and 2) with transformations, the\nsprite itself isn't transformed, but rather the entire coordinate plane of the sprite\nis transformed.  The coordinate plane itself is translated by 100 and then rotated\n180 degrees.  And that is why in the third step we translate the sprite using\nnegative values.  Translating by -100 in the third step results in the sprite\nvisually moving to the right and down within the draw container.\n\nFortunately there is a shortcut we can apply using two optional params of the rotate\nmethod allowing us to specify the center point of rotation:\n\n    @example\n    var drawContainer = new Ext.draw.Container({\n        renderTo: Ext.getBody(),\n        width: 380,\n        height: 380,\n        sprites: [{\n            type: 'rect',\n            width: 100,\n            height: 100,\n            fillStyle: 'red'\n        }]\n    });\n\n    var main = drawContainer.getSurface();\n    var rect = main.getItems()[0];\n\n    var m = new Ext.draw.Matrix().rotate(Math.PI, 100, 100);\n\n    rect.setTransform(m);\n    main.renderFrame();\n\n\nThis class is compatible with\n[SVGMatrix](http://www.w3.org/TR/SVG11/coords.html#InterfaceSVGMatrix) except:\n\n  1. Ext.draw.Matrix is not read only\n  2. Using Number as its values rather than floats\n\nUsing this class helps to reduce the severe numeric\n[problem with HTML Canvas and SVG transformation](http://stackoverflow.com/questions/8784405/large-numbers-in-html-canvas-translate-result-in-strange-behavior)\n\nAdditionally, there's no way to get the current transformation matrix\n[in Canvas](http://stackoverflow.com/questions/7395813/html5-canvas-get-transform-matrix).\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Create an affine transform matrix.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xx",
+                    "text": "Coefficient from x to x\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,215,24",
+                      "text": "0,215,27,24",
+                      "type": "0,215,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "xy",
+                    "text": "Coefficient from x to y\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,216,24",
+                      "text": "0,216,27,24",
+                      "type": "0,216,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "yx",
+                    "text": "Coefficient from y to x\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,217,24",
+                      "text": "0,217,27,24",
+                      "type": "0,217,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "yy",
+                    "text": "Coefficient from y to y\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,218,24",
+                      "text": "0,218,27,24",
+                      "type": "0,218,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dx",
+                    "text": "Offset of x\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,219,24",
+                      "text": "0,219,27,12",
+                      "type": "0,219,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dy",
+                    "text": "Offset of y\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,220,24",
+                      "text": "0,220,27,12",
+                      "type": "0,220,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,222,0",
+                  "text": "0,213,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "prepend",
+                "text": "Prepend a matrix onto the current.\n\n__Note:__ The given transform will come after the current one.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xx",
+                    "text": "Coefficient from x to x.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,237,24",
+                      "text": "0,237,27,25",
+                      "type": "0,237,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "xy",
+                    "text": "Coefficient from x to y.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,238,24",
+                      "text": "0,238,27,25",
+                      "type": "0,238,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "yx",
+                    "text": "Coefficient from y to x.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,239,24",
+                      "text": "0,239,27,25",
+                      "type": "0,239,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "yy",
+                    "text": "Coefficient from y to y.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,240,24",
+                      "text": "0,240,27,25",
+                      "type": "0,240,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dx",
+                    "text": "Offset of x.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,241,24",
+                      "text": "0,241,27,13",
+                      "type": "0,241,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dy",
+                    "text": "Offset of y.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,242,24",
+                      "text": "0,242,27,13",
+                      "type": "0,242,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,243,34,5",
+                      "type": "0,243,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,245,0",
+                  "text": "0,233,8,100"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "prependMatrix",
+                "text": "Prepend a matrix onto the current.\n\n__Note:__ The given transform will come after the current one.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "matrix",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "name": "0,267,33",
+                      "type": "0,267,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,268,34,5",
+                      "type": "0,268,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,270,0",
+                  "text": "0,264,8,99"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "append",
+                "text": "Postpend a matrix onto the current.\n\n__Note:__ The given transform will come before the current one.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xx",
+                    "text": "Coefficient from x to x.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,279,24",
+                      "text": "0,279,27,25",
+                      "type": "0,279,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "xy",
+                    "text": "Coefficient from x to y.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,280,24",
+                      "text": "0,280,27,25",
+                      "type": "0,280,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "yx",
+                    "text": "Coefficient from y to x.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,281,24",
+                      "text": "0,281,27,25",
+                      "type": "0,281,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "yy",
+                    "text": "Coefficient from y to y.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,282,24",
+                      "text": "0,282,27,25",
+                      "type": "0,282,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dx",
+                    "text": "Offset of x.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,283,24",
+                      "text": "0,283,27,13",
+                      "type": "0,283,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dy",
+                    "text": "Offset of y.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,284,24",
+                      "text": "0,284,27,13",
+                      "type": "0,284,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,285,34,5",
+                      "type": "0,285,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,287,0",
+                  "text": "0,275,8,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "appendMatrix",
+                "text": "Postpend a matrix onto the current.\n\n__Note:__ The given transform will come before the current one.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "matrix",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "name": "0,310,33",
+                      "type": "0,310,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,311,34,5",
+                      "type": "0,311,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,313,0",
+                  "text": "0,306,8,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "set",
+                "text": "Set the elements of a Matrix\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xx",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,319,24",
+                      "type": "0,319,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "xy",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,320,24",
+                      "type": "0,320,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "yx",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,321,24",
+                      "type": "0,321,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "yy",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,322,24",
+                      "type": "0,322,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dx",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,323,24",
+                      "type": "0,323,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dy",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,324,24",
+                      "type": "0,324,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,325,34,5",
+                      "type": "0,325,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,327,0",
+                  "text": "0,318,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "inverse",
+                "text": "Return a new matrix represents the opposite transformation of the current one.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "optional": true,
+                    "text": "A target matrix. If present, it will receive\nthe result of inversion to avoid creating a new object.\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "name": "0,343,34",
+                      "text": "0,343,42,45:0,344,8,57",
+                      "type": "0,343,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "type": "0,346,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,348,0",
+                  "text": "0,341,8,80"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "translate",
+                "text": "Translate the matrix.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,373,24",
+                      "type": "0,373,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,374,24",
+                      "type": "0,374,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prepend",
+                    "optional": true,
+                    "text": "If `true`, this will transformation be prepended to the matrix.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,375,26",
+                      "text": "0,375,35,64",
+                      "type": "0,375,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,376,34,5",
+                      "type": "0,376,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,378,0",
+                  "text": "0,371,8,23"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "scale",
+                "text": "Scale the matrix.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "sx",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,389,24",
+                      "type": "0,389,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "sy",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,390,24",
+                      "type": "0,390,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scx",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,391,24",
+                      "type": "0,391,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scy",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,392,24",
+                      "type": "0,392,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prepend",
+                    "optional": true,
+                    "text": "If `true`, this will transformation be prepended to the matrix.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,393,26",
+                      "text": "0,393,35,64",
+                      "type": "0,393,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,394,34,5",
+                      "type": "0,394,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,396,0",
+                  "text": "0,387,8,19"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "rotate",
+                "text": "Rotate the matrix.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "angle",
+                    "text": "Radians to rotate\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,420,24",
+                      "text": "0,420,30,18",
+                      "type": "0,420,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "rcx",
+                    "text": "Center of rotation.\n",
+                    "type": "Number/null",
+                    "src": {
+                      "name": "0,421,29",
+                      "text": "0,421,33,20",
+                      "type": "0,421,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "rcy",
+                    "text": "Center of rotation.\n",
+                    "type": "Number/null",
+                    "src": {
+                      "name": "0,422,29",
+                      "text": "0,422,33,20",
+                      "type": "0,422,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prepend",
+                    "optional": true,
+                    "text": "If `true`, this will transformation be prepended to the matrix.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,423,26",
+                      "text": "0,423,35,64",
+                      "type": "0,423,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,424,34,5",
+                      "type": "0,424,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,426,0",
+                  "text": "0,418,8,20"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "rotateFromVector",
+                "text": "Rotate the matrix by the angle of a vector.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,454,24",
+                      "type": "0,454,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,455,24",
+                      "type": "0,455,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prepend",
+                    "optional": true,
+                    "text": "If `true`, this will transformation be prepended to the matrix.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,456,26",
+                      "text": "0,456,35,64",
+                      "type": "0,456,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,457,34,5",
+                      "type": "0,457,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,459,0",
+                  "text": "0,452,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clone",
+                "text": "Clone this matrix.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "type": "0,473,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,475,0",
+                  "text": "0,472,8,19"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "flipX",
+                "text": "Horizontally flip the matrix\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,481,34,5",
+                      "type": "0,481,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,483,0",
+                  "text": "0,480,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "flipY",
+                "text": "Vertically flip the matrix\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,489,34,5",
+                      "type": "0,489,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,491,0",
+                  "text": "0,488,8,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "skewX",
+                "text": "Skew the matrix\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "angle",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,497,24",
+                      "type": "0,497,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,498,34,5",
+                      "type": "0,498,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,500,0",
+                  "text": "0,496,8,16"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "skewY",
+                "text": "Skew the matrix\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "angle",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,506,24",
+                      "type": "0,506,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,507,34,5",
+                      "type": "0,507,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,509,0",
+                  "text": "0,505,8,16"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "shearX",
+                "text": "Shear the matrix along the x-axis.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "factor",
+                    "text": "The horizontal shear factor.\n",
+                    "src": {
+                      "name": "0,515,15",
+                      "text": "0,515,22,29"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,516,34,5",
+                      "type": "0,516,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,518,0",
+                  "text": "0,514,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "shearY",
+                "text": "Shear the matrix along the y-axis.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "factor",
+                    "text": "The vertical shear factor.\n",
+                    "src": {
+                      "name": "0,524,15",
+                      "text": "0,524,22,27"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,525,34,5",
+                      "type": "0,525,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,527,0",
+                  "text": "0,523,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reset",
+                "text": "Reset the matrix to identical.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,533,34,5",
+                      "type": "0,533,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,535,0",
+                  "text": "0,532,8,31"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "precisionCompensate",
+                "text": "Split Matrix to `{{devicePixelRatio,c,0},{b,devicePixelRatio,0},{0,0,1}}.{{xx,0,dx},{0,yy,dy},{0,0,1}}`\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object with b,c,d=devicePixelRatio,xx,yy,dx,dy\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,542,25,47",
+                      "type": "0,542,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "devicePixelRatio",
+                    "src": {
+                      "name": "0,544,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "src": {
+                      "name": "0,544,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,540,8",
+                  "name": "0,544,0",
+                  "text": "0,541,8,104"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "precisionCompensateRect",
+                "text": "Split Matrix to `{{1,c,0},{b,d,0},{0,0,1}}.{{xx,0,dx},{0,xx,dy},{0,0,1}}`\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object with b,c,d,xx,yy=xx,dx,dy\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,566,25,33",
+                      "type": "0,566,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "devicePixelRatio",
+                    "src": {
+                      "name": "0,568,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "src": {
+                      "name": "0,568,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,564,8",
+                  "name": "0,568,0",
+                  "text": "0,565,8,74"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "x",
+                "text": "Transform point returning the x component of the result.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,589,24",
+                      "type": "0,589,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,590,24",
+                      "type": "0,590,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "x component of the result.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,591,25,27",
+                      "type": "0,591,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,593,0",
+                  "text": "0,588,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "y",
+                "text": "Transform point returning the y component of the result.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,600,24",
+                      "type": "0,600,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,601,24",
+                      "type": "0,601,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "y component of the result.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,602,25,27",
+                      "type": "0,602,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,604,0",
+                  "text": "0,599,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "get",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "i",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,612,24",
+                      "type": "0,612,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "j",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,613,24",
+                      "type": "0,613,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,614,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,611,8",
+                  "name": "0,616,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "transformPoint",
+                "text": "Transform a point to a new array.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "point",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,622,23",
+                      "type": "0,622,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,623,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,625,0",
+                  "text": "0,621,8,34"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "transformBBox",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "bbox",
+                    "text": "Given as `{x: Number, y: Number, width: Number, height: Number}`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,643,24",
+                      "text": "0,643,29,66",
+                      "type": "0,643,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "radius",
+                    "optional": true,
+                    "type": "Number",
+                    "src": {
+                      "name": "0,644,25",
+                      "type": "0,644,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "optional": true,
+                    "text": "Optional target object to recieve the result.\nRecommended to use it for better gc.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,645,25",
+                      "text": "0,645,33,46:0,646,8,38",
+                      "type": "0,645,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Object with x, y, width and height.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,648,25,36",
+                      "type": "0,648,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,650,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "transformList",
+                "text": "Transform a list for points.\n\n__Note:__ will change the original list but not points inside it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "list",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,694,23",
+                      "type": "0,694,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "list\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,695,24,5",
+                      "type": "0,695,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,697,0",
+                  "text": "0,691,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isIdentity",
+                "text": "Determines whether this matrix is an identity matrix (no transform).\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,716,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,718,0",
+                  "text": "0,715,8,69"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isEqual",
+                "text": "Determines if this matrix has the same values as another matrix.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "matrix",
+                    "text": "A maxtrix or array of its elements.\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "name": "0,731,33",
+                      "text": "0,731,40,36",
+                      "type": "0,731,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,732,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,734,0",
+                  "text": "0,730,8,65"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Determines if this matrix has the same values as another matrix.\n",
+                "name": "equals",
+                "since": "6.0.1",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "matrix",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "name": "0,750,33",
+                      "type": "0,750,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,751,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,747,8",
+                  "name": "0,753,0",
+                  "since": "0,748,15"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toArray",
+                "text": "Create an array of elements by horizontal order (xx,yx,dx,yx,yy,dy).\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,759,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,761,0",
+                  "text": "0,758,8,69"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toVerticalArray",
+                "text": "Create an array of elements by vertical order (xx,xy,yx,yy,dx,dy).\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Array/String",
+                    "src": {
+                      "type": "0,768,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,770,0",
+                  "text": "0,767,8,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Get an array of elements.\nThe numbers are rounded to keep only 4 decimals.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,777,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,779,0",
+                  "text": "0,775,8,75"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toContext",
+                "text": "Apply the matrix to a drawing context.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ctx",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,786,24",
+                      "type": "0,786,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,787,34,5",
+                      "type": "0,787,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,789,0",
+                  "text": "0,785,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toSvg",
+                "text": "Return a string that can be used as transform attribute in SVG.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,796,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,798,0",
+                  "text": "0,795,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getScaleX",
+                "text": "Get the x scale of the matrix.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,813,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,815,0",
+                  "text": "0,812,8,31"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getScaleY",
+                "text": "Get the y scale of the matrix.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,822,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,824,0",
+                  "text": "0,821,8,31"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getXX",
+                "text": "Get x-to-x component of the matrix\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,831,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,833,0",
+                  "text": "0,830,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getXY",
+                "text": "Get x-to-y component of the matrix.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,839,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,841,0",
+                  "text": "0,838,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getYX",
+                "text": "Get y-to-x component of the matrix.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,847,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,849,0",
+                  "text": "0,846,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getYY",
+                "text": "Get y-to-y component of the matrix.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,855,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,857,0",
+                  "text": "0,854,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDX",
+                "text": "Get offset x component of the matrix.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,863,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,865,0",
+                  "text": "0,862,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDY",
+                "text": "Get offset y component of the matrix.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,871,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,873,0",
+                  "text": "0,870,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "split",
+                "text": "Splits this transformation matrix into Scale, Rotate, Translate components,\nassuming it was produced by applying transformations in that order.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,880,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,882,0",
+                  "text": "0,878,8,144"
+                }
+              },
+              {
+                "$type": "method",
+                "text": "Performs matrix multiplication. This matrix is post-multiplied by another matrix.\n\n__Note:__ The given transform will come before the current one.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "matrix",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "name": "0,931,33",
+                      "type": "0,931,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "text": "0,932,34,5",
+                      "type": "0,932,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "text": "0,926,8,148"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "a",
+                "text": "Get x-to-x component of the matrix. Avoid using it for performance consideration.\nUse <a href='#!/api/Ext.draw.Matrix-method-getXX'>getXX</a> instead.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,913,31",
+                  "text": "0,913,33,82:0,914,12,28",
+                  "type": "0,913,23"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "createAffineMatrixFromTwoPair",
+                "static": true,
+                "text": "Return the affine matrix that transform two points (x0, y0) and (x1, y1) to (x0p, y0p) and (x1p, y1p)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x0",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,116,28",
+                      "type": "0,116,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y0",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,117,28",
+                      "type": "0,117,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,118,28",
+                      "type": "0,118,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,119,28",
+                      "type": "0,119,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x0p",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,120,28",
+                      "type": "0,120,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y0p",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,121,28",
+                      "type": "0,121,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x1p",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,122,28",
+                      "type": "0,122,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y1p",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,123,28",
+                      "type": "0,123,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,125,0",
+                  "static": "0,114,12",
+                  "text": "0,115,12,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createPanZoomFromTwoPair",
+                "static": true,
+                "text": "Return the affine matrix that transform two points (x0, y0) and (x1, y1) to (x0p, y0p) and (x1p, y1p)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x0",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,142,28",
+                      "type": "0,142,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y0",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,143,28",
+                      "type": "0,143,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,144,28",
+                      "type": "0,144,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,145,28",
+                      "type": "0,145,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x0p",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,146,28",
+                      "type": "0,146,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y0p",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,147,28",
+                      "type": "0,147,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x1p",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,148,28",
+                      "type": "0,148,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y1p",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,149,28",
+                      "type": "0,149,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,151,0",
+                  "static": "0,140,12",
+                  "text": "0,141,12,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fly",
+                "static": true,
+                "text": "Create a flyweight to wrap the given array.\nThe flyweight will directly refer the object and the elements can be changed by other methods.\n\nDo not hold the instance of flyweight matrix.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "elements",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,178,27",
+                      "type": "0,178,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "type": "0,179,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,181,0",
+                  "static": "0,172,12",
+                  "text": "0,173,12,187"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "create",
+                "static": true,
+                "text": "Create a matrix from `mat`. If `mat` is already a matrix, returns it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "mat",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,201,27",
+                      "type": "0,201,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.draw.Matrix",
+                    "src": {
+                      "type": "0,202,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,204,0",
+                  "static": "0,199,12",
+                  "text": "0,200,12,70"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,108,0",
+          "text": "0,2,4,3727"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

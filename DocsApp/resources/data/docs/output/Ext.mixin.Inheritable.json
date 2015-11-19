@@ -1,0 +1,355 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/mixin/Inheritable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "extends": "Ext.Mixin",
+        "name": "Ext.mixin.Inheritable",
+        "since": "5.0.0",
+        "text": "A mixin that provides the functionality for inheritable configs. This allows linking\ncomponents and containers via a prototype-chained object for accessing inherited\nvalues.\n\n## Getting Inherited Properties\n\nA component's inherited state is used to keep track of aspects of a component's state\nthat might be influenced by its ancestors like \"collapsed\" and \"hidden\". For example:\n\n     var hidden = this.getInheritedConfig('hidden');\n\nThe above will produce `true` if this or any ancestor component has its `hidden` config\nset to `true`.\n\n## Chained Objects\n\nInheritable properties are implemented by chaining each component's inherited state\nobject to its parent container's inherited state object via the prototype. The result\nis such that if a component's `inheritedState` does not have it's own property, it\ninherits the property from the nearest ancestor that does.\n\nIn the case of a Container, two state objects are created. The primary (\"outer\") object\nis used for reading inherited properties. It is also what a child will prototype chain\nto if that child is not part of the container's `items` collection. Anything in the\n`items` collection will chain to the inheritedStateInner object instead. This object is\nprototype chained to inheritedState but allows for Container's layout to set inherited\nproperties that specifically apply only to children of the container. This inner object\nis unlikely to be needed by user code.\n\n## Publishing Inherited Properties\n\nThe first step to publishing inherited properties is to override <a href='#!/api/Ext.mixin.Inheritable-method-initInheritedState'>initInheritedState</a>\nand add properties that have inheritable values.\n\n     initInheritedState: function (inheritedState) {\n         this.callParent(arguments);\n\n         if (this.getHidden()) {\n             inheritedState.hidden = true;\n         }\n     }\n\nThe above is important because <a href='#!/api/Ext.mixin.Inheritable-method-initInheritedState'>initInheritedState</a> is called whenever the object needs\nto be repopulated. As you can see, only `true` values are added to `inheritedState` in\nthis case because `false` would mask a `hidden` value of `true` from an ancestor.\n\nIf these values change dynamically, these properties must be maintained. For example:\n\n     updateHidden: function (hidden) {\n         var inherited = this.getInherited();\n\n         if (hidden) {\n             inherited.hidden = true;\n         } else {\n             // Unmask whatever may be inherited:\n             delete inherited.hidden;\n         }\n     }\n\n## Proper Usage\n\nALWAYS access inherited state using <a href='#!/api/Ext.mixin.Inheritable-method-getInherited'>getInherited</a> or <a href='#!/api/Ext.mixin.Inheritable-method-getInheritedConfig'>getInheritedConfig</a>, not by\naccessing `inheritedState` directly.\n\nThe `inheritedState` property does not exist until the first call to <a href='#!/api/Ext.mixin.Inheritable-method-getInherited'>getInherited</a>. At\nthat point <a href='#!/api/Ext.mixin.Inheritable-method-getInherited'>getInherited</a> walks up the component tree to establish the `inheritedState`\nprototype chain. Additionally the `inheritedState` property should NOT be relied upon\neven after the initial call to <a href='#!/api/Ext.mixin.Inheritable-method-getInherited'>getInherited</a> because it is possible for it to become\ninvalid.\n\nInvalidation typically happens when a component is moved to a new container. In such a\ncase the `inheritedState` remains invalid until the next time <a href='#!/api/Ext.mixin.Inheritable-method-getInherited'>getInherited</a> is called\non the component or one of its descendants.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "fixReference",
+                "text": "Sets up a reference on our current reference holder.\n",
+                "src": {
+                  "access": "0,335,12",
+                  "name": "0,337,0",
+                  "text": "0,333,12,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInherited",
+                "since": "5.0.0",
+                "text": "This method returns an object containing the inherited properties for this instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "inner",
+                    "optional": true,
+                    "text": "Pass `true` to return `inheritedStateInner` instead\nof the normal `inheritedState` object. This is only needed internally and should\nnot be passed by user code.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,88,26",
+                      "text": "0,88,39,52:0,89,8,110",
+                      "type": "0,88,16",
+                      "value": "0,88,32"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `inheritedState` object containing inherited properties.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,92,25,61",
+                      "type": "0,92,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,95,0",
+                  "since": "0,93,15",
+                  "text": "0,86,8,86"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInheritedConfig",
+                "since": "5.0.0",
+                "text": "This method returns the value of a config property that may be inherited from some\nancestor.\n\nIn some cases, a config may be explicitly set on a component with the intent of\n*only* being presented to its children while that component should act upon the\ninherited value (see `referenceHolder` for example). In these cases the `skipThis`\nparameter should be specified as `true`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "property",
+                    "text": "The name of the config property to return.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,152,24",
+                      "text": "0,152,33,43",
+                      "type": "0,152,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "Pass `true` if the property should be ignored if\nfound on this instance. In other words, `true` means the property must be inherited\nand not explicitly set on this instance.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,153,26",
+                      "text": "0,153,42,49:0,154,8,125",
+                      "type": "0,153,16",
+                      "value": "0,153,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value of the requested `property`.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "text": "0,156,24,39",
+                      "type": "0,156,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,159,0",
+                  "since": "0,157,15",
+                  "text": "0,144,8,379"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getRefOwner",
+                "text": "Used by <a href='#!/api/Ext.ComponentQuery'>Ext.ComponentQuery</a>, and the <a href='#!/api/Ext.Component-method-up'>Ext.Component#up</a>\nmethod to find the owning Component in the linkage hierarchy.\n\nBy default this returns the Container which contains this Component.\n\nThis may be overridden by Component authors who implement ownership hierarchies\nwhich are not based upon ownerCt, such as BoundLists being owned by Fields or Menus\nbeing owned by Buttons.\n",
+                "src": {
+                  "access": "0,285,8",
+                  "name": "0,287,0",
+                  "text": "0,277,8,408"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initInheritedState",
+                "since": "5.0.0",
+                "text": "This method is called to initialize the `inheritedState` objects for this instance.\nThis amounts to typically copying certain properties from the instance to the given\nobject.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "inheritedState",
+                    "text": "The state object for this instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,300,24",
+                      "text": "0,300,39,36",
+                      "type": "0,300,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "inheritedStateInner",
+                    "optional": true,
+                    "text": "This object is only provided for containers.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,301,25",
+                      "text": "0,301,46,45",
+                      "type": "0,301,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,303,8",
+                  "name": "0,302,16",
+                  "since": "0,304,15",
+                  "text": "0,296,8,177"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "invalidateInheritedState",
+                "since": "5.0.0",
+                "text": "This method marks the current inherited state as invalid. The next time a call is\nmade to <a href='#!/api/Ext.mixin.Inheritable-method-getInherited'>getInherited</a> the objects will be recreated and initialized.\n",
+                "src": {
+                  "access": "0,310,8",
+                  "name": "0,313,0",
+                  "since": "0,311,15",
+                  "text": "0,308,8,152"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "lookupReferenceHolder",
+                "since": "5.0.0",
+                "text": "Gets the Controller or Component that is used as the reference holder for this view.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "`false` to return this as the reference holder if\nthis instance has set `referenceHolder`. Unlike <a href='#!/api/Ext.mixin.Inheritable-method-getInheritedConfig'>getInheritedConfig</a> this method\ndefaults to `true` because it is possible that a `reference` property set by the\nowner of a component that is also a `referenceHolder` itself. In this case, the\n`reference` connects not to this component but to the parent referenceHolder.\n",
+                    "type": "Boolean",
+                    "value": "true",
+                    "src": {
+                      "name": "0,261,26",
+                      "text": "0,261,41,50:0,262,8,321",
+                      "type": "0,261,16",
+                      "value": "0,261,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The reference holder.\n",
+                    "type": "Ext.app.ViewController/Ext.container.Container",
+                    "src": {
+                      "text": "0,267,65,22",
+                      "type": "0,267,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,269,8",
+                  "name": "0,272,0",
+                  "since": "0,270,15",
+                  "text": "0,259,8,86"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onInheritedAdd",
+                "text": "Called when this Inheritable is added to a parent\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "instanced",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,351,29",
+                      "type": "0,351,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,330,-1",
+                  "name": "0,353,0",
+                  "text": "0,350,12,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onInheritedRemove",
+                "text": "Called when this inheritable is removed from a parent\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "destroying",
+                    "text": "`true` if this item will be destroyed by it's container\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,369,29",
+                      "text": "0,369,40,56",
+                      "type": "0,369,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,330,-1",
+                  "name": "0,371,0",
+                  "text": "0,368,12,54"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "resolveListenerScope",
+                "since": "5.0.0",
+                "text": "Gets the Controller or Component that is used as the event root for this view.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "defaultScope",
+                    "optional": true,
+                    "text": "The default scope to return if none is found.\n",
+                    "type": "Object",
+                    "value": "this",
+                    "src": {
+                      "name": "0,185,25",
+                      "text": "0,185,44,46",
+                      "type": "0,185,16",
+                      "value": "0,185,38"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The default listener scope.\n",
+                    "type": "Ext.app.ViewController/Ext.container.Container",
+                    "src": {
+                      "text": "0,186,65,28",
+                      "type": "0,186,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,188,8",
+                  "name": "0,191,0",
+                  "since": "0,189,15",
+                  "text": "0,183,8,80"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "resolveSatelliteListenerScope",
+                "since": "5.1.1",
+                "text": "Returns the default listener scope for a \"satellite\" of this component.\nUsed for resolving scope for observable objects that are not part of the normal\nContainer/Component hierarchy (for example, plugins)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "satellite",
+                    "type": "Ext.mixin.Observable",
+                    "src": {
+                      "name": "0,227,38",
+                      "type": "0,227,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "defaultScope",
+                    "optional": true,
+                    "type": "Object",
+                    "src": {
+                      "name": "0,228,25",
+                      "type": "0,228,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The listener scope\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,229,25,19",
+                      "type": "0,229,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,230,8",
+                  "name": "0,233,0",
+                  "since": "0,231,15",
+                  "text": "0,223,8,206"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,75,4",
+          "extends": "0,79,0",
+          "name": "0,78,0",
+          "since": "0,76,11",
+          "text": "0,2,4,3123"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

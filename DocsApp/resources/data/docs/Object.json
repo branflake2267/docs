@@ -208,20 +208,20 @@
             "items": [
               {
                 "$type": "property",
-                "name": "prototype",
-                "text": "Allows the addition of properties to all objects of type Object.\n",
-                "src": {
-                  "name": "0,46,14",
-                  "text": "0,47,4,65"
-                }
-              },
-              {
-                "$type": "property",
                 "name": "constructor",
                 "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their <a href='#!/api/Object-property-prototype'>prototype</a>:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
                 "src": {
                   "name": "0,346,14",
                   "text": "0,347,3,1996"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "0,46,14",
+                  "text": "0,47,4,65"
                 }
               }
             ]
@@ -276,6 +276,41 @@
               },
               {
                 "$type": "method",
+                "name": "defineProperties",
+                "static": true,
+                "text": "\nDefines new or modifies existing properties directly on an object,\nreturning the object.\n\nIn essence, it defines all properties corresponding to the\nenumerable own properties of props on the object.\n\n    Object.defineProperties(obj, {\n      \"property1\": {\n        value: true,\n        writable: true\n      },\n      \"property2\": {\n        value: \"Hello\",\n        writable: false\n      }\n      // etc. etc.\n    });\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object on which to define or modify properties.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,626,20",
+                      "text": "0,626,24,52",
+                      "type": "0,626,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "props",
+                    "text": "An object whose own enumerable properties\nconstitute descriptors for the properties to be defined or\nmodified.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,627,20",
+                      "text": "0,627,26,42:0,628,4,69",
+                      "type": "0,627,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,603,12",
+                  "static": "0,604,4",
+                  "text": "0,605,4,476"
+                }
+              },
+              {
+                "$type": "method",
                 "name": "defineProperty",
                 "static": true,
                 "text": "\nDefines a new property directly on an object, or modifies an\nexisting property on an object, and returns the object.\n\nThis method allows precise addition to or modification of a\nproperty on an object. Normal property addition through assignment\ncreates properties which show up during property enumeration\n(for...in loop or <a href='#!/api/Object-static-method-keys'>Object#keys</a> method), whose values may be\nchanged, and which may be deleted. This method allows these extra\ndetails to be changed from their defaults.\n\nProperty descriptors present in objects come in two main flavors:\ndata descriptors and accessor descriptors. A data descriptor is a\nproperty that has a value, which may or may not be writable. An\naccessor descriptor is a property described by a getter-setter pair\nof functions. A descriptor must be one of these two flavors; it\ncannot be both.\n\nBoth data and accessor descriptor is an object with the following\noptional keys:\n\n- **configurable** True if and only if the type of this property\n  descriptor may be changed and if the property may be deleted from\n  the corresponding object. Defaults to false.\n\n- **enumerable** True if and only if this property shows up during\n  enumeration of the properties on the corresponding\n  object. Defaults to false.\n\nA data descriptor is an object with the following optional keys:\n\n- **value** The value associated with the property. Can be any\n  valid JavaScript value (number, object, function, etc) Defaults\n  to undefined.\n\n- **writable** True if and only if the value associated with the\n  property may be changed with an assignment operator. Defaults to\n  false.\n\nAn accessor descriptor is an object with the following optional\nkeys:\n\n- **get** A function which serves as a getter for the property, or\n  undefined if there is no getter. The function return will be used\n  as the value of property. Defaults to undefined.\n\n- **set** A function which serves as a setter for the property, or\n  undefined if there is no setter. The function will receive as\n  only argument the new value being assigned to the\n  property. Defaults to undefined.\n\nBear in mind that these options are not necessarily own properties\nso, if inherited, will be considered too. In order to ensure these\ndefaults are preserved you might freeze the Object.prototype\nupfront, specify all options explicitly, or point to null as\n__proto__ property.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
@@ -322,37 +357,26 @@
               },
               {
                 "$type": "method",
-                "name": "defineProperties",
+                "name": "freeze",
                 "static": true,
-                "text": "\nDefines new or modifies existing properties directly on an object,\nreturning the object.\n\nIn essence, it defines all properties corresponding to the\nenumerable own properties of props on the object.\n\n    Object.defineProperties(obj, {\n      \"property1\": {\n        value: true,\n        writable: true\n      },\n      \"property2\": {\n        value: \"Hello\",\n        writable: false\n      }\n      // etc. etc.\n    });\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "text": "\nFreezes an object: that is, prevents new properties from being\nadded to it; prevents existing properties from being removed; and\nprevents existing properties, or their enumerability,\nconfigurability, or writability, from being changed. In essence the\nobject is made effectively immutable. The method returns the object\nbeing frozen.\n\nNothing can be added to or removed from the properties set of a\nfrozen object. Any attempt to do so will fail, either silently or\nby throwing a TypeError exception (most commonly, but not\nexclusively, when in strict mode).\n\nValues cannot be changed for data properties. Accessor properties\n(getters and setters) work the same (and still give the illusion\nthat you are changing the value). Note that values that are objects\ncan still be modified, unless they are also frozen.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
                 "items": [
                   {
                     "$type": "param",
                     "name": "obj",
-                    "text": "The object on which to define or modify properties.\n",
+                    "text": "The object to freeze.\n",
                     "type": "Object",
                     "src": {
-                      "name": "0,626,20",
-                      "text": "0,626,24,52",
-                      "type": "0,626,12"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "props",
-                    "text": "An object whose own enumerable properties\nconstitute descriptors for the properties to be defined or\nmodified.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "0,627,20",
-                      "text": "0,627,26,42:0,628,4,69",
-                      "type": "0,627,12"
+                      "name": "0,963,20",
+                      "text": "0,963,24,22",
+                      "type": "0,963,12"
                     }
                   }
                 ],
                 "src": {
-                  "name": "0,603,12",
-                  "static": "0,604,4",
-                  "text": "0,605,4,476"
+                  "name": "0,941,12",
+                  "static": "0,942,4",
+                  "text": "0,943,4,872"
                 }
               },
               {
@@ -397,39 +421,6 @@
                   "name": "0,633,12",
                   "static": "0,634,4",
                   "text": "0,635,4,521"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "keys",
-                "static": true,
-                "text": "\nReturns an array of a given object's own enumerable properties, in\nthe same order as that provided by a for-in loop (the difference\nbeing that a for-in loop enumerates properties in the prototype\nchain as well).\n\nReturns an array whose elements are strings corresponding to the\nenumerable properties found directly upon object. The ordering of\nthe properties is the same as that given by looping over the\nproperties of the object manually.\n\n    var arr = [\"a\", \"b\", \"c\"];\n    alert(Object.keys(arr)); // will alert \"0,1,2\"\n\n    // array like object\n    var obj = { 0 : \"a\", 1 : \"b\", 2 : \"c\"};\n    alert(Object.keys(obj)); // will alert \"0,1,2\"\n\n    // getFoo is property which isn't enumerable\n    var my_obj = Object.create({}, { getFoo : { value : function () { return this.foo } } });\n    my_obj.foo = 1;\n\n    alert(Object.keys(my_obj)); // will alert only foo\n\nIf you want all properties, even the not enumerable, see\n<a href='#!/api/Object-static-method-getOwnPropertyNames'>Object#getOwnPropertyNames</a>.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "obj",
-                    "text": "The object whose enumerable own properties are\nto be returned.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "0,709,20",
-                      "text": "0,709,24,47:0,710,4,16",
-                      "type": "0,709,12"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "Array of property names.\n",
-                    "type": "String[]",
-                    "src": {
-                      "text": "0,711,23,25",
-                      "type": "0,711,13"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,678,12",
-                  "static": "0,679,4",
-                  "text": "0,680,4,1021"
                 }
               },
               {
@@ -500,30 +491,6 @@
               },
               {
                 "$type": "method",
-                "name": "preventExtensions",
-                "static": true,
-                "text": "\nPrevents new properties from ever being added to an object\n(i.e. prevents future extensions to the object).\n\nAn object is extensible if new properties can be added to it.\n<a href='#!/api/Object-static-method-preventExtensions'>preventExtensions</a> marks an object as no longer extensible, so that\nit will never have properties beyond the ones it had at the time it\nwas marked as non-extensible.  Note that the properties of a\nnon-extensible object, in general, may still be deleted. Attempting\nto add new properties to a non-extensible object will fail, either\nsilently or by throwing a TypeError (most commonly, but not\nexclusively, when in strict mode).\n\nIt only prevents addition of own properties. Properties can still\nbe added to the object prototype.\n\nIf there is a way to turn an extensible object to a non-extensible\none, there is no way to do the opposite in ECMAScript 5\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "obj",
-                    "text": "The object which should be made non-extensible.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "0,824,20",
-                      "text": "0,824,24,48",
-                      "type": "0,824,12"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,801,12",
-                  "static": "0,802,4",
-                  "text": "0,803,4,887"
-                }
-              },
-              {
-                "$type": "method",
                 "name": "isExtensible",
                 "static": true,
                 "text": "\nDetermines if an object is extensible (whether it can have new\nproperties added to it).\n\nObjects are extensible by default: they can have new properties\nadded to them, and can be modified. An object can be marked as\nnon-extensible using <a href='#!/api/Object-static-method-preventExtensions'>Object#preventExtensions</a>,\n<a href='#!/api/Object-static-method-seal'>Object#seal</a>, or <a href='#!/api/Object-static-method-freeze'>Object#freeze</a>.\n\n    // New objects are extensible.\n    var empty = {};\n    assert(Object.isExtensible(empty) === true);\n\n    // ...but that can be changed.\n    Object.preventExtensions(empty);\n    assert(Object.isExtensible(empty) === false);\n\n    // Sealed objects are by definition non-extensible.\n    var sealed = Object.seal({});\n    assert(Object.isExtensible(sealed) === false);\n\n    // Frozen objects are also by definition non-extensible.\n    var frozen = Object.freeze({});\n    assert(Object.isExtensible(frozen) === false);\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
@@ -557,26 +524,35 @@
               },
               {
                 "$type": "method",
-                "name": "seal",
+                "name": "isFrozen",
                 "static": true,
-                "text": "\nSeals an object, preventing new properties from being added to it\nand marking all existing properties as non-configurable. Values of\npresent properties can still be changed as long as they are\nwritable.\n\nBy default, objects are extensible (new properties can be added to\nthem). Sealing an object prevents new properties from being added\nand marks all existing properties as non-configurable. This has the\neffect of making the set of properties on the object fixed and\nimmutable. Making all properties non-configurable also prevents\nthem from being converted from data properties to accessor\nproperties and vice versa, but it does not prevent the values of\ndata properties from being changed. Attempting to delete or add\nproperties to a sealed object, or to convert a data property to\naccessor or vice versa, will fail, either silently or by throwing a\nTypeError (most commonly, although not exclusively, when in strict\nmode code).\n\nThe prototype chain remains untouched.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "text": "\nDetermines if an object is frozen.\n\nAn object is frozen if and only if it is not extensible, all its\nproperties are non-configurable, and all its data properties (that\nis, properties which are not accessor properties with getter or\nsetter components) are non-writable.\n\n    // A new object is extensible, so it is not frozen.\n    assert(Object.isFrozen({}) === false);\n\n    // An empty object which is not extensible is vacuously frozen.\n    var vacuouslyFrozen = Object.preventExtensions({});\n    assert(Object.isFrozen(vacuouslyFrozen) === true);\n\n    // A new object with one property is also extensible, ergo not frozen.\n    var oneProp = { p: 42 };\n    assert(Object.isFrozen(oneProp) === false);\n\n    // Preventing extensions to the object still doesn't make it frozen,\n    // because the property is still configurable (and writable).\n    Object.preventExtensions(oneProp);\n    assert(Object.isFrozen(oneProp) === false);\n\n    // ...but then deleting that property makes the object vacuously frozen.\n    delete oneProp.p;\n    assert(Object.isFrozen(oneProp) === true);\n\n    // A non-extensible object with a non-writable but still configurable property is not frozen.\n    var nonWritable = { e: \"plep\" };\n    Object.preventExtensions(nonWritable);\n    Object.defineProperty(nonWritable, \"e\", { writable: false }); // make non-writable\n    assert(Object.isFrozen(nonWritable) === false);\n\n    // Changing that property to non-configurable then makes the object frozen.\n    Object.defineProperty(nonWritable, \"e\", { configurable: false }); // make non-configurable\n    assert(Object.isFrozen(nonWritable) === true);\n\n    // A non-extensible object with a non-configurable but still writable property also isn't frozen.\n    var nonConfigurable = { release: \"the kraken!\" };\n    Object.preventExtensions(nonConfigurable);\n    Object.defineProperty(nonConfigurable, \"release\", { configurable: false });\n    assert(Object.isFrozen(nonConfigurable) === false);\n\n    // Changing that property to non-writable then makes the object frozen.\n    Object.defineProperty(nonConfigurable, \"release\", { writable: false });\n    assert(Object.isFrozen(nonConfigurable) === true);\n\n    // A non-extensible object with a configurable accessor property isn't frozen.\n    var accessor = { get food() { return \"yum\"; } };\n    Object.preventExtensions(accessor);\n    assert(Object.isFrozen(accessor) === false);\n\n    // ...but make that property non-configurable and it becomes frozen.\n    Object.defineProperty(accessor, \"food\", { configurable: false });\n    assert(Object.isFrozen(accessor) === true);\n\n    // But the easiest way for an object to be frozen is if Object.freeze has been called on it.\n    var frozen = { 1: 81 };\n    assert(Object.isFrozen(frozen) === false);\n    Object.freeze(frozen);\n    assert(Object.isFrozen(frozen) === true);\n\n    // By definition, a frozen object is non-extensible.\n    assert(Object.isExtensible(frozen) === false);\n\n    // Also by definition, a frozen object is sealed.\n    assert(Object.isSealed(frozen) === true);\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
                 "items": [
                   {
                     "$type": "param",
                     "name": "obj",
-                    "text": "The object which should be sealed.\n",
+                    "text": "The object which should be checked.\n",
                     "type": "Object",
                     "src": {
-                      "name": "0,887,20",
-                      "text": "0,887,24,35",
-                      "type": "0,887,12"
+                      "name": "0,1040,20",
+                      "text": "0,1040,24,36",
+                      "type": "0,1040,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the object is frozen, otherwise false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,1041,22,47",
+                      "type": "0,1041,13"
                     }
                   }
                 ],
                 "src": {
-                  "name": "0,862,12",
-                  "static": "0,863,4",
-                  "text": "0,864,4,1034"
+                  "name": "0,967,12",
+                  "static": "0,968,4",
+                  "text": "0,969,4,3106"
                 }
               },
               {
@@ -614,59 +590,83 @@
               },
               {
                 "$type": "method",
-                "name": "freeze",
+                "name": "keys",
                 "static": true,
-                "text": "\nFreezes an object: that is, prevents new properties from being\nadded to it; prevents existing properties from being removed; and\nprevents existing properties, or their enumerability,\nconfigurability, or writability, from being changed. In essence the\nobject is made effectively immutable. The method returns the object\nbeing frozen.\n\nNothing can be added to or removed from the properties set of a\nfrozen object. Any attempt to do so will fail, either silently or\nby throwing a TypeError exception (most commonly, but not\nexclusively, when in strict mode).\n\nValues cannot be changed for data properties. Accessor properties\n(getters and setters) work the same (and still give the illusion\nthat you are changing the value). Note that values that are objects\ncan still be modified, unless they are also frozen.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "text": "\nReturns an array of a given object's own enumerable properties, in\nthe same order as that provided by a for-in loop (the difference\nbeing that a for-in loop enumerates properties in the prototype\nchain as well).\n\nReturns an array whose elements are strings corresponding to the\nenumerable properties found directly upon object. The ordering of\nthe properties is the same as that given by looping over the\nproperties of the object manually.\n\n    var arr = [\"a\", \"b\", \"c\"];\n    alert(Object.keys(arr)); // will alert \"0,1,2\"\n\n    // array like object\n    var obj = { 0 : \"a\", 1 : \"b\", 2 : \"c\"};\n    alert(Object.keys(obj)); // will alert \"0,1,2\"\n\n    // getFoo is property which isn't enumerable\n    var my_obj = Object.create({}, { getFoo : { value : function () { return this.foo } } });\n    my_obj.foo = 1;\n\n    alert(Object.keys(my_obj)); // will alert only foo\n\nIf you want all properties, even the not enumerable, see\n<a href='#!/api/Object-static-method-getOwnPropertyNames'>Object#getOwnPropertyNames</a>.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
                 "items": [
                   {
                     "$type": "param",
                     "name": "obj",
-                    "text": "The object to freeze.\n",
+                    "text": "The object whose enumerable own properties are\nto be returned.\n",
                     "type": "Object",
                     "src": {
-                      "name": "0,963,20",
-                      "text": "0,963,24,22",
-                      "type": "0,963,12"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,941,12",
-                  "static": "0,942,4",
-                  "text": "0,943,4,872"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "isFrozen",
-                "static": true,
-                "text": "\nDetermines if an object is frozen.\n\nAn object is frozen if and only if it is not extensible, all its\nproperties are non-configurable, and all its data properties (that\nis, properties which are not accessor properties with getter or\nsetter components) are non-writable.\n\n    // A new object is extensible, so it is not frozen.\n    assert(Object.isFrozen({}) === false);\n\n    // An empty object which is not extensible is vacuously frozen.\n    var vacuouslyFrozen = Object.preventExtensions({});\n    assert(Object.isFrozen(vacuouslyFrozen) === true);\n\n    // A new object with one property is also extensible, ergo not frozen.\n    var oneProp = { p: 42 };\n    assert(Object.isFrozen(oneProp) === false);\n\n    // Preventing extensions to the object still doesn't make it frozen,\n    // because the property is still configurable (and writable).\n    Object.preventExtensions(oneProp);\n    assert(Object.isFrozen(oneProp) === false);\n\n    // ...but then deleting that property makes the object vacuously frozen.\n    delete oneProp.p;\n    assert(Object.isFrozen(oneProp) === true);\n\n    // A non-extensible object with a non-writable but still configurable property is not frozen.\n    var nonWritable = { e: \"plep\" };\n    Object.preventExtensions(nonWritable);\n    Object.defineProperty(nonWritable, \"e\", { writable: false }); // make non-writable\n    assert(Object.isFrozen(nonWritable) === false);\n\n    // Changing that property to non-configurable then makes the object frozen.\n    Object.defineProperty(nonWritable, \"e\", { configurable: false }); // make non-configurable\n    assert(Object.isFrozen(nonWritable) === true);\n\n    // A non-extensible object with a non-configurable but still writable property also isn't frozen.\n    var nonConfigurable = { release: \"the kraken!\" };\n    Object.preventExtensions(nonConfigurable);\n    Object.defineProperty(nonConfigurable, \"release\", { configurable: false });\n    assert(Object.isFrozen(nonConfigurable) === false);\n\n    // Changing that property to non-writable then makes the object frozen.\n    Object.defineProperty(nonConfigurable, \"release\", { writable: false });\n    assert(Object.isFrozen(nonConfigurable) === true);\n\n    // A non-extensible object with a configurable accessor property isn't frozen.\n    var accessor = { get food() { return \"yum\"; } };\n    Object.preventExtensions(accessor);\n    assert(Object.isFrozen(accessor) === false);\n\n    // ...but make that property non-configurable and it becomes frozen.\n    Object.defineProperty(accessor, \"food\", { configurable: false });\n    assert(Object.isFrozen(accessor) === true);\n\n    // But the easiest way for an object to be frozen is if Object.freeze has been called on it.\n    var frozen = { 1: 81 };\n    assert(Object.isFrozen(frozen) === false);\n    Object.freeze(frozen);\n    assert(Object.isFrozen(frozen) === true);\n\n    // By definition, a frozen object is non-extensible.\n    assert(Object.isExtensible(frozen) === false);\n\n    // Also by definition, a frozen object is sealed.\n    assert(Object.isSealed(frozen) === true);\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "obj",
-                    "text": "The object which should be checked.\n",
-                    "type": "Object",
-                    "src": {
-                      "name": "0,1040,20",
-                      "text": "0,1040,24,36",
-                      "type": "0,1040,12"
+                      "name": "0,709,20",
+                      "text": "0,709,24,47:0,710,4,16",
+                      "type": "0,709,12"
                     }
                   },
                   {
                     "$type": "return",
-                    "text": "True if the object is frozen, otherwise false.\n",
-                    "type": "Boolean",
+                    "text": "Array of property names.\n",
+                    "type": "String[]",
                     "src": {
-                      "text": "0,1041,22,47",
-                      "type": "0,1041,13"
+                      "text": "0,711,23,25",
+                      "type": "0,711,13"
                     }
                   }
                 ],
                 "src": {
-                  "name": "0,967,12",
-                  "static": "0,968,4",
-                  "text": "0,969,4,3106"
+                  "name": "0,678,12",
+                  "static": "0,679,4",
+                  "text": "0,680,4,1021"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "preventExtensions",
+                "static": true,
+                "text": "\nPrevents new properties from ever being added to an object\n(i.e. prevents future extensions to the object).\n\nAn object is extensible if new properties can be added to it.\n<a href='#!/api/Object-static-method-preventExtensions'>preventExtensions</a> marks an object as no longer extensible, so that\nit will never have properties beyond the ones it had at the time it\nwas marked as non-extensible.  Note that the properties of a\nnon-extensible object, in general, may still be deleted. Attempting\nto add new properties to a non-extensible object will fail, either\nsilently or by throwing a TypeError (most commonly, but not\nexclusively, when in strict mode).\n\nIt only prevents addition of own properties. Properties can still\nbe added to the object prototype.\n\nIf there is a way to turn an extensible object to a non-extensible\none, there is no way to do the opposite in ECMAScript 5\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object which should be made non-extensible.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,824,20",
+                      "text": "0,824,24,48",
+                      "type": "0,824,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,801,12",
+                  "static": "0,802,4",
+                  "text": "0,803,4,887"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "seal",
+                "static": true,
+                "text": "\nSeals an object, preventing new properties from being added to it\nand marking all existing properties as non-configurable. Values of\npresent properties can still be changed as long as they are\nwritable.\n\nBy default, objects are extensible (new properties can be added to\nthem). Sealing an object prevents new properties from being added\nand marks all existing properties as non-configurable. This has the\neffect of making the set of properties on the object fixed and\nimmutable. Making all properties non-configurable also prevents\nthem from being converted from data properties to accessor\nproperties and vice versa, but it does not prevent the values of\ndata properties from being changed. Attempting to delete or add\nproperties to a sealed object, or to convert a data property to\naccessor or vice versa, will fail, either silently or by throwing a\nTypeError (most commonly, although not exclusively, when in strict\nmode code).\n\nThe prototype chain remains untouched.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object which should be sealed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,887,20",
+                      "text": "0,887,24,35",
+                      "type": "0,887,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,862,12",
+                  "static": "0,863,4",
+                  "text": "0,864,4,1034"
                 }
               }
             ]

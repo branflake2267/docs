@@ -1,0 +1,119 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/bind/Multi.js",
+    "../../../ext/packages/core/src/app/bind/BaseBinding.js",
+    "../../../ext/packages/core/src/util/Schedulable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.app.bind.BaseBinding",
+        "name": "Ext.app.bind.Multi",
+        "text": "This class is created to manage a multi-bind against a `ViewModel`.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "single",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "This option instructs the binding to call its `destroy` method immediately after\ndelivering the initial value.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "1,17,24",
+                  "since": "1,20,15",
+                  "text": "1,18,8,111",
+                  "type": "1,17,14",
+                  "value": "1,17,31"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "trackStatics",
+                "since": "5.1.0",
+                "text": "This option tracks for static branches of the root object which can be pruned using\n<a href='#!/api/Ext.app.bind.Multi-pruneStaticKeys'>pruneStaticKeys</a>. This can be useful to only get the dynamic parts of a multi bind:\n\n     {\n         a: 1,\n         b: '{someBind}',\n         c: ['a', 'b', 'c'],\n         d: ['a', 'b', '{someBind}'],\n         e: {\n             y: 1,\n             z: 2\n         },\n         f: {\n             y: 1,\n             z: '{someBind}'\n         }\n     }\n\n     // Will produce\n     {\n         b: value,\n         d: ['a', 'b', value],\n         f: {\n             y: 1,\n             z: value\n         }\n     }\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,46,8",
+                  "name": "0,18,23",
+                  "since": "0,47,15",
+                  "text": "0,19,8,587",
+                  "type": "0,18,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getScheduler",
+                "text": "This method returns the `Scheduler` for this item.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.util.Scheduler",
+                    "src": {
+                      "type": "2,37,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,33,-1",
+                  "name": "2,39,0",
+                  "text": "2,36,12,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "schedule",
+                "text": "Schedules this item with the associated <a href='#!/api/Ext.util.Scheduler'>Ext.util.Scheduler</a>.\n",
+                "src": {
+                  "access": "2,33,-1",
+                  "name": "2,46,0",
+                  "text": "2,44,12,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "sort",
+                "text": "This method should be overridden by items that have dependencies to insert. The\nstandard form would be:\n\n     sort: function () {\n         this.getScheduler().sortItems(this.dependencies);\n     }\n\nThis example assumes the item has a \"dependencies\" array to pass to the scheduler.\n",
+                "src": {
+                  "name": "2,83,20",
+                  "text": "2,84,12,280"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unschedule",
+                "text": "Unschedules this item with the associated <a href='#!/api/Ext.util.Scheduler'>Ext.util.Scheduler</a>.\n",
+                "src": {
+                  "access": "2,33,-1",
+                  "name": "2,68,0",
+                  "text": "2,66,12,64"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,5,0",
+          "name": "0,4,0",
+          "text": "0,2,4,68"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

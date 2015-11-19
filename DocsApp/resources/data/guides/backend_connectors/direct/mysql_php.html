@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="../../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#Ext Direct with PHP and MySQL</p>
+<div class="contents"><h1 id="backend_connectors-_-direct-_-mysql_php_-_ext_direct_with_php_and_mysql">Ext Direct with PHP and MySQL</h1>
 <p>Most web applications require the use of a client-side and a server-side.  The client-side 
 code cannot directly call server-side functions.  Instead, the client sends requests, the 
 server handles the requests, and then returns information to the client.  Ext Direct allows 
@@ -32,14 +32,14 @@ and methods and Ext Direct will then act as a proxy, giving you front-end access
 server-side environment.</p>
 <p><strong>Note:</strong> There are many variations in server side technology, but this guide uses the 
 Remoting Provider along with PHP and MySQL.</p>
-<p>##Requirements</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_requirements">Requirements</h2>
 <ul>
 <li>A server running PHP 5.3+</li>
 <li>A server running MySQL 4.1+</li>
 <li>Ext JS 4+ (this example uses Ext JS 6)</li>
 <li>Sencha Cmd</li>
 </ul>
-<p>##Generate an Application</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_generate_an_application">Generate an Application</h2>
 <p>To begin, let&#39;s generate an application using Sencha Cmd.  Simply open your terminal, and 
 issue the following command:</p>
 <pre><code>sencha -sdk path/to/ext/ generate app -classic DirectApp ./DirectApp
@@ -47,7 +47,7 @@ issue the following command:</p>
 pre-configured views in this starter app to demonstrate connecting with Ext Direct.  </p>
 <p><strong>Note:</strong> Your application should be available at <a href="http://localhost/DirectApp">http://localhost/DirectApp</a> or 
 <a href="http://localhost:1841/">http://localhost:1841/</a> if you&#39;re using &quot;sencha app watch&quot;.</p>
-<p>##Direct Proxy</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_direct_proxy">Direct Proxy</h2>
 <p>Our starter app already has a [[ext:Ext.grid.Panel grid]] displaying names, emails, and 
 phone numbers.  However, it is using local data by way of a 
 [[ext:Ext.data.proxy.Memory memory proxy]].  Let&#39;s begin by opening the &quot;app/store/Personnel.js&quot; 
@@ -72,7 +72,7 @@ using PHP.  The resulting code should look like this:</p>
  });
 </code></pre><p>Refreshing your app should now result in an empty grid since we have not yet provided any 
 data via our [[ext:Ext.data.proxy.Direct direct proxy]].</p>
-<p>##Populating the Database</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_populating_the_database">Populating the Database</h2>
 <p>Let&#39;s replace the data with something that already fits the name/email/phone fields.  Use 
 this SQL to create a &quot;heroes&quot; table:</p>
 <pre><code> DROP TABLE IF EXISTS `heroes`;
@@ -105,7 +105,7 @@ this SQL to create a &quot;heroes&quot; table:</p>
  UNLOCK TABLES;
 </code></pre><p>You should now have a MySQL table populated with 10 records that we&#39;ll display in our 
 grid.  Now that we have data, let&#39;s create a connection.  </p>
-<p>##Creating the Query</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_creating_the_query">Creating the Query</h2>
 <p>In the root directory of our app, create a folder called &#39;php&#39; followed by another one 
 inside it called &quot;classes&quot;. Within &quot;classes&quot; create a file called &quot;QueryDatabase.php&quot;.</p>
 <p>We&#39;ll be utilizing PHP&#39;s MySQLi extension which works with MySQL 4.1.3 and above 
@@ -160,7 +160,7 @@ the database for all of the column fields. We then push all of the results into 
 called <code>$results</code> by way of a while statement.  Finally, we close the connection to the 
 database and return the results. </p>
 <p><strong>Note:</strong> Replace <code>hostname</code>, <code>password</code>, and <code>database</code> with your own credentials.</p>
-<p>##Config</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_config">Config</h2>
 <p>Let&#39;s go up a level to the &quot;php&quot; directory and create a new file called &quot;config.php&quot; and 
 add the following code:</p>
 <pre><code> &lt;?php
@@ -182,8 +182,8 @@ add the following code:</p>
 </code></pre><p>This exposes the functions we want to be made available to our Ext application to call the 
 server. For now, we only need to add the &#39;getResults&#39; method we created above.</p>
 <p>That&#39;s all there is to our config.php file for now.</p>
-<p>##Router
-Next, we&#39;ll need a router to make sure the correct methods are called. The router is where 
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_router">Router</h2>
+<p>Next, we&#39;ll need a router to make sure the correct methods are called. The router is where 
 the calls from <code>Ext Direct</code> get routed to the correct class using a Remote Procedure 
 Call (RPC).</p>
 <p>While still in the &quot;php&quot; directory, let&#39;s create another file called &quot;router.php&quot; and 
@@ -293,7 +293,7 @@ exposure.  We also add a <code>doRpc</code> function that will provide important
 our data and responses from the server. </p>
 <p><strong>Note:</strong> Slightly more advanced version of router.php (and api.php in the next section) can 
 be found within the &quot;ext/examples/kitchensink/data/direct&quot; folder within the SDK. </p>
-<p>##API</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_api">API</h2>
 <p>Finally, let&#39;s create a file called &#39;api.php&#39; and populate it with the following code:</p>
 <pre><code> &lt;?php
  require(&#39;config.php&#39;);
@@ -341,7 +341,7 @@ proceeds to turn our config and router PHP files into JSON so the right method i
 when Ext Direct calls it.</p>
 <p>Again, the content of &quot;api.php&quot; can be found within the &quot;ext/examples/kitchensink/data/direct&quot; 
 folder within the SDK. </p>
-<p>##Updating app.json</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_updating_app_json">Updating app.json</h2>
 <p>Next, let&#39;s tell Cmd about &quot;api.php&quot;, the application&#39;s &quot;entry point&quot; to our Direct. The 
 best way to communicate our needs to Cmd is by way of &quot;app.json&#39;s&quot; javascript array.  Open 
 &quot;app.json&quot; and find the JS array.  Then add &quot;api.php&quot; as a remote inclusion.  The resulting 
@@ -376,7 +376,7 @@ the &quot;app.js&quot; line.</p>
  &lt;/html&gt;
 </code></pre><p>Because we&#39;re using the HTML5 document type, we&#39;re allowed to omit the type in a script tag, 
 it assumes that all <code>&lt;script&gt;</code> tags will be JavaScript which helps cut down our bytes.</p>
-<p>##Provider</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_provider">Provider</h2>
 <p>We&#39;ve made it to our final step to populate the grid with results!  We now need to add a 
 provider to the direct manager.  As we discussed earlier, there are two providers in the 
 framework, but we’ll be using the remoting api for this particular project.  Open your 
@@ -388,12 +388,25 @@ function.  It should like this:</p>
 </code></pre><p><strong>Note:</strong> &quot;Ext.REMOTING_API&quot; is the name of the variable that was created by the JavaScript 
 code printed in &quot;api.php&quot;. You can use any variable name you like but it should be the same 
 in both places.</p>
-<p>##Conclusion</p>
+<h2 id="backend_connectors-_-direct-_-mysql_php_-_conclusion">Conclusion</h2>
 <p>Refreshing your application should now display our new grid results.  As you can see, there&#39;s 
 a little bit of setup involved, but once complete, adding new methods is simply a matter 
 of writing them and adding them to your config file. You then have direct access to 
 your server side methods, which streamlines your code and a whole lot more!</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_requirements">Requirements</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_generate_an_application">Generate an Application</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_direct_proxy">Direct Proxy</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_populating_the_database">Populating the Database</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_creating_the_query">Creating the Query</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_config">Config</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_router">Router</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_api">API</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_updating_app_json">Updating app.json</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_provider">Provider</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-mysql_php_-_conclusion">Conclusion</a></div>
+    </div>
 </body>
 </html>

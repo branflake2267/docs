@@ -1,0 +1,531 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/plugin/BufferedRenderer.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "alias": "plugin.bufferedrenderer",
+        "extends": "Ext.AbstractPlugin",
+        "name": "Ext.grid.plugin.BufferedRenderer",
+        "text": "Implements buffered rendering of a grid, allowing users to scroll\nthrough thousands of records without the performance penalties of\nrendering all the records into the DOM at once.\n\nThe number of rows rendered outside the visible area can be controlled by configuring the plugin.\n\nUsers should not instantiate this class. It is instantiated automatically\nand applied to all grids.\n\n## Implementation notes\n\nThis class monitors scrolling of the <a href='#!/api/Ext.view.Table'>Ext.view.Table</a> within a <a href='#!/api/Ext.grid.Panel'>Ext.grid.Panel</a> to render a small section of\nthe dataset.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "numFromEdge",
+                "text": "The zone which causes new rows to be appended to the view. As soon as the edge\nof the rendered grid is this number of rows from the edge of the viewport, the view is moved.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,36,0",
+                  "text": "0,33,8,173",
+                  "type": "0,32,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "trailingBufferZone",
+                "text": "The number of extra rows to render on the trailing side of scrolling\n**outside the <a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a>** buffer as scrolling proceeds.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,43,0",
+                  "text": "0,40,8,136",
+                  "type": "0,39,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "leadingBufferZone",
+                "text": "The number of extra rows to render on the leading side of scrolling\n**outside the <a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a>** buffer as scrolling proceeds.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,50,0",
+                  "text": "0,47,8,135",
+                  "type": "0,46,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "synchronousRender",
+                "optional": true,
+                "text": "By default, on detection of a scroll event which brings the end of the rendered table within\n<a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a> rows of the grid viewport, if the required rows are available in the Store,\nthe BufferedRenderer will render rows from the Store *immediately* before returning from the event handler.\nThis setting helps avoid the impression of whitespace appearing during scrolling.\n\nSet this to `false` to defer the render until the scroll event handler exits. This allows for faster\nscrolling, but also allows whitespace to be more easily scrolled into view.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,53,24",
+                  "text": "0,54,8,561",
+                  "type": "0,53,14",
+                  "value": "0,53,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scrollToLoadBuffer",
+                "text": "This is the time in milliseconds to buffer load requests when the store is a <a href='#!/api/Ext.data.BufferedStore'>Ext.data.BufferedStore</a>\nand a page required for rendering is not present in the store's cache and needs loading.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,70,0",
+                  "text": "0,67,8,212",
+                  "type": "0,66,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "beforeTableLayout",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The view's layout context\nCalled before the start of a view's layout run\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "0,326,40",
+                      "text": "0,326,53,26:0,327,8,47",
+                      "type": "0,326,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,325,8",
+                  "name": "0,329,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterTableLayout",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The view's layout context\nCalled when a view's layout run is complete.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "0,339,40",
+                      "text": "0,339,53,26:0,340,8,45",
+                      "type": "0,339,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,338,8",
+                  "name": "0,342,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onViewResize",
+                "text": "Called directly from <a href='#!/api/Ext.view.Table-method-onResize'>Ext.view.Table#onResize</a>. Reacts to View changing height by\nrecalculating the size of the rendered block, and either trimming it or adding to it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "view",
+                    "text": "The Table view.\n",
+                    "type": "Ext.view.Table",
+                    "src": {
+                      "name": "0,408,32",
+                      "text": "0,408,37,16",
+                      "type": "0,408,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "width",
+                    "text": "The new Width.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,409,24",
+                      "text": "0,409,30,15",
+                      "type": "0,409,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "height",
+                    "text": "The new height.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,410,24",
+                      "text": "0,410,31,16",
+                      "type": "0,410,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldWidth",
+                    "text": "The old width.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,411,24",
+                      "text": "0,411,33,15",
+                      "type": "0,411,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldHeight",
+                    "text": "The old height.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,412,24",
+                      "text": "0,412,34,16",
+                      "type": "0,412,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,413,8",
+                  "name": "0,415,0",
+                  "text": "0,406,8,174"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getViewRange",
+                "text": "TableView's getViewRange delegates the operation to this method if buffered rendering is present.\n",
+                "src": {
+                  "access": "0,568,8",
+                  "name": "0,571,0",
+                  "text": "0,569,8,98"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onReplace",
+                "text": "Handles the Store replace event, producing a correct buffered view after the replace operation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "src": {
+                      "name": "0,616,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "startIndex",
+                    "src": {
+                      "name": "0,616,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldRecords",
+                    "src": {
+                      "name": "0,616,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newRecords",
+                    "src": {
+                      "name": "0,616,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,613,8",
+                  "name": "0,616,0",
+                  "text": "0,614,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "scrollTo",
+                "text": "Scrolls to and optionally selects the specified row index **in the total dataset**.\n\nThis is a private method for internal usage by the framework.\n\nUse the grid's <a href='#!/api/Ext.panel.Table-method-ensureVisible'>Ext.panel.Table#ensureVisible</a> method to scroll a particular\nrecord or record index into view.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record, or the zero-based position in the dataset to scroll to.\n",
+                    "type": "Number/Ext.data.Model",
+                    "src": {
+                      "name": "0,718,39",
+                      "text": "0,718,46,68",
+                      "type": "0,718,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing options to modify the operation.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "animate",
+                        "optional": true,
+                        "text": "Pass `true` to animate the row into view.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,720,42",
+                          "text": "0,720,51,42",
+                          "type": "0,720,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "highlight",
+                        "optional": true,
+                        "text": "Pass `true` to highlight the row with a glow animation when it is in view.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,721,42",
+                          "text": "0,721,53,75",
+                          "type": "0,721,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "select",
+                        "optional": true,
+                        "text": "Pass as `true` to select the specified row.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,722,42",
+                          "text": "0,722,50,44",
+                          "type": "0,722,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "focus",
+                        "optional": true,
+                        "text": "Pass as `true` to focus the specified row.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,723,42",
+                          "text": "0,723,49,43",
+                          "type": "0,723,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "callback",
+                        "optional": true,
+                        "text": "A function to call when the row has been scrolled to.\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "recordIdx",
+                            "text": "The resulting record index (may have changed if the passed index was outside the valid range).\n",
+                            "type": "Number",
+                            "src": {
+                              "name": "0,725,50",
+                              "text": "0,725,60,95",
+                              "type": "0,725,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The resulting record from the store.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "0,726,50",
+                              "text": "0,726,57,37",
+                              "type": "0,726,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "node",
+                            "text": "The resulting view row element.\n",
+                            "type": "HTMLElement",
+                            "src": {
+                              "name": "0,727,50",
+                              "text": "0,727,55,32",
+                              "type": "0,727,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "0,724,42",
+                          "text": "0,724,52,54",
+                          "type": "0,724,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "optional": true,
+                        "text": "The scope (`this` reference) in which to execute the callback. Defaults to this BufferedRenderer.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,728,42",
+                          "text": "0,728,49,98",
+                          "type": "0,728,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "column",
+                        "optional": true,
+                        "text": "The column, or column index to scroll into view.\n",
+                        "type": "Ext.grid.column.Column/Number",
+                        "src": {
+                          "name": "0,729,56",
+                          "text": "0,729,64,49",
+                          "type": "0,729,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,719,34",
+                      "text": "0,719,43,54",
+                      "type": "0,719,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,710,8",
+                  "name": "0,732,0",
+                  "text": "0,711,8,280"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "refreshView",
+                "text": "Refreshes the current rendered range if possible.\nOptionally refreshes starting at the specified index.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "startIndex",
+                    "src": {
+                      "name": "0,1005,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1001,8",
+                  "name": "0,1005,0",
+                  "text": "0,1002,8,104"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getLastVisibleRowIndex",
+                "text": "Returns the index of the last row in your table view deemed to be visible.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,1561,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "startRow",
+                    "src": {
+                      "name": "0,1564,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "endRow",
+                    "src": {
+                      "name": "0,1564,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "viewportTop",
+                    "src": {
+                      "name": "0,1564,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "viewportBottom",
+                    "src": {
+                      "name": "0,1564,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1562,8",
+                  "name": "0,1564,0",
+                  "text": "0,1560,8,75"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "isBufferedRenderer",
+                "text": "`true` in this class to identify an object as an instantiated BufferedRenderer, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,24,28",
+                  "text": "0,25,8,101",
+                  "type": "0,24,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "viewSize",
+                "src": {
+                  "access": "0,73,8",
+                  "name": "0,75,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "rowHeight",
+                "src": {
+                  "access": "0,78,8",
+                  "name": "0,80,0"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "position",
+                "text": "Current pixel scroll position of the associated <a href='#!/api/Ext.view.Table'>Ext.view.Table</a>.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,82,27",
+                  "text": "0,83,8,77",
+                  "type": "0,82,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,2,4",
+          "alias": "0,21,0",
+          "extends": "0,20,0",
+          "name": "0,19,0",
+          "text": "0,3,4,561"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

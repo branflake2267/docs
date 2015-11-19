@@ -1,0 +1,209 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/util/Animate.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.util.Animate",
+        "requires": "Ext.fx.Manager,Ext.fx.Anim",
+        "text": "This animation class is a mixin.\n\nExt.util.Animate provides an API for the creation of animated transitions of properties and styles.\nThis class is used as a mixin and currently applied to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>, <a href='#!/api/Ext.dom.CompositeElement'>Ext.CompositeElement</a>,\n<a href='#!/api/Ext.draw.sprite.Sprite'>Ext.draw.sprite.Sprite</a>, <a href='#!/api/Ext.draw.sprite.Composite'>Ext.draw.sprite.Composite</a>, and <a href='#!/api/Ext.Component'>Ext.Component</a>.  Note that Components\nhave a limited subset of what attributes can be animated such as top, left, x, y, height, width, and\nopacity (color, paddings, and margins can not be animated).\n\n## Animation Basics\n\nAll animations require three things - `easing`, `duration`, and `to` (the final end value for each property)\nyou wish to animate. Easing and duration are defaulted values specified below.\nEasing describes how the intermediate values used during a transition will be calculated.\n<a href='#!/api/Ext.fx.Anim-cfg-easing'>Ext.fx.Anim#easing</a> allows for a transition to change speed over its duration.\nYou may use the defaults for easing and duration, but you must always set a\n<a href='#!/api/Ext.fx.Anim-cfg-to'>Ext.fx.Anim#to</a> property which is the end value for all animations.\n\nPopular element 'to' configurations are:\n\n - opacity\n - x\n - y\n - color\n - height\n - width\n\nPopular sprite 'to' configurations are:\n\n - translation\n - path\n - scale\n - stroke\n - rotation\n\nThe default duration for animations is 250 (which is a 1/4 of a second).  Duration is denoted in\nmilliseconds.  Therefore 1 second is 1000, 1 minute would be 60000, and so on. The default easing curve\nused for all animations is 'ease'.  Popular easing functions are included and can be found in <a href='#!/api/Ext.fx.Anim-cfg-easing'>Ext.fx.Anim#easing</a>.\n\nFor example, a simple animation to fade out an element with a default easing and duration:\n\n    var p1 = Ext.get('myElementId');\n\n    p1.animate({\n        to: {\n            opacity: 0\n        }\n    });\n\nTo make this animation fade out in a tenth of a second:\n\n    var p1 = Ext.get('myElementId');\n\n    p1.animate({\n       duration: 100,\n        to: {\n            opacity: 0\n        }\n    });\n\n## Animation Queues\n\nBy default all animations are added to a queue which allows for animation via a chain-style API.\nFor example, the following code will queue 4 animations which occur sequentially (one right after the other):\n\n    p1.animate({\n        to: {\n            x: 500\n        }\n    }).animate({\n        to: {\n            y: 150\n        }\n    }).animate({\n        to: {\n            backgroundColor: '#f00'  //red\n        }\n    }).animate({\n        to: {\n            opacity: 0\n        }\n    });\n\nYou can change this behavior by calling the <a href='#!/api/Ext.util.Animate-method-syncFx'>Ext.util.Animate#syncFx</a> method and all\nsubsequent animations for the specified target will be run concurrently (at the same time).\n\n    p1.syncFx();  //this will make all animations run at the same time\n\n    p1.animate({\n        to: {\n            x: 500\n        }\n    }).animate({\n        to: {\n            y: 150\n        }\n    }).animate({\n        to: {\n            backgroundColor: '#f00'  //red\n        }\n    }).animate({\n        to: {\n            opacity: 0\n        }\n    });\n\nThis works the same as:\n\n    p1.animate({\n        to: {\n            x: 500,\n            y: 150,\n            backgroundColor: '#f00'  //red\n            opacity: 0\n        }\n    });\n\nThe <a href='#!/api/Ext.util.Animate-method-stopAnimation'>Ext.util.Animate#stopAnimation</a> method can be used to stop any\ncurrently running animations and clear any queued animations.\n\n## Animation Keyframes\n\nYou can also set up complex animations with <a href='#!/api/Ext.fx.Anim-cfg-keyframes'>Ext.fx.Anim#keyframes</a> which follow the\nCSS3 Animation configuration pattern. Note rotation, translation, and scaling can only be done for sprites.\nThe previous example can be written with the following syntax:\n\n    p1.animate({\n        duration: 1000,  //one second total\n        keyframes: {\n            25: {     //from 0 to 250ms (25%)\n                x: 0\n            },\n            50: {   //from 250ms to 500ms (50%)\n                y: 0\n            },\n            75: {  //from 500ms to 750ms (75%)\n                backgroundColor: '#f00'  //red\n            },\n            100: {  //from 750ms to 1sec\n                opacity: 0\n            }\n        }\n    });\n\n## Animation Events\n\nEach animation you create has events for <a href='#!/api/Ext.fx.Anim-event-beforeanimate'>Ext.fx.Anim#beforeanimate</a>,\n<a href='#!/api/Ext.fx.Anim-event-afteranimate'>Ext.fx.Anim#afteranimate</a>, and <a href='#!/api/Ext.fx.Anim-event-lastframe'>Ext.fx.Anim#lastframe</a>.\nKeyframed animations adds an additional <a href='#!/api/Ext.fx.Animator-event-keyframe'>Ext.fx.Animator#keyframe</a> event which\nfires for each keyframe in your animation.\n\nAll animations support the <a href='#!/api/Ext.util.Observable-cfg-listeners'>Ext.util.Observable#listeners</a> configuration to attact functions to these events.\n\n    startAnimate: function() {\n        var p1 = Ext.get('myElementId');\n        p1.animate({\n           duration: 100,\n            to: {\n                opacity: 0\n            },\n            listeners: {\n                beforeanimate:  function() {\n                    // Execute my custom method before the animation\n                    this.myBeforeAnimateFn();\n                },\n                afteranimate: function() {\n                    // Execute my custom method after the animation\n                    this.myAfterAnimateFn();\n                },\n                scope: this\n        });\n    },\n    myBeforeAnimateFn: function() {\n      // My custom logic\n    },\n    myAfterAnimateFn: function() {\n      // My custom logic\n    }\n\nDue to the fact that animations run asynchronously, you can determine if an animation is currently\nrunning on any target by using the <a href='#!/api/Ext.util.Animate-method-getActiveAnimation'>Ext.util.Animate#getActiveAnimation</a>\nmethod.  This method will return false if there are no active animations or return the currently\nrunning <a href='#!/api/Ext.fx.Anim'>Ext.fx.Anim</a> instance.\n\nIn this example, we're going to wait for the current animation to finish, then stop any other\nqueued animations before we fade our element's opacity to 0:\n\n    var curAnim = p1.getActiveAnimation();\n    if (curAnim) {\n        curAnim.on('afteranimate', function() {\n            p1.stopAnimation();\n            p1.animate({\n                to: {\n                    opacity: 0\n                }\n            });\n        });\n    }\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "animate",
+                "text": "Performs custom animation on this object.\n\nThis method is applicable to both the <a href='#!/api/Ext.Component'>Ext.Component</a> class and the <a href='#!/api/Ext.draw.sprite.Sprite'>Ext.draw.sprite.Sprite</a>\nclass. It performs animated transitions of certain properties of this object over a specified timeline.\n\n### Animating a <a href='#!/api/Ext.Component'>Ext.Component</a>\n\nWhen animating a Component, the following properties may be specified in `from`, `to`, and `keyframe` objects:\n\n  - `x` - The Component's page X position in pixels.\n\n  - `y` - The Component's page Y position in pixels\n\n  - `left` - The Component's `left` value in pixels.\n\n  - `top` - The Component's `top` value in pixels.\n\n  - `width` - The Component's `width` value in pixels.\n\n  - `height` - The Component's `height` value in pixels.\n\n  - `dynamic` - Specify as true to update the Component's layout (if it is a Container) at every frame of the animation.\n    *Use sparingly as laying out on every intermediate size change is an expensive operation.*\n\nFor example, to animate a Window to a new size, ensuring that its internal layout and any shadow is correct:\n\n    myWindow = Ext.create('Ext.window.Window', {\n        title: 'Test Component animation',\n        width: 500,\n        height: 300,\n        layout: {\n            type: 'hbox',\n            align: 'stretch'\n        },\n        items: [{\n            title: 'Left: 33%',\n            margin: '5 0 5 5',\n            flex: 1\n        }, {\n            title: 'Left: 66%',\n            margin: '5 5 5 5',\n            flex: 2\n        }]\n    });\n    myWindow.show();\n    myWindow.header.el.on('click', function() {\n        myWindow.animate({\n            to: {\n                width: (myWindow.getWidth() == 500) ? 700 : 500,\n                height: (myWindow.getHeight() == 300) ? 400 : 300\n            }\n        });\n    });\n\nFor performance reasons, by default, the internal layout is only updated when the Window reaches its final `\"to\"`\nsize. If dynamic updating of the Window's child Components is required, then configure the animation with\n`dynamic: true` and the two child items will maintain their proportions during the animation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "Configuration for <a href='#!/api/Ext.fx.Anim'>Ext.fx.Anim</a>.\nNote that the <a href='#!/api/Ext.fx.Anim-cfg-to'>Ext.fx.Anim#to</a> config is required.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,269,24",
+                      "text": "0,269,31,39:0,270,8,60",
+                      "type": "0,269,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,271,25,5",
+                      "type": "0,271,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,273,0",
+                  "text": "0,211,8,2113"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "anim",
+                "text": "Process the passed fx configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "0,286,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,283,8",
+                  "name": "0,286,0",
+                  "text": "0,284,8,37"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getAnimationProps",
+                "text": "Get animation properties\n",
+                "src": {
+                  "access": "0,306,8",
+                  "name": "0,309,0",
+                  "text": "0,307,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Replaced by <a href='#!/api/Ext.util.Animate-stopAnimation'>stopAnimation</a>\n",
+                "deprecatedVersion": "4.0",
+                "name": "stopFx",
+                "text": "Stops any running effects and clears this object's internal effects queue if it contains any additional effects\nthat haven't started yet.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The Element\n",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "text": "0,320,34,12",
+                      "type": "0,320,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,319,8",
+                  "deprecatedVersion": "0,319,8",
+                  "name": "0,323,0",
+                  "text": "0,317,8,138"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "stopAnimation",
+                "text": "Stops any running effects and clears this object's internal effects queue if it contains any additional effects\nthat haven't started yet.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The Element\n",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "text": "0,328,34,12",
+                      "type": "0,328,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,330,0",
+                  "text": "0,326,8,138"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "syncFx",
+                "text": "Ensures that all effects queued after syncFx is called on this object are run concurrently. This is the opposite\nof <a href='#!/api/Ext.util.Animate-method-sequenceFx'>sequenceFx</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,338,25,5",
+                      "type": "0,338,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,340,0",
+                  "text": "0,336,8,137"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "sequenceFx",
+                "text": "Ensures that all effects queued after sequenceFx is called on this object are run in sequence. This is the\nopposite of <a href='#!/api/Ext.util.Animate-method-syncFx'>syncFx</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,350,25,5",
+                      "type": "0,350,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,352,0",
+                  "text": "0,348,8,136"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Replaced by <a href='#!/api/Ext.util.Animate-getActiveAnimation'>getActiveAnimation</a>\n",
+                "deprecatedVersion": "4.0",
+                "inheritdoc": "Ext.util.Animate#getActiveAnimation",
+                "name": "hasActiveFx",
+                "src": {
+                  "deprecatedMessage": "0,360,8",
+                  "deprecatedVersion": "0,360,8",
+                  "inheritdoc": "0,361,8",
+                  "name": "0,364,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getActiveAnimation",
+                "text": "Returns the current animation if this object has any effects actively running or queued, else returns false.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Anim if element has active effects, else false\n",
+                    "type": "Ext.fx.Anim/Boolean",
+                    "src": {
+                      "text": "0,368,38,47",
+                      "type": "0,368,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,370,0",
+                  "text": "0,367,8,109"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,200,0",
+          "requires": "0,204,0,0:0,205,0,0",
+          "text": "0,2,4,6083"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

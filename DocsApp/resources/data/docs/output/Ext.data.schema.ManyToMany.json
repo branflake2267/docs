@@ -1,0 +1,126 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/schema/ManyToMany.js",
+    "../../../ext/packages/core/src/data/schema/Association.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.data.schema.Association",
+        "name": "Ext.data.schema.ManyToMany",
+        "text": "This relationship describes the case where any one entity of one type may relate to any\nnumber of entities of another type, and also in the reverse.\n\nThis form of association cannot store id's in the related entities since that would\nlimit the number of related entities to one for the entity with the foreign key. Instead,\nthese relationships are typically implemented using a so-called \"matrix\" table. This\ntable typically has two columns to hold the id's of a pair of related entities. This\npair of id's is unique in the matrix table.\n\n# Declaration Forms\n\n     // Fully spelled out - all properties are their defaults:\n\n     Ext.define('App.models.Group', {\n         extend: 'Ext.data.Model',\n\n         manyToMany: {\n             UserGroups: {\n                 type: 'User',\n                 role: 'users',\n                 field: 'userId',\n                 right: {\n                     field: 'groupId',\n                     role: 'groups'\n                 }\n             }\n         }\n     });\n\n     // Eliminate \"right\" object and use boolean to indicate Group is on the\n     // right. By default, left/right is determined by alphabetic order.\n\n     Ext.define('App.models.Group', {\n         extend: 'Ext.data.Model',\n\n         manyToMany: {\n             UserGroups: {\n                 type: 'User',\n                 role: 'users',\n                 field: 'userId',\n                 right: true\n             }\n         }\n     });\n\n     // Eliminate object completely and rely on string to name the other type. Still\n     // keep Group on the \"right\".\n\n     Ext.define('App.models.Group', {\n         extend: 'Ext.data.Model',\n\n         manyToMany: {\n             UserGroups: 'User#'   // '#' is on the side (left or right) of Group\n         }\n     });\n\n     // Remove explicit matrix name and keep Group on the \"right\". Generated matrixName\n     // remains \"UserGroups\".\n\n     Ext.define('App.models.Group', {\n         extend: 'Ext.data.Model',\n\n         manyToMany: [\n             'User#'\n         ]\n     });\n\n     // Minimal definition but now Group is on the \"left\" since \"Group\" sorts before\n     // \"User\". Generated matrixName is now \"GroupUsers\".\n\n     Ext.define('App.models.Group', {\n         extend: 'Ext.data.Model',\n\n         manyToMany: [\n             'User'\n         ]\n     });\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "name",
+                "text": "The name of this association.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,74,22",
+                  "text": "1,75,8,30",
+                  "type": "1,74,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "definedBy",
+                "readonly": true,
+                "type": "Ext.Class",
+                "src": {
+                  "name": "1,87,30",
+                  "readonly": "1,88,8",
+                  "type": "1,87,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "field",
+                "readonly": true,
+                "type": "Ext.data.field.Field",
+                "src": {
+                  "name": "1,92,41",
+                  "readonly": "1,93,8",
+                  "type": "1,92,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "left",
+                "readonly": true,
+                "type": "Ext.data.schema.Role",
+                "src": {
+                  "name": "1,108,41",
+                  "readonly": "1,109,8",
+                  "type": "1,108,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "nullable",
+                "readonly": true,
+                "type": "Boolean",
+                "src": {
+                  "name": "1,103,28",
+                  "readonly": "1,104,8",
+                  "type": "1,103,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "owner",
+                "readonly": true,
+                "text": "Points at either <a href='#!/api/Ext.data.schema.ManyToMany-property-left'>left</a> or <a href='#!/api/Ext.data.schema.ManyToMany-property-right'>right</a> objects if one is the owning party in this\nassociation or is <a href='#!/api/null'>null</a> if there is no owner.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,79,27",
+                  "readonly": "1,82,8",
+                  "text": "1,80,8,125",
+                  "type": "1,79,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "right",
+                "readonly": true,
+                "type": "Ext.data.schema.Role",
+                "src": {
+                  "name": "1,113,41",
+                  "readonly": "1,114,8",
+                  "type": "1,113,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "schema",
+                "readonly": true,
+                "type": "Ext.data.schema.Schema",
+                "src": {
+                  "name": "1,98,43",
+                  "readonly": "1,99,8",
+                  "type": "1,98,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,81,0",
+          "name": "0,80,0",
+          "text": "0,2,4,2298"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

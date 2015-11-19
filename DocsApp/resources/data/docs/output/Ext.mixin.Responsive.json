@@ -1,0 +1,353 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/mixin/Responsive.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.Mixin",
+        "name": "Ext.mixin.Responsive",
+        "requires": "Ext.GlobalEvents",
+        "since": "5.0.0",
+        "text": "This mixin provides its user with a <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> config that allows the class\nto conditionally control config properties.\n\nFor example:\n\n     Ext.define('ResponsiveClass', {\n         mixin: [\n             'Ext.mixin.Responsive'\n         ],\n\n         responsiveConfig: {\n             portrait: {\n             },\n\n             landscape: {\n             }\n         }\n     });\n\nFor a config to participate as a responsiveConfig it must have a \"setter\" method. In\nthe below example, a \"setRegion\" method must exist.\n\n     Ext.create({\n         xtype: 'viewport',\n         layout: 'border',\n\n         items: [{\n             title: 'Some Title',\n             plugins: 'responsive',\n\n             responsiveConfig: {\n                 'width < 800': {\n                     region: 'north'\n                 },\n                 'width >= 800': {\n                     region: 'west'\n                 }\n             }\n         }]\n     });\n\nTo use responsiveConfig the class must be defined using the Ext.mixin.Responsive mixin.\n\n     Ext.define('App.view.Foo', {\n         extend: 'Ext.panel.Panel',\n         xtype: 'foo',\n         mixins: [\n              'Ext.mixin.Responsive'\n         ],\n         ...\n     });\n\nOtherwise, you will need to use the responsive plugin if the class is not one you authored.\n\n     Ext.create('Ext.panel.Panel', {\n         renderTo: document.body,\n         plugins: 'responsive',\n         ...\n     });\n\n _Note:_ There is the exception of <a href='#!/api/Ext.container.Viewport'>Ext.container.Viewport</a> or other classes using <a href='#!/api/Ext.plugin.Viewport'>Ext.plugin.Viewport</a>.\n In those cases, the viewport plugin inherits from <a href='#!/api/Ext.plugin.Responsive'>Ext.plugin.Responsive</a>.\n\nFor details see <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>responsiveConfig</a>.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "responsiveConfig",
+                "since": "5.0.0",
+                "text": "This object consists of keys that represent the conditions on which configs\nwill be applied. For example:\n\n     responsiveConfig: {\n         landscape: {\n             region: 'west'\n         },\n         portrait: {\n             region: 'north'\n         }\n     }\n\nIn this case the keys (\"landscape\" and \"portrait\") are the criteria (or \"rules\")\nand the object to their right contains the configs that will apply when that\nrule is true.\n\nThese rules can be any valid JavaScript expression but the following values\nare considered in scope:\n\n * `landscape` - True if the device orientation is landscape (always `true` on\n  desktop devices).\n * `portrait` - True if the device orientation is portrait (always `false` on\n  desktop devices).\n * `tall` - True if `width` < `height` regardless of device type.\n * `wide` - True if `width` > `height` regardless of device type.\n * `width` - The width of the viewport in pixels.\n * `height` - The height of the viewport in pixels.\n * `platform` - An object containing various booleans describing the platform\n (see <a href='#!/api/Ext-property-platformTags'>Ext#platformTags</a>). The properties of this\n object are also available implicitly (without \"platform.\" prefix) but this\n sub-object may be useful to resolve ambiguity (for example, if one of the\n <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveFormulas'>responsiveFormulas</a> overlaps and hides any of these properties).\n Previous to Ext JS 5.1, the `platformTags` were only available using this\n prefix.\n\nA more complex example:\n\n     responsiveConfig: {\n         'desktop || width > 800': {\n             region: 'west'\n         },\n\n         '!(desktop || width > 800)': {\n             region: 'north'\n         }\n     }\n\n**NOTE**: If multiple rules set a single config (like above), it is important\nthat the rules be mutually exclusive. That is, only one rule should set each\nconfig. If multiple rules are actively setting a single config, the order of\nthese (and therefore the config's value) is unspecified.\n\nFor a config to participate as a <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> it must have a \"setter\"\nmethod. In the above example, a \"setRegion\" method must exist.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,84,26",
+                  "since": "0,140,19",
+                  "text": "0,85,12,2080",
+                  "type": "0,84,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "responsiveFormulas",
+                "since": "5.0.1",
+                "text": "It is common when using <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> to have recurring expressions that\nmake for complex configurations. Using <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveFormulas'>responsiveFormulas</a> allows you to cut\ndown on this repetition by adding new properties to the \"scope\" for the rules\nin a <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>responsiveConfig</a>.\n\nFor example:\n\n     Ext.define('MyApp.view.main.Main', {\n         extend: 'Ext.container.Container',\n\n         mixins: [\n             'Ext.mixin.Responsive'\n         ],\n\n         responsiveFormulas: {\n             small: 'width < 600',\n\n             medium: 'width >= 600 && width < 800',\n\n             large: 'width >= 800',\n\n             tuesday: function (context) {\n                 return (new Date()).getDay() === 2;\n             }\n         }\n     });\n\nWith the above declaration, any <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> can now use these values\nlike so:\n\n     responsiveConfig: {\n         small: {\n             hidden: true\n         },\n         'medium && !tuesday': {\n             hidden: false,\n             region: 'north'\n         },\n         large: {\n             hidden: false,\n             region: 'west'\n         }\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,167,26",
+                  "since": "0,212,19",
+                  "text": "0,168,12,1080",
+                  "type": "0,167,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterClassMixedIn",
+                "text": "This class system hook method is called at the tail end of the mixin process.\nWe need to see if the `targetClass` has already got a <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> and\nif so, we must add its value to the real config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "targetClass",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,439,31",
+                      "type": "0,439,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,440,12",
+                  "name": "0,442,0",
+                  "text": "0,436,12,204"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "This method removes this instance from the Responsive collection.\n",
+                "src": {
+                  "name": "0,226,0",
+                  "text": "0,224,8,66"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getResponsiveState",
+                "text": "Evaluates and returns the configs based on the <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>responsiveConfig</a>. This\nmethod relies on the state being captured by the <a href='#!/api/Ext.mixin.Responsive-static-method-updateContext'>updateContext</a> method.\n",
+                "src": {
+                  "access": "0,496,12",
+                  "name": "0,498,0",
+                  "text": "0,494,12,145"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "transformInstanceConfig",
+                "text": "This config system hook method is called just prior to processing the specified\n\"instanceConfig\". This hook returns the instanceConfig that will actually be\nprocessed by the config system.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "instanceConfig",
+                    "text": "The user-supplied instance config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,532,28",
+                      "text": "0,532,43,42",
+                      "type": "0,532,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,533,12",
+                  "name": "0,535,0",
+                  "text": "0,529,12,189"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateResponsiveState",
+                "text": "Evaluates and applies the <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> to this instance. This is called\nby <a href='#!/api/Ext.mixin.Responsive-static-method-notify'>notify</a> automatically.\n",
+                "src": {
+                  "access": "0,573,12",
+                  "name": "0,575,0",
+                  "text": "0,571,12,105"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "activate",
+                "static": true,
+                "text": "Activates event listeners for all `Responsive` instances. This method is\ncalled when the first instance is registered.\n",
+                "src": {
+                  "access": "0,278,16",
+                  "name": "0,280,0",
+                  "static": "0,231,-1",
+                  "text": "0,276,16,119"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "deactivate",
+                "static": true,
+                "text": "Deactivates event listeners. This method is called when the last instance\nis destroyed.\n",
+                "src": {
+                  "access": "0,289,16",
+                  "name": "0,291,0",
+                  "static": "0,231,-1",
+                  "text": "0,287,16,88"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "notify",
+                "static": true,
+                "text": "Updates all registered the `Responsive` instances (found in the <a href='#!/api/Ext.mixin.Responsive-static-property-all'>all</a>\ncollection).\n",
+                "src": {
+                  "access": "0,299,16",
+                  "name": "0,301,0",
+                  "static": "0,231,-1",
+                  "text": "0,297,16,83"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onResize",
+                "static": true,
+                "text": "Handler of the window resize event. Schedules a timer so that we eventually\ncall <a href='#!/api/Ext.mixin.Responsive-static-method-notify'>notify</a>.\n",
+                "src": {
+                  "access": "0,337,16",
+                  "name": "0,339,0",
+                  "static": "0,231,-1",
+                  "text": "0,335,16,91"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onTimer",
+                "static": true,
+                "text": "This method is the timer handler. When called this removes the timer and\ncalls <a href='#!/api/Ext.mixin.Responsive-static-method-notify'>notify</a>.\n",
+                "src": {
+                  "access": "0,348,16",
+                  "name": "0,350,0",
+                  "static": "0,231,-1",
+                  "text": "0,346,16,89"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "processConfig",
+                "since": "5.0.1",
+                "static": true,
+                "text": "This method is called to update the internal state of a given config since\nthe config is needed prior to `initConfig` processing the `instanceConfig`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "instance",
+                    "text": "The instance to configure.\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "name": "0,359,34",
+                      "text": "0,359,43,27",
+                      "type": "0,359,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "instanceConfig",
+                    "text": "The config for the instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,360,32",
+                      "text": "0,360,47,29",
+                      "type": "0,360,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the config to process.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,361,32",
+                      "text": "0,361,37,35",
+                      "type": "0,361,24"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,362,16",
+                  "name": "0,365,0",
+                  "since": "0,363,23",
+                  "static": "0,231,-1",
+                  "text": "0,356,16,152"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateContext",
+                "static": true,
+                "text": "Updates the <a href='#!/api/Ext.mixin.Responsive-static-property-context'>context</a> object base on the current environment.\n",
+                "src": {
+                  "access": "0,411,16",
+                  "name": "0,413,0",
+                  "static": "0,231,-1",
+                  "text": "0,410,16,62"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "active",
+                "static": true,
+                "type": "Boolean",
+                "src": {
+                  "access": "0,236,16",
+                  "name": "0,234,36",
+                  "static": "0,235,16",
+                  "type": "0,234,27"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "all",
+                "static": true,
+                "text": "The collection of all `Responsive` instances. These are the instances that\nwill be notified when dynamic conditions change.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,245,16",
+                  "name": "0,241,35",
+                  "static": "0,244,16",
+                  "text": "0,242,16,124",
+                  "type": "0,241,27"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "context",
+                "static": true,
+                "text": "This object holds the various context values passed to the rule evaluation\nfunctions.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,254,16",
+                  "name": "0,250,35",
+                  "static": "0,253,16",
+                  "text": "0,251,16,86",
+                  "type": "0,250,27"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "count",
+                "static": true,
+                "text": "The number of instances in the <a href='#!/api/Ext.mixin.Responsive-static-property-all'>all</a> collection.\n",
+                "type": "Number",
+                "src": {
+                  "access": "0,262,16",
+                  "name": "0,259,35",
+                  "static": "0,261,16",
+                  "text": "0,260,16,49",
+                  "type": "0,259,27"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "nextId",
+                "static": true,
+                "text": "The seed value used to assign `Responsive` instances a unique id for keying\nin the <a href='#!/api/Ext.mixin.Responsive-static-property-all'>all</a> collection.\n",
+                "type": "Number",
+                "src": {
+                  "access": "0,271,16",
+                  "name": "0,267,35",
+                  "static": "0,270,16",
+                  "text": "0,268,16,101",
+                  "type": "0,267,27"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,69,0",
+          "name": "0,68,0",
+          "requires": "0,71,0",
+          "since": "0,66,11",
+          "text": "0,2,4,1653"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

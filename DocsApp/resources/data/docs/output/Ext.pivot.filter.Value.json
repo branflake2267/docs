@@ -1,0 +1,402 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../packages/pivot/src/pivot/filter/Value.js",
+    "../../../packages/pivot/src/pivot/filter/Base.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "pivotfilter.value",
+        "alternateClassNames": "Mz.aggregate.filter.Value",
+        "extends": "Ext.pivot.filter.Base",
+        "name": "Ext.pivot.filter.Value",
+        "text": "Value filter class. Use this filter type when you want to filter\nthe left/top axis results by the grand total summary values.\n\nExample for a value filter:\n\n     // This example will generate a column for each year\n     // that has its grand total value between 1,000 and 15,000.\n     aggregate: [{\n         id:         'agg',\n         dataIndex:  'value',\n         aggregator: 'sum',\n         header:     'Total'\n     }],\n     topAxis: [{\n         dataIndex:  'year',\n         header:     'Year',\n         filter: {\n             type:           'value',\n             operator:       'between',\n             dimensionId:    'agg',  // this is the id of an aggregate dimension\n             value:          [1000, 15000]\n         }\n     }]\n\n\nTop 10 works as following:\n\nFirst of all sort axis groups by grand total value of the specified dimension. The sorting\norder depends on top/bottom configuration.\n\n - Top/Bottom 10 Items: Keep only the top x items from the groups array\n\n - Top/Bottom 10 Percent: Find first combined values to total at least x percent of the parent grandtotal\n\n - Top/Bottom 10 Sum: Find first combined values to total at least x\n\n\nExample for a top 10 value filter:\n\n     // This example will return the bottom 3 years that have the smallest\n     // sum of value.\n     aggregate: [{\n         id:         'agg',\n         dataIndex:  'value',\n         aggregator: 'sum',\n         header:     'Total'\n     }],\n     leftAxis: [{\n         dataIndex:  'year',\n         header:     'Year',\n         filter: {\n             type:           'value',\n             operator:       'top10',\n             dimensionId:    'agg',   // this is the id of an aggregate dimension\n             topType:        'items',\n             topOrder:       'bottom',\n             value:          3\n         }\n     }]\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "caseSensitive",
+                "optional": true,
+                "text": "\nDuring filtering should we use case sensitive comparison?\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,66,24",
+                  "text": "1,67,8,60",
+                  "type": "1,66,14",
+                  "value": "1,66,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dimensionId",
+                "text": "(required)\n\nId of the aggregate dimension used to filter by the specified value\n",
+                "type": "String",
+                "src": {
+                  "name": "0,81,22",
+                  "text": "0,81,34,11:0,82,8,70",
+                  "type": "0,81,14"
+                }
+              },
+              {
+                "$type": "property",
+                "deprecatedMessage": "Use <a href='#!/api/Ext.pivot.filter.Value-value'>value</a> instead as an array with 2 values.\n\nUsed in case of a 'between/not between' type of filter\n",
+                "deprecatedVersion": "6.0",
+                "name": "from",
+                "type": "String",
+                "src": {
+                  "deprecatedMessage": "1,44,8",
+                  "deprecatedVersion": "1,44,8",
+                  "name": "1,43,22",
+                  "type": "1,43,14"
+                }
+              },
+              {
+                "$type": "property",
+                "deprecatedMessage": "Use <a href='#!/api/Ext.pivot.filter.Value-type'>type</a> instead. The old type config was renamed to <a href='#!/api/Ext.pivot.filter.Value-operator'>operator</a>.\n",
+                "deprecatedVersion": "6.0",
+                "name": "mztype",
+                "type": "String",
+                "src": {
+                  "deprecatedMessage": "1,19,8",
+                  "deprecatedVersion": "1,19,8",
+                  "name": "1,17,22",
+                  "type": "1,17,14"
+                }
+              },
+              {
+                "$type": "property",
+                "inheritdoc": true,
+                "localDoc": "   * `top10`\n",
+                "name": "operator",
+                "src": {
+                  "inheritdoc": "0,74,8",
+                  "localDoc": "0,76,8",
+                  "name": "0,73,13"
+                }
+              },
+              {
+                "$type": "property",
+                "deprecatedMessage": "Use <a href='#!/api/Ext.pivot.filter.Value-value'>value</a> instead as an array with 2 values.\n\nUsed in case of a 'between/not between' operator\n",
+                "deprecatedVersion": "6.0",
+                "name": "to",
+                "type": "String",
+                "src": {
+                  "deprecatedMessage": "1,52,8",
+                  "deprecatedVersion": "1,52,8",
+                  "name": "1,51,22",
+                  "type": "1,51,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "topOrder",
+                "optional": true,
+                "text": "\nWhich kind of top10 do you want? Possible values: top, bottom\n",
+                "type": "String",
+                "value": "\"top\"",
+                "src": {
+                  "name": "0,98,23",
+                  "text": "0,99,8,64",
+                  "type": "0,98,14",
+                  "value": "0,98,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "topSort",
+                "optional": true,
+                "text": "\nShould the top10 results be sorted? If True then the dimension sorting is ignored and\nthe results are sorted by the grand total in DESC (topOrder = top) or ASC (topOrder = bottom) order.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,106,24",
+                  "text": "0,107,8,189",
+                  "type": "0,106,14",
+                  "value": "0,106,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "topType",
+                "optional": true,
+                "text": "\nSpecify here which kind of Top10 we need to perform.\nPossible values: items, percent, sum\n",
+                "type": "String",
+                "value": "\"items\"",
+                "src": {
+                  "name": "0,89,23",
+                  "text": "0,90,8,92",
+                  "type": "0,89,14",
+                  "value": "0,89,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "value",
+                "text": "(required)\n\nValue to filter by. For 'between' and 'not between' operators this should be an array of values.\n",
+                "type": "String/Array",
+                "src": {
+                  "name": "1,59,28",
+                  "text": "1,59,34,11:1,60,8,98",
+                  "type": "1,59,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyFilter",
+                "text": "This function performs top10 on the specified array.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "axis",
+                    "src": {
+                      "name": "0,183,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "treeItems",
+                    "src": {
+                      "name": "0,184,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,186,8",
+                  "name": "0,188,0",
+                  "text": "0,181,8,54"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "extractTop10Items",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "src": {
+                      "name": "0,223,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,224,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,226,8",
+                  "name": "0,228,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "extractTop10Percent",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "axis",
+                    "src": {
+                      "name": "0,271,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "src": {
+                      "name": "0,272,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,273,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,275,8",
+                  "name": "0,277,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "extractTop10Sum",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "src": {
+                      "name": "0,249,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,250,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,252,8",
+                  "name": "0,254,0"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": true,
+                "name": "getSerialArgs",
+                "src": {
+                  "inheritdoc": "0,169,8",
+                  "name": "0,171,0"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": true,
+                "name": "isMatch",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "src": {
+                      "name": "0,149,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritdoc": "0,147,8",
+                  "name": "0,149,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "serialize",
+                "text": "Returns the serialized filter data as an object.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "1,94,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,96,0",
+                  "text": "1,92,8,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "sortItemsByGrandTotal",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "axis",
+                    "src": {
+                      "name": "0,304,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "src": {
+                      "name": "0,305,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,307,8",
+                  "name": "0,309,0"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,295,28",
+                  "text": "2,296,8,128",
+                  "type": "2,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "getSerialArgs",
+                "text": "Template method to be implemented by all subclasses that is used to\nget and return serialized filter data.\n\nDefaults to Ext.emptyFn.\n",
+                "src": {
+                  "name": "1,114,0",
+                  "text": "1,108,8,134"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isTopFilter",
+                "readonly": true,
+                "text": "\nIs this a top10 type of filter?\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,115,28",
+                  "readonly": "0,116,8",
+                  "text": "0,117,8,34",
+                  "type": "0,115,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "parent",
+                "readonly": true,
+                "text": "Reference to the parent dimension object.\n",
+                "type": "Ext.pivot.dimension.Item",
+                "src": {
+                  "access": "1,77,8",
+                  "name": "1,74,45",
+                  "readonly": "1,75,8",
+                  "text": "1,74,52,42",
+                  "type": "1,74,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,70,0",
+          "alternateClassNames": "0,65,0",
+          "extends": "0,68,0",
+          "name": "0,63,0",
+          "text": "0,2,4,1810"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

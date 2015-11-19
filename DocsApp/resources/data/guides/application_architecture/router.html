@@ -5,21 +5,21 @@
     <link rel="stylesheet" type="text/css" href="../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#Controlling an Application with Router</p>
+<div class="contents"><h1 id="application_architecture-_-router_-_controlling_an_application_with_router">Controlling an Application with Router</h1>
 <p>On a normal website, a user navigates to and from different pages as they click links or
 fill out forms.  However, in a single page application, a user&#39;s interaction doesn&#39;t load
 a new page.  Instead, it is handled within a single page and components react to that
 interaction. So how do you still allow users to use the browser&#39;s forward and back
 buttons? The answer is to digest URI hash changes with Ext JS 5&#39;s new Router.</p>
-<p>##What Routing Is Used For</p>
+<h2 id="application_architecture-_-router_-_what_routing_is_used_for">What Routing Is Used For</h2>
 <p>Routing can be used to track the application state through the use of the browser history
 stack.  Routing also allows for deep linking into the application which allows a direct
 link to a specific part of your application.</p>
-<p>##What Routing Is Not Used For</p>
+<h2 id="application_architecture-_-router_-_what_routing_is_not_used_for">What Routing Is Not Used For</h2>
 <p>Routing should not be used to store any data or session, data should be stored in a
 persistent data source such as a cookie or localstorage.  Routing is only a means of
 tracking the application&#39;s state.</p>
-<p>##What is the Hash?</p>
+<h2 id="application_architecture-_-router_-_what_is_the_hash_">What is the Hash?</h2>
 <p>Browsers navigate the internet using a URI which consists of many parts. Let&#39;s look at a
 sample URI:</p>
 <pre><code>http://www.example.com/apps/users#user/1234
@@ -37,7 +37,7 @@ notification then allows you to react to the change within your application. It 
 important to mention that the hash is not sent to the server.  The hash is typically
 digested within the client&#39;s interpretation of the URI.  The Ext Router relies on the
 browser&#39;s hash functionality to allow application state tracking and deep linking.</p>
-<p>##Implement Routing in your Application</p>
+<h2 id="application_architecture-_-router_-_implement_routing_in_your_application">Implement Routing in your Application</h2>
 <p>The Router class is a new addition to Ext JS 5 that was built to make hash change
 interpretation very simple in an MVC application.  We have always had Ext.util.History,
 which you could use to react to the hash changes.  However, this Ext.util.History offers a
@@ -59,7 +59,7 @@ application.  Here is a basic example controller implementing Router:</p>
 </code></pre><p>This route will react to the <code>#users</code> hash and will execute the <code>onUsers</code> method scoped to
 the controller instance.  As you can see, the <code>routes</code> config is placed within the
 <code>config</code> object instead of on the root level.</p>
-<p>##Updating the Hash</p>
+<h2 id="application_architecture-_-router_-_updating_the_hash">Updating the Hash</h2>
 <p>To update the hash, a controller has a redirectTo method.</p>
 <pre><code>this.redirectTo(&#39;user/1234&#39;);
 </code></pre><p>This will update the hash to be <code>&quot;#user/1234&quot;</code> and any routes configured to recognize the
@@ -71,7 +71,7 @@ also accepts a second parameter to force the Router to react to this hash by pas
 <pre><code>this.redirectTo(&#39;user/1234&#39;, true);
 </code></pre><p>Even if the current hash matches the hash being passed to <code>redirectTo</code>, the Router will
 still execute any matching routes.</p>
-<p>##Default Token</p>
+<h2 id="application_architecture-_-router_-_default_token">Default Token</h2>
 <p>When an application starts, it may be configured to add a default hash if one is not
 provided. For instance, if the application shows a dashboard when the <code>#home</code> hash is
 used, you may want to add the <code>#home</code> hash to the URI if no other hash exists.  To enable
@@ -87,7 +87,7 @@ file, which can be found within your application:</p>
 </code></pre><p>When the application is started, it will check the current hash of the URI. If there is a
 hash defined, it will execute the route handlers. If no hash is found, it will add the
 <code>#home</code> hash and any route handlers will get executed to handle it appropriately.</p>
-<p>##Hashes with Parameters</p>
+<h2 id="application_architecture-_-router_-_hashes_with_parameters">Hashes with Parameters</h2>
 <p>An application can also identify parameters within hashes.  A user ID is an example of a
 parameter you may want to include in a hash.  We mentioned using <code>#user/1234</code> as a hash
 earlier within the guide.  In this case, we may want the <code>1234</code> to be an id parameter. You
@@ -107,7 +107,7 @@ would then set up your controller to react to the <code>#user/1234</code> hash:<
 parameter and your application will pass that parameter to the onUser method as an
 argument.  The method will receive the same number of arguments passed to it in the same
 order as specified in the route, which allows for easy inclusion of multiple parameters.</p>
-<p>##Hash Parameter Formatting</p>
+<h2 id="application_architecture-_-router_-_hash_parameter_formatting">Hash Parameter Formatting</h2>
 <p>The application may want to enforce a specific format for the user ID.  The ID is numeric
 In the case we&#39;ve explored so far.  You may also use the route to equate to an object by
 using the <code>conditions</code> config:</p>
@@ -138,7 +138,7 @@ the route we need to concatenate the Regular Expression strings together into a 
 Regular Expression object. If you do not provide a condition for a parameter, it will
 default to:</p>
 <pre><code>([%a-zA-Z0-9\\-\\_\\s,]+)
-</code></pre><p>##Route Handling</p>
+</code></pre><h2 id="application_architecture-_-router_-_route_handling">Route Handling</h2>
 <p>There may be times when an application needs to prevent the handling of a route.  In this
 case, we may want to check administrative rights to determine whether or not the current
 user is allowed to view a portion of the application. The route can be configured to use a
@@ -235,7 +235,7 @@ handling:</p>
 across all controllers.</p>
 <p><strong>Note:</strong> <em>If you do not execute the <code>resume</code> or <code>stop</code> method, routing is interrupted and will never
 be completed properly. It&#39;s important to execute either method at some point.</em></p>
-<p>##Handling Unmatched Routes</p>
+<h2 id="application_architecture-_-router_-_handling_unmatched_routes">Handling Unmatched Routes</h2>
 <p>If the hash was changed but there is no route that was found to match the hash, the Router
 will do nothing; the Router will not attempt to change the hash and will leave the
 unmatched hash alone.  The Router will fire the <code>unmatchedroute</code> event on the application
@@ -255,7 +255,7 @@ instance which is listenable in the <code>Ext.application</code> call:</p>
         //...
     }
 });
-</code></pre><p>##Using Multiple Routes in a Single Hash</p>
+</code></pre><h2 id="application_architecture-_-router_-_using_multiple_routes_in_a_single_hash">Using Multiple Routes in a Single Hash</h2>
 <p>Since Ext JS applications can be complex, there may be times where we need to use multiple
 routes in a single hash. The Router is set up to handle this so there is no extra set up
 to the routes that are configured in the controllers. Instead, you can delimit the hash
@@ -271,5 +271,18 @@ route will always execute before the <code>messages</code> route for the above e
 property.</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#application_architecture-_-router_-_what_routing_is_used_for">What Routing Is Used For</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_what_routing_is_not_used_for">What Routing Is Not Used For</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_what_is_the_hash_">What is the Hash?</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_implement_routing_in_your_application">Implement Routing in your Application</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_updating_the_hash">Updating the Hash</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_default_token">Default Token</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_hashes_with_parameters">Hashes with Parameters</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_hash_parameter_formatting">Hash Parameter Formatting</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_route_handling">Route Handling</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_handling_unmatched_routes">Handling Unmatched Routes</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-router_-_using_multiple_routes_in_a_single_hash">Using Multiple Routes in a Single Hash</a></div>
+    </div>
 </body>
 </html>

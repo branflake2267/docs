@@ -5,14 +5,14 @@
     <link rel="stylesheet" type="text/css" href="../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#Introduction to Application Architecture</p>
+<div class="contents"><h1 id="application_architecture-_-application_architecture_-_introduction_to_application_architecture">Introduction to Application Architecture</h1>
 <p>Ext JS provides support for both MVC and MVVM application architectures. Both of these 
 architectural approaches share certain concepts and focus on dividing application code 
 along logical lines. Each approach has its strengths based on how it chooses to divide 
 up the pieces of an application.</p>
 <p>The goal of this guide is to provide you with foundational knowledge regarding the 
 components that make up these architectures. </p>
-<p>##What is MVC?</p>
+<h2 id="application_architecture-_-application_architecture_-_what_is_mvc_">What is MVC?</h2>
 <p>In an MVC architecture, most classes are either Models, Views or Controllers. 
 The user interacts with Views, which display data held in Models.  Those interactions 
 are monitored by a Controller, which then responds to the interactions by updating the 
@@ -32,13 +32,13 @@ called the ViewModel. The ViewModel coordinates the changes between a Model’s 
 the View&#39;s presentation of that data using a technique called “data binding”.</p>
 <p>The result is that the Model and framework perform as much work as possible, minimizing 
 or eliminating application logic that directly manipulates the View.</p>
-<p>##Returning Users</p>
+<h2 id="application_architecture-_-application_architecture_-_returning_users">Returning Users</h2>
 <p>Ext JS 5 introduces support for the MVVM architecture as well as improvements on the (C) 
 in MVC. While we encourage you to investigate and take advantage of these improvements, 
 it is important to note that we have made every effort to ensure existing Ext JS 4 MVC 
 applications continue to function unmodified.</p>
-<p>##MVC and MVVM
-To understand how these choices fit into your application, we should start by further 
+<h2 id="application_architecture-_-application_architecture_-_mvc_and_mvvm">MVC and MVVM</h2>
+<p>To understand how these choices fit into your application, we should start by further 
 defining what the various abbreviations represent.</p>
 <ul>
 <li><p><strong>(M) Model</strong> - This is the data for your application. A set of classes (called 
@@ -70,7 +70,7 @@ code. Following the conventions we suggest will provide a number of important be
 optimized production versions of your applications.</p>
 </li>
 </ul>
-<p>##Building a Sample App</p>
+<h2 id="application_architecture-_-application_architecture_-_building_a_sample_app">Building a Sample App</h2>
 <p>Before we start walking through the pieces, let&#39;s build a sample application 
 with <a href="http://www.sencha.com/products/sencha-cmd/">Sencha Cmd</a>.  First, download and 
 unzip the <a href="http://www.sencha.com/products/extjs/evaluate/">Ext JS SDK</a>.  Next, issue the 
@@ -80,11 +80,11 @@ cd app
 sencha app watch
 </code></pre><p><strong>Note:</strong> If you are not familiar with what&#39;s happening above, please check out our 
 <a href="../getting_started/getting_started.html">Getting Started guide</a>.</p>
-<p>##Application Overview
-Before we start talking about the pieces that make up the MVC, MVVM, MVC+VM patterns, 
+<h2 id="application_architecture-_-application_architecture_-_application_overview">Application Overview</h2>
+<p>Before we start talking about the pieces that make up the MVC, MVVM, MVC+VM patterns, 
 let&#39;s take a look at the structure of a Cmd generated application.</p>
-<p>###File Structure
-Ext JS applications follow a unified directory structure that is the same for every app. 
+<h3 id="application_architecture-_-application_architecture_-_file_structure">File Structure</h3>
+<p>Ext JS applications follow a unified directory structure that is the same for every app. 
 In our recommended layout, all Store, Model, ViewModel, and ViewController classes are 
 placed in the <code>app</code> folder (<em>with Models placed in the <code>model</code> folder, Stores in 
 <code>store</code>, and ViewModels/Controllers in <code>view</code></em>).  Best practice will be to logically 
@@ -93,8 +93,8 @@ group [[ext:Ext.app.ViewController ViewControllers]] and
 folder using a similar naming structure that you&#39;ll use for the views themselves (see 
 the &quot;app/view/main/&quot; and &quot;classic/src/view/main/&quot; folders below). </p>
 <p><img src="images/file_structure.jpeg"/></p>
-<p>###Namespace
-The first line of each Class is an address of sorts.  This &quot;address&quot; is called a 
+<h3 id="application_architecture-_-application_architecture_-_namespace">Namespace</h3>
+<p>The first line of each Class is an address of sorts.  This &quot;address&quot; is called a 
 namespace.  The formula for namespace is:</p>
 <pre><code>&lt;AppName&gt;.&lt;foldername&gt;.&lt;ClassAndFileName&gt;
 </code></pre><p>In your sample app, &quot;MyApp&quot; is the AppName, &quot;view&quot; is the folder name, &quot;main&quot; is the 
@@ -111,8 +111,8 @@ modern/src/view/main/Main.js
 app/view/main/MainController.js
 </code></pre><p>If that file is not found, Ext JS will throw an error until you remedy the situation.</p>
 <p><img src="images/missing_class_error.jpeg"/></p>
-<p>##Application
-Let’s start evaluating the application by looking at <code>index.html</code>.</p>
+<h2 id="application_architecture-_-application_architecture_-_application">Application</h2>
+<p>Let’s start evaluating the application by looking at <code>index.html</code>.</p>
 <pre><code>&lt;!DOCTYPE HTML&gt;
 &lt;html manifest=&quot;&quot;&gt;
 &lt;head&gt;
@@ -174,8 +174,8 @@ application in a simple and efficient manner.</p>
 information about the configuration it accepts.</p>
 <p>For more information on the <code>beforeLoad</code> section and platform-specific builds refer to 
 the <a href="../whats_new/6.0.0/developing_for_multiple_screens_and_environments.html">Developing for Multiple Environments and Screens guide</a>.</p>
-<p>###app.js
-When we generated our application earlier, we created a class (in <code>Application.js</code>) AND 
+<h3 id="application_architecture-_-application_architecture_-_app_js">app.js</h3>
+<p>When we generated our application earlier, we created a class (in <code>Application.js</code>) AND 
 launched an instance of it (in <code>app.js</code>).  You can see the content of <code>app.js</code> below:</p>
 <pre><code>/*
  * This file is generated and updated by Sencha Cmd. You can edit this file as
@@ -210,7 +210,7 @@ you can use any class as your Viewport.  In the above example, we have determine
 to create the designated view and attach the 
 [[ext:Ext.plugin.Viewport Viewport Plugin]].  This connects the view to the document 
 body.</p>
-<p>###Application.js</p>
+<h3 id="application_architecture-_-application_architecture_-_application_js">Application.js</h3>
 <p>Every Ext JS application starts with an instance of the 
 [[ext:Ext.app.Application Application Class]].  This class is intended to be launch-able 
 by <code>app.js</code> as well as instantiable for testing.</p>
@@ -244,7 +244,7 @@ application, such as the app&#39;s namespace, shared stores, etc.  The <code>onA
 is called when the application is out of date (<em>browser cached version versus the 
 latest version on the server</em>).  The user is prompted to reload the application in order 
 to operate with the current build.</p>
-<p>##Views</p>
+<h2 id="application_architecture-_-application_architecture_-_views">Views</h2>
 <p>A View is nothing more than a Component, which is a subclass of [[ext:Ext.Component]].<br>A view contains all of your application&#39;s visual aspects.</p>
 <p>If you open the starter app&#39;s <code>classic/src/view/main/Main.js</code> file, you should see the 
 following code.</p>
@@ -377,16 +377,16 @@ Ext.define(&#39;MyApp.view.main.List&#39;, {
         select: &#39;onItemSelected&#39;
     }
 });
-</code></pre><p>###Controller Config
-The <code>controller</code> config allows you to designate a 
+</code></pre><h3 id="application_architecture-_-application_architecture_-_controller_config">Controller Config</h3>
+<p>The <code>controller</code> config allows you to designate a 
 [[ext:Ext.app.ViewController ViewController]] for the view.  When a 
 [[ext:Ext.app.ViewController ViewController]] is specified on a view in this manner, it 
 then becomes a container for your event handlers and references.  This gives the 
 [[ext:Ext.app.ViewController ViewController]] a one-to-one relationship with the 
 components and events fired from the view.  We&#39;ll talk more about controllers in the 
 next section.</p>
-<p>###ViewModel Config
-The <code>viewModel</code> config allows you to designate a [[ext:Ext.app.ViewModel ViewModel]] for 
+<h3 id="application_architecture-_-application_architecture_-_viewmodel_config">ViewModel Config</h3>
+<p>The <code>viewModel</code> config allows you to designate a [[ext:Ext.app.ViewModel ViewModel]] for 
 the view.  The ViewModel is a data provider for this component and its child views. The 
 data contained in the ViewModel is typically used by adding bind configs to the 
 components that want to present or edit this data.</p>
@@ -394,8 +394,8 @@ components that want to present or edit this data.</p>
 the ViewModel.  This means that the <code>title</code> will be populated by data&#39;s &quot;name&quot; value, 
 which is managed in the ViewModel.  If the ViewModel&#39;s data changes, the <code>title</code>&#39;s value 
 will be automatically updated.  We&#39;ll discuss ViewModels later in this document.</p>
-<p>##Controllers
-Next, let&#39;s take a look at [[ext:Ext.app.ViewController Controllers]].  The starter 
+<h2 id="application_architecture-_-application_architecture_-_controllers">Controllers</h2>
+<p>Next, let&#39;s take a look at [[ext:Ext.app.ViewController Controllers]].  The starter 
 app&#39;s generated ViewController <code>MainController.js</code> looks like this:</p>
 <pre><code>Ext.define(&#39;MyApp.view.main.MainController&#39;, {
     extend: &#39;Ext.app.ViewController&#39;,
@@ -434,8 +434,8 @@ ViewController instance will be destroyed as well.</p>
 <li><p>Provide encapsulation to make nesting views intuitive.</p>
 </li>
 </ul>
-<p>##ViewModels
-Next, let&#39;s take a look at the [[ext:Ext.app.ViewModel ViewModel]].  If you open your 
+<h2 id="application_architecture-_-application_architecture_-_viewmodels">ViewModels</h2>
+<p>Next, let&#39;s take a look at the [[ext:Ext.app.ViewModel ViewModel]].  If you open your 
 <code>app/view/main/MainModel.js</code> file, you should see the following code:</p>
 <pre><code>Ext.define(&#39;MyApp.view.main.MainModel&#39;, {
     extend: &#39;Ext.app.ViewModel&#39;,
@@ -461,12 +461,12 @@ simply &quot;inherit&quot; the data of their parent ViewModel.</p>
 data from the viewModel onto the view in a declarative fashion.  The data is in-line in 
 the &quot;MainModel.js&quot; example.  That said, your data could be anything and come from 
 anywhere.  Data may be provided by any sort of proxy (AJAX, REST, etc).</p>
-<p>##Models and Stores
-[[ext:Ext.data.Model Models]] and [[ext:Ext.data.Store Stores]] make up the information 
+<h2 id="application_architecture-_-application_architecture_-_models_and_stores">Models and Stores</h2>
+<p>[[ext:Ext.data.Model Models]] and [[ext:Ext.data.Store Stores]] make up the information 
 gateway of your application.  Most of your data is sent, retrieved, organized, and 
 &quot;modeled&quot; by these two classes.</p>
-<p>###Models 
-A [[ext:Ext.data.Model]] represents any type of persist-able data in your application. 
+<h3 id="application_architecture-_-application_architecture_-_models">Models</h3>
+<p>A [[ext:Ext.data.Model]] represents any type of persist-able data in your application. 
 Each model has fields and functions that allow your application to &quot;model&quot; data. Models 
 are most commonly used in conjunction with stores.  Stores can then be consumed by 
 data-bound components like grids, trees, and charts.</p>
@@ -481,8 +481,8 @@ code:</p>
 });
 </code></pre><p>As mentioned in the namespace section above, you would want to create <code>User.js</code>, which will 
 live under &quot;app/model/&quot;.</p>
-<p>####Fields
-[[ext:Ext.data.Model]] describes records that contain values or properties called 
+<h4 id="application_architecture-_-application_architecture_-_fields">Fields</h4>
+<p>[[ext:Ext.data.Model]] describes records that contain values or properties called 
 “[[ext:Ext.data.Model-cfg-fields fields]]”. The Model class can declare these fields 
 using the <code>fields</code> config. In this case, the <code>name</code> is declared to be a 
 [[ext:Ext.data.field.String string]] and age is an 
@@ -500,7 +500,7 @@ inserted into the data object.  You will want to define your fields if your data
 </li>
 </ul>
 <p>Let&#39;s set up a store and see these two work together.</p>
-<p>###Stores</p>
+<h3 id="application_architecture-_-application_architecture_-_stores">Stores</h3>
 <p>A [[ext:Ext.data.Store Store]] is a client side cache of records (instances of a Model 
 class). Stores provide functions for sorting, filtering and querying the records 
 contained within.</p>
@@ -527,7 +527,7 @@ of your store.  The stores config in <code>Application.js</code> would look like
 would require that you gather data by using a proxy on your model or store.  Proxies 
 allow for data transfer between your data providers and applications. </p>
 <p>You can read more about models, stores, and data providers in our <a href="../core_concepts/data_package.html">Data Guide</a>.</p>
-<p>##Next Steps</p>
+<h2 id="application_architecture-_-application_architecture_-_next_steps">Next Steps</h2>
 <p>We&#39;ve created a robust and useful application called the 
 <a href="http://dev.sencha.com/ext/5.0.0/examples/ticket-app/index.html">Ticket App</a>.  This 
 application manages Login/Logout sessions, incorporates data binding, and displays 
@@ -539,7 +539,27 @@ learn more about ideal MVC+VM Application Architecture.</p>
 </div>
 
     <div class="toc">
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_what_is_mvc_">What is MVC?</a></div>
         <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_what_is_mvvm_">What is MVVM?</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_returning_users">Returning Users</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_mvc_and_mvvm">MVC and MVVM</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_building_a_sample_app">Building a Sample App</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_application_overview">Application Overview</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_file_structure">File Structure</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_namespace">Namespace</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_application">Application</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_app_js">app.js</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_application_js">Application.js</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_views">Views</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_controller_config">Controller Config</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_viewmodel_config">ViewModel Config</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_controllers">Controllers</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_viewmodels">ViewModels</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_models_and_stores">Models and Stores</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_models">Models</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_fields">Fields</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_stores">Stores</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-application_architecture_-_next_steps">Next Steps</a></div>
     </div>
 </body>
 </html>

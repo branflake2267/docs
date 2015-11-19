@@ -1,0 +1,721 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/util/Version.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Version",
+        "text": "\nA utility class that wraps around a version number string and provides convenient methods\nto perform comparisons. A version number is expressed in the following general format:\n\n    major[.minor[.patch[.build[release]]]]\n\nThe `Version` instance holds various readonly properties that contain the digested form\nof the version string. The numeric componnets of <a href='#!/api/Ext.Version-property-major'>major</a>, <a href='#!/api/Ext.Version-property-minor'>minor</a>, <a href='#!/api/Ext.Version-property-patch'>patch</a> and <a href='#!/api/Ext.Version-property-build'>build</a>\nas well as the textual suffix called <a href='#!/api/Ext.Version-property-release'>release</a>.\n\nNot depicted in the above syntax are three possible prefixes used to control partial\nmatching. These are '^' (the default), '>' and '~'. These are discussed below.\n\nExamples:\n\n    var version = new Ext.Version('1.0.2beta'); // or maybe \"1.0\" or \"1.2.3.4RC\"\n    console.log(\"Version is \" + version); // Version is 1.0.2beta\n\n    console.log(version.getMajor()); // 1\n    console.log(version.getMinor()); // 0\n    console.log(version.getPatch()); // 2\n    console.log(version.getBuild()); // 0\n    console.log(version.getRelease()); // beta\n\nThe understood values of <a href='#!/api/Ext.Version-property-release'>release</a> are assigned numberic equivalents for the sake of\ncomparsion. The order of these from smallest to largest is as follows:\n\n * `\"dev\"`\n * `\"alpha\"` or `\"a\"`\n * `\"beta\"` or `\"b\"`\n * `\"RC\"` or `\"rc\"`\n * `\"#\"`\n * `\"pl\"` or `\"p\"`\n\nAny other (unrecognized) suffix is consider greater than any of these.\n\n## Comparisons\nThere are two forms of comparison that are commonly needed: full and partial. Full\ncomparison is simpler and is also the default.\n\nExample:\n\n    var version = new Ext.Version('1.0.2beta');\n\n    console.log(version.isGreaterThan('1.0.1')); // True\n    console.log(version.isGreaterThan('1.0.2alpha')); // True\n    console.log(version.isGreaterThan('1.0.2RC')); // False\n    console.log(version.isGreaterThan('1.0.2')); // False\n    console.log(version.isLessThan('1.0.2')); // True\n\n    console.log(version.match(1.0)); // True (using a Number)\n    console.log(version.match('1.0.2')); // True (using a String)\n\nThese comparisons are ultimately implemented by <a href='#!/api/Ext.Version-method-compareTo'>Ext.Version#compareTo</a>\nwhich returns -1, 0 or 1 depending on whether the `Version' instance is less than, equal\nto, or greater than the given \"other\" version.\n\nFor example:\n\n     var n = version.compareTo('1.0.1');  // == 1  (because 1.0.2beta > 1.0.1)\n\n     n = version.compareTo('1.1');  // == -1\n     n = version.compareTo(version); // == 0\n\n### Partial Comparisons\nBy default, unspecified version number fields are filled with 0. In other words, the\nversion number fields are 0-padded on the right or a \"lower bound\". This produces the\nmost commonly used forms of comparsion:\n\n     var ver = new Version('4.2');\n\n     n = ver.compareTo('4.2.1'); // == -1  (4.2 promotes to 4.2.0 and is less than 4.2.1)\n\nThere are two other ways to interpret comparisons of versions of different length. The\nfirst of these is to change the padding on the right to be a large number (scuh as\nInfinity) instead of 0. This has the effect of making the version an upper bound. For\nexample:\n\n     var ver = new Version('^4.2'); // NOTE: the '^' prefix used\n\n     n = ver.compareTo('4.3'); // == -1  (less than 4.3)\n\n     n = ver.compareTo('4.2'); // == 1   (greater than all 4.2's)\n     n = ver.compareTo('4.2.1'); // == 1\n     n = ver.compareTo('4.2.9'); // == 1\n\nThe second way to interpret this comparison is to ignore the extra digits, making the\nmatch a prefix match. For example:\n\n     var ver = new Version('~4.2'); // NOTE: the '~' prefix used\n\n     n = ver.compareTo('4.3'); // == -1\n\n     n = ver.compareTo('4.2'); // == 0\n     n = ver.compareTo('4.2.1'); // == 0\n\nThis final form can be useful when version numbers contain more components than are\nimportant for certain comparisons. For example, the full version of Ext JS 4.2.1 is\n\"4.2.1.883\" where 883 is the <a href='#!/api/Ext.Version-property-build'>build</a> number.\n\nThis is how to create a \"partial\" `Version` and compare versions to it:\n\n     var version421ish = new Version('~4.2.1');\n\n     n = version421ish.compareTo('4.2.1.883'); // == 0\n     n = version421ish.compareTo('4.2.1.2'); // == 0\n     n = version421ish.compareTo('4.2.1'); // == 0\n\n     n = version421ish.compareTo('4.2'); // == 1\n\nIn the above example, '4.2.1.2' compares as equal to '4.2.1' because digits beyond the\ngiven \"4.2.1\" are ignored. However, '4.2' is less than the '4.2.1' prefix; its missing\ndigit is filled with 0.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "compareTo",
+                "text": "Compares this version instance to the specified `other` version.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "other",
+                    "text": "The other version to which to compare.\n",
+                    "type": "String/Number/Ext.Version",
+                    "src": {
+                      "name": "0,235,47",
+                      "text": "0,235,53,39",
+                      "type": "0,235,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "-1 if this version is less than the target version, 1 if this\nversion is greater, and 0 if they are equal.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,236,29,62:0,237,12,45",
+                      "type": "0,236,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,239,0",
+                  "text": "0,233,12,66"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "toString",
+                "text": "Override the native <a href='#!/api/Ext.Version-method-toString'>toString</a> method\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "version\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,283,29,8",
+                      "type": "0,283,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,282,12",
+                  "name": "0,285,0",
+                  "text": "0,281,12,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "valueOf",
+                "text": "Override the native <a href='#!/api/Ext.Version-method-valueOf'>valueOf</a> method\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "version\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,292,29,8",
+                      "type": "0,292,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,291,12",
+                  "name": "0,294,0",
+                  "text": "0,290,12,37"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getMajor",
+                "text": "Returns the major component value.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,300,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,302,0",
+                  "text": "0,299,12,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getMinor",
+                "text": "Returns the minor component value.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,308,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,310,0",
+                  "text": "0,307,12,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getPatch",
+                "text": "Returns the patch component value.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,316,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,318,0",
+                  "text": "0,315,12,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getBuild",
+                "text": "Returns the build component value.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,324,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,326,0",
+                  "text": "0,323,12,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRelease",
+                "text": "Returns the release component text (e.g., \"beta\").\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,332,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,334,0",
+                  "text": "0,331,12,51"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getReleaseValue",
+                "text": "Returns the release component value for comparison purposes.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number/String",
+                    "src": {
+                      "type": "0,340,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,342,0",
+                  "text": "0,339,12,61"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isGreaterThan",
+                "text": "Returns whether this version if greater than the supplied argument\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The version to compare with\n",
+                    "type": "String/Number",
+                    "src": {
+                      "name": "0,348,35",
+                      "text": "0,348,42,28",
+                      "type": "0,348,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this version if greater than the target, `false` otherwise\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,349,30,69",
+                      "type": "0,349,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,351,0",
+                  "text": "0,347,12,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isGreaterThanOrEqual",
+                "text": "Returns whether this version if greater than or equal to the supplied argument\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The version to compare with\n",
+                    "type": "String/Number",
+                    "src": {
+                      "name": "0,357,35",
+                      "text": "0,357,42,28",
+                      "type": "0,357,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this version if greater than or equal to the target, `false` otherwise\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,358,30,81",
+                      "type": "0,358,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,360,0",
+                  "text": "0,356,12,79"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLessThan",
+                "text": "Returns whether this version if smaller than the supplied argument\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The version to compare with\n",
+                    "type": "String/Number",
+                    "src": {
+                      "name": "0,366,35",
+                      "text": "0,366,42,28",
+                      "type": "0,366,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this version if smaller than the target, `false` otherwise\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,367,30,69",
+                      "type": "0,367,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,369,0",
+                  "text": "0,365,12,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLessThanOrEqual",
+                "text": "Returns whether this version if less than or equal to the supplied argument\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The version to compare with\n",
+                    "type": "String/Number",
+                    "src": {
+                      "name": "0,375,35",
+                      "text": "0,375,42,28",
+                      "type": "0,375,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this version if less than or equal to the target, `false` otherwise\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,376,30,78",
+                      "type": "0,376,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,378,0",
+                  "text": "0,374,12,76"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "equals",
+                "text": "Returns whether this version equals to the supplied argument\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The version to compare with\n",
+                    "type": "String/Number",
+                    "src": {
+                      "name": "0,384,35",
+                      "text": "0,384,42,28",
+                      "type": "0,384,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this version equals to the target, `false` otherwise\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,385,30,63",
+                      "type": "0,385,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,387,0",
+                  "text": "0,383,12,61"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "match",
+                "text": "Returns whether this version matches the supplied argument. Example:\n\n    var version = new Ext.Version('1.0.2beta');\n    console.log(version.match(1)); // true\n    console.log(version.match(1.0)); // true\n    console.log(version.match('1.0.2')); // true\n    console.log(version.match('1.0.2RC')); // false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The version to compare with\n",
+                    "type": "String/Number",
+                    "src": {
+                      "name": "0,400,35",
+                      "text": "0,400,42,28",
+                      "type": "0,400,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this version matches the target, `false` otherwise\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,401,30,61",
+                      "type": "0,401,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,403,0",
+                  "text": "0,392,12,308"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toArray",
+                "text": "Returns this format: [major, minor, patch, build, release]. Useful for comparison.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number[]",
+                    "src": {
+                      "type": "0,410,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,412,0",
+                  "text": "0,409,12,83"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getShortVersion",
+                "text": "Returns shortVersion version without dots and release\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,419,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,421,0",
+                  "text": "0,418,12,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "gt",
+                "text": "Convenient alias to <a href='#!/api/Ext.Version-method-isGreaterThan'>Ext.Version#isGreaterThan</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "type": "String/Number/Ext.Version",
+                    "src": {
+                      "name": "0,427,47",
+                      "type": "0,427,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,428,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,430,0",
+                  "text": "0,426,12,68"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lt",
+                "text": "Convenient alias to <a href='#!/api/Ext.Version-method-isLessThan'>Ext.Version#isLessThan</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "type": "String/Number/Ext.Version",
+                    "src": {
+                      "name": "0,436,47",
+                      "type": "0,436,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,437,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,439,0",
+                  "text": "0,435,12,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "gtEq",
+                "text": "Convenient alias to <a href='#!/api/Ext.Version-method-isGreaterThanOrEqual'>Ext.Version#isGreaterThanOrEqual</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "type": "String/Number/Ext.Version",
+                    "src": {
+                      "name": "0,445,47",
+                      "type": "0,445,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,446,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,448,0",
+                  "text": "0,444,12,82"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "ltEq",
+                "text": "Convenient alias to <a href='#!/api/Ext.Version-method-isLessThanOrEqual'>Ext.Version#isLessThanOrEqual</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "type": "String/Number/Ext.Version",
+                    "src": {
+                      "name": "0,454,47",
+                      "type": "0,454,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,455,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,457,0",
+                  "text": "0,453,12,76"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "parts",
+                "readonly": true,
+                "text": "The split array of version number components found in the version string.\nFor example, for \"1.2.3\", this would be `[1, 2, 3]`.\n",
+                "type": "Number[]",
+                "src": {
+                  "access": "0,168,16",
+                  "name": "0,164,37",
+                  "readonly": "0,167,16",
+                  "text": "0,165,16,127",
+                  "type": "0,164,27"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "major",
+                "readonly": true,
+                "text": "The first numeric part of the version number string.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,180,35",
+                  "readonly": "0,182,16",
+                  "text": "0,181,16,53",
+                  "type": "0,180,27"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "minor",
+                "optional": true,
+                "readonly": true,
+                "text": "The second numeric part of the version number string.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,187,36",
+                  "readonly": "0,189,16",
+                  "text": "0,188,16,54",
+                  "type": "0,187,27"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "patch",
+                "optional": true,
+                "readonly": true,
+                "text": "The third numeric part of the version number string.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,194,36",
+                  "readonly": "0,196,16",
+                  "text": "0,195,16,53",
+                  "type": "0,194,27"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "build",
+                "optional": true,
+                "readonly": true,
+                "text": "The fourth numeric part of the version number string.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,201,36",
+                  "readonly": "0,203,16",
+                  "text": "0,202,16,54",
+                  "type": "0,201,27"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "release",
+                "optional": true,
+                "readonly": true,
+                "text": "The release level. The following values are understood:\n\n * `\"dev\"`\n * `\"alpha\"` or `\"a\"`\n * `\"beta\"` or `\"b\"`\n * `\"RC\"` or `\"rc\"`\n * `\"#\"`\n * `\"pl\"` or `\"p\"`\n",
+                "type": "String",
+                "value": "\"\"",
+                "src": {
+                  "name": "0,219,32",
+                  "readonly": "0,228,12",
+                  "text": "0,220,12,159",
+                  "type": "0,219,23",
+                  "value": "0,219,40"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "releaseValueMap",
+                "src": {
+                  "access": "0,477,12",
+                  "name": "0,479,0"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "getComponentValue",
+                "static": true,
+                "text": "Converts a version component to a comparable value\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value to convert\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,495,28",
+                      "text": "0,495,34,21",
+                      "type": "0,495,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,496,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,498,0",
+                  "static": "0,494,12",
+                  "text": "0,492,12,52"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "compare",
+                "static": true,
+                "text": "Compare 2 specified versions by ensuring the first parameter is a `Version`\ninstance and then calling the <a href='#!/api/Ext.Version-method-compareTo'>compareTo</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "current",
+                    "text": "The current version to compare to\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,507,28",
+                      "text": "0,507,36,34",
+                      "type": "0,507,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The target version to compare to\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,508,28",
+                      "text": "0,508,35,33",
+                      "type": "0,508,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns -1 if the current version is smaller than the target version, 1 if greater, and 0 if they're equivalent\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,509,29,112",
+                      "type": "0,509,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,511,0",
+                  "static": "0,506,12",
+                  "text": "0,503,12,127"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "text": "0,3,4,4311"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

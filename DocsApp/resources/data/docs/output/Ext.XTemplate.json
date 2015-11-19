@@ -1,0 +1,717 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/XTemplate.js",
+    "../../../ext/packages/core/src/Template.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.Template",
+        "name": "Ext.XTemplate",
+        "requires": "Ext.util.XTemplateCompiler",
+        "text": "A template class that supports advanced functionality like:\n\n- Auto-filling arrays using templates and sub-templates\n- Conditional processing with basic comparison operators\n- Basic math function support\n- Execute arbitrary inline code with special built-in template variables\n- Custom member functions\n- Many special tags and built-in operators that aren't defined as part of the API, but are supported in the templates that can be created\n\nXTemplate provides the templating mechanism built into <a href='#!/api/Ext.view.View'>Ext.view.View</a>.\n\nThe <a href='#!/api/Ext.Template'>Ext.Template</a> describes the acceptable parameters to pass to the constructor. The following examples\ndemonstrate all of the supported features.\n\n# Sample Data\n\nThis is the data object used for reference in each code example:\n\n    var data = {\n        name: 'Don Griffin',\n        title: 'Senior Technomage',\n        company: 'Sencha Inc.',\n        drinks: ['Coffee', 'Water', 'More Coffee'],\n        kids: [\n            { name: 'Aubrey',  age: 17 },\n            { name: 'Joshua',  age: 13 },\n            { name: 'Cale',    age: 10 },\n            { name: 'Nikol',   age: 5 },\n            { name: 'Solomon', age: 0 }\n        ]\n    };\n\n# Auto filling of arrays\n\nThe **tpl** tag and the **for** operator are used to process the provided data object:\n\n- If the value specified in for is an array, it will auto-fill, repeating the template block inside the tpl\n  tag for each item in the array.\n- If for=\".\" is specified, the data object provided is examined.\n- If between=\"...\" is specified, the provided value will be inserted between the items.\n  This is also supported in the \"foreach\" looping template.\n- While processing an array, the special variable {#} will provide the current array index + 1 (starts at 1, not 0).\n\nExamples:\n\n    <tpl for=\".\">...</tpl>       // loop through array at root node\n    <tpl for=\"foo\">...</tpl>     // loop through array at foo node\n    <tpl for=\"foo.bar\">...</tpl> // loop through array at foo.bar node\n    <tpl for=\".\" between=\",\">...</tpl> // loop through array at root node and insert ',' between each item\n\nUsing the sample data above:\n\n    var tpl = new Ext.XTemplate(\n        '<p>Kids: ',\n        '<tpl for=\".\">',       // process the data.kids node\n            '<p>{#}. {name}</p>',  // use current array index to autonumber\n        '</tpl></p>'\n    );\n    tpl.overwrite(panel.body, data.kids); // pass the kids property of the data object\n\nAn example illustrating how the **for** property can be leveraged to access specified members of the provided data\nobject to populate the template:\n\n    var tpl = new Ext.XTemplate(\n        '<p>Name: {name}</p>',\n        '<p>Title: {title}</p>',\n        '<p>Company: {company}</p>',\n        '<p>Kids: ',\n        '<tpl for=\"kids\">',     // interrogate the kids property within the data\n            '<p>{name}</p>',\n        '</tpl></p>'\n    );\n    tpl.overwrite(panel.body, data);  // pass the root node of the data object\n\nFlat arrays that contain values (and not objects) can be auto-rendered using the special **`{.}`** variable inside a\nloop. This variable will represent the value of the array at the current index:\n\n    var tpl = new Ext.XTemplate(\n        '<p>{name}\\'s favorite beverages:</p>',\n        '<tpl for=\"drinks\">',\n            '<div> - {.}</div>',\n        '</tpl>'\n    );\n    tpl.overwrite(panel.body, data);\n\nWhen processing a sub-template, for example while looping through a child array, you can access the parent object's\nmembers via the **parent** object:\n\n    var tpl = new Ext.XTemplate(\n        '<p>Name: {name}</p>',\n        '<p>Kids: ',\n        '<tpl for=\"kids\">',\n            '<tpl if=\"age &gt; 1\">',\n                '<p>{name}</p>',\n                '<p>Dad: {parent.name}</p>',\n            '</tpl>',\n        '</tpl></p>'\n    );\n    tpl.overwrite(panel.body, data);\n\nThe **foreach** operator is used to loop over an object's properties.  The following\nexample demonstrates looping over the main data object's properties:\n\n    var tpl = new Ext.XTemplate(\n        '<dl>',\n            '<tpl foreach=\".\">',\n                '<dt>{$}</dt>', // the special **`{$}`** variable contains the property name\n                '<dd>{.}</dd>', // within the loop, the **`{.}`** variable is set to the property value\n            '</tpl>',\n        '</dl>'\n    );\n    tpl.overwrite(panel.body, data);\n\n# Conditional processing with basic comparison operators\n\nThe **tpl** tag and the **if** operator are used to provide conditional checks for deciding whether or not to render\nspecific parts of the template.\n\nUsing the sample data above:\n\n    var tpl = new Ext.XTemplate(\n        '<p>Name: {name}</p>',\n        '<p>Kids: ',\n        '<tpl for=\"kids\">',\n            '<tpl if=\"age &gt; 1\">',\n                '<p>{name}</p>',\n            '</tpl>',\n        '</tpl></p>'\n    );\n    tpl.overwrite(panel.body, data);\n\nMore advanced conditionals are also supported:\n\n    var tpl = new Ext.XTemplate(\n        '<p>Name: {name}</p>',\n        '<p>Kids: ',\n        '<tpl for=\"kids\">',\n            '<p>{name} is a ',\n            '<tpl if=\"age &gt;= 13\">',\n                '<p>teenager</p>',\n            '<tpl elseif=\"age &gt;= 2\">',\n                '<p>kid</p>',\n            '<tpl else>',\n                '<p>baby</p>',\n            '</tpl>',\n        '</tpl></p>'\n    );\n\n    var tpl = new Ext.XTemplate(\n        '<p>Name: {name}</p>',\n        '<p>Kids: ',\n        '<tpl for=\"kids\">',\n            '<p>{name} is a ',\n            '<tpl switch=\"name\">',\n                '<tpl case=\"Aubrey\" case=\"Nikol\">',\n                    '<p>girl</p>',\n                '<tpl default>',\n                    '<p>boy</p>',\n            '</tpl>',\n        '</tpl></p>'\n    );\n\nA `break` is implied between each case and default, however, multiple cases can be listed\nin a single &lt;tpl&gt; tag.\n\n# Using double quotes\n\nExamples:\n\n    var tpl = new Ext.XTemplate(\n        \"<tpl if='age &gt; 1 && age &lt; 10'>Child</tpl>\",\n        \"<tpl if='age &gt;= 10 && age &lt; 18'>Teenager</tpl>\",\n        \"<tpl if='this.isGirl(name)'>...</tpl>\",\n        '<tpl if=\"id == \\'download\\'\">...</tpl>',\n        \"<tpl if='needsIcon'><img src='{icon}' class='{iconCls}'/></tpl>\",\n        \"<tpl if='name == \\\"Don\\\"'>Hello</tpl>\"\n    );\n\n# Basic math support\n\nThe following basic math operators may be applied directly on numeric data values:\n\n    + - * /\n\nFor example:\n\n    var tpl = new Ext.XTemplate(\n        '<p>Name: {name}</p>',\n        '<p>Kids: ',\n        '<tpl for=\"kids\">',\n            '<tpl if=\"age &gt; 1\">',  // <-- Note that the > is encoded\n                '<p>{#}: {name}</p>',  // <-- Auto-number each item\n                '<p>In 5 Years: {age+5}</p>',  // <-- Basic math\n                '<p>Dad: {parent.name}</p>',\n            '</tpl>',\n        '</tpl></p>'\n    );\n    tpl.overwrite(panel.body, data);\n\n# Execute arbitrary inline code with special built-in template variables\n\nAnything between `{[ ... ]}` is considered code to be executed in the scope of the template.\nThe expression is evaluated and the result is included in the generated result. There are\nsome special variables available in that code:\n\n- **out**: The output array into which the template is being appended (using `push` to later\n  `join`).\n- **values**: The values in the current scope. If you are using scope changing sub-templates,\n  you can change what values is.\n- **parent**: The scope (values) of the ancestor template.\n- **xindex**: If you are in a \"for\" or \"foreach\" looping template, the index of the loop you are in (1-based).\n- **xcount**: If you are in a \"for\" looping template, the total length of the array you are looping.\n- **xkey**: If you are in a \"foreach\" looping template, the key of the current property\nbeing examined.\n\nThis example demonstrates basic row striping using an inline code block and the xindex variable:\n\n    var tpl = new Ext.XTemplate(\n        '<p>Name: {name}</p>',\n        '<p>Company: {[values.company.toUpperCase() + \", \" + values.title]}</p>',\n        '<p>Kids: ',\n        '<tpl for=\"kids\">',\n            '<div class=\"{[xindex % 2 === 0 ? \"even\" : \"odd\"]}\">',\n            '{name}',\n            '</div>',\n        '</tpl></p>'\n     );\n\nAny code contained in \"verbatim\" blocks (using \"{% ... %}\") will be inserted directly in\nthe generated code for the template. These blocks are not included in the output. This\ncan be used for simple things like break/continue in a loop, or control structures or\nmethod calls (when they don't produce output). The `this` references the template instance.\n\n    var tpl = new Ext.XTemplate(\n        '<p>Name: {name}</p>',\n        '<p>Company: {[values.company.toUpperCase() + \", \" + values.title]}</p>',\n        '<p>Kids: ',\n        '<tpl for=\"kids\">',\n            '{% if (xindex % 2 === 0) continue; %}',\n            '{name}',\n            '{% if (xindex > 100) break; %}',\n            '</div>',\n        '</tpl></p>'\n     );\n\n# Template member functions\n\nOne or more member functions can be specified in a configuration object passed into the XTemplate constructor for\nmore complex processing:\n\n    var tpl = new Ext.XTemplate(\n        '<p>Name: {name}</p>',\n        '<p>Kids: ',\n        '<tpl for=\"kids\">',\n            '<tpl if=\"this.isGirl(name)\">',\n                '<p>Girl: {name} - {age}</p>',\n            '<tpl else>',\n                '<p>Boy: {name} - {age}</p>',\n            '</tpl>',\n            '<tpl if=\"this.isBaby(age)\">',\n                '<p>{name} is a baby!</p>',\n            '</tpl>',\n        '</tpl></p>',\n        {\n            // XTemplate configuration:\n            disableFormats: true,\n            // member functions:\n            isGirl: function(name){\n               return name == 'Aubrey' || name == 'Nikol';\n            },\n            isBaby: function(age){\n               return age < 1;\n            }\n        }\n    );\n    tpl.overwrite(panel.body, data);\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "hide": true,
+                "name": "compiled",
+                "text": "Only applies to <a href='#!/api/Ext.Template'>Ext.Template</a>, XTemplates are compiled automatically on the\nfirst call to <a href='#!/api/Ext.XTemplate-method-apply'>apply</a> or <a href='#!/api/Ext.XTemplate-method-applyOut'>applyOut</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "hide": "0,297,8",
+                  "name": "0,294,23",
+                  "text": "0,295,8,134",
+                  "type": "0,294,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "definitions",
+                "text": "Optional. A statement, or array of statements which set up `var`s which may then\nbe accessed within the scope of the generated function.\n\n    var data = {\n        name: 'Don Griffin',\n        isWizard: true,\n        title: 'Senior Technomage',\n        company: 'Sencha Inc.'\n    };\n\n    var tpl = new Ext.XTemplate('{[values.isWizard ? wizard : notSoWizard]}' +\n        ' {name}', {\n        definitions: 'var wizard = \"Wizard\", notSoWizard = \"Townsperson\";'\n    });\n\n    console.log(tpl.apply(data));\n    // LOGS: Wizard Don Griffin\n",
+                "type": "String/Array",
+                "src": {
+                  "name": "0,301,28",
+                  "text": "0,302,8,533",
+                  "type": "0,301,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disableFormats",
+                "text": "True to disable format functions in the template. If the template doesn't contain\nformat functions, setting disableFormats to true will reduce apply time. Defaults to false.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,135,23",
+                  "text": "1,136,8,174",
+                  "type": "1,135,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "strict",
+                "optional": true,
+                "text": "Expressions in templates that traverse \"dot paths\" and fail (due to <a href='#!/api/null'>null</a> at some\nstage) have always been expanded as empty strings. This is convenient in most cases\nbut doing so can also mask errors in the template. Setting this to `true` changes\nthis default so that any expression errors will be thrown as exceptions.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,331,24",
+                  "text": "0,332,8,322",
+                  "type": "0,331,14",
+                  "value": "0,331,31"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "append",
+                "text": "Applies the supplied `values` to the template and appends the new node(s) to the specified `el`.\n\nFor example usage see <a href='#!/api/Ext.Template'>Ext.Template</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "1,396,52",
+                      "text": "1,396,55,20",
+                      "type": "1,396,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.XTemplate-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "1,397,30",
+                      "text": "1,397,37,61",
+                      "type": "1,397,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return an Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,398,25",
+                      "text": "1,398,39,42",
+                      "type": "1,398,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "1,399,46,24",
+                      "type": "1,399,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,401,0",
+                  "text": "1,392,8,167"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "apply",
+                "text": "Returns an HTML fragment of this template with the specified values applied.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. Can be an array if your params are numeric:\n\n    var tpl = new Ext.Template('Name: {0}, Age: {1}');\n    tpl.apply(['John', 25]);\n\nor an object:\n\n    var tpl = new Ext.Template('Name: {name}, Age: {age}');\n    tpl.apply({name: 'John', age: 25});\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "1,171,30",
+                      "text": "1,171,37,65:1,172,8,202",
+                      "type": "1,171,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The HTML fragment\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,181,25,18",
+                      "type": "1,181,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,183,0",
+                  "text": "1,169,8,78"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "applyOut",
+                "text": "Appends the result of this template to the provided output array.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.XTemplate-method-apply'>apply</a>.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "1,242,30",
+                      "text": "1,242,37,41",
+                      "type": "1,242,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "out",
+                    "text": "The array to which output is pushed.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "1,243,23",
+                      "text": "1,243,27,37",
+                      "type": "1,243,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The given out array.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "1,244,24,21",
+                      "type": "1,244,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,246,0",
+                  "text": "1,241,8,66"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.Template#apply",
+                "name": "applyTemplate",
+                "text": "Alias for <a href='#!/api/Ext.XTemplate-method-apply'>apply</a>.\n",
+                "src": {
+                  "inheritdoc": "1,265,8",
+                  "name": "1,262,16",
+                  "text": "1,264,8,26"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "compile",
+                "text": "Does nothing. XTemplates are compiled automatically, so this function simply returns this.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.XTemplate",
+                    "src": {
+                      "text": "0,379,32,5",
+                      "type": "0,379,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,381,0",
+                  "text": "0,378,8,91"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new template.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "html",
+                    "text": "List of strings to be concatenated into template.\nAlternatively an array of strings can be given, but then no config object may be passed.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "1,81,27",
+                      "text": "1,81,32,50:1,82,8,89",
+                      "type": "1,81,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "(optional) Config object\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,83,24",
+                      "text": "1,83,31,25",
+                      "type": "1,83,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,85,0",
+                  "text": "1,79,8,23"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "evalCompiled",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "$",
+                    "src": {
+                      "name": "1,311,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,309,8",
+                  "name": "1,311,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "evaluate",
+                "text": "Do not create the substitution closure on every apply call\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "src": {
+                      "name": "1,200,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,197,8",
+                  "name": "1,200,0",
+                  "text": "1,198,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertAfter",
+                "text": "Applies the supplied values to the template and inserts the new node(s) after el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "1,382,52",
+                      "text": "1,382,55,20",
+                      "type": "1,382,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.XTemplate-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "1,383,30",
+                      "text": "1,383,37,61",
+                      "type": "1,383,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return a Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,384,25",
+                      "text": "1,384,39,41",
+                      "type": "1,384,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "1,385,46,24",
+                      "type": "1,385,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,387,0",
+                  "text": "1,380,8,83"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertBefore",
+                "text": "Applies the supplied values to the template and inserts the new node(s) before el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "1,370,52",
+                      "text": "1,370,55,20",
+                      "type": "1,370,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.XTemplate-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "1,371,30",
+                      "text": "1,371,37,61",
+                      "type": "1,371,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return a Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,372,25",
+                      "text": "1,372,39,41",
+                      "type": "1,372,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "1,373,46,24",
+                      "type": "1,373,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,375,0",
+                  "text": "1,368,8,84"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertFirst",
+                "text": "Applies the supplied values to the template and inserts the new node(s) as the first child of el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "1,358,52",
+                      "text": "1,358,55,20",
+                      "type": "1,358,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.XTemplate-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "1,359,30",
+                      "text": "1,359,37,61",
+                      "type": "1,359,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return a Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,360,25",
+                      "text": "1,360,39,41",
+                      "type": "1,360,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "1,361,46,24",
+                      "type": "1,361,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,363,0",
+                  "text": "1,356,8,99"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "overwrite",
+                "text": "Applies the supplied values to the template and overwrites the content of el with the new node(s).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "1,413,52",
+                      "text": "1,413,55,20",
+                      "type": "1,413,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.XTemplate-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "1,414,30",
+                      "text": "1,414,37,61",
+                      "type": "1,414,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return a Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,415,25",
+                      "text": "1,415,39,41",
+                      "type": "1,415,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "1,416,46,24",
+                      "type": "1,416,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,418,0",
+                  "text": "1,411,8,100"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "set",
+                "text": "Sets the HTML used as the template and optionally compiles it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "html",
+                    "type": "String",
+                    "src": {
+                      "name": "1,273,24",
+                      "type": "1,273,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "compile",
+                    "text": "(optional) True to compile the template.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,274,25",
+                      "text": "1,274,33,41",
+                      "type": "1,274,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Template",
+                    "src": {
+                      "text": "1,275,31,5",
+                      "type": "1,275,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,277,0",
+                  "text": "1,272,8,63"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "emptyObj",
+                "src": {
+                  "access": "0,289,8",
+                  "name": "0,291,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "fn",
+                "readonly": true,
+                "text": "The function that applies this template. This is created on first use of the\ntemplate (calls to <a href='#!/api/Ext.XTemplate-method-apply'>apply</a> or <a href='#!/api/Ext.XTemplate-method-applyOut'>applyOut</a>).\n",
+                "type": "Function",
+                "src": {
+                  "access": "0,325,8",
+                  "name": "0,322,29",
+                  "readonly": "0,326,8",
+                  "text": "0,323,8,120",
+                  "type": "0,322,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isTemplate",
+                "text": "`true` in this class to identify an object as an instantiated Template, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,124,28",
+                  "text": "1,125,8,93",
+                  "type": "1,124,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "re",
+                "text": "Regular expression used to extract tokens.\n\nFinds the following expressions within a format string\n\n                    {AND?}\n                    /   \\\n                  /       \\\n                /           \\\n              /               \\\n           OR                  AND?\n          /  \\                 / \\\n         /    \\               /   \\\n        /      \\             /     \\\n   (\\d+)  ([a-z_][\\w\\-]*)   /       \\\n    index       name       /         \\\n                          /           \\\n                         /             \\\n                  \\:([a-z_\\.]*)   (?:\\((.*?)?\\))?\n                     formatFn           args\n\nNumeric index or (name followed by optional formatting function and args)\n",
+                "type": "RegExp",
+                "src": {
+                  "access": "1,164,8",
+                  "name": "1,142,27",
+                  "text": "1,143,8,715",
+                  "type": "1,142,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "from",
+                "static": true,
+                "text": "Creates a template from the passed element's value (_display:none_ textarea, preferred) or innerHTML.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "A DOM element or its id\n",
+                    "type": "String/HTMLElement",
+                    "src": {
+                      "name": "1,59,40",
+                      "text": "1,59,43,24",
+                      "type": "1,59,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "(optional) Config object\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,60,28",
+                      "text": "1,60,35,25",
+                      "type": "1,60,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The created template\n",
+                    "type": "Ext.Template",
+                    "src": {
+                      "text": "1,61,35,21",
+                      "type": "1,61,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,63,12",
+                  "name": "1,65,0",
+                  "static": "1,62,12",
+                  "text": "1,58,12,102"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getTpl",
+                "static": true,
+                "text": "Gets an `XTemplate` from an object (an instance of an <a href='#!/api/Ext-method-define'>Ext#define</a>d class).\nMany times, templates are configured high in the class hierarchy and are to be\nshared by all classes that derive from that base. To further complicate matters,\nthese templates are seldom actual instances but are rather configurations. For\nexample:\n\n     Ext.define('MyApp.Class', {\n         extraCls: 'extra-class',\n\n         someTpl: [\n             '<div class=\"{%this.emitClass(out)%}\"></div>',\n         {\n             // Member fn - outputs the owing class's extra CSS class\n             emitClass: function(out) {\n                 out.push(this.owner.extraCls);\n             }\n         }]\n     });\n\nThe goal being to share that template definition with all instances and even\ninstances of derived classes, until `someTpl` is overridden. This method will\n\"upgrade\" these configurations to be real `XTemplate` instances *in place* (to\navoid creating one instance per object).\n\nThe resulting XTemplate will have an `owner` reference injected which refers back\nto the owning object whether that is an object which has an *own instance*, or a\nclass prototype. Through this link, XTemplate member functions will be able to access\nprototype properties of its owning class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "instance",
+                    "text": "The object from which to get the `XTemplate` (must be\nan instance of an <a href='#!/api/Ext-method-define'>Ext#define</a>d class).\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,416,28",
+                      "text": "0,416,37,54:0,417,12,47",
+                      "type": "0,416,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the property by which to get the `XTemplate`.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,418,28",
+                      "text": "0,418,33,58",
+                      "type": "0,418,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `XTemplate` instance or null if not found.\n",
+                    "type": "Ext.XTemplate",
+                    "src": {
+                      "text": "0,419,36,47",
+                      "type": "0,419,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,420,12",
+                  "name": "0,423,0",
+                  "static": "0,421,12",
+                  "text": "0,387,12,1254"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,280,0",
+          "name": "0,279,0",
+          "requires": "0,283,0",
+          "text": "0,2,4,9816"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

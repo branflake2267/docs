@@ -1,0 +1,412 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/util/Filter.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.util.Filter",
+        "text": "Represents a filter that can be applied to a <a href='#!/api/Ext.util.MixedCollection'>Ext.util.MixedCollection</a>. Can either simply\nfilter on a property/value pair or pass in a filter function with custom logic. Filters are always used in the\ncontext of MixedCollections, though <a href='#!/api/Ext.data.Store'>Ext.data.Store</a>s frequently create them when filtering and searching\non their records. Example usage:\n\n    // Set up a fictional MixedCollection containing a few people to filter on\n    var allNames = new Ext.util.MixedCollection();\n    allNames.addAll([\n        { id: 1, name: 'Peter',  age: 25 },\n        { id: 2, name: 'Egon',   age: 37 },\n        { id: 3, name: 'Ray',    age: 32 },\n        { id: 4, name: 'Winston',age: 26 }\n    ]);\n\n    var ageFilter = new Ext.util.Filter({\n        property: 'age',\n        value   : 32\n    });\n\n    var longNameFilter = new Ext.util.Filter({\n        filterFn: function(item) {\n            return item.name.length > 4;\n        }\n    });\n\n    // a new MixedCollection with the 3 names longer than 4 characters\n    var longNames = allNames.filter(longNameFilter);\n\n    // a new MixedCollection with the 2 people of age 32:\n    var youngFolk = allNames.filter(ageFilter);\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "property",
+                "optional": true,
+                "text": "The property to filter on. Required unless a <a href='#!/api/Ext.util.Filter-cfg-filterFn'>filterFn</a> is passed.\n",
+                "type": "String",
+                "value": "null",
+                "src": {
+                  "name": "0,38,27",
+                  "text": "0,39,12,74",
+                  "type": "0,38,18",
+                  "value": "0,38,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "value",
+                "optional": true,
+                "text": "The value you want to match against. Required unless a <a href='#!/api/Ext.util.Filter-cfg-filterFn'>filterFn</a> is passed.\n\nCan be a regular expression which will be used as a matcher or any other value\nsuch as an object or an array of objects. This value is compared using the configured\n<a href='#!/api/Ext.util.Filter-cfg-operator'>operator</a>.\n",
+                "type": "RegExp/Mixed",
+                "value": "null",
+                "src": {
+                  "name": "0,44,33",
+                  "text": "0,45,12,269",
+                  "type": "0,44,18",
+                  "value": "0,44,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "filterFn",
+                "text": "A custom filter function which is passed each item in the <a href='#!/api/Ext.util.MixedCollection'>Ext.util.MixedCollection</a> in turn. Should return\n`true` to accept each item or `false` to reject it.\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,54,28",
+                  "text": "0,55,12,166",
+                  "type": "0,54,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "id",
+                "optional": true,
+                "text": "An identifier by which this Filter is indexed in a <a href='#!/api/Ext.data.Store-cfg-filters'>Ext.data.Store#cfg-filters</a>\n\nIdentified Filters may be individually removed from a Store's filter set by using <a href='#!/api/Ext.data.Store-method-removeFilter'>Ext.data.Store#removeFilter</a>.\n\nAnonymous Filters may be removed en masse by passing <a href='#!/api/null'>null</a> to <a href='#!/api/Ext.data.Store-method-removeFilter'>Ext.data.Store#removeFilter</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,61,27",
+                  "text": "0,62,12,334",
+                  "type": "0,61,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "anyMatch",
+                "text": "True to allow any match - no regex start/end line anchors will be added.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,71,27",
+                  "text": "0,72,12,73",
+                  "type": "0,71,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "exactMatch",
+                "optional": true,
+                "text": "True to force exact match (^ and $ characters added to the regex). Ignored if anyMatch is true.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,77,28",
+                  "text": "0,78,12,96",
+                  "type": "0,77,18",
+                  "value": "0,77,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "caseSensitive",
+                "optional": true,
+                "text": "True to make the regex case sensitive (adds 'i' switch to regex).\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,83,28",
+                  "text": "0,84,12,66",
+                  "type": "0,83,18",
+                  "value": "0,83,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disabled",
+                "text": "Setting this property to `true` disables this individual Filter so that it no longer contributes to a <a href='#!/api/Ext.data.Store-cfg-filters'>Ext.data.Store#cfg-filters</a>\n\nWhen disabled, the next time the store is filtered, the Filter plays no part in filtering and records eliminated by it may rejoin the dataset.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,89,27",
+                  "text": "0,90,12,301",
+                  "type": "0,89,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disableOnEmpty",
+                "since": "5.1.0",
+                "text": "`true` to not have this filter participate in the filtering process when the <a href='#!/api/Ext.util.Filter-cfg-value'>value</a> of\nthis the filter is empty according to <a href='#!/api/Ext-method-isEmpty'>Ext#isEmpty</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,98,27",
+                  "since": "0,102,19",
+                  "text": "0,99,12,155",
+                  "type": "0,98,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "operator",
+                "optional": true,
+                "text": "The operator to use to compare the <a href='#!/api/Ext.util.Filter-cfg-property'>cfg-property</a> to this Filter's <a href='#!/api/Ext.util.Filter-cfg-value'>cfg-value</a>\n\nPossible values are:\n\n   * `<`\n   * `<=`\n   * `=`\n   * `>=`\n   * `>`\n   * `!=`\n   * `in`\n   * `notin`\n   * `like`\n   * /=\n\nThe `in` and `notin` operator expects this filter's <a href='#!/api/Ext.util.Filter-cfg-value'>cfg-value</a> to be an array and matches\nvalues that are present in that array.\n\nThe `like` operator matches values that contain this filter's <a href='#!/api/Ext.util.Filter-cfg-value'>cfg-value</a> as a\nsubstring.\n\nThe `'*='` operator uses the <a href='#!/api/Ext.util.Filter-cfg-value'>cfg-value</a> as the source for a <a href='#!/api/RegExp'>RegExp</a> and tests whether the\ncandidate value matches the regular expression.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,107,27",
+                  "text": "0,108,12,600",
+                  "type": "0,107,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "root",
+                "optional": true,
+                "text": "Optional root property. This is mostly useful when filtering a Store, in which case we set the root to 'data' to\nmake the filter pull the <a href='#!/api/Ext.util.Filter-cfg-property'>property</a> out of the data object of each item\n",
+                "type": "String",
+                "value": "null",
+                "src": {
+                  "name": "0,135,27",
+                  "text": "0,136,12,192",
+                  "type": "0,135,18",
+                  "value": "0,135,32"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "serializer",
+                "optional": true,
+                "text": "A function to post-process any serialization.\n",
+                "type": "Function",
+                "src": {
+                  "access": "0,144,12",
+                  "name": "0,142,29",
+                  "text": "0,143,12,46",
+                  "type": "0,142,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "convert",
+                "optional": true,
+                "text": "A function to do any conversion on the value before comparison. For example,\nsomething that returns the date only part of a date.\n",
+                "type": "Function",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "value",
+                    "text": "The value to convert.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,152,34",
+                      "text": "0,152,40,22",
+                      "type": "0,152,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "return",
+                    "text": "The converted value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,153,34",
+                      "text": "0,153,41,21",
+                      "type": "0,153,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,154,12",
+                  "name": "0,149,29",
+                  "text": "0,150,12,130",
+                  "type": "0,149,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scope",
+                "optional": true,
+                "text": "The context (`this` property) in which the filtering function is called. Defaults\nto this Filter object.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,160,23",
+                  "text": "0,161,8,105",
+                  "type": "0,160,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Filter.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "Config object\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,231,24",
+                      "text": "0,231,31,14",
+                      "type": "0,231,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,233,0",
+                  "text": "0,230,8,20"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createRegexFilter",
+                "text": "Creates a filter function for the configured value/anyMatch/caseSensitive options\nfor this Filter.\n",
+                "src": {
+                  "access": "0,304,8",
+                  "name": "0,308,0",
+                  "text": "0,305,8,99"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getPropertyValue",
+                "text": "Returns the property of interest from the given item, based on the configured <a href='#!/api/Ext.util.Filter-cfg-root'>root</a>\nand <a href='#!/api/Ext.util.Filter-cfg-property'>property</a> configs.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,327,24",
+                      "text": "0,327,29,10",
+                      "type": "0,327,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The property of the object.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,328,25,28",
+                      "type": "0,328,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,329,8",
+                  "name": "0,331,0",
+                  "text": "0,325,8,109"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getState",
+                "text": "Returns this filter's state.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,340,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,342,0",
+                  "text": "0,339,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "serialize",
+                "text": "Returns this filter's serialized state. This is used when transmitting this filter\nto a server.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,367,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,369,0",
+                  "text": "0,365,8,96"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "createFilterFn",
+                "static": true,
+                "text": "Creates a single filter function which encapsulates the passed Filter array or\nCollection.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "filters",
+                    "text": "The filters from which to\ncreate a filter function.\n",
+                    "type": "Ext.util.Filter[]/Ext.util.Collection",
+                    "src": {
+                      "name": "0,174,59",
+                      "text": "0,174,67,26:0,175,12,26",
+                      "type": "0,174,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A function, which when passed a candidate object returns `true`\nif the candidate passes all the specified Filters.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,176,31,64:0,177,12,51",
+                      "type": "0,176,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,179,0",
+                  "static": "0,169,-1",
+                  "text": "0,172,12,91"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "isInvalid",
+                "static": true,
+                "text": "Checks whether the filter will produce a meaningful value. Since filters\nmay be used in conjunction with data binding, this is a sanity check to\ncheck whether the resulting filter will be able to match.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cfg",
+                    "text": "The filter config object\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,208,28",
+                      "text": "0,208,32,25",
+                      "type": "0,208,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the filter will produce a valid value\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,209,30,48",
+                      "type": "0,209,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,211,12",
+                  "name": "0,213,0",
+                  "static": "0,169,-1",
+                  "text": "0,204,12,204"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,33,0",
+          "text": "0,2,4,1182"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

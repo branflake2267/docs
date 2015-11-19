@@ -1,0 +1,180 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/charts/src/draw/sprite/AttributeDefinition.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.draw.sprite.AttributeDefinition",
+        "requires": "Ext.draw.sprite.AttributeParser,Ext.draw.sprite.AnimationParser",
+        "text": "Flyweight object to process the attributes of a sprite.\nA single instance of the AttributeDefinition is created per sprite class.\nSee `onClassCreated` and `onClassExtended` callbacks\nof the <a href='#!/api/Ext.draw.sprite.Sprite'>Ext.draw.sprite.Sprite</a> for more info.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "defaults",
+                "text": "Defines the default values of attributes.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,16,26",
+                  "text": "0,16,35,42",
+                  "type": "0,16,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "aliases",
+                "text": "Defines the alternative names for attributes.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,24,26",
+                  "text": "0,24,34,46",
+                  "type": "0,24,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "animationProcessors",
+                "text": "Defines the process used to animate between attributes.\nOne doesn't have to define animation processors for sprite attributes that use\npredefined <a href='#!/api/Ext.draw.sprite.AttributeDefinition-cfg-processors'>processors</a> from the <a href='#!/api/Ext.draw.sprite.AttributeParser'>Ext.draw.sprite.AttributeParser</a> singleton.\nFor such attributes matching animation processors from the <a href='#!/api/Ext.draw.sprite.AnimationParser'>Ext.draw.sprite.AnimationParser</a>\nsingleton will be used automatically.\nHowever, if you have a custom processor for an attribute that should support\nanimation, you must provide a corresponding animation processor for it here.\nFor more information on animation processors please see <a href='#!/api/Ext.draw.sprite.AnimationParser'>Ext.draw.sprite.AnimationParser</a>\ndocumentation.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,29,26",
+                  "text": "0,29,46,56:0,30,12,572",
+                  "type": "0,29,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "processors",
+                "text": "Defines the preprocessing used on the attributes.\nOne can define a custom processor function here or use the name of a predefined\nprocessor from the <a href='#!/api/Ext.draw.sprite.AttributeParser'>Ext.draw.sprite.AttributeParser</a> singleton.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,42,26",
+                  "text": "0,42,37,50:0,43,12,150",
+                  "type": "0,42,18"
+                }
+              },
+              {
+                "$type": "property",
+                "deprecatedMessage": "the <a href='#!/api/Ext.draw.sprite.AttributeDefinition-triggers'>triggers</a> config instead.\n",
+                "deprecatedVersion": "Use",
+                "name": "dirtyTriggers",
+                "type": "Object",
+                "src": {
+                  "deprecatedMessage": "0,55,12",
+                  "deprecatedVersion": "0,55,12",
+                  "name": "0,54,26",
+                  "type": "0,54,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "triggers",
+                "since": "5.1.0",
+                "text": "Defines which updaters have to be called when an attribute is changed.\nFor example, the config below indicates that the 'size' updater\nof a <a href='#!/api/Ext.draw.sprite.Square'>Ext.draw.sprite.Square</a> sprite has to be called\nwhen the 'size' attribute changes.\n\n    triggers: {\n        size: 'size'   // Use comma-separated values here if multiple updaters have to be called.\n    }                  // Note that the order is _not_ guaranteed.\n\nIf any of the updaters to be called (triggered by the <a href='#!/api/Ext.draw.sprite.Sprite-method-setAttributes'>Ext.draw.sprite.Sprite#setAttributes</a> config,\naside from the 'canvas' updater, which doesn't have to be defined and acts as a flag,\nindicating that this attribute should be applied to a Canvas context (or whatever emulates it).\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,60,26",
+                  "since": "0,76,19",
+                  "text": "0,60,35,71:0,61,12,873",
+                  "type": "0,60,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "updaters",
+                "text": "Defines the postprocessing used by the attribute.\nInside the updater function 'this' refers to the sprite that the attributes belong to.\nIn case of an instancing sprite 'this' will refer to the instancing template.\nThe two parameters passed to the updater function are the attributes object\nof the sprite or instance, and the names of attributes that triggered this updater call.\n\nThe example below shows how the 'size' updater changes other attributes\nof a <a href='#!/api/Ext.draw.sprite.Square'>Ext.draw.sprite.Square</a> sprite sprite when its 'size' attribute changes.\n\n    updaters: {\n        size: function (attr) {\n            var size = attr.size;\n            this.setAttributes({   // Changes to these attributes will trigger the 'path' updater.\n                x: attr.x - size,\n                y: attr.y - size,\n                height: 2 * size,\n                width: 2 * size\n            });\n        }\n    }\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,81,26",
+                  "text": "0,81,35,50:0,82,12,843",
+                  "type": "0,81,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "normalize",
+                "text": "Normalizes the changes given via their processors before they are applied as attributes.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "changes",
+                    "text": "The changes given.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,347,24",
+                      "text": "0,347,32,19",
+                      "type": "0,347,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "keepUnrecognized",
+                    "text": "If 'true', unknown attributes will be passed through as normalized values.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,348,25",
+                      "text": "0,348,42,75",
+                      "type": "0,348,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The normalized values.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,349,25,23",
+                      "type": "0,349,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,351,0",
+                  "text": "0,345,8,90"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "inheritable": true,
+                "name": "processorFactoryRe",
+                "static": true,
+                "text": "Processor declaration in the form of 'processorFactory(argument1,argument2,...)'.\nE.g.: <a href='#!/api/Ext.draw.sprite.AttributeParser-method-enums'>Ext.draw.sprite.AttributeParser#enums</a>,\n<a href='#!/api/Ext.draw.sprite.AttributeParser-limited'>limited</a>.\n",
+                "src": {
+                  "access": "0,107,12",
+                  "inheritable": "0,104,-1",
+                  "name": "0,112,0",
+                  "static": "0,104,-1",
+                  "text": "0,108,12,198"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,2,4",
+          "name": "0,8,0",
+          "requires": "0,10,0,0:0,11,0,0",
+          "text": "0,3,4,236"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

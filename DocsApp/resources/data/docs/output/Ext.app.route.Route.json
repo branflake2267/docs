@@ -1,0 +1,392 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/route/Route.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.app.route.Route",
+        "text": "Represents a mapping between a url and a controller/action pair. May also contain\nadditional params.\n\nThis is a private internal class that should not need to be used by end-developer code.\nIts API and existence are subject to change so use at your own risk.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "action",
+                "text": "The name of the action that will be called on the\n<a href='#!/api/Ext.app.route.Route-cfg-controller'>controller</a> if this route is matched.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,12,22",
+                  "text": "0,12,29,50:0,13,8,46",
+                  "type": "0,12,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "conditions",
+                "text": "Optional set of conditions for each token in the url\nstring. Each key should be one of the tokens, each value should be a regex that the\ntoken should accept. For example, if you have a Route with a url like\n`\"files/:fileName\"` and you want it to match urls like \"files/someImage.jpg\" then\nyou can set these conditions to allow the :fileName token to accept strings\ncontaining a period (\".\"):\n\n    conditions: {\n        ':fileName': \"[0-9a-zA-Z\\.]+\"\n    }\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,18,22",
+                  "text": "0,18,33,53:0,19,8,402",
+                  "type": "0,18,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "controller",
+                "text": "The name of the Controller whose <a href='#!/api/Ext.app.route.Route-cfg-action'>action</a> will be\ncalled if this route is matched.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,32,22",
+                  "text": "0,32,33,57:0,33,8,33",
+                  "type": "0,32,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "allowInactive",
+                "text": "`true` to allow this route to be triggered on\na controller that is not active.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,38,23",
+                  "text": "0,38,37,46:0,39,8,33",
+                  "type": "0,38,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "url",
+                "text": "(required) The url regex to match against.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,44,22",
+                  "text": "0,44,26,43",
+                  "type": "0,44,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "before",
+                "text": "An optional function used to intercept <a href='#!/api/Ext.app.route.Route-cfg-action'>action</a>\nto do perform additional tasks and possibly stop the execution. An example is if the route is\nfor editing a user and you need to verify the current user has permission. You could\nsend an <a href='#!/api/Ext.Ajax'>Ext.Ajax</a> request to a server or some arbitrary code.\n\nThis function MUST be executed by passing in a Boolean\nvalue to allow execution of the configured action on <a href='#!/api/Ext.app.route.Route'>Ext.app.route.Route</a>.\n\nDefaults to <a href='#!/api/null'>null</a>\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,49,24",
+                  "text": "0,49,31,55:0,50,8,406",
+                  "type": "0,49,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "caseInsensitive",
+                "text": "`true` to allow the tokens to be matched with\ncase-insensitive. Defaults to `false` which will force case matching.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,62,23",
+                  "text": "0,62,39,46:0,63,8,70",
+                  "type": "0,62,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "recognize",
+                "text": "Attempts to recognize a given url string and return controller/action pair for it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "url",
+                    "text": "The url to recognize.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,106,24",
+                      "text": "0,106,28,22",
+                      "type": "0,106,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The matched data, or `false` if no match.\n",
+                    "type": "Object/Boolean",
+                    "src": {
+                      "text": "0,107,33,42",
+                      "type": "0,107,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,109,0",
+                  "text": "0,104,8,84"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "recognizes",
+                "text": "Returns true if this <a href='#!/api/Ext.app.route.Route'>Ext.app.route.Route</a> matches the given url string.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "url",
+                    "text": "The url to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,138,24",
+                      "text": "0,138,28,17",
+                      "type": "0,138,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this <a href='#!/api/Ext.app.route.Route'>Ext.app.route.Route</a> recognizes the url.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,139,26,63",
+                      "type": "0,139,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,137,8",
+                  "name": "0,141,0",
+                  "text": "0,135,8,80"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "execute",
+                "text": "The method to execute the action using the configured before function which will\nkick off the actual <a href='#!/api/Ext.app.route.Route-cfg-action'>action</a> on the <a href='#!/api/Ext.app.route.Route-cfg-controller'>controller</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "token",
+                    "text": "The hash to execute with.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,150,24",
+                      "text": "0,150,30,26",
+                      "type": "0,150,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "argConfig",
+                    "text": "The object from the <a href='#!/api/Ext.app.route.Route'>Ext.app.route.Route</a>s\nrecognize method call.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,151,24",
+                      "text": "0,151,34,50:0,152,8,23",
+                      "type": "0,151,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "An optional callback function to execute after the\n<a href='#!/api/Ext.app.route.Route-cfg-action'>action</a> is executed.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,153,26",
+                      "text": "0,153,35,51:0,154,8,29",
+                      "type": "0,153,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The scope to execute the callback with, defaults to this\n<a href='#!/api/Ext.app.route.Route'>Ext.app.route.Route</a>.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,155,24",
+                      "text": "0,155,30,57:0,156,8,29",
+                      "type": "0,155,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,149,8",
+                  "name": "0,158,0",
+                  "text": "0,146,8,146"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "matchesFor",
+                "text": "Returns a hash of matching url segments for the given url.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "url",
+                    "text": "The url to extract matches for\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,191,24",
+                      "text": "0,191,28,31",
+                      "type": "0,191,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "matching url segments\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,192,25,22",
+                      "type": "0,192,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,190,8",
+                  "name": "0,194,0",
+                  "text": "0,188,8,60"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createMatcherRegex",
+                "text": "Takes the configured url string including wildcards and returns a regex that can be\nused to match against a url.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "url",
+                    "text": "The url string.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,216,24",
+                      "text": "0,216,28,16",
+                      "type": "0,216,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The matcher regex.\n",
+                    "type": "RegExp",
+                    "src": {
+                      "text": "0,217,25,19",
+                      "type": "0,217,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,215,8",
+                  "name": "0,219,0",
+                  "text": "0,212,8,114"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createCallback",
+                "text": "Creates the callback function to execute in the configured <a href='#!/api/Ext.app.route.Route-cfg-before'>before</a> function.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments found from the <a href='#!/api/Ext.app.route.Route'>Ext.app.route.Route</a>s\nrecognize call.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,247,24",
+                      "text": "0,247,29,59:0,248,8,16",
+                      "type": "0,247,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "The function to be executed after the <a href='#!/api/Ext.app.route.Route-cfg-action'>action</a>\nhas been executed.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,249,26",
+                      "text": "0,249,35,54:0,250,8,19",
+                      "type": "0,249,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The scope to execute on the callback function, defaults to\nthe <a href='#!/api/Ext.app.route.Route'>Ext.app.route.Route</a>.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,251,24",
+                      "text": "0,251,30,59:0,252,8,33",
+                      "type": "0,251,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object with the `resume` and `stop` methods on it to control to continue\nwith the action or not.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,253,25,76:0,254,8,24",
+                      "type": "0,253,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,246,8",
+                  "name": "0,256,0",
+                  "text": "0,244,8,86"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "matcherRegex",
+                "text": "A regular expression to match the token to the configured <a href='#!/api/Ext.app.route.Route-cfg-url'>url</a>.\n",
+                "src": {
+                  "access": "0,70,8",
+                  "name": "0,72,0",
+                  "text": "0,68,8,73"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "paramMatchingRegex",
+                "text": "A regular expression to check if there are parameters in the configured <a href='#!/api/Ext.app.route.Route-cfg-url'>url</a>.\n",
+                "src": {
+                  "access": "0,77,8",
+                  "name": "0,79,0",
+                  "text": "0,75,8,87"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "paramsInMatchString",
+                "text": "An array of parameters in the configured <a href='#!/api/Ext.app.route.Route-cfg-url'>url</a>.\n",
+                "src": {
+                  "access": "0,84,8",
+                  "name": "0,86,0",
+                  "text": "0,82,8,56"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,8,4",
+          "name": "0,10,0",
+          "text": "0,2,4,260"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

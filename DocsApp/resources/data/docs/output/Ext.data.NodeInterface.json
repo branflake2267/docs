@@ -1,0 +1,2622 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/NodeInterface.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.data.NodeInterface",
+        "requires": "Ext.data.field.Boolean,Ext.data.field.Integer,Ext.data.field.String,Ext.data.writer.Json,Ext.mixin.Observable",
+        "text": "This class is used as a set of methods that are applied to the prototype of a\n<a href='#!/api/Ext.data.Model'>Ext.data.Model</a> to decorate it with a Node API. This means that models\nused in conjunction with a tree will have all of the tree related methods available\non the model. In general, this class will not be used directly by the developer.\n\nThis class also creates extra <a href='#!/api/Ext.data.field.Field'>Ext.data.Field</a> on the model, if they do\nnot exist, to help maintain the tree state and UI. These fields are documented as\nconfig options.\n\nThe data fields used to render a tree node are: <a href='#!/api/Ext.data.NodeInterface-cfg-text'>text</a>, <a href='#!/api/Ext.data.NodeInterface-cfg-leaf'>leaf</a>,\n<a href='#!/api/Ext.data.NodeInterface-cfg-children'>children</a>, and <a href='#!/api/Ext.data.NodeInterface-cfg-expanded'>expanded</a>.  Once a node is loaded to the tree store\nyou can use <a href='#!/api/Ext.data.Model-method-get'>Ext.data.Model#get</a> to fetch the value of a given field\nname (provided there is not a convenience accessor on the Node for that field).\n\n    @example\n    Ext.tip.QuickTipManager.init(); // not required when using Ext.application()\n\n    var root = {\n        expanded: true,\n        children: [{\n            text: \"Leaf node (<i>no folder/arrow icon</i>)\",\n            leaf: true,\n            qtitle: 'Sample Tip Title',\n            qtip: 'Tip body'\n        }, {\n            text: \"Parent node expanded\",\n            expanded: true,\n            children: [{\n                text: \"Expanded leaf node 1\",\n                leaf: true\n            }, {\n                text: \"Expanded leaf node 2\",\n                leaf: true\n            }]\n        }, {\n            text: \"Parent node collapsed\",\n            children: [{\n                text: \"Collapsed leaf node 1\",\n                leaf: true\n            }, {\n                text: \"Collapsed leaf node 2\",\n                leaf: true\n            }]\n        }]\n    };\n\n    var tree = Ext.create('Ext.tree.Panel', {\n        title: 'TreePanel',\n        width: 260,\n        height: 200,\n        root: root,\n        rootVisible: false,\n        renderTo: document.body,\n        bbar: ['The first node ', {\n            text: 'is a leaf?',\n            handler: function () {\n                var firstChild = tree.getRootNode().getChildAt(0);\n                Ext.Msg.alert('Is Leaf?', firstChild.isLeaf());\n            }\n        }, {\n            text: 'has text?',\n            handler: function () {\n                var firstChild = tree.getRootNode().getChildAt(0);\n                Ext.Msg.alert('Has Text:', firstChild.get('text'));\n            }\n        }]\n    });\n\nThe following configs have methods used to set the value / state of the node at\nruntime:\n\n**<a href='#!/api/Ext.data.NodeInterface-cfg-children'>children</a> / <a href='#!/api/Ext.data.NodeInterface-cfg-leaf'>leaf</a>**\n\n - <a href='#!/api/Ext.data.NodeInterface-method-appendChild'>appendChild</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-hasChildNodes'>hasChildNodes</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-insertBefore'>insertBefore</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-insertChild'>insertChild</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-remove'>method-remove</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-removeAll'>removeAll</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-removeChild'>removeChild</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-replaceChild'>replaceChild</a>\n\n**<a href='#!/api/Ext.data.NodeInterface-cfg-expanded'>expanded</a>**\n\n - <a href='#!/api/Ext.data.NodeInterface-method-expand'>method-expand</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-expandChildren'>expandChildren</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-collapse'>method-collapse</a>\n - <a href='#!/api/Ext.data.NodeInterface-method-collapseChildren'>collapseChildren</a>\n\nThe remaining configs may be set using <a href='#!/api/Ext.data.Model-method-set'>Ext.data.Model#method-set</a>.\n\n    node.set('text', 'Changed Text'); // example showing how to change the node label\n\nThe <a href='#!/api/Ext.data.NodeInterface-cfg-qtip'>qtip</a>, <a href='#!/api/Ext.data.NodeInterface-cfg-qtitle'>qtitle</a>, and <a href='#!/api/Ext.data.NodeInterface-cfg-qshowDelay'>qshowDelay</a> use QuickTips and\nrequires initializing <a href='#!/api/Ext.tip.QuickTipManager'>Ext.tip.QuickTipManager</a> unless the application is\ncreated using <a href='#!/api/Ext-method-application'>Ext#method-application</a>.\n\n    Ext.tip.QuickTipManager.init();\n\nFor additional information and examples see the description for\n<a href='#!/api/Ext.tree.Panel'>Ext.tree.Panel</a>.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "expanded",
+                "optional": true,
+                "text": "True if the node is expanded.\n\nWhen the tree is asynchronously remote loaded, expanding a collapsed node loads\nthe children of that node (if the node has not already been loaded previously).\n\nSee also: <a href='#!/api/Ext.data.NodeInterface-method-isExpanded'>isExpanded</a>.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,114,24",
+                  "text": "0,115,8,223",
+                  "type": "0,114,14",
+                  "value": "0,114,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "expandable",
+                "optional": true,
+                "text": "False to prevent expanding/collapsing of this node.\n\nSee also: <a href='#!/api/Ext.data.NodeInterface-method-isExpandable'>isExpandable</a>.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,124,24",
+                  "text": "0,125,8,86",
+                  "type": "0,124,14",
+                  "value": "0,124,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "checked",
+                "optional": true,
+                "text": "Set to true or false to show a checkbox alongside this node.\n\nTo fetch an array of checked nodes use <a href='#!/api/Ext.tree.Panel-method-getChecked'>Ext.tree.Panel#method-getChecked</a>.\n",
+                "type": "Boolean",
+                "value": "null",
+                "src": {
+                  "name": "0,131,24",
+                  "text": "0,132,8,156",
+                  "type": "0,131,14",
+                  "value": "0,131,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "leaf",
+                "optional": true,
+                "text": "Set to true to indicate that this child can have no children. The expand icon/arrow will then not be\nrendered for this node.\n\nSee also: <a href='#!/api/Ext.data.NodeInterface-method-isLeaf'>isLeaf</a>.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,139,24",
+                  "text": "0,140,8,153",
+                  "type": "0,139,14",
+                  "value": "0,139,29"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "cls",
+                "text": "CSS class to apply to this node.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,147,22",
+                  "text": "0,148,8,33",
+                  "type": "0,147,14"
+                }
+              },
+              {
+                "$type": "property",
+                "inheritdoc": "Ext.panel.Header#iconCls",
+                "localDoc": "Use <a href='#!/api/Ext.data.NodeInterface-icon'>icon</a> to set the icon src path directly.\n",
+                "name": "iconCls",
+                "type": "String",
+                "src": {
+                  "inheritdoc": "0,153,8",
+                  "localDoc": "0,154,18",
+                  "name": "0,152,22",
+                  "type": "0,152,14"
+                }
+              },
+              {
+                "$type": "property",
+                "inheritdoc": "Ext.panel.Header#icon",
+                "name": "icon",
+                "type": "String",
+                "src": {
+                  "inheritdoc": "0,159,8",
+                  "name": "0,158,22",
+                  "type": "0,158,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "allowDrop",
+                "optional": true,
+                "text": "Set to false to deny dropping on this node.\n\nApplicable when using the <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop'>Ext.tree.plugin.TreeViewDragDrop</a> plugin.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,163,24",
+                  "text": "0,164,8,137",
+                  "type": "0,163,14",
+                  "value": "0,163,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "allowDrag",
+                "optional": true,
+                "text": "Set to false to deny dragging of this node.\n\nApplicable when using the <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop'>Ext.tree.plugin.TreeViewDragDrop</a> plugin.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,171,24",
+                  "text": "0,172,8,137",
+                  "type": "0,171,14",
+                  "value": "0,171,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "href",
+                "text": "A URL for a link that's created when this config is specified.\n\nSee also <a href='#!/api/Ext.data.NodeInterface-cfg-hrefTarget'>hrefTarget</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,179,22",
+                  "text": "0,180,8,94",
+                  "type": "0,179,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hrefTarget",
+                "text": "Target for link. Only applicable when <a href='#!/api/Ext.data.NodeInterface-cfg-href'>href</a> is also specified.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,186,22",
+                  "text": "0,187,8,71",
+                  "type": "0,186,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "qtip",
+                "text": "Tooltip text to show on this node.\n\nSee also <a href='#!/api/Ext.data.NodeInterface-cfg-qtitle'>qtitle</a>.\nSee also <a href='#!/api/Ext.data.NodeInterface-cfg-qshowDelay'>qshowDelay</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,191,22",
+                  "text": "0,192,8,92",
+                  "type": "0,191,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "qtitle",
+                "text": "Tooltip title.\n\nSee also <a href='#!/api/Ext.data.NodeInterface-cfg-qtip'>qtip</a>.\nSee also <a href='#!/api/Ext.data.NodeInterface-cfg-qshowDelay'>qshowDelay</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,199,22",
+                  "text": "0,200,8,70",
+                  "type": "0,199,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "qshowDelay",
+                "text": "Tooltip showDelay.\n\nSee also <a href='#!/api/Ext.data.NodeInterface-cfg-qtip'>qtip</a>.\nSee also <a href='#!/api/Ext.data.NodeInterface-cfg-qtitle'>qtitle</a>.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,207,22",
+                  "text": "0,208,8,70",
+                  "type": "0,207,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "text",
+                "text": "The text to show on node label (_html tags are accepted_).\nThe default text for the root node is `ROOT`.  All other nodes default to ''.\n\n**Note:** By default the node label is <a href='#!/api/Ext.data.NodeInterface-cfg-text'>text</a>, but can be set using the tree's\n<a href='#!/api/Ext.tree.Panel-cfg-displayField'>Ext.tree.Panel#cfg-displayField</a> config.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,215,22",
+                  "text": "0,216,8,278",
+                  "type": "0,215,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "children",
+                "text": "Array of child nodes.\n\n**Note:** By default the child nodes root is <a href='#!/api/Ext.data.NodeInterface-cfg-children'>children</a>, but can be set using the\nreader <a href='#!/api/Ext.data.reader.Reader-cfg-rootProperty'>Ext.data.reader.Reader#cfg-rootProperty</a> config on the\n<a href='#!/api/Ext.data.TreeStore'>Ext.data.TreeStore</a> <a href='#!/api/Ext.data.TreeStore-cfg-proxy'>Ext.data.TreeStore#cfg-proxy</a>.\n",
+                "type": "Ext.data.NodeInterface[]",
+                "src": {
+                  "name": "0,224,40",
+                  "text": "0,225,8,270",
+                  "type": "0,224,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "loaded",
+                "optional": true,
+                "text": "True if the node has finished loading.\n\nSee <a href='#!/api/Ext.data.NodeInterface-method-isLoaded'>isLoaded</a>.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "access": "0,234,8",
+                  "name": "0,233,24",
+                  "text": "0,235,8,63",
+                  "type": "0,233,14",
+                  "value": "0,233,31"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "loading",
+                "optional": true,
+                "text": "True if the node is currently loading.\n\nSee <a href='#!/api/Ext.data.NodeInterface-method-isLoading'>isLoading</a>.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "access": "0,242,8",
+                  "name": "0,241,24",
+                  "text": "0,243,8,64",
+                  "type": "0,241,14",
+                  "value": "0,241,32"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "root",
+                "text": "True if this is the root node.\n\nSee <a href='#!/api/Ext.data.NodeInterface-method-isRoot'>isRoot</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,250,8",
+                  "name": "0,249,23",
+                  "text": "0,251,8,53",
+                  "type": "0,249,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "isLast",
+                "text": "True if this is the last node.\n\nSee <a href='#!/api/Ext.data.NodeInterface-method-isLast'>method-isLast</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,258,8",
+                  "name": "0,257,23",
+                  "text": "0,259,8,60",
+                  "type": "0,257,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "isFirst",
+                "text": "True if this is the first node.\n\nSee <a href='#!/api/Ext.data.NodeInterface-method-isFirst'>method-isFirst</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,266,8",
+                  "name": "0,265,23",
+                  "text": "0,267,8,62",
+                  "type": "0,265,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "parentId",
+                "text": "ID of parent node.\n\nSee <a href='#!/api/Ext.data.NodeInterface-property-parentNode'>parentNode</a>.\n",
+                "type": "String",
+                "src": {
+                  "access": "0,274,8",
+                  "name": "0,273,22",
+                  "text": "0,275,8,45",
+                  "type": "0,273,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "index",
+                "text": "The position of the node inside its parent. When parent has 4 children and the node is third amongst them,\nindex will be 2.\n\nSee <a href='#!/api/Ext.data.NodeInterface-method-indexOf'>indexOf</a> and <a href='#!/api/Ext.data.NodeInterface-method-indexOfId'>indexOfId</a>.\n",
+                "type": "Number",
+                "src": {
+                  "access": "0,282,8",
+                  "name": "0,281,22",
+                  "text": "0,283,8,170",
+                  "type": "0,281,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "depth",
+                "text": "The number of parents this node has. A root node has depth 0, a child of it depth 1, and so on...\n\nSee <a href='#!/api/Ext.data.NodeInterface-method-getDepth'>getDepth</a>.\n",
+                "type": "Number",
+                "src": {
+                  "access": "0,291,8",
+                  "name": "0,290,22",
+                  "text": "0,292,8,122",
+                  "type": "0,290,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "append",
+                "text": "Fires when a new child node is appended\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "This node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,437,56",
+                      "text": "0,437,61,10",
+                      "type": "0,437,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The newly appended node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,438,56",
+                      "text": "0,438,61,24",
+                      "type": "0,438,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The index of the newly appended node\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,439,40",
+                      "text": "0,439,46,37",
+                      "type": "0,439,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,435,31",
+                  "text": "0,436,24,40"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "remove",
+                "text": "Fires when a child node is removed\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "This node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,444,56",
+                      "text": "0,444,61,10",
+                      "type": "0,444,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The removed node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,445,56",
+                      "text": "0,445,61,17",
+                      "type": "0,445,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isMove",
+                    "text": "`true` if the child node is being removed so it can be moved to another position in the tree.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,446,41",
+                      "text": "0,446,48,94",
+                      "type": "0,446,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "context",
+                    "text": "An object providing information about where the removed node came from. It contains the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "parentNode",
+                        "text": "The node from which the removed node was removed.\n",
+                        "type": "Ext.data.NodeInterface",
+                        "src": {
+                          "name": "0,448,64",
+                          "text": "0,448,75,50",
+                          "type": "0,448,32"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "previousSibling",
+                        "text": "The removed node's former previous sibling.\n",
+                        "type": "Ext.data.NodeInterface",
+                        "src": {
+                          "name": "0,449,64",
+                          "text": "0,449,80,44",
+                          "type": "0,449,32"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "nextSibling",
+                        "text": "The removed node's former next sibling.\n(a side effect of calling <a href='#!/api/Ext.data.NodeInterface-method-appendChild'>Ext.data.NodeInterface#appendChild</a> or\n<a href='#!/api/Ext.data.NodeInterface-method-insertBefore'>Ext.data.NodeInterface#insertBefore</a> with a node that already has a parentNode)\n",
+                        "type": "Ext.data.NodeInterface",
+                        "src": {
+                          "name": "0,450,64",
+                          "text": "0,450,76,40:0,451,24,184",
+                          "type": "0,450,32"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,447,40",
+                      "text": "0,447,48,110",
+                      "type": "0,447,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,442,31",
+                  "text": "0,443,24,35"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "move",
+                "text": "Fires when this node is moved to a new location in the tree\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "This node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,457,56",
+                      "text": "0,457,61,10",
+                      "type": "0,457,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldParent",
+                    "text": "The old parent of this node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,458,56",
+                      "text": "0,458,66,28",
+                      "type": "0,458,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newParent",
+                    "text": "The new parent of this node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,459,56",
+                      "text": "0,459,66,28",
+                      "type": "0,459,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The index it was moved to\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,460,40",
+                      "text": "0,460,46,26",
+                      "type": "0,460,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,455,31",
+                  "text": "0,456,24,60"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "insert",
+                "text": "Fires when a new child node is inserted.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "This node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,465,56",
+                      "text": "0,465,61,10",
+                      "type": "0,465,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The child node inserted\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,466,56",
+                      "text": "0,466,61,24",
+                      "type": "0,466,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "refNode",
+                    "text": "The child node the node was inserted before\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,467,56",
+                      "text": "0,467,64,44",
+                      "type": "0,467,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,463,31",
+                  "text": "0,464,24,41"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "beforeappend",
+                "text": "Fires before a new child is appended, return false to cancel the append.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "This node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,472,56",
+                      "text": "0,472,61,10",
+                      "type": "0,472,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The child node to be appended\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,473,56",
+                      "text": "0,473,61,30",
+                      "type": "0,473,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,470,31",
+                  "text": "0,471,24,73"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "beforeremove",
+                "text": "Fires before a child is removed, return false to cancel the remove.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "This node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,478,56",
+                      "text": "0,478,61,10",
+                      "type": "0,478,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The child node to be removed\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,479,56",
+                      "text": "0,479,61,29",
+                      "type": "0,479,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isMove",
+                    "text": "`true` if the child node is being removed so it can be moved to another position in the tree.\n(a side effect of calling <a href='#!/api/Ext.data.NodeInterface-method-appendChild'>Ext.data.NodeInterface#appendChild</a> or\n<a href='#!/api/Ext.data.NodeInterface-method-insertBefore'>Ext.data.NodeInterface#insertBefore</a> with a node that already has a parentNode)\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,480,41",
+                      "text": "0,480,48,94:0,481,24,184",
+                      "type": "0,480,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,476,31",
+                  "text": "0,477,24,68"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "beforemove",
+                "text": "Fires before this node is moved to a new location in the tree. Return false to cancel the move.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "This node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,487,56",
+                      "text": "0,487,61,10",
+                      "type": "0,487,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldParent",
+                    "text": "The parent of this node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,488,56",
+                      "text": "0,488,66,24",
+                      "type": "0,488,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newParent",
+                    "text": "The new parent this node is moving to\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,489,56",
+                      "text": "0,489,66,38",
+                      "type": "0,489,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The index it is being moved to\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,490,40",
+                      "text": "0,490,46,31",
+                      "type": "0,490,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,485,31",
+                  "text": "0,486,24,96"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "beforeinsert",
+                "text": "Fires before a new child is inserted, return false to cancel the insert.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "This node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,495,56",
+                      "text": "0,495,61,10",
+                      "type": "0,495,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The child node to be inserted\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,496,56",
+                      "text": "0,496,61,30",
+                      "type": "0,496,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "refNode",
+                    "text": "The child node the node is being inserted before\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,497,56",
+                      "text": "0,497,64,49",
+                      "type": "0,497,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,493,31",
+                  "text": "0,494,24,73"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "expand",
+                "text": "Fires when this node is expanded.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "The expanding node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,502,56",
+                      "text": "0,502,61,19",
+                      "type": "0,502,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,500,31",
+                  "text": "0,501,24,34"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "collapse",
+                "text": "Fires when this node is collapsed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "The collapsing node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,507,56",
+                      "text": "0,507,61,20",
+                      "type": "0,507,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,505,31",
+                  "text": "0,506,24,35"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "beforeexpand",
+                "text": "Fires before this node is expanded.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "The expanding node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,512,56",
+                      "text": "0,512,61,19",
+                      "type": "0,512,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,510,31",
+                  "text": "0,511,24,36"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "beforecollapse",
+                "text": "Fires before this node is collapsed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "The collapsing node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,517,56",
+                      "text": "0,517,61,20",
+                      "type": "0,517,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,515,31",
+                  "text": "0,516,24,37"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "sort",
+                "text": "Fires when this node's childNodes are sorted.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "This node.\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,522,56",
+                      "text": "0,522,61,11",
+                      "type": "0,522,32"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "childNodes",
+                    "text": "The childNodes of this node.\n",
+                    "type": "Ext.data.NodeInterface[]",
+                    "src": {
+                      "name": "0,523,58",
+                      "text": "0,523,69,29",
+                      "type": "0,523,32"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,520,31",
+                  "text": "0,521,24,46"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "createNode",
+                "text": "Ensures that the passed object is an instance of a Record with the NodeInterface applied\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "type": "0,530,29"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "src": {
+                      "name": "0,532,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,532,0",
+                  "text": "0,529,20,89"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLeaf",
+                "text": "Returns true if this node is a leaf\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,584,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,586,0",
+                  "text": "0,583,20,36"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setFirstChild",
+                "text": "Sets the first child of this node\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,593,52",
+                      "type": "0,593,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,592,20",
+                  "name": "0,595,0",
+                  "text": "0,591,20,34"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setLastChild",
+                "text": "Sets the last child of this node\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,602,52",
+                      "type": "0,602,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,601,20",
+                  "name": "0,604,0",
+                  "text": "0,600,20,33"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "updateInfo",
+                "text": "Updates general data of this node like isFirst, isLast, depth. This\nmethod is internally called after a node is moved. This shouldn't\nhave to be called by the developer unless they are creating custom\nTree plugins.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "commit",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,614,37",
+                      "type": "0,614,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "info",
+                    "text": "The info to update. May contain any of the following\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "isFirst",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,616,42",
+                          "type": "0,616,29"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "isLast",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,617,42",
+                          "type": "0,617,29"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "index",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,618,42",
+                          "type": "0,618,29"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "depth",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,619,42",
+                          "type": "0,619,29"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "parentId",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,620,42",
+                          "type": "0,620,29"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,615,36",
+                      "text": "0,615,41,53",
+                      "type": "0,615,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,613,20",
+                  "name": "0,622,0",
+                  "text": "0,609,20,215"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLast",
+                "text": "Returns true if this node is the last child of its parent\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,717,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,719,0",
+                  "text": "0,716,20,58"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isFirst",
+                "text": "Returns true if this node is the first child of its parent\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,725,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,727,0",
+                  "text": "0,724,20,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasChildNodes",
+                "text": "Returns true if this node has one or more child nodes, else false.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,733,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,735,0",
+                  "text": "0,732,20,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isExpandable",
+                "text": "Returns true if this node has one or more child nodes, or if the <tt>expandable</tt>\nnode attribute is explicitly specified as true, otherwise returns false.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,742,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,744,0",
+                  "text": "0,740,20,158"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "appendChild",
+                "text": "Inserts node(s) as the last child node of this node.\n\nIf the node was previously a child node of another parent node, it will be removed from that node first.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The node or Array of nodes to append\n",
+                    "type": "Ext.data.NodeInterface/Ext.data.NodeInterface[]/Object",
+                    "src": {
+                      "name": "0,765,84",
+                      "text": "0,765,89,37",
+                      "type": "0,765,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvents",
+                    "optional": true,
+                    "text": "True to suppress firing of\nevents.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,766,38",
+                      "text": "0,766,60,27:0,767,20,8",
+                      "type": "0,766,28",
+                      "value": "0,766,53"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "commit",
+                    "optional": true,
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,768,38",
+                      "type": "0,768,28",
+                      "value": "0,768,45"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The appended node if single append, or null if an array was passed\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,769,53,67",
+                      "type": "0,769,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,771,0",
+                  "text": "0,761,20,160"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getOwnerTree",
+                "text": "Returns the tree this node is in.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The tree panel which owns this node.\n",
+                    "type": "Ext.tree.Panel",
+                    "src": {
+                      "text": "0,927,44,37",
+                      "type": "0,927,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,929,0",
+                  "text": "0,926,19,34"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTreeStore",
+                "text": "Returns the <a href='#!/api/Ext.data.TreeStore'>Ext.data.TreeStore</a> which owns this node.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The TreeStore which owns this node.\n",
+                    "type": "Ext.data.TreeStore",
+                    "src": {
+                      "text": "0,938,49,36",
+                      "type": "0,938,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,940,0",
+                  "text": "0,937,20,61"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeChild",
+                "text": "Removes a child node from this node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The node to remove\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,951,52",
+                      "text": "0,951,57,19",
+                      "type": "0,951,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "erase",
+                    "optional": true,
+                    "text": "True to erase the record using the\nconfigured proxy.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,952,38",
+                      "text": "0,952,51,35:0,953,20,18",
+                      "type": "0,952,28",
+                      "value": "0,952,44"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The removed node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,954,53,17",
+                      "type": "0,954,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,956,0",
+                  "text": "0,950,20,37"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "copy",
+                "text": "Creates a copy (clone) of this Node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "optional": true,
+                    "text": "A new id, defaults to this Node's id.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1089,37",
+                      "text": "0,1089,41,38",
+                      "type": "0,1089,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "deep",
+                    "optional": true,
+                    "text": "True to recursively copy all child Nodes into the new Node.\nFalse to copy without child Nodes.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1090,38",
+                      "text": "0,1090,50,60:0,1091,20,35",
+                      "type": "0,1090,28",
+                      "value": "0,1090,43"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A copy of this Node.\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,1092,53,21",
+                      "type": "0,1092,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1094,0",
+                  "text": "0,1088,20,37"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clear",
+                "text": "Clears the node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "erase",
+                    "optional": true,
+                    "text": "True to erase the node using the configured\nproxy.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1112,38",
+                      "text": "0,1112,51,44:0,1113,20,7",
+                      "type": "0,1112,28",
+                      "value": "0,1112,44"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1111,20",
+                  "name": "0,1115,0",
+                  "text": "0,1110,20,17"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "erase",
+                "text": "Destroys the node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "src": {
+                      "name": "0,1178,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1178,0",
+                  "text": "0,1176,20,19"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertBefore",
+                "text": "Inserts the first node before the second node in this nodes childNodes collection.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The node to insert\n",
+                    "type": "Ext.data.NodeInterface/Ext.data.NodeInterface[]/Object",
+                    "src": {
+                      "name": "0,1206,84",
+                      "text": "0,1206,89,19",
+                      "type": "0,1206,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "refNode",
+                    "text": "The node to insert before (if null the node is appended)\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,1207,52",
+                      "text": "0,1207,60,57",
+                      "type": "0,1207,28"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The inserted node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,1208,53,18",
+                      "type": "0,1208,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1210,0",
+                  "text": "0,1205,20,83"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertChild",
+                "text": "Inserts a node into this node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The zero-based index to insert the node at\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,1335,36",
+                      "text": "0,1335,42,43",
+                      "type": "0,1335,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The node to insert\n",
+                    "type": "Ext.data.NodeInterface/Object",
+                    "src": {
+                      "name": "0,1336,59",
+                      "text": "0,1336,64,19",
+                      "type": "0,1336,28"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The node you just inserted\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,1337,53,27",
+                      "type": "0,1337,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1339,0",
+                  "text": "0,1334,20,31"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "isLastVisible",
+                "text": "Used by <a href='#!/api/Ext.tree.Column-initTemplateRendererData'>Ext.tree.Column#initTemplateRendererData</a> to determine whether a node is the last *visible*\nsibling.\n",
+                "src": {
+                  "access": "0,1350,20",
+                  "name": "0,1355,0",
+                  "text": "0,1351,20,117"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "remove",
+                "text": "Removes this node from its parent.\n\n**If** the node is not phantom (only added in the client side), then it may be marked for removal.\n\nIf the owning <a href='#!/api/Ext.data.TreeStore'>Ext.data.TreeStore</a> is set to <a href='#!/api/Ext.data.ProxyStore-cfg-trackRemoved'>Ext.data.ProxyStore#trackRemoved</a>\nthen the node will be added to the stack of nodes due to be removed the next time the store is synced with the server.\n\nIf the owning <a href='#!/api/Ext.data.TreeStore'>Ext.data.TreeStore</a> is set to <a href='#!/api/Ext.data.ProxyStore-cfg-autoSync'>Ext.data.ProxyStore#autoSync</a>\nthen the synchronize request will be initiated immediately.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "erase",
+                    "optional": true,
+                    "text": "True to erase the node using the configured proxy. This is only needed when the\nowning <a href='#!/api/Ext.data.TreeStore'>Ext.data.TreeStore</a> is not taking care of synchronization operations.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1386,38",
+                      "text": "0,1386,51,80:0,1387,20,96",
+                      "type": "0,1386,28",
+                      "value": "0,1386,44"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,1389,53,5",
+                      "type": "0,1389,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1391,0",
+                  "text": "0,1376,20,550"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeAll",
+                "text": "Removes all child nodes from this node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "erase",
+                    "optional": true,
+                    "text": "True to erase the node using the configured\nproxy.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1406,38",
+                      "text": "0,1406,51,44:0,1407,20,7",
+                      "type": "0,1406,28",
+                      "value": "0,1406,44"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,1408,53,5",
+                      "type": "0,1408,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1411,0",
+                  "text": "0,1405,20,40"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getChildAt",
+                "text": "Returns the child node at the specified index.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,1479,36",
+                      "type": "0,1479,28"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "type": "0,1480,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1482,0",
+                  "text": "0,1478,20,47"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "replaceChild",
+                "text": "Replaces one child node in this node with another.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newChild",
+                    "text": "The replacement node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,1488,52",
+                      "text": "0,1488,61,21",
+                      "type": "0,1488,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldChild",
+                    "text": "The node to replace\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,1489,52",
+                      "text": "0,1489,61,20",
+                      "type": "0,1489,28"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The replaced node\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,1490,53,18",
+                      "type": "0,1490,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1492,0",
+                  "text": "0,1487,20,51"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "indexOf",
+                "text": "Returns the index of a child node\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,1502,52",
+                      "type": "0,1502,28"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The index of the node or -1 if it was not found\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1503,37,48",
+                      "type": "0,1503,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1505,0",
+                  "text": "0,1501,20,34"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "indexOfId",
+                "text": "Returns the index of a child node that matches the id\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the node to find\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1511,36",
+                      "text": "0,1511,39,27",
+                      "type": "0,1511,28"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The index of the node or -1 if it was not found\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1512,37,48",
+                      "type": "0,1512,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1514,0",
+                  "text": "0,1510,20,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getPath",
+                "text": "Gets the hierarchical path from the root of the current node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "optional": true,
+                    "text": "The field to construct the path from. Defaults to the model idProperty.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1529,37",
+                      "text": "0,1529,44,72",
+                      "type": "0,1529,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "separator",
+                    "optional": true,
+                    "text": "A separator to use.\n",
+                    "type": "String",
+                    "value": "'/'",
+                    "src": {
+                      "name": "0,1530,37",
+                      "text": "0,1530,52,20",
+                      "type": "0,1530,28",
+                      "value": "0,1530,47"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The node path\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,1531,37,14",
+                      "type": "0,1531,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1533,0",
+                  "text": "0,1528,20,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDepth",
+                "text": "Returns depth of this node (the root node has a depth of 0)\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,1549,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1551,0",
+                  "text": "0,1548,20,60"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "bubble",
+                "text": "Bubbles up the tree from this node, calling the specified function with each node. The arguments to the function\nwill be the args provided or the current node. If the function returns false at any point,\nthe bubble is stopped.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,1559,38",
+                      "text": "0,1559,41,21",
+                      "type": "0,1559,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (this reference) in which the function is executed. Defaults to the current Node.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1560,37",
+                      "text": "0,1560,44,92",
+                      "type": "0,1560,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "optional": true,
+                    "text": "The args to call the function with. Defaults to passing the current Node.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,1561,36",
+                      "text": "0,1561,42,74",
+                      "type": "0,1561,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1563,0",
+                  "text": "0,1556,20,227"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "cascadeBy",
+                "text": "Cascades down the tree from this node, calling the specified functions with each node. The arguments to the function\nwill be the args provided or the current node. If the `before` function returns false at any point,\nthe cascade is stopped on that branch.\n\nNote that the 3 argument form passing `fn, scope, args` is still supported. The `fn` function is as before, called\n*before* cascading down into child nodes. If it returns `false`, the child nodes are not traversed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "spec",
+                    "text": "An object containing before and after functions, scope and an argument list.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "before",
+                        "optional": true,
+                        "text": "A function to call on a node *before* cascading down into child nodes.\nIf it returns `false`, the child nodes are not traversed.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,1591,44",
+                          "text": "0,1591,52,71:0,1592,20,58",
+                          "type": "0,1591,28"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "after",
+                        "optional": true,
+                        "text": "A function to call on a node *after* cascading down into child nodes.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,1593,44",
+                          "text": "0,1593,51,70",
+                          "type": "0,1593,28"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "optional": true,
+                        "text": "The scope (this reference) in which the functions are executed. Defaults to the current Node.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,1594,42",
+                          "text": "0,1594,49,94",
+                          "type": "0,1594,28"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "args",
+                        "optional": true,
+                        "text": "The args to call the function with. Defaults to passing the current Node.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "0,1595,41",
+                          "text": "0,1595,47,74",
+                          "type": "0,1595,28"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,1590,36",
+                      "text": "0,1590,41,77",
+                      "type": "0,1590,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1597,0",
+                  "text": "0,1583,20,473"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "eachChild",
+                "text": "Iterates the child nodes of this node, calling the specified function\nwith each node. The arguments to the function will be the args\nprovided or the current node. If the function returns false at any\npoint, the iteration stops.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,1626,38",
+                      "text": "0,1626,41,21",
+                      "type": "0,1626,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (_this_ reference) in which the\nfunction is executed. Defaults to the Node on which eachChild is\ncalled.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1627,37",
+                      "text": "0,1627,44,42:0,1628,20,73",
+                      "type": "0,1627,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "optional": true,
+                    "text": "The args to call the function with. Defaults to\npassing the current Node.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,1630,36",
+                      "text": "0,1630,42,48:0,1631,20,26",
+                      "type": "0,1630,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1633,0",
+                  "text": "0,1622,20,228"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "findChild",
+                "text": "Finds the first child that has the attribute with the specified value.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "attribute",
+                    "text": "The attribute name\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1647,36",
+                      "text": "0,1647,46,19",
+                      "type": "0,1647,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value to search for\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1648,36",
+                      "text": "0,1648,42,24",
+                      "type": "0,1648,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "deep",
+                    "optional": true,
+                    "text": "True to search through nodes deeper than the immediate children\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1649,38",
+                      "text": "0,1649,50,64",
+                      "type": "0,1649,28",
+                      "value": "0,1649,43"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The found child or null if none was found\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,1650,53,42",
+                      "type": "0,1650,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1652,0",
+                  "text": "0,1646,20,71"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "findChildBy",
+                "text": "Finds the first child by a custom function. The child matches if the function passed returns true.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "A function which must return true if the passed Node is the required Node.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,1660,38",
+                      "text": "0,1660,41,75",
+                      "type": "0,1660,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (this reference) in which the function is executed. Defaults to the Node being tested.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1661,37",
+                      "text": "0,1661,44,97",
+                      "type": "0,1661,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "deep",
+                    "optional": true,
+                    "text": "True to search through nodes deeper than the immediate children\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1662,38",
+                      "text": "0,1662,50,64",
+                      "type": "0,1662,28",
+                      "value": "0,1662,43"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The found child or null if none was found\n",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "text": "0,1663,53,42",
+                      "type": "0,1663,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1665,0",
+                  "text": "0,1659,20,99"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "contains",
+                "text": "Returns true if this node is an ancestor (at any point) of the passed node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,1688,52",
+                      "type": "0,1688,28"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1689,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1691,0",
+                  "text": "0,1687,20,76"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isAncestor",
+                "text": "Returns true if the passed node is an ancestor (at any point) of this node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "type": "Ext.data.NodeInterface",
+                    "src": {
+                      "name": "0,1697,52",
+                      "type": "0,1697,28"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1698,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1700,0",
+                  "text": "0,1696,20,76"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "sort",
+                "text": "Sorts this nodes children using the supplied sort function.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "sortFn",
+                    "optional": true,
+                    "text": "A function which, when passed two Nodes, returns -1, 0 or 1 depending upon required sort order.\n\nIt omitted, the node is sorted according to the existing sorters in the owning <a href='#!/api/Ext.data.TreeStore'>Ext.data.TreeStore</a>.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,1713,39",
+                      "text": "0,1713,47,96:0,1714,20,118",
+                      "type": "0,1713,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "recursive",
+                    "optional": true,
+                    "text": "True to apply this sort recursively\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1716,38",
+                      "text": "0,1716,55,36",
+                      "type": "0,1716,28",
+                      "value": "0,1716,48"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "optional": true,
+                    "text": "True to not fire a sort event.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1717,38",
+                      "text": "0,1717,59,31",
+                      "type": "0,1717,28",
+                      "value": "0,1717,52"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1719,0",
+                  "text": "0,1712,20,60"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isExpanded",
+                "text": "Returns `true` if this node is expanded.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1763,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1765,0",
+                  "text": "0,1762,20,41"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLoaded",
+                "text": "Returns true if this node is loaded\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1771,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1773,0",
+                  "text": "0,1770,20,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isBranchLoaded",
+                "text": "Returns true if this node is a branch node, and the entire branch is fully loaded.\n\nUsing this method, it is possible to ascertain whether an\n`expandAll()` call (_classic toolkit TreePanel method_) will have\naccess to all descendant nodes without incurring a store load.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1783,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1785,0",
+                  "text": "0,1778,20,271"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLoading",
+                "text": "Returns true if this node is loading\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1801,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1803,0",
+                  "text": "0,1800,20,37"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isRoot",
+                "text": "Returns true if this node is the root node\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1809,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1811,0",
+                  "text": "0,1808,20,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isVisible",
+                "text": "Returns true if this node is visible. Note that visibility refers to\nthe structure of the tree, the <a href='#!/api/Ext.tree.Panel-cfg-rootVisible'>Ext.tree.Panel#rootVisible</a>\nconfiguration is not taken into account here. If this method is called\non the root node, it will always be visible.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1820,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1822,0",
+                  "text": "0,1816,20,251"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "expand",
+                "text": "Expand this node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "recursive",
+                    "optional": true,
+                    "text": "True to recursively expand all the children\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1835,38",
+                      "text": "0,1835,55,44",
+                      "type": "0,1835,28",
+                      "value": "0,1835,48"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "optional": true,
+                    "text": "The function to execute once the expand completes\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,1836,39",
+                      "text": "0,1836,49,50",
+                      "type": "0,1836,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope to run the callback in\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1837,37",
+                      "text": "0,1837,44,33",
+                      "type": "0,1837,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1839,0",
+                  "text": "0,1834,20,18"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onChildNodesAvailable",
+                "text": "Called as a callback from the beforeexpand listener fired by <a href='#!/api/Ext.data.NodeInterface-method-expand'>method-expand</a> when the child nodes have been loaded and appended.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "src": {
+                      "name": "0,1917,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "recursive",
+                    "src": {
+                      "name": "0,1917,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "src": {
+                      "name": "0,1917,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "0,1917,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1914,20",
+                  "name": "0,1917,0",
+                  "text": "0,1915,20,136"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "expandChildren",
+                "text": "Expand all the children of this node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "recursive",
+                    "optional": true,
+                    "text": "True to recursively expand all the children\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1989,38",
+                      "text": "0,1989,55,44",
+                      "type": "0,1989,28",
+                      "value": "0,1989,48"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "optional": true,
+                    "text": "The function to execute once all the children are expanded\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,1990,39",
+                      "text": "0,1990,49,59",
+                      "type": "0,1990,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope to run the callback in\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1991,37",
+                      "text": "0,1991,44,33",
+                      "type": "0,1991,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1993,0",
+                  "text": "0,1988,20,38"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "collapse",
+                "text": "Collapse this node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "recursive",
+                    "optional": true,
+                    "text": "True to recursively collapse all the children\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,2035,38",
+                      "text": "0,2035,55,46",
+                      "type": "0,2035,28",
+                      "value": "0,2035,48"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "optional": true,
+                    "text": "The function to execute once the collapse completes\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,2036,39",
+                      "text": "0,2036,49,52",
+                      "type": "0,2036,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope to run the callback in\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,2037,37",
+                      "text": "0,2037,44,33",
+                      "type": "0,2037,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,2039,0",
+                  "text": "0,2034,20,20"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setCollapsed",
+                "text": "Sets the node into the collapsed state without affecting the UI.\n\nThis is called when a node is collapsed with the recursive flag. All the descendant\nnodes will have been removed from the store, but descendant non-leaf nodes still\nneed to be set to the collapsed state without affecting the UI.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "recursive",
+                    "src": {
+                      "name": "0,2123,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,2115,20",
+                  "name": "0,2123,0",
+                  "text": "0,2117,20,295"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "collapseChildren",
+                "text": "Collapse all the children of this node.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "recursive",
+                    "optional": true,
+                    "text": "True to recursively collapse all the children\n",
+                    "type": "Function",
+                    "value": "false",
+                    "src": {
+                      "name": "0,2149,39",
+                      "text": "0,2149,56,46",
+                      "type": "0,2149,28",
+                      "value": "0,2149,49"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "optional": true,
+                    "text": "The function to execute once all the children are collapsed\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,2150,39",
+                      "text": "0,2150,49,60",
+                      "type": "0,2150,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope to run the callback in\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,2151,37",
+                      "text": "0,2151,44,33",
+                      "type": "0,2151,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,2153,0",
+                  "text": "0,2148,20,40"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEvent",
+                "text": "Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed\nto <a href='#!/api/Ext.mixin.Observable-method-addListener'>Ext.mixin.Observable#addListener</a>).\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.mixin.Observable-method-enableBubble'>Ext.mixin.Observable#enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,2194,35",
+                      "text": "0,2194,45,31",
+                      "type": "0,2194,27"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Variable number of parameters are passed to handlers.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,2195,38",
+                      "text": "0,2195,43,54",
+                      "type": "0,2195,27"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,2196,37,77",
+                      "type": "0,2196,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,2198,0",
+                  "text": "0,2188,19,344"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "serialize",
+                "text": "Creates an object representation of this node including its children.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "writerParam",
+                    "src": {
+                      "name": "0,2239,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,2239,0",
+                  "text": "0,2237,20,70"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "nextSibling",
+                "text": "A reference to this node's next sibling node. <a href='#!/api/null'>null</a> if this node does not have a next sibling.\n",
+                "type": "Ext.data.NodeInterface",
+                "src": {
+                  "name": "0,298,43",
+                  "text": "0,299,8,96",
+                  "type": "0,298,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "previousSibling",
+                "text": "A reference to this node's previous sibling node. <a href='#!/api/null'>null</a> if this node does not have a previous sibling.\n",
+                "type": "Ext.data.NodeInterface",
+                "src": {
+                  "name": "0,303,43",
+                  "text": "0,304,8,104",
+                  "type": "0,303,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "parentNode",
+                "text": "A reference to this node's parent node. <a href='#!/api/null'>null</a> if this node is the root node.\n",
+                "type": "Ext.data.NodeInterface",
+                "src": {
+                  "name": "0,308,43",
+                  "text": "0,309,8,78",
+                  "type": "0,308,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "lastChild",
+                "text": "A reference to this node's last child node. <a href='#!/api/null'>null</a> if this node has no children.\n",
+                "type": "Ext.data.NodeInterface",
+                "src": {
+                  "name": "0,313,43",
+                  "text": "0,314,8,81",
+                  "type": "0,313,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "firstChild",
+                "text": "A reference to this node's first child node. <a href='#!/api/null'>null</a> if this node has no children.\n",
+                "type": "Ext.data.NodeInterface",
+                "src": {
+                  "name": "0,318,43",
+                  "text": "0,319,8,82",
+                  "type": "0,318,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "childNodes",
+                "text": "An array of this nodes children.  Array will be empty if this node has no children.\n",
+                "type": "Ext.data.NodeInterface[]",
+                "src": {
+                  "name": "0,323,45",
+                  "text": "0,324,8,84",
+                  "type": "0,323,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isNode",
+                "text": "`true` in this class to identify an object as an instantiated Node, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,413,40",
+                  "text": "0,414,20,89",
+                  "type": "0,413,31"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "decorate",
+                "static": true,
+                "text": "This method allows you to decorate a Model's class to implement the NodeInterface.\nThis adds a set of methods, new events, new properties and new fields on every Record.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "model",
+                    "text": "The Model class or an instance of the Model class you want to\ndecorate the prototype of.\n",
+                    "type": "Ext.Class/Ext.data.Model",
+                    "src": {
+                      "name": "0,331,46",
+                      "text": "0,331,52,62:0,332,12,27",
+                      "type": "0,331,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,335,0",
+                  "static": "0,333,12",
+                  "text": "0,329,12,170"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,104,0",
+          "requires": "0,106,0,0:0,107,0,0:0,108,0,0:0,109,0,0:0,110,0,0",
+          "text": "0,2,4,3362"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

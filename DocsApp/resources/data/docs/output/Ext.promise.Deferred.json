@@ -1,0 +1,257 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/promise/Deferred.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.promise.Deferred",
+        "requires": "Ext.promise.Consequence",
+        "since": "6.0.0",
+        "text": "Deferreds are the mechanism used to create new Promises. A Deferred has a single\nassociated Promise that can be safely returned to external consumers to ensure they do\nnot interfere with the resolution or rejection of the deferred operation.\n\nA Deferred is typically used within the body of a function that performs an asynchronous\noperation. When that operation succeeds, the Deferred should be resolved; if that\noperation fails, the Deferred should be rejected.\n\nEach Deferred has an associated Promise. A Promise delegates <a href='#!/api/Ext.promise.Deferred-method-then'>then</a> calls to its\nDeferred's <a href='#!/api/Ext.promise.Deferred-method-then'>then</a> method. In this way, access to Deferred operations are divided between\nproducer (Deferred) and consumer (Promise) roles.\n\nWhen a Deferred's <a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> method is called, it fulfills with the optionally specified\nvalue. If <a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> is called with a then-able (i.e.a Function or Object with a <a href='#!/api/Ext.promise.Deferred-method-then'>then</a>\nfunction, such as another Promise) it assimilates the then-able's result; the Deferred\nprovides its own <a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> and <a href='#!/api/Ext.promise.Deferred-method-reject'>reject</a> methods as the onFulfilled or onRejected\narguments in a call to that then-able's <a href='#!/api/Ext.promise.Deferred-method-then'>then</a> function. If an error is thrown while\ncalling the then-able's <a href='#!/api/Ext.promise.Deferred-method-then'>then</a> function (prior to any call back to the specified\n<a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> or <a href='#!/api/Ext.promise.Deferred-method-reject'>reject</a> methods), the Deferred rejects with that error. If a Deferred's\n<a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> method is called with its own Promise, it rejects with a TypeError.\n\nWhen a Deferred's <a href='#!/api/Ext.promise.Deferred-method-reject'>reject</a> method is called, it rejects with the optionally specified\nreason.\n\nEach time a Deferred's <a href='#!/api/Ext.promise.Deferred-method-then'>then</a> method is called, it captures a pair of optional\nonFulfilled and onRejected callbacks and returns a Promise of the Deferred's future\nvalue as transformed by those callbacks.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "then",
+                "text": "Used to specify onFulfilled and onRejected callbacks that will be\nnotified when the future value becomes available.\n\nThose callbacks can subsequently transform the value that was\nfulfilled or the error that was rejected. Each call to <a href='#!/api/Ext.promise.Deferred-method-then'>then</a>\nreturns a new Promise of that transformed value; i.e., a Promise\nthat is fulfilled with the callback return value or rejected with\nany error thrown by the callback.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "onFulfilled",
+                    "optional": true,
+                    "text": "Callback to execute to transform a fulfillment value.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,98,27",
+                      "text": "0,98,40,54",
+                      "type": "0,98,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "onRejected",
+                    "optional": true,
+                    "text": "Callback to execute to transform a rejection reason.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,99,27",
+                      "text": "0,99,39,53",
+                      "type": "0,99,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "onProgress",
+                    "optional": true,
+                    "text": "Callback to execute to transform a progress value.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,100,27",
+                      "text": "0,100,39,51",
+                      "type": "0,100,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Promise that is fulfilled with the callback return value or rejected with\nany error thrown by the callback.\n",
+                    "src": {
+                      "text": "0,102,16,74:0,103,8,34"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,105,0",
+                  "text": "0,89,8,407"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resolve",
+                "text": "Resolve this Deferred with the (optional) specified value.\n\nIf called with a then-able (i.e.a Function or Object with a <a href='#!/api/Ext.promise.Deferred-method-then'>then</a>\nfunction, such as another Promise) it assimilates the then-able's\nresult; the Deferred provides its own <a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> and <a href='#!/api/Ext.promise.Deferred-method-reject'>reject</a> methods\nas the onFulfilled or onRejected arguments in a call to that\nthen-able's <a href='#!/api/Ext.promise.Deferred-method-then'>then</a> function.  If an error is thrown while calling\nthe then-able's <a href='#!/api/Ext.promise.Deferred-method-then'>then</a> function (prior to any call back to the\nspecified <a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> or <a href='#!/api/Ext.promise.Deferred-method-reject'>reject</a> methods), the Deferred rejects with\nthat error. If a Deferred's <a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> method is called with its own\nPromise, it rejects with a TypeError.\n\nOnce a Deferred has been fulfilled or rejected, it is considered to be complete\nand subsequent calls to <a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> or <a href='#!/api/Ext.promise.Deferred-method-reject'>reject</a> are ignored.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "Value to resolve as either a fulfillment value or rejection\nreason.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,135,23",
+                      "text": "0,135,29,60:0,136,8,8",
+                      "type": "0,135,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,138,0",
+                  "text": "0,120,8,767"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reject",
+                "text": "Reject this Deferred with the specified reason.\n\nOnce a Deferred has been rejected, it is considered to be complete\nand subsequent calls to <a href='#!/api/Ext.promise.Deferred-method-resolve'>resolve</a> or <a href='#!/api/Ext.promise.Deferred-method-reject'>reject</a> are ignored.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "reason",
+                    "text": "Rejection reason.\n",
+                    "type": "Error",
+                    "src": {
+                      "name": "0,189,23",
+                      "text": "0,189,30,18",
+                      "type": "0,189,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,191,0",
+                  "text": "0,184,8,176"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "update",
+                "text": "Updates progress for this Deferred, if it is still pending, triggering it to\nexecute the `onProgress` callback and propagate the resulting transformed progress\nvalue to Deferreds that originate from this Deferred.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "progress",
+                    "text": "The progress value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,204,23",
+                      "text": "0,204,32,20",
+                      "type": "0,204,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,206,0",
+                  "text": "0,200,8,215"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "complete",
+                "text": "Complete this Deferred with the specified action and value.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "action",
+                    "text": "Completion action (i.e. 'fufill' or 'reject').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,223,24",
+                      "text": "0,223,31,47",
+                      "type": "0,223,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "Fulfillment value or rejection reason.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,224,23",
+                      "text": "0,224,29,39",
+                      "type": "0,224,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,226,8",
+                  "name": "0,228,0",
+                  "text": "0,221,8,61"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "promise",
+                "text": "Promise of the future value of this Deferred.\n",
+                "type": "Ext.promise.Promise",
+                "src": {
+                  "name": "0,46,40",
+                  "text": "0,46,48,46",
+                  "type": "0,46,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "consequences",
+                "text": "Pending Consequences chained to this Deferred.\n",
+                "type": "Ext.promise.Consequence[]",
+                "src": {
+                  "access": "0,53,8",
+                  "name": "0,51,46",
+                  "text": "0,51,59,47",
+                  "type": "0,51,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "completed",
+                "text": "Indicates whether this Deferred has been completed.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,60,8",
+                  "name": "0,58,28",
+                  "text": "0,58,38,52",
+                  "type": "0,58,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "completeAction",
+                "text": "The completion action (i.e. 'fulfill' or 'reject').\n",
+                "type": "String",
+                "src": {
+                  "access": "0,67,8",
+                  "name": "0,65,27",
+                  "text": "0,65,42,52",
+                  "type": "0,65,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "completionValue",
+                "text": "The completion value (i.e. resolution value or rejection error).\n",
+                "type": "Mixed",
+                "src": {
+                  "access": "0,74,8",
+                  "name": "0,72,26",
+                  "text": "0,72,42,65",
+                  "type": "0,72,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,37,4",
+          "name": "0,40,0",
+          "requires": "0,42,0",
+          "since": "0,38,11",
+          "text": "0,9,4,1660"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

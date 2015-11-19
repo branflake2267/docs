@@ -1,0 +1,809 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/tree/plugin/TreeViewDragDrop.js",
+    "../../../ext/packages/core/src/plugin/Abstract.js",
+    "../../../ext/classic/classic/overrides/plugin/Abstract.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "plugin.treeviewdragdrop",
+        "extends": "Ext.plugin.Abstract",
+        "name": "Ext.tree.plugin.TreeViewDragDrop",
+        "text": "This plugin provides drag and drop functionality for a <a href='#!/api/Ext.tree.View'>Ext.tree.View</a>.\n\nA specialized instance of <a href='#!/api/Ext.dd.DragZone'>Ext.dd.DragZone</a> and <a href='#!/api/Ext.dd.DropZone'>Ext.dd.DropZone</a> are attached to the tree view.  The DropZone will participate in drops\nfrom DragZones having the same <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-ddGroup'>ddGroup</a> including drops from within the same\ntree.\n\nDuring the drop operation a data object is passed to a participating DropZone's drop\nhandlers.  The drag data object has the following properties:\n\n- **copy:** <a href='#!/api/Boolean'>Boolean</a> <br> The value of <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-copy'>copy</a>.  Or `true` if <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-allowCopy'>allowCopy</a> is true **and** the control key was pressed as the drag operation began.\n\n- **view:** <a href='#!/api/Ext.tree.View'>Ext.tree.View</a> <br> The source tree view from which the\ndrag originated\n\n- **ddel:** HTMLElement <br> The drag proxy element which moves with the cursor\n\n- **item:** HTMLElement <br> The tree view node upon which the mousedown event was\nregistered\n\n- **records:** <a href='#!/api/Array'>Array</a> <br> An Array of <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>s\nrepresenting the selected data being dragged from the source tree view.\n\nBy adding this plugin to a view, two new events will be fired from the client\ntree view as well as its owning Tree: <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-event-beforedrop'>beforedrop</a> and <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-event-drop'>drop</a>.\n\n    var store = Ext.create('Ext.data.TreeStore', {\n        root: {\n            expanded: true,\n            children: [{\n                text: \"detention\",\n                leaf: true\n            }, {\n                text: \"homework\",\n                expanded: true,\n                children: [{\n                    text: \"book report\",\n                    leaf: true\n                }, {\n                    text: \"algebra\",\n                    leaf: true\n                }]\n            }, {\n                text: \"buy lottery tickets\",\n                leaf: true\n            }]\n        }\n    });\n\n    Ext.create('Ext.tree.Panel', {\n        title: 'Simple Tree',\n        width: 200,\n        height: 200,\n        store: store,\n        rootVisible: false,\n        renderTo: document.body,\n        viewConfig: {\n            plugins: {\n                ptype: 'treeviewdragdrop',\n                dragText: 'Drag and drop to reorganize'\n            }\n        }\n    });\n",
+        "uses": "Ext.tree.ViewDragZone,Ext.tree.ViewDropZone",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "allowContainerDrops",
+                "text": "True if drops on the tree container (outside of a specific tree node) are allowed.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,223,23",
+                  "text": "0,224,8,83",
+                  "type": "0,223,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "allowCopy",
+                "optional": true,
+                "text": "Set as `true` to allow the user to hold down the control key at the start of the\ndrag operation and copy the dragged records between grids.  Otherwise, dragged\nrecords will be moved.\n\n**Note:** This only applies to records dragged between two different grids with\nunique stores.\n\nSee <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-copy'>copy</a> to enable the copying of all dragged records.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,188,24",
+                  "text": "0,189,8,344",
+                  "type": "0,188,14",
+                  "value": "0,188,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "allowParentInserts",
+                "text": "Allow inserting a dragged node between an expanded parent node and its first child that will become a sibling of\nthe parent when dropped.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,216,23",
+                  "text": "0,217,8,138",
+                  "type": "0,216,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "appendOnly",
+                "text": "True if the tree should only allow append drops (use for trees which are sorted).\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,229,23",
+                  "text": "0,230,8,82",
+                  "type": "0,229,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "containerScroll",
+                "text": "True to register this container with the Scrollmanager for auto scrolling during drag operations.\nA <a href='#!/api/Ext.dd.ScrollManager'>Ext.dd.ScrollManager</a> configuration may also be passed.\n",
+                "type": "Object/Boolean",
+                "src": {
+                  "name": "0,244,30",
+                  "text": "0,242,8,163",
+                  "type": "0,244,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "copy",
+                "optional": true,
+                "text": "Set as `true` to copy the records from the source grid to the destination drop\ngrid.  Otherwise, dragged records will be moved.\n\n**Note:** This only applies to records dragged between two different grids with\nunique stores.\n\nSee <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-allowCopy'>allowCopy</a> to allow only control-drag operations to copy records.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,177,24",
+                  "text": "0,178,8,303",
+                  "type": "0,177,14",
+                  "value": "0,177,29"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ddGroup",
+                "optional": true,
+                "text": "A named drag drop group to which this object belongs. If a group is specified, then both the DragZones and\nDropZone used by this plugin will only interact with other drag drop objects in the same group.\n",
+                "type": "String",
+                "value": "TreeDD",
+                "src": {
+                  "name": "0,235,23",
+                  "text": "0,236,8,203",
+                  "type": "0,235,14",
+                  "value": "0,235,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "displayField",
+                "optional": true,
+                "text": "The name of the model field that is used to display the text for the nodes\n",
+                "type": "String",
+                "value": "text",
+                "src": {
+                  "name": "0,312,23",
+                  "text": "0,313,8,75",
+                  "type": "0,312,14",
+                  "value": "0,312,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dragGroup",
+                "optional": true,
+                "text": "The ddGroup to which the <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-property-dragZone'>property-dragZone</a> will belong.\n\nThis defines which other DropZones the DragZone will interact with. Drag/DropZones only interact with other\nDrag/DropZones which are members of the same ddGroup.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,249,23",
+                  "text": "0,250,8,237",
+                  "type": "0,249,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dragText",
+                "text": "The text to show while dragging.\n\nTwo placeholders can be used in the text:\n\n- `{0}` The number of selected items.\n- `{1}` 's' when more than 1 items (only useful for English).\n\n**NOTE:** The node's <a href='#!/api/Ext.tree.Panel-cfg-displayField'>Ext.tree.Panel#cfg-displayField</a> will be shown\nwhen a single node is dragged unless <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-dragText'>dragText</a> is a simple text string.\n",
+                "src": {
+                  "name": "0,212,0",
+                  "text": "0,202,8,331"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dragZone",
+                "optional": true,
+                "text": "A config object to apply to the creation of the <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-property-dragZone'>property-dragZone</a> which handles for drag start gestures.\n\nTemplate methods of the DragZone may be overridden using this config.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,318,23",
+                  "text": "0,319,8,194",
+                  "type": "0,318,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dropGroup",
+                "optional": true,
+                "text": "The ddGroup to which the <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-property-dropZone'>property-dropZone</a> will belong.\n\nThis defines which other DragZones the DropZone will interact with. Drag/DropZones only interact with other\nDrag/DropZones which are members of the same <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-ddGroup'>ddGroup</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,257,23",
+                  "text": "0,258,8,246",
+                  "type": "0,257,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dropZone",
+                "optional": true,
+                "text": "A config object to apply to the creation of the <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-property-dropZone'>property-dropZone</a> which handles mouseover and drop gestures.\n\nTemplate methods of the DropZone may be overridden using this config.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,325,23",
+                  "text": "0,326,8,198",
+                  "type": "0,325,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "enableDrag",
+                "text": "Set to `false` to disallow dragging items from the View.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,283,23",
+                  "text": "0,284,8,57",
+                  "type": "0,283,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "enableDrop",
+                "text": "Set to `false` to disallow the View from accepting drop gestures.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,277,23",
+                  "text": "0,278,8,66",
+                  "type": "0,277,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "expandDelay",
+                "optional": true,
+                "text": "The delay in milliseconds to wait before expanding a target tree node while dragging a droppable node over the\ntarget.\n",
+                "type": "Number",
+                "value": "1000",
+                "src": {
+                  "name": "0,270,23",
+                  "text": "0,271,8,119",
+                  "type": "0,270,14",
+                  "value": "0,270,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "nodeHighlightColor",
+                "optional": true,
+                "text": "The color to use when visually highlighting the dragged or dropped node (default value is light blue).\nThe color must be a 6 digit hex value, without a preceding '#'. See also <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-nodeHighlightOnDrop'>nodeHighlightOnDrop</a> and\n<a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-nodeHighlightOnRepair'>nodeHighlightOnRepair</a>.\n",
+                "type": "String",
+                "value": "c3daf9",
+                "src": {
+                  "name": "0,289,23",
+                  "text": "0,290,8,241",
+                  "type": "0,289,14",
+                  "value": "0,289,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "nodeHighlightOnDrop",
+                "text": "Whether or not to highlight any nodes after they are\nsuccessfully dropped on their target. Defaults to the value of `Ext.enableFx`.\nSee also <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-nodeHighlightColor'>nodeHighlightColor</a> and <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-nodeHighlightOnRepair'>nodeHighlightOnRepair</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,297,23",
+                  "text": "0,298,8,205",
+                  "type": "0,297,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "nodeHighlightOnRepair",
+                "text": "Whether or not to highlight any nodes after they are\nrepaired from an unsuccessful drag/drop. Defaults to the value of `Ext.enableFx`.\nSee also <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-nodeHighlightColor'>nodeHighlightColor</a> and <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-nodeHighlightOnDrop'>nodeHighlightOnDrop</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,305,23",
+                  "text": "0,306,8,206",
+                  "type": "0,305,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pluginId",
+                "text": "A name for the plugin that can be set at creation time to then retrieve the plugin\nthrough <a href='#!/api/Ext.Component-method-getPlugin'>Ext.Component#getPlugin</a> method.  For example:\n\n    var grid = Ext.create('Ext.grid.Panel', {\n        plugins: [{\n            ptype: 'cellediting',\n            clicksToEdit: 2,\n            pluginId: 'cellplugin'\n        }]\n    });\n\n    // later on:\n    var plugin = grid.getPlugin('cellplugin');\n",
+                "type": "String",
+                "src": {
+                  "name": "1,61,22",
+                  "text": "1,62,8,404",
+                  "type": "1,61,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "sortOnDrop",
+                "optional": true,
+                "text": "Configure as `true` to sort the target node into the current tree sort order after the dropped node is added.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,265,24",
+                  "text": "0,266,8,110",
+                  "type": "0,265,14",
+                  "value": "0,265,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stateEvents",
+                "text": "The configured list of stateEvents used to (optionally) participate in Owner Component's state management.\n",
+                "type": "String/Array",
+                "src": {
+                  "name": "2,13,28",
+                  "text": "2,14,8,107",
+                  "type": "2,13,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "beforedrop",
+                "text": "**This event is fired through the <a href='#!/api/Ext.tree.View'>Ext.tree.View</a> and its owning\n<a href='#!/api/Ext.tree.Panel'>Ext.tree.Panel</a>. You can add listeners to the tree or tree <a href='#!/api/Ext.tree.Panel-cfg-viewConfig'>Ext.tree.Panel#viewConfig</a> object**\n\nFired when a drop gesture has been triggered by a mouseup event in a valid drop\nposition in the tree view.\n\nReturning `false` to this event signals that the drop gesture was invalid and\nanimates the drag proxy back to the point from which the drag began.\n\nThe dropHandlers parameter can be used to defer the processing of this event. For\nexample, you can force the handler to wait for the result of a message box\nconfirmation or an asynchronous server call (_see the details of the dropHandlers\nproperty for more information_).\n\n    tree.on('beforedrop', function(node, data, overModel, dropPosition, dropHandlers) {\n        // Defer the handling\n        dropHandlers.wait = true;\n        Ext.MessageBox.confirm('Drop', 'Are you sure', function(btn){\n            if (btn === 'yes') {\n                dropHandlers.processDrop();\n            } else {\n                dropHandlers.cancelDrop();\n            }\n        });\n    });\n\nAny other return value continues with the data transfer operation unless the wait\nproperty is set.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The <a href='#!/api/Ext.tree.View'>Ext.tree.View</a> node **if any** over\nwhich the cursor was positioned.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "0,108,29",
+                      "text": "0,108,34,57:0,109,8,34",
+                      "type": "0,108,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "The data object gathered at mousedown time by the\ncooperating <a href='#!/api/Ext.dd.DragZone'>Ext.dd.DragZone</a>s <a href='#!/api/Ext.dd.DragZone-method-getDragData'>Ext.dd.DragZone#getDragData</a> method.  It contains the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "copy",
+                        "text": "The value of <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-copy'>copy</a>.  Or `true` if\n<a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-allowCopy'>allowCopy</a> is true **and** the control key was pressed as the drag\noperation began.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,114,30",
+                          "text": "0,114,35,42:0,115,8,92",
+                          "type": "0,114,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "view",
+                        "text": "The source tree view from which the drag\noriginated\n",
+                        "type": "Ext.tree.View",
+                        "src": {
+                          "name": "0,117,36",
+                          "text": "0,117,41,41:0,118,8,11",
+                          "type": "0,117,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "ddel",
+                        "text": "The drag proxy element which moves with the cursor\n",
+                        "type": "HTMLElement",
+                        "src": {
+                          "name": "0,119,34",
+                          "text": "0,119,39,51",
+                          "type": "0,119,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "item",
+                        "text": "The tree view node upon which the mousedown event\nwas registered\n",
+                        "type": "HTMLElement",
+                        "src": {
+                          "name": "0,120,34",
+                          "text": "0,120,39,50:0,121,8,15",
+                          "type": "0,120,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "records",
+                        "text": "An Array of Models representing the\nselected data being dragged from the source tree view\n",
+                        "type": "Ext.data.TreeModel[]",
+                        "src": {
+                          "name": "0,122,43",
+                          "text": "0,122,51,36:0,123,8,55",
+                          "type": "0,122,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,111,24",
+                      "text": "0,111,29,50:0,112,8,142",
+                      "type": "0,111,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "overModel",
+                    "text": "The Model over which the drop gesture took place\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,125,36",
+                      "text": "0,125,46,49",
+                      "type": "0,125,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dropPosition",
+                    "text": "`\"before\"` or `\"after\"` depending on whether the\ncursor is above or below the mid-line of the node.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,127,24",
+                      "text": "0,127,37,49:0,128,8,52",
+                      "type": "0,127,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dropHandlers",
+                    "text": "This parameter allows the developer to control when the drop action takes place.\nIt is useful if any asynchronous processing needs to be completed before\nperforming the drop. This object has the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "wait",
+                        "text": "Indicates whether the drop should be deferred.\nSet this property to true to defer the drop.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,135,38",
+                          "text": "0,135,43,47:0,136,8,45",
+                          "type": "0,135,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "processDrop",
+                        "text": "A function to be called to complete\nthe drop operation.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,137,39",
+                          "text": "0,137,51,36:0,138,8,20",
+                          "type": "0,137,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "cancelDrop",
+                        "text": "A function to be called to cancel the\ndrop operation.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,139,39",
+                          "text": "0,139,50,38:0,140,8,16",
+                          "type": "0,139,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,130,24",
+                      "text": "0,131,8,218",
+                      "type": "0,130,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,77,15",
+                  "text": "0,78,8,1234"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "drop",
+                "text": "**This event is fired through the <a href='#!/api/Ext.tree.View'>Ext.tree.View</a> and its owning\n<a href='#!/api/Ext.tree.Panel'>Ext.tree.Panel</a>. You can add listeners to the tree or tree <a href='#!/api/Ext.tree.Panel-cfg-viewConfig'>Ext.tree.Panel#viewConfig</a> object**\n\nFired when a drop operation has been completed and the data has been moved or\ncopied.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The <a href='#!/api/Ext.tree.View'>Ext.tree.View</a> node **if any** over\nwhich the cursor was positioned.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "0,152,29",
+                      "text": "0,152,34,57:0,153,8,34",
+                      "type": "0,152,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "The data object gathered at mousedown time by the\ncooperating <a href='#!/api/Ext.dd.DragZone'>Ext.dd.DragZone</a>s <a href='#!/api/Ext.dd.DragZone-method-getDragData'>Ext.dd.DragZone#getDragData</a> method.  It contains the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "copy",
+                        "text": "The value of <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-copy'>copy</a>.  Or `true` if\n<a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-allowCopy'>allowCopy</a> is true **and** the control key was pressed as the drag\noperation began.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,158,30",
+                          "text": "0,158,35,42:0,159,8,92",
+                          "type": "0,158,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "view",
+                        "text": "The source tree view from which the drag\noriginated\n",
+                        "type": "Ext.tree.View",
+                        "src": {
+                          "name": "0,161,36",
+                          "text": "0,161,41,41:0,162,8,11",
+                          "type": "0,161,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "ddel",
+                        "text": "The drag proxy element which moves with the cursor\n",
+                        "type": "HTMLElement",
+                        "src": {
+                          "name": "0,163,34",
+                          "text": "0,163,39,51",
+                          "type": "0,163,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "item",
+                        "text": "The tree view node upon which the mousedown event\nwas registered\n",
+                        "type": "HTMLElement",
+                        "src": {
+                          "name": "0,164,34",
+                          "text": "0,164,39,50:0,165,8,15",
+                          "type": "0,164,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "records",
+                        "text": "An Array of Models representing the\nselected data being dragged from the source tree view\n",
+                        "type": "Ext.data.TreeModel[]",
+                        "src": {
+                          "name": "0,166,43",
+                          "text": "0,166,51,36:0,167,8,55",
+                          "type": "0,166,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,155,24",
+                      "text": "0,155,29,50:0,156,8,142",
+                      "type": "0,155,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "overModel",
+                    "text": "The Model over which the drop gesture took\nplace.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,169,36",
+                      "text": "0,169,46,43:0,170,8,8",
+                      "type": "0,169,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dropPosition",
+                    "text": "`\"before\"` or `\"after\"` depending on whether the\ncursor is above or below the mid-line of the node.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,172,24",
+                      "text": "0,172,37,49:0,173,8,51",
+                      "type": "0,172,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,144,15",
+                  "text": "0,145,8,294"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "applyState",
+                "text": "The applyState method is invoked by the client Component's State mixin after initComponent method has been run for the client.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method to utilize it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The current plugin state object to be applied.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,35,24",
+                      "text": "2,35,30,47",
+                      "type": "2,35,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "allState",
+                    "text": "The current aggregate state of the Component and all plugins.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,36,24",
+                      "text": "2,36,33,62",
+                      "type": "2,36,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,39,0",
+                  "text": "2,31,8,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clonePlugin",
+                "text": "Creates clone of the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "overrideCfg",
+                    "optional": true,
+                    "text": "Additional config for the derived plugin.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,38,25",
+                      "text": "1,38,38,42",
+                      "type": "1,38,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,40,0",
+                  "text": "1,37,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Instantiates the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "Configuration object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,27,25",
+                      "text": "1,27,33,22",
+                      "type": "1,27,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,29,0",
+                  "text": "1,26,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "The destroy method is invoked by the owning Component at the time the Component is\nbeing destroyed.\n",
+                "src": {
+                  "name": "1,91,16",
+                  "text": "1,88,8,101"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `true`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "2,57,0",
+                  "text": "2,52,8,171"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `false`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "2,47,0",
+                  "text": "2,42,8,172"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCmp",
+                "text": "Returns the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "1,54,32,17",
+                      "type": "1,54,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,56,0",
+                  "text": "1,53,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getState",
+                "text": "The getState method is invoked by the client Component's State mixin when one or more of the the specified <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-stateEvents'>stateEvents</a> are raised.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method which returns a state object.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "state\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,24,25,6",
+                      "type": "2,24,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,27,0",
+                  "text": "2,20,8,352"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "init",
+                "text": "The init method is invoked after initComponent method has been run for the client Component.\n\nThe supplied implementation is empty. Subclasses should perform plugin initialization, and set up bidirectional\nlinks between the plugin and its client Component in their own implementation of this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "client",
+                    "text": "The client Component which owns this plugin.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,83,31",
+                      "text": "1,83,38,45",
+                      "type": "1,83,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,85,0",
+                  "text": "1,79,8,300"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setCmp",
+                "text": "Sets the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cmp",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,46,31",
+                      "text": "1,46,35,17",
+                      "type": "1,46,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,48,0",
+                  "text": "1,45,8,53"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "dragZone",
+                "text": "An <a href='#!/api/Ext.view.DragZone'>Ext.view.DragZone</a> which handles mousedown and dragging of records from the grid.\n",
+                "type": "Ext.view.DragZone",
+                "src": {
+                  "name": "0,332,38",
+                  "text": "0,333,8,101",
+                  "type": "0,332,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dropZone",
+                "text": "An <a href='#!/api/Ext.grid.ViewDropZone'>Ext.grid.ViewDropZone</a> which handles mouseover and dropping records in any grid which shares the same <a href='#!/api/Ext.tree.plugin.TreeViewDragDrop-cfg-dropGroup'>dropGroup</a>.\n",
+                "type": "Ext.grid.ViewDropZone",
+                "src": {
+                  "name": "0,337,42",
+                  "text": "0,338,8,141",
+                  "type": "0,337,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isPlugin",
+                "text": "`true` in this class to identify an object as an instantiated Plugin, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,20,28",
+                  "text": "1,21,8,91",
+                  "type": "1,20,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,69,0",
+          "extends": "0,68,0",
+          "name": "0,67,0",
+          "text": "0,2,4,2211",
+          "uses": "0,72,0,0:0,73,0,0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

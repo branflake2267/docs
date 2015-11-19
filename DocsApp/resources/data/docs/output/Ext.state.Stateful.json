@@ -1,0 +1,429 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/state/Stateful.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.state.Stateful",
+        "requires": "Ext.state.Manager,Ext.util.TaskRunner",
+        "text": "A mixin for being able to save the state of an object to an underlying\n<a href='#!/api/Ext.state.Provider'>Ext.state.Provider</a>.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "stateful",
+                "text": "A flag which causes the object to attempt to restore the state of\ninternal properties from a saved state on startup. The object must have\na <a href='#!/api/Ext.state.Stateful-cfg-stateId'>stateId</a> for state to be managed.\n\nAuto-generated ids are not guaranteed to be stable across page loads and\ncannot be relied upon to save and restore the same state for a object.\n\nFor state saving to work, the state manager's provider must have been\nset to an implementation of <a href='#!/api/Ext.state.Provider'>Ext.state.Provider</a> which overrides the\n<a href='#!/api/Ext.state.Provider-method-set'>Ext.state.Provider#set</a> and <a href='#!/api/Ext.state.Provider-method-get'>Ext.state.Provider#get</a>\nmethods to save and recall name/value pairs. A built-in implementation,\n<a href='#!/api/Ext.state.CookieProvider'>Ext.state.CookieProvider</a> is available.\n\nTo set the state provider for the current page:\n\n   Ext.state.Manager.setProvider(new Ext.state.CookieProvider({\n       expires: new Date(new Date().getTime()+(1000*60*60*24*7)), //7 days from now\n   }));\n\nA stateful object attempts to save state when one of the events\nlisted in the <a href='#!/api/Ext.state.Stateful-cfg-stateEvents'>stateEvents</a> configuration fires.\n\nTo save state, a stateful object first serializes its state by\ncalling *<a href='#!/api/Ext.state.Stateful-method-getState'>getState</a>*.\n\nThe Component base class implements <a href='#!/api/Ext.state.Stateful-method-getState'>getState</a> to save its width and height within the state\nonly if they were initially configured, and have changed from the configured value.\n\nThe Panel class saves its collapsed state in addition to that.\n\nThe Grid class saves its column state and store state (sorters and filters and grouper) in addition to its superclass state.\n\nIf there is more application state to be save, the developer must provide an implementation which\nfirst calls the superclass method to inherit the above behaviour, and then injects new properties\ninto the returned object.\n\nThe value yielded by getState is passed to <a href='#!/api/Ext.state.Manager-method-set'>Ext.state.Manager#set</a>\nwhich uses the configured <a href='#!/api/Ext.state.Provider'>Ext.state.Provider</a> to save the object\nkeyed by the <a href='#!/api/Ext.state.Stateful-cfg-stateId'>stateId</a>.\n\nDuring construction, a stateful object attempts to *restore* its state by calling\n<a href='#!/api/Ext.state.Manager-method-get'>Ext.state.Manager#get</a> passing the <a href='#!/api/Ext.state.Stateful-cfg-stateId'>stateId</a>\n\nThe resulting object is passed to <a href='#!/api/Ext.state.Stateful-method-applyState'>applyState</a>*. The default implementation of\n<a href='#!/api/Ext.state.Stateful-method-applyState'>applyState</a> simply copies properties into the object, but a developer may\noverride this to support restoration of more complex application state.\n\nYou can perform extra processing on state save and restore by attaching\nhandlers to the <a href='#!/api/Ext.state.Stateful-event-beforestaterestore'>beforestaterestore</a>, <a href='#!/api/Ext.state.Stateful-event-staterestore'>staterestore</a>,\n<a href='#!/api/Ext.state.Stateful-event-beforestatesave'>beforestatesave</a> and <a href='#!/api/Ext.state.Stateful-event-statesave'>statesave</a> events.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,15,23",
+                  "text": "0,16,8,2441",
+                  "type": "0,15,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stateId",
+                "text": "The unique id for this object to use for state management purposes.\n\nSee <a href='#!/api/Ext.state.Stateful-cfg-stateful'>stateful</a> for an explanation of saving and restoring state.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,70,22",
+                  "text": "0,71,8,141",
+                  "type": "0,70,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stateEvents",
+                "text": "An array of events that, when fired, should trigger this object to\nsave its state. Defaults to none. <a href='#!/api/Ext.state.Stateful-cfg-stateEvents'>stateEvents</a> may be any type\nof event supported by this object, including browser or custom events\n(e.g., `['click', 'customerchange']`).\n\nSee <a href='#!/api/Ext.state.Stateful-cfg-stateful'>stateful</a> for an explanation of saving and\nrestoring object state.\n",
+                "type": "String[]",
+                "src": {
+                  "name": "0,77,24",
+                  "text": "0,78,8,322",
+                  "type": "0,77,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "saveDelay",
+                "text": "A buffer to be applied if many state events are fired within a short period.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,88,22",
+                  "text": "0,89,8,77",
+                  "type": "0,88,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "beforestaterestore",
+                "text": "Fires before the state of the object is restored. Return false from an event handler to stop the restore.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.state.Stateful",
+                    "src": {
+                      "name": "0,96,36",
+                      "type": "0,96,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The hash of state values returned from the StateProvider. If this\nevent is not vetoed, then the state object is passed to *<a href='#!/api/Ext.state.Stateful-method-applyState'>applyState</a>*. By default,\nthat simply copies property values into this object. The method maybe overriden to\nprovide custom state restoration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,97,24",
+                      "text": "0,97,30,66:0,98,8,201",
+                      "type": "0,97,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,94,15",
+                  "text": "0,95,8,106"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "staterestore",
+                "text": "Fires after the state of the object is restored.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.state.Stateful",
+                    "src": {
+                      "name": "0,106,36",
+                      "type": "0,106,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The hash of state values returned from the StateProvider. This is passed\nto *<a href='#!/api/Ext.state.Stateful-method-applyState'>applyState</a>*. By default, that simply copies property values into this\nobject. The method maybe overridden to provide custom state restoration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,107,24",
+                      "text": "0,107,30,73:0,108,8,149",
+                      "type": "0,107,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,104,15",
+                  "text": "0,105,8,49"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "beforestatesave",
+                "text": "Fires before the state of the object is saved to the configured state provider. Return false to stop the save.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.state.Stateful",
+                    "src": {
+                      "name": "0,115,36",
+                      "type": "0,115,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The hash of state values. This is determined by calling\n*`getState()`* on the object. This method must be provided by the\ndeveloper to return whatever representation of state is required, by default, Ext.state.Stateful\nhas a null implementation.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,116,24",
+                      "text": "0,116,30,56:0,117,8,190",
+                      "type": "0,116,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,113,15",
+                  "text": "0,114,8,111"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "statesave",
+                "text": "Fires after the state of the object is saved to the configured state provider.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.state.Stateful",
+                    "src": {
+                      "name": "0,125,36",
+                      "type": "0,125,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The hash of state values. This is determined by calling\n*`getState()`* on the object. This method must be provided by the\ndeveloper to return whatever representation of state is required, by default, Ext.state.Stateful\nhas a null implementation.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,126,24",
+                      "text": "0,126,30,56:0,127,8,190",
+                      "type": "0,126,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,123,15",
+                  "text": "0,124,8,79"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "addStateEvents",
+                "text": "Add events that will trigger the state to be saved. If the first argument is an\narray, each element of that array is the name of a state event. Otherwise, each\nargument passed to this method is the name of a state event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "events",
+                    "text": "The event name or an array of event names.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "0,150,33",
+                      "text": "0,150,40,43",
+                      "type": "0,150,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,152,0",
+                  "text": "0,146,8,222"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onStateChange",
+                "text": "This method is called when any of the <a href='#!/api/Ext.state.Stateful-cfg-stateEvents'>stateEvents</a> are fired.\n",
+                "src": {
+                  "access": "0,175,8",
+                  "name": "0,177,0",
+                  "text": "0,174,8,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "saveState",
+                "text": "Saves the state of the object to the persistence store.\n",
+                "src": {
+                  "name": "0,209,0",
+                  "text": "0,207,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getState",
+                "text": "Gets the current state of the object. By default this function returns null,\nit should be overridden in subclasses to implement methods for getting the state.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The current state\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,248,25,18",
+                      "type": "0,248,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,250,0",
+                  "text": "0,246,8,159"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "applyState",
+                "text": "Applies the state to the object. This should be overridden in subclasses to do\nmore complex state operations. By default it applies the state properties onto\nthe current object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The state\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,258,24",
+                      "text": "0,258,30,10",
+                      "type": "0,258,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,260,0",
+                  "text": "0,255,8,178"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getStateId",
+                "text": "Gets the state id for this object.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The 'stateId' or the implicit 'id' specified by component configuration.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,268,25,73",
+                      "type": "0,268,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,269,8",
+                  "name": "0,271,0",
+                  "text": "0,267,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initState",
+                "text": "Initializes the state of the object upon construction.\n",
+                "src": {
+                  "access": "0,278,8",
+                  "name": "0,280,0",
+                  "text": "0,277,8,55"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "savePropToState",
+                "text": "Conditionally saves a single property from this object to the given state object.\nThe idea is to only save state which has changed from the initial state so that\ncurrent software settings do not override future software settings. Only those\nvalues that are user-changed state should be saved.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The name of the property to save.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,325,24",
+                      "text": "0,325,33,34",
+                      "type": "0,325,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The state object in to which to save the property.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,326,24",
+                      "text": "0,326,30,51",
+                      "type": "0,326,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "stateName",
+                    "text": "(optional) The name to use for the property in state.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,327,24",
+                      "text": "0,327,34,54",
+                      "type": "0,327,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the property was saved, false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,328,26,46",
+                      "type": "0,328,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,330,0",
+                  "text": "0,320,8,294"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "savePropsToState",
+                "text": "Gathers additional named properties of the instance and adds their current values\nto the passed state object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "propNames",
+                    "text": "The name (or array of names) of the property to save.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "0,349,33",
+                      "text": "0,349,43,54",
+                      "type": "0,349,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The state object in to which to save the property values.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,350,24",
+                      "text": "0,350,30,58",
+                      "type": "0,350,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "state\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,351,25,6",
+                      "type": "0,351,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,353,0",
+                  "text": "0,347,8,110"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroys this stateful object.\n",
+                "src": {
+                  "name": "0,371,0",
+                  "text": "0,369,8,31"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "requires": "0,10,0,0:0,11,0,0",
+          "text": "0,3,4,99"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,2350 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/property/Property.js",
+    "../../../ext/packages/core/src/data/Model.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.PropGridProperty",
+        "extends": "Ext.data.Model",
+        "name": "Ext.grid.property.Property",
+        "text": "A specific <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> type that represents a name/value pair and is made to work with the\n<a href='#!/api/Ext.grid.property.Grid'>Ext.grid.property.Grid</a>. Typically, Properties do not need to be created directly as they can be\ncreated implicitly by simply using the appropriate data configs either via the\n<a href='#!/api/Ext.grid.property.Grid-cfg-source'>Ext.grid.property.Grid#source</a> config property or by calling <a href='#!/api/Ext.grid.property.Grid-method-setSource'>Ext.grid.property.Grid#setSource</a>.\nHowever, if the need arises, these records can also be created explicitly as shown below. Example usage:\n\n    var rec = new Ext.grid.property.Property({\n        name: 'birthday',\n        value: Ext.Date.parse('17/06/1962', 'd/m/Y')\n    });\n    // Add record to an already populated grid\n    grid.store.addSorted(rec);\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "associations",
+                "text": "An array of <a href='#!/api/Ext.data.schema.Association'>Ext.data.schema.Association</a> for this model.\n",
+                "type": "Object[]",
+                "src": {
+                  "name": "1,835,24",
+                  "text": "1,836,8,77",
+                  "type": "1,835,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "belongsTo",
+                "text": "One or more BelongsTo associations for this model.\n",
+                "type": "String/Object/String[]/Object[]",
+                "src": {
+                  "name": "1,843,47",
+                  "text": "1,844,8,51",
+                  "type": "1,843,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "clientIdProperty",
+                "optional": true,
+                "text": "The name of the property a server will use to send back a client-generated id in a\n`create` or `update` <a href='#!/api/Ext.data.operation.Operation'>Ext.data.operation.Operation</a>.\n\nIf specified, this property cannot have the same name as any other field.\n\nFor example:\n\n     Ext.define('Person', {\n         idProperty: 'id',  // this is the default value (for clarity)\n\n         clientIdProperty: 'clientId',\n\n         identifier: 'negative', // to generate -1, -2 etc on the client\n\n         fields: [ 'name' ]\n     });\n\n     var person = new Person({\n         // no id provided, so -1 is generated\n         name: 'Clark Kent'\n     });\n\nThe server is given this data during the `create`:\n\n     {\n         id: -1,\n         name: 'Clark Kent'\n     }\n\nThe server allocates a real id and responds like so:\n\n     {\n         id: 427,\n         clientId: -1\n     }\n\nThis property is most useful when creating multiple entities in a single call to\nthe server in a <a href='#!/api/Ext.data.operation.Create'>Ext.data.operation.Create</a>. Alternatively,\nthe server could respond with records that correspond one-to-one to those sent in\nthe `operation`.\n\nFor example the client could send a `create` with this data:\n\n     [ { id: -1, name: 'Clark Kent' },\n       { id: -2, name: 'Peter Parker' },\n       { id: -3, name: 'Bruce Banner' } ]\n\nAnd the server could respond in the same order:\n\n     [ { id: 427 },      // updates id = -1\n       { id: 428 },      // updates id = -2\n       { id: 429 } ]     // updates id = -3\n\nOr using <a href='#!/api/Ext.grid.property.Property-cfg-clientIdProperty'>clientIdProperty</a> the server could respond in arbitrary order:\n\n     [ { id: 427, clientId: -3 },\n       { id: 428, clientId: -1 },\n       { id: 429, clientId: -2 } ]\n\n**IMPORTANT:** When upgrading from previous versions be aware that this property\nused to perform the role of <a href='#!/api/Ext.data.writer.Writer-cfg-clientIdProperty'>Ext.data.writer.Writer#clientIdProperty</a> as\nwell as that described above. To continue send a client-generated id as other than\nthe <a href='#!/api/Ext.grid.property.Property-cfg-idProperty'>idProperty</a>, set <a href='#!/api/Ext.grid.property.Property-cfg-clientIdProperty'>clientIdProperty</a> on the `writer`. A better solution, however,\nis most likely a properly configured <a href='#!/api/Ext.grid.property.Property-cfg-identifier'>identifier</a> as that would work better with\nassociations.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,470,23",
+                  "text": "1,471,8,2070",
+                  "type": "1,470,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "convertOnSet",
+                "optional": true,
+                "text": "Set to `false` to prevent any converters from being called on fields specified in\na <a href='#!/api/Ext.data.Model-method-set'>Ext.data.Model#set</a> operation.\n\n**Note:** Setting the config to `false` will only prevent the convert / calculate\ncall when the set `fieldName` param matches the field's <a href='#!/api/Ext.grid.property.Property-name'>name</a>.  In the\nfollowing example the calls to set `salary` will not execute the convert method\non <a href='#!/api/Ext.grid.property.Property-method-set'>set</a> while the calls to set `vested` will execute the convert method on the\ninitial read as well as on <a href='#!/api/Ext.grid.property.Property-method-set'>set</a>.\n\nExample model definition:\n\n    Ext.define('MyApp.model.Employee', {\n        extend: 'Ext.data.Model',\n        fields: ['yearsOfService', {\n            name: 'salary',\n            convert: function (val) {\n                var startingBonus = val * .1;\n                return val + startingBonus;\n            }\n        }, {\n            name: 'vested',\n            convert: function (val, record) {\n                return record.get('yearsOfService') >= 4;\n            },\n            depends: 'yearsOfService'\n        }],\n        convertOnSet: false\n    });\n\n    var tina = Ext.create('MyApp.model.Employee', {\n        salary: 50000,\n        yearsOfService: 3\n    });\n\n    console.log(tina.get('salary')); // logs 55000\n    console.log(tina.get('vested')); // logs false\n\n    tina.set({\n        salary: 60000,\n        yearsOfService: 4\n    });\n    console.log(tina.get('salary')); // logs 60000\n    console.log(tina.get('vested')); // logs true\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,786,24",
+                  "text": "1,787,8,1427",
+                  "type": "1,786,14",
+                  "value": "1,786,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "fields",
+                "text": "An Array of <a href='#!/api/Ext.data.field.Field'>Ext.data.field.Field</a> config objects, simply the field\n<a href='#!/api/Ext.data.field.Field-cfg-name'>Ext.data.field.Field#name</a>, or a mix of config objects and strings.\nIf just a name is given, the field type defaults to `auto`.\n\nIn a <a href='#!/api/Ext.data.field.Field'>Ext.data.field.Field</a> config object you may pass the alias of\nthe `Ext.data.field.*` type using the `type` config option.\n\n    // two fields are set:\n    // - an 'auto' field with a name of 'firstName'\n    // - and an Ext.data.field.Integer field with a name of 'age'\n    fields: ['firstName', {\n        type: 'int',\n        name: 'age'\n    }]\n\nFields will automatically be created at read time for any for any keys in the\ndata passed to the Model's <a href='#!/api/Ext.grid.property.Property-cfg-proxy'>proxy</a>\n<a href='#!/api/Ext.data.reader.Reader'>Ext.data.reader.Reader</a> whose name is not explicitly configured in\nthe `fields` config.\n\nExtending a Model class will inherit all the `fields` from the superclass /\nancestor classes.\n",
+                "type": "Object[]/String[]",
+                "src": {
+                  "name": "1,654,33",
+                  "text": "1,655,8,897",
+                  "type": "1,654,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hasMany",
+                "text": "One or more HasMany associations for this model.\n",
+                "type": "String/Object/String[]/Object[]",
+                "src": {
+                  "name": "1,839,47",
+                  "text": "1,840,8,49",
+                  "type": "1,839,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "idProperty",
+                "optional": true,
+                "text": "The name of the field treated as this Model's unique id.\n\nIf changing the idProperty in a subclass, the generated id field will replace the one\ngenerated by the superclass, for example;\n\n     Ext.define('Super', {\n         extend: 'Ext.data.Model',\n         fields: ['name']\n     });\n\n     Ext.define('Sub', {\n         extend: 'Super',\n         idProperty: 'customId'\n     });\n\n     var fields = Super.getFields();\n     // Has 2 fields, \"name\" & \"id\"\n     console.log(fields[0].name, fields[1].name, fields.length);\n\n     fields = Sub.getFields();\n     // Has 2 fields, \"name\" & \"customId\", \"id\" is replaced\n     console.log(fields[0].name, fields[1].name, fields.length);\n\nThe data values for this field must be unique or there will be id value collisions\nin the <a href='#!/api/Ext.data.Store'>Ext.data.Store</a>.\n",
+                "type": "String",
+                "value": "'id'",
+                "src": {
+                  "name": "1,549,23",
+                  "text": "1,550,8,794",
+                  "type": "1,549,14",
+                  "value": "1,549,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "identifier",
+                "text": "The id generator to use for this model. The <a href='#!/api/Ext.grid.property.Property-cfg-identifier'>identifier</a> generates values for the\n<a href='#!/api/Ext.grid.property.Property-cfg-idProperty'>idProperty</a> when no value is given. Records with client-side generated\nvalues for <a href='#!/api/Ext.grid.property.Property-cfg-idProperty'>idProperty</a> are called <a href='#!/api/Ext.grid.property.Property-property-phantom'>phantom</a> records since they are\nnot yet known to the server.\n\nThis can be overridden at the model level to provide a custom generator for a model.\nThe simplest form of this would be:\n\n     Ext.define('MyApp.data.MyModel', {\n         extend: 'Ext.data.Model',\n         requires: ['Ext.data.identifier.Sequential'],\n         identifier: 'sequential',\n         ...\n     });\n\nThe above would generate <a href='#!/api/Ext.data.identifier.Sequential'>Ext.data.identifier.Sequential</a> id's such\nas 1, 2, 3 etc..\n\nAnother useful id generator is <a href='#!/api/Ext.data.identifier.Uuid'>Ext.data.identifier.Uuid</a>:\n\n     Ext.define('MyApp.data.MyModel', {\n         extend: 'Ext.data.Model',\n         requires: ['Ext.data.identifier.Uuid'],\n         identifier: 'uuid',\n         ...\n     });\n\nAn id generator can also be further configured:\n\n     Ext.define('MyApp.data.MyModel', {\n         extend: 'Ext.data.Model',\n         identifier: {\n             type: 'sequential',\n             seed: 1000,\n             prefix: 'ID_'\n         }\n     });\n\nThe above would generate id's such as ID_1000, ID_1001, ID_1002 etc..\n\nIf multiple models share an id space, a single generator can be shared:\n\n     Ext.define('MyApp.data.MyModelX', {\n         extend: 'Ext.data.Model',\n         identifier: {\n             type: 'sequential',\n             id: 'xy'\n         }\n     });\n\n     Ext.define('MyApp.data.MyModelY', {\n         extend: 'Ext.data.Model',\n         identifier: {\n             type: 'sequential',\n             id: 'xy'\n         }\n     });\n\nFor more complex, shared id generators, a custom generator is the best approach.\nSee <a href='#!/api/Ext.data.identifier.Generator'>Ext.data.identifier.Generator</a> for details on creating custom id generators.\n",
+                "type": "String/Object",
+                "src": {
+                  "name": "1,587,29",
+                  "text": "1,588,8,1844",
+                  "type": "1,587,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "manyToMany",
+                "text": "A config object for a <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a> association.\nSee the class description for <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a> for\nconfiguration examples.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,579,22",
+                  "text": "1,580,8,185",
+                  "type": "1,579,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "proxy",
+                "text": "The <a href='#!/api/Ext.data.proxy.Proxy'>Ext.data.proxy.Proxy</a> to use for this class.\n",
+                "type": "String/Object/Ext.data.proxy.Proxy",
+                "src": {
+                  "name": "1,730,50",
+                  "text": "1,731,8,62",
+                  "type": "1,730,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "schema",
+                "optional": true,
+                "text": "The name of the <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a> to which this entity and its\nassociations belong. For details on custom schemas see <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a>.\n",
+                "type": "String/Object",
+                "value": "'default'",
+                "src": {
+                  "name": "1,736,30",
+                  "text": "1,737,8,164",
+                  "type": "1,736,14",
+                  "value": "1,736,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "validationSeparator",
+                "optional": true,
+                "text": "If specified this property is used to concatenate multiple errors for each field\nas reported by the <a href='#!/api/Ext.grid.property.Property-cfg-validators'>validators</a>.\n",
+                "type": "String",
+                "value": "null",
+                "src": {
+                  "name": "1,779,23",
+                  "text": "1,780,8,114",
+                  "type": "1,779,14",
+                  "value": "1,779,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "validators",
+                "text": "An array of <a href='#!/api/Ext.data.validator.Validator'>Ext.data.validator.Validator</a> for this model.\n",
+                "type": "Object[]",
+                "src": {
+                  "name": "1,774,24",
+                  "text": "1,775,8,76",
+                  "type": "1,774,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "versionProperty",
+                "optional": true,
+                "text": "If specified, this is the name of the property that contains the entity \"version\".\nThe version property is used to manage a long-running transaction and allows the\ndetection of simultaneous modification.\n\nThe way a version property is used is that the client receives the version as it\nwould any other entity property. When saving an entity, this property is always\nincluded in the request and the server uses the value in a \"conditional update\".\nIf the current version of the entity on the server matches the version property\nsent by the client, the update is allowed. Otherwise, the update fails.\n\nOn successful update, both the client and server increment the version. This is\ndone on the server in the conditional update and on the client when it receives a\nsuccess on its update request.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,748,23",
+                  "text": "1,749,8,793",
+                  "type": "1,748,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "abort",
+                "text": "Aborts a pending <a href='#!/api/Ext.grid.property.Property-load'>load</a> operation. If the record is not loading, this does nothing.\n",
+                "src": {
+                  "name": "1,1873,0",
+                  "text": "1,1871,8,91"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beginEdit",
+                "text": "Begins an edit. While in edit mode, no events (e.g.. the `update` event) are\nrelayed to the containing store. When an edit has begun, it must be followed by\neither <a href='#!/api/Ext.grid.property.Property-method-endEdit'>endEdit</a> or <a href='#!/api/Ext.grid.property.Property-method-cancelEdit'>cancelEdit</a>.\n",
+                "src": {
+                  "name": "1,852,0",
+                  "text": "1,848,8,191"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "callJoined",
+                "text": "Helper function used by afterEdit, afterReject and afterCommit. Calls the given\nmethod on the <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> that this instance has <a href='#!/api/Ext.grid.property.Property-method-join'>join</a>, if any.\nThe store function will always be called with the model instance as its single\nargument. If this model is joined to a Ext.data.NodeStore, then this method calls\nthe given method on the NodeStore and the associated Ext.data.TreeStore.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "funcName",
+                    "text": "The name function to call on each store.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,2678,28",
+                      "text": "1,2678,37,41",
+                      "type": "1,2678,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "optional": true,
+                    "text": "The arguments to pass to the method. This instance is\nalways inserted as the first argument.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "1,2679,28",
+                      "text": "1,2679,34,54:1,2680,12,39",
+                      "type": "1,2679,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2681,12",
+                  "name": "1,2683,0",
+                  "text": "1,2673,12,398"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "cancelEdit",
+                "text": "Cancels all changes made in the current edit operation.\n",
+                "src": {
+                  "name": "1,873,0",
+                  "text": "1,871,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clone",
+                "text": "Creates a clone of this record. States like <a href='#!/api/Ext.grid.property.Property-property-dropped'>dropped</a>, <a href='#!/api/Ext.grid.property.Property-property-phantom'>phantom</a> and <a href='#!/api/Ext.grid.property.Property-property-dirty'>dirty</a> are\nall preserved in the cloned record.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "optional": true,
+                    "text": "The session to which the new record\nbelongs.\n",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "name": "1,1424,35",
+                      "text": "1,1424,44,36:1,1425,8,9",
+                      "type": "1,1424,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The cloned record.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "1,1426,33,19",
+                      "type": "1,1426,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1428,0",
+                  "text": "1,1421,8,118"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "commit",
+                "text": "Usually called by the <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> which owns the model instance. Commits all changes made to the\ninstance since either creation or the last commit operation.\n\nDevelopers should subscribe to the <a href='#!/api/Ext.data.Store-event-update'>Ext.data.Store#event-update</a> event to have their code notified of commit\noperations.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "silent",
+                    "optional": true,
+                    "text": "Pass `true` to skip notification of the owning store of the change.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,1285,26",
+                      "text": "1,1285,40,68",
+                      "type": "1,1285,16",
+                      "value": "1,1285,33"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "modifiedFieldNames",
+                    "optional": true,
+                    "text": "Array of field names changed during sync with server if known.\nOmit or pass <a href='#!/api/null'>null</a> if unknown. An empty array means that it is known that no fields were modified\nby the server's response.\nDefaults to false.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "1,1286,27",
+                      "text": "1,1286,47,63:1,1287,8,144",
+                      "type": "1,1286,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1291,0",
+                  "text": "1,1279,8,298"
+                }
+              },
+              {
+                "$type": "method",
+                "constructor": true,
+                "name": "constructor",
+                "text": "Creates new property.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "A data object in the format:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "name",
+                        "text": "A name or names for the property.\n",
+                        "type": "String/String[]",
+                        "src": {
+                          "name": "0,18,36",
+                          "text": "0,18,41,34",
+                          "type": "0,18,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "A value or values for the property.\nThe specified value's type will be read automatically by the grid to determine the type of editor to use when\ndisplaying it.\n",
+                        "type": "Mixed/Mixed[]",
+                        "src": {
+                          "name": "0,19,34",
+                          "text": "0,19,40,36:0,20,4,125",
+                          "type": "0,19,12"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,17,20",
+                      "text": "0,17,27,29",
+                      "type": "0,17,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,22,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "constructor": "0,15,4",
+                  "text": "0,16,4,22"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "copy",
+                "text": "Creates a clean copy of this record. The returned record will not consider any its\nfields as modified.\n\nTo generate a phantom instance with a new id pass <a href='#!/api/null'>null</a>:\n\n    var rec = record.copy(null); // clone the record but no id (one is generated)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newId",
+                    "optional": true,
+                    "text": "A new id, defaults to the id of the instance being copied.\nSee <a href='#!/api/Ext.data.Model-cfg-idProperty'>Ext.data.Model#idProperty</a>.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,1453,25",
+                      "text": "1,1453,32,59:1,1454,8,52",
+                      "type": "1,1453,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "optional": true,
+                    "text": "The session to which the new record\nbelongs.\n",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "name": "1,1455,35",
+                      "text": "1,1455,44,36:1,1456,8,10",
+                      "type": "1,1455,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "type": "1,1458,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1460,0",
+                  "text": "1,1446,8,246"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "copyFrom",
+                "text": "Copies data from the passed record into this record. If the passed record is undefined, does nothing.\n\nIf this is a phantom record (represented only in the client, with no corresponding database entry), and\nthe source record is not a phantom, then this record acquires the id of the source record.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "sourceRecord",
+                    "text": "The record to copy data from.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "1,2618,36",
+                      "text": "1,2618,49,30",
+                      "type": "1,2618,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The names of the fields which changed value.\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "1,2619,31,45",
+                      "type": "1,2619,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2620,12",
+                  "name": "1,2622,0",
+                  "text": "1,2613,12,299"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "drop",
+                "since": "5.0.0",
+                "text": "Marks this record as <a href='#!/api/Ext.grid.property.Property-property-dropped'>dropped</a> and waiting to be deleted on the server. When a\nrecord is dropped, it is automatically removed from all association stores and\nany child records associated to this record are also dropped (a \"cascade delete\")\ndepending on the `cascade` parameter.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cascade",
+                    "optional": true,
+                    "text": "Pass `false` to disable the cascade to drop child\nrecords.\n",
+                    "type": "Boolean",
+                    "value": "true",
+                    "src": {
+                      "name": "1,1329,26",
+                      "text": "1,1329,40,50:1,1330,8,9",
+                      "type": "1,1329,16",
+                      "value": "1,1329,34"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1333,0",
+                  "since": "1,1331,15",
+                  "text": "1,1324,8,279"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "endEdit",
+                "text": "Ends an edit. If any data was modified, the containing store is notified\n(ie, the store's `update` event will fire).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "silent",
+                    "optional": true,
+                    "text": "True to not notify any stores of the change.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,889,26",
+                      "text": "1,889,34,45",
+                      "type": "1,889,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "modifiedFieldNames",
+                    "optional": true,
+                    "text": "Array of field names changed during edit.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "1,890,27",
+                      "text": "1,890,47,42",
+                      "type": "1,890,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,892,0",
+                  "text": "1,887,8,117"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "#method-load",
+                "localDoc": "Destroys the model using the configured proxy.  The erase action is\nasynchronous.  Any processing of the erased record should be done in a callback.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n\n    // pass the phantom record data to the server to be saved\n    user.save({\n        success: function(record, operation) {\n            // do something if the save succeeded\n            // erase the created record\n            record.erase({\n                failure: function(record, operation) {\n                    // do something if the erase failed\n                },\n                success: function(record, operation) {\n                    // do something if the erase succeeded\n                },\n                callback: function(record, operation, success) {\n                    // do something if the erase succeeded or failed\n                }\n            });\n        }\n    });\n\n**NOTE:** If a <a href='#!/api/Ext.grid.property.Property-phantom'>phantom</a> record is erased it will not be processed via the\nproxy.  However, any passed `success` or `callback` functions will be called.\n\nThe options param is an <a href='#!/api/Ext.data.operation.Destroy'>Ext.data.operation.Destroy</a> config object\ncontaining success, failure and callback functions, plus optional scope.\n",
+                "name": "erase",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The destroy operation\n",
+                    "type": "Ext.data.operation.Destroy",
+                    "src": {
+                      "text": "1,1590,45,22",
+                      "type": "1,1590,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "src": {
+                      "name": "1,1592,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritdoc": "1,1589,8",
+                  "localDoc": "1,1545,18",
+                  "name": "1,1592,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "get",
+                "text": "Returns the value of the given field.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fieldName",
+                    "text": "The name of the field.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,1004,24",
+                      "text": "1,1004,34,23",
+                      "type": "1,1004,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value of the specified field.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1005,25,34",
+                      "type": "1,1005,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1007,0",
+                  "text": "1,1003,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getAssociatedData",
+                "text": "Gets all of the data from this Models *loaded* associations. It does this\nrecursively. For example if we have a User which hasMany Orders, and each Order\nhasMany OrderItems, it will return an object like this:\n\n    {\n        orders: [\n            {\n                id: 123,\n                status: 'shipped',\n                orderItems: [\n                    ...\n                ]\n            }\n        ]\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "result",
+                    "optional": true,
+                    "text": "The object on to which the associations will be added. If\nno object is passed one is created. This object is then returned.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,1666,25",
+                      "text": "1,1666,33,58:1,1667,8,66",
+                      "type": "1,1666,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing options describing the data\ndesired.\n",
+                    "type": "Boolean/Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "associated",
+                        "optional": true,
+                        "text": "Pass `true` to include associated data from\nother associated records.\n",
+                        "type": "Boolean",
+                        "value": "true",
+                        "src": {
+                          "name": "1,1670,34",
+                          "text": "1,1670,51,44:1,1671,8,26",
+                          "type": "1,1670,16",
+                          "value": "1,1670,45"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "changes",
+                        "optional": true,
+                        "text": "Pass `true` to only include fields that\nhave been modified. Note that field modifications are only tracked for fields that\nare not declared with `persist` set to `false`. In other words, only persistent\nfields have changes tracked so passing `true` for this means `options.persist` is\nredundant.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "1,1672,34",
+                          "text": "1,1672,49,40:1,1673,8,256",
+                          "type": "1,1672,16",
+                          "value": "1,1672,42"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "critical",
+                        "optional": true,
+                        "text": "Pass `true` to include fields set as `critical`.\nThis is only meaningful when `options.changes` is `true` since critical fields may\nnot have been modified.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "1,1677,34",
+                          "text": "1,1677,44,49:1,1678,8,107",
+                          "type": "1,1677,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "persist",
+                        "optional": true,
+                        "text": "Pass `true` to only return persistent fields.\nThis is implied when `options.changes` is set to `true`.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "1,1680,34",
+                          "text": "1,1680,43,46:1,1681,8,57",
+                          "type": "1,1680,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "serialize",
+                        "optional": true,
+                        "text": "Pass `true` to invoke the `serialize`\nmethod on the returned fields.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "1,1682,34",
+                          "text": "1,1682,51,38:1,1683,8,31",
+                          "type": "1,1682,16",
+                          "value": "1,1682,44"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "1,1668,33",
+                      "text": "1,1668,42,49:1,1669,8,9",
+                      "type": "1,1668,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The nested data set for the Model's loaded associations.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1684,25,57",
+                      "type": "1,1684,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1686,0",
+                  "text": "1,1650,8,412"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getChanges",
+                "text": "Gets an object of only the fields that have been modified since this record was\ncreated or committed. Only persistent fields are tracked in the <a href='#!/api/Ext.grid.property.Property-property-modified'>modified</a> set so\nthis method will only return changes to persistent fields.\n\nFor more control over the returned data, see <a href='#!/api/Ext.grid.property.Property-method-getData'>getData</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "1,1617,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1619,0",
+                  "text": "1,1612,8,287"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCriticalFields",
+                "text": "Returns the array of fields that are declared as critical (must always send).\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.field.Field[]",
+                    "src": {
+                      "type": "1,1625,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1627,0",
+                  "text": "1,1624,8,78"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getData",
+                "text": "Gets all values for each field in this model and returns an object containing the\ncurrent data. This can be tuned by passing an `options` object with various\nproperties describing the desired result. Passing `true` simply returns all fields\n*and* all associated record data.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing options describing the data\ndesired. If `true` is passed it is treated as an object with `associated` set to\n`true`.\n",
+                    "type": "Boolean/Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "associated",
+                        "optional": true,
+                        "text": "Pass `true` to include associated data.\nThis is equivalent to pass `true` as the only argument. See <a href='#!/api/Ext.grid.property.Property-method-getAssociatedData'>getAssociatedData</a>.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "1,1769,34",
+                          "text": "1,1769,52,40:1,1770,8,81",
+                          "type": "1,1769,16",
+                          "value": "1,1769,45"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "changes",
+                        "optional": true,
+                        "text": "Pass `true` to only include fields that\nhave been modified. Note that field modifications are only tracked for fields that\nare not declared with `persist` set to `false`. In other words, only persistent\nfields have changes tracked so passing `true` for this means `options.persist` is\nredundant.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "1,1771,34",
+                          "text": "1,1771,49,40:1,1772,8,256",
+                          "type": "1,1771,16",
+                          "value": "1,1771,42"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "critical",
+                        "optional": true,
+                        "text": "Pass `true` to include fields set as `critical`.\nThis is only meaningful when `options.changes` is `true` since critical fields may\nnot have been modified.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "1,1776,34",
+                          "text": "1,1776,44,49:1,1777,8,107",
+                          "type": "1,1776,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "persist",
+                        "optional": true,
+                        "text": "Pass `true` to only return persistent fields.\nThis is implied when `options.changes` is set to `true`.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "1,1779,34",
+                          "text": "1,1779,43,46:1,1780,8,57",
+                          "type": "1,1779,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "serialize",
+                        "optional": true,
+                        "text": "Pass `true` to invoke the `serialize`\nmethod on the returned fields.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "1,1781,34",
+                          "text": "1,1781,51,38:1,1782,8,31",
+                          "type": "1,1781,16",
+                          "value": "1,1781,44"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "1,1766,33",
+                      "text": "1,1766,42,49:1,1767,8,89",
+                      "type": "1,1766,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object containing all the values in this model.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1783,25,51",
+                      "type": "1,1783,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1785,0",
+                  "text": "1,1761,8,276"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getFields",
+                "text": "Get the fields array for this model.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The fields array\n",
+                    "type": "Ext.data.field.Field[]",
+                    "src": {
+                      "text": "1,922,41,17",
+                      "type": "1,922,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,924,0",
+                  "text": "1,921,8,37"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Returns the unique ID allocated to this model instance as defined by <a href='#!/api/Ext.grid.property.Property-cfg-idProperty'>idProperty</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The id\n",
+                    "type": "Number/String",
+                    "src": {
+                      "text": "1,942,32,7",
+                      "type": "1,942,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,944,0",
+                  "text": "1,941,8,83"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getIdProperty",
+                "text": "Get the idProperty for this model.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The idProperty\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,934,25,15",
+                      "type": "1,934,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,936,0",
+                  "text": "1,933,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getModified",
+                "text": "Returns the original value of a modified field. If there is no modified value,\n<a href='#!/api/undefined'>undefined</a> will be return. Also see <a href='#!/api/Ext.grid.property.Property-method-isModified'>isModified</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fieldName",
+                    "text": "The name of the field for which to return the original value.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,991,24",
+                      "text": "1,991,34,62",
+                      "type": "1,991,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "modified\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,992,25,9",
+                      "type": "1,992,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,994,0",
+                  "text": "1,989,8,137"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getModifiedFieldNames",
+                "text": "Gets the names of all the fields that were modified during an edit.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "old",
+                    "optional": true,
+                    "text": "The saved data from <a href='#!/api/Ext.grid.property.Property-method-beginEdit'>beginEdit</a>.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,2737,29",
+                      "text": "1,2737,34,33",
+                      "type": "1,2737,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The array of modified field names.\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "1,2738,31,35",
+                      "type": "1,2738,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2739,12",
+                  "name": "1,2741,0",
+                  "text": "1,2736,12,68"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getObservableId",
+                "text": "Return a unique observable ID. Model is not observable but tree nodes (<a href='#!/api/Ext.data.NodeInterface'>Ext.data.NodeInterface</a>) are, so\nthey must be globally unique within the <a href='#!/api/Ext.grid.property.Property-observableType'>observableType</a>.\n",
+                "src": {
+                  "access": "1,951,8",
+                  "name": "1,953,0",
+                  "text": "1,949,8,170"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getPrevious",
+                "text": "This method returns the value of a field given its name prior to its most recent\nchange.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fieldName",
+                    "text": "The field's <a href='#!/api/Ext.data.field.Field-cfg-name'>Ext.data.field.Field#name</a>.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,969,24",
+                      "text": "1,969,34,52",
+                      "type": "1,969,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value of the given field prior to its current value. <a href='#!/api/undefined'>undefined</a>\nif there is no previous value;\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,970,25,69:1,971,8,31",
+                      "type": "1,970,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,973,0",
+                  "text": "1,967,8,89"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getProxy",
+                "text": "Returns the configured Proxy for this Model.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The proxy\n",
+                    "type": "Ext.data.proxy.Proxy",
+                    "src": {
+                      "text": "1,1477,39,10",
+                      "type": "1,1477,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1479,0",
+                  "text": "1,1476,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTransientFields",
+                "since": "5.0.0",
+                "text": "Returns the array of fields that are declared as non-persist or \"transient\".\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.field.Field[]",
+                    "src": {
+                      "type": "1,1847,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1850,0",
+                  "since": "1,1848,15",
+                  "text": "1,1846,8,77"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getValidation",
+                "since": "5.0.0",
+                "text": "Returns the <a href='#!/api/Ext.data.Validation'>Ext.data.Validation</a> record holding the results of this record's\n<a href='#!/api/Ext.grid.property.Property-cfg-validators'>validators</a>. This record is lazily created on first request and is then kept on\nthis record to be updated later.\n\nSee the class description for more about <a href='#!/api/Ext.grid.property.Property-cfg-validators'>validators</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "refresh",
+                    "optional": true,
+                    "text": "Pass `false` to not call the `refresh` method on the\nvalidation instance prior to returning it. Pass `true` to force a `refresh` of the\nvalidation instance. By default the returned record is only refreshed if changes\nhave been made to this record.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,1490,26",
+                      "text": "1,1490,35,53:1,1491,8,195",
+                      "type": "1,1490,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `Validation` record for this record.\n",
+                    "type": "Ext.data.Validation",
+                    "src": {
+                      "text": "1,1494,38,41",
+                      "type": "1,1494,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1497,0",
+                  "since": "1,1495,15",
+                  "text": "1,1484,8,249"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "isEqual",
+                "text": "Checks if two values are equal, taking into account certain special factors, for\nexample dates.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "lhs",
+                    "text": "The first value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,2762,28",
+                      "text": "1,2762,32,17",
+                      "type": "1,2762,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "rhs",
+                    "text": "The second value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,2763,28",
+                      "text": "1,2763,32,18",
+                      "type": "1,2763,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the values are equal.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,2764,30,30",
+                      "type": "1,2764,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2765,12",
+                  "name": "1,2767,0",
+                  "text": "1,2760,12,96"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLoading",
+                "text": "Checks whether this model is loading data from the <a href='#!/api/Ext.grid.property.Property-cfg-proxy'>proxy</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "`true` if in a loading state.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,1864,26,30",
+                      "type": "1,1864,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1866,0",
+                  "text": "1,1863,8,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isModified",
+                "text": "Returns true if the passed field name has been <a href='#!/api/Ext.grid.property.Property-property-modified'>modified</a> since the load or last commit.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fieldName",
+                    "text": "The field's <a href='#!/api/Ext.data.field.Field-cfg-name'>Ext.data.field.Field#name</a>.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,980,24",
+                      "text": "1,980,34,52",
+                      "type": "1,980,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "1,981,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,983,0",
+                  "text": "1,979,8,98"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isValid",
+                "text": "Checks if the model is valid. See <a href='#!/api/Ext.grid.property.Property-method-getValidation'>getValidation</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if the model is valid.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,1526,26,28",
+                      "type": "1,1526,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1528,0",
+                  "text": "1,1525,8,58"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "join",
+                "text": "Tells this model instance that an observer is looking at it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The store to which this model has been added.\n",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "name": "1,1357,32",
+                      "text": "1,1357,37,46",
+                      "type": "1,1357,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1359,0",
+                  "text": "1,1356,8,61"
+                }
+              },
+              {
+                "$type": "method",
+                "localDoc": "Loads the model instance using the configured proxy.  The load action\nis asynchronous.  Any processing of the loaded record should be done in a\ncallback.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User();\n    user.load({\n        scope: this,\n        failure: function(record, operation) {\n            // do something if the load failed\n        },\n        success: function(record, operation) {\n            // do something if the load succeeded\n        },\n        callback: function(record, operation, success) {\n            // do something whether the load succeeded or failed\n        }\n    });\n\nThe options param is an <a href='#!/api/Ext.data.operation.Read'>Ext.data.operation.Read</a> config object containing\nsuccess, failure and callback functions, plus optional scope.\n",
+                "name": "load",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Options to pass to the proxy.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "success",
+                        "text": "A function to be called when the\nmodel is processed by the proxy successfully.\nThe callback is passed the following parameters:\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The record.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "1,1918,48",
+                              "text": "1,1918,55,12",
+                              "type": "1,1918,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "operation",
+                            "text": "The operation.\n",
+                            "type": "Ext.data.operation.Operation",
+                            "src": {
+                              "name": "1,1919,62",
+                              "text": "1,1919,72,15",
+                              "type": "1,1919,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "1,1915,34",
+                          "text": "1,1915,42,33:1,1916,8,95",
+                          "type": "1,1915,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "failure",
+                        "text": "A function to be called when the\nmodel is unable to be processed by the server.\nThe callback is passed the following parameters:\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The record.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "1,1924,48",
+                              "text": "1,1924,55,12",
+                              "type": "1,1924,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "operation",
+                            "text": "The operation.\n",
+                            "type": "Ext.data.operation.Operation",
+                            "src": {
+                              "name": "1,1925,62",
+                              "text": "1,1925,72,15",
+                              "type": "1,1925,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "1,1921,34",
+                          "text": "1,1921,42,33:1,1922,8,96",
+                          "type": "1,1921,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "callback",
+                        "text": "A function to be called whether the proxy\ntransaction was successful or not.\nThe callback is passed the following parameters:\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The record.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "1,1930,49",
+                              "text": "1,1930,56,12",
+                              "type": "1,1930,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "operation",
+                            "text": "The operation.\n",
+                            "type": "Ext.data.operation.Operation",
+                            "src": {
+                              "name": "1,1931,63",
+                              "text": "1,1931,73,15",
+                              "type": "1,1931,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "success",
+                            "text": "`true` if the operation was successful.\n",
+                            "type": "Boolean",
+                            "src": {
+                              "name": "1,1932,42",
+                              "text": "1,1932,50,40",
+                              "type": "1,1932,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "1,1927,34",
+                          "text": "1,1927,43,42:1,1928,8,84",
+                          "type": "1,1927,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "The scope in which to execute the callback\nfunctions.  Defaults to the model instance.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "1,1934,32",
+                          "text": "1,1934,38,43:1,1935,8,45",
+                          "type": "1,1934,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "1,1914,25",
+                      "text": "1,1914,34,30",
+                      "type": "1,1914,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The read operation.\n",
+                    "type": "Ext.data.operation.Read",
+                    "src": {
+                      "text": "1,1937,42,20",
+                      "type": "1,1937,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "localDoc": "1,1881,18",
+                  "name": "1,1939,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onLoad",
+                "template": true,
+                "text": "This method is called by the <a href='#!/api/Ext.data.reader.Reader'>Ext.data.reader.Reader</a> after loading a model from\nthe server. This is after processing any inline associations that are available.\n",
+                "src": {
+                  "access": "1,1645,8",
+                  "name": "1,1643,16",
+                  "template": "1,1646,8",
+                  "text": "1,1640,8,169"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reject",
+                "text": "Usually called by the <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> to which this model instance has been <a href='#!/api/Ext.grid.property.Property-method-join'>join</a>. Rejects\nall changes made to the model instance since either creation, or the last commit operation. Modified fields are\nreverted to their original values.\n\nDevelopers should subscribe to the <a href='#!/api/Ext.data.Store-event-update'>Ext.data.Store#event-update</a> event to have their code notified of reject\noperations.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "silent",
+                    "optional": true,
+                    "text": "`true` to skip notification of the owning store of the change.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,1254,26",
+                      "text": "1,1254,40,63",
+                      "type": "1,1254,16",
+                      "value": "1,1254,33"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1256,0",
+                  "text": "1,1247,8,389"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "#method-load",
+                "localDoc": "Saves the model instance using the configured proxy.  The save action\nis asynchronous.  Any processing of the saved record should be done in a callback.\n\nCreate example:\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n\n    // pass the phantom record data to the server to be saved\n    user.save({\n        failure: function(record, operation) {\n            // do something if the save failed\n        },\n        success: function(record, operation) {\n            // do something if the save succeeded\n        },\n        callback: function(record, operation, success) {\n            // do something whether the save succeeded or failed\n        }\n    });\n\nThe response from a create operation should include the ID for the newly created\nrecord:\n\n    // sample response\n    {\n        success: true,\n        id: 1\n    }\n\n    // the id may be nested if the proxy's reader has a rootProperty config\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        proxy: {\n            type: 'ajax',\n            url: 'server.url',\n            reader: {\n                type: 'ajax',\n                rootProperty: 'data'\n            }\n        }\n    });\n\n    // sample nested response\n    {\n        success: true,\n        data: {\n            id: 1\n        }\n    }\n\n(Create + ) Update example:\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n    user.save({\n        success: function(record, operation) {\n            record.set('name', 'Bar');\n            // updates the remote record via the proxy\n            record.save();\n        }\n    });\n\n(Create + ) Destroy example - see also <a href='#!/api/Ext.grid.property.Property-erase'>erase</a>:\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ],\n        proxy: {\n            type: 'ajax',\n            url: 'server.url'\n        }\n    });\n\n    var user = new MyApp.model.User({\n        name: 'Foo'\n    });\n    user.save({\n        success: function(record, operation) {\n            record.drop();\n            // destroys the remote record via the proxy\n            record.save();\n        }\n    });\n\n**NOTE:** If a <a href='#!/api/Ext.grid.property.Property-phantom'>phantom</a> record is <a href='#!/api/Ext.grid.property.Property-drop'>dropped</a> and subsequently\nsaved it will not be processed via the proxy.  However, any passed `success`\nor `callback` functions will be called.\n\nThe options param is an Operation config object containing success, failure and\ncallback functions, plus optional scope.  The type of Operation depends on the\nstate of the model being saved.\n\n - <a href='#!/api/Ext.grid.property.Property-phantom'>phantom</a> model - <a href='#!/api/Ext.data.operation.Create'>Ext.data.operation.Create</a>\n - <a href='#!/api/Ext.grid.property.Property-isModified'>modified</a> model - <a href='#!/api/Ext.data.operation.Update'>Ext.data.operation.Update</a>\n - <a href='#!/api/Ext.grid.property.Property-dropped'>dropped</a> model - <a href='#!/api/Ext.data.operation.Destroy'>Ext.data.operation.Destroy</a>\n",
+                "name": "save",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The operation instance for saving this model.  The type of operation returned\ndepends on the model state at the time of the action.\n\n - <a href='#!/api/Ext.grid.property.Property-property-phantom'>phantom</a> model - <a href='#!/api/Ext.data.operation.Create'>Ext.data.operation.Create</a>\n - <a href='#!/api/Ext.grid.property.Property-method-isModified'>isModified</a> model - <a href='#!/api/Ext.data.operation.Update'>Ext.data.operation.Update</a>\n - <a href='#!/api/Ext.grid.property.Property-property-dropped'>dropped</a> model - <a href='#!/api/Ext.data.operation.Destroy'>Ext.data.operation.Destroy</a>\n",
+                    "type": "Ext.data.operation.Create/Ext.data.operation.Update/Ext.data.operation.Destroy",
+                    "src": {
+                      "text": "1,2159,8,332",
+                      "type": "1,2158,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "src": {
+                      "name": "1,2166,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritdoc": "1,2157,8",
+                  "localDoc": "1,2031,18",
+                  "name": "1,2166,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "set",
+                "text": "Sets the given field to the given value. For example:\n\n     record.set('name', 'value');\n\nThis method can also be passed an object containing multiple values to set at once.\nFor example:\n\n     record.set({\n         name: 'value',\n         age: 42\n     });\n\nThe following store events are fired when the modified record belongs to a store:\n\n - <a href='#!/api/Ext.data.Store-event-beginupdate'>Ext.data.Store#event-beginupdate</a>\n - <a href='#!/api/Ext.data.Store-event-update'>Ext.data.Store#event-update</a>\n - <a href='#!/api/Ext.data.Store-event-endupdate'>Ext.data.Store#event-endupdate</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fieldName",
+                    "text": "The field to set, or an object containing key/value\npairs.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "1,1040,31",
+                      "text": "1,1040,41,52:1,1041,8,7",
+                      "type": "1,1040,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newValue",
+                    "text": "The value for the field (if `fieldName` is a string).\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,1042,24",
+                      "text": "1,1042,33,54",
+                      "type": "1,1042,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Options for governing this update.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "convert",
+                        "optional": true,
+                        "text": "Set to `false` to  prevent any converters from\nbeing called during the set operation. This may be useful when setting a large bunch of\nraw values.\n",
+                        "type": "Boolean",
+                        "value": "true",
+                        "src": {
+                          "name": "1,1044,34",
+                          "text": "1,1044,48,47:1,1045,8,100",
+                          "type": "1,1044,16",
+                          "value": "1,1044,42"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "dirty",
+                        "optional": true,
+                        "text": "Pass `false` if the field values are to be\nunderstood as non-dirty (fresh from the server). When `true`, this change will be\nreflected in the <a href='#!/api/Ext.grid.property.Property-property-modified'>modified</a> collection.\n",
+                        "type": "Boolean",
+                        "value": "true",
+                        "src": {
+                          "name": "1,1047,34",
+                          "text": "1,1047,46,43:1,1048,8,122",
+                          "type": "1,1047,16",
+                          "value": "1,1047,40"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "commit",
+                        "optional": true,
+                        "text": "Pass `true` to call the <a href='#!/api/Ext.grid.property.Property-method-commit'>commit</a> method\nafter setting fields. If this option is passed, the usual after change processing will\nbe bypassed. <a href='#!/api/Ext.grid.property.Property-method-commit'>commit</a> will be called even if there are no field changes.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "1,1050,34",
+                          "text": "1,1050,48,47:1,1051,8,174",
+                          "type": "1,1050,16",
+                          "value": "1,1050,41"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "silent",
+                        "optional": true,
+                        "text": "Pass `true` to suppress notification of any\nchanges made by this call. Use with caution.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "1,1053,34",
+                          "text": "1,1053,48,44:1,1054,8,45",
+                          "type": "1,1053,16",
+                          "value": "1,1053,41"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "1,1043,25",
+                      "text": "1,1043,34,35",
+                      "type": "1,1043,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The array of modified field names or null if nothing was modified.\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "1,1055,27,67",
+                      "type": "1,1055,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1057,0",
+                  "text": "1,1022,8,495"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setId",
+                "text": "Sets the model instance's id field to the given id.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The new id.\n",
+                    "type": "Number/String",
+                    "src": {
+                      "name": "1,959,31",
+                      "text": "1,959,34,12",
+                      "type": "1,959,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "See <a href='#!/api/Ext.grid.property.Property-method-set'>set</a>.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,960,25",
+                      "text": "1,960,34,18",
+                      "type": "1,960,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,962,0",
+                  "text": "1,958,8,52"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setSession",
+                "text": "Set the session for this record.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "text": "The session\n",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "name": "1,2716,38",
+                      "text": "1,2716,46,12",
+                      "type": "1,2716,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2597,-1",
+                  "name": "1,2718,0",
+                  "text": "1,2715,12,33"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toUrl",
+                "text": "Returns a url-suitable string for this model instance. By default this just returns the name of the Model class\nfollowed by the instance ID - for example an instance of MyApp.model.User with ID 123 will return 'user/123'.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The url string for this model instance.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,1535,25,40",
+                      "type": "1,1535,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1537,0",
+                  "text": "1,1533,8,222"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unjoin",
+                "text": "Tells this model instance that it has been removed from the store.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The store from which this model has been removed.\n",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "name": "1,1387,32",
+                      "text": "1,1387,38,50",
+                      "type": "1,1387,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1389,0",
+                  "text": "1,1386,8,67"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use `getValidation` instead.\n",
+                "deprecatedVersion": "5.0",
+                "name": "validate",
+                "text": "Validates the current data against all of its configured <a href='#!/api/Ext.grid.property.Property-cfg-validators'>validators</a>. The\nreturned collection holds an object for each reported problem from a `validator`.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The errors collection.\n",
+                    "type": "Ext.data.ErrorCollection",
+                    "src": {
+                      "text": "1,1517,43,23",
+                      "type": "1,1517,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "1,1518,8",
+                  "deprecatedVersion": "1,1518,8",
+                  "name": "1,1520,0",
+                  "text": "1,1514,8,165"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "dirty",
+                "readonly": true,
+                "text": "True if this record has been modified.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,440,28",
+                  "readonly": "1,442,8",
+                  "text": "1,441,8,39",
+                  "type": "1,440,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dropped",
+                "readonly": true,
+                "text": "True if this record is pending delete on the server. This is set by the <a href='#!/api/Ext.grid.property.Property-method-drop'>drop</a>\nmethod and transmitted to the server by the <a href='#!/api/Ext.grid.property.Property-method-save'>save</a> method.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,454,28",
+                  "readonly": "1,457,8",
+                  "text": "1,455,8,138",
+                  "type": "1,454,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "editing",
+                "readonly": true,
+                "text": "Internal flag used to track whether or not the model instance is currently being edited.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,433,28",
+                  "readonly": "1,435,8",
+                  "text": "1,434,8,89",
+                  "type": "1,433,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "entityName",
+                "text": "The short name of this entity class. This name is derived from the `namespace` of\nthe associated `schema` and this class name. By default, a class is not given a\nshortened name.\n\nAll entities in a given `schema` must have a unique <a href='#!/api/Ext.grid.property.Property-property-entityName'>entityName</a>.\n\nFor more details see \"Relative Naming\" in <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,422,27",
+                  "text": "1,423,8,320",
+                  "type": "1,422,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "erased",
+                "readonly": true,
+                "text": "True if this record has been erased on the server. This flag is set of the <a href='#!/api/Ext.grid.property.Property-method-erase'>erase</a>\nmethod.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,462,28",
+                  "readonly": "1,465,8",
+                  "text": "1,463,8,91",
+                  "type": "1,462,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "fieldOrdinals",
+                "readonly": true,
+                "text": "This property is indexed by field name and contains the ordinal of that field. The\nordinal often has meaning to servers and is derived based on the position in the\n`fields` array.\n\nThis can be used like so:\n\n     Ext.define('MyApp.models.User', {\n         extend: 'Ext.data.Model',\n\n         fields: [\n             { name: 'name' }\n         ]\n     });\n\n     var nameOrdinal = MyApp.models.User.fieldOrdinals.name;\n\n     // or, if you have an instance:\n\n     var user = new MyApp.models.User();\n     var nameOrdinal = user.fieldOrdinals.name;\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,709,8",
+                  "name": "1,687,27",
+                  "readonly": "1,710,8",
+                  "text": "1,688,8,543",
+                  "type": "1,687,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "fields",
+                "readonly": true,
+                "text": "An array fields defined for this Model (including fields defined in superclasses)\nin ordinal order; that is in declaration order.\n",
+                "type": "Ext.data.field.Field[]",
+                "src": {
+                  "access": "1,682,8",
+                  "name": "1,679,43",
+                  "readonly": "1,683,8",
+                  "text": "1,680,8,130",
+                  "type": "1,679,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "generation",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is incremented on each modification of a record.\n",
+                "type": "Number",
+                "src": {
+                  "name": "1,766,27",
+                  "readonly": "1,768,8",
+                  "since": "1,769,15",
+                  "text": "1,767,8,63",
+                  "type": "1,766,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isEntity",
+                "readonly": true,
+                "text": "The value `true` to identify this class and its subclasses.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,331,28",
+                  "readonly": "1,333,8",
+                  "text": "1,332,8,60",
+                  "type": "1,331,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isModel",
+                "readonly": true,
+                "text": "The value `true` to identify this class and its subclasses.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,338,28",
+                  "readonly": "1,340,8",
+                  "text": "1,339,8,60",
+                  "type": "1,338,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "modified",
+                "text": "A hash of field values which holds the initial values of fields before a set of edits\nare <a href='#!/api/Ext.grid.property.Property-method-commit'>commit</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,714,28",
+                  "text": "1,715,9,117",
+                  "type": "1,714,20"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "phantom",
+                "text": "True when the record does not yet exist in a server-side database. Any record which\nhas a real database identity set as its <a href='#!/api/Ext.grid.property.Property-cfg-idProperty'>idProperty</a> is NOT a phantom -- it's real.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,542,28",
+                  "text": "1,543,8,168",
+                  "type": "1,542,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "previousValues",
+                "readonly": true,
+                "text": "This object is similar to the <a href='#!/api/Ext.grid.property.Property-property-modified'>modified</a> object except it holds the data values as\nthey were prior to the most recent change.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,724,8",
+                  "name": "1,720,27",
+                  "readonly": "1,723,8",
+                  "text": "1,721,8,126",
+                  "type": "1,720,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "schema",
+                "readonly": true,
+                "text": "The <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a> to which this entity and its associations belong.\n",
+                "type": "Ext.data.schema.Schema",
+                "src": {
+                  "name": "1,741,43",
+                  "readonly": "1,743,8",
+                  "text": "1,742,8,79",
+                  "type": "1,741,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "session",
+                "readonly": true,
+                "text": "The <a href='#!/api/Ext.data.Session'>Ext.data.Session</a> for this record.\n",
+                "type": "Ext.data.Session",
+                "src": {
+                  "name": "1,447,37",
+                  "readonly": "1,449,8",
+                  "text": "1,448,8,46",
+                  "type": "1,447,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "store",
+                "text": "The <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> to which this instance belongs.\n\n**Note:** If this instance is bound to multiple stores, this property\nwill reference only the first.\n",
+                "type": "Ext.data.Store",
+                "src": {
+                  "name": "1,1375,42",
+                  "text": "1,1376,15,167",
+                  "type": "1,1375,26"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "addFields",
+                "since": "5.0.0",
+                "static": true,
+                "text": "This method adds the given set of fields to this model class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newFields",
+                    "text": "The new fields to add. Based on the `name`\nof a field this may replace a previous field definition.\n",
+                    "type": "String[]/Object[]",
+                    "src": {
+                      "name": "1,2214,39",
+                      "text": "1,2214,49,43:1,2215,12,58",
+                      "type": "1,2214,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2217,12",
+                  "inheritable": "1,2219,12",
+                  "name": "1,2222,0",
+                  "since": "1,2220,19",
+                  "static": "1,2218,12",
+                  "text": "1,2212,12,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "createWithId",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "1,2342,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "1,2342,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "src": {
+                      "name": "1,2342,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2338,12",
+                  "inheritable": "1,2340,12",
+                  "name": "1,2342,0",
+                  "static": "1,2339,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "getField",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "1,2381,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2377,12",
+                  "inheritable": "1,2379,12",
+                  "name": "1,2381,0",
+                  "static": "1,2378,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "getFields",
+                "static": true,
+                "src": {
+                  "access": "1,2359,12",
+                  "inheritable": "1,2361,12",
+                  "name": "1,2363,0",
+                  "static": "1,2360,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "getFieldsMap",
+                "static": true,
+                "src": {
+                  "access": "1,2368,12",
+                  "inheritable": "1,2370,12",
+                  "name": "1,2372,0",
+                  "static": "1,2369,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "getIdFromData",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "1,2329,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2325,12",
+                  "inheritable": "1,2327,12",
+                  "name": "1,2329,0",
+                  "static": "1,2326,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "getProxy",
+                "static": true,
+                "text": "Returns the configured Proxy for this Model.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The proxy\n",
+                    "type": "Ext.data.proxy.Proxy",
+                    "src": {
+                      "text": "1,2387,43,10",
+                      "type": "1,2387,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,2389,12",
+                  "name": "1,2391,0",
+                  "static": "1,2388,12",
+                  "text": "1,2386,12,45"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "load",
+                "static": true,
+                "text": "Asynchronously loads a model instance by id. Any processing of the loaded\nrecord should be done in a callback.\n\nSample usage:\n\n    Ext.define('MyApp.User', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'id', type: 'int'},\n            {name: 'name', type: 'string'}\n        ]\n    });\n\n    MyApp.User.load(10, {\n        scope: this,\n        failure: function(record, operation) {\n            //do something if the load failed\n        },\n        success: function(record, operation) {\n            //do something if the load succeeded\n        },\n        callback: function(record, operation, success) {\n            //do something whether the load succeeded or failed\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The ID of the model to load.\n**NOTE:** The model returned must have an ID matching the param in the load\nrequest.\n",
+                    "type": "Number/String",
+                    "src": {
+                      "name": "1,2478,35",
+                      "text": "1,2478,38,29:1,2479,12,86",
+                      "type": "1,2478,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "The options param is an\n<a href='#!/api/Ext.data.operation.Read'>Ext.data.operation.Read</a> config object containing success, failure and\ncallback functions, plus optional scope.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "success",
+                        "text": "A function to be called when the\nmodel is processed by the proxy successfully.\nThe callback is passed the following parameters:\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The record.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "1,2489,52",
+                              "text": "1,2489,59,12",
+                              "type": "1,2489,20"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "operation",
+                            "text": "The operation.\n",
+                            "type": "Ext.data.operation.Operation",
+                            "src": {
+                              "name": "1,2490,66",
+                              "text": "1,2490,76,15",
+                              "type": "1,2490,20"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "1,2486,38",
+                          "text": "1,2486,46,33:1,2487,12,95",
+                          "type": "1,2486,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "failure",
+                        "text": "A function to be called when the\nmodel is unable to be processed by the server.\nThe callback is passed the following parameters:\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The record.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "1,2495,52",
+                              "text": "1,2495,59,12",
+                              "type": "1,2495,20"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "operation",
+                            "text": "The operation.\n",
+                            "type": "Ext.data.operation.Operation",
+                            "src": {
+                              "name": "1,2496,66",
+                              "text": "1,2496,76,15",
+                              "type": "1,2496,20"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "1,2492,38",
+                          "text": "1,2492,46,33:1,2493,12,96",
+                          "type": "1,2492,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "callback",
+                        "text": "A function to be called whether the proxy\ntransaction was successful or not.\nThe callback is passed the following parameters:\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The record.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "1,2501,53",
+                              "text": "1,2501,60,12",
+                              "type": "1,2501,20"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "operation",
+                            "text": "The\noperation.\n",
+                            "type": "Ext.data.operation.Operation",
+                            "src": {
+                              "name": "1,2502,67",
+                              "text": "1,2502,77,4:1,2503,12,11",
+                              "type": "1,2502,20"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "success",
+                            "text": "`true` if the operation was\nsuccessful.\n",
+                            "type": "Boolean",
+                            "src": {
+                              "name": "1,2504,46",
+                              "text": "1,2504,54,28:1,2505,12,13",
+                              "type": "1,2504,20"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "1,2498,38",
+                          "text": "1,2498,47,42:1,2499,12,84",
+                          "type": "1,2498,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "The scope in which to execute the callback\nfunctions.  Defaults to the model instance.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "1,2507,36",
+                          "text": "1,2507,42,43:1,2508,12,45",
+                          "type": "1,2507,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "1,2482,29",
+                      "text": "1,2482,38,24:1,2483,12,120",
+                      "type": "1,2482,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "optional": true,
+                    "text": "The session for this record.\n",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "name": "1,2510,39",
+                      "text": "1,2510,48,29",
+                      "type": "1,2510,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The newly created model. Note that the model will\n(probably) still be loading once it is returned from this method. To do any\npost-processing on the data, the appropriate place to do see is in the\ncallback.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "1,2512,37,50:1,2513,12,158",
+                      "type": "1,2512,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,2518,12",
+                  "name": "1,2520,0",
+                  "static": "1,2517,12",
+                  "text": "1,2452,12,709"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "removeFields",
+                "since": "5.0.0",
+                "static": true,
+                "text": "Removes the given set of fields from this model.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "removeFields",
+                    "text": "The names of fields to remove or `true`\nto remove all existing fields. Removes are processed first followed by adds so\nif a field name appears in `newFields` as well that field will effectively be\nadded (however, in that case there is no need to include the field in this\narray).\n",
+                    "type": "Boolean/String[]",
+                    "src": {
+                      "name": "1,2309,38",
+                      "text": "1,2309,51,40:1,2310,12,241",
+                      "type": "1,2309,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2315,12",
+                  "inheritable": "1,2317,12",
+                  "name": "1,2320,0",
+                  "since": "1,2318,19",
+                  "static": "1,2316,12",
+                  "text": "1,2307,12,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "replaceFields",
+                "since": "5.0.0",
+                "static": true,
+                "text": "This method replaces the specified set of fields with a given set of new fields.\nFields should normally be considered immutable, but if the timing is right (that\nis, before derived classes are declared), it is permissible to change the fields\ncollection.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newFields",
+                    "text": "The new fields to add. Based on the `name`\nof a field this may replace a previous field definition.\n",
+                    "type": "String[]/Object[]",
+                    "src": {
+                      "name": "1,2232,39",
+                      "text": "1,2232,49,43:1,2233,12,57",
+                      "type": "1,2232,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "removeFields",
+                    "text": "The names of fields to remove or `true`\nto remove all existing fields. Removes are processed first followed by adds so\nif a field name appears in `newFields` as well that field will effectively be\nadded (however, in that case there is no need to include the field in this\narray).\n",
+                    "type": "Boolean/String[]",
+                    "src": {
+                      "name": "1,2234,38",
+                      "text": "1,2234,51,40:1,2235,12,241",
+                      "type": "1,2234,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,2240,12",
+                  "inheritable": "1,2242,12",
+                  "name": "1,2245,0",
+                  "since": "1,2243,19",
+                  "static": "1,2241,12",
+                  "text": "1,2227,12,256"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "setProxy",
+                "static": true,
+                "text": "Sets the Proxy to use for this model. Accepts any options that can be accepted by\n<a href='#!/api/Ext-method-createByAlias'>Ext#createByAlias</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "proxy",
+                    "text": "The proxy\n",
+                    "type": "String/Object/Ext.data.proxy.Proxy",
+                    "src": {
+                      "name": "1,2426,56",
+                      "text": "1,2426,62,10",
+                      "type": "1,2426,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.proxy.Proxy",
+                    "src": {
+                      "type": "1,2427,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "1,2429,12",
+                  "name": "1,2431,0",
+                  "static": "1,2428,12",
+                  "text": "1,2424,12,127"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties"
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,27,0",
+          "extends": "0,25,0",
+          "name": "0,24,0",
+          "text": "0,2,4,714"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

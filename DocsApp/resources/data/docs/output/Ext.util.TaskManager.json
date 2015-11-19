@@ -1,0 +1,365 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/util/TaskManager.js",
+    "../../../ext/packages/core/src/util/TaskRunner.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.TaskManager",
+        "extends": "Ext.util.TaskRunner",
+        "name": "Ext.util.TaskManager",
+        "singleton": true,
+        "text": "A static <a href='#!/api/Ext.util.TaskRunner'>Ext.util.TaskRunner</a> instance that can be used to start and stop\narbitrary tasks. See <a href='#!/api/Ext.util.TaskRunner'>Ext.util.TaskRunner</a> for supported methods and task\nconfig properties.\n\n    @example\n    var task, clock;\n\n    clock = Ext.getBody().appendChild({\n        id: 'clock'\n    });\n\n    // Start a simple clock task that updates a div once per second\n    task = {\n        run: function() {\n            clock.setHtml(Ext.Date.format(new Date(), 'g:i:s A'));\n        },\n        interval: 1000\n    };\n\n    Ext.TaskManager.start(task);\n\nSee the <a href='#!/api/Ext.util.TaskManager-method-start'>start</a> method for details about how to configure a task object.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "fireIdleEvent",
+                "optional": true,
+                "text": "This may be configured `false` to inhibit firing of the <a href='#!/api/Ext.GlobalEvents-event-idle'>Ext.GlobalEvents#idle</a> after task invocation.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,110,24",
+                  "text": "1,111,8,120",
+                  "type": "1,110,14",
+                  "value": "1,110,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "interval",
+                "text": "How often to run the task in milliseconds. Defaults to every 10ms.\n",
+                "type": "Number",
+                "src": {
+                  "name": "1,116,22",
+                  "text": "1,117,8,67",
+                  "type": "1,116,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "constructor": true,
+                "name": "constructor",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "interval",
+                    "optional": true,
+                    "text": "The minimum precision in milliseconds supported by\nthis TaskRunner instance. Alternatively, a config object to apply to the new instance.\n",
+                    "type": "Number/Object",
+                    "value": "10",
+                    "src": {
+                      "name": "1,103,28",
+                      "text": "1,103,41,51:1,104,4,87",
+                      "type": "1,103,12",
+                      "value": "1,103,37"
+                    }
+                  }
+                ],
+                "src": {
+                  "constructor": "1,102,4"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroys this instance, stopping all tasks that are currently running.\n",
+                "src": {
+                  "name": "1,407,16",
+                  "text": "1,406,8,71"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "newTask",
+                "text": "Creates a new <a href='#!/api/Ext.util.TaskRunner.Task'>Ext.util.TaskRunner.Task</a> instance. These instances can\nbe easily started and stopped.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "The config object. For details on the supported properties,\nsee <a href='#!/api/Ext.util.TaskManager-method-start'>start</a>.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,144,24",
+                      "text": "1,144,31,60:1,145,8,21",
+                      "type": "1,144,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Ext.util.TaskRunner.Task instance, which can be useful for method chaining.\n",
+                    "type": "Ext.util.TaskRunner.Task",
+                    "src": {
+                      "text": "1,148,8,76",
+                      "type": "1,147,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,150,0",
+                  "text": "1,142,8,113"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onTick",
+                "src": {
+                  "access": "1,261,7",
+                  "name": "1,263,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "start",
+                "text": "Starts a new task.\n\nBefore each invocation, Ext injects the property `taskRunCount` into the task object\nso that calculations based on the repeat count can be performed.\n\nThe returned task will contain a <a href='#!/api/Ext.util.TaskManager-method-destroy'>destroy</a> method that can be used to destroy the\ntask and cancel further calls. This is equivalent to the <a href='#!/api/Ext.util.TaskManager-method-stop'>stop</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "task",
+                    "text": "A config object that supports the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "run",
+                        "text": "The function to execute each time the task is invoked. The\nfunction will be called at each interval and passed the `args` argument if specified,\nand the current invocation count if not.\n\nIf a particular scope (`this` reference) is required, be sure to specify it using\nthe `scope` argument.\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "return",
+                            "text": "`false` from this function to terminate the task.\n",
+                            "type": "Boolean",
+                            "src": {
+                              "name": "1,176,34",
+                              "text": "1,176,41,50",
+                              "type": "1,176,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "1,166,31",
+                          "text": "1,166,35,59:1,167,8,233",
+                          "type": "1,166,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onError",
+                        "text": "The function to execute in case of unhandled\nerror on task.run.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "1,173,31",
+                          "text": "1,173,39,45:1,174,8,20",
+                          "type": "1,173,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "interval",
+                        "text": "The frequency in milliseconds with which the task\nshould be invoked.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "1,178,29",
+                          "text": "1,178,38,50:1,179,8,20",
+                          "type": "1,178,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "args",
+                        "optional": true,
+                        "text": "An array of arguments to be passed to the function\nspecified by `run`. If not specified, the current invocation count is passed.\n",
+                        "type": "Object[]",
+                        "src": {
+                          "name": "1,181,32",
+                          "text": "1,181,38,51:1,182,8,79",
+                          "type": "1,181,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "optional": true,
+                        "text": "The scope (`this` reference) in which to execute the\n`run` function. Defaults to the task config object.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "1,184,30",
+                          "text": "1,184,37,53:1,185,8,53",
+                          "type": "1,184,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "duration",
+                        "optional": true,
+                        "text": "The length of time in milliseconds to invoke the task\nbefore stopping automatically (defaults to indefinite).\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "1,187,30",
+                          "text": "1,187,40,54:1,188,8,57",
+                          "type": "1,187,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "repeat",
+                        "optional": true,
+                        "text": "The number of times to invoke the task before stopping\nautomatically (defaults to indefinite).\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "1,190,30",
+                          "text": "1,190,38,55:1,191,8,41",
+                          "type": "1,190,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "fireIdleEvent",
+                        "optional": true,
+                        "text": "If all tasks in a TaskRunner's execution\nsweep are configured with `fireIdleEvent: false`, then the\n<a href='#!/api/Ext.GlobalEvents-event-idle'>Ext.GlobalEvents#idle</a> is not fired when the TaskRunner's execution\nsweep finishes.\n",
+                        "type": "Number",
+                        "value": "true",
+                        "src": {
+                          "name": "1,193,30",
+                          "text": "1,193,50,41:1,194,8,161",
+                          "type": "1,193,16",
+                          "value": "1,193,44"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "fireOnStart",
+                        "optional": true,
+                        "text": "True to run the task immediately instead of\nwaiting for the _interval's_ initial pass to call the _run_ function.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "1,198,31",
+                          "text": "1,198,50,44:1,199,8,70",
+                          "type": "1,198,16",
+                          "value": "1,198,43"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "1,165,24",
+                      "text": "1,165,29,56",
+                      "type": "1,165,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,201,0",
+                  "text": "1,157,8,333"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "startTimer",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "timeout",
+                    "src": {
+                      "name": "1,379,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "now",
+                    "src": {
+                      "name": "1,379,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,377,7",
+                  "name": "1,379,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "stop",
+                "text": "Stops an existing running task.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "task",
+                    "text": "The task to stop\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,228,24",
+                      "text": "1,228,29,17",
+                      "type": "1,228,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The task\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,229,25,9",
+                      "type": "1,229,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,231,0",
+                  "text": "1,227,8,32"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "stopAll",
+                "text": "Stops all tasks that are currently running.\n",
+                "src": {
+                  "name": "1,249,0",
+                  "text": "1,247,8,44"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "timerId",
+                "text": "The id of the current timer.\n",
+                "src": {
+                  "access": "1,124,8",
+                  "name": "1,122,18",
+                  "text": "1,123,8,29"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,30,0",
+          "extends": "0,27,0",
+          "name": "0,26,0",
+          "singleton": "0,33,0",
+          "text": "0,3,4,615"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

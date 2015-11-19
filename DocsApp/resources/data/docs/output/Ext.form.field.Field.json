@@ -1,0 +1,828 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/form/field/Field.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.form.field.Field",
+        "text": "This mixin provides a common interface for the logical behavior and state of form fields, including:\n\n- Getter and setter methods for field values\n- Events and methods for tracking value and validity changes\n- Methods for triggering validation\n\n**NOTE**: When implementing custom fields, it is most likely that you will want to extend the <a href='#!/api/Ext.form.field.Base'>Ext.form.field.Base</a>\ncomponent class rather than using this mixin directly, as BaseField contains additional logic for generating an\nactual DOM complete with <a href='#!/api/Ext.form.Labelable'>Ext.form.Labelable</a> display and a form input field,\nplus methods that bind the Field value getters and setters to the input field's value.\n\nIf you do want to implement this mixin directly and don't want to extend <a href='#!/api/Ext.form.field.Base'>Ext.form.field.Base</a>, then\nyou will most likely want to override the following methods with custom implementations: <a href='#!/api/Ext.form.field.Field-method-getValue'>getValue</a>,\n<a href='#!/api/Ext.form.field.Field-method-setValue'>setValue</a>, and <a href='#!/api/Ext.form.field.Field-method-getErrors'>getErrors</a>. Other methods may be overridden as needed but their base\nimplementations should be sufficient for common cases. You will also need to make sure that <a href='#!/api/Ext.form.field.Field-method-initField'>initField</a>\nis called during the component's initialization.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "validation",
+                "text": "This property, when a <a href='#!/api/String'>String</a>, contributes its value to the error state of this\ninstance as reported by <a href='#!/api/Ext.form.field.Field-method-getErrors'>getErrors</a>.\n",
+                "type": "Boolean/String",
+                "src": {
+                  "name": "0,30,34",
+                  "text": "0,31,12,118",
+                  "type": "0,30,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "validationField",
+                "text": "When binding is used with a model, this maps to the underlying <a href='#!/api/Ext.data.field.Field'>Ext.data.field.Field</a> if\nit is available. This can be used to validate the value against the model field without needing\nto push the value back into the model.\n",
+                "type": "Ext.data.field.Field",
+                "src": {
+                  "access": "0,42,12",
+                  "name": "0,37,34",
+                  "text": "0,38,12,231",
+                  "type": "0,37,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "value",
+                "text": "A value to initialize this field with.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,48,22",
+                  "text": "0,49,8,39",
+                  "type": "0,48,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "name",
+                "text": "The name of the field. By default this is used as the parameter name when including the\n<a href='#!/api/Ext.form.field.Field-method-getSubmitData'>getSubmitData</a> in a <a href='#!/api/Ext.form.Basic-method-submit'>Ext.form.Basic#submit</a>. To prevent the field from\nbeing included in the form submit, set <a href='#!/api/Ext.form.field.Field-cfg-submitValue'>submitValue</a> to false.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,53,22",
+                  "text": "0,54,8,269",
+                  "type": "0,53,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disabled",
+                "text": "True to disable the field. Disabled Fields will not be <a href='#!/api/Ext.form.Basic-method-submit'>Ext.form.Basic#submit</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,60,23",
+                  "text": "0,61,8,96",
+                  "type": "0,60,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "submitValue",
+                "text": "Setting this to false will prevent the field from being <a href='#!/api/Ext.form.Basic-method-submit'>Ext.form.Basic#submit</a> even when it is\nnot disabled.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,66,23",
+                  "text": "0,67,8,126",
+                  "type": "0,66,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "validateOnChange",
+                "text": "Specifies whether this field should be validated immediately whenever a change in its value is detected.\nIf the validation results in a change in the field's validity, a <a href='#!/api/Ext.form.field.Field-event-validitychange'>validitychange</a> event will be\nfired. This allows the field to show feedback about the validity of its contents immediately as the user is\ntyping.\n\nWhen set to false, feedback will not be immediate. However the form will still be validated before submitting if\nthe clientValidation option to <a href='#!/api/Ext.form.Basic-method-doAction'>Ext.form.Basic#doAction</a> is enabled, or if the field or form are validated\nmanually.\n\nSee also <a href='#!/api/Ext.form.field.Base-cfg-checkChangeEvents'>Ext.form.field.Base#checkChangeEvents</a> for controlling how changes to the field's value are\ndetected.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,73,23",
+                  "text": "0,74,8,680",
+                  "type": "0,73,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "valuePublishEvent",
+                "since": "5.0.1",
+                "text": "The event name(s) to use to publish the <a href='#!/api/Ext.form.field.Field-cfg-value'>value</a>\n<a href='#!/api/Ext.form.field.Base-cfg-bind'>Ext.form.field.Base#bind</a> for this field.\n",
+                "type": "String[]/String",
+                "src": {
+                  "name": "0,89,31",
+                  "since": "0,92,15",
+                  "text": "0,90,8,104",
+                  "type": "0,89,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "change",
+                "text": "Fires when the value of a field is changed. The value of a field is\nchecked for changes when the field's <a href='#!/api/Ext.form.field.Field-method-setValue'>setValue</a> method\nis called and when any of the events listed in\n<a href='#!/api/Ext.form.field.Base-cfg-checkChangeEvents'>Ext.form.field.Base#checkChangeEvents</a> are fired.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.form.field.Field",
+                    "src": {
+                      "name": "0,114,38",
+                      "type": "0,114,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newValue",
+                    "text": "The new value\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,115,24",
+                      "text": "0,115,33,14",
+                      "type": "0,115,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldValue",
+                    "text": "The original value\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,116,24",
+                      "text": "0,116,33,19",
+                      "type": "0,116,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,109,15",
+                  "text": "0,110,8,252"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "validitychange",
+                "text": "Fires when a change in the field's validity is detected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.form.field.Field",
+                    "src": {
+                      "name": "0,122,38",
+                      "type": "0,122,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isValid",
+                    "text": "Whether or not the field is now valid\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,123,25",
+                      "text": "0,123,33,38",
+                      "type": "0,123,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,120,15",
+                  "text": "0,121,8,57"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "dirtychange",
+                "text": "Fires when a change in the field's <a href='#!/api/Ext.form.field.Field-method-isDirty'>isDirty</a> state is detected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.form.field.Field",
+                    "src": {
+                      "name": "0,129,38",
+                      "type": "0,129,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isDirty",
+                    "text": "Whether or not the field is now dirty\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,130,25",
+                      "text": "0,130,33,38",
+                      "type": "0,130,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,127,15",
+                  "text": "0,128,8,71"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "initField",
+                "text": "Initializes this Field mixin on the current instance. Components using this mixin should call this method during\ntheir own initialization process.\n",
+                "src": {
+                  "name": "0,137,0",
+                  "text": "0,134,8,147"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "initValue",
+                "text": "Initializes the field's value based on the initial config.\n",
+                "src": {
+                  "name": "0,173,0",
+                  "text": "0,171,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "cleanupField",
+                "text": "Cleans up values initialized by this Field mixin on the current instance.\nComponents using this mixin should call this method before being destroyed.\n",
+                "src": {
+                  "name": "0,196,0",
+                  "text": "0,193,8,150"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getName",
+                "text": "Returns the <a href='#!/api/Ext.form.field.Field-cfg-name'>Ext.form.field.Field#name</a> attribute of the field. This is used as the parameter name\nwhen including the field value in a <a href='#!/api/Ext.form.Basic-method-submit'>Ext.form.Basic#submit</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "name The field <a href='#!/api/Ext.form.field.Field-cfg-name'>Ext.form.field.Field#name</a>\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,210,25,54",
+                      "type": "0,210,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,212,0",
+                  "text": "0,208,8,191"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getValue",
+                "text": "Returns the current data value of the field. The type of value returned is particular to the type of the\nparticular field (e.g. a Date object for <a href='#!/api/Ext.form.field.Date'>Ext.form.field.Date</a>).\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "value The field value\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,219,25,22",
+                      "type": "0,219,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,221,0",
+                  "text": "0,217,8,176"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setValue",
+                "text": "Sets a data value into the field and runs the change detection and validation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value to set\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,227,24",
+                      "text": "0,227,30,17",
+                      "type": "0,227,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.form.field.Field",
+                    "src": {
+                      "text": "0,228,39,5",
+                      "type": "0,228,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,230,0",
+                  "text": "0,226,8,79"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isEqual",
+                "text": "Returns whether two field <a href='#!/api/Ext.form.field.Field-method-getValue'>getValue</a> are logically equal. Field implementations may override this\nto provide custom comparison logic appropriate for the particular field's data type.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value1",
+                    "text": "The first value to compare\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,240,24",
+                      "text": "0,240,31,27",
+                      "type": "0,240,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value2",
+                    "text": "The second value to compare\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,241,24",
+                      "text": "0,241,31,28",
+                      "type": "0,241,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the values are equal, false if inequal.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,242,26,48",
+                      "type": "0,242,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,244,0",
+                  "text": "0,238,8,197"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "isEqualAsString",
+                "text": "Returns whether two values are logically equal.\nSimilar to <a href='#!/api/Ext.form.field.Field-method-isEqual'>isEqual</a>, however null or undefined values will be treated as empty strings.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value1",
+                    "text": "The first value to compare\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,252,24",
+                      "text": "0,252,31,27",
+                      "type": "0,252,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value2",
+                    "text": "The second value to compare\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,253,24",
+                      "text": "0,253,31,28",
+                      "type": "0,253,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the values are equal, false if inequal.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,254,26,48",
+                      "type": "0,254,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,251,8",
+                  "name": "0,256,0",
+                  "text": "0,249,8,144"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSubmitData",
+                "text": "Returns the parameter(s) that would be included in a standard form submit for this field. Typically this will be\nan object with a single name-value pair, the name being this field's <a href='#!/api/Ext.form.field.Field-method-getName'>getName</a> and the value being\nits current stringified value. More advanced field implementations may return more than one name-value pair.\n\nNote that the values returned from this method are not guaranteed to have been successfully <a href='#!/api/Ext.form.field.Field-method-validate'>validate</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "A mapping of submit parameter names to values; each value should be a string, or an array of\nstrings if that particular name has multiple values. It can also return null if there are no parameters to be\nsubmitted.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,268,25,93:0,269,8,121",
+                      "type": "0,268,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,272,0",
+                  "text": "0,261,8,456"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getModelData",
+                "text": "Returns the value(s) that should be saved to the <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> instance for this field, when <a href='#!/api/Ext.form.Basic-method-updateRecord'>Ext.form.Basic#updateRecord</a> is called. Typically this will be an object with a single name-value pair, the name\nbeing this field's <a href='#!/api/Ext.form.field.Field-method-getName'>getName</a> and the value being its current data value. More advanced field\nimplementations may return more than one name-value pair. The returned values will be saved to the corresponding\nfield names in the Model.\n\nNote that the values returned from this method are not guaranteed to have been successfully <a href='#!/api/Ext.form.field.Field-method-validate'>validate</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "A mapping of submit parameter names to values; each value should be a string, or an array of\nstrings if that particular name has multiple values. It can also return null if there are no parameters to be\nsubmitted.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,292,25,93:0,293,8,121",
+                      "type": "0,292,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "includeEmptyText",
+                    "src": {
+                      "name": "0,296,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isSubmitting",
+                    "src": {
+                      "name": "0,296,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,296,0",
+                  "text": "0,283,8,589"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reset",
+                "text": "Resets the current field value to the originally loaded value and clears any validation messages. See <a href='#!/api/Ext.form.Basic'>Ext.form.Basic</a>.<a href='#!/api/Ext.form.Basic-cfg-trackResetOnLoad'>Ext.form.Basic#trackResetOnLoad</a>\n",
+                "src": {
+                  "name": "0,313,0",
+                  "text": "0,310,8,182"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resetOriginalValue",
+                "text": "Resets the field's <a href='#!/api/Ext.form.field.Field-property-originalValue'>originalValue</a> property so it matches the current <a href='#!/api/Ext.form.field.Field-method-getValue'>getValue</a>. This is\ncalled by <a href='#!/api/Ext.form.Basic'>Ext.form.Basic</a>.<a href='#!/api/Ext.form.Basic-method-setValues'>Ext.form.Basic#setValues</a> if the form's\n<a href='#!/api/Ext.form.Basic-cfg-trackResetOnLoad'>Ext.form.Basic#trackResetOnLoad</a> property is set to true.\n",
+                "src": {
+                  "name": "0,334,0",
+                  "text": "0,330,8,282"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "checkChange",
+                "text": "Checks whether the value of the field has changed since the last time it was checked.\nIf the value has changed, it:\n\n1. Fires the <a href='#!/api/Ext.form.field.Field-event-change'>change</a>,\n2. Performs validation if the <a href='#!/api/Ext.form.field.Field-cfg-validateOnChange'>validateOnChange</a> config is enabled, firing the\n   <a href='#!/api/Ext.form.field.Field-event-validitychange'>validitychange</a> if the validity has changed, and\n3. Checks the <a href='#!/api/Ext.form.field.Field-method-isDirty'>isDirty</a> of the field and fires the <a href='#!/api/Ext.form.field.Field-event-dirtychange'>dirtychange</a>\n   if it has changed.\n",
+                "src": {
+                  "name": "0,349,0",
+                  "text": "0,340,8,458"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "didValueChange",
+                "text": "Checks if the value has changed. Allows subclasses to override for\nany more complex logic.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newVal",
+                    "src": {
+                      "name": "0,370,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldVal",
+                    "src": {
+                      "name": "0,370,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,366,8",
+                  "name": "0,370,0",
+                  "text": "0,367,8,91"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onChange",
+                "text": "Called when the field's value changes. Performs validation if the <a href='#!/api/Ext.form.field.Field-cfg-validateOnChange'>validateOnChange</a>\nconfig is enabled, and invokes the dirty check.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newVal",
+                    "src": {
+                      "name": "0,379,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,375,8",
+                  "name": "0,379,0",
+                  "text": "0,376,8,140"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "publishValue",
+                "text": "Publish the value of this field.\n",
+                "src": {
+                  "access": "0,392,8",
+                  "name": "0,394,0",
+                  "text": "0,390,8,34"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isDirty",
+                "text": "Returns true if the value of this Field has been changed from its <a href='#!/api/Ext.form.field.Field-property-originalValue'>originalValue</a>.\nWill always return false if the field is disabled.\n\nNote that if the owning <a href='#!/api/Ext.form.Basic'>Ext.form.Basic</a> was configured with\n<a href='#!/api/Ext.form.Basic-cfg-trackResetOnLoad'>Ext.form.Basic#trackResetOnLoad</a> then the <a href='#!/api/Ext.form.field.Field-property-originalValue'>originalValue</a> is updated when\nthe values are loaded by <a href='#!/api/Ext.form.Basic'>Ext.form.Basic</a>.<a href='#!/api/Ext.form.Basic-method-setValues'>Ext.form.Basic#setValues</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if this field has been changed from its original value (and is not disabled),\nfalse otherwise.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,409,26,83:0,410,8,17",
+                      "type": "0,409,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,412,0",
+                  "text": "0,403,8,411"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "checkDirty",
+                "text": "Checks the <a href='#!/api/Ext.form.field.Field-method-isDirty'>isDirty</a> state of the field and if it has changed since the last time it was checked,\nfires the <a href='#!/api/Ext.form.field.Field-event-dirtychange'>dirtychange</a> event.\n",
+                "src": {
+                  "name": "0,421,0",
+                  "text": "0,418,8,143"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onDirtyChange",
+                "text": "Called when the field's dirty state changes.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "isDirty",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,437,25",
+                      "type": "0,437,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,435,8",
+                  "name": "0,439,0",
+                  "text": "0,436,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getErrors",
+                "text": "Runs this field's validators and returns an array of error messages for any validation failures. This is called\ninternally during validation and would not usually need to be used manually.\n\nEach subclass should override or augment the return value to provide their own errors.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value to get errors for (defaults to the current field value)\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,447,24",
+                      "text": "0,447,30,66",
+                      "type": "0,447,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "All error messages for this field; an empty Array if none.\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "0,448,27,59",
+                      "type": "0,448,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,450,0",
+                  "text": "0,442,8,278"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isValid",
+                "text": "Returns whether or not the field value is currently valid by <a href='#!/api/Ext.form.field.Field-method-getErrors'>getErrors</a> the field's current\nvalue. The <a href='#!/api/Ext.form.field.Field-event-validitychange'>validitychange</a> event will not be fired; use <a href='#!/api/Ext.form.field.Field-method-validate'>validate</a> instead if you want the event\nto fire. **Note**: <a href='#!/api/Ext.form.field.Field-cfg-disabled'>disabled</a> fields are always treated as valid.\n\nImplementations are encouraged to ensure that this method does not have side-effects such as triggering error\nmessage display.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if the value is valid, else false\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,478,26,39",
+                      "type": "0,478,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,480,0",
+                  "text": "0,471,8,425"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "validate",
+                "text": "Returns whether or not the field value is currently valid by <a href='#!/api/Ext.form.field.Field-method-getErrors'>getErrors</a> the field's current\nvalue, and fires the <a href='#!/api/Ext.form.field.Field-event-validitychange'>validitychange</a> event if the field's validity has changed since the last validation.\n**Note**: <a href='#!/api/Ext.form.field.Field-cfg-disabled'>disabled</a> fields are always treated as valid.\n\nCustom implementations of this method are allowed to have side-effects such as triggering error message display.\nTo validate without side-effects, use <a href='#!/api/Ext.form.field.Field-method-isValid'>isValid</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if the value is valid, else false\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,493,26,39",
+                      "type": "0,493,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,495,0",
+                  "text": "0,486,8,460"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "batchChanges",
+                "text": "A utility for grouping a set of modifications which may trigger value changes into a single transaction, to\nprevent excessive firing of <a href='#!/api/Ext.form.field.Field-event-change'>change</a> events. This is useful for instance if the field has sub-fields which\nare being updated as a group; you don't want the container field to check its own changed state for each subfield\nchange.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call with change checks suspended.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,522,26",
+                      "text": "0,522,29,51",
+                      "type": "0,522,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,524,0",
+                  "text": "0,518,8,344"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isFileUpload",
+                "text": "Returns whether this Field is a file upload field; if it returns true, forms will use special techniques for\n<a href='#!/api/Ext.form.Basic-method-submit'>Ext.form.Basic#submit</a> via AJAX. See <a href='#!/api/Ext.form.Basic-method-hasUpload'>Ext.form.Basic#hasUpload</a> for details. If\nthis returns true, the <a href='#!/api/Ext.form.field.Field-method-extractFileInput'>extractFileInput</a> method must also be implemented to return the corresponding file\ninput element.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,543,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,545,0",
+                  "text": "0,539,8,351"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "extractFileInput",
+                "text": "Only relevant if the instance's <a href='#!/api/Ext.form.field.Field-method-isFileUpload'>isFileUpload</a> method returns true. Returns a reference to the file input\nDOM element holding the user's selected file. The input will be appended into the submission form and will not be\nreturned, so this method should also create a replacement.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "HTMLElement",
+                    "src": {
+                      "type": "0,553,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,555,0",
+                  "text": "0,550,8,286"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "markInvalid",
+                "text": "Display one or more error messages associated with this field, using\n<a href='#!/api/Ext.form.Labelable-cfg-msgTarget'>Ext.form.Labelable#msgTarget</a> to determine how to display the messages and\napplying <a href='#!/api/Ext.form.Labelable-cfg-invalidCls'>Ext.form.Labelable#invalidCls</a> to the field's UI element.\n\n    var formPanel = Ext.create('Ext.form.Panel', {\n        title: 'Contact Info',\n        width: 300,\n        bodyPadding: 10,\n        renderTo: Ext.getBody(),\n        items: [{\n            xtype: 'textfield',\n            name: 'name',\n            id: 'nameId',\n            fieldLabel: 'Name'\n        }],\n        bbar: [{\n            text: 'Mark both fields invalid',\n            handler: function() {\n                var nameField = formPanel.getForm().findField('name');\n                nameField.markInvalid('Name invalid message');\n\n                // multiple error string syntax\n                // nameField.markInvalid(['First message', 'Second message']);\n            }\n        }]\n    });\n\n**Note**: this method does not cause the Field's <a href='#!/api/Ext.form.field.Field-method-validate'>validate</a> or\n<a href='#!/api/Ext.form.field.Field-method-isValid'>isValid</a> methods to return `false` if the value does _pass_ validation.\nSo simply marking a Field as invalid will not prevent submission of forms\nsubmitted with the <a href='#!/api/Ext.form.action.Submit-cfg-clientValidation'>Ext.form.action.Submit#clientValidation</a> option set.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "errors",
+                    "text": "The validation message(s) to display.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "0,593,33",
+                      "text": "0,593,40,38",
+                      "type": "0,593,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,595,0",
+                  "text": "0,561,8,1228"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearInvalid",
+                "text": "Clear any invalid styles/messages for this field. Components using this mixin should implement this method to\nupdate the components rendering to clear any existing messages.\n\n**Note**: this method does not cause the Field's <a href='#!/api/Ext.form.field.Field-method-validate'>validate</a> or <a href='#!/api/Ext.form.field.Field-method-isValid'>isValid</a> methods to return `true`\nif the value does not _pass_ validation. So simply clearing a field's errors will not necessarily allow\nsubmission of forms submitted with the <a href='#!/api/Ext.form.action.Submit-cfg-clientValidation'>Ext.form.action.Submit#clientValidation</a> option set.\n",
+                "src": {
+                  "name": "0,598,16",
+                  "text": "0,599,8,490"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "isFormField",
+                "text": "Flag denoting that this component is a Field. Always true.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,23,28",
+                  "text": "0,24,8,59",
+                  "type": "0,23,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "suspendCheckChange",
+                "src": {
+                  "access": "0,97,8",
+                  "name": "0,99,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "dirty",
+                "text": "The dirty state of the field.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,104,8",
+                  "name": "0,102,28",
+                  "text": "0,103,8,30",
+                  "type": "0,102,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "originalValue",
+                "text": "The original value of the field as configured in the <a href='#!/api/Ext.form.field.Field-cfg-value'>value</a> configuration, or as loaded by the last\nform load operation if the form's <a href='#!/api/Ext.form.Basic-cfg-trackResetOnLoad'>Ext.form.Basic#trackResetOnLoad</a> setting is `true`.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,185,31",
+                  "text": "0,186,12,218",
+                  "type": "0,185,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "beforeReset",
+                "text": "Template method before a field is reset.\n",
+                "src": {
+                  "access": "0,325,8",
+                  "name": "0,327,0",
+                  "text": "0,324,8,41"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,19,0",
+          "text": "0,2,4,1150"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -14,7 +14,7 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
             vm.set('allMembers', classFile.classMembers());
         });
 
-        vm.bind('{configs}', function (store) {
+        /*vm.bind('{configs}', function (store) {
             me.memberStoreBound(store, 'configs');
         });
         vm.bind('{properties}', function (store) {
@@ -25,10 +25,10 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         });
         vm.bind('{events}', function (store) {
             me.memberStoreBound(store, 'events');
-        });
+        });*/
     },
 
-    memberStoreBound: function (store, type) {
+    /*memberStoreBound: function (store, type) {
         this.hideShowMemberInfo(store, type);
     },
 
@@ -36,7 +36,7 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         var empty = store.getCount() === 0;
 
         this.getView().lookupReference(type + 'Header').setVisible(!empty);
-    },
+    },*/
 
     addFavorite: function (btn) {
         var view = this.getView(),
@@ -55,11 +55,12 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
     },
 
     onMemberClick: function (view, rec, el, i, e) {
-        var expander = e.getTarget('.da-expander-toggle');
+        var expander = e.getTarget('.da-expander-toggle'),
+            name = e.getTarget('.da-member-name');
 
-        if (expander) {
-            Ext.fly(el).toggleCls('da-member-expanded');
-            Ext.fly(expander).toggleCls('fa-compress');
+        if (expander || name) {
+            Ext.fly(el).toggleCls('da-member-expanded')
+                .down('.da-expander-toggle').toggleCls('fa-compress');
         }
     },
 
@@ -128,7 +129,7 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         this.doFilter();
     },
 
-    onAccessFilterChange: Ext.Function.createBuffered(function () {
+    onAccessFilterChange: function () {
         /*var me = this,
         vm = me.getViewModel(),
             store = vm.get('allMembers'),
@@ -173,36 +174,21 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         }
 
         me.doFilter();
-    }, 10),
+    },
 
-    doFilter: function () {
-        /*var vm = this.getViewModel(),
-            cats = vm.get('catFilters'),
-            memberViews = this.getView().query('main-member-dataview'),
-            len = memberViews.length,
-            i = 0,
-            prefix = 'da-class-member-',
-            view, el;
-
-        for (;i < len; i++) {
-            view = memberViews[i];
-            el = view.getEl();
-
-            el.toggleCls(prefix + 'isPublic', cats.pub);
-            el.toggleCls(prefix + 'isProtected', cats.prot);
-            el.toggleCls(prefix + 'isPrivate', cats.pri);
-            el.toggleCls(prefix + 'isInherited', cats.inherited);
-            el.toggleCls(prefix + 'isDeprecated', cats.deprecated);
-            el.toggleCls(prefix + 'isRemoved', cats.removed);
-        }*/
-
-        var vm          = this.getViewModel(),
-            filterVal   = this.lookupReference('memberFilter').getValue() || '',
-            cats        = vm.get('catFilters'),
-            memberViews = this.getView().query('main-member-dataview'),
-            len         = memberViews.length,
-            i           = 0,
-            view, store, count;
+    doFilter: Ext.Function.createBuffered(function () {
+        var me             = this,
+            vm             = me.getViewModel(),
+            filterVal      = vm.get('memberFilter'),
+            cats           = vm.get('catFilters'),
+            memberViews    = me.getView().query('main-member-dataview'),
+            len            = memberViews.length,
+            i              = 0,
+            totalCount     = 0,
+            classEmptyText = me.lookupReference('classEmptyText'),
+            nullFilterMsg  = me.nullFilterMsg,
+            filterMsg      = me.filterMsg,
+            view, store, count, emptyData, msg;
 
         for (;i < len; i++) {
             view  = memberViews[i];
@@ -247,6 +233,7 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
                     // if we push the whole record it make for a major slowdown it seems when it comes to showing the
                     // member list / filtered member list
                     view.filteredRecords.push({
+                        "$type"          : rec.get('$type'),
                         name             : name,
                         access           : access,
                         deprecatedVersion: itemDeprecated,
@@ -257,16 +244,55 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
                         preventable      : rec.get('preventable')
                     });
                     count++;
+                    totalCount++;
                 } else {
                     node.setVisibilityMode(Ext.dom.Element.DISPLAY).hide();
                 }
             });
-            view.previousSibling().setHidden(!count);
             view.filteredCount = count;
             view.fireEvent('refresh', view);
             Ext.resumeLayouts(true);
         }
-    },
+        me.lookupReference('classDescription').setHidden(filterVal.length);
+        classEmptyText.setHidden(totalCount);
+
+        if (!totalCount) {
+            emptyData = Ext.apply({}, cats, {
+                filterVal: filterVal
+            });
+
+            msg = (!cats.pub && !cats.prot && !cats.pri) ? nullFilterMsg : filterMsg;
+            classEmptyText.update(msg.apply(emptyData));
+        }
+    }, 10),
+
+    nullFilterMsg: new Ext.XTemplate(
+        '<div class="da-class-empty-text">',
+            '<tpl if="!pub && !prot && !pri">',
+                '<div class="da-empty-filter-disclaimer">',
+                    'To display class members you must select one or more of the following filters: <b>Public, Protected, or Private</b>',
+                '</div>',
+            '</tpl>',
+        '</div>'
+    ),
+
+    filterMsg: new Ext.XTemplate(
+        '<div class="da-class-empty-text">',
+            '<b>No class members found using the current filter:</b>',
+            '<ul>',
+                '<li <tpl if="filterVal.length == 0">class="da-filter-false"</tpl>>Filter text: {filterVal}</li>',
+                '<hr>',
+                '<li <tpl if="!pub">class="da-filter-false"</tpl>>Public: {pub}</li>',
+                '<li <tpl if="!pri">class="da-filter-false"</tpl>>Private: {pri}</li>',
+                '<li <tpl if="!prot">class="da-filter-false"</tpl>>Protected: {prot}</li>',
+                '<hr>',
+                '<li <tpl if="!inherited">class="da-filter-false"</tpl>>Inherited: {inherited}</li>',
+                '<li <tpl if="!accessor">class="da-filter-false"</tpl>>Accessor: {accessor}</li>',
+                '<li <tpl if="!deprecated">class="da-filter-false"</tpl>>Deprecated: {deprecated}</li>',
+                '<li <tpl if="!removed">class="da-filter-false"</tpl>>Removed: {removed}</li>',
+            '</ul>',
+        '</div>'
+    ),
 
     onMemberNavBtnClick: function (btn) {
         var targetEl = this.lookupReference(btn.target).getEl(),
@@ -346,5 +372,11 @@ Ext.define('DocsApp.view.mainApp.doc.DocController', {
         type = (type === 'config') ? 'cfg' : type;
         this.lookupReference('memberListMenu').hide();
         this.redirectTo('#!/api/' + this.getView().getClassName() + '-' + type + '-' + rec.get('name'), true);
+    },
+
+    toggleFilterMenuDocked: function () {
+        var vm = this.getViewModel();
+
+        vm.set('memberFilterDocked', !vm.get('memberFilterDocked'));
     }
 });

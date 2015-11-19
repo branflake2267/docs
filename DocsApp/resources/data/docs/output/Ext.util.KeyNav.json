@@ -1,0 +1,382 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/util/KeyNav.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.KeyNav",
+        "name": "Ext.util.KeyNav",
+        "requires": "Ext.util.KeyMap",
+        "text": "Provides a convenient wrapper for normalized keyboard navigation. KeyNav allows you to bind navigation keys to\nfunction calls that will get called when the keys are pressed, providing an easy way to implement custom navigation\nschemes for any UI component.\n\nThe following are all of the possible keys that can be implemented: enter, space, left, right, up, down, tab, esc,\npageUp, pageDown, del, backspace, home, end.\n\nUsage:\n\n    var nav = new Ext.util.KeyNav({\n        target : \"my-element\",\n        left   : function(e){\n            this.moveLeft(e.ctrlKey);\n        },\n        right  : function(e){\n            this.moveRight(e.ctrlKey);\n        },\n        enter  : function(e){\n            this.save();\n        },\n\n        // Binding may be a function specifiying fn, scope and defaultEventAction\n        esc: {\n            fn: this.onEsc,\n            defaultEventAction: false\n        },\n\n        // Binding may be keyed by a single character\n        A: {\n            ctrl: true,\n            fn: selectAll\n        },\n\n        // Binding may be keyed by a key code (45 = INSERT)\n        45: {\n            fn: doInsert\n        }\n        scope : this\n    });\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "disabled",
+                "text": "True to disable this KeyNav instance.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,48,23",
+                  "text": "0,49,8,38",
+                  "type": "0,48,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultEventAction",
+                "optional": true,
+                "text": "The method to call on the <a href='#!/api/Ext.event.Event'>Ext.event.Event</a> after this KeyNav intercepts a key.\nValid values are <a href='#!/api/Ext.event.Event-method-stopEvent'>Ext.event.Event#stopEvent</a>, <a href='#!/api/Ext.event.Event-method-preventDefault'>Ext.event.Event#preventDefault</a>\nand <a href='#!/api/Ext.event.Event-method-stopPropagation'>Ext.event.Event#stopPropagation</a>.\n\nIf a falsy value is specified, no method is called on the key event.\n",
+                "type": "String",
+                "value": "false",
+                "src": {
+                  "name": "0,54,23",
+                  "text": "0,55,8,292",
+                  "type": "0,54,14",
+                  "value": "0,54,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "forceKeyDown",
+                "text": "Handle the keydown event instead of keypress. KeyNav automatically does this for IE since IE does not propagate\nspecial keys on keypress, but setting this to true will force other browsers to also handle keydown instead of\nkeypress.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,64,23",
+                  "text": "0,65,8,233",
+                  "type": "0,64,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "target",
+                "text": "The object on which to listen for the event specified by the <a href='#!/api/Ext.util.KeyNav-cfg-eventName'>eventName</a> config option.\n",
+                "type": "Ext.Component/Ext.dom.Element/HTMLElement/String",
+                "src": {
+                  "name": "0,72,64",
+                  "text": "0,73,8,95",
+                  "type": "0,72,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "eventName",
+                "text": "The event to listen for to pick up key events.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,77,22",
+                  "text": "0,78,8,47",
+                  "type": "0,77,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "processEvent",
+                "text": "An optional event processor function which accepts the argument list provided by the <a href='#!/api/Ext.util.KeyNav-cfg-eventName'>eventName</a> of the <a href='#!/api/Ext.util.KeyNav-cfg-target'>target</a>, and returns a keyEvent for processing by the KeyMap.\n\nThis may be useful when the <a href='#!/api/Ext.util.KeyNav-cfg-target'>target</a> is a Component with s complex event signature. Extra information from\nthe event arguments may be injected into the event for use by the handler functions before returning it.\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,83,24",
+                  "text": "0,84,8,418",
+                  "type": "0,83,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "processEventScope",
+                "optional": true,
+                "text": "The scope (`this` context) in which the <a href='#!/api/Ext.util.KeyNav-cfg-processEvent'>processEvent</a> method is executed.\n",
+                "type": "Object",
+                "value": "this",
+                "src": {
+                  "name": "0,92,23",
+                  "text": "0,93,8,82",
+                  "type": "0,92,14",
+                  "value": "0,92,41"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ignoreInputFields",
+                "optional": true,
+                "text": "Configure this as `true` if there are any input fields within the <a href='#!/api/Ext.util.KeyNav-cfg-target'>target</a>, and this KeyNav\nshould not process events from input fields, (`&lt;input>, &lt;textarea> and elements with `contentEditable=\"true\"`)\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,97,24",
+                  "text": "0,98,8,216",
+                  "type": "0,97,14",
+                  "value": "0,97,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "keyMap",
+                "optional": true,
+                "text": "An optional pre-existing <a href='#!/api/Ext.util.KeyMap'>Ext.util.KeyMap</a> to use to listen for key events. If not specified,\none is created.\n",
+                "type": "Ext.util.KeyMap",
+                "src": {
+                  "name": "0,103,32",
+                  "text": "0,104,8,123",
+                  "type": "0,103,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "priority",
+                "optional": true,
+                "text": "The priority to set on this KeyNav's listener. Listeners with a higher priority are fired before those with\nlower priority.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,114,23",
+                  "text": "0,115,8,124",
+                  "type": "0,114,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "legacyConstructor",
+                "text": "Old constructor signature.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The element or its ID to bind to\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,150,52",
+                      "text": "0,150,55,33",
+                      "type": "0,150,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "The config\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,151,24",
+                      "text": "0,151,31,11",
+                      "type": "0,151,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,148,8",
+                  "name": "0,153,0",
+                  "text": "0,149,8,27"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doConstruction",
+                "text": "Sets up a configuration for the KeyNav.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "A configuration object as specified in the constructor.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,162,24",
+                      "text": "0,162,31,56",
+                      "type": "0,162,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,161,8",
+                  "name": "0,164,0",
+                  "text": "0,160,8,40"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "handleEvent",
+                "text": "Method for filtering out the map argument\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "keyCode",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,248,24",
+                      "type": "0,248,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "0,249,33",
+                      "type": "0,249,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "handler",
+                    "text": "The function to call\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,250,26",
+                      "text": "0,250,34,21",
+                      "type": "0,250,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "keyNav",
+                    "text": "The owning KeyNav\n",
+                    "type": "Ext.util.KeyNav",
+                    "src": {
+                      "name": "0,251,33",
+                      "text": "0,251,40,18",
+                      "type": "0,251,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,247,8",
+                  "name": "0,253,0",
+                  "text": "0,246,8,42"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroy this KeyNav.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "removeEl",
+                    "text": "Pass `true` to remove the element associated with this KeyNav.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,260,25",
+                      "text": "0,260,34,63",
+                      "type": "0,260,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,262,0",
+                  "text": "0,259,8,21"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "Enables this KeyNav.\n",
+                "src": {
+                  "name": "0,275,0",
+                  "text": "0,273,8,21"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "Disables this KeyNav.\n",
+                "src": {
+                  "name": "0,286,0",
+                  "text": "0,284,8,22"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setDisabled",
+                "text": "Convenience function for setting disabled/enabled by boolean.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "disabled",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,296,25",
+                      "type": "0,296,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,298,0",
+                  "text": "0,295,8,62"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getKeyEvent",
+                "text": "Determines the event to bind to listen for keys. Defaults to the <a href='#!/api/Ext.util.KeyNav-cfg-eventName'>eventName</a> value, but\nmay be overridden the <a href='#!/api/Ext.util.KeyNav-cfg-forceKeyDown'>forceKeyDown</a> setting.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The type of event to listen for.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,308,25,33",
+                      "type": "0,308,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "forceKeyDown",
+                    "src": {
+                      "name": "0,310,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "configuredEventName",
+                    "src": {
+                      "name": "0,310,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,304,8",
+                  "name": "0,310,0",
+                  "text": "0,305,8,149"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "lastKeyEvent",
+                "text": "The last key event that this KeyMap handled.\n",
+                "type": "Ext.event.Event",
+                "src": {
+                  "name": "0,109,36",
+                  "text": "0,110,8,45",
+                  "type": "0,109,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,43,0",
+          "name": "0,42,0",
+          "requires": "0,45,0",
+          "text": "0,2,4,1162"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

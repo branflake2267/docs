@@ -1,0 +1,233 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/identifier/Uuid.js",
+    "../../../ext/packages/core/src/data/identifier/Generator.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "data.identifier.uuid",
+        "extends": "Ext.data.identifier.Generator",
+        "name": "Ext.data.identifier.Uuid",
+        "text": "This class generates UUID's according to RFC 4122. This class has a default id property.\nThis means that a single instance is shared unless the id property is overridden. Thus,\ntwo <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> instances configured like the following share one generator:\n\n    Ext.define('MyApp.data.MyModelX', {\n        extend: 'Ext.data.Model',\n        identifier: 'uuid'\n    });\n\n    Ext.define('MyApp.data.MyModelY', {\n        extend: 'Ext.data.Model',\n        identifier: 'uuid'\n    });\n\nThis allows all models using this class to share a commonly configured instance.\n\n# Using Version 1 (\"Sequential\") UUID's\n\nIf a server can provide a proper timestamp and a \"cryptographic quality random number\"\n(as described in RFC 4122), the shared instance can be configured as follows:\n\n    Ext.data.identifier.Uuid.Global.reconfigure({\n        version: 1,\n        clockSeq: clock, // 14 random bits\n        salt: salt,      // 48 secure random bits (the Node field)\n        timestamp: ts    // timestamp per Section 4.1.4\n    });\n\n    // or these values can be split into 32-bit chunks:\n\n    Ext.data.identifier.Uuid.Global.reconfigure({\n        version: 1,\n        clockSeq: clock,\n        salt: { lo: saltLow32, hi: saltHigh32 },\n        timestamp: { lo: timestampLow32, hi: timestamptHigh32 }\n    });\n\nThis approach improves the generator's uniqueness by providing a valid timestamp and\nhigher quality random data. Version 1 UUID's should not be used unless this information\ncan be provided by a server and care should be taken to avoid caching of this data.\n\nSee [http://www.ietf.org/rfc/rfc4122.txt](http://www.ietf.org/rfc/rfc4122.txt) for details.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "clockSeq",
+                "optional": true,
+                "text": "A clock value to help avoid duplicates.\n\nOnly applicable when <a href='#!/api/Ext.data.identifier.Uuid-cfg-version'>version</a> is set to `1`.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,98,23",
+                  "text": "0,99,8,87",
+                  "type": "0,98,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "id",
+                "text": "The id for this generator instance. By default all model instances share the same\nUUID generator instance. By specifying an id other then 'uuid', a unique generator instance\nwill be created for the Model.\n",
+                "src": {
+                  "name": "0,64,0",
+                  "text": "0,60,12,205"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "salt",
+                "optional": true,
+                "text": "This value is a 48-bit number. This can be a number or an object with `hi` and `lo`\nproperties where `lo` is the low 32-bits and `hi` is the upper 16 bits.\n\nOnly applicable when <a href='#!/api/Ext.data.identifier.Uuid-cfg-version'>version</a> is set to `1`.\n",
+                "type": "Number/Object",
+                "src": {
+                  "name": "0,82,30",
+                  "text": "0,83,8,203",
+                  "type": "0,82,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "timestamp",
+                "optional": true,
+                "text": "When created, this value is a 60-bit number. This can be a number or an object with\n`hi` and `lo` properties where `lo` is the low 32-bits and `hi` is the upper 28 bits.\n\nOnly applicable when <a href='#!/api/Ext.data.identifier.Uuid-cfg-version'>version</a> is set to `1`.\n",
+                "type": "Number/Object",
+                "src": {
+                  "name": "0,90,30",
+                  "text": "0,91,8,217",
+                  "type": "0,90,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "version",
+                "optional": true,
+                "text": "The Version of UUID. Supported values are:\n\n * 1 : Time-based, \"sequential\" UUID. To use this type of generator, you must also\n specify the <a href='#!/api/Ext.data.identifier.Uuid-cfg-salt'>salt</a>, <a href='#!/api/Ext.data.identifier.Uuid-cfg-timestamp'>timestamp</a> and `clock` properties. For details on the values\n and how a server should produce them, see RFC 4122. Use of this type of generator\n produces values that are easier to read since they are sequential, but requires\n some care to initialize properly and still ensure their uniqueness.\n\n * 4 : Pseudo-random UUID. This is the simplest form and requires no configuration\n and hence is the default type.\n",
+                "type": "Number",
+                "value": "4",
+                "src": {
+                  "name": "0,68,23",
+                  "text": "0,69,8,559",
+                  "type": "0,68,14",
+                  "value": "0,68,31"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clone",
+                "text": "Create a copy of this identifier.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The clone\n",
+                    "type": "Ext.data.identifier.Generator",
+                    "src": {
+                      "text": "1,192,52,10",
+                      "type": "1,192,21"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "1,194,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,191,12",
+                  "name": "1,194,0",
+                  "text": "1,190,12,34"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Initializes a new instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "(optional) Configuration object to be applied to the new instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,164,24",
+                      "text": "1,164,31,67",
+                      "type": "1,164,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,166,0",
+                  "text": "1,163,8,28"
+                }
+              },
+              {
+                "$type": "method",
+                "abstract": true,
+                "name": "generate",
+                "text": "Generates and returns the next id. This method must be implemented by the derived\nclass.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The next id.\n",
+                    "type": "Number/String",
+                    "src": {
+                      "text": "1,183,32,13",
+                      "type": "1,183,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "abstract": "1,185,8",
+                  "name": "1,184,16",
+                  "text": "1,180,8,90"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reconfigure",
+                "text": "Reconfigures this generator given new config properties. The only values that this\nchanges are <a href='#!/api/Ext.data.identifier.Uuid-cfg-version'>version</a> and, if <a href='#!/api/Ext.data.identifier.Uuid-cfg-version'>version</a> is 1, its related config properties.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "0,114,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,114,0",
+                  "text": "0,111,8,160"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,295,28",
+                  "text": "2,296,8,128",
+                  "type": "2,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isGenerator",
+                "text": "`true` in this class to identify an object as an instantiated IdGenerator, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,149,28",
+                  "text": "1,150,8,96",
+                  "type": "1,149,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "isUnique",
+                "text": "Provides a way to determine if this identifier supports creating unique IDs. Proxies like <a href='#!/api/Ext.data.proxy.LocalStorage'>Ext.data.proxy.LocalStorage</a>\nneed the identifier to create unique IDs and will check this property.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,54,8",
+                  "name": "0,52,18",
+                  "text": "0,50,8,197",
+                  "type": "0,53,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties"
+          }
+        ],
+        "src": {
+          "alias": "0,47,0",
+          "extends": "0,46,0",
+          "name": "0,45,0",
+          "text": "0,2,4,1644"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

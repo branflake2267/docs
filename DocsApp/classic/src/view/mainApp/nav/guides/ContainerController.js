@@ -6,7 +6,7 @@ Ext.define('DocsApp.view.mainApp.nav.guides.ContainerController', {
         '!/guide:guide:heading': {
             action    : 'onGuide',
             conditions: {
-                ':guide'  : '(?:(?:\/){1}([a-z_]+))?',
+                ':guide'  : '(?:(?:\/){1}([a-z_-]+))?',
                 ':heading': '(?:(?:-){1}([a-z_]+))?'
             }
         }
@@ -28,7 +28,7 @@ Ext.define('DocsApp.view.mainApp.nav.guides.ContainerController', {
     onGuide: function (guide, heading) {
         var store = Ext.getStore('guide.Topical'),
             node, tree;
-
+        
         if (store.isLoaded()) {
             node = store.getRoot().findChildBy(function (node) {
                 return node.isLeaf() && node.get('slug') === guide;

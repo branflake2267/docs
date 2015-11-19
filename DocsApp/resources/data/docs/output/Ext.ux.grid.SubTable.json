@@ -1,0 +1,626 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/ux/classic/src/grid/SubTable.js",
+    "../../../ext/classic/classic/src/grid/plugin/RowExpander.js",
+    "../../../ext/packages/core/src/plugin/Abstract.js",
+    "../../../ext/classic/classic/overrides/plugin/Abstract.js",
+    "../../../ext/classic/theme-neutral/sass/var/grid/plugin/RowExpander.scss"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "plugin.subtable",
+        "extends": "Ext.grid.plugin.RowExpander",
+        "name": "Ext.ux.grid.SubTable",
+        "text": "A small grid nested within a parent grid's row.\n\nSee the [Kitchen Sink](http://dev.sencha.com/extjs/5.0.1/examples/kitchensink/#customer-grid) for example usage.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "bodyBefore",
+                "optional": true,
+                "text": "Configure as `true` to put the row expander body *before* the data row.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "1,68,24",
+                  "text": "1,69,8,73",
+                  "type": "1,68,14",
+                  "value": "1,68,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "columnWidth",
+                "optional": true,
+                "text": "The width of the row expander column which contains the [+]/[-] icons to toggle row expansion.\n",
+                "type": "Number",
+                "value": "24",
+                "src": {
+                  "name": "1,21,23",
+                  "text": "1,22,8,95",
+                  "type": "1,21,14",
+                  "value": "1,21,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "expandOnDblClick",
+                "text": "`true` to toggle a row between expanded/collapsed when double clicked\n(defaults to `true`).\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,48,23",
+                  "text": "1,49,8,92",
+                  "type": "1,48,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "expandOnEnter",
+                "text": "This config is no longer supported. The Enter key initiated the grid's actinoable mode.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,43,23",
+                  "text": "1,44,8,88",
+                  "type": "1,43,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "headerWidth",
+                "text": "The width of the Row Expander column header\n",
+                "type": "Number",
+                "src": {
+                  "name": "1,65,0",
+                  "text": "1,63,8,44",
+                  "type": "1,62,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "lockedTpl",
+                "optional": true,
+                "text": "An XTemplate which, when passed a record data object, produces HTML for the expanded row content *on the locked side of a lockable grid*.\n",
+                "type": "Ext.XTemplate",
+                "src": {
+                  "name": "1,37,30",
+                  "text": "1,38,8,138",
+                  "type": "1,37,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pluginId",
+                "text": "A name for the plugin that can be set at creation time to then retrieve the plugin\nthrough <a href='#!/api/Ext.Component-method-getPlugin'>Ext.Component#getPlugin</a> method.  For example:\n\n    var grid = Ext.create('Ext.grid.Panel', {\n        plugins: [{\n            ptype: 'cellediting',\n            clicksToEdit: 2,\n            pluginId: 'cellplugin'\n        }]\n    });\n\n    // later on:\n    var plugin = grid.getPlugin('cellplugin');\n",
+                "type": "String",
+                "src": {
+                  "name": "2,61,22",
+                  "text": "2,62,8,404",
+                  "type": "2,61,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "rowBodyTpl",
+                "text": "An XTemplate which, when passed a record data object, produces HTML for the expanded row content.\n\nNote that if this plugin is applied to a lockable grid, the rowBodyTpl applies to the normal (unlocked) side.\nSee <a href='#!/api/Ext.ux.grid.SubTable-cfg-lockedTpl'>lockedTpl</a>\n",
+                "type": "Ext.XTemplate",
+                "src": {
+                  "name": "1,27,29",
+                  "text": "1,28,8,233",
+                  "type": "1,27,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "selectRowOnExpand",
+                "text": "`true` to select a row when clicking on the expander icon\n(defaults to `false`).\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,55,23",
+                  "text": "1,56,8,81",
+                  "type": "1,55,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stateEvents",
+                "text": "The configured list of stateEvents used to (optionally) participate in Owner Component's state management.\n",
+                "type": "String/Array",
+                "src": {
+                  "name": "3,13,28",
+                  "text": "3,14,8,107",
+                  "type": "3,13,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "collapsebody",
+                "text": "**Fired through the grid's View.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "rowNode",
+                    "text": "The &lt;tr> element which owns the expanded row.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "1,106,29",
+                      "text": "1,106,37,49",
+                      "type": "1,106,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record providing the data.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "1,107,32",
+                      "text": "1,107,39,31",
+                      "type": "1,107,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "expandRow",
+                    "text": "The &lt;tr> element containing the expanded data.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "1,108,29",
+                      "text": "1,108,39,50",
+                      "type": "1,108,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,104,15",
+                  "text": "1,105,8,35"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "expandbody",
+                "text": "**Fired through the grid's View**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "rowNode",
+                    "text": "The &lt;tr> element which owns the expanded row.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "1,99,29",
+                      "text": "1,99,37,49",
+                      "type": "1,99,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record providing the data.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "1,100,32",
+                      "text": "1,100,39,31",
+                      "type": "1,100,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "expandRow",
+                    "text": "The &lt;tr> element containing the expanded data.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "1,101,29",
+                      "text": "1,101,39,50",
+                      "type": "1,101,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,97,15",
+                  "text": "1,98,8,34"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addExpander",
+                "text": "Inject the expander column into the correct grid.\n\nIf we are expanding the normal side of a lockable grid, poke the column into the locked side if the locked side has columns\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "expanderGrid",
+                    "src": {
+                      "name": "1,270,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,265,8",
+                  "name": "1,270,0",
+                  "text": "1,266,8,175"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "applyState",
+                "text": "The applyState method is invoked by the client Component's State mixin after initComponent method has been run for the client.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method to utilize it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The current plugin state object to be applied.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,35,24",
+                      "text": "3,35,30,47",
+                      "type": "3,35,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "allState",
+                    "text": "The current aggregate state of the Component and all plugins.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,36,24",
+                      "text": "3,36,33,62",
+                      "type": "3,36,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,39,0",
+                  "text": "3,31,8,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clonePlugin",
+                "text": "Creates clone of the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "overrideCfg",
+                    "optional": true,
+                    "text": "Additional config for the derived plugin.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,38,25",
+                      "text": "2,38,38,42",
+                      "type": "2,38,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,40,0",
+                  "text": "2,37,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Instantiates the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "Configuration object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,27,25",
+                      "text": "2,27,33,22",
+                      "type": "2,27,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,29,0",
+                  "text": "2,26,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "The destroy method is invoked by the owning Component at the time the Component is\nbeing destroyed.\n",
+                "src": {
+                  "name": "2,91,16",
+                  "text": "2,88,8,101"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `true`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "3,57,0",
+                  "text": "3,52,8,171"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `false`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "3,47,0",
+                  "text": "3,42,8,172"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCmp",
+                "text": "Returns the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "2,54,32,17",
+                      "type": "2,54,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,56,0",
+                  "text": "2,53,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getFeatureConfig",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "And array of Features or Feature config objects.\nReturns the array of Feature configurations needed to make the RowExpander work.\nMay be overridden in a subclass to modify the returned array.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "1,137,24,49:1,138,8,143",
+                      "type": "1,137,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "grid",
+                    "src": {
+                      "name": "1,141,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,136,8",
+                  "name": "1,141,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getState",
+                "text": "The getState method is invoked by the client Component's State mixin when one or more of the the specified <a href='#!/api/Ext.ux.grid.SubTable-cfg-stateEvents'>stateEvents</a> are raised.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method which returns a state object.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "state\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,24,25,6",
+                      "type": "3,24,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,27,0",
+                  "text": "3,20,8,352"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "init",
+                "text": "The init method is invoked after initComponent method has been run for the client Component.\n\nThe supplied implementation is empty. Subclasses should perform plugin initialization, and set up bidirectional\nlinks between the plugin and its client Component in their own implementation of this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "client",
+                    "text": "The client Component which owns this plugin.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "2,83,31",
+                      "text": "2,83,38,45",
+                      "type": "2,83,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,85,0",
+                  "text": "2,79,8,300"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setCmp",
+                "text": "Sets the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cmp",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "2,46,31",
+                      "text": "2,46,35,17",
+                      "type": "2,46,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,48,0",
+                  "text": "2,45,8,53"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "isPlugin",
+                "text": "`true` in this class to identify an object as an instantiated Plugin, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,20,28",
+                  "text": "2,21,8,91",
+                  "type": "2,20,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "vars",
+            "items": [
+              {
+                "$type": "property",
+                "name": "$row-expander-cell-spacing-after",
+                "text": "The horizontal space after the RowExpander icon\n",
+                "type": "Number",
+                "value": "6px",
+                "src": {
+                  "name": "4,27,1",
+                  "text": "4,25,4,48",
+                  "type": "4,24,10",
+                  "value": "4,27,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$row-expander-cell-spacing-before",
+                "text": "The horizontal space before the RowExpander icon\n",
+                "type": "Number",
+                "value": "6px",
+                "src": {
+                  "name": "4,21,1",
+                  "text": "4,19,4,49",
+                  "type": "4,18,10",
+                  "value": "4,21,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$row-expander-collapse-glyph",
+                "text": "Glyph for the RowExpander's \"collapse\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-minus-square $row-expander-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "4,64,1",
+                  "text": "4,62,4,98",
+                  "type": "4,61,10",
+                  "value": "4,64,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$row-expander-cursor",
+                "text": "The cursor for the RowExpander icon\n",
+                "type": "String",
+                "value": "pointer",
+                "src": {
+                  "name": "4,33,1",
+                  "text": "4,31,4,36",
+                  "type": "4,30,10",
+                  "value": "4,33,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$row-expander-expand-glyph",
+                "text": "Glyph for the RowExpander's \"expand\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-plus-square $row-expander-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "4,58,1",
+                  "text": "4,56,4,96",
+                  "type": "4,55,10",
+                  "value": "4,58,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$row-expander-glyph-color",
+                "text": "The color to use for the RowExpander icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "color",
+                "value": "$color",
+                "src": {
+                  "name": "4,46,1",
+                  "text": "4,44,4,96",
+                  "type": "4,43,10",
+                  "value": "4,46,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$row-expander-glyph-font-size",
+                "text": "The font size for the RowExpander icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "Number",
+                "value": "14px",
+                "src": {
+                  "name": "4,52,1",
+                  "text": "4,50,4,93",
+                  "type": "4,49,10",
+                  "value": "4,52,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$row-expander-height",
+                "text": "The height of the RowExpander icon\n",
+                "type": "Number",
+                "value": "11px",
+                "src": {
+                  "name": "4,9,1",
+                  "text": "4,7,4,35",
+                  "type": "4,6,10",
+                  "value": "4,9,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$row-expander-width",
+                "text": "The width of the RowExpander icon\n",
+                "type": "Number",
+                "value": "11px",
+                "src": {
+                  "name": "4,15,1",
+                  "text": "4,13,4,34",
+                  "type": "4,12,10",
+                  "value": "4,15,30"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,9,0",
+          "extends": "0,7,0",
+          "name": "0,6,0",
+          "text": "0,2,4,162"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

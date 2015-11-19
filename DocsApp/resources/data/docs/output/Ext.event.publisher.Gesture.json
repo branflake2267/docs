@@ -1,0 +1,215 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/event/publisher/Gesture.js",
+    "../../../ext/packages/core/src/event/publisher/Dom.js",
+    "../../../ext/packages/core/src/event/publisher/Publisher.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "extends": "Ext.event.publisher.Dom",
+        "name": "Ext.event.publisher.Gesture",
+        "requires": "Ext.util.Point,Ext.AnimationQueue",
+        "uses": "Ext.event.gesture.*",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "async",
+                "text": "By default the gesture publisher runs all handlers on requestAnimationFrame\ntiming for smooth performance of gestures and scrolling.  Set this config\nto false to disable requestAnimationFrame and run handlers immediately.\n\nTest environments may want to set this to false to ensure that gesture events\nsuch as tap behave the same as dom events such as click in that they fire\nimmediately with no delay\n",
+                "src": {
+                  "access": "0,18,12",
+                  "name": "0,28,0",
+                  "text": "0,20,12,401"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "isEventBlocked",
+                "text": "Detects if the given event should be blocked from firing because it is an emulated\n\"compatibility\" mouse event triggered by a touch on the screen.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "1,520,33",
+                      "type": "1,520,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "1,521,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,522,8",
+                  "name": "1,524,0",
+                  "text": "1,518,8,147"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onDirectEvent",
+                "text": "Handler for directly-attached (non-delegated) dom events\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,403,23",
+                      "type": "1,403,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,404,8",
+                  "name": "1,406,0",
+                  "text": "1,402,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "registerEvents",
+                "text": "Registers all <a href='#!/api/Ext.event.publisher.Gesture-property-handledEvents'>handledEvents</a> in the\n<a href='#!/api/Ext.event.publisher.Publisher-static-property-publishersByEvent'>Ext.event.publisher.Publisher#publishersByEvent</a> map.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "events",
+                    "optional": true,
+                    "text": "optional events to register instead of handledEvents.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "2,62,27",
+                      "text": "2,62,35,54",
+                      "type": "2,62,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,63,8",
+                  "name": "2,65,0",
+                  "text": "2,60,8,105"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reset",
+                "text": "Resets the internal state of the Gesture publisher and all of its recognizers.\nApplications will not typically need to use this method, but it is useful for\nUnit-testing situations where a clean slate is required for each test.\n\nCalling this method will also reset the state of Ext.event.publisher.Dom\n",
+                "src": {
+                  "name": "0,536,0",
+                  "text": "0,530,8,302"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "blockedCompatibilityMouseEvents",
+                "text": "Browsers with pointer events may implement \"compatibility\" mouse events:\nhttp://www.w3.org/TR/pointerevents/#compatibility-mapping-with-mouse-events\nThe behavior implemented in handlers for mouse over/out/enter/leave is not typically\ndesired when touching the screen, so we map all of these events to their pointer\ncounterparts in Ext.Element event translation code, so that they can be blocked\nvia \"blockedPointerEvents\".  The only scenario where this breaks down is in IE10\nwith mouseenter/mouseleave, since MSPointerEnter/MSPointerLeave were not implemented\nin IE10.  For these 2 events we have to resort to a different method - capturing\nthe timestamp of the last pointer event that has pointerType == 'touch', and if the\nmouse event occurred within a certain threshold we can reasonably assume it occurred\nbecause of a touch on the screen (see isEventBlocked)\n",
+                "src": {
+                  "access": "1,92,8",
+                  "name": "1,94,0",
+                  "text": "1,81,8,865"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "blockedPointerEvents",
+                "text": "In browsers that implement pointerevents when a pointerdown is triggered by touching\nthe screen, pointerover and pointerenter events will be fired immmediately before\nthe pointerdown. Also pointerout and pointerleave will be fired immediately after\npointerup when triggered using touch input.  For a consistent cross-browser\nexperience on touch-screens we block pointerover, pointerout, pointerenter, and\npointerleave when triggered by touch input, since in most cases pointerover/pointerenter\nbehavior is not desired when touching the screen.  Note: this should only affect\nevents with pointerType === 'touch' or pointerType === 'pen', we do NOT want to\nblock these events when triggered using a mouse.\nSee also:\n    http://www.w3.org/TR/pointerevents/#the-pointerdown-event\n    http://www.w3.org/TR/pointerevents/#the-pointerenter-event\n",
+                "src": {
+                  "access": "1,67,8",
+                  "name": "1,69,0",
+                  "text": "1,55,8,839"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "handledDomEvents",
+                "text": "An array of DOM events that this publisher handles.  Events specified in this array\nwill be added as global listeners on the <a href='#!/api/Ext.event.publisher.Gesture-property-target'>target</a>\n",
+                "type": "Array",
+                "src": {
+                  "name": "1,13,26",
+                  "text": "1,14,8,141",
+                  "type": "1,13,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "handledEvents",
+                "text": "An array of events that this publisher handles.\n",
+                "type": "Array",
+                "src": {
+                  "name": "2,8,26",
+                  "text": "2,9,8,48",
+                  "type": "2,8,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "handles",
+                "text": "A map for conveniently checking if this publisher handles a given event\n",
+                "type": "Object",
+                "src": {
+                  "access": "2,39,12",
+                  "name": "2,38,31",
+                  "text": "2,40,12,72",
+                  "type": "2,38,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "target",
+                "text": "the DOM target to which listeners are attached for\ndelegated events.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,635,12",
+                  "name": "1,633,31",
+                  "text": "1,633,38,51:1,634,12,18",
+                  "type": "1,633,23"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties"
+          }
+        ],
+        "src": {
+          "access": "0,2,4",
+          "extends": "0,5,0",
+          "name": "0,4,0",
+          "requires": "0,8,0,0:0,9,0,0",
+          "uses": "0,12,0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

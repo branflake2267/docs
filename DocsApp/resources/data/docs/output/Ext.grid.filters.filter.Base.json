@@ -1,0 +1,392 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/filters/filter/Base.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "mixins": "Ext.mixin.Factoryable",
+        "name": "Ext.grid.filters.filter.Base",
+        "text": "Abstract base class for filter implementations.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "active",
+                "text": "Indicates the initial status of the filter (defaults to false).\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,47,23",
+                  "text": "0,48,8,64",
+                  "type": "0,47,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dataIndex",
+                "text": "The <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> dataIndex of the field this filter represents.\nThe dataIndex does not actually have to exist in the store.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,59,22",
+                  "text": "0,60,8,134",
+                  "type": "0,59,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "itemDefaults",
+                "optional": true,
+                "text": "The default configuration options for any menu items created by this filter.\n\nExample usage:\n\n     itemDefaults: {\n         width: 150\n     },\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,18,27",
+                  "text": "0,19,12,143",
+                  "type": "0,18,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "updateBuffer",
+                "text": "Number of milliseconds to wait after user interaction to fire an update. Only supported\nby filters: 'list', 'numeric', and 'string'.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,34,26",
+                  "text": "0,35,12,133",
+                  "type": "0,34,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "activate",
+                "text": "Fires when an inactive filter becomes active\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.grid.filters.Filters",
+                    "src": {
+                      "name": "0,84,42",
+                      "type": "0,84,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,82,15",
+                  "text": "0,83,8,45"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "deactivate",
+                "text": "Fires when an active filter becomes inactive\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.grid.filters.Filters",
+                    "src": {
+                      "name": "0,90,42",
+                      "type": "0,90,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,88,15",
+                  "text": "0,89,8,45"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "update",
+                "text": "Fires when a filter configuration has changed\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "The filter object.\n",
+                    "type": "Ext.grid.filters.Filters",
+                    "src": {
+                      "name": "0,96,42",
+                      "text": "0,96,47,19",
+                      "type": "0,96,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,94,15",
+                  "text": "0,95,8,46"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Initializes the filter given its configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,101,24",
+                      "type": "0,101,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,103,0",
+                  "text": "0,100,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createMenu",
+                "text": "Creates the Menu for this filter.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "Filter configuration\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,154,24",
+                      "text": "0,154,31,21",
+                      "type": "0,154,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.menu.Menu",
+                    "src": {
+                      "type": "0,155,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,152,8",
+                  "name": "0,157,0",
+                  "text": "0,153,8,34"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroys this filter by purging any event listeners, and removing any menus.\n",
+                "src": {
+                  "name": "0,119,0",
+                  "text": "0,117,8,77"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getValue",
+                "template": true,
+                "text": "Template method to be implemented by all subclasses that is to\nget and return the value of the filter.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The 'serialized' form of this filter\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,242,25,37",
+                      "type": "0,242,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,238,8",
+                  "name": "0,239,16",
+                  "template": "0,243,8",
+                  "text": "0,240,8,103"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onValueChange",
+                "text": "Handler method called when there is a significant event on an input item.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "src": {
+                      "name": "0,194,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,194,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,191,8",
+                  "name": "0,194,0",
+                  "text": "0,192,8,74"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "preprocess",
+                "template": true,
+                "text": "Template method to be implemented by all subclasses that need to perform\nany operations before the column filter has finished construction.\n",
+                "src": {
+                  "access": "0,225,8",
+                  "name": "0,226,16",
+                  "template": "0,229,8",
+                  "text": "0,227,8,140"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setActive",
+                "text": "Sets the status of the filter and fires the appropriate events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "active",
+                    "text": "The new filter state.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,258,25",
+                      "text": "0,258,32,22",
+                      "type": "0,258,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The filter key for columns that support multiple filters.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,259,24",
+                      "text": "0,259,28,58",
+                      "type": "0,259,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,261,0",
+                  "text": "0,257,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setValue",
+                "template": true,
+                "text": "Template method to be implemented by all subclasses that is to\nset the value of the filter and fire the 'update' event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "The value to set the filter\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,252,24",
+                      "text": "0,252,29,28",
+                      "type": "0,252,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,248,8",
+                  "name": "0,249,16",
+                  "template": "0,253,8",
+                  "text": "0,250,8,120"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "active",
+                "text": "True if this filter is active. Use setActive() to alter after configuration. If\nyou set a value, the filter will be actived automatically.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,42,28",
+                  "text": "0,43,8,139",
+                  "type": "0,42,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,295,28",
+                  "text": "1,296,8,128",
+                  "type": "1,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "filterIdPrefix",
+                "text": "The prefix for id's used to track stateful Store filters.\n",
+                "src": {
+                  "access": "0,77,8",
+                  "name": "0,79,0",
+                  "text": "0,76,8,58"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "menu",
+                "text": "The filter configuration menu that will be installed into the filter submenu of a column menu.\n",
+                "type": "Ext.menu.Menu",
+                "src": {
+                  "name": "0,66,34",
+                  "text": "0,67,8,95",
+                  "type": "0,66,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "type",
+                "text": "The filter type. Used by the filters.Feature class when adding filters and applying state.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,53,27",
+                  "text": "0,54,8,91",
+                  "type": "0,53,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "mixins": "0,6,0",
+          "name": "0,4,0",
+          "text": "0,2,4,48"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

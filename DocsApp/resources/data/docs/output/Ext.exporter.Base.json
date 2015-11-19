@@ -1,0 +1,181 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../packages/exporter/src/exporter/Base.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "exporter.base",
+        "mixins": "Ext.mixin.Factoryable",
+        "name": "Ext.exporter.Base",
+        "requires": "Ext.exporter.File",
+        "text": "This is the base class for an exporter. This class is supposed to be extended to allow\ndata export to various formats.\n\nThe purpose is to have more exporters that can take the same <a href='#!/api/Ext.exporter.Base-cfg-data'>data</a> and export it to different\nformats.\n\nExporters are used by <a href='#!/api/Ext.grid.plugin.Exporter'>Ext.grid.plugin.Exporter</a> and <a href='#!/api/Ext.pivot.plugin.Exporter'>Ext.pivot.plugin.Exporter</a>\nbut could also be used individually when needed.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "author",
+                "optional": true,
+                "text": "\nThe author that generated the file.\n",
+                "type": "String",
+                "value": "\"Sencha\"",
+                "src": {
+                  "name": "0,78,27",
+                  "text": "0,79,12,37",
+                  "type": "0,78,18",
+                  "value": "0,78,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "charset",
+                "optional": true,
+                "text": "\nFile's charset\n",
+                "type": "String",
+                "value": "\"UTF-8\"",
+                "src": {
+                  "name": "0,92,27",
+                  "text": "0,93,12,16",
+                  "type": "0,92,18",
+                  "value": "0,92,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "data",
+                "text": "(required)\n\nData to be consumed by the exporter should look like this:\n\n     {\n         columns: [{\n             text: 'First column'\n         },{\n             text: 'Second column',\n             columns: [{ // columns is optional\n                 text: '2nd column 1'\n             },{\n                 text: '2nd column 2'\n             }]\n         }],\n\n         groups: [{\n             // if the first level group is missing then the exported document will\n             // only contain column headers and no data\n\n             text: '1st level group', // text is optional; hidden when missing.\n             rows: [\n                 [1.23, 4.65, 3.23],\n                 [10.23, 7.45, 7.93]\n             ],\n             summary: [11.46, 14.10, 11.16] // summary is optional; hidden when missing.\n\n             groups: [{ // groups is optional; hidden when missing;\n                 text: '2nd level group',\n                 rows: [...],\n                 summary: [...],\n\n                 groups: [...]\n             }]\n         }]\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,25,26",
+                  "text": "0,25,31,11:0,26,12,1026",
+                  "type": "0,25,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "fileName",
+                "optional": true,
+                "text": "\nName of the saved file\n",
+                "type": "String",
+                "value": "\"export.txt\"",
+                "src": {
+                  "name": "0,85,27",
+                  "text": "0,86,12,24",
+                  "type": "0,85,18",
+                  "value": "0,85,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showSummary",
+                "optional": true,
+                "text": "\nShould group summaries be shown? The data this exporter can consume\nmay contain group summaries.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,65,28",
+                  "text": "0,66,12,98",
+                  "type": "0,65,18",
+                  "value": "0,65,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "title",
+                "optional": true,
+                "text": "\nTitle displayed above the table. Hidden when empty\n",
+                "type": "String",
+                "value": "\"\"",
+                "src": {
+                  "name": "0,72,27",
+                  "text": "0,73,12,52",
+                  "type": "0,72,18",
+                  "value": "0,72,33"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "getColumnCount",
+                "text": "Returns the number of columns available in the provided `columns` array.\nIt will parse the whole tree structure to count the bottom level columns too.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "columns",
+                    "src": {
+                      "name": "0,120,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,121,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,123,0",
+                  "text": "0,117,8,152"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "saveAs",
+                "text": "Save the file on user's machine using the content generated by this exporter.\n",
+                "src": {
+                  "name": "0,112,0",
+                  "text": "0,110,8,78"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,295,28",
+                  "text": "1,296,8,128",
+                  "type": "1,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "getContent",
+                "text": "Generates the file content.\n",
+                "src": {
+                  "name": "0,107,0",
+                  "text": "0,105,8,28"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,17,0",
+          "mixins": "0,14,0",
+          "name": "0,12,0",
+          "requires": "0,20,0",
+          "text": "0,2,4,427"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

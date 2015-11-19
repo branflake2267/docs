@@ -1,0 +1,361 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/ComponentQuery.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.ComponentQuery",
+        "requires": "Ext.ComponentManager,Ext.util.Operators,Ext.util.LruCache",
+        "singleton": true,
+        "text": "Provides searching of Components within Ext.ComponentManager (globally) or a specific\nExt.container.Container on the document with a similar syntax to a CSS selector.\nReturns Array of matching Components, or empty Array.\n\n## Basic Component lookup\n\nComponents can be retrieved by using their <a href='#!/api/Ext.Component'>Ext.Component</a>:\n\n- `component`\n- `gridpanel`\n\nMatching by `xtype` matches inherited types, so in the following code, the previous field\n*of any type which inherits from `TextField`* will be found:\n\n    prevField = myField.previousNode('textfield');\n\nTo match only the exact type, pass the \"shallow\" flag by adding `(true)` to xtype\n(See Component's <a href='#!/api/Ext.Component-method-isXType'>Ext.Component#isXType</a> method):\n\n    prevTextField = myField.previousNode('textfield(true)');\n\nYou can search Components by their `id` or `itemId` property, prefixed with a #:\n\n    #myContainer\n\nComponent `xtype` and `id` or `itemId` can be used together to avoid possible\nid collisions between Components of different types:\n\n    panel#myPanel\n\nWhen Component's `id` or `xtype` contains dots, you can escape them in your selector:\n\n    my\\.panel#myPanel\n\nKeep in mind that JavaScript treats the backslash character in a special way, so you\nneed to escape it, too, in the actual code:\n\n    var myPanel = Ext.ComponentQuery.query('my\\\\.panel#myPanel');\n\n## Traversing Component tree\n\nComponents can be found by their relation to other Components. There are several\nrelationship operators, mostly taken from CSS selectors:\n\n- **`E F`** All descendant Components of E that match F\n- **`E > F`** All direct children Components of E that match F\n- **`E ^ F`** All parent Components of E that match F\n\nExpressions between relationship operators are matched left to right, i.e. leftmost\nselector is applied first, then if one or more matches are found, relationship operator\nitself is applied, then next selector expression, etc. It is possible to combine\nrelationship operators in complex selectors:\n\n    window[title=\"Input form\"] textfield[name=login] ^ form > button[action=submit]\n\nThat selector can be read this way: Find a window with title \"Input form\", in that\nwindow find a TextField with name \"login\" at any depth (including subpanels and/or\nFieldSets), then find an <a href='#!/api/Ext.form.Panel'>Ext.form.Panel</a> that is a parent of the TextField, and in\nthat form find a direct child that is a button with custom property `action` set to\nvalue \"submit\".\n\nWhitespace on both sides of `^` and `>` operators is non-significant, i.e. can be\nomitted, but usually is used for clarity.\n\n## Searching by Component attributes\n\nComponents can be searched by their object property values (attributes). To do that,\nuse attribute matching expression in square brackets:\n\n- `component[disabled]` - matches any Component that has `disabled` property with\nany truthy (non-empty, not `false`) value.\n- `panel[title=\"Test\"]` - matches any Component that has `title` property set to\n\"Test\". Note that if the value does not contain spaces, the quotes are optional.\n\nAttributes can use any of the following operators to compare values:\n`=`, `!=`, `^=`, `$=`, `*=`, `%=`, `|=` and `~=`.\n\nPrefixing the attribute name with an at sign `@` means that the property must be\nthe object's `ownProperty`, not a property from the prototype chain.\n\nSpecifications like `[propName]` check that the property is a truthy value. To check\nthat the object has an `ownProperty` of a certain name, regardless of the value use\nthe form `[?propName]`.\n\nThe specified value is coerced to match the type of the property found in the\ncandidate Component using <a href='#!/api/Ext-method-coerce'>Ext#coerce</a>.\n\nIf you need to find Components by their `itemId` property, use the `#id` form; it will\ndo the same as `[itemId=id]` but is easier to read.\n\nIf you need to include a metacharacter like (, ), [, ], etc., in the query, escape it\nby prefixing it with a backslash:\n\n     var component = Ext.ComponentQuery.query('[myProperty=\\\\[foo\\\\]]');\n\n## Attribute matching operators\n\nThe '=' operator will return the results that **exactly** match the\nspecified object property (attribute):\n\n    Ext.ComponentQuery.query('panel[cls=my-cls]');\n\nWill match the following Component:\n\n    Ext.create('Ext.window.Window', {\n        cls: 'my-cls'\n    });\n\nBut will not match the following Component, because 'my-cls' is one value\namong others:\n\n     Ext.create('Ext.panel.Panel', {\n         cls: 'foo-cls my-cls bar-cls'\n     });\n\nYou can use the '~=' operator instead, it will return Components with\nthe property that **exactly** matches one of the whitespace-separated\nvalues. This is also true for properties that only have *one* value:\n\n    Ext.ComponentQuery.query('panel[cls~=my-cls]');\n\nWill match both Components:\n\n    Ext.create('Ext.panel.Panel', {\n        cls: 'foo-cls my-cls bar-cls'\n    });\n\n    Ext.create('Ext.window.Window', {\n        cls: 'my-cls'\n    });\n\nGenerally, '=' operator is more suited for object properties other than\nCSS classes, while '~=' operator will work best with properties that\nhold lists of whitespace-separated CSS classes.\n\nThe '^=' operator will return Components with specified attribute that\nstart with the passed value:\n\n    Ext.ComponentQuery.query('panel[title^=Sales]');\n\nWill match the following Component:\n\n    Ext.create('Ext.panel.Panel', {\n        title: 'Sales estimate for Q4'\n    });\n\nThe '$=' operator will return Components with specified properties that\nend with the passed value:\n\n    Ext.ComponentQuery.query('field[fieldLabel$=name]');\n\nWill match the following Component:\n\n    Ext.create('Ext.form.field.Text', {\n        fieldLabel: 'Enter your name'\n    });\n\nThe '/=' operator will return Components with specified properties that\nmatch the passed regular expression:\n\n    Ext.ComponentQuery.query('button[action/=\"edit|save\"]');\n\nWill match the following Components with a custom `action` property:\n\n    Ext.create('Ext.button.Button', {\n         action: 'edit'\n    });\n\n    Ext.create('Ext.button.Button', {\n         action: 'save'\n    });\n\nWhen you need to use meta characters like [], (), etc. in your query, make sure\nto escape them with back slashes:\n\n    Ext.ComponentQuery.query('panel[title=\"^Sales for Q\\\\[1-4\\\\]\"]');\n\nThe following test will find panels with their `ownProperty` collapsed being equal to\n`false`. It will **not** match a collapsed property from the prototype chain.\n\n    Ext.ComponentQuery.query('panel[@collapsed=false]');\n\nMember expressions from candidate Components may be tested. If the expression returns\na *truthy* value, the candidate Component will be included in the query:\n\n    var disabledFields = myFormPanel.query(\"{isDisabled()}\");\n\nSuch expressions are executed in Component's context, and the above expression is\nsimilar to running this snippet for every Component in your application:\n\n     if (component.isDisabled()) {\n         matches.push(component);\n     }\n\nIt is important to use only methods that are available in **every** Component instance\nto avoid run time exceptions. If you need to match your Components with a custom\ncondition formula, you can augment <a href='#!/api/Ext.Component'>Ext.Component</a> to provide custom matcher that\nwill return `false` by default, and override it in your custom classes:\n\n     Ext.define('My.Component', {\n         override: 'Ext.Component',\n         myMatcher: function() { return false; }\n     });\n\n     Ext.define('My.Panel', {\n         extend: 'Ext.panel.Panel',\n         requires: ['My.Component'],     // Ensure that Component override is applied\n         myMatcher: function(selector) {\n             return selector === 'myPanel';\n         }\n     });\n\nAfter that you can use a selector with your custom matcher to find all instances\nof `My.Panel`:\n\n     Ext.ComponentQuery.query(\"{myMatcher('myPanel')}\");\n\nHowever if you really need to use a custom matcher, you may find it easier to implement\na custom Pseudo class instead (see below).\n\n## Conditional matching\n\nAttribute matchers can be combined to select only Components that match **all**\nconditions (logical AND operator):\n\n    Ext.ComponentQuery.query('panel[cls~=my-cls][floating=true][title$=\"sales data\"]');\n\nE.g., the query above will match only a Panel-descended Component that has 'my-cls'\nCSS class *and* is floating *and* with a title that ends with \"sales data\".\n\nExpressions separated with commas will match any Component that satisfies\n*either* expression (logical OR operator):\n\n    Ext.ComponentQuery.query('field[fieldLabel^=User], field[fieldLabel*=password]');\n\nE.g., the query above will match any field with field label starting with \"User\",\n*or* any field that has \"password\" in its label.\n\nIf you need to include a comma in an attribute matching expression, escape it with a\nbackslash:\n\n    Ext.ComponentQuery.query('field[fieldLabel^=\"User\\\\, foo\"], field[fieldLabel*=password]');\n\n## Pseudo classes\n\nPseudo classes may be used to filter results in the same way as in\n<a href='#!/api/Ext.dom.Query'>Ext.dom.Query</a>. There are five default pseudo classes:\n\n* `not` Negates a selector.\n* `first` Filters out all except the first matching item for a selector.\n* `last` Filters out all except the last matching item for a selector.\n* `focusable` Filters out all except Components which are currently able to recieve\nfocus.\n* `nth-child` Filters Components by ordinal position in the selection.\n* `scrollable` Filters out all except Components which are scrollable.\n\nThese pseudo classes can be used with other matchers or without them:\n\n     // Select first direct child button in any panel\n     Ext.ComponentQuery.query('panel > button:first');\n\n     // Select last field in Profile form\n     Ext.ComponentQuery.query('form[title=Profile] field:last');\n\n     // Find first focusable Component in a panel and focus it\n     panel.down(':focusable').focus();\n\n     // Select any field that is not hidden in a form\n     form.query('field:not(hiddenfield)');\n\n     // Find last scrollable Component and reset its scroll positions.\n     tabpanel.down(':scrollable[hideMode=display]:last').getScrollable().scrollTo(0, 0);\n\nPseudo class `nth-child` can be used to find any child Component by its\nposition relative to its siblings. This class' handler takes one argument\nthat specifies the selection formula as `Xn` or `Xn+Y`:\n\n     // Find every odd field in a form\n     form.query('field:nth-child(2n+1)'); // or use shortcut: :nth-child(odd)\n\n     // Find every even field in a form\n     form.query('field:nth-child(2n)');   // or use shortcut: :nth-child(even)\n\n     // Find every 3rd field in a form\n     form.query('field:nth-child(3n)');\n\nPseudo classes can be combined to further filter the results, e.g., in the\nform example above we can modify the query to exclude hidden fields:\n\n     // Find every 3rd non-hidden field in a form\n     form.query('field:not(hiddenfield):nth-child(3n)');\n\nNote that when combining pseudo classes, whitespace is significant, i.e.\nthere should be no spaces between pseudo classes. This is a common mistake;\nif you accidentally type a space between `field` and `:not`, the query\nwill not return any result because it will mean \"find *field's children\nComponents* that are not hidden fields...\".\n\n## Custom pseudo classes\n\nIt is possible to define your own custom pseudo classes. In fact, a\npseudo class is just a property in `Ext.ComponentQuery.pseudos` object\nthat defines pseudo class name (property name) and pseudo class handler\n(property value):\n\n    // Function receives array and returns a filtered array.\n    Ext.ComponentQuery.pseudos.invalid = function(items) {\n        var i = 0, l = items.length, c, result = [];\n        for (; i < l; i++) {\n            if (!(c = items[i]).isValid()) {\n                result.push(c);\n            }\n        }\n        return result;\n    };\n\n    var invalidFields = myFormPanel.query('field:invalid');\n    if (invalidFields.length) {\n        invalidFields[0].getEl().scrollIntoView(myFormPanel.body);\n        for (var i = 0, l = invalidFields.length; i < l; i++) {\n            invalidFields[i].getEl().frame(\"red\");\n        }\n    }\n\nPseudo class handlers can be even more flexible, with a selector\nargument used to define the logic:\n\n     // Handler receives array of itmes and selector in parentheses\n     Ext.ComponentQuery.pseudos.titleRegex = function(components, selector) {\n         var i = 0, l = components.length, c, result = [], regex = new RegExp(selector);\n         for (; i < l; i++) {\n             c = components[i];\n             if (c.title && regex.test(c.title)) {\n                 result.push(c);\n             }\n         }\n         return result;\n     }\n\n     var salesTabs = tabPanel.query('panel:titleRegex(\"sales\\\\s+for\\\\s+201[123]\")');\n\nBe careful when using custom pseudo classes with MVC Controllers: when\nyou use a pseudo class in Controller's `control` or `listen` component\nselectors, the pseudo class' handler function will be called very often\nand may slow down your application significantly. A good rule of thumb\nis to always specify Component xtype with the pseudo class so that the\nhandlers are only called on Components that you need, and try to make\nthe condition checks as cheap in terms of execution time as possible.\nNote how in the example above, handler function checks that Component\n*has* a title first, before running regex test on it.\n\n## Query examples\n\nQueries return an array of Components. Here are some example queries:\n\n    // retrieve all Ext.Panels in the document by xtype\n    var panelsArray = Ext.ComponentQuery.query('panel');\n\n    // retrieve all Ext.Panels within the container with an id myCt\n    var panelsWithinmyCt = Ext.ComponentQuery.query('#myCt panel');\n\n    // retrieve all direct children which are Ext.Panels within myCt\n    var directChildPanel = Ext.ComponentQuery.query('#myCt > panel');\n\n    // retrieve all grids or trees\n    var gridsAndTrees = Ext.ComponentQuery.query('gridpanel, treepanel');\n\n    // Focus first Component\n    myFormPanel.child(':focusable').focus();\n\n    // Retrieve every odd text field in a form\n    myFormPanel.query('textfield:nth-child(odd)');\n\n    // Retrieve every even field in a form, excluding hidden fields\n    myFormPanel.query('field:not(hiddenfield):nth-child(even)');\n\n    // Retrieve every scrollable in a tabpanel\n    tabpanel.query(':scrollable');\n\nFor easy access to queries based from a particular Container see the\n<a href='#!/api/Ext.container.Container-method-query'>Ext.container.Container#query</a>, <a href='#!/api/Ext.container.Container-method-down'>Ext.container.Container#down</a> and\n<a href='#!/api/Ext.container.Container-method-child'>Ext.container.Container#child</a> methods. Also see\n<a href='#!/api/Ext.Component-method-up'>Ext.Component#up</a>.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "query",
+                "text": "Returns an array of matched Components from within the passed root object.\n\nThis method filters returned Components in a similar way to how CSS selector based DOM\nqueries work using a textual selector string.\n\nSee class summary for details.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector string to filter returned Components.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,934,28",
+                      "text": "0,934,37,51",
+                      "type": "0,934,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "root",
+                    "optional": true,
+                    "text": "The Container within which to perform the query.\nIf omitted, all Components within the document are included in the search.\n\nThis parameter may also be an array of Components to filter according to the selector.\n",
+                    "type": "Ext.container.Container",
+                    "src": {
+                      "name": "0,935,46",
+                      "text": "0,935,52,49:0,936,12,163",
+                      "type": "0,935,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The matched Components.\n",
+                    "type": "Ext.Component[]",
+                    "src": {
+                      "text": "0,939,38,24",
+                      "type": "0,939,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,943,0",
+                  "text": "0,927,12,242"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "visitPreOrder",
+                "text": "Traverses the tree rooted at the passed root in pre-order mode, calling the passed function on the nodes at each level.\nThat is the function is called upon each node **before** being called on its children).\n\nFor an object to be queryable, it must implement the `getRefItems` method which returns all\nimmediate child items.\n\nThis method is used at each level down the cascade. Currently <a href='#!/api/Ext.Component'>Ext.Component</a>s\nand <a href='#!/api/Ext.data.TreeModel'>Ext.data.TreeModel</a>s are queryable.\n\nIf you have tree-structured data, you can make your nodes queryable, and use ComponentQuery on them.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "A ComponentQuery selector used to filter candidate nodes before calling the function.\nAn empty string matches any node.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,989,28",
+                      "text": "0,989,37,86:0,990,12,34",
+                      "type": "0,989,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "root",
+                    "text": "The root queryable object to start from.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,991,28",
+                      "text": "0,991,33,41",
+                      "type": "0,991,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call. Return `false` to abort the traverse.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "node",
+                        "text": "The node being visited.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,993,31",
+                          "text": "0,993,36,24",
+                          "type": "0,993,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,992,30",
+                      "text": "0,992,33,60",
+                      "type": "0,992,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The context (`this` reference) in which the function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,994,29",
+                      "text": "0,994,36,66",
+                      "type": "0,994,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "extraArgs",
+                    "optional": true,
+                    "text": "A set of arguments to be appended to the function's argument list to pass down extra data known to the caller\n**after** the node being visited.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,995,28",
+                      "text": "0,995,39,110:0,996,12,34",
+                      "type": "0,995,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,998,0",
+                  "text": "0,978,12,580"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "visitPostOrder",
+                "text": "Traverses the tree rooted at the passed root in post-order mode, calling the passed function on the nodes at each level.\nThat is the function is called upon each node **after** being called on its children).\n\nFor an object to be queryable, it must implement the `getRefItems` method which returns all\nimmediate child items.\n\nThis method is used at each level down the cascade. Currently <a href='#!/api/Ext.Component'>Ext.Component</a>s\nand <a href='#!/api/Ext.data.TreeModel'>Ext.data.TreeModel</a>s are queryable.\n\nIf you have tree-structured data, you can make your nodes queryable, and use ComponentQuery on them.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "A ComponentQuery selector used to filter candidate nodes before calling the function.\nAn empty string matches any node.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1014,28",
+                      "text": "0,1014,37,86:0,1015,12,34",
+                      "type": "0,1014,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "root",
+                    "text": "The root queryable object to start from.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1016,28",
+                      "text": "0,1016,33,41",
+                      "type": "0,1016,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call. Return `false` to abort the traverse.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "node",
+                        "text": "The node being visited.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,1018,31",
+                          "text": "0,1018,36,24",
+                          "type": "0,1018,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,1017,30",
+                      "text": "0,1017,33,60",
+                      "type": "0,1017,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The context (`this` reference) in which the function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1019,29",
+                      "text": "0,1019,36,66",
+                      "type": "0,1019,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "extraArgs",
+                    "optional": true,
+                    "text": "A set of arguments to be appended to the function's argument list to pass down extra data known to the caller\n**after** the node being visited.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,1020,28",
+                      "text": "0,1020,39,110:0,1021,12,34",
+                      "type": "0,1020,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1023,0",
+                  "text": "0,1003,12,580"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_visit",
+                "text": "Visit implementation which handles both preOrder and postOrder modes.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "preOrder",
+                    "src": {
+                      "name": "0,1031,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "src": {
+                      "name": "0,1031,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "root",
+                    "src": {
+                      "name": "0,1031,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "0,1031,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "0,1031,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "extraArgs",
+                    "src": {
+                      "name": "0,1031,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1028,12",
+                  "name": "0,1031,0",
+                  "text": "0,1029,12,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "is",
+                "text": "Tests whether the passed Component matches the selector string.\nAn empty selector will always match.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "component",
+                    "text": "The Component to test\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,1078,35",
+                      "text": "0,1078,45,22",
+                      "type": "0,1078,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector string to test against.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1079,28",
+                      "text": "0,1079,37,37",
+                      "type": "0,1079,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the Component matches the selector.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,1080,30,44",
+                      "type": "0,1080,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1083,0",
+                  "text": "0,1075,12,102"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "cache",
+                "text": "Cache of selectors and matching ComponentQuery.Query objects\n",
+                "src": {
+                  "access": "0,828,12",
+                  "name": "0,831,0",
+                  "text": "0,829,12,61"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "pseudos",
+                "text": "Cache of pseudo class filter functions\n",
+                "src": {
+                  "access": "0,836,12",
+                  "name": "0,839,0",
+                  "text": "0,837,12,39"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,386,0",
+          "requires": "0,389,0,0:0,390,0,0:0,391,0,0",
+          "singleton": "0,387,0",
+          "text": "0,2,4,14407"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

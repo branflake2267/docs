@@ -1,0 +1,947 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/field/Boolean.js",
+    "../../../ext/packages/core/src/data/field/Field.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "data.field.bool,data.field.boolean",
+        "extends": "Ext.data.field.Field",
+        "name": "Ext.data.field.Boolean",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "allowBlank",
+                "text": "\nUsed for validating a <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>. Defaults to true. An empty value here will cause\n<a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.<a href='#!/api/Ext.data.Model-method-isValid'>Ext.data.Model#isValid</a> to evaluate to false.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,280,8",
+                  "name": "1,279,23",
+                  "text": "1,281,8,186",
+                  "type": "1,279,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "allowNull",
+                "text": "\nUse when converting received data into a <a href='#!/api/Ext.data.field.Integer'>Ext.data.field.Integer</a>,\n<a href='#!/api/Ext.data.field.Number'>Ext.data.field.Number</a>, <a href='#!/api/Ext.data.field.Boolean'>Ext.data.field.Boolean</a>\nor <a href='#!/api/Ext.data.field.String'>Ext.data.field.String</a> type. If the value cannot be\nparsed, <a href='#!/api/null'>null</a> will be used if allowNull is true, otherwise a default value for that type will be used:\n\n- for `int` and `float` - `0`.\n- for `string` - `\"\"`.\n- for `bool` - `false`.\n\nNote that when parsing of <a href='#!/api/Ext.data.field.Date'>Ext.data.field.Date</a> type fails, the value will\nbe <a href='#!/api/null'>null</a> regardless of this setting.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,288,23",
+                  "text": "1,289,8,538",
+                  "type": "1,288,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "calculate",
+                "text": "This config defines a simple field calculation function. A calculate method only\nhas access to the record data and should return the value of the calculated field.\nWhen provided in this way, the <a href='#!/api/Ext.data.field.Boolean-cfg-depends'>depends</a> config is automatically determined by\nparsing the <a href='#!/api/Ext.data.field.Boolean-cfg-calculate'>calculate</a> function. For example:\n\n     fields: [{\n         name: 'firstName',\n         type: 'string'\n     },{\n         name: 'lastName',\n         type: 'string'\n     },{\n         name: 'fullName',\n         calculate: function (data) {\n             return data.firstName + ' ' + data.lastName;\n         }\n     }]\n\nThe above 'fullName' field is equivalent to:\n\n     {\n         name: 'fullName',\n         convert: function (v, rec) {\n             return rec.get('firstName') + ' ' + rec.get('lastName');\n         },\n         depends: ['firstName', 'lastName']\n     }\n\nThe restrictions on form for a <a href='#!/api/Ext.data.field.Boolean-cfg-calculate'>calculate</a> method are that the accesses to field\nvalues must match the following regular expression (case insensitive):\n\n     data.([a-z_][a-z0-9_]*)\n     // where 'data' is the param passed to the calculate method\n\nThe only advantage of a <a href='#!/api/Ext.data.field.Boolean-cfg-calculate'>calculate</a> method over a `convert` method is automatic\ndetermination of <a href='#!/api/Ext.data.field.Boolean-cfg-depends'>depends</a>.\n\n**Note:** The use of calculate and <a href='#!/api/Ext.data.field.Boolean-method-convert'>method-convert</a> are exclusive.  The\ncalculate method will override the convert method if both are configured.\n",
+                "type": "Function",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "An object with all values for each field in the parent\nmodel.  See <a href='#!/api/Ext.data.Model-method-getData'>Ext.data.Model#getData</a>.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,346,24",
+                      "text": "1,346,29,55:1,347,8,52",
+                      "type": "1,346,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "value The value of the calculated field\n",
+                    "type": "Mixed",
+                    "src": {
+                      "text": "1,348,24,40",
+                      "type": "1,348,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,305,24",
+                  "text": "1,306,8,1334",
+                  "type": "1,305,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "convert",
+                "text": "If specified this config overrides the <a href='#!/api/Ext.data.field.Boolean-method-convert'>method-convert</a> method. See\nalso <a href='#!/api/Ext.data.field.Boolean-cfg-calculate'>cfg-calculate</a> for simple field calculations.\n\n**Note:** The use of <a href='#!/api/Ext.data.field.Boolean-cfg-calculate'>calculate</a> and convert are exclusive.  The calculate\nmethod will override the convert method if both are configured.\n",
+                "type": "Function",
+                "src": {
+                  "name": "1,352,24",
+                  "text": "1,353,8,303",
+                  "type": "1,352,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "critical",
+                "text": "A critical field is a field that must always be sent to the server even if it has\nnot changed. The most common example of such a field is the \"id\" of a record (see\n<a href='#!/api/Ext.data.Model-cfg-idProperty'>Ext.data.Model#idProperty</a> but the <a href='#!/api/Ext.data.Model-cfg-versionProperty'>Ext.data.Model#versionProperty</a>\nis similarly a <a href='#!/api/Ext.data.field.Boolean-cfg-critical'>critical</a> field.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,361,23",
+                  "text": "1,362,8,282",
+                  "type": "1,361,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultValue",
+                "optional": true,
+                "text": "\nThe default value used when the creating an instance from a raw data object,\nand the property referenced by the <a href='#!/api/Ext.data.field.Field-cfg-mapping'>Ext.data.field.Field#mapping</a>\ndoes not exist in that data object.\n\nThe value <a href='#!/api/undefined'>undefined</a> prevents defaulting in a value.\n",
+                "type": "Object",
+                "value": "undefined",
+                "src": {
+                  "name": "1,377,23",
+                  "text": "1,378,8,251",
+                  "type": "1,377,14",
+                  "value": "1,377,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "depends",
+                "optional": true,
+                "text": "The field name or names within the <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> on which the value\nof this field depends, and from which a new value may be calculated. These values\nare the values used by the `convert` method. If you do not have a `convert` method\nthen this config should not be specified.\n\nBefore using this config you should consider if using a <a href='#!/api/Ext.data.field.Boolean-cfg-calculate'>calculate</a> method instead\nof a `convert` method would be simpler.\n\nWhenever any of the named fields are set using the <a href='#!/api/Ext.data.Model-method-set'>Ext.data.Model#set</a>\nmethod, this fields will have its `convert` method called passing the\n<a href='#!/api/Ext.data.Model'>Ext.data.Model</a> so that the dependent value can be calculated from\nall fields which it needs.\n\nFor example, to display a person's full name, using two separate `firstName` and\n`lastName` fields, configure the name field like this:\n\n    {\n        name: 'name',\n\n        // Will be called whenever forename or surname fields are set\n        convert: function (v, rec) {\n            return rec.get('firstName') + ' ' + rec.get('lastName');\n        },\n\n        depends: [ 'firstName', 'lastName' ],\n\n        // It should not be returned to the server - it's not a database field\n        persist: false\n    }\n\nNote that if you do not want the calculated field to be part of the field set sent\nback to the server when the store is synchronized, you should configure the field\nwith <a href='#!/api/Ext.data.field.Boolean-cfg-persist'>persist</a> set to `false`.\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "1,432,32",
+                  "text": "1,433,8,1382",
+                  "type": "1,432,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "mapping",
+                "text": "\n(Optional) A path expression for use by the <a href='#!/api/Ext.data.reader.Reader'>Ext.data.reader.Reader</a> implementation that is creating the\n<a href='#!/api/Ext.data.Model'>Ext.data.Model</a> to extract the Field value from the data object. If the path expression is the same\nas the field name, the mapping may be omitted. A function may be passed to do complex data extraction. The examples\nbelow are simple just to demonstrate the capability, typically, a function would not be used to extract such\nsimple data.\n\nThe form of the mapping expression depends on the Reader being used.\n\n- <a href='#!/api/Ext.data.reader.Json'>Ext.data.reader.Json</a>\n\n  The mapping is a string containing the javascript expression to reference the data from an element of the data\n  item's <a href='#!/api/Ext.data.reader.Json-cfg-rootProperty'>Ext.data.reader.Json#cfg-rootProperty</a> Array. Defaults to the field name. If a function is passed,\n  a single argument is received which contains the raw json object:\n\n      // Server returns [{\"name\": \"Foo\", \"age\": 1}, {\"name\": \"Bar\", \"age\": 2}]\n      mapping: function(data) {\n          return data.name;\n      }\n\n- <a href='#!/api/Ext.data.reader.Xml'>Ext.data.reader.Xml</a>\n\n  The mapping is an <a href='#!/api/Ext.dom.Query'>Ext.DomQuery</a> path to the data item relative to the DOM element that represents the\n  <a href='#!/api/Ext.data.reader.Xml-cfg-record'>Ext.data.reader.Xml#record</a>. Defaults to the field name. If a function is passed, a single argument\n  is received which contains the record node:\n\n      // Server returns <Root><Person><Name>Foo</Name><Age>1</Age></Person><Person><Name>Bar</Name><Age>2</Age></Person></Root>\n      mapping: function(data) {\n          return data.firstChild.textContent;\n      }\n\n- <a href='#!/api/Ext.data.reader.Array'>Ext.data.reader.Array</a>\n\n  The mapping is a number indicating the Array index of the field's value. Defaults to the field specification's\n  Array position. If a function is passed, a single argument is received which contains the child array.\n\n      // Server returns [[\"Foo\", 1], [\"Bar\", 2]]\n      mapping: function(data) {\n          return data[0];\n      }\n\nIf a more complex value extraction strategy is required, then configure the Field with a <a href='#!/api/Ext.data.field.Boolean-cfg-convert'>cfg-convert</a>\nfunction. This is passed the whole row object, and may interrogate it in whatever way is necessary in order to\nreturn the desired data.\n",
+                "type": "String/Number/Function",
+                "src": {
+                  "name": "1,479,38",
+                  "text": "1,480,8,2158",
+                  "type": "1,479,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "name",
+                "text": "\nThe name by which the field is referenced within the Model. This is referenced by,\nfor example, the `dataIndex` property in column definition objects passed to\n<a href='#!/api/Ext.grid.property.HeaderContainer'>Ext.grid.property.HeaderContainer</a>.\n\nNote: In the simplest case, if no properties other than <a href='#!/api/Ext.data.field.Boolean-cfg-name'>name</a> are required, a\nfield definition may consist of just a String for the field name.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,528,22",
+                  "text": "1,529,8,350",
+                  "type": "1,528,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "persist",
+                "optional": true,
+                "text": "\nFalse to exclude this field from the <a href='#!/api/Ext.data.Model-property-modified'>Ext.data.Model#modified</a> fields in a\nrecord. This will also exclude the field from being written using a\n<a href='#!/api/Ext.data.writer.Writer'>Ext.data.writer.Writer</a>. This option is useful when fields are used to keep\nstate on the client but do not need to be persisted to the server.\n\nDefaults to `false` for <a href='#!/api/Ext.data.field.Boolean-property-calculated'>calculated</a> fields and `true` otherwise.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,547,24",
+                  "text": "1,548,8,367",
+                  "type": "1,547,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "reference",
+                "optional": true,
+                "text": "The <a href='#!/api/Ext.data.Model-property-entityName'>Ext.data.Model#entityName</a> of the entity referenced by this field.\nIn most databases, this relationship is represented by a \"foreign key\". That is, a\nvalue for such a field matches the value of the <a href='#!/api/Ext.data.Model-cfg-idProperty'>Ext.data.Model#idProperty</a>\nfor an entity of this type.\n\n     Ext.define('MyApp.models.Organization', {\n         extend: 'Ext.data.Model',\n         ...\n     });\n\n     Ext.define('MyApp.models.User', {\n         extend: 'Ext.data.Model',\n\n         fields: [\n             { name: 'organizationId', reference: 'Organization' }\n         ],\n         ...\n     });\n\nIf a <a href='#!/api/Ext.data.field.Boolean-cfg-reference'>reference</a> is not nullable, set the <a href='#!/api/Ext.data.field.Field-cfg-allowBlank'>Ext.data.field.Field#allowBlank</a> property\nto false.\n\n     Ext.define('MyApp.models.User', {\n         extend: 'Ext.data.Model',\n\n         fields: [\n             { name: 'organizationId', reference: 'Organization', allowBlank: false }\n         ],\n         ...\n     });\n\nIf the name of the generated <a href='#!/api/Ext.data.schema.Association'>Ext.data.schema.Association</a> or other aspects\nneed to be specified, the <a href='#!/api/Ext.data.field.Boolean-cfg-reference'>reference</a> can be an object. The following usage shows\nwhat would be generated by default given the above examples using the string form.\n\n     Ext.define('MyApp.models.User', {\n         extend: 'Ext.data.Model',\n\n         fields: [{\n             name: 'organizationId',\n             reference: {\n                 type: 'Organization',\n                 association: 'UsersByOrganization',\n                 role: 'organization',\n                 inverse: 'users'\n             }\n         }],\n         ...\n     });\n\nFinally, a <a href='#!/api/Ext.data.field.Boolean-cfg-reference'>reference</a> can also describe ownership between the entities. By default,\nno ownership relationship is assumed. If, however, the User entities are owned by\ntheir Organization, we could say this:\n\n     Ext.define('MyApp.models.User', {\n         extend: 'Ext.data.Model',\n\n         fields: [{\n             name: 'organizationId',\n             reference: {\n                 parent: 'Organization' // Organization is the parent of User\n             }\n         }],\n         ...\n     });\n",
+                "type": "String/Object",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "type",
+                    "text": "The type which this field references. This is the value set by the string form of\n<a href='#!/api/Ext.data.field.Boolean-cfg-reference'>reference</a>. If the referenced entity has an ownership relationship this field\nshould be omitted and `reference.parent` or `reference.child` should be specified\ninstead.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,626,32",
+                      "text": "1,627,8,253",
+                      "type": "1,626,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "association",
+                    "optional": true,
+                    "text": "The name of the association. By default, the name of the association is the\ncapitalized `inverse` plus \"By\" plus the capitalized `role`.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,632,33",
+                      "text": "1,633,8,138",
+                      "type": "1,632,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "child",
+                    "optional": true,
+                    "text": "Set this property instead of `reference.type` to indicate that the referenced entity\nis an owned child of this entity. That is, the <a href='#!/api/Ext.data.field.Boolean-cfg-reference'>reference</a> entity should be deleted\nwhen this entity is deleted.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,636,33",
+                      "text": "1,637,8,199",
+                      "type": "1,636,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "parent",
+                    "optional": true,
+                    "text": "Set this property instead of `reference.type` to indicate that the referenced entity\nis the owning parent of this entity. That is, this entity should be deleted when the\n<a href='#!/api/Ext.data.field.Boolean-cfg-reference'>reference</a> entity is deleted.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,641,33",
+                      "text": "1,642,8,202",
+                      "type": "1,641,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "role",
+                    "optional": true,
+                    "text": "The name of the role played by the referenced entity. By default, this is the field\nname (minus its \"Id\" suffix if present).\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,646,33",
+                      "text": "1,647,8,126",
+                      "type": "1,646,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "inverse",
+                    "optional": true,
+                    "text": "The name of the inverse role (of this entity with respect to the <a href='#!/api/Ext.data.field.Boolean-cfg-reference'>reference</a>\nentity). By default, this is the <a href='#!/api/Ext.util.Inflector-method-pluralize'>Ext.util.Inflector#pluralize</a>\nname of this entity, unless this <a href='#!/api/Ext.data.field.Boolean-cfg-reference'>reference</a> is <a href='#!/api/Ext.data.field.Boolean-cfg-unique'>unique</a>, in which case the default\nname is the <a href='#!/api/Ext.util.Inflector-method-singularize'>Ext.util.Inflector#singularize</a> name of this entity.\n\nThis config may also be an object containing a role, getter, or setter.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "1,650,40",
+                      "text": "1,651,8,400",
+                      "type": "1,650,14"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,559,30",
+                  "text": "1,560,8,2026",
+                  "type": "1,559,14"
+                }
+              },
+              {
+                "$type": "property",
+                "inheritdoc": "#method-serialize",
+                "name": "serialize",
+                "type": "Function",
+                "src": {
+                  "inheritdoc": "1,662,8",
+                  "name": "1,661,24",
+                  "type": "1,661,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "sortType",
+                "text": "\nA function which converts a Field's value to a comparable value in order to ensure\ncorrect sort ordering.\n\nPredefined functions are provided in <a href='#!/api/Ext.data.SortTypes'>Ext.data.SortTypes</a>. A custom sort example:\n\n    // current sort     after sort we want\n    // +-+------+          +-+------+\n    // |1|First |          |1|First |\n    // |2|Last  |          |3|Second|\n    // |3|Second|          |2|Last  |\n    // +-+------+          +-+------+\n\n    sortType: function(value) {\n       switch (value.toLowerCase()) // native toLowerCase():\n       {\n          case 'first': return 1;\n          case 'second': return 2;\n          default: return 3;\n       }\n    }\n\nMay also be set to a String value, corresponding to one of the named sort types in\n<a href='#!/api/Ext.data.SortTypes'>Ext.data.SortTypes</a>.\n",
+                "type": "Function/String",
+                "src": {
+                  "name": "1,666,31",
+                  "text": "1,667,8,758",
+                  "type": "1,666,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "unique",
+                "optional": true,
+                "text": "`true` if the value of this field is unique amongst all instances. When used with a\n<a href='#!/api/Ext.data.field.Boolean-cfg-reference'>reference</a> this describes a \"one-to-one\" relationship. It is almost always the case\nthat a <a href='#!/api/Ext.data.field.Boolean-cfg-unique'>unique</a> field cannot also be <a href='#!/api/Ext.data.field.Boolean-cfg-allowBlank'>allowBlank</a>.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "1,694,24",
+                  "text": "1,695,8,236",
+                  "type": "1,694,14",
+                  "value": "1,694,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "validators",
+                "text": "An array of <a href='#!/api/Ext.data.validator.Validator'>Ext.data.validator.Validator</a> for this field. These\n<a href='#!/api/Ext.data.field.Boolean-cfg-validators'>validators</a> will only be passed a field value to validate.\n",
+                "type": "Object[]",
+                "src": {
+                  "name": "1,702,24",
+                  "text": "1,703,8,142",
+                  "type": "1,702,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "collate",
+                "text": "Compares two values to retrieve their relative position in sort order, taking into account\nany <a href='#!/api/Ext.data.field.Boolean-cfg-sortType'>sortType</a>. Also see <a href='#!/api/Ext.data.field.Boolean-method-compare'>compare</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value1",
+                    "text": "The first value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,912,24",
+                      "text": "1,912,31,17",
+                      "type": "1,912,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value2",
+                    "text": "The second value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,913,24",
+                      "text": "1,913,31,18",
+                      "type": "1,913,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`-1` if `value1` is less than `value2`. `1` if `value1` is greater than `value2`.\n`0` otherwise.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "1,914,25,82:1,915,8,15",
+                      "type": "1,914,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,917,0",
+                  "text": "1,910,8,141"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "compare",
+                "text": "Compares two values to retrieve their relative position in sort order. Also see\n<a href='#!/api/Ext.data.field.Boolean-method-collate'>collate</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value1",
+                    "text": "The first value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,933,24",
+                      "text": "1,933,31,17",
+                      "type": "1,933,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value2",
+                    "text": "The second value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,934,24",
+                      "text": "1,934,31,18",
+                      "type": "1,934,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`-1` if `value1` is less than `value2`. `1` if `value1` is greater than `value2`.\n`0` otherwise.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "1,935,25,82:1,936,8,15",
+                      "type": "1,935,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,938,0",
+                  "text": "1,931,8,98"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "convert",
+                "text": "A function which converts the value provided by the Reader into the value that will\nbe stored in the record. This method can be overridden by a derived class or set as\na <a href='#!/api/Ext.data.field.Boolean-cfg-convert'>cfg-convert</a> config.\n\nIf configured as <a href='#!/api/null'>null</a>, then no conversion will be applied to the raw data property\nwhen this Field is read. This will increase performance. but you must ensure that\nthe data is of the correct type and does not *need* converting.\n\nExample of convert functions:\n\n    function fullName(v, record){\n        return record.data.last + ', ' + record.data.first;\n    }\n\n    function location(v, record){\n        return !record.data.city ? '' : (record.data.city + ', ' + record.data.state);\n    }\n\n    Ext.define('Dude', {\n        extend: 'Ext.data.Model',\n        fields: [\n            {name: 'fullname',  convert: fullName},\n            {name: 'firstname', mapping: 'name.first'},\n            {name: 'lastname',  mapping: 'name.last'},\n            {name: 'city', defaultValue: 'unknown'},\n            'state',\n            {name: 'location',  convert: location}\n        ]\n    });\n\n    // create the data store\n    var store = Ext.create('Ext.data.Store', {\n        model: 'Dude',\n        proxy: {\n            type: 'memory',\n            reader: {\n                type: 'json',\n                rootProperty: 'daRoot',\n                totalProperty: 'total'\n            }\n        }\n    });\n\n    var myData = [\n        { key: 1,\n          name: { first: 'Fat',    last:  'Albert' }\n          // notice no city, state provided in data object\n        },\n        { key: 2,\n          name: { first: 'Barney', last:  'Rubble' },\n          city: 'Bedrock', state: 'Stoneridge'\n        },\n        { key: 3,\n          name: { first: 'Cliff',  last:  'Claven' },\n          city: 'Boston',  state: 'MA'\n        }\n    ];\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The data value as read by the Reader, if undefined will use\nthe configured <a href='#!/api/Ext.data.field.Boolean-cfg-defaultValue'>defaultValue</a>.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "1,1014,23",
+                      "text": "1,1014,29,60:1,1015,8,31",
+                      "type": "1,1014,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The data object containing the Model as read so far\nby the Reader. Note that the Model may not be fully populated at this point as the\nfields are read in the order that they are defined.\n<a href='#!/api/Ext.data.Model-cfg-fields'>Ext.data.Model#cfg-fields</a> array.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "1,1016,32",
+                      "text": "1,1016,39,52:1,1017,8,183",
+                      "type": "1,1016,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The converted value for storage in the record.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "text": "1,1020,24,47",
+                      "type": "1,1020,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1022,0",
+                  "text": "1,955,8,1813"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getAllowBlank",
+                "text": "Gets allowBlank for this field. See <a href='#!/api/Ext.data.field.Boolean-cfg-allowBlank'>allowBlank</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "allowBlank\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,1105,26,11",
+                      "type": "1,1105,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1107,0",
+                  "text": "1,1104,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getAllowNull",
+                "text": "Gets allowNull for this field. See <a href='#!/api/Ext.data.field.Boolean-cfg-allowNull'>allowNull</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "allowNull\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,1113,26,10",
+                      "type": "1,1113,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1115,0",
+                  "text": "1,1112,8,55"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getConvert",
+                "text": "Gets converter for this field. See <a href='#!/api/Ext.data.field.Boolean-method-convert'>method-convert</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "convert\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "1,1121,27,8",
+                      "type": "1,1121,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1123,0",
+                  "text": "1,1120,8,60"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDefaultValue",
+                "text": "Gets the defaultValue for this field. See <a href='#!/api/Ext.data.field.Boolean-cfg-defaultValue'>defaultValue</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "defaultValue\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1129,25,13",
+                      "type": "1,1129,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1131,0",
+                  "text": "1,1128,8,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDepends",
+                "text": "Gets the depends for this field. See <a href='#!/api/Ext.data.field.Boolean-cfg-depends'>depends</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "depends\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "1,1137,27,8",
+                      "type": "1,1137,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1139,0",
+                  "text": "1,1136,8,55"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getMapping",
+                "text": "Get the mapping for this field. See <a href='#!/api/Ext.data.field.Boolean-cfg-mapping'>mapping</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "mapping\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1145,25,8",
+                      "type": "1,1145,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1147,0",
+                  "text": "1,1144,8,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getName",
+                "text": "Gets the name for this field. See <a href='#!/api/Ext.data.field.Boolean-cfg-name'>name</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "name\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,1097,25,5",
+                      "type": "1,1097,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1099,0",
+                  "text": "1,1096,8,49"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getPersist",
+                "text": "Gets the persist for this field. See <a href='#!/api/Ext.data.field.Boolean-cfg-persist'>persist</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "persist\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,1162,26,8",
+                      "type": "1,1162,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1164,0",
+                  "text": "1,1161,8,55"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSortType",
+                "text": "Gets the sortType for this field. See <a href='#!/api/Ext.data.field.Boolean-cfg-sortType'>sortType</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "sortType\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "1,1170,27,9",
+                      "type": "1,1170,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1172,0",
+                  "text": "1,1169,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getType",
+                "text": "Gets a string representation of the type of this field.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "type\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,1178,25,5",
+                      "type": "1,1178,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1180,0",
+                  "text": "1,1177,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasMapping",
+                "text": "Checks if this field has a mapping applied.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "`true` if this field has a mapping.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,1153,26,36",
+                      "type": "1,1153,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1155,0",
+                  "text": "1,1152,8,44"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isEqual",
+                "text": "Tests whether two values are equal based on this field type.\nThis uses the <a href='#!/api/Ext.data.field.Boolean-method-compare'>compare</a> method to determine equality, so\nthis method should generally not be overridden.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value1",
+                    "text": "The first value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,946,24",
+                      "text": "1,946,31,17",
+                      "type": "1,946,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value2",
+                    "text": "The second value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,947,24",
+                      "text": "1,947,31,18",
+                      "type": "1,947,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the values are equal.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,948,26,32",
+                      "type": "1,948,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,950,0",
+                  "text": "1,943,8,173"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "serialize",
+                "text": "A function which converts the Model's value for this Field into a form which can be used by whatever <a href='#!/api/Ext.data.writer.Writer'>Ext.data.writer.Writer</a>\nis being used to sync data with the server.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The Field's value - the value to be serialized.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "1,1029,23",
+                      "text": "1,1029,29,48",
+                      "type": "1,1029,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record being serialized.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "1,1030,32",
+                      "text": "1,1030,39,29",
+                      "type": "1,1030,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The string that represents the Field's value.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,1031,25,46",
+                      "type": "1,1031,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1033,0",
+                  "text": "1,1025,8,184"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "validate",
+                "since": "5.0.0",
+                "template": true,
+                "text": "Validates the passed value for this field.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value to validate.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,1038,24",
+                      "text": "1,1038,30,23",
+                      "type": "1,1038,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "separator",
+                    "optional": true,
+                    "text": "This string is passed if the caller wants all validation\nmessages concatenated with this string between each. This can be handled as a\n\"falsy\" value because concatenating with no separator is seldom desirable.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,1040,25",
+                      "text": "1,1040,36,57:1,1041,8,154",
+                      "type": "1,1040,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "errors",
+                    "optional": true,
+                    "text": "This parameter is passed if the caller\nwants all validation results individually added to the collection.\n",
+                    "type": "Ext.data.ErrorCollection",
+                    "src": {
+                      "name": "1,1044,43",
+                      "text": "1,1044,51,39:1,1045,8,68",
+                      "type": "1,1044,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the value is valid. A string may be returned if\nthe value is not valid, to indicate an error message. Any other non `true` value\nindicates the value is not valid. This method is not implemented by default,\nsubclasses may override it to provide an implementation.\n",
+                    "type": "Boolean/String",
+                    "src": {
+                      "text": "1,1047,33,58:1,1048,8,216",
+                      "type": "1,1047,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1052,8",
+                  "name": "1,1056,0",
+                  "since": "1,1054,15",
+                  "template": "1,1053,8",
+                  "text": "1,1036,8,44"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "calculated",
+                "readonly": true,
+                "text": "This property is `true` if this field has a <a href='#!/api/Ext.data.field.Boolean-cfg-calculate'>cfg-calculate</a>\nmethod or a <a href='#!/api/Ext.data.field.Boolean-method-convert'>method-convert</a> method that operates on the entire\nrecord as opposed to just the data value. This property is determined from the\n`length` of the <a href='#!/api/Ext.data.field.Boolean-method-convert'>method-convert</a> function which means this is\n*not* calculated:\n\n     convert: function (value) {\n         return ...\n     }\n\nWhile this *is* calculated:\n\n     convert: function (value, record) {\n         return ...\n     }\n\n**NOTE:** It is recommended for such fields to use <a href='#!/api/Ext.data.field.Boolean-cfg-calculate'>cfg-calculate</a>\nor explicitly specify the fields used by <a href='#!/api/Ext.data.field.Boolean-method-convert'>method-convert</a> using\n<a href='#!/api/Ext.data.field.Boolean-cfg-depends'>cfg-depends</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,726,28",
+                  "readonly": "1,747,8",
+                  "text": "1,727,8,696",
+                  "type": "1,726,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultInvalidMessage",
+                "since": "5.0.0",
+                "text": "The default message to present for an invalid field.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,370,27",
+                  "since": "1,372,15",
+                  "text": "1,371,8,53",
+                  "type": "1,370,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "definedBy",
+                "text": "The class (derived from <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>) that defined this field.\n\n     Ext.define('MyApp.models.Foo', {\n         extend: 'Ext.data.Model',\n\n         fields: [\n             { name: 'bar' }\n         ],\n         ...\n     });\n\n     var barField = MyApp.models.Foo.getField('bar');\n\n     alert(barField.definedBy === MyApp.models.Foo); // alerts 'true'\n\nWhen a field is inherited, this value will reference the class that originally\ndefined the field.\n\n     Ext.define('MyApp.models.Base', {\n         extend: 'Ext.data.Model',\n\n         fields: [\n             { name: 'foo' }\n         ],\n         ...\n     });\n\n     Ext.define('MyApp.models.Derived', {\n         extend: 'MyApp.models.Base',\n\n         fields: [\n             { name: 'bar' }\n         ],\n         ...\n     });\n\n     var fooField = MyApp.models.Derived.getField('foo');\n\n     alert(fooField.definedBy === MyApp.models.Base); // alerts 'true'\n",
+                "type": "Ext.Class",
+                "src": {
+                  "name": "1,388,30",
+                  "text": "1,389,8,908",
+                  "type": "1,388,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "dependents",
+                "readonly": true,
+                "text": "This array tracks the fields that have indicated this field in their <a href='#!/api/Ext.data.field.Boolean-cfg-depends'>depends</a>\nlist. If no fields depend on this field, this will be <a href='#!/api/null'>null</a>.\n",
+                "type": "Ext.data.field.Field[]",
+                "src": {
+                  "access": "1,474,8",
+                  "name": "1,470,43",
+                  "readonly": "1,473,8",
+                  "text": "1,471,8,141",
+                  "type": "1,470,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "evil",
+                "readonly": true,
+                "text": "This flag is set to true for fields that have `convert` methods which take the 2nd\nargument (the record) and do not specify a <a href='#!/api/Ext.data.field.Boolean-cfg-depends'>depends</a> set. Good fields indicate the\nfields on which they depend (if any).\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,756,8",
+                  "name": "1,752,28",
+                  "readonly": "1,757,8",
+                  "text": "1,753,8,204",
+                  "type": "1,752,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,295,28",
+                  "text": "2,296,8,128",
+                  "type": "2,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "identifier",
+                "readonly": true,
+                "text": "This property is set to `true` if this is an <a href='#!/api/Ext.data.Model-cfg-idProperty'>Ext.data.Model#idProperty</a>\nfield.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,762,28",
+                  "readonly": "1,765,8",
+                  "text": "1,763,8,89",
+                  "type": "1,762,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ordinal",
+                "text": "\nThe position of this field in the <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> in which it was defined.\n",
+                "type": "Number",
+                "src": {
+                  "name": "1,540,27",
+                  "text": "1,541,8,83",
+                  "type": "1,540,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "rank",
+                "readonly": true,
+                "text": "This is a 1-based value that describes the dependency order of this field. This is\ninitialized to <a href='#!/api/null'>null</a> (falsey) so we can cheaply topo-sort the fields of a class.\n",
+                "type": "Number",
+                "src": {
+                  "access": "1,711,8",
+                  "name": "1,708,27",
+                  "readonly": "1,712,8",
+                  "text": "1,709,8,165",
+                  "type": "1,708,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "stripRe",
+                "readonly": true,
+                "text": "A regular expression for stripping non-numeric characters from a numeric value.\nThis should be overridden for localization.\n",
+                "type": "RegExp",
+                "src": {
+                  "access": "1,721,8",
+                  "name": "1,717,27",
+                  "readonly": "1,720,8",
+                  "text": "1,718,8,124",
+                  "type": "1,717,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "trueRe",
+                "optional": true,
+                "text": "Values matching this regular expression are considered `true`.\n",
+                "src": {
+                  "name": "0,14,19",
+                  "text": "0,15,8,63"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,7,0,0:0,8,0,0",
+          "extends": "0,4,0",
+          "name": "0,3,0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

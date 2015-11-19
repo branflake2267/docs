@@ -1,0 +1,456 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../packages/pivot/src/pivot/axis/Base.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "pivotaxis.base",
+        "alternateClassNames": "Mz.aggregate.axis.Abstract",
+        "mixins": "Ext.mixin.Factoryable",
+        "name": "Ext.pivot.axis.Base",
+        "requires": "Ext.pivot.MixedCollection,Ext.pivot.dimension.Item,Ext.pivot.axis.Item",
+        "text": "Base implementation of a pivot axis. You may customize multiple dimensions\non an axis. Basically this class stores all labels that were generated\nfor the configured dimensions.\n\nExample:\n\n     leftAxis: [{\n         dataIndex:  'person',\n         header:     'Person',\n         sortable:   false\n     },{\n         dataIndex:  'country',\n         header:     'Country',\n         direction:  'DESC'\n     }]\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "dimensions",
+                "text": "All dimensions configured for this axis.\n",
+                "type": "Ext.pivot.dimension.Item[]",
+                "src": {
+                  "name": "0,39,42",
+                  "text": "0,39,53,41",
+                  "type": "0,39,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "addDimension",
+                "text": "Create an <a href='#!/api/Ext.pivot.dimension.Item'>Ext.pivot.dimension.Item</a> object with the specified config and add it to the\ninternal collection of dimensions.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "Config object for the <a href='#!/api/Ext.pivot.dimension.Item'>Ext.pivot.dimension.Item</a> that is created.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,116,24",
+                      "text": "0,116,31,72",
+                      "type": "0,116,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,118,0",
+                  "text": "0,113,8,130"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addItem",
+                "text": "Add the specified item to the internal collection of items.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "Config object for the <a href='#!/api/Ext.pivot.axis.Item'>Ext.pivot.axis.Item</a> that is added\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,127,24",
+                      "text": "0,127,29,64",
+                      "type": "0,127,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,129,0",
+                  "text": "0,125,8,61"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addItemToTree",
+                "text": "Add the specified item to the tree\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "0,224,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,226,8",
+                  "name": "0,228,0",
+                  "text": "0,222,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "buildTree",
+                "text": "This function builds the internal tree after all records were processed\n",
+                "src": {
+                  "access": "0,209,8",
+                  "name": "0,211,0",
+                  "text": "0,207,8,73"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clear",
+                "text": "Clear all items and the tree.\n",
+                "src": {
+                  "name": "0,154,0",
+                  "text": "0,151,8,31"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "findTreeElement",
+                "text": "Find the first element in the tree that matches the criteria (attribute = value).\n\nIt returns an object with the tree element and depth level.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,176,18"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "attribute",
+                    "src": {
+                      "name": "0,178,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "src": {
+                      "name": "0,178,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,178,0",
+                  "text": "0,172,8,144"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTree",
+                "text": "This function parses the internal collection of items and builds a tree.\nThis tree is used by the Matrix class to generate the pivot store and column headers.\n",
+                "src": {
+                  "name": "0,164,0",
+                  "text": "0,160,8,160"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "sortTree",
+                "text": "Sort the tree using the sorters defined on the axis dimensions\n",
+                "src": {
+                  "access": "0,255,8",
+                  "name": "0,257,0",
+                  "text": "0,253,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "sortTreeByDimension",
+                "text": "Sort tree by a specified dimension. The dimension's sorter function is used for sorting.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "tree",
+                    "src": {
+                      "name": "0,323,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dimension",
+                    "src": {
+                      "name": "0,324,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "direction",
+                    "src": {
+                      "name": "0,325,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,326,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,328,8",
+                  "name": "0,330,0",
+                  "text": "0,321,8,90"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "sortTreeByField",
+                "text": "Sort the tree by the specified field and direction.\n\nIf the field is one of the axis dimension then sort by that otherwise go to the records and sort\nthem by that field.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "src": {
+                      "name": "0,285,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "direction",
+                    "src": {
+                      "name": "0,286,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,288,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,289,8",
+                  "name": "0,291,0",
+                  "text": "0,280,8,171"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "sortTreeByRecords",
+                "text": "Sort tree by values on a generated field on the pivot model.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "tree",
+                    "src": {
+                      "name": "0,366,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "src": {
+                      "name": "0,367,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "direction",
+                    "src": {
+                      "name": "0,368,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,369,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,371,8",
+                  "name": "0,373,0",
+                  "text": "0,364,8,62"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "sortTreeLeaves",
+                "text": "Sort tree leaves by their group summary.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "tree",
+                    "src": {
+                      "name": "0,434,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "src": {
+                      "name": "0,435,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "direction",
+                    "src": {
+                      "name": "0,436,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,438,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,440,8",
+                  "name": "0,442,0",
+                  "text": "0,432,8,42"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "sortTreeRecords",
+                "text": "Sort the records array of each item in the tree\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "tree",
+                    "src": {
+                      "name": "0,399,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "src": {
+                      "name": "0,400,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "direction",
+                    "src": {
+                      "name": "0,401,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,403,8",
+                  "name": "0,405,0",
+                  "text": "0,397,8,49"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,295,28",
+                  "text": "1,296,8,128",
+                  "type": "1,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isLeftAxis",
+                "readonly": true,
+                "text": "Internal flag to know which axis is this one\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,71,28",
+                  "readonly": "0,72,8",
+                  "text": "0,71,39,45",
+                  "type": "0,71,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "items",
+                "text": "All items generated for this axis are stored in this collection.\n",
+                "type": "Ext.pivot.MixedCollection",
+                "src": {
+                  "name": "0,51,46",
+                  "text": "0,51,52,65",
+                  "type": "0,51,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "levels",
+                "readonly": true,
+                "text": "No of levels this axis tree has\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,64,27",
+                  "readonly": "0,65,8",
+                  "text": "0,64,34,32",
+                  "type": "0,64,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "matrix",
+                "text": "Matrix instance this axis belongs to.\n",
+                "type": "Ext.pivot.matrix.Base",
+                "src": {
+                  "name": "0,45,42",
+                  "text": "0,45,49,38",
+                  "type": "0,45,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "tree",
+                "text": "When the tree is built for this axis it is stored in this property.\n",
+                "src": {
+                  "access": "0,59,8",
+                  "name": "0,61,0",
+                  "text": "0,57,8,69"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,26,0",
+          "alternateClassNames": "0,23,0",
+          "mixins": "0,29,0",
+          "name": "0,21,0",
+          "requires": "0,33,0,0:0,34,0,0:0,35,0,0",
+          "text": "0,3,4,406"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

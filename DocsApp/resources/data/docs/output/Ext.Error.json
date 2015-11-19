@@ -1,0 +1,94 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/lang/Error.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Error",
+        "text": "A helper class for the native JavaScript Error object that adds a few useful capabilities for handling\nerrors in an application. When you use Ext.Error to <a href='#!/api/Ext.Error-static-method-raise'>raise</a> an error from within any class that\nuses the Class System, the Error class can automatically add the source class and method from which\nthe error was raised. It also includes logic to automatically log the error to the console, if available,\nwith additional metadata about the error. In all cases, the error will always be thrown at the end so that\nexecution will halt.\n\nExt.Error also offers a global error <a href='#!/api/Ext.Error-static-method-handle'>handle</a> method that can be overridden in order to\nhandle application-wide errors in a single spot. You can optionally <a href='#!/api/Ext.Error-static-property-ignore'>ignore</a> errors altogether,\nalthough in a real application it's usually a better idea to override the handling function and perform\nlogging or some other method of reporting the errors in a way that is meaningful to the application.\n\nAt its simplest you can simply raise an error as a simple string from within any code:\n\nExample usage:\n\n    Ext.raise('Something bad happened!');\n\nIf raised from plain JavaScript code, the error will be logged to the console (if available) and the message\ndisplayed. In most cases however you'll be raising errors from within a class, and it may often be useful to add\nadditional metadata about the error being raised.  The <a href='#!/api/Ext.Error-static-method-raise'>raise</a> method can also take a config object.\nIn this form the `msg` attribute becomes the error description, and any other data added to the config gets\nadded to the error object and, if the console is available, logged to the console for inspection.\n\nExample usage:\n\n    Ext.define('Ext.Foo', {\n        doSomething: function(option){\n            if (someCondition === false) {\n                Ext.raise({\n                    msg: 'You cannot do that!',\n                    option: option,   // whatever was passed into the method\n                    'error code': 100 // other arbitrary info\n                });\n            }\n        }\n    });\n\nIf a console is available (that supports the `console.dir` function) you'll see console output like:\n\n    An error was raised with the following data:\n    option:         Object { foo: \"bar\"}\n        foo:        \"bar\"\n    error code:     100\n    msg:            \"You cannot do that!\"\n    sourceClass:   \"Ext.Foo\"\n    sourceMethod:  \"doSomething\"\n\n    uncaught exception: You cannot do that!\n\nAs you can see, the error will report exactly where it was raised and will include as much information as the\nraising code can usefully provide.\n\nIf you want to handle all application errors globally you can simply override the static <a href='#!/api/Ext.Error-static-method-handle'>handle</a> method\nand provide whatever handling logic you need. If the method returns true then the error is considered handled\nand will not be thrown to the browser. If anything but true is returned then the error will be thrown normally.\n\nExample usage:\n\n    Ext.Error.handle = function(err) {\n        if (err.someProperty == 'NotReallyAnError') {\n            // maybe log something to the application here if applicable\n            return true;\n        }\n        // any non-true return value (including none) will cause the error to be thrown\n    }\n",
+        "items": [
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use <a href='#!/api/Ext-raise'>Ext#raise</a> instead.\n",
+                "deprecatedVersion": "6.0.0",
+                "name": "raise",
+                "static": true,
+                "text": "This method is called internally by <a href='#!/api/Ext-method-raise'>Ext#raise</a>. Application code should\ncall <a href='#!/api/Ext-method-raise'>Ext#raise</a> instead of calling this method directly.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "err",
+                    "src": {
+                      "name": "0,138,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,136,12",
+                  "deprecatedVersion": "0,136,12",
+                  "name": "0,138,0",
+                  "static": "0,135,12",
+                  "text": "0,132,12,144"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "handle",
+                "static": true,
+                "text": "Globally handle any Ext errors that may be raised, optionally providing custom logic to\nhandle different errors individually. Return true from the function to bypass throwing the\nerror to the browser, otherwise the error will be thrown and execution will halt.\n\nExample usage:\n\n    Ext.Error.handle = function(err) {\n        if (err.someProperty == 'NotReallyAnError') {\n            // maybe log something to the application here if applicable\n            return true;\n        }\n        // any non-true return value (including none) will cause the error to be thrown\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "err",
+                    "text": "The error being raised. It will contain any attributes that were originally\nraised with it, plus properties about the method and class from which the error originated\n(if raised from a class that uses the Class System).\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,191,28",
+                      "text": "0,191,32,76:0,192,12,144",
+                      "type": "0,191,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,196,0",
+                  "static": "0,194,12",
+                  "text": "0,177,12,574"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "ignore",
+                "static": true,
+                "text": "Static flag that can be used to globally disable error reporting to the browser if set to true\n(defaults to false). Note that if you ignore Ext errors it's likely that some other code may fail\nand throw a native JavaScript error thereafter, so use with caution. In most cases it will probably\nbe preferable to supply a custom error <a href='#!/api/Ext.Error-static-method-handle'>handle</a> function instead.\n\nExample usage:\n\n    Ext.Error.ignore = true;\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,117,32",
+                  "static": "0,127,12",
+                  "text": "0,118,12,422",
+                  "type": "0,117,23"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,69,11",
+          "text": "0,2,4,3217"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,970 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/charts/src/draw/PathUtil.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.draw.PathUtil",
+        "requires": "Ext.draw.overrides.Path,Ext.draw.overrides.sprite.Path,Ext.draw.overrides.sprite.Instancing,Ext.draw.overrides.Surface",
+        "singleton": true,
+        "text": "Singleton that provides methods used by the Ext.draw.Path\nfor hit testing and finding path intersection points.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "cubicRoots",
+                "text": "Finds roots of a cubic equation in t, where t lies in the interval of [0,1].\nBased on http://www.particleincell.com/blog/2013/cubic-line-intersection/\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "P",
+                    "text": "Cubic equation coefficients.\n",
+                    "type": "Number[]",
+                    "src": {
+                      "name": "0,30,19",
+                      "text": "0,30,32,29",
+                      "type": "0,30,22"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns an array of parametric intersection locations along the cubic,\n                 with -1 indicating an out-of-bounds intersection\n                 (before or after the end point or in the imaginary plane).\n",
+                    "type": "Number[]",
+                    "src": {
+                      "text": "0,31,31,71:0,32,12,142",
+                      "type": "0,31,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,27,12",
+                  "name": "0,35,0",
+                  "text": "0,28,12,151"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "quadraticRoots",
+                "text": "Finds roots of a quadratic equation in t, where t lies in the interval of [0,1].\nTakes three quadratic equation coefficients as parameters.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "a",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,94,19",
+                      "type": "0,94,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "b",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,95,19",
+                      "type": "0,95,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "c",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,96,19",
+                      "type": "0,96,22"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,97,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,91,12",
+                  "name": "0,99,0",
+                  "text": "0,92,12,140"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "linearRoot",
+                "text": "Finds roots of a linear equation in t, where t lies in the interval of [0,1].\nTakes two linear equation coefficients as parameters.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "a",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,125,19",
+                      "type": "0,125,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "b",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,126,19",
+                      "type": "0,126,22"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,127,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,122,12",
+                  "name": "0,129,0",
+                  "text": "0,123,12,132"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "bezierCoeffs",
+                "text": "Calculates the coefficients of a cubic function for the given coordinates.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "P0",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,140,19",
+                      "type": "0,140,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "P1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,141,19",
+                      "type": "0,141,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "P2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,142,19",
+                      "type": "0,142,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "P3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,143,19",
+                      "type": "0,143,23"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "0,144,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,138,12",
+                  "name": "0,146,0",
+                  "text": "0,139,12,75"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "cubicLineIntersections",
+                "text": "Computes intersection points between a cubic spline and a line segment.\nTakes in x/y components of cubic control points and line segment start/end points\nas parameters.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "px1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,160,19",
+                      "type": "0,160,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "px2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,161,19",
+                      "type": "0,161,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "px3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,162,19",
+                      "type": "0,162,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "px4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,163,19",
+                      "type": "0,163,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "py1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,164,19",
+                      "type": "0,164,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "py2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,165,19",
+                      "type": "0,165,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "py3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,166,19",
+                      "type": "0,166,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "py4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,167,19",
+                      "type": "0,167,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,168,19",
+                      "type": "0,168,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,169,19",
+                      "type": "0,169,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,170,19",
+                      "type": "0,170,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,171,19",
+                      "type": "0,171,23"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Array of intersection points, where each intersection point\n                 is itself a two-item array [x,y].\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,172,28,60:0,173,12,51",
+                      "type": "0,172,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,156,12",
+                  "name": "0,175,0",
+                  "text": "0,157,12,169"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "splitCubic",
+                "text": "Splits cubic Bezier curve into two cubic Bezier curves at point z,\nwhere z belongs to a range of [0, 1].\nAccepts cubic coefficients and point z as parameters.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "P1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,234,19",
+                      "type": "0,234,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "P2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,235,19",
+                      "type": "0,235,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "P3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,236,19",
+                      "type": "0,236,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "P4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,237,19",
+                      "type": "0,237,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "z",
+                    "text": "Point to split the given curve at.\n",
+                    "src": {
+                      "name": "0,238,19",
+                      "text": "0,238,21,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Two-item array, where each item is itself an array\n                 of cubic coefficients.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,239,28,51:0,240,12,40",
+                      "type": "0,239,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,230,12",
+                  "name": "0,242,0",
+                  "text": "0,231,12,159"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "cubicDimension",
+                "text": "Returns the dimension of a cubic Bezier curve in a single direction.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "a",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,270,19",
+                      "type": "0,270,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "b",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,271,19",
+                      "type": "0,271,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "c",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,272,19",
+                      "type": "0,272,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "d",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,273,19",
+                      "type": "0,273,22"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Two-item array representing cubic's range in the given direction.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,274,28,66",
+                      "type": "0,274,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,268,12",
+                  "name": "0,276,0",
+                  "text": "0,269,12,69"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "interpolateCubic",
+                "text": "Calculates a value of a cubic function at the given point t. In other words\nreturns a * (1 - t) ^ 3 + 3 * b (1 - t) ^ 2 * t + 3 * c (1 - t) * t ^ 3 + d * t ^ 3\nfor given a, b, c, d and t, where t belongs to an interval of [0, 1].\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "a",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,322,19",
+                      "type": "0,322,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "b",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,323,19",
+                      "type": "0,323,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "c",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,324,19",
+                      "type": "0,324,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "d",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,325,19",
+                      "type": "0,325,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "t",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,326,19",
+                      "type": "0,326,22"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,327,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,318,12",
+                  "name": "0,329,0",
+                  "text": "0,319,12,230"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "cubicsIntersections",
+                "text": "Computes intersection points between two cubic Bezier curve segments.\nTakes x/y components of control points for two Bezier curve segments.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ax1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,344,19",
+                      "type": "0,344,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ax2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,345,19",
+                      "type": "0,345,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ax3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,346,19",
+                      "type": "0,346,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ax4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,347,19",
+                      "type": "0,347,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ay1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,348,19",
+                      "type": "0,348,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ay2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,349,19",
+                      "type": "0,349,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ay3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,350,19",
+                      "type": "0,350,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ay4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,351,19",
+                      "type": "0,351,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bx1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,352,19",
+                      "type": "0,352,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bx2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,353,19",
+                      "type": "0,353,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bx3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,354,19",
+                      "type": "0,354,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bx4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,355,19",
+                      "type": "0,355,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "by1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,356,19",
+                      "type": "0,356,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "by2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,357,19",
+                      "type": "0,357,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "by3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,358,19",
+                      "type": "0,358,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "by4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,359,19",
+                      "type": "0,359,24"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Array of intersection points, where each intersection point\n                 is itself a two-item array [x,y].\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,360,28,60:0,361,12,51",
+                      "type": "0,360,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,341,12",
+                  "name": "0,363,0",
+                  "text": "0,342,12,140"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "linesIntersection",
+                "text": "Returns the point [x,y] where two line segments intersect or null.\nTakes x/y components of the start and end point of the segments as parameters.\nBased on Paul Bourke's explanation:\nhttp://paulbourke.net/geometry/pointlineplane/\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,402,19",
+                      "type": "0,402,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,403,19",
+                      "type": "0,403,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,404,19",
+                      "type": "0,404,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,405,19",
+                      "type": "0,405,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,406,19",
+                      "type": "0,406,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,407,19",
+                      "type": "0,407,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,408,19",
+                      "type": "0,408,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,409,19",
+                      "type": "0,409,23"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Number[]/null",
+                    "src": {
+                      "type": "0,410,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,397,12",
+                  "name": "0,412,0",
+                  "text": "0,398,12,229"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "pointOnLine",
+                "text": "Checks if a point belongs to a line segment.\nTakes x/y components of the start and end points of the segment and the point's\ncoordinates as parameters.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,434,19",
+                      "type": "0,434,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,435,19",
+                      "type": "0,435,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,436,19",
+                      "type": "0,436,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,437,19",
+                      "type": "0,437,23"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,438,19",
+                      "type": "0,438,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,439,19",
+                      "type": "0,439,22"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,440,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,430,12",
+                  "name": "0,442,0",
+                  "text": "0,431,12,152"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "pointOnCubic",
+                "text": "Checks if a point belongs to a cubic Bezier curve segment.\nTakes x/y components of the control points of the segment and the point's\ncoordinates as parameters.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "px1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,467,19",
+                      "type": "0,467,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "px2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,468,19",
+                      "type": "0,468,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "px3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,469,19",
+                      "type": "0,469,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "px4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,470,19",
+                      "type": "0,470,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "py1",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,471,19",
+                      "type": "0,471,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "py2",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,472,19",
+                      "type": "0,472,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "py3",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,473,19",
+                      "type": "0,473,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "py4",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,474,19",
+                      "type": "0,474,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,475,19",
+                      "type": "0,475,22"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,476,19",
+                      "type": "0,476,22"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,477,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,463,12",
+                  "name": "0,479,0",
+                  "text": "0,464,12,160"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,2,4",
+          "name": "0,6,0",
+          "requires": "0,20,0,0:0,21,0,0:0,22,0,0:0,23,0,0",
+          "singleton": "0,17,0",
+          "text": "0,3,4,112"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

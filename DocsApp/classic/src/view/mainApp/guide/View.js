@@ -5,14 +5,15 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
     controller: 'main-guide-controller',
 
     config: {
-        guideId: null,
-        route  : null
+        guideId     : null,
+        route       : null,
+        focusHeading: null
     },
 
-    cls       : 'da-guide-body',
-    iconCls   : 'x-fa fa-book',
-    padding   : '2 20 20 20',
-    scrollable: true,
+    cls        : 'da-guide-body',
+    iconCls    : 'x-fa fa-book',
+    bodyPadding: '2 20 20 20',
+    scrollable : true,
 
     lbar: [{
         iconCls: 'x-fa fa-star',
@@ -69,9 +70,12 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
                     data : headers,
                     tpl  : new Ext.XTemplate(
                         '<tpl for=".">',
-                            '<a class="da-guide-toc-{tag}" da-data="{name}" href="{[this.getHref(values)]}">{name}</a>',
+                            '<a class="da-guide-toc-{tag}{[this.isFirst(xindex)]}" da-data="{name}" href="{[this.getHref(values)]}">{name}</a>',
                         '</tpl>',
                         {
+                            isFirst: function (xindex) {
+                                return xindex === 1 ? ' da-highlightTocNode' : '';
+                            },
                             getHref: function (values) {
                                 var id = values.id,
                                     parse = id.split('_-_'),
@@ -112,5 +116,16 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
         if (tocTarget) {
             tocTarget.radioCls('da-highlightTocNode');
         }
+    },
+
+    getRoute: function () {
+        var str = '#!/guide/' + this.getGuideId(),
+            focusHeading = this.getFocusHeading();
+
+        if (focusHeading) {
+            str += '-' + focusHeading;
+        }
+
+        return str;
     }
 });

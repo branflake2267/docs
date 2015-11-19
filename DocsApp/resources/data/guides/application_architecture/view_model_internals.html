@@ -5,14 +5,14 @@
     <link rel="stylesheet" type="text/css" href="../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#ViewModel Internals</p>
+<div class="contents"><h1 id="application_architecture-_-view_model_internals_-_viewmodel_internals">ViewModel Internals</h1>
 <p>Now that you&#39;ve seen <a href="./view_models_data_binding.html">what a ViewModel can do</a>, let&#39;s 
 dig in a bit on what is happening under the covers. Having a basic understanding of the
 mechanics will help you diagnose issues because you will know what the ViewModel does 
 with your declarations.</p>
 <p>The ViewModel has two distinct jobs: managing changes to the data object and scheduling 
 the bindings when data changes.</p>
-<p>##ViewModel Data and Inheritance</p>
+<h2 id="application_architecture-_-view_model_internals_-_viewmodel_data_and_inheritance">ViewModel Data and Inheritance</h2>
 <p>The ViewModel class manages a &quot;data&quot; object and it leverages the JavaScript prototype
 chain to provide value inheritance. Said in picture form:</p>
 <p><img src="images/view_model_internals.jpeg"/></p>
@@ -53,7 +53,7 @@ ViewModel instead:</p>
     xtype: &#39;textfield&#39;,
     bind: &#39;{stuff.foo}&#39;
 }
-</code></pre><p>##Scheduling and Dependencies</p>
+</code></pre><h2 id="application_architecture-_-view_model_internals_-_scheduling_and_dependencies">Scheduling and Dependencies</h2>
 <p>The key to making data binding fast is to avoid redundant or unnecessary calculation.<br>To manage this, the ViewModel tracks the dependencies between data. Every binding and 
 formula introduces a dependency. Under the hood, a ViewModel breaks these down one 
 indirection at a time and creates a linear schedule. This schedule is processed on a 
@@ -82,8 +82,8 @@ see in this contrived example:</p>
 </code></pre><p>In real applications these bugs will likely not be so obvious, but clearly &quot;foo&quot; and 
 &quot;bar&quot; depend on each other so there can be no sequence of evaluation for these two 
 methods that yields a proper answer.</p>
-<p>##Formula Dependencies
-When a formula uses an explicit bind then its dependencies are obvious. When a formula
+<h2 id="application_architecture-_-view_model_internals_-_formula_dependencies">Formula Dependencies</h2>
+<p>When a formula uses an explicit bind then its dependencies are obvious. When a formula
 just provides a function or a <code>get</code> method, then the ViewModel <strong>parses the text of the
 function</strong> looking for property references. While this is extremely convenient and 
 ensures that you don&#39;t forget to list a dependency in an explicit bind, there are 
@@ -91,5 +91,10 @@ limitations to this approach. For details on formula parsing, see
 [[ext:Ext.app.bind.Formula]].</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#application_architecture-_-view_model_internals_-_viewmodel_data_and_inheritance">ViewModel Data and Inheritance</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_model_internals_-_scheduling_and_dependencies">Scheduling and Dependencies</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_model_internals_-_formula_dependencies">Formula Dependencies</a></div>
+    </div>
 </body>
 </html>

@@ -1,0 +1,377 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/JsonP.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.data.JsonP",
+        "singleton": true,
+        "text": "This class is used to create JSONP requests. JSONP is a mechanism that allows for making\nrequests for data cross domain. JSONP is basically a `<script>` node with the source of the url executing\na function that was created by Ext.data.JsonP. Once the resource has loaded, the `<script>` node will be destroyed.\n\nIf you have a request such as:\n\n    Ext.data.JsonP.request({\n        url : 'foo.php'\n    });\n\nExt.data.JsonP will create a `<script>` node in the `<head>` with the `src` attribute pointing to\n`foo.php?callback=Ext.data.JsonP.callback1`. The `foo.php` script will have to detect the `callback` URL parameter\nand return valid JavaScript:\n\n    Ext.data.JsonP.callback1({\"foo\":\"bar\"});\n\nA simple PHP example would look like:\n\n    <?php\n\n    $data = array('foo' => 'bar');\n\n    if (!empty($_REQUEST['callback'])) {\n        header('Content-Type: application/javascript');\n        echo $_REQUEST['callback'] . '(';\n    }\n\n    echo json_encode($data);\n\n    if (!empty($_REQUEST['callback']) {\n        echo ');';\n    }\n\n    ?>\n\nMore information is available <a href=\"http://en.wikipedia.org/wiki/JSONP\">here</a>. You can also use <a href=\"http://www.jsonplint.com\">JSONPLint</a> to test your JSONP.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "request",
+                "text": "Makes a JSONP request.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "An object which may contain the following properties. Note that options will\ntake priority over any defaults that are specified in the class.\n<ul>\n<li><b>url</b> : String <div class=\"sub-desc\">The URL to request.</div></li>\n<li><b>params</b> : Object (Optional)<div class=\"sub-desc\">An object containing a series of\nkey value pairs that will be sent along with the request.</div></li>\n<li><b>timeout</b> : Number (Optional) <div class=\"sub-desc\">See <a href='#!/api/Ext.data.JsonP-property-timeout'>timeout</a></div></li>\n<li><b>callbackKey</b> : String (Optional) <div class=\"sub-desc\">See <a href='#!/api/Ext.data.JsonP-property-callbackKey'>callbackKey</a></div></li>\n<li><b>callbackName</b> : String (Optional) <div class=\"sub-desc\">The function name to use for this request.\nBy default this name will be auto-generated: Ext.data.JsonP.callback1, Ext.data.JsonP.callback2, etc.\nSetting this option to \"my_name\" will force the function name to be Ext.data.JsonP.my_name.\nUse this if you want deterministic behavior, but be careful - the callbackName should be different\nin each JsonP request that you make.</div></li>\n<li><b>disableCaching</b> : Boolean (Optional) <div class=\"sub-desc\">See <a href='#!/api/Ext.data.JsonP-property-disableCaching'>disableCaching</a></div></li>\n<li><b>disableCachingParam</b> : String (Optional) <div class=\"sub-desc\">See <a href='#!/api/Ext.data.JsonP-property-disableCachingParam'>disableCachingParam</a></div></li>\n<li><b>success</b> : Function (Optional) <div class=\"sub-desc\">A function to execute if the request succeeds.</div></li>\n<li><b>failure</b> : Function (Optional) <div class=\"sub-desc\">A function to execute if the request fails.</div></li>\n<li><b>callback</b> : Function (Optional) <div class=\"sub-desc\">A function to execute when the request\ncompletes, whether it is a success or failure.</div></li>\n<li><b>scope</b> : Object (Optional)<div class=\"sub-desc\">The scope in\nwhich to execute the callbacks: The \"this\" object for the callback function. Defaults to the browser window.</div></li>\n</ul>\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,94,24",
+                      "text": "0,94,32,77:0,95,8,1774",
+                      "type": "0,94,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "request An object containing the request details.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,116,25,50",
+                      "type": "0,116,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,118,0",
+                  "text": "0,93,8,23"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "abort",
+                "text": "Abort a request. If the request parameter is not specified all open requests will\nbe aborted.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "(Optional) The request to abort\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "0,176,31",
+                      "text": "0,176,39,32",
+                      "type": "0,176,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,178,0",
+                  "text": "0,174,8,94"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setupErrorHandling",
+                "text": "Sets up error handling for the script\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,200,24",
+                      "text": "0,200,32,12",
+                      "type": "0,200,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,199,8",
+                  "name": "0,202,0",
+                  "text": "0,198,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "handleAbort",
+                "text": "Handles any aborts when loading the script\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,209,24",
+                      "text": "0,209,32,12",
+                      "type": "0,209,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,208,8",
+                  "name": "0,211,0",
+                  "text": "0,207,8,43"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "handleError",
+                "text": "Handles any script errors when loading the script\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,219,24",
+                      "text": "0,219,32,12",
+                      "type": "0,219,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,218,8",
+                  "name": "0,221,0",
+                  "text": "0,217,8,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "cleanupErrorHandling",
+                "text": "Cleans up anu script handling errors\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,229,24",
+                      "text": "0,229,32,12",
+                      "type": "0,229,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,228,8",
+                  "name": "0,231,0",
+                  "text": "0,227,8,37"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "handleTimeout",
+                "text": "Handle any script timeouts\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,238,24",
+                      "text": "0,238,32,12",
+                      "type": "0,238,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,237,8",
+                  "name": "0,240,0",
+                  "text": "0,236,8,27"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "handleResponse",
+                "text": "Handle a successful response\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "result",
+                    "text": "The result from the request\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,248,24",
+                      "text": "0,248,31,28",
+                      "type": "0,248,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,249,24",
+                      "text": "0,249,32,12",
+                      "type": "0,249,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,247,8",
+                  "name": "0,251,0",
+                  "text": "0,246,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createScript",
+                "text": "Create the script tag given the specified url, params and options. The options\nparameter is passed to allow an override to access it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "url",
+                    "text": "The url of the request\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,281,24",
+                      "text": "0,281,28,23",
+                      "type": "0,281,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "params",
+                    "text": "Any extra params to be sent\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,282,24",
+                      "text": "0,282,31,28",
+                      "type": "0,282,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "The object passed to <a href='#!/api/Ext.data.JsonP-method-request'>request</a>.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,283,24",
+                      "text": "0,283,32,39",
+                      "type": "0,283,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,280,8",
+                  "name": "0,285,0",
+                  "text": "0,278,8,134"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "loadScript",
+                "text": "Loads the script for the given request by appending it to the HEAD element. This is\nits own method so that users can override it (as well as <a href='#!/api/Ext.data.JsonP-method-createScript'>createScript</a>).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request object.\n",
+                    "src": {
+                      "name": "0,297,15",
+                      "text": "0,297,23,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,296,8",
+                  "name": "0,299,0",
+                  "text": "0,294,8,165"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "requestCount",
+                "text": "Number of requests done so far.\n",
+                "src": {
+                  "access": "0,51,8",
+                  "name": "0,53,0",
+                  "text": "0,50,8,32"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "requests",
+                "text": "Hash of pending requests.\n",
+                "src": {
+                  "access": "0,57,8",
+                  "name": "0,59,0",
+                  "text": "0,56,8,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "timeout",
+                "text": "A default timeout for any JsonP requests. If the request has not completed in this time the\nfailure callback will be fired. The timeout is in ms. Defaults to <tt>30000</tt>.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,62,18",
+                  "text": "0,64,8,174",
+                  "type": "0,63,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disableCaching",
+                "text": "True to add a unique cache-buster param to requests. Defaults to <tt>true</tt>.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,70,18",
+                  "text": "0,72,8,80",
+                  "type": "0,71,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disableCachingParam",
+                "text": "Change the parameter which is sent went disabling caching through a cache buster. Defaults to <tt>'_dc'</tt>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,77,18",
+                  "text": "0,79,8,110",
+                  "type": "0,78,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "callbackKey",
+                "text": "Specifies the GET parameter that will be sent to the server containing the function name to be executed when\nthe request completes. Defaults to <tt>callback</tt>. Thus, a common request will be in the form of\nurl?callback=Ext.data.JsonP.callback1\n",
+                "type": "String",
+                "src": {
+                  "name": "0,84,18",
+                  "text": "0,86,8,247",
+                  "type": "0,85,14"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "singleton": "0,3,4",
+          "text": "0,4,4,1202"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -3,6 +3,7 @@
   "files": [
     "../../../ext/packages/core/src/data/field/String.js",
     "../../../ext/packages/core/src/data/field/Field.js",
+    "../../../../docs/docs/js/primitives/Object.js",
     "../../../ext/packages/core/src/mixin/Factoryable.js"
   ],
   "global": {
@@ -11,6 +12,7 @@
       {
         "$type": "class",
         "alias": "data.field.string",
+        "extended": "Ext.data.field.Field,Object",
         "extends": "Ext.data.field.Field",
         "name": "Ext.data.field.String",
         "items": [
@@ -24,10 +26,10 @@
                 "text": "\nUsed for validating a <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>. Defaults to true. An empty value here will cause\n<a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.<a href='#!/api/Ext.data.Model-method-isValid'>Ext.data.Model#isValid</a> to evaluate to false.\n",
                 "type": "Boolean",
                 "src": {
-                  "access": "1,280,8",
-                  "name": "1,279,23",
-                  "text": "1,281,8,186",
-                  "type": "1,279,14"
+                  "access": "1,283,8",
+                  "name": "1,282,23",
+                  "text": "1,284,8,186",
+                  "type": "1,282,14"
                 }
               },
               {
@@ -36,15 +38,15 @@
                 "text": "\nUse when converting received data into a <a href='#!/api/Ext.data.field.Integer'>Ext.data.field.Integer</a>,\n<a href='#!/api/Ext.data.field.Number'>Ext.data.field.Number</a>, <a href='#!/api/Ext.data.field.Boolean'>Ext.data.field.Boolean</a>\nor <a href='#!/api/Ext.data.field.String'>Ext.data.field.String</a> type. If the value cannot be\nparsed, <a href='#!/api/null'>null</a> will be used if allowNull is true, otherwise a default value for that type will be used:\n\n- for `int` and `float` - `0`.\n- for `string` - `\"\"`.\n- for `bool` - `false`.\n\nNote that when parsing of <a href='#!/api/Ext.data.field.Date'>Ext.data.field.Date</a> type fails, the value will\nbe <a href='#!/api/null'>null</a> regardless of this setting.\n",
                 "type": "Boolean",
                 "src": {
-                  "name": "1,288,23",
-                  "text": "1,289,8,538",
-                  "type": "1,288,14"
+                  "name": "1,291,23",
+                  "text": "1,292,8,538",
+                  "type": "1,291,14"
                 }
               },
               {
                 "$type": "property",
                 "name": "calculate",
-                "text": "This config defines a simple field calculation function. A calculate method only\nhas access to the record data and should return the value of the calculated field.\nWhen provided in this way, the <a href='#!/api/Ext.data.field.String-cfg-depends'>depends</a> config is automatically determined by\nparsing the <a href='#!/api/Ext.data.field.String-cfg-calculate'>calculate</a> function. For example:\n\n     fields: [{\n         name: 'firstName',\n         type: 'string'\n     },{\n         name: 'lastName',\n         type: 'string'\n     },{\n         name: 'fullName',\n         calculate: function (data) {\n             return data.firstName + ' ' + data.lastName;\n         }\n     }]\n\nThe above 'fullName' field is equivalent to:\n\n     {\n         name: 'fullName',\n         convert: function (v, rec) {\n             return rec.get('firstName') + ' ' + rec.get('lastName');\n         },\n         depends: ['firstName', 'lastName']\n     }\n\nThe restrictions on form for a <a href='#!/api/Ext.data.field.String-cfg-calculate'>calculate</a> method are that the accesses to field\nvalues must match the following regular expression (case insensitive):\n\n     data.([a-z_][a-z0-9_]*)\n     // where 'data' is the param passed to the calculate method\n\nThe only advantage of a <a href='#!/api/Ext.data.field.String-cfg-calculate'>calculate</a> method over a `convert` method is automatic\ndetermination of <a href='#!/api/Ext.data.field.String-cfg-depends'>depends</a>.\n\n**Note:** The use of calculate and <a href='#!/api/Ext.data.field.String-method-convert'>method-convert</a> are exclusive.  The\ncalculate method will override the convert method if both are configured.\n",
+                "text": "This config defines a simple field calculation function. A calculate method only\nhas access to the record data and should return the value of the calculated field.\nWhen provided in this way, the <a href='#!/api/Ext.data.field.String-cfg-depends'>depends</a> config is automatically determined by\nparsing the <a href='#!/api/Ext.data.field.String-cfg-calculate'>calculate</a> function. For example:\n\n     fields: [{\n         name: 'firstName',\n         type: 'string'\n     },{\n         name: 'lastName',\n         type: 'string'\n     },{\n         name: 'fullName',\n         calculate: function (data) {\n             return data.firstName + ' ' + data.lastName;\n         }\n     }]\n\nThe above 'fullName' field is equivalent to:\n\n     {\n         name: 'fullName',\n         convert: function (v, rec) {\n             return rec.get('firstName') + ' ' + rec.get('lastName');\n         },\n         depends: ['firstName', 'lastName']\n     }\n\nThe restrictions on form for a <a href='#!/api/Ext.data.field.String-cfg-calculate'>calculate</a> method are that the accesses to field\nvalues must match the following regular expression (case insensitive):\n\n     data.([a-z_][a-z0-9_]*)\n     // where 'data' is the param passed to the calculate method\n\nThe only advantage of a <a href='#!/api/Ext.data.field.String-cfg-calculate'>calculate</a> method over a `convert` method is automatic\ndetermination of <a href='#!/api/Ext.data.field.String-cfg-depends'>depends</a>.\n\n**Note:** The use of calculate and <a href='#!/api/Ext.data.field.String-method-convert'>method-convert</a> are exclusive.  The\ncalculate method will override the convert method if both are configured.\n\n**Note:** Fields used by the calculate method must be explicitly defined in the\n<a href='#!/api/Ext.data.Model-cfg-fields'>Ext.data.Model#cfg-fields</a> of the model.\n",
                 "type": "Function",
                 "items": [
                   {
@@ -53,9 +55,9 @@
                     "text": "An object with all values for each field in the parent\nmodel.  See <a href='#!/api/Ext.data.Model-method-getData'>Ext.data.Model#getData</a>.\n",
                     "type": "Object",
                     "src": {
-                      "name": "1,346,24",
-                      "text": "1,346,29,55:1,347,8,52",
-                      "type": "1,346,16"
+                      "name": "1,352,24",
+                      "text": "1,352,29,55:1,353,8,52",
+                      "type": "1,352,16"
                     }
                   },
                   {
@@ -63,15 +65,15 @@
                     "text": "value The value of the calculated field\n",
                     "type": "Mixed",
                     "src": {
-                      "text": "1,348,24,40",
-                      "type": "1,348,17"
+                      "text": "1,354,24,40",
+                      "type": "1,354,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,305,24",
-                  "text": "1,306,8,1334",
-                  "type": "1,305,14"
+                  "name": "1,308,24",
+                  "text": "1,309,8,1471",
+                  "type": "1,308,14"
                 }
               },
               {
@@ -80,9 +82,9 @@
                 "text": "If specified this config overrides the <a href='#!/api/Ext.data.field.String-method-convert'>method-convert</a> method. See\nalso <a href='#!/api/Ext.data.field.String-cfg-calculate'>cfg-calculate</a> for simple field calculations.\n\n**Note:** The use of <a href='#!/api/Ext.data.field.String-cfg-calculate'>calculate</a> and convert are exclusive.  The calculate\nmethod will override the convert method if both are configured.\n",
                 "type": "Function",
                 "src": {
-                  "name": "1,352,24",
-                  "text": "1,353,8,303",
-                  "type": "1,352,14"
+                  "name": "1,358,24",
+                  "text": "1,359,8,303",
+                  "type": "1,358,14"
                 }
               },
               {
@@ -91,9 +93,9 @@
                 "text": "A critical field is a field that must always be sent to the server even if it has\nnot changed. The most common example of such a field is the \"id\" of a record (see\n<a href='#!/api/Ext.data.Model-cfg-idProperty'>Ext.data.Model#idProperty</a> but the <a href='#!/api/Ext.data.Model-cfg-versionProperty'>Ext.data.Model#versionProperty</a>\nis similarly a <a href='#!/api/Ext.data.field.String-cfg-critical'>critical</a> field.\n",
                 "type": "Boolean",
                 "src": {
-                  "name": "1,361,23",
-                  "text": "1,362,8,282",
-                  "type": "1,361,14"
+                  "name": "1,367,23",
+                  "text": "1,368,8,282",
+                  "type": "1,367,14"
                 }
               },
               {
@@ -104,10 +106,10 @@
                 "type": "Object",
                 "value": "undefined",
                 "src": {
-                  "name": "1,377,23",
-                  "text": "1,378,8,251",
-                  "type": "1,377,14",
-                  "value": "1,377,36"
+                  "name": "1,383,23",
+                  "text": "1,384,8,251",
+                  "type": "1,383,14",
+                  "value": "1,383,36"
                 }
               },
               {
@@ -117,9 +119,9 @@
                 "text": "The field name or names within the <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> on which the value\nof this field depends, and from which a new value may be calculated. These values\nare the values used by the `convert` method. If you do not have a `convert` method\nthen this config should not be specified.\n\nBefore using this config you should consider if using a <a href='#!/api/Ext.data.field.String-cfg-calculate'>calculate</a> method instead\nof a `convert` method would be simpler.\n\nWhenever any of the named fields are set using the <a href='#!/api/Ext.data.Model-method-set'>Ext.data.Model#set</a>\nmethod, this fields will have its `convert` method called passing the\n<a href='#!/api/Ext.data.Model'>Ext.data.Model</a> so that the dependent value can be calculated from\nall fields which it needs.\n\nFor example, to display a person's full name, using two separate `firstName` and\n`lastName` fields, configure the name field like this:\n\n    {\n        name: 'name',\n\n        // Will be called whenever forename or surname fields are set\n        convert: function (v, rec) {\n            return rec.get('firstName') + ' ' + rec.get('lastName');\n        },\n\n        depends: [ 'firstName', 'lastName' ],\n\n        // It should not be returned to the server - it's not a database field\n        persist: false\n    }\n\nNote that if you do not want the calculated field to be part of the field set sent\nback to the server when the store is synchronized, you should configure the field\nwith <a href='#!/api/Ext.data.field.String-cfg-persist'>persist</a> set to `false`.\n",
                 "type": "String/String[]",
                 "src": {
-                  "name": "1,432,32",
-                  "text": "1,433,8,1382",
-                  "type": "1,432,14"
+                  "name": "1,438,32",
+                  "text": "1,439,8,1382",
+                  "type": "1,438,14"
                 }
               },
               {
@@ -128,9 +130,9 @@
                 "text": "\n(Optional) A path expression for use by the <a href='#!/api/Ext.data.reader.Reader'>Ext.data.reader.Reader</a> implementation that is creating the\n<a href='#!/api/Ext.data.Model'>Ext.data.Model</a> to extract the Field value from the data object. If the path expression is the same\nas the field name, the mapping may be omitted. A function may be passed to do complex data extraction. The examples\nbelow are simple just to demonstrate the capability, typically, a function would not be used to extract such\nsimple data.\n\nThe form of the mapping expression depends on the Reader being used.\n\n- <a href='#!/api/Ext.data.reader.Json'>Ext.data.reader.Json</a>\n\n  The mapping is a string containing the javascript expression to reference the data from an element of the data\n  item's <a href='#!/api/Ext.data.reader.Json-cfg-rootProperty'>Ext.data.reader.Json#cfg-rootProperty</a> Array. Defaults to the field name. If a function is passed,\n  a single argument is received which contains the raw json object:\n\n      // Server returns [{\"name\": \"Foo\", \"age\": 1}, {\"name\": \"Bar\", \"age\": 2}]\n      mapping: function(data) {\n          return data.name;\n      }\n\n- <a href='#!/api/Ext.data.reader.Xml'>Ext.data.reader.Xml</a>\n\n  The mapping is an <a href='#!/api/Ext.dom.Query'>Ext.DomQuery</a> path to the data item relative to the DOM element that represents the\n  <a href='#!/api/Ext.data.reader.Xml-cfg-record'>Ext.data.reader.Xml#record</a>. Defaults to the field name. If a function is passed, a single argument\n  is received which contains the record node:\n\n      // Server returns <Root><Person><Name>Foo</Name><Age>1</Age></Person><Person><Name>Bar</Name><Age>2</Age></Person></Root>\n      mapping: function(data) {\n          return data.firstChild.textContent;\n      }\n\n- <a href='#!/api/Ext.data.reader.Array'>Ext.data.reader.Array</a>\n\n  The mapping is a number indicating the Array index of the field's value. Defaults to the field specification's\n  Array position. If a function is passed, a single argument is received which contains the child array.\n\n      // Server returns [[\"Foo\", 1], [\"Bar\", 2]]\n      mapping: function(data) {\n          return data[0];\n      }\n\nIf a more complex value extraction strategy is required, then configure the Field with a <a href='#!/api/Ext.data.field.String-cfg-convert'>cfg-convert</a>\nfunction. This is passed the whole row object, and may interrogate it in whatever way is necessary in order to\nreturn the desired data.\n",
                 "type": "String/Number/Function",
                 "src": {
-                  "name": "1,479,38",
-                  "text": "1,480,8,2158",
-                  "type": "1,479,14"
+                  "name": "1,485,38",
+                  "text": "1,486,8,2158",
+                  "type": "1,485,14"
                 }
               },
               {
@@ -139,9 +141,9 @@
                 "text": "\nThe name by which the field is referenced within the Model. This is referenced by,\nfor example, the `dataIndex` property in column definition objects passed to\n<a href='#!/api/Ext.grid.property.HeaderContainer'>Ext.grid.property.HeaderContainer</a>.\n\nNote: In the simplest case, if no properties other than <a href='#!/api/Ext.data.field.String-cfg-name'>name</a> are required, a\nfield definition may consist of just a String for the field name.\n",
                 "type": "String",
                 "src": {
-                  "name": "1,528,22",
-                  "text": "1,529,8,350",
-                  "type": "1,528,14"
+                  "name": "1,534,22",
+                  "text": "1,535,8,350",
+                  "type": "1,534,14"
                 }
               },
               {
@@ -151,9 +153,9 @@
                 "text": "\nFalse to exclude this field from the <a href='#!/api/Ext.data.Model-property-modified'>Ext.data.Model#modified</a> fields in a\nrecord. This will also exclude the field from being written using a\n<a href='#!/api/Ext.data.writer.Writer'>Ext.data.writer.Writer</a>. This option is useful when fields are used to keep\nstate on the client but do not need to be persisted to the server.\n\nDefaults to `false` for <a href='#!/api/Ext.data.field.String-property-calculated'>calculated</a> fields and `true` otherwise.\n",
                 "type": "Boolean",
                 "src": {
-                  "name": "1,547,24",
-                  "text": "1,548,8,367",
-                  "type": "1,547,14"
+                  "name": "1,553,24",
+                  "text": "1,554,8,367",
+                  "type": "1,553,14"
                 }
               },
               {
@@ -169,9 +171,9 @@
                     "text": "The type which this field references. This is the value set by the string form of\n<a href='#!/api/Ext.data.field.String-cfg-reference'>reference</a>. If the referenced entity has an ownership relationship this field\nshould be omitted and `reference.parent` or `reference.child` should be specified\ninstead.\n",
                     "type": "String",
                     "src": {
-                      "name": "1,626,32",
-                      "text": "1,627,8,253",
-                      "type": "1,626,14"
+                      "name": "1,632,32",
+                      "text": "1,633,8,253",
+                      "type": "1,632,14"
                     }
                   },
                   {
@@ -181,9 +183,9 @@
                     "text": "The name of the association. By default, the name of the association is the\ncapitalized `inverse` plus \"By\" plus the capitalized `role`.\n",
                     "type": "String",
                     "src": {
-                      "name": "1,632,33",
-                      "text": "1,633,8,138",
-                      "type": "1,632,14"
+                      "name": "1,638,33",
+                      "text": "1,639,8,138",
+                      "type": "1,638,14"
                     }
                   },
                   {
@@ -193,9 +195,9 @@
                     "text": "Set this property instead of `reference.type` to indicate that the referenced entity\nis an owned child of this entity. That is, the <a href='#!/api/Ext.data.field.String-cfg-reference'>reference</a> entity should be deleted\nwhen this entity is deleted.\n",
                     "type": "String",
                     "src": {
-                      "name": "1,636,33",
-                      "text": "1,637,8,199",
-                      "type": "1,636,14"
+                      "name": "1,642,33",
+                      "text": "1,643,8,199",
+                      "type": "1,642,14"
                     }
                   },
                   {
@@ -205,9 +207,9 @@
                     "text": "Set this property instead of `reference.type` to indicate that the referenced entity\nis the owning parent of this entity. That is, this entity should be deleted when the\n<a href='#!/api/Ext.data.field.String-cfg-reference'>reference</a> entity is deleted.\n",
                     "type": "String",
                     "src": {
-                      "name": "1,641,33",
-                      "text": "1,642,8,202",
-                      "type": "1,641,14"
+                      "name": "1,647,33",
+                      "text": "1,648,8,202",
+                      "type": "1,647,14"
                     }
                   },
                   {
@@ -217,9 +219,9 @@
                     "text": "The name of the role played by the referenced entity. By default, this is the field\nname (minus its \"Id\" suffix if present).\n",
                     "type": "String",
                     "src": {
-                      "name": "1,646,33",
-                      "text": "1,647,8,126",
-                      "type": "1,646,14"
+                      "name": "1,652,33",
+                      "text": "1,653,8,126",
+                      "type": "1,652,14"
                     }
                   },
                   {
@@ -229,16 +231,16 @@
                     "text": "The name of the inverse role (of this entity with respect to the <a href='#!/api/Ext.data.field.String-cfg-reference'>reference</a>\nentity). By default, this is the <a href='#!/api/Ext.util.Inflector-method-pluralize'>Ext.util.Inflector#pluralize</a>\nname of this entity, unless this <a href='#!/api/Ext.data.field.String-cfg-reference'>reference</a> is <a href='#!/api/Ext.data.field.String-cfg-unique'>unique</a>, in which case the default\nname is the <a href='#!/api/Ext.util.Inflector-method-singularize'>Ext.util.Inflector#singularize</a> name of this entity.\n\nThis config may also be an object containing a role, getter, or setter.\n",
                     "type": "String/Object",
                     "src": {
-                      "name": "1,650,40",
-                      "text": "1,651,8,400",
-                      "type": "1,650,14"
+                      "name": "1,656,40",
+                      "text": "1,657,8,400",
+                      "type": "1,656,14"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,559,30",
-                  "text": "1,560,8,2026",
-                  "type": "1,559,14"
+                  "name": "1,565,30",
+                  "text": "1,566,8,2026",
+                  "type": "1,565,14"
                 }
               },
               {
@@ -247,9 +249,9 @@
                 "name": "serialize",
                 "type": "Function",
                 "src": {
-                  "inheritdoc": "1,662,8",
-                  "name": "1,661,24",
-                  "type": "1,661,14"
+                  "inheritdoc": "1,668,8",
+                  "name": "1,667,24",
+                  "type": "1,667,14"
                 }
               },
               {
@@ -258,9 +260,9 @@
                 "text": "\nA function which converts a Field's value to a comparable value in order to ensure\ncorrect sort ordering.\n\nPredefined functions are provided in <a href='#!/api/Ext.data.SortTypes'>Ext.data.SortTypes</a>. A custom sort example:\n\n    // current sort     after sort we want\n    // +-+------+          +-+------+\n    // |1|First |          |1|First |\n    // |2|Last  |          |3|Second|\n    // |3|Second|          |2|Last  |\n    // +-+------+          +-+------+\n\n    sortType: function(value) {\n       switch (value.toLowerCase()) // native toLowerCase():\n       {\n          case 'first': return 1;\n          case 'second': return 2;\n          default: return 3;\n       }\n    }\n\nMay also be set to a String value, corresponding to one of the named sort types in\n<a href='#!/api/Ext.data.SortTypes'>Ext.data.SortTypes</a>.\n",
                 "type": "Function/String",
                 "src": {
-                  "name": "1,666,31",
-                  "text": "1,667,8,758",
-                  "type": "1,666,14"
+                  "name": "1,672,31",
+                  "text": "1,673,8,758",
+                  "type": "1,672,14"
                 }
               },
               {
@@ -271,10 +273,10 @@
                 "type": "Boolean",
                 "value": "false",
                 "src": {
-                  "name": "1,694,24",
-                  "text": "1,695,8,236",
-                  "type": "1,694,14",
-                  "value": "1,694,31"
+                  "name": "1,700,24",
+                  "text": "1,701,8,236",
+                  "type": "1,700,14",
+                  "value": "1,700,31"
                 }
               },
               {
@@ -283,9 +285,9 @@
                 "text": "An array of <a href='#!/api/Ext.data.validator.Validator'>Ext.data.validator.Validator</a> for this field. These\n<a href='#!/api/Ext.data.field.String-cfg-validators'>validators</a> will only be passed a field value to validate.\n",
                 "type": "Object[]",
                 "src": {
-                  "name": "1,702,24",
-                  "text": "1,703,8,142",
-                  "type": "1,702,14"
+                  "name": "1,708,24",
+                  "text": "1,709,8,142",
+                  "type": "1,708,14"
                 }
               }
             ]
@@ -304,9 +306,9 @@
                     "text": "The first value.\n",
                     "type": "Object",
                     "src": {
-                      "name": "1,912,24",
-                      "text": "1,912,31,17",
-                      "type": "1,912,16"
+                      "name": "1,918,24",
+                      "text": "1,918,31,17",
+                      "type": "1,918,16"
                     }
                   },
                   {
@@ -315,9 +317,9 @@
                     "text": "The second value.\n",
                     "type": "Object",
                     "src": {
-                      "name": "1,913,24",
-                      "text": "1,913,31,18",
-                      "type": "1,913,16"
+                      "name": "1,919,24",
+                      "text": "1,919,31,18",
+                      "type": "1,919,16"
                     }
                   },
                   {
@@ -325,14 +327,14 @@
                     "text": "`-1` if `value1` is less than `value2`. `1` if `value1` is greater than `value2`.\n`0` otherwise.\n",
                     "type": "Number",
                     "src": {
-                      "text": "1,914,25,82:1,915,8,15",
-                      "type": "1,914,17"
+                      "text": "1,920,25,82:1,921,8,15",
+                      "type": "1,920,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,917,0",
-                  "text": "1,910,8,141"
+                  "name": "1,923,0",
+                  "text": "1,916,8,141"
                 }
               },
               {
@@ -346,9 +348,9 @@
                     "text": "The first value.\n",
                     "type": "Object",
                     "src": {
-                      "name": "1,933,24",
-                      "text": "1,933,31,17",
-                      "type": "1,933,16"
+                      "name": "1,939,24",
+                      "text": "1,939,31,17",
+                      "type": "1,939,16"
                     }
                   },
                   {
@@ -357,9 +359,9 @@
                     "text": "The second value.\n",
                     "type": "Object",
                     "src": {
-                      "name": "1,934,24",
-                      "text": "1,934,31,18",
-                      "type": "1,934,16"
+                      "name": "1,940,24",
+                      "text": "1,940,31,18",
+                      "type": "1,940,16"
                     }
                   },
                   {
@@ -367,14 +369,37 @@
                     "text": "`-1` if `value1` is less than `value2`. `1` if `value1` is greater than `value2`.\n`0` otherwise.\n",
                     "type": "Number",
                     "src": {
-                      "text": "1,935,25,82:1,936,8,15",
-                      "type": "1,935,17"
+                      "text": "1,941,25,82:1,942,8,15",
+                      "type": "1,941,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,938,0",
-                  "text": "1,931,8,98"
+                  "name": "1,944,0",
+                  "text": "1,937,8,98"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to wrap.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,40,21",
+                      "text": "2,40,28,19",
+                      "type": "2,40,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,38,12",
+                  "text": "2,39,4,20"
                 }
               },
               {
@@ -388,9 +413,9 @@
                     "text": "The data value as read by the Reader, if undefined will use\nthe configured <a href='#!/api/Ext.data.field.String-cfg-defaultValue'>defaultValue</a>.\n",
                     "type": "Mixed",
                     "src": {
-                      "name": "1,1014,23",
-                      "text": "1,1014,29,60:1,1015,8,31",
-                      "type": "1,1014,16"
+                      "name": "1,1020,23",
+                      "text": "1,1020,29,60:1,1021,8,31",
+                      "type": "1,1020,16"
                     }
                   },
                   {
@@ -399,9 +424,9 @@
                     "text": "The data object containing the Model as read so far\nby the Reader. Note that the Model may not be fully populated at this point as the\nfields are read in the order that they are defined.\n<a href='#!/api/Ext.data.Model-cfg-fields'>Ext.data.Model#cfg-fields</a> array.\n",
                     "type": "Ext.data.Model",
                     "src": {
-                      "name": "1,1016,32",
-                      "text": "1,1016,39,52:1,1017,8,183",
-                      "type": "1,1016,16"
+                      "name": "1,1022,32",
+                      "text": "1,1022,39,52:1,1023,8,183",
+                      "type": "1,1022,16"
                     }
                   },
                   {
@@ -409,14 +434,14 @@
                     "text": "The converted value for storage in the record.\n",
                     "type": "Mixed",
                     "src": {
-                      "text": "1,1020,24,47",
-                      "type": "1,1020,17"
+                      "text": "1,1026,24,47",
+                      "type": "1,1026,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1022,0",
-                  "text": "1,955,8,1813"
+                  "name": "1,1028,0",
+                  "text": "1,961,8,1813"
                 }
               },
               {
@@ -429,14 +454,14 @@
                     "text": "allowBlank\n",
                     "type": "Boolean",
                     "src": {
-                      "text": "1,1105,26,11",
-                      "type": "1,1105,17"
+                      "text": "1,1111,26,11",
+                      "type": "1,1111,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1107,0",
-                  "text": "1,1104,8,57"
+                  "name": "1,1113,0",
+                  "text": "1,1110,8,57"
                 }
               },
               {
@@ -449,14 +474,14 @@
                     "text": "allowNull\n",
                     "type": "Boolean",
                     "src": {
-                      "text": "1,1113,26,10",
-                      "type": "1,1113,17"
+                      "text": "1,1119,26,10",
+                      "type": "1,1119,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1115,0",
-                  "text": "1,1112,8,55"
+                  "name": "1,1121,0",
+                  "text": "1,1118,8,55"
                 }
               },
               {
@@ -469,14 +494,14 @@
                     "text": "convert\n",
                     "type": "Function",
                     "src": {
-                      "text": "1,1121,27,8",
-                      "type": "1,1121,17"
+                      "text": "1,1127,27,8",
+                      "type": "1,1127,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1123,0",
-                  "text": "1,1120,8,60"
+                  "name": "1,1129,0",
+                  "text": "1,1126,8,60"
                 }
               },
               {
@@ -489,14 +514,14 @@
                     "text": "defaultValue\n",
                     "type": "Object",
                     "src": {
-                      "text": "1,1129,25,13",
-                      "type": "1,1129,17"
+                      "text": "1,1135,25,13",
+                      "type": "1,1135,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1131,0",
-                  "text": "1,1128,8,65"
+                  "name": "1,1137,0",
+                  "text": "1,1134,8,65"
                 }
               },
               {
@@ -509,14 +534,14 @@
                     "text": "depends\n",
                     "type": "String[]",
                     "src": {
-                      "text": "1,1137,27,8",
-                      "type": "1,1137,17"
+                      "text": "1,1143,27,8",
+                      "type": "1,1143,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1139,0",
-                  "text": "1,1136,8,55"
+                  "name": "1,1145,0",
+                  "text": "1,1142,8,55"
                 }
               },
               {
@@ -529,14 +554,14 @@
                     "text": "mapping\n",
                     "type": "Object",
                     "src": {
-                      "text": "1,1145,25,8",
-                      "type": "1,1145,17"
+                      "text": "1,1151,25,8",
+                      "type": "1,1151,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1147,0",
-                  "text": "1,1144,8,54"
+                  "name": "1,1153,0",
+                  "text": "1,1150,8,54"
                 }
               },
               {
@@ -549,14 +574,14 @@
                     "text": "name\n",
                     "type": "String",
                     "src": {
-                      "text": "1,1097,25,5",
-                      "type": "1,1097,17"
+                      "text": "1,1103,25,5",
+                      "type": "1,1103,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1099,0",
-                  "text": "1,1096,8,49"
+                  "name": "1,1105,0",
+                  "text": "1,1102,8,49"
                 }
               },
               {
@@ -569,14 +594,14 @@
                     "text": "persist\n",
                     "type": "Boolean",
                     "src": {
-                      "text": "1,1162,26,8",
-                      "type": "1,1162,17"
+                      "text": "1,1168,26,8",
+                      "type": "1,1168,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1164,0",
-                  "text": "1,1161,8,55"
+                  "name": "1,1170,0",
+                  "text": "1,1167,8,55"
                 }
               },
               {
@@ -589,14 +614,14 @@
                     "text": "sortType\n",
                     "type": "Function",
                     "src": {
-                      "text": "1,1170,27,9",
-                      "type": "1,1170,17"
+                      "text": "1,1176,27,9",
+                      "type": "1,1176,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1172,0",
-                  "text": "1,1169,8,57"
+                  "name": "1,1178,0",
+                  "text": "1,1175,8,57"
                 }
               },
               {
@@ -609,14 +634,14 @@
                     "text": "type\n",
                     "type": "String",
                     "src": {
-                      "text": "1,1178,25,5",
-                      "type": "1,1178,17"
+                      "text": "1,1184,25,5",
+                      "type": "1,1184,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1180,0",
-                  "text": "1,1177,8,56"
+                  "name": "1,1186,0",
+                  "text": "1,1183,8,56"
                 }
               },
               {
@@ -629,14 +654,45 @@
                     "text": "`true` if this field has a mapping.\n",
                     "type": "Boolean",
                     "src": {
-                      "text": "1,1153,26,36",
-                      "type": "1,1153,17"
+                      "text": "1,1159,26,36",
+                      "type": "1,1159,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1155,0",
-                  "text": "1,1152,8,44"
+                  "name": "1,1161,0",
+                  "text": "1,1158,8,44"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from <a href='#!/api/Object'>Object</a> inherits the <a href='#!/api/Ext.data.field.String-method-hasOwnProperty'>hasOwnProperty</a> method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,100,20",
+                      "text": "2,100,25,34",
+                      "type": "2,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,101,22,57:2,102,4,15",
+                      "type": "2,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,53,12",
+                  "text": "2,54,4,1520"
                 }
               },
               {
@@ -650,9 +706,9 @@
                     "text": "The first value.\n",
                     "type": "Object",
                     "src": {
-                      "name": "1,946,24",
-                      "text": "1,946,31,17",
-                      "type": "1,946,16"
+                      "name": "1,952,24",
+                      "text": "1,952,31,17",
+                      "type": "1,952,16"
                     }
                   },
                   {
@@ -661,9 +717,9 @@
                     "text": "The second value.\n",
                     "type": "Object",
                     "src": {
-                      "name": "1,947,24",
-                      "text": "1,947,31,18",
-                      "type": "1,947,16"
+                      "name": "1,953,24",
+                      "text": "1,953,31,18",
+                      "type": "1,953,16"
                     }
                   },
                   {
@@ -671,14 +727,87 @@
                     "text": "`true` if the values are equal.\n",
                     "type": "Boolean",
                     "src": {
-                      "text": "1,948,26,32",
-                      "type": "1,948,17"
+                      "text": "1,954,26,32",
+                      "type": "1,954,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,950,0",
-                  "text": "1,943,8,173"
+                  "name": "1,956,0",
+                  "text": "1,949,8,173"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n<a href='#!/api/Ext.data.field.String-method-isPrototypeOf'>isPrototypeOf</a> allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,148,20",
+                      "text": "2,148,30,71:2,149,4,18",
+                      "type": "2,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,150,20",
+                      "text": "2,150,27,50",
+                      "type": "2,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,151,22,56",
+                      "type": "2,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,106,12",
+                  "text": "2,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a <a href='#!/api/Ext.data.field.String-method-propertyIsEnumerable'>propertyIsEnumerable</a> method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of <a href='#!/api/Ext.data.field.String-method-propertyIsEnumerable'>propertyIsEnumerable</a> on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,220,20",
+                      "text": "2,220,25,34",
+                      "type": "2,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,221,22,57:2,222,4,22",
+                      "type": "2,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,155,12",
+                  "text": "2,156,4,2313"
                 }
               },
               {
@@ -692,9 +821,9 @@
                     "text": "The Field's value - the value to be serialized.\n",
                     "type": "Mixed",
                     "src": {
-                      "name": "1,1029,23",
-                      "text": "1,1029,29,48",
-                      "type": "1,1029,16"
+                      "name": "1,1035,23",
+                      "text": "1,1035,29,48",
+                      "type": "1,1035,16"
                     }
                   },
                   {
@@ -703,9 +832,9 @@
                     "text": "The record being serialized.\n",
                     "type": "Ext.data.Model",
                     "src": {
-                      "name": "1,1030,32",
-                      "text": "1,1030,39,29",
-                      "type": "1,1030,16"
+                      "name": "1,1036,32",
+                      "text": "1,1036,39,29",
+                      "type": "1,1036,16"
                     }
                   },
                   {
@@ -713,14 +842,54 @@
                     "text": "The string that represents the Field's value.\n",
                     "type": "String",
                     "src": {
-                      "text": "1,1031,25,46",
-                      "type": "1,1031,17"
+                      "text": "1,1037,25,46",
+                      "type": "1,1037,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "1,1033,0",
-                  "text": "1,1025,8,184"
+                  "name": "1,1039,0",
+                  "text": "1,1031,8,184"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n<a href='#!/api/Object'>Object</a>s <a href='#!/api/Ext.data.field.String-method-toLocaleString'>toLocaleString</a> returns the result of calling <a href='#!/api/Ext.data.field.String-method-toString'>toString</a>.\n\nThis function is provided to give objects a generic <a href='#!/api/Ext.data.field.String-method-toLocaleString'>toLocaleString</a> method, even though not all\nmay use it. Currently, only <a href='#!/api/Array'>Array</a>, <a href='#!/api/Number'>Number</a>, and <a href='#!/api/Date'>Date</a> override <a href='#!/api/Ext.data.field.String-method-toLocaleString'>toLocaleString</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "2,235,21,32",
+                      "type": "2,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,226,12",
+                  "text": "2,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from <a href='#!/api/Object'>Object</a>.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom <a href='#!/api/Object'>Object</a>:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "2,297,21,32",
+                      "type": "2,297,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,239,12",
+                  "text": "2,240,4,2445"
                 }
               },
               {
@@ -737,9 +906,9 @@
                     "text": "The value to validate.\n",
                     "type": "Object",
                     "src": {
-                      "name": "1,1038,24",
-                      "text": "1,1038,30,23",
-                      "type": "1,1038,16"
+                      "name": "1,1044,24",
+                      "text": "1,1044,30,23",
+                      "type": "1,1044,16"
                     }
                   },
                   {
@@ -749,9 +918,9 @@
                     "text": "This string is passed if the caller wants all validation\nmessages concatenated with this string between each. This can be handled as a\n\"falsy\" value because concatenating with no separator is seldom desirable.\n",
                     "type": "String",
                     "src": {
-                      "name": "1,1040,25",
-                      "text": "1,1040,36,57:1,1041,8,154",
-                      "type": "1,1040,16"
+                      "name": "1,1046,25",
+                      "text": "1,1046,36,57:1,1047,8,154",
+                      "type": "1,1046,16"
                     }
                   },
                   {
@@ -761,9 +930,9 @@
                     "text": "This parameter is passed if the caller\nwants all validation results individually added to the collection.\n",
                     "type": "Ext.data.ErrorCollection",
                     "src": {
-                      "name": "1,1044,43",
-                      "text": "1,1044,51,39:1,1045,8,68",
-                      "type": "1,1044,16"
+                      "name": "1,1050,43",
+                      "text": "1,1050,51,39:1,1051,8,68",
+                      "type": "1,1050,16"
                     }
                   },
                   {
@@ -771,17 +940,37 @@
                     "text": "`true` if the value is valid. A string may be returned if\nthe value is not valid, to indicate an error message. Any other non `true` value\nindicates the value is not valid. This method is not implemented by default,\nsubclasses may override it to provide an implementation.\n",
                     "type": "Boolean/String",
                     "src": {
-                      "text": "1,1047,33,58:1,1048,8,216",
-                      "type": "1,1047,17"
+                      "text": "1,1053,33,58:1,1054,8,216",
+                      "type": "1,1053,17"
                     }
                   }
                 ],
                 "src": {
-                  "access": "1,1052,8",
-                  "name": "1,1056,0",
-                  "since": "1,1054,15",
-                  "template": "1,1053,8",
-                  "text": "1,1036,8,44"
+                  "access": "1,1058,8",
+                  "name": "1,1062,0",
+                  "since": "1,1060,15",
+                  "template": "1,1059,8",
+                  "text": "1,1042,8,44"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the <a href='#!/api/Ext.data.field.String-method-valueOf'>valueOf</a> method to convert an object to a primitive value. You rarely need to\ninvoke the <a href='#!/api/Ext.data.field.String-method-valueOf'>valueOf</a> method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the <a href='#!/api/Ext.data.field.String-method-valueOf'>valueOf</a> method is inherited by every object descended from <a href='#!/api/Object'>Object</a>. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, <a href='#!/api/Ext.data.field.String-method-valueOf'>valueOf</a> returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use <a href='#!/api/Ext.data.field.String-method-valueOf'>valueOf</a> within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default <a href='#!/api/Object'>Object</a> method.\n\nYou can create a function to be called in place of the default <a href='#!/api/Ext.data.field.String-method-valueOf'>valueOf</a> method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a <a href='#!/api/Ext.data.field.String-method-valueOf'>valueOf</a> method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's <a href='#!/api/Ext.data.field.String-method-valueOf'>valueOf</a> method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the <a href='#!/api/Ext.data.field.String-method-toString'>toString</a> method, which is different from\n<a href='#!/api/String'>String</a> objects converting to string primitives using <a href='#!/api/Ext.data.field.String-method-valueOf'>valueOf</a>. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,340,21,50",
+                      "type": "2,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,301,12",
+                  "text": "2,302,4,1821"
                 }
               }
             ]
@@ -796,10 +985,19 @@
                 "text": "This property is `true` if this field has a <a href='#!/api/Ext.data.field.String-cfg-calculate'>cfg-calculate</a>\nmethod or a <a href='#!/api/Ext.data.field.String-method-convert'>method-convert</a> method that operates on the entire\nrecord as opposed to just the data value. This property is determined from the\n`length` of the <a href='#!/api/Ext.data.field.String-method-convert'>method-convert</a> function which means this is\n*not* calculated:\n\n     convert: function (value) {\n         return ...\n     }\n\nWhile this *is* calculated:\n\n     convert: function (value, record) {\n         return ...\n     }\n\n**NOTE:** It is recommended for such fields to use <a href='#!/api/Ext.data.field.String-cfg-calculate'>cfg-calculate</a>\nor explicitly specify the fields used by <a href='#!/api/Ext.data.field.String-method-convert'>method-convert</a> using\n<a href='#!/api/Ext.data.field.String-cfg-depends'>cfg-depends</a>.\n",
                 "type": "Boolean",
                 "src": {
-                  "name": "1,726,28",
-                  "readonly": "1,747,8",
-                  "text": "1,727,8,696",
-                  "type": "1,726,19"
+                  "name": "1,732,28",
+                  "readonly": "1,753,8",
+                  "text": "1,733,8,696",
+                  "type": "1,732,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their <a href='#!/api/Ext.data.field.String-property-prototype'>prototype</a>:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "2,346,14",
+                  "text": "2,347,3,1996"
                 }
               },
               {
@@ -809,10 +1007,10 @@
                 "text": "The default message to present for an invalid field.\n",
                 "type": "String",
                 "src": {
-                  "name": "1,370,27",
-                  "since": "1,372,15",
-                  "text": "1,371,8,53",
-                  "type": "1,370,19"
+                  "name": "1,376,27",
+                  "since": "1,378,15",
+                  "text": "1,377,8,53",
+                  "type": "1,376,19"
                 }
               },
               {
@@ -821,9 +1019,9 @@
                 "text": "The class (derived from <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>) that defined this field.\n\n     Ext.define('MyApp.models.Foo', {\n         extend: 'Ext.data.Model',\n\n         fields: [\n             { name: 'bar' }\n         ],\n         ...\n     });\n\n     var barField = MyApp.models.Foo.getField('bar');\n\n     alert(barField.definedBy === MyApp.models.Foo); // alerts 'true'\n\nWhen a field is inherited, this value will reference the class that originally\ndefined the field.\n\n     Ext.define('MyApp.models.Base', {\n         extend: 'Ext.data.Model',\n\n         fields: [\n             { name: 'foo' }\n         ],\n         ...\n     });\n\n     Ext.define('MyApp.models.Derived', {\n         extend: 'MyApp.models.Base',\n\n         fields: [\n             { name: 'bar' }\n         ],\n         ...\n     });\n\n     var fooField = MyApp.models.Derived.getField('foo');\n\n     alert(fooField.definedBy === MyApp.models.Base); // alerts 'true'\n",
                 "type": "Ext.Class",
                 "src": {
-                  "name": "1,388,30",
-                  "text": "1,389,8,908",
-                  "type": "1,388,19"
+                  "name": "1,394,30",
+                  "text": "1,395,8,908",
+                  "type": "1,394,19"
                 }
               },
               {
@@ -834,11 +1032,11 @@
                 "text": "This array tracks the fields that have indicated this field in their <a href='#!/api/Ext.data.field.String-cfg-depends'>depends</a>\nlist. If no fields depend on this field, this will be <a href='#!/api/null'>null</a>.\n",
                 "type": "Ext.data.field.Field[]",
                 "src": {
-                  "access": "1,474,8",
-                  "name": "1,470,43",
-                  "readonly": "1,473,8",
-                  "text": "1,471,8,141",
-                  "type": "1,470,19"
+                  "access": "1,480,8",
+                  "name": "1,476,43",
+                  "readonly": "1,479,8",
+                  "text": "1,477,8,141",
+                  "type": "1,476,19"
                 }
               },
               {
@@ -849,11 +1047,11 @@
                 "text": "This flag is set to true for fields that have `convert` methods which take the 2nd\nargument (the record) and do not specify a <a href='#!/api/Ext.data.field.String-cfg-depends'>depends</a> set. Good fields indicate the\nfields on which they depend (if any).\n",
                 "type": "Boolean",
                 "src": {
-                  "access": "1,756,8",
-                  "name": "1,752,28",
-                  "readonly": "1,757,8",
-                  "text": "1,753,8,204",
-                  "type": "1,752,19"
+                  "access": "1,762,8",
+                  "name": "1,758,28",
+                  "readonly": "1,763,8",
+                  "text": "1,759,8,204",
+                  "type": "1,758,19"
                 }
               },
               {
@@ -863,9 +1061,9 @@
                 "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
                 "type": "Object",
                 "src": {
-                  "name": "2,295,28",
-                  "text": "2,296,8,128",
-                  "type": "2,295,19"
+                  "name": "3,295,28",
+                  "text": "3,296,8,128",
+                  "type": "3,295,19"
                 }
               },
               {
@@ -875,10 +1073,10 @@
                 "text": "This property is set to `true` if this is an <a href='#!/api/Ext.data.Model-cfg-idProperty'>Ext.data.Model#idProperty</a>\nfield.\n",
                 "type": "Boolean",
                 "src": {
-                  "name": "1,762,28",
-                  "readonly": "1,765,8",
-                  "text": "1,763,8,89",
-                  "type": "1,762,19"
+                  "name": "1,768,28",
+                  "readonly": "1,771,8",
+                  "text": "1,769,8,89",
+                  "type": "1,768,19"
                 }
               },
               {
@@ -887,9 +1085,18 @@
                 "text": "\nThe position of this field in the <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> in which it was defined.\n",
                 "type": "Number",
                 "src": {
-                  "name": "1,540,27",
-                  "text": "1,541,8,83",
-                  "type": "1,540,19"
+                  "name": "1,546,27",
+                  "text": "1,547,8,83",
+                  "type": "1,546,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "2,46,14",
+                  "text": "2,47,4,65"
                 }
               },
               {
@@ -900,11 +1107,11 @@
                 "text": "This is a 1-based value that describes the dependency order of this field. This is\ninitialized to <a href='#!/api/null'>null</a> (falsey) so we can cheaply topo-sort the fields of a class.\n",
                 "type": "Number",
                 "src": {
-                  "access": "1,711,8",
-                  "name": "1,708,27",
-                  "readonly": "1,712,8",
-                  "text": "1,709,8,165",
-                  "type": "1,708,19"
+                  "access": "1,717,8",
+                  "name": "1,714,27",
+                  "readonly": "1,718,8",
+                  "text": "1,715,8,165",
+                  "type": "1,714,19"
                 }
               },
               {
@@ -915,11 +1122,11 @@
                 "text": "A regular expression for stripping non-numeric characters from a numeric value.\nThis should be overridden for localization.\n",
                 "type": "RegExp",
                 "src": {
-                  "access": "1,721,8",
-                  "name": "1,717,27",
-                  "readonly": "1,720,8",
-                  "text": "1,718,8,124",
-                  "type": "1,717,19"
+                  "access": "1,727,8",
+                  "name": "1,723,27",
+                  "readonly": "1,726,8",
+                  "text": "1,724,8,124",
+                  "type": "1,723,19"
                 }
               }
             ]

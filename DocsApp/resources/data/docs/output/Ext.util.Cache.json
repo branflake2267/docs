@@ -1,0 +1,308 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/util/Cache.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.util.Cache",
+        "since": "5.1.0",
+        "text": "This class is used to manage simple, LRU caches. It provides an absolutely minimal\ncontainer interface. It is created like this:\n\n     this.itemCache = new Ext.util.Cache({\n         miss: function (key) {\n             return new CacheItem(key);\n         }\n     });\n\nThe <a href='#!/api/Ext.util.Cache-method-miss'>miss</a> abstract method must be implemented by either a derived class or\nat the instance level as shown above.\n\nOnce the cache exists and it can handle cache misses, the cache is used like so:\n\n     var item = this.itemCache.get(key);\n\nThe `key` is some value that uniquely identifies the cached item.\n\nIn some cases, creating the cache item may require more than just the lookup key. In\nthat case, any extra arguments passed to <a href='#!/api/Ext.util.Cache-method-get'>get</a> will be passed to <a href='#!/api/Ext.util.Cache-method-miss'>miss</a>.\n\n     this.otherCache = new Ext.util.Cache({\n         miss: function (key, extra) {\n             return new CacheItem(key, extra);\n         }\n     });\n\n     var item = this.otherCache.get(key, extra);\n\nTo process items as they are removed, you can provide an <a href='#!/api/Ext.util.Cache-method-evict'>evict</a> method. The\nstock method is `Ext.emptyFn` and so does nothing.\n\nFor example:\n\n     this.itemCache = new Ext.util.Cache({\n         miss: function (key) {\n             return new CacheItem(key);\n         },\n\n         evict: function (key, cacheItem) {\n             cacheItem.destroy();\n         }\n     });\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "maxSize",
+                "text": "The maximum size the cache is allowed to grow to before\nfurther additions cause removal of the least recently used entry.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,79,26",
+                  "text": "0,79,34,56:0,80,12,66",
+                  "type": "0,79,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "abstract": true,
+                "access": "protected",
+                "name": "miss",
+                "text": "This method is called by <a href='#!/api/Ext.util.Cache-method-get'>get</a> when the key is not found in the cache.\nThe implementation of this method should create the (expensive) value and return\nit. Whatever arguments were passed to <a href='#!/api/Ext.util.Cache-method-get'>get</a> will be passed on to this\nmethod.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The cache lookup key for the item.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,97,28",
+                      "text": "0,97,32,35",
+                      "type": "0,97,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Any other arguments originally passed to <a href='#!/api/Ext.util.Cache-method-get'>get</a>.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,98,31",
+                      "text": "0,98,36,57",
+                      "type": "0,98,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "abstract": "0,100,12",
+                  "access": "0,101,12",
+                  "name": "0,99,20",
+                  "text": "0,92,12,249"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clear",
+                "text": "Removes all items from this cache.\n",
+                "src": {
+                  "name": "0,107,0",
+                  "text": "0,105,12,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "each",
+                "text": "Calls the given function `fn` for each item in the cache. The items will be passed\nto `fn` from most-to-least recently used.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call for each cache item.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "key",
+                        "text": "The cache key for the item.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,127,31",
+                          "text": "0,127,35,28",
+                          "type": "0,127,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "The value in the cache for the item.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,128,31",
+                          "text": "0,128,37,37",
+                          "type": "0,128,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,126,30",
+                      "text": "0,126,33,42",
+                      "type": "0,126,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The `this` pointer to use for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,129,29",
+                      "text": "0,129,36,36",
+                      "type": "0,129,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,131,0",
+                  "text": "0,124,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "get",
+                "text": "Finds an item in this cache and returns its value. If the item is present, it is\nshuffled into the MRU (most-recently-used) position as necessary. If the item is\nmissing, the <a href='#!/api/Ext.util.Cache-method-miss'>miss</a> method is called to create the item.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The cache key of the item.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,146,28",
+                      "text": "0,146,32,27",
+                      "type": "0,146,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments for the <a href='#!/api/Ext.util.Cache-method-miss'>miss</a> method should it be needed.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,147,31",
+                      "text": "0,147,36,53",
+                      "type": "0,147,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The cached object.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,148,29,19",
+                      "type": "0,148,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,150,0",
+                  "text": "0,142,12,229"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "evict",
+                "template": true,
+                "text": "This method is called internally from <a href='#!/api/Ext.util.Cache-method-get'>get</a> when the cache is full and\nthe least-recently-used (LRU) item has been removed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The cache lookup key for the item being removed.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,191,28",
+                      "text": "0,191,32,49",
+                      "type": "0,191,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The cache value (returned by <a href='#!/api/Ext.util.Cache-method-miss'>miss</a>) for the item\nbeing removed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,192,28",
+                      "text": "0,192,34,59:0,193,12,15",
+                      "type": "0,192,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,196,12",
+                  "name": "0,194,20",
+                  "template": "0,195,12",
+                  "text": "0,188,12,134"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "linkEntry",
+                "text": "Inserts the given entry at the front (MRU) end of the entry list.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entry",
+                    "text": "The cache item entry.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,202,28",
+                      "text": "0,202,34,22",
+                      "type": "0,202,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,203,12",
+                  "name": "0,205,0",
+                  "text": "0,201,12,66"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unlinkEntry",
+                "text": "Removes the given entry from the entry list.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entry",
+                    "text": "The cache item entry.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,217,28",
+                      "text": "0,217,34,22",
+                      "type": "0,217,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "evicted",
+                    "text": "Pass `true` if <a href='#!/api/Ext.util.Cache-method-evict'>evict</a> should be called.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,218,29",
+                      "text": "0,218,37,50",
+                      "type": "0,218,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,219,12",
+                  "name": "0,221,0",
+                  "text": "0,216,12,45"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "count",
+                "readonly": true,
+                "text": "The number of items in this cache.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,85,31",
+                  "readonly": "0,87,12",
+                  "text": "0,86,12,35",
+                  "type": "0,85,23"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,47,4",
+          "name": "0,46,11",
+          "since": "0,48,11",
+          "text": "0,2,4,1320"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

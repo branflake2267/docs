@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#View Models and Data Binding</p>
+<div class="contents"><h1 id="application_architecture-_-view_models_data_binding_-_view_models_and_data_binding">View Models and Data Binding</h1>
 <p>Data binding and the ViewModel that powers it are powerful additions to Ext JS.<br>Together they enable you to do more with less code and write in a much more declarative
 style while helping you maintain a clean separation of concerns.</p>
 <p>A ViewModel is a class that manages a data object. It then allows those interested in 
@@ -20,13 +20,13 @@ config will have its setter method called whenever the bound value changes - no 
 event handlers needed.</p>
 <p>In this guide, we will walk through some examples that show the power of ViewModels and
 Data Binding.</p>
-<p>##Component Binding</p>
+<h2 id="application_architecture-_-view_models_data_binding_-_component_binding">Component Binding</h2>
 <p>Probably the best way to understand binding and ViewModels is to look at the various 
 ways you can use bindings on components. This is because components are the primary 
 consumers of data binding and components are something familiar to Ext JS developers. 
 In order for binding to work, however, we do need a ViewModel so we will reference one 
 for now and define it later.</p>
-<p>###Binding and Configs</p>
+<h3 id="application_architecture-_-view_models_data_binding_-_binding_and_configs">Binding and Configs</h3>
 <p>Binding for components is the process of connecting data from a 
 [[ext:Ext.app.ViewModel]] to a component&#39;s config properties. Any configuration a 
 component possesses may be bound to, so long as it has a setter method. For instance, 
@@ -54,7 +54,7 @@ text around tokens inside braces. You can use formatters as well, as with
 string.</p>
 <p>We will see later how the data for <code>name</code> and <code>someWidth</code> are defined. The above example
 simply shows how the data is consumed by a component.</p>
-<p>###Binding Boolean Configs</p>
+<h3 id="application_architecture-_-view_models_data_binding_-_binding_boolean_configs">Binding Boolean Configs</h3>
 <p>Many configs you will want to bind are boolean values, such as visible (or <code>hidden</code>),
 <code>disabled</code>, <code>checked</code>, and <code>pressed</code>. Bind templates support boolean negation &quot;inline&quot; 
 in the template. Other forms of algebra are relegated to formulas (see below), but 
@@ -76,7 +76,7 @@ boolean inversion is common enough there is special provision for it. For exampl
 </code></pre><p>This also highlights how values in single token templates are not converted to strings. 
 In the above, while &quot;name&quot; is a string value, it is negated using &quot;!&quot; and becomes a 
 boolean value and that is passed to the <code>setHidden</code> method on the button.</p>
-<p>###Binding and Priority</p>
+<h3 id="application_architecture-_-view_models_data_binding_-_binding_and_priority">Binding and Priority</h3>
 <p>Bound config properties will always overwrite configurations set statically on the
 component as soon as the bound result is available. In other words, bound data will 
 always take priority over static configuration values but may be delayed in order to 
@@ -93,7 +93,7 @@ fetch that data.</p>
     }
 });
 </code></pre><p>Once the binding for &quot;name&quot; is delivered, the &quot;Simple Form&quot; title will be replaced.</p>
-<p>###Binding and Child Components</p>
+<h3 id="application_architecture-_-view_models_data_binding_-_binding_and_child_components">Binding and Child Components</h3>
 <p>One of the most helpful parts of binding is that all of the children of the component 
 with a viewModel also have access to their container&#39;s data.</p>
 <p>In this example, you can see the children items of a form may be bound to their
@@ -116,7 +116,7 @@ container&#39;s viewModel.</p>
         bind: &#39;{lastName}&#39;
     }]
 });
-</code></pre><p>###Two Way Binding</p>
+</code></pre><h3 id="application_architecture-_-view_models_data_binding_-_two_way_binding">Two Way Binding</h3>
 <p>The bind config also allows for two-way data binding, which translates to live
 synchronization of data between the view and the model.  Any data change made in the 
 view is automatically written back to the model.  This automatically updates any other
@@ -185,7 +185,7 @@ Ext.onReady(function () {
 });
 </code></pre><p>When the above panel is displayed we can see that changes in the text fields are 
 reflected in the panel <code>title</code> as well as the <code>hidden</code> state of the &quot;Submit&quot; button.</p>
-<p>###Binding and Component State</p>
+<h3 id="application_architecture-_-view_models_data_binding_-_binding_and_component_state">Binding and Component State</h3>
 <p>Sometimes a component&#39;s state, e.g. the <code>checked</code> state of a checkbox or the selected
 record of a grid, is interesting to other components. When a component is assigned a
 <code>reference</code> to identify it, that component will publish some of its key properties in 
@@ -212,8 +212,8 @@ checkbox is checked. This sort of behavior is well suited for dynamic forms like
         }
     }]
 });
-</code></pre><p>###Bind Descriptors
-So far we&#39;ve seen three basic forms of bind descriptors:</p>
+</code></pre><h3 id="application_architecture-_-view_models_data_binding_-_bind_descriptors">Bind Descriptors</h3>
+<p>So far we&#39;ve seen three basic forms of bind descriptors:</p>
 <ul>
 <li><p><code>{firstName}</code> - A &quot;direct bind&quot; to some value in the ViewModel. This value is passed
 through unmodified and so may arrive as any type of data.</p>
@@ -228,7 +228,7 @@ boolean config properties.</p>
 </ul>
 <p>Beyond these basic forms, there are a few specialized forms of bind descriptors that you
 can use.</p>
-<p>####Multi-Bind</p>
+<h4 id="application_architecture-_-view_models_data_binding_-_multi_bind">Multi-Bind</h4>
 <p>If an object or array is given as a bind descriptor, the ViewModel will produce an 
 object or array of the same shape but with the various properties replaced by their bind 
 result.  For example:</p>
@@ -242,8 +242,8 @@ result.  For example:</p>
 });
 </code></pre><p>This sets the &quot;data&quot; config for the component to be an object with two properties whose
 values are set from the ViewModel.</p>
-<p>####Record Bind
-When a particular record is desired, say &quot;User&quot; with <code>id</code> of 42, the bind descriptor is 
+<h4 id="application_architecture-_-view_models_data_binding_-_record_bind">Record Bind</h4>
+<p>When a particular record is desired, say &quot;User&quot; with <code>id</code> of 42, the bind descriptor is 
 an object but with a &quot;reference&quot; property. For example:</p>
 <pre><code>Ext.create(&#39;Ext.Component&#39;, {
     bind: {
@@ -255,8 +255,8 @@ an object but with a &quot;reference&quot; property. For example:</p>
 });
 </code></pre><p>In this case, the component&#39;s <code>tpl</code> will receive the User record once it is loaded. This
 currently requires the use of an <code>Ext.data.Session</code>.</p>
-<p>####Association Bind
-Similar to a record bind, one can also bind to an association, say the User&#39;s Address
+<h4 id="application_architecture-_-view_models_data_binding_-_association_bind">Association Bind</h4>
+<p>Similar to a record bind, one can also bind to an association, say the User&#39;s Address
 record:</p>
 <pre><code>Ext.create(&#39;Ext.Component&#39;, {
     bind: {
@@ -269,8 +269,8 @@ record:</p>
 });
 </code></pre><p>In this case, the component&#39;s <code>tpl</code> will receive the User&#39;s &quot;address&quot; record once it is
 loaded. This also currently requires the use of an <code>Ext.data.Session</code>.</p>
-<p>####Bind Options
-The final form of bind descriptor is used when you need to describe binding options. The
+<h4 id="application_architecture-_-view_models_data_binding_-_bind_options">Bind Options</h4>
+<p>The final form of bind descriptor is used when you need to describe binding options. The
 following example shows how to receive only one value for a binding and then disconnect
 automatically.</p>
 <pre><code>Ext.create(&#39;Ext.Component&#39;, {
@@ -296,8 +296,8 @@ config of a component since these often receive objects.</p>
         }
     }
 });
-</code></pre><p>##Creating ViewModels
-Now that we&#39;ve gotten a taste for how components use ViewModels and gotten a glimpse of
+</code></pre><h2 id="application_architecture-_-view_models_data_binding_-_creating_viewmodels">Creating ViewModels</h2>
+<p>Now that we&#39;ve gotten a taste for how components use ViewModels and gotten a glimpse of
 what ViewModels look like, it is time to learn more about ViewModels and what they offer.</p>
 <p>As stated previously, a ViewModel is a manager for an underlying <code>data</code> object. It is 
 the content of that object that is being consumed by bind statements. The inheritance of 
@@ -306,7 +306,7 @@ chain.  This is covered in more detail in the
 <a href="./view_model_internals.html">View Model Internals</a> guide, but in a nutshell a child 
 ViewModel&#39;s <code>data</code> object has the <code>data</code> object of its parent ViewModel as its 
 prototype.</p>
-<p>###Formulas</p>
+<h3 id="application_architecture-_-view_models_data_binding_-_formulas">Formulas</h3>
 <p>In addition to holding data and providing binding, ViewModels also offer a convenient 
 way to calculate data from other data called <code>formulas</code>.  Formulas allow you to 
 encapsulate data dependencies in the ViewModel and keep your views free to focus on 
@@ -337,7 +337,7 @@ data property. For example:</p>
 </code></pre><p>The &quot;x2&quot; formulas uses an &quot;x&quot; property to define &quot;x2&quot; as &quot;x * 2&quot;. The &quot;x2y&quot; formulas 
 uses both &quot;x2&quot; and &quot;y&quot;. This definition means that if &quot;x&quot; changes, &quot;x2&quot; is recalculated 
 and then &quot;x2y&quot;. But if &quot;y&quot; changes, only &quot;x2y&quot; needs to be recalculated.</p>
-<p>####Formulas With Explicit Binding</p>
+<h4 id="application_architecture-_-view_models_data_binding_-_formulas_with_explicit_binding">Formulas With Explicit Binding</h4>
 <p>In the above examples, the dependencies for the formula were found via inspecting the 
 function, however this isn&#39;t always the best solution. An explicit bind statement can be 
 used, which will return a simple object when all the values in the bind have presented.</p>
@@ -359,7 +359,7 @@ used, which will return a simple object when all the values in the bind have pre
         }
     }
 });
-</code></pre><p>####Two-Way Formulas</p>
+</code></pre><h4 id="application_architecture-_-view_models_data_binding_-_two_way_formulas">Two-Way Formulas</h4>
 <p>When a formula is invertible we can also define a <code>set</code> method to be called when the 
 value is set (say via two-way binding). Since the &quot;this&quot; pointer is the ViewModel, the 
 <code>set</code> method can call <code>this.set()</code> to set the appropriate properties in the ViewModel.</p>
@@ -389,7 +389,7 @@ two-way formula.</p>
         }
     }
 });
-</code></pre><p>###Recommendations</p>
+</code></pre><h3 id="application_architecture-_-view_models_data_binding_-_recommendations">Recommendations</h3>
 <p>With all the power of ViewModels, formulas, and data binding, it can be easy to overuse 
 or abuse these mechanisms and create an application that is hard to understand or debug, 
 or is slow to update or leaks memory. To help avoid these issues and still get the most 
@@ -446,10 +446,29 @@ method. The result is stable if the get method will produce the exact same value
 stable point or it will continue indefinitely. Neither result is likely desirable.</p>
 </li>
 </ul>
-<p>#Further Reading
-For more information about the viewModels, please take a few minutes to check out our
+<h1 id="application_architecture-_-view_models_data_binding_-_further_reading">Further Reading</h1>
+<p>For more information about the viewModels, please take a few minutes to check out our
 <a href="./view_model_internals.html">ViewModel Internals guide</a>.</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_component_binding">Component Binding</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_binding_and_configs">Binding and Configs</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_binding_boolean_configs">Binding Boolean Configs</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_binding_and_priority">Binding and Priority</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_binding_and_child_components">Binding and Child Components</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_two_way_binding">Two Way Binding</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_binding_and_component_state">Binding and Component State</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_bind_descriptors">Bind Descriptors</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_multi_bind">Multi-Bind</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_record_bind">Record Bind</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_association_bind">Association Bind</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_bind_options">Bind Options</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_creating_viewmodels">Creating ViewModels</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_formulas">Formulas</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_formulas_with_explicit_binding">Formulas With Explicit Binding</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_two_way_formulas">Two-Way Formulas</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_models_data_binding_-_recommendations">Recommendations</a></div>
+    </div>
 </body>
 </html>

@@ -1,0 +1,470 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/container/DockingContainer.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.container.DockingContainer",
+        "requires": "Ext.util.MixedCollection,Ext.Element",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "defaultDockWeights",
+                "text": "This object holds the default weights applied to dockedItems that have no weight. These start with a\nweight of 1, to allow negative weights to insert before top items and are odd numbers\nso that even weights can be used to get between different dock orders.\n\nTo make default docking order match border layout, do this:\n\n     Ext.panel.Panel.prototype.defaultDockWeights = { top: 1, bottom: 3, left: 5, right: 7 };\n\nChanging these defaults as above or individually on this object will effect all Panels.\nTo change the defaults on a single panel, you should replace the entire object:\n\n     initComponent: function () {\n         // NOTE: Don't change members of defaultDockWeights since the object is shared.\n         this.defaultDockWeights = { top: 1, bottom: 3, left: 5, right: 7 };\n\n         this.callParent();\n     }\n\nTo change only one of the default values, you do this:\n\n     initComponent: function () {\n         // NOTE: Don't change members of defaultDockWeights since the object is shared.\n         this.defaultDockWeights = Ext.applyIf({ top: 10 }, this.defaultDockWeights);\n\n         this.callParent();\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,30,22",
+                  "text": "0,31,8,1122",
+                  "type": "0,30,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "tabGuard",
+                "since": "6.0.0",
+                "text": "When set to `true`, two elements are added to the panel's element. These are the\n<a href='#!/api/Ext.container.DockingContainer-property-tabGuardBeforeEl'>tabGuardBeforeEl</a> and <a href='#!/api/Ext.container.DockingContainer-property-tabGuardAfterEl'>tabGuardAfterEl</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,88,8",
+                  "name": "0,87,23",
+                  "since": "0,89,15",
+                  "text": "0,85,8,141",
+                  "type": "0,87,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "dockedadd",
+                "text": "Fires when any <a href='#!/api/Ext.Component'>Ext.Component</a> is added or inserted as a docked item.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.panel.Panel",
+                    "src": {
+                      "name": "0,17,33",
+                      "type": "0,17,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "component",
+                    "text": "The component being added\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,18,31",
+                      "text": "0,18,41,26",
+                      "type": "0,18,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The index at which the component will be added docked items collection\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,19,24",
+                      "text": "0,19,30,71",
+                      "type": "0,19,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,15,15",
+                  "text": "0,16,8,76"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "dockedremove",
+                "text": "Fires when any <a href='#!/api/Ext.Component'>Ext.Component</a> is removed from the docked items.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.panel.Panel",
+                    "src": {
+                      "name": "0,25,33",
+                      "type": "0,25,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "component",
+                    "text": "The component being removed\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,26,31",
+                      "text": "0,26,41,28",
+                      "type": "0,26,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,23,15",
+                  "text": "0,24,8,71"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "addDocked",
+                "text": "Adds docked item(s) to the container.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "text": "The Component or array of components to add. The components\nmust include a 'dock' parameter on each component to indicate where it should be docked\n('top', 'right', 'bottom', 'left').\n",
+                    "type": "Object/Object[]",
+                    "src": {
+                      "name": "0,125,33",
+                      "text": "0,125,39,60:0,126,8,124",
+                      "type": "0,125,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "pos",
+                    "optional": true,
+                    "text": "The index at which the Component will be added\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,128,25",
+                      "text": "0,128,30,47",
+                      "type": "0,128,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The added components.\n",
+                    "type": "Ext.Component[]",
+                    "src": {
+                      "text": "0,129,34,22",
+                      "type": "0,129,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,131,0",
+                  "text": "0,123,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDockedComponent",
+                "text": "Finds a docked component by id, itemId or position. Also see <a href='#!/api/Ext.container.DockingContainer-method-getDockedItems'>getDockedItems</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "text": "The id, itemId or position of the docked component (see <a href='#!/api/Ext.container.Container-method-getComponent'>Ext.container.Container#getComponent</a> for details)\n",
+                    "type": "String/Number",
+                    "src": {
+                      "name": "0,234,31",
+                      "text": "0,234,36,127",
+                      "type": "0,234,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The docked component (if found)\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "0,235,32,32",
+                      "type": "0,235,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,237,0",
+                  "text": "0,233,8,85"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDockedItems",
+                "text": "Retrieves an array of all currently docked Components.\n\nFor example to find a toolbar that has been docked at top:\n\n    panel.getDockedItems('toolbar[dock=\"top\"]');\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "A <a href='#!/api/Ext.ComponentQuery'>Ext.ComponentQuery</a> selector string to filter the returned items.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,251,24",
+                      "text": "0,251,33,90",
+                      "type": "0,251,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "beforeBody",
+                    "text": "An optional flag to limit the set of items to only those\n before the body (true) or after the body (false). All components are returned by\n default.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,252,25",
+                      "text": "0,252,36,57:0,253,8,92",
+                      "type": "0,252,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The array of docked components meeting the specified criteria.\n",
+                    "type": "Ext.Component[]",
+                    "src": {
+                      "text": "0,255,34,63",
+                      "type": "0,255,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,257,0",
+                  "text": "0,245,8,166"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertDocked",
+                "text": "Inserts docked item(s) to the panel at the indicated position.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "pos",
+                    "text": "The index at which the Component will be inserted\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,298,24",
+                      "text": "0,298,28,50",
+                      "type": "0,298,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "text": "The Component or array of components to add. The components\nmust include a 'dock' paramater on each component to indicate where it should be docked ('top', 'right',\n'bottom', 'left').\n",
+                    "type": "Object/Object[]",
+                    "src": {
+                      "name": "0,299,33",
+                      "text": "0,299,39,60:0,300,8,124",
+                      "type": "0,299,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,303,0",
+                  "text": "0,297,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onDockedAdd",
+                "template": true,
+                "text": "Invoked after a docked item is added to the Panel.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "component",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,311,31",
+                      "type": "0,311,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,313,8",
+                  "name": "0,315,0",
+                  "template": "0,312,8",
+                  "text": "0,310,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onDockedRemove",
+                "template": true,
+                "text": "Invoked after a docked item is removed from the Panel.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "component",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,319,31",
+                      "type": "0,319,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,321,8",
+                  "name": "0,323,0",
+                  "template": "0,320,8",
+                  "text": "0,318,8,55"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeDocked",
+                "text": "Removes the docked item from the panel.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The Component to remove.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,327,31",
+                      "text": "0,327,36,25",
+                      "type": "0,327,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "autoDestroy",
+                    "text": "(optional) Destroy the component after removal.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,328,25",
+                      "text": "0,328,37,48",
+                      "type": "0,328,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,330,0",
+                  "text": "0,326,8,40"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "moveDocked",
+                "text": "Moves a docked item to a different side.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,375,31",
+                      "type": "0,375,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "side",
+                    "type": "'top'/'right'/'bottom'/'left'",
+                    "src": {
+                      "name": "0,376,47",
+                      "type": "0,376,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,377,8",
+                  "name": "0,379,0",
+                  "text": "0,374,8,41"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "dockOrder",
+                "text": "Values to decide which side of the body element docked items must go\nThis overides any weight. A left/top will *always* sort before a right/bottom\nregardless of any weight value. Weights sort at either side of the \"body\" dividing point.\n",
+                "src": {
+                  "access": "0,66,8",
+                  "name": "0,71,0",
+                  "text": "0,67,8,237"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "horizontalDocks",
+                "text": "Number of dock 'left' and 'right' items.\n",
+                "src": {
+                  "access": "0,79,8",
+                  "name": "0,82,0",
+                  "text": "0,80,8,41"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "tabGuardAfterEl",
+                "since": "6.0.0",
+                "text": "This element reference is generated when <a href='#!/api/Ext.container.DockingContainer-cfg-tabGuard'>tabGuard</a> is `true`. This element\nis generated after all `dockedItems` in the DOM.\n",
+                "type": "Ext.dom.Element",
+                "src": {
+                  "access": "0,97,8",
+                  "name": "0,96,36",
+                  "since": "0,98,15",
+                  "text": "0,94,8,134",
+                  "type": "0,96,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "tabGuardBeforeEl",
+                "since": "6.0.0",
+                "text": "This element reference is generated when <a href='#!/api/Ext.container.DockingContainer-cfg-tabGuard'>tabGuard</a> is `true`. This element\nis generated before all `dockedItems` in the DOM.\n",
+                "type": "Ext.dom.Element",
+                "src": {
+                  "access": "0,105,8",
+                  "name": "0,104,36",
+                  "since": "0,106,15",
+                  "text": "0,102,8,135",
+                  "type": "0,104,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "tabGuardTpl",
+                "since": "6.0.0",
+                "text": "This template is used to generate the <a href='#!/api/Ext.container.DockingContainer-cfg-tabGuard'>tabGuard</a> elements. It is used once per\nelement (see <a href='#!/api/Ext.container.DockingContainer-property-tabGuardBeforeEl'>tabGuardBeforeEl</a> and <a href='#!/api/Ext.container.DockingContainer-property-tabGuardAfterEl'>tabGuardAfterEl</a>).\n",
+                "type": "String/String[]/Ext.XTemplate",
+                "src": {
+                  "access": "0,113,8",
+                  "name": "0,110,50",
+                  "since": "0,114,15",
+                  "text": "0,111,8,153",
+                  "type": "0,110,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,4,0",
+          "requires": "0,8,0,0:0,8,0,0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

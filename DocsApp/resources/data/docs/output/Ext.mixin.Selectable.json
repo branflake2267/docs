@@ -1,0 +1,791 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/mixin/Selectable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "extends": "Ext.Mixin",
+        "name": "Ext.mixin.Selectable",
+        "text": "Tracks what records are currently selected in a databound widget. This class is mixed in to\n<a href='#!/api/Ext.view.View'>Ext.view.View</a> and all subclasses.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "allowDeselect",
+                "text": "Allow users to deselect a record in a DataView, List or Grid. Only applicable when the Selectable's <a href='#!/api/Ext.mixin.Selectable-cfg-mode'>mode</a> is\n`'SINGLE'`.\n",
+                "type": "Boolean",
+                "src": {
+                  "accessor": "0,51,12",
+                  "name": "0,48,27",
+                  "text": "0,49,12,122",
+                  "type": "0,48,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "deselectOnContainerClick",
+                "text": "`true` to deselect current selection when the container body is\nclicked.\n",
+                "type": "Boolean",
+                "src": {
+                  "accessor": "0,72,12",
+                  "name": "0,70,27",
+                  "text": "0,70,52,64:0,71,12,9",
+                  "type": "0,70,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "disableSelection",
+                "text": "`true` to disable selection.\nThis configuration will lock the selection model that the DataView uses.\n",
+                "type": "Boolean",
+                "src": {
+                  "accessor": "0,35,12",
+                  "name": "0,33,27",
+                  "text": "0,33,44,29:0,34,12,73",
+                  "type": "0,33,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "accessor": true,
+                "name": "lastFocused",
+                "type": "Ext.data.Model",
+                "src": {
+                  "access": "0,64,12",
+                  "accessor": "0,65,12",
+                  "name": "0,63,34",
+                  "type": "0,63,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "accessor": true,
+                "name": "lastSelected",
+                "type": "Ext.data.Model",
+                "src": {
+                  "access": "0,57,12",
+                  "accessor": "0,58,12",
+                  "name": "0,56,34",
+                  "type": "0,56,18"
+                }
+              },
+              {
+                "$type": "property",
+                "deprecatedMessage": "Please use <a href='#!/api/Ext.mixin.Selectable-disableSelection'>disableSelection</a> instead.\n",
+                "deprecatedVersion": "2.0.0",
+                "inheritdoc": "Ext.mixin.Selectable#disableSelection",
+                "name": "locked",
+                "type": "Boolean",
+                "src": {
+                  "deprecatedMessage": "0,567,8",
+                  "deprecatedVersion": "0,567,8",
+                  "inheritdoc": "0,566,8",
+                  "name": "0,565,23",
+                  "type": "0,565,14"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "mode",
+                "text": "Modes of selection.\nValid values are `'SINGLE'`, `'SIMPLE'`, and `'MULTI'`.\n",
+                "type": "String",
+                "src": {
+                  "accessor": "0,43,12",
+                  "name": "0,40,26",
+                  "text": "0,41,12,76",
+                  "type": "0,40,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "selection",
+                "text": "The selected record.\n",
+                "type": "Ext.data.Model",
+                "src": {
+                  "name": "0,77,34",
+                  "text": "0,78,12,21",
+                  "type": "0,77,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "deprecatedMessage": "Please listen to the <a href='#!/api/Ext.mixin.Selectable-selectionchange'>selectionchange</a> event with an order of `before` instead.\n",
+                "deprecatedVersion": "2.0.0",
+                "name": "beforeselectionchange",
+                "preventable": true,
+                "text": "Fires before an item is selected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.mixin.Selectable",
+                    "src": {
+                      "name": "0,19,38",
+                      "type": "0,19,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,21,8",
+                  "deprecatedVersion": "0,21,8",
+                  "name": "0,17,15",
+                  "preventable": "0,20,8",
+                  "text": "0,18,8,34"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "selectionchange",
+                "text": "Fires when a selection changes.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.mixin.Selectable",
+                    "src": {
+                      "name": "0,27,38",
+                      "type": "0,27,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "text": "The records whose selection has changed.\n",
+                    "type": "Ext.data.Model[]",
+                    "src": {
+                      "name": "0,28,34",
+                      "text": "0,28,42,41",
+                      "type": "0,28,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,25,15",
+                  "text": "0,26,8,32"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyMode",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "mode",
+                    "src": {
+                      "name": "0,121,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,119,8",
+                  "name": "0,121,0"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Please use <a href='#!/api/Ext.mixin.Selectable-deselectAll'>deselectAll</a> instead.\n",
+                "deprecatedVersion": "2.0.0",
+                "name": "clearSelections",
+                "text": "Deselects any currently selected records and clears all stored selections.\n",
+                "src": {
+                  "deprecatedMessage": "0,553,8",
+                  "deprecatedVersion": "0,553,8",
+                  "name": "0,552,16",
+                  "text": "0,550,8,75"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "deselect",
+                "text": "Deselects the given record(s). If many records are currently selected, it will only deselect those you pass in.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "text": "The record(s) to deselect. Can also be a number to reference by index.\n",
+                    "type": "Number/Array/Ext.data.Model",
+                    "src": {
+                      "name": "0,347,45",
+                      "text": "0,347,53,71",
+                      "type": "0,347,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "text": "If `true` the <a href='#!/api/Ext.mixin.Selectable-method-deselect'>deselect</a> event will not be fired.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,348,25",
+                      "text": "0,348,39,50",
+                      "type": "0,348,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,350,0",
+                  "text": "0,346,8,112"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "deselectAll",
+                "text": "Deselects all records.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "supress",
+                    "src": {
+                      "name": "0,163,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,163,0",
+                  "text": "0,161,8,23"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Please use <a href='#!/api/Ext.mixin.Selectable-deselect'>deselect</a> instead.\n",
+                "deprecatedVersion": "2.0.0",
+                "name": "doDeselect",
+                "text": "Deselects a record instance by record instance or index.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "text": "An array of records or an index.\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "0,513,39",
+                      "text": "0,513,47,33",
+                      "type": "0,513,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "text": "Set to `false` to not fire a deselect event.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,514,25",
+                      "text": "0,514,39,45",
+                      "type": "0,514,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,515,8",
+                  "deprecatedVersion": "0,515,8",
+                  "name": "0,512,16",
+                  "text": "0,510,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doMultiSelect",
+                "text": "Selects a set of multiple records.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "src": {
+                      "name": "0,309,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "keepExisting",
+                    "src": {
+                      "name": "0,309,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "src": {
+                      "name": "0,309,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,307,8",
+                  "name": "0,309,0",
+                  "text": "0,306,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Please use <a href='#!/api/Ext.mixin.Selectable-select'>select</a> instead.\n",
+                "deprecatedVersion": "2.0.0",
+                "name": "doSelect",
+                "text": "Selects a record instance by record instance or index.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "text": "An array of records or an index.\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "0,503,39",
+                      "text": "0,503,47,33",
+                      "type": "0,503,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "keepExisting",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,504,25",
+                      "type": "0,504,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "text": "Set to `false` to not fire a select event.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,505,25",
+                      "text": "0,505,39,43",
+                      "type": "0,505,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,506,8",
+                  "deprecatedVersion": "0,506,8",
+                  "name": "0,502,16",
+                  "text": "0,500,8,55"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doSingleSelect",
+                "text": "Selects a single record.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "src": {
+                      "name": "0,277,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "src": {
+                      "name": "0,277,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,275,8",
+                  "name": "0,277,0",
+                  "text": "0,274,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Please use <a href='#!/api/Ext.mixin.Selectable-getSelectionCount'>getSelectionCount</a> instead.\n",
+                "deprecatedVersion": "2.0.0",
+                "name": "getCount",
+                "text": "Returns the number of selections.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,560,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,561,8",
+                  "deprecatedVersion": "0,561,8",
+                  "name": "0,559,16",
+                  "text": "0,557,8,34"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedVersion": "2.0.0",
+                "name": "getLastSelected",
+                "text": "Returns the array of previously selected items.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The previous selection.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,530,24,24",
+                      "type": "0,530,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedVersion": "0,531,8",
+                  "name": "0,529,16",
+                  "text": "0,527,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSelectionCount",
+                "text": "Returns the number of selections.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,486,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,488,0",
+                  "text": "0,485,8,34"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Please use <a href='#!/api/Ext.mixin.Selectable-getMode'>getMode</a> instead.\n",
+                "deprecatedVersion": "2.0.0",
+                "name": "getSelectionMode",
+                "text": "Returns the selection mode currently used by this Selectable.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The current mode.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,522,25,18",
+                      "type": "0,522,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,523,8",
+                  "deprecatedVersion": "0,523,8",
+                  "name": "0,521,16",
+                  "text": "0,519,8,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSelections",
+                "text": "Returns the currently selected records.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The selected records.\n",
+                    "type": "Ext.data.Model[]",
+                    "src": {
+                      "text": "0,410,35,22",
+                      "type": "0,410,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,412,0",
+                  "text": "0,409,8,40"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasSelection",
+                "text": "Returns `true` if there is a selected record.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,428,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,430,0",
+                  "text": "0,427,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Please use <a href='#!/api/Ext.mixin.Selectable-getDisableSelection'>getDisableSelection</a> instead.\n",
+                "deprecatedVersion": "2.0.0",
+                "name": "isLocked",
+                "text": "Returns `true` if the Selectable is currently locked.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if currently locked\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,538,26,25",
+                      "type": "0,538,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,539,8",
+                  "deprecatedVersion": "0,539,8",
+                  "name": "0,537,16",
+                  "text": "0,535,8,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSelected",
+                "text": "Returns `true` if the specified row is selected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record or index of the record to check.\n",
+                    "type": "Ext.data.Model/Number",
+                    "src": {
+                      "name": "0,418,39",
+                      "text": "0,418,46,44",
+                      "type": "0,418,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,419,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,421,0",
+                  "text": "0,417,8,49"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "refreshSelection",
+                "src": {
+                  "access": "0,435,8",
+                  "name": "0,437,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "select",
+                "text": "Adds the given records to the currently selected set.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "text": "The records to select.\n",
+                    "type": "Ext.data.Model/Array/Number",
+                    "src": {
+                      "name": "0,245,45",
+                      "text": "0,245,53,23",
+                      "type": "0,245,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "keepExisting",
+                    "text": "If `true`, the existing selection will be added to (if not, the old selection is replaced).\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,246,25",
+                      "text": "0,246,38,92",
+                      "type": "0,246,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "suppressEvent",
+                    "text": "If `true`, the <a href='#!/api/Ext.mixin.Selectable-method-select'>select</a> event will not be fired.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,247,25",
+                      "text": "0,247,39,49",
+                      "type": "0,247,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,249,0",
+                  "text": "0,244,8,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "selectAll",
+                "text": "Selects all records.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "silent",
+                    "text": "`true` to suppress all select events.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,151,25",
+                      "text": "0,151,32,38",
+                      "type": "0,151,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,153,0",
+                  "text": "0,150,8,21"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "selectRange",
+                "text": "Selects a range of rows if the selection model <a href='#!/api/Ext.mixin.Selectable-getDisableSelection'>Ext.mixin.Selectable#getDisableSelection</a> is not locked.\nAll rows in between `startRecord` and `endRecord` are also selected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "startRecord",
+                    "text": "The index of the first row in the range.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,216,24",
+                      "text": "0,216,36,41",
+                      "type": "0,216,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "endRecord",
+                    "text": "The index of the last row in the range.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,217,24",
+                      "text": "0,217,34,40",
+                      "type": "0,217,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "keepExisting",
+                    "optional": true,
+                    "text": "`true` to retain existing selections.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,218,26",
+                      "text": "0,218,40,38",
+                      "type": "0,218,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,220,0",
+                  "text": "0,214,8,180"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedVersion": "2.0.0",
+                "name": "setLastFocused",
+                "text": "This was an internal function accidentally exposed in 1.x and now deprecated. Calling it has no effect\n",
+                "src": {
+                  "deprecatedVersion": "0,546,8",
+                  "name": "0,545,16",
+                  "text": "0,543,8,103"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "updateLastFocused",
+                "text": "Sets a record as the last focused record. This does NOT mean\nthat the record has been selected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newRecord",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "0,392,33",
+                      "type": "0,392,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldRecord",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "0,393,33",
+                      "type": "0,393,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,395,0",
+                  "text": "0,390,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateStore",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newStore",
+                    "src": {
+                      "name": "0,131,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldStore",
+                    "src": {
+                      "name": "0,131,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,129,8",
+                  "name": "0,131,0"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,4,4",
+          "extends": "0,7,0",
+          "name": "0,6,0",
+          "text": "0,2,4,143"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

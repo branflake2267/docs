@@ -1,0 +1,1167 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/layout/ContextItem.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.layout.ContextItem",
+        "text": "This class manages state information for a component or element during a layout.\n\n# Blocks\n\nA \"block\" is a required value that is preventing further calculation. When a layout has\nencountered a situation where it cannot possibly calculate results, it can associate\nitself with the context item and missing property so that it will not be rescheduled\nuntil that property is set.\n\nBlocks are a one-shot registration. Once the property changes, the block is removed.\n\nBe careful with blocks. If *any* further calculations can be made, a block is not the\nright choice.\n\n# Triggers\n\nWhenever any call to <a href='#!/api/Ext.layout.ContextItem-method-getProp'>getProp</a>, <a href='#!/api/Ext.layout.ContextItem-method-getDomProp'>getDomProp</a>, <a href='#!/api/Ext.layout.ContextItem-method-hasProp'>hasProp</a> or\n<a href='#!/api/Ext.layout.ContextItem-method-hasDomProp'>hasDomProp</a> is made, the current layout is automatically registered as being\ndependent on that property in the appropriate state. Any changes to the property will\ntrigger the layout and it will be queued in the <a href='#!/api/Ext.layout.Context'>Ext.layout.Context</a>.\n\nTriggers, once added, remain for the entire layout. Any changes to the property will\nreschedule all unfinished layouts in their trigger set.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "init",
+                "text": "Clears all properties on this object except (perhaps) those not calculated by this\ncomponent. This is more complex than it would seem because a layout can decide to\ninvalidate its results and run the component's layouts again, but since some of the\nvalues may be calculated by the container, care must be taken to preserve those\nvalues.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "full",
+                    "text": "True if all properties are to be invalidated, false to keep\nthose calculated by the ownerCt.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,196,25",
+                      "text": "0,196,30,60:0,197,8,33",
+                      "type": "0,196,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A value to pass as the first argument to <a href='#!/api/Ext.layout.ContextItem-method-initContinue'>initContinue</a>.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "text": "0,198,24,64",
+                      "type": "0,198,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,199,8",
+                  "name": "0,201,0",
+                  "text": "0,190,8,338"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initContinue",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "full",
+                    "src": {
+                      "name": "0,423,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,421,8",
+                  "name": "0,423,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initDone",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "containerLayoutDone",
+                    "src": {
+                      "name": "0,454,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,452,8",
+                  "name": "0,454,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initAnimation",
+                "src": {
+                  "access": "0,478,8",
+                  "name": "0,480,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addBlock",
+                "text": "Adds a block.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the block list ('blocks' or 'domBlocks').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,504,24",
+                      "text": "0,504,29,54",
+                      "type": "0,504,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "layout",
+                    "text": "The layout that is blocked.\n",
+                    "type": "Ext.layout.Layout",
+                    "src": {
+                      "name": "0,505,35",
+                      "text": "0,505,42,28",
+                      "type": "0,505,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name that blocked the layout (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,506,24",
+                      "text": "0,506,33,59",
+                      "type": "0,506,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,507,8",
+                  "name": "0,509,0",
+                  "text": "0,502,8,15"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addTrigger",
+                "text": "Adds a trigger.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name that triggers the layout (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,574,24",
+                      "text": "0,574,33,60",
+                      "type": "0,574,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "inDom",
+                    "text": "True if the trigger list is `domTriggers`, false if `triggers`.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,575,25",
+                      "text": "0,575,31,64",
+                      "type": "0,575,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,576,8",
+                  "name": "0,578,0",
+                  "text": "0,572,8,17"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clearBlocks",
+                "text": "Removes any blocks on a property in the specified set. Any layouts that were blocked\nby this property and are not still blocked (by other properties) will be rescheduled.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the block list ('blocks' or 'domBlocks').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,673,24",
+                      "text": "0,673,29,54",
+                      "type": "0,673,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name that blocked the layout (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,674,24",
+                      "text": "0,674,33,59",
+                      "type": "0,674,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,675,8",
+                  "name": "0,677,0",
+                  "text": "0,670,8,172"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "block",
+                "text": "Registers a layout in the block list for the given property. Once the property is\nset in the <a href='#!/api/Ext.layout.Context'>Ext.layout.Context</a>, the layout is unblocked.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "layout",
+                    "type": "Ext.layout.Layout",
+                    "src": {
+                      "name": "0,702,35",
+                      "type": "0,702,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name that blocked the layout (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,703,24",
+                      "text": "0,703,33,59",
+                      "type": "0,703,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,705,0",
+                  "text": "0,699,8,147"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "domBlock",
+                "text": "Registers a layout in the DOM block list for the given property. Once the property\nflushed to the DOM by the <a href='#!/api/Ext.layout.Context'>Ext.layout.Context</a>, the layout is unblocked.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "layout",
+                    "type": "Ext.layout.Layout",
+                    "src": {
+                      "name": "0,713,35",
+                      "type": "0,713,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name that blocked the layout (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,714,24",
+                      "text": "0,714,33,59",
+                      "type": "0,714,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,716,0",
+                  "text": "0,710,8,163"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "fireTriggers",
+                "text": "Reschedules any layouts associated with a given trigger.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the trigger list ('triggers' or 'domTriggers').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,723,24",
+                      "text": "0,723,29,60",
+                      "type": "0,723,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name that triggers the layout (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,724,24",
+                      "text": "0,724,33,60",
+                      "type": "0,724,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,725,8",
+                  "name": "0,727,0",
+                  "text": "0,721,8,58"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "flush",
+                "text": "Flushes any updates in the dirty collection to the DOM. This is only called if there\nare dirty entries because this object is only added to the flushQueue of the\n<a href='#!/api/Ext.layout.Context'>Ext.layout.Context</a> when entries become dirty.\n",
+                "src": {
+                  "name": "0,749,0",
+                  "text": "0,745,8,216"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "flushAnimations",
+                "src": {
+                  "access": "0,785,8",
+                  "name": "0,787,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getBorderInfo",
+                "text": "Gets the border information for the element as an object with left, top, right and\nbottom properties holding border size in pixels. This object is only read from the\nDOM on first request and is cached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,865,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,867,0",
+                  "text": "0,862,8,202"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getEl",
+                "text": "Returns the context item for an owned element. This should only be called on a\ncomponent's item. The list of child items is used to manage invalidating calculated\nresults.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "nameOrEl",
+                    "text": "The element or the name of an owned element\n",
+                    "type": "String/Ext.dom.Element",
+                    "src": {
+                      "name": "0,883,40",
+                      "text": "0,883,49,44",
+                      "type": "0,883,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "optional": true,
+                    "text": "The owner of the\nnamed element if the passed \"nameOrEl\" parameter is a String. Defaults to this\nContextItem's \"target\" property.  For more details on owned elements see\n<a href='#!/api/Ext.Component-cfg-childEls'>Ext.Component#cfg-childEls</a> and\n<a href='#!/api/Ext.Component-cfg-renderSelectors'>Ext.Component#renderSelectors</a>\n",
+                    "type": "Ext.layout.container.Container/Ext.Component",
+                    "src": {
+                      "name": "0,884,63",
+                      "text": "0,884,70,17:0,885,8,254",
+                      "type": "0,884,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "type": "0,889,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,891,0",
+                  "text": "0,880,8,172"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getFrameInfo",
+                "text": "Gets the \"frame\" information for the element as an object with left, top, right and\nbottom properties holding border+framing size in pixels. This object is calculated\non first request and is cached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,925,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,927,0",
+                  "text": "0,922,8,199"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getMarginInfo",
+                "text": "Gets the margin information for the element as an object with left, top, right and\nbottom properties holding margin size in pixels. This object is only read from the\nDOM on first request and is cached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,954,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,956,0",
+                  "text": "0,951,8,202"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearMarginCache",
+                "text": "clears the margin cache so that marginInfo get re-read from the dom on the next call to getMarginInfo()\nThis is needed in some special cases where the margins have changed since the last layout, making the cached\nvalues invalid.  For example collapsed window headers have different margin than expanded ones.\n",
+                "src": {
+                  "name": "0,1009,0",
+                  "text": "0,1005,8,309"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getPaddingInfo",
+                "text": "Gets the padding information for the element as an object with left, top, right and\nbottom properties holding padding size in pixels. This object is only read from the\nDOM on first request and is cached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,1018,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1020,0",
+                  "text": "0,1015,8,204"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getProp",
+                "text": "Gets a property of this object. Also tracks the current layout as dependent on this\nproperty so that changes to it will trigger the layout to be recalculated.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name that blocked the layout (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1034,24",
+                      "text": "0,1034,33,59",
+                      "type": "0,1034,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The property value or undefined if not yet set.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,1035,25,48",
+                      "type": "0,1035,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1037,0",
+                  "text": "0,1032,8,159"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDomProp",
+                "text": "Gets a property of this object if it is correct in the DOM. Also tracks the current\nlayout as dependent on this property so that DOM writes of it will trigger the\nlayout to be recalculated.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1049,24",
+                      "text": "0,1049,33,35",
+                      "type": "0,1049,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The property value or undefined if not yet set or is dirty.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,1050,25,60",
+                      "type": "0,1050,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1052,0",
+                  "text": "0,1046,8,190"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStyle",
+                "text": "Returns a style for this item. Each style is read from the DOM only once on first\nrequest and is then cached. If the value is an integer, it is parsed automatically\n(so '5px' is not returned, but rather 5).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "styleName",
+                    "text": "The CSS style name.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1065,24",
+                      "text": "0,1065,34,20",
+                      "type": "0,1065,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value of the DOM style (parsed as necessary).\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,1066,25,50",
+                      "type": "0,1066,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1068,0",
+                  "text": "0,1061,8,208"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStyles",
+                "text": "Returns styles for this item. Each style is read from the DOM only once on first\nrequest and is then cached. If the value is an integer, it is parsed automatically\n(so '5px' is not returned, but rather 5).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "styleNames",
+                    "text": "The CSS style names.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "0,1094,26",
+                      "text": "0,1094,37,21",
+                      "type": "0,1094,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "altNames",
+                    "optional": true,
+                    "text": "The alternate names for the returned styles. If given,\nthese names must correspond one-for-one to the `styleNames`.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "0,1095,27",
+                      "text": "0,1095,37,55:0,1096,8,61",
+                      "type": "0,1095,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The values of the DOM styles (parsed as necessary).\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,1097,25,52",
+                      "type": "0,1097,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1099,0",
+                  "text": "0,1090,8,207"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasProp",
+                "text": "Returns true if the given property has been set. This is equivalent to calling\n<a href='#!/api/Ext.layout.ContextItem-method-getProp'>getProp</a> and not getting an undefined result. In particular, this call\nregisters the current layout to be triggered by changes to this property.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1157,24",
+                      "text": "0,1157,33,35",
+                      "type": "0,1157,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1158,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1160,0",
+                  "text": "0,1153,8,233"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasDomProp",
+                "text": "Returns true if the given property is correct in the DOM. This is equivalent to\ncalling <a href='#!/api/Ext.layout.ContextItem-method-getDomProp'>getDomProp</a> and not getting an undefined result. In particular,\nthis call registers the current layout to be triggered by flushes of this property.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1169,24",
+                      "text": "0,1169,33,35",
+                      "type": "0,1169,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,1170,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1172,0",
+                  "text": "0,1165,8,245"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "invalidate",
+                "text": "Invalidates the component associated with this item. The layouts for this component\nand all of its contained items will be re-run after first clearing any computed\nvalues.\n\nIf state needs to be carried forward beyond the invalidation, the `options` parameter\ncan be used.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "An object describing how to handle the invalidation.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "state",
+                        "text": "An object to <a href='#!/api/Ext-apply'>Ext#apply</a> to the <a href='#!/api/Ext.layout.ContextItem-property-state'>state</a>\n of this item after invalidation clears all other properties.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,1185,32",
+                          "text": "0,1185,38,53:0,1186,8,62",
+                          "type": "0,1185,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "before",
+                        "text": "A function to call after the context data is cleared\nand before the <a href='#!/api/Ext.layout.Layout-method-beginLayoutCycle'>Ext.layout.Layout#beginLayoutCycle</a> methods are called.\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "item",
+                            "text": "This ContextItem.\n",
+                            "type": "Ext.layout.ContextItem",
+                            "src": {
+                              "name": "0,1189,55",
+                              "text": "0,1189,60,18",
+                              "type": "0,1189,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "options",
+                            "text": "The options object passed to <a href='#!/api/Ext.layout.ContextItem-method-invalidate'>invalidate</a>.\n",
+                            "type": "Object",
+                            "src": {
+                              "name": "0,1190,39",
+                              "text": "0,1190,47,50",
+                              "type": "0,1190,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "0,1187,34",
+                          "text": "0,1187,41,53:0,1188,8,78",
+                          "type": "0,1187,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "after",
+                        "text": "A function to call after the context data is cleared\nand after the <a href='#!/api/Ext.layout.Layout-method-beginLayoutCycle'>Ext.layout.Layout#beginLayoutCycle</a> methods are called.\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "item",
+                            "text": "This ContextItem.\n",
+                            "type": "Ext.layout.ContextItem",
+                            "src": {
+                              "name": "0,1193,54",
+                              "text": "0,1193,59,18",
+                              "type": "0,1193,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "options",
+                            "text": "The options object passed to <a href='#!/api/Ext.layout.ContextItem-method-invalidate'>invalidate</a>.\n",
+                            "type": "Object",
+                            "src": {
+                              "name": "0,1194,38",
+                              "text": "0,1194,46,50",
+                              "type": "0,1194,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "0,1191,34",
+                          "text": "0,1191,40,53:0,1192,8,77",
+                          "type": "0,1191,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "The scope to use when calling the callback functions.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,1195,32",
+                          "text": "0,1195,38,54",
+                          "type": "0,1195,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,1184,24",
+                      "text": "0,1184,32,53",
+                      "type": "0,1184,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1197,0",
+                  "text": "0,1177,8,273"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "recoverProp",
+                "text": "Recovers a property value from the last computation and restores its value and\ndirty state.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The name of the property to recover.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1274,24",
+                      "text": "0,1274,33,37",
+                      "type": "0,1274,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldProps",
+                    "text": "The old \"props\" object from which to recover values.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1275,24",
+                      "text": "0,1275,33,53",
+                      "type": "0,1275,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldDirty",
+                    "text": "The old \"dirty\" object from which to recover state.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1276,24",
+                      "text": "0,1276,33,52",
+                      "type": "0,1276,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1278,0",
+                  "text": "0,1271,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeEl",
+                "text": "Removes a cached ContextItem that was created using <a href='#!/api/Ext.layout.ContextItem-method-getEl'>getEl</a>.  It may be\nnecessary to call this method if the dom reference for owned element changes so\nthat <a href='#!/api/Ext.layout.ContextItem-method-getEl'>getEl</a> can be called again to reinitialize the ContextItem with the\nnew element.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "nameOrEl",
+                    "text": "The element or the name of an owned element\n",
+                    "type": "String/Ext.dom.Element",
+                    "src": {
+                      "name": "0,1319,40",
+                      "text": "0,1319,49,44",
+                      "type": "0,1319,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "optional": true,
+                    "text": "The owner of the\nnamed element if the passed \"nameOrEl\" parameter is a String. Defaults to this\nContextItem's \"target\" property.\n",
+                    "type": "Ext.layout.container.Container/Ext.Component",
+                    "src": {
+                      "name": "0,1320,63",
+                      "text": "0,1320,70,17:0,1321,8,112",
+                      "type": "0,1320,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1324,0",
+                  "text": "0,1315,8,253"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setAttribute",
+                "text": "Queue the setting of a DOM attribute on this ContextItem's target when next flushed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "0,1369,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "src": {
+                      "name": "0,1369,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1369,0",
+                  "text": "0,1367,8,85"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setContentHeight",
+                "text": "Sets the contentHeight property. If the component uses raw content, then only the\nmeasured height is acceptable.\n\nCalculated values can sometimes be NaN or undefined, which generally mean the\ncalculation is not done. To indicate that such as value was passed, 0 is returned.\nOtherwise, 1 is returned.\n\nIf the caller is not measuring (i.e., they are calculating) and the component has raw\ncontent, 1 is returned indicating that the caller is done.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "height",
+                    "src": {
+                      "name": "0,1405,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "measured",
+                    "src": {
+                      "name": "0,1405,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1405,0",
+                  "text": "0,1395,8,447"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setContentWidth",
+                "text": "Sets the contentWidth property. If the component uses raw content, then only the\nmeasured width is acceptable.\n\nCalculated values can sometimes be NaN or undefined, which generally means that the\ncalculation is not done. To indicate that such as value was passed, 0 is returned.\nOtherwise, 1 is returned.\n\nIf the caller is not measuring (i.e., they are calculating) and the component has raw\ncontent, 1 is returned indicating that the caller is done.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "width",
+                    "src": {
+                      "name": "0,1424,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "measured",
+                    "src": {
+                      "name": "0,1424,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1424,0",
+                  "text": "0,1414,8,451"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setContentSize",
+                "text": "Sets the contentWidth and contentHeight properties. If the component uses raw content,\nthen only the measured values are acceptable.\n\nCalculated values can sometimes be NaN or undefined, which generally means that the\ncalculation is not done. To indicate that either passed value was such a value, false\nreturned. Otherwise, true is returned.\n\nIf the caller is not measuring (i.e., they are calculating) and the component has raw\ncontent, true is returned indicating that the caller is done.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "width",
+                    "src": {
+                      "name": "0,1443,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "height",
+                    "src": {
+                      "name": "0,1443,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "measured",
+                    "src": {
+                      "name": "0,1443,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1443,0",
+                  "text": "0,1433,8,492"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setProp",
+                "text": "Sets a property value. This will unblock and/or trigger dependent layouts if the\nproperty value is being changed. Values of NaN and undefined are not accepted by\nthis method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "propName",
+                    "text": "The property name (e.g., 'width').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1453,24",
+                      "text": "0,1453,33,35",
+                      "type": "0,1453,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The new value of the property.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1454,24",
+                      "text": "0,1454,30,31",
+                      "type": "0,1454,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dirty",
+                    "text": "Optionally specifies if the value is currently in the DOM\n (default is `true` which indicates the value is not in the DOM and must be flushed\n at some point).\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,1455,25",
+                      "text": "0,1455,31,58:0,1456,8,101",
+                      "type": "0,1455,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "1 if this call specified the property value, 0 if not.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1458,25,55",
+                      "type": "0,1458,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1460,0",
+                  "text": "0,1449,8,176"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setHeight",
+                "text": "Sets the height and constrains the height to min/maxHeight range.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "height",
+                    "text": "The height.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,1501,24",
+                      "text": "0,1501,31,12",
+                      "type": "0,1501,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dirty",
+                    "optional": true,
+                    "text": "Specifies if the value is currently in the DOM. A\nvalue of `false` indicates that the value is already in the DOM.\n",
+                    "type": "Boolean",
+                    "value": "true",
+                    "src": {
+                      "name": "0,1502,26",
+                      "text": "0,1502,38,50:0,1503,8,65",
+                      "type": "0,1502,16",
+                      "value": "0,1502,32"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The actual height after constraining.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1504,25,38",
+                      "type": "0,1504,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1506,0",
+                  "text": "0,1499,8,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setWidth",
+                "text": "Sets the height and constrains the width to min/maxWidth range.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "width",
+                    "text": "The width.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,1552,24",
+                      "text": "0,1552,30,11",
+                      "type": "0,1552,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dirty",
+                    "optional": true,
+                    "text": "Specifies if the value is currently in the DOM. A\nvalue of `false` indicates that the value is already in the DOM.\n",
+                    "type": "Boolean",
+                    "value": "true",
+                    "src": {
+                      "name": "0,1553,26",
+                      "text": "0,1553,38,50:0,1554,8,65",
+                      "type": "0,1553,16",
+                      "value": "0,1553,32"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The actual width after constraining.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1555,25,37",
+                      "type": "0,1555,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1557,0",
+                  "text": "0,1550,8,65"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "optOut",
+                "readonly": true,
+                "text": "There are several cases that allow us to skip (opt out) of laying out a component\nand its children as long as its `lastBox` is not marked as `invalid`. If anything\nhappens to change things, the `lastBox` is marked as `invalid` by `updateLayout`\nas it ascends the component hierarchy.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,41,8",
+                  "name": "0,40,28",
+                  "readonly": "0,42,8",
+                  "text": "0,35,8,285",
+                  "type": "0,40,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "state",
+                "text": "State variables that are cleared when invalidated. Only applies to component items.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,80,27",
+                  "text": "0,81,8,84",
+                  "type": "0,80,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "wrapsComponent",
+                "readonly": true,
+                "text": "True if this item wraps a Component (rather than an Element).\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,86,28",
+                  "readonly": "0,88,8",
+                  "text": "0,87,8,62",
+                  "type": "0,86,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "styles",
+                "text": "Adds x and y values from a props object to a styles object as \"left\" and \"top\" values.\nOverridden to add the x property as \"right\" in rtl mode.\nA styles object for an Element\n",
+                "type": "Object",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "count The number of styles that were set.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,552,25,42",
+                      "type": "0,552,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,553,8",
+                  "name": "0,550,27",
+                  "text": "0,548,8,144:0,550,34,31",
+                  "type": "0,550,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,26,4",
+          "name": "0,28,0",
+          "text": "0,2,4,1048"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

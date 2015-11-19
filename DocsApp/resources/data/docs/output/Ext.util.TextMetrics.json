@@ -1,0 +1,281 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/util/TextMetrics.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.util.TextMetrics",
+        "requires": "Ext.dom.Element",
+        "text": "Provides precise pixel measurements for blocks of text so that you can determine\nthe exact pixel height and width of a block of text.\n\n**Note:** The TextMetrics tool should only be utilized to measure plain text. Attempting to\nmeasure text that includes HTML may return inaccurate results.\n\nThis measurement works by copying the relevant font-related CSS styles from the element\nparam to the TextMetrics' cached measurement element.  This returns the dimensions of the cached\nelement wrapping the text.  By default, the wrapping element is auto-sized.\nYou must provide a **fixed width** if the passed text is multi-lined.\n\nWhen multiple measurements are being done with the same element styling, you should\ncreate a single, reusable TextMetrics instance.  This is more efficient than using the\nstatic <a href='#!/api/Ext.util.TextMetrics-static-method-measure'>measure</a> method.  The element styles are copied to the cached\nTextMetrics element once during instantiation versus repeated copying using\n_measure()_.\n\nThe following example demonstrates the recommended use of TextMetrics where the custom\ntextfield class sets up a reusable TextMetrics instance used to measure the label\nwidth. This example assumes that all instances of _mytextfield_ have the same\n<a href='#!/api/Ext.form.Labelable-cfg-labelClsExtra'>Ext.form.Labelable#labelClsExtra</a> and\n<a href='#!/api/Ext.form.Labelable-cfg-labelStyle'>Ext.form.Labelable#labelStyle</a> configs.\n\n    Ext.define('MyApp.view.MyTextField', {\n        extend: 'Ext.form.field.Text',\n        xtype: 'mytextfield',\n\n        initComponent: function () {\n            var me = this,\n                tm = me.getTextMetrics();\n\n            me.labelWidth = tm.getWidth(me.fieldLabel + me.labelSeparator);\n            me.callParent();\n        },\n\n        getTextMetrics: function () {\n            var me = this,\n                // Using me.self allows labelCls etc. to vary by derived\n                // class, but not by instance.\n                cls = me.self,\n                tm = cls.measurer,\n                el;\n\n            if (!tm) {\n                el = Ext.getBody().createChild();\n                el.addCls(me.labelCls + ' ' + me.labelClsExtra).\n                    applyStyles(me.labelStyle);\n\n                cls.measurer = tm = new Ext.util.TextMetrics(el);\n            }\n\n            return tm;\n        }\n    });\n\n    Ext.create('Ext.form.Panel', {\n        title: 'Contact Info',\n        width: 600,\n        bodyPadding: 10,\n        renderTo: Ext.getBody(),\n        items: [{\n            xtype: 'mytextfield',\n            fieldLabel: 'Name',\n            labelStyle: 'font-size: 10px;'\n        }, {\n            xtype: 'mytextfield',\n            fieldLabel: 'Email Address',\n            labelStyle: 'font-size: 10px;'\n        }]\n    });\n\nWhile less efficient than the preceding example, this example allows each instance of\n_mytextfield2_ to have unique labelClsExtra and labelStyle configs.  Each custom\ntextfield instance uses the static TextMetrics measure method which will copy the\nlabel styles repeatedly, thus being less efficient but more versatile.\n\n    Ext.define('MyApp.view.MyTextField2', {\n        extend: 'Ext.form.field.Text',\n        xtype: 'mytextfield2',\n\n        initComponent: function () {\n            var me = this,\n                el = me.getMeasurementEl(),\n                tm = Ext.util.TextMetrics;\n\n            me.labelWidth = tm.measure(el, me.fieldLabel + me.labelSeparator).width;\n            me.callParent();\n        },\n\n        getMeasurementEl: function () {\n            var me = this,\n                cls = MyApp.view.MyTextField2,\n                el = cls.measureEl;\n\n            if (!el) {\n                cls.measureEl = el = Ext.getBody().createChild();\n            }\n\n            el.dom.removeAttribute('style');\n            el.removeCls(el.dom.className).\n                addCls(me.labelCls + ' ' + me.labelClsExtra).\n                applyStyles(me.labelStyle);\n\n            return el;\n        }\n    });\n\n    Ext.create('Ext.form.Panel', {\n        title: 'Contact Info',\n        width: 600,\n        bodyPadding: 10,\n        renderTo: Ext.getBody(),\n        items: [{\n            xtype: 'mytextfield2',\n            fieldLabel: 'Name',\n            labelStyle: 'font-size: 14px;font-weight: bold;',\n            labelClsExtra: 'nameLabel'\n        }, {\n            xtype: 'mytextfield2',\n            fieldLabel: 'Email Address',\n            labelStyle: 'font-size: 10px;',\n            labelClsExtra: 'emailLabel'\n        }]\n    });\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new TextMetrics.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "bindTo",
+                    "text": "The element or its ID to bind to.\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,169,52",
+                      "text": "0,169,59,34",
+                      "type": "0,169,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fixedWidth",
+                    "optional": true,
+                    "text": "A fixed width to apply to the measuring element.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,170,25",
+                      "text": "0,170,37,49",
+                      "type": "0,170,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,172,0",
+                  "text": "0,168,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSize",
+                "text": "Returns the size of the specified text based on the internal element's style and width properties\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "text",
+                    "text": "The text to measure\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,201,24",
+                      "text": "0,201,29,20",
+                      "type": "0,201,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object containing the text's size `{width: (width), height: (height)}`\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,202,25,74",
+                      "type": "0,202,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,204,0",
+                  "text": "0,200,8,98"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "bind",
+                "text": "Binds this TextMetrics instance to a new element\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The element or its ID.\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,216,52",
+                      "text": "0,216,55,23",
+                      "type": "0,216,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,218,0",
+                  "text": "0,215,8,49"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setFixedWidth",
+                "text": "Sets a fixed width on the internal measurement element.  If the text will be multiline, you have\nto set a fixed width in order to accurately measure the text height.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "width",
+                    "text": "The width to set on the element\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,230,24",
+                      "text": "0,230,30,32",
+                      "type": "0,230,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,232,0",
+                  "text": "0,228,8,166"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getWidth",
+                "text": "Returns the measured width of the specified text\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "text",
+                    "text": "The text to measure\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,238,25",
+                      "text": "0,238,30,20",
+                      "type": "0,238,17"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "width The width in pixels\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,239,26,26",
+                      "type": "0,239,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,241,0",
+                  "text": "0,237,9,49"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getHeight",
+                "text": "Returns the measured height of the specified text\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "text",
+                    "text": "The text to measure\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,248,25",
+                      "text": "0,248,30,20",
+                      "type": "0,248,17"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "height The height in pixels\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,249,26,28",
+                      "type": "0,249,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,251,0",
+                  "text": "0,247,9,50"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroy this instance\n",
+                "src": {
+                  "name": "0,258,0",
+                  "text": "0,256,9,22"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "measure",
+                "static": true,
+                "text": "Measures the size of the specified text\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The element, dom node or id from which to copy existing CSS styles\nthat can affect the size of the rendered text\n",
+                    "type": "String/HTMLElement",
+                    "src": {
+                      "name": "0,136,40",
+                      "text": "0,136,43,67:0,137,12,46",
+                      "type": "0,136,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "text",
+                    "text": "The text to measure\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,138,28",
+                      "text": "0,138,33,20",
+                      "type": "0,138,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fixedWidth",
+                    "text": "(optional) If the text will be multiline, you have to set a fixed width\nin order to accurately measure the text height\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,139,28",
+                      "text": "0,139,39,72:0,140,12,47",
+                      "type": "0,139,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object containing the text's size `{width: (width), height: (height)}`\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,141,29,74",
+                      "type": "0,141,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,144,0",
+                  "static": "0,142,12",
+                  "text": "0,135,12,40"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "static": true,
+                "text": "Destroy the TextMetrics instance created by <a href='#!/api/Ext.util.TextMetrics-static-method-measure'>measure</a>.\n",
+                "src": {
+                  "name": "0,160,0",
+                  "static": "0,158,12",
+                  "text": "0,157,12,62"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,127,0",
+          "requires": "0,129,0",
+          "text": "0,2,4,4396"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,574 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/filters/filter/Date.js",
+    "../../../ext/classic/classic/src/grid/filters/filter/Base.js",
+    "../../../ext/classic/classic/src/grid/filters/filter/TriFilter.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "grid.filter.date",
+        "extends": "Ext.grid.filters.filter.TriFilter",
+        "name": "Ext.grid.filters.filter.Date",
+        "text": "The date grid filter allows you to create a filter selection that limits results\nto values matching specific date constraints.  The filter can be set programmatically or via\nuser input with a configurable <a href='#!/api/Ext.picker.Date'>Ext.picker.Date</a> in the filter section\nof the column header.\n\nExample Date Filter Usage:\n\n    @example\n    var shows = Ext.create('Ext.data.Store', {\n        fields: ['id','show', {\n              name: 'airDate',\n              type: 'date',\n              dateFormat: 'Y-m-d'\n        }],\n        data: [\n            {id: 0, show: 'Battlestar Galactica', airDate: '1978-09-17'},\n            {id: 1, show: 'Doctor Who', airDate: '1963-11-23'},\n            {id: 2, show: 'Farscape', airDate: '1999-03-19'},\n            {id: 3, show: 'Firefly', airDate: '2002-12-20'},\n            {id: 4, show: 'Star Trek', airDate: '1966-09-08'},\n            {id: 5, show: 'Star Wars: Christmas Special', airDate: '1978-11-17'}\n        ]\n    });\n\n    Ext.create('Ext.grid.Panel', {\n        renderTo: Ext.getBody(),\n        title: 'Sci-Fi Television',\n        height: 250,\n        width: 375,\n        store: shows,\n        plugins: 'gridfilters',\n        columns: [{\n            dataIndex: 'id',\n            text: 'ID',\n            width: 50\n        },{\n            dataIndex: 'show',\n            text: 'Show',\n            flex: 1\n        },{\n            xtype: 'datecolumn',\n            dataIndex: 'airDate',\n            text: 'Original Air Date',\n            width: 125,\n            filter: {\n                type: 'date',\n\n                // optional picker config\n                pickerDefaults: {\n                    // any DatePicker configs\n                }\n            }\n        }]\n    });\n",
+        "uses": "Ext.picker.Date,Ext.menu.DatePicker",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "active",
+                "text": "Indicates the initial status of the filter (defaults to false).\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,47,23",
+                  "text": "1,48,8,64",
+                  "type": "1,47,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dataIndex",
+                "text": "The <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> dataIndex of the field this filter represents.\nThe dataIndex does not actually have to exist in the store.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,59,22",
+                  "text": "1,60,8,134",
+                  "type": "1,59,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dateFormat",
+                "text": "The date format to return when using getValue.\nDefaults to <a href='#!/api/Ext.Date-property-defaultFormat'>Ext.Date#defaultFormat</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,97,25",
+                  "text": "0,98,11,91",
+                  "type": "0,97,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "fields",
+                "optional": true,
+                "text": "Configures field items individually. These properties override those defined\nby <a href='#!/api/Ext.grid.filters.filter.Date-cfg-itemDefaults'>itemDefaults</a>.\n\nExample usage:\n     fields: {\n         gt: { // override fieldCfg options\n             width: 200\n         }\n     },\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,67,27",
+                  "text": "0,68,12,223",
+                  "type": "0,67,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "itemDefaults",
+                "optional": true,
+                "text": "The default configuration options for any menu items created by this filter.\n\nExample usage:\n\n     itemDefaults: {\n         width: 150\n     },\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,18,27",
+                  "text": "1,19,12,143",
+                  "type": "1,18,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "maxDate",
+                "text": "Allowable date as passed to the Ext.DatePicker\nDefaults to undefined.\n",
+                "type": "Date",
+                "src": {
+                  "name": "0,115,20",
+                  "text": "0,116,8,70",
+                  "type": "0,115,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "minDate",
+                "text": "Allowable date as passed to the Ext.DatePicker\nDefaults to undefined.\n",
+                "type": "Date",
+                "src": {
+                  "name": "0,121,20",
+                  "text": "0,122,8,70",
+                  "type": "0,121,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pickerDefaults",
+                "text": "Configuration options for the date picker associated with each field.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,86,26",
+                  "text": "0,87,12,70",
+                  "type": "0,86,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "updateBuffer",
+                "text": "Number of milliseconds to wait after user interaction to fire an update. Only supported\nby filters: 'list', 'numeric', and 'string'.\n",
+                "type": "Number",
+                "src": {
+                  "name": "1,34,26",
+                  "text": "1,35,12,133",
+                  "type": "1,34,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "activate",
+                "text": "Fires when an inactive filter becomes active\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.grid.filters.Filters",
+                    "src": {
+                      "name": "1,84,42",
+                      "type": "1,84,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,82,15",
+                  "text": "1,83,8,45"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "deactivate",
+                "text": "Fires when an active filter becomes inactive\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.grid.filters.Filters",
+                    "src": {
+                      "name": "1,90,42",
+                      "type": "1,90,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,88,15",
+                  "text": "1,89,8,45"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "update",
+                "text": "Fires when a filter configuration has changed\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "The filter object.\n",
+                    "type": "Ext.grid.filters.Filters",
+                    "src": {
+                      "name": "1,96,42",
+                      "text": "1,96,47,19",
+                      "type": "1,96,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,94,15",
+                  "text": "1,95,8,46"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "activate",
+                "text": "This method will be called when a column's menu trigger is clicked as well as when a filter is\nactivated. Depending on the caller, the UI and the store will be synced.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "showingMenu",
+                    "src": {
+                      "name": "2,100,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,96,8",
+                  "name": "2,100,0",
+                  "text": "2,97,8,168"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Initializes the filter given its configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,101,24",
+                      "type": "1,101,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,103,0",
+                  "text": "1,100,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createMenu",
+                "text": "Template method that is to initialize the filter and install required menu items.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "0,134,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,131,8",
+                  "name": "0,134,0",
+                  "text": "0,132,8,82"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "deactivate",
+                "text": "This method will be called when a filter is deactivated. The UI and the store will be synced.\n",
+                "src": {
+                  "access": "2,141,8",
+                  "name": "2,144,0",
+                  "text": "2,142,8,94"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroys this filter by purging any event listeners, and removing any menus.\n",
+                "src": {
+                  "name": "1,119,0",
+                  "text": "1,117,8,77"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getPicker",
+                "text": "Gets the menu picker associated with the passed field\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The field identifier ('lt', 'gt', 'eq')\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,197,24",
+                      "text": "0,197,29,40",
+                      "type": "0,197,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The menu picker\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,198,25,16",
+                      "type": "0,198,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,200,0",
+                  "text": "0,196,8,54"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getValue",
+                "template": true,
+                "text": "Template method to be implemented by all subclasses that is to\nget and return the value of the filter.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The 'serialized' form of this filter\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,242,25,37",
+                      "type": "1,242,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,238,8",
+                  "name": "1,239,16",
+                  "template": "1,243,8",
+                  "text": "1,240,8,103"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onCheckChange",
+                "text": "Remove the filter from the store but don't update its value or the field UI.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "src": {
+                      "name": "0,208,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "checked",
+                    "src": {
+                      "name": "0,208,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,205,8",
+                  "name": "0,208,0",
+                  "text": "0,206,8,77"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onMenuSelect",
+                "text": "Handler for when the DatePicker for a field fires the 'select' event\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "picker",
+                    "type": "Ext.picker.Date",
+                    "src": {
+                      "name": "0,264,33",
+                      "type": "0,264,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,265,24",
+                      "type": "0,265,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,267,0",
+                  "text": "0,263,8,69"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onValueChange",
+                "text": "Handler method called when there is a significant event on an input item.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "src": {
+                      "name": "1,194,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "1,194,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,191,8",
+                  "name": "1,194,0",
+                  "text": "1,192,8,74"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "preprocess",
+                "template": true,
+                "text": "Template method to be implemented by all subclasses that need to perform\nany operations before the column filter has finished construction.\n",
+                "src": {
+                  "access": "1,225,8",
+                  "name": "1,226,16",
+                  "template": "1,229,8",
+                  "text": "1,227,8,140"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setActive",
+                "text": "Sets the status of the filter and fires the appropriate events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "active",
+                    "text": "The new filter state.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,258,25",
+                      "text": "1,258,32,22",
+                      "type": "1,258,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The filter key for columns that support multiple filters.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,259,24",
+                      "text": "1,259,28,58",
+                      "type": "1,259,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,261,0",
+                  "text": "1,257,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setValue",
+                "template": true,
+                "text": "Template method to be implemented by all subclasses that is to\nset the value of the filter and fire the 'update' event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "The value to set the filter\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,252,24",
+                      "text": "1,252,29,28",
+                      "type": "1,252,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,248,8",
+                  "name": "1,249,16",
+                  "template": "1,253,8",
+                  "text": "1,250,8,120"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "active",
+                "text": "True if this filter is active. Use setActive() to alter after configuration. If\nyou set a value, the filter will be actived automatically.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,42,28",
+                  "text": "1,43,8,139",
+                  "type": "1,42,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "3,295,28",
+                  "text": "3,296,8,128",
+                  "type": "3,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "filterIdPrefix",
+                "text": "The prefix for id's used to track stateful Store filters.\n",
+                "src": {
+                  "access": "1,77,8",
+                  "name": "1,79,0",
+                  "text": "1,76,8,58"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "menu",
+                "text": "The filter configuration menu that will be installed into the filter submenu of a column menu.\n",
+                "type": "Ext.menu.Menu",
+                "src": {
+                  "name": "1,66,34",
+                  "text": "1,67,8,95",
+                  "type": "1,66,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "menuItems",
+                "text": "The items to be shown in this menu.  Items are added to the menu\naccording to their position within this array.\nDefaults to:\n     menuItems : ['lt', 'gt', '-', 'eq']\n",
+                "type": "String[]",
+                "src": {
+                  "access": "2,15,8",
+                  "name": "2,10,29",
+                  "text": "2,11,8,166",
+                  "type": "2,10,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "type",
+                "text": "The filter type. Used by the filters.Feature class when adding filters and applying state.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,53,27",
+                  "text": "1,54,8,91",
+                  "type": "1,53,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,59,0",
+          "extends": "0,58,0",
+          "name": "0,57,0",
+          "text": "0,2,4,1706",
+          "uses": "0,60,0,0:0,60,0,0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

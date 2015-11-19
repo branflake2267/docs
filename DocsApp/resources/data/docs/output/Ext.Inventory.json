@@ -1,0 +1,256 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/class/Inventory.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.Inventory",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "getAliasesByName",
+                "text": "Get the aliases of a class by the class name\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,81,24",
+                      "type": "0,81,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "aliases\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,82,24,8",
+                      "type": "0,82,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,84,0",
+                  "text": "0,79,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getNameByAlias",
+                "text": "Get the name of a class by its alias.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "type": "String",
+                    "src": {
+                      "name": "0,95,24",
+                      "type": "0,95,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "className\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,96,25,10",
+                      "type": "0,96,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,98,0",
+                  "text": "0,93,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getNameByAlternate",
+                "text": "Get the name of a class by its alternate name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alternate",
+                    "type": "String",
+                    "src": {
+                      "name": "0,105,24",
+                      "type": "0,105,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "className\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,106,25,10",
+                      "type": "0,106,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,108,0",
+                  "text": "0,103,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getNamesByExpression",
+                "text": "Converts a string expression to an array of matching class names. An expression can\neither refers to class aliases or class names. Expressions support wildcards:\n\n     // returns ['Ext.window.Window']\n    var window = Ext.ClassManager.getNamesByExpression('widget.window');\n\n    // returns ['widget.panel', 'widget.window', ...]\n    var allWidgets = Ext.ClassManager.getNamesByExpression('widget.*');\n\n    // returns ['Ext.data.Store', 'Ext.data.ArrayProxy', ...]\n    var allData = Ext.ClassManager.getNamesByExpression('Ext.data.*');\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "expression",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "0,125,33",
+                      "type": "0,125,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "exclude",
+                    "optional": true,
+                    "text": "An object keyed by class name containing classes to\nexclude from the returned classes. This must be provided if `accumulate` is set to\n`true`.\n",
+                    "type": "Object",
+                    "value": "null",
+                    "src": {
+                      "name": "0,126,25",
+                      "text": "0,126,39,52:0,127,8,91",
+                      "type": "0,126,16",
+                      "value": "0,126,33"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "accumulate",
+                    "optional": true,
+                    "text": "Pass `true` to add matching classes to the\nspecified `exclude` object.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,129,26",
+                      "text": "0,129,44,43:0,130,8,28",
+                      "type": "0,129,16",
+                      "value": "0,129,37"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An array of class names.\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "0,131,27,25",
+                      "type": "0,131,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,133,0",
+                  "text": "0,113,8,536"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "select",
+                "text": "This method returns a selector object that produces a selection of classes and\ndelivers them to the desired `receiver`.\n\nThe returned selector object has the same methods as the given `receiver` object\nbut these methods on the selector accept a first argument that expects a pattern\nor array of patterns. The actual method on the `receiver` will be called with an\narray of classes that match these patterns but with any patterns passed to an\n`exclude` call removed.\n\nFor example:\n\n     var sel = inventory.select({\n             require: function (classes) {\n                 console.log('Classes: ' + classes.join(','));\n             }\n         });\n\n     sel.exclude('Ext.chart.*').exclude('Ext.draw.*').require('*');\n\n     // Logs all classes except those in the Ext.chart and Ext.draw namespaces.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "receiver",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,322,24",
+                      "type": "0,322,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "Optional scope to use when calling `receiver` methods.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,323,25",
+                      "text": "0,323,32,55",
+                      "type": "0,323,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object with the same methods as `receiver` plus `exclude`.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,324,25,62",
+                      "type": "0,324,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,326,0",
+                  "text": "0,301,8,800"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setPath",
+                "text": "Sets the path of a namespace.\nFor Example:\n\n     inventory.setPath('Ext', '.');\n     inventory.setPath({\n         Ext: '.'\n     });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of a single mapping or an object of mappings.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,367,31",
+                      "text": "0,367,36,55",
+                      "type": "0,367,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "path",
+                    "optional": true,
+                    "text": "If `name` is a String, then this is the path for that name.\nOtherwise this parameter is ignored.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,368,25",
+                      "text": "0,368,31,60:0,369,8,37",
+                      "type": "0,368,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Inventory",
+                    "src": {
+                      "text": "0,370,32,5",
+                      "type": "0,370,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,373,0",
+                  "text": "0,359,8,133"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,4,4",
+          "name": "0,3,11"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,188 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/ux/classic/src/DataView/Draggable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.ux.DataView.Draggable",
+        "requires": "Ext.dd.DragZone",
+        "text": "## Basic DataView with Draggable mixin.\n\n    Ext.Loader.setPath('Ext.ux', '../../../SDK/extjs/examples/ux');\n\n    Ext.define('My.cool.View', {\n        extend: 'Ext.view.View',\n\n        mixins: {\n            draggable: 'Ext.ux.DataView.Draggable'\n        },\n\n        initComponent: function() {\n            this.mixins.draggable.init(this, {\n                ddConfig: {\n                    ddGroup: 'someGroup'\n                }\n            });\n\n            this.callParent(arguments);\n        }\n    });\n\n    Ext.onReady(function () {\n        Ext.create('Ext.data.Store', {\n            storeId: 'baseball',\n            fields: ['team', 'established'],\n            data: [\n                { team: 'Atlanta Braves', established: '1871' },\n                { team: 'Miami Marlins', established: '1993' },\n                { team: 'New York Mets', established: '1962' },\n                { team: 'Philadelphia Phillies', established: '1883' },\n                { team: 'Washington Nationals', established: '1969' }\n            ]\n         });\n\n         Ext.create('My.cool.View', {\n             store: Ext.StoreMgr.get('baseball'),\n             tpl: [\n                 '<tpl for=\".\">',\n                     '<p class=\"team\">',\n                         'The {team} were founded in {established}.',\n                     '</p>',\n                 '</tpl>'\n             ],\n             itemSelector: 'p.team',\n             renderTo: Ext.getBody()\n         });\n     });\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "ghostCls",
+                "text": "The CSS class added to the outermost element of the created ghost proxy\n(defaults to 'x-dataview-draggable-ghost')\n",
+                "type": "String",
+                "src": {
+                  "name": "0,55,22",
+                  "text": "0,55,31,72:0,56,8,43",
+                  "type": "0,55,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ghostTpl",
+                "text": "The template used in the ghost DataView\n",
+                "type": "Ext.XTemplate/Array",
+                "src": {
+                  "name": "0,61,35",
+                  "text": "0,61,44,40",
+                  "type": "0,61,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ddConfig",
+                "text": "Config object that is applied to the internally created DragZone\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,70,22",
+                  "text": "0,70,31,65",
+                  "type": "0,70,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ghostConfig",
+                "text": "Config object that is used to configure the internally created DataView\n",
+                "type": "String",
+                "src": {
+                  "name": "0,74,22",
+                  "text": "0,74,34,72",
+                  "type": "0,74,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onRender",
+                "text": "Called when the attached DataView is rendered. Sets up the internal DragZone\n",
+                "src": {
+                  "access": "0,100,8",
+                  "name": "0,103,0",
+                  "text": "0,101,8,77"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getRepairXY",
+                "text": "Returns the x and y co-ordinates that the dragged item should be animated back to if it was dropped on an\ninvalid drop target. If we're dragging more than one item we don't animate back and just allow afterRepair\nto frame each dropped item.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,178,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,173,8",
+                  "name": "0,178,0",
+                  "text": "0,174,8,241"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "prepareGhost",
+                "text": "Updates the internal ghost DataView by ensuring it is rendered and contains the correct records\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "text": "The set of records that is currently selected in the parent DataView\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,195,23",
+                      "text": "0,195,31,69",
+                      "type": "0,195,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The Ghost DataView's encapsulating HTMLElement.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "text": "0,196,30,48",
+                      "type": "0,196,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,198,0",
+                  "text": "0,194,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createGhost",
+                "text": "Creates the 'ghost' DataView that follows the mouse cursor during the drag operation. This div is usually a\nlighter-weight representation of just the nodes that are selected in the parent DataView.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "records",
+                    "src": {
+                      "name": "0,207,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,203,8",
+                  "name": "0,207,0",
+                  "text": "0,204,8,198"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "dataview",
+                "text": "The Ext.view.View instance that this DragZone is attached to\n",
+                "type": "Ext.view.View",
+                "src": {
+                  "name": "0,79,22",
+                  "text": "0,81,12,61",
+                  "type": "0,80,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dragZone",
+                "text": "The attached DragZone instane\n",
+                "type": "Ext.dd.DragZone",
+                "src": {
+                  "name": "0,114,22",
+                  "text": "0,116,12,30",
+                  "type": "0,115,18"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,51,0",
+          "requires": "0,52,0",
+          "text": "0,2,4,1454"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

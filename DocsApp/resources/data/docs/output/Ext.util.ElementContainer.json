@@ -1,0 +1,117 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/util/ElementContainer.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.util.ElementContainer",
+        "text": "This mixin enables classes to declare relationships to child elements and provides the\nmechanics for acquiring the <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a> and storing them on an object\ninstance as properties.\n\nThis class is used by <a href='#!/api/Ext.Component'>Ext.Component</a> and <a href='#!/api/Ext.layout.container.Container'>Ext.layout.container.Container</a> to\nmanage their child elements.\n\nA typical component that uses these features might look something like this:\n\n     Ext.define('Ext.ux.SomeComponent', {\n         extend: 'Ext.Component',\n\n         childEls: [\n             'bodyEl'\n         ],\n\n         renderTpl: [\n             '<div id=\"{id}-bodyEl\" data-ref=\"bodyEl\"></div>'\n         ],\n\n         // ...\n     });\n\nThe <a href='#!/api/Ext.util.ElementContainer-cfg-childEls'>childEls</a> config lists one or more relationships to child elements managed\nby the component. The items in this array can be objects that more fully specify the\nchild. For example, the above could have used this instead to achieve the same result:\n\n     childEls: [\n         { name: 'bodyEl', itemId: 'bodyEl' }\n     ]\n\n\nUnlike a `renderTpl` where there is a single value for an instance, <a href='#!/api/Ext.util.ElementContainer-cfg-childEls'>childEls</a> are aggregated\nup the class hierarchy so that they are effectively inherited. In other words, if a\nclass where to derive from `Ext.ux.SomeComponent` in the example above, it could also\nhave a <a href='#!/api/Ext.util.ElementContainer-cfg-childEls'>childEls</a> property in the same way as `Ext.ux.SomeComponent`.\n\n     Ext.define('Ext.ux.AnotherComponent', {\n         extend: 'Ext.ux.SomeComponent',\n\n         childEls: [\n             // 'bodyEl' is inherited\n             'innerEl'\n         ],\n\n         renderTpl: [\n             '<div id=\"{id}-bodyEl\" data-ref=\"bodyEl\">'\n                 '<div id=\"{id}-innerEl\" data-ref=\"innerEl\"></div>'\n             '</div>'\n         ],\n\n         // ...\n     });\n\n**IMPORTANT**\nThe `renderTpl` contains both child elements and unites them in the desired markup, but\nthe <a href='#!/api/Ext.util.ElementContainer-cfg-childEls'>childEls</a> only contains the new child element. The `data-ref` attribute must be\nrendered on to child elements that do not use `select` or `selectNode` options. This\nis done for performance reasons on IE8 where element lookup (even by id) is not very\nefficient.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "childEls",
+                "text": "The canonical form of <a href='#!/api/Ext.util.ElementContainer-cfg-childEls'>childEls</a> is an object keyed by child's property name\nwith values that are objects with the following properties.\n\n- `itemId` - The id to combine with the Component's id that is the id of the\n  child element.\n- `id` - The id of the child element.\n- `leaf` - Set to `true` to ignore content when scanning for childEls. This\n should be set on things like the generated content for an <a href='#!/api/Ext.view.View'>Ext.view.View</a>.\n- `select`: A selector that will be passed to <a href='#!/api/Ext.dom.Element-method-select'>Ext.dom.Element#method-select</a>.\n- `selectNode`: A selector that will be passed to <a href='#!/api/Ext.dom.Element-method-selectNode'>Ext.dom.Element#method-selectNode</a>.\n\nFor example:\n\n     childEls: {\n         button: true,\n         buttonText: 'text',\n         buttonImage: {\n             itemId: 'image'\n         }\n     }\n\nThe above is translated into the following complete form:\n\n     childEls: {\n         button: {\n             name: 'button',\n             itemId: 'button'\n         },\n         buttonText: {\n             name: 'buttonText',\n             itemId: 'text'\n         },\n         buttonImage: {\n             name: 'buttonImage',\n             itemId: 'image'\n         }\n     }\n\nThe above can be provided as an array like so:\n\n     childEls: [\n         'button',\n         { name: 'buttonText', itemId: 'text' },\n         { name: 'buttonImage', itemId: 'image' }\n     }\n\nFor example, a Component which renders a title and body text:\n\n    @example\n    Ext.create('Ext.Component', {\n        renderTo: Ext.getBody(),\n        renderTpl: [\n            '<h1 id=\"{id}-title\" data-ref=\"title\">{title}</h1>',\n            '<p>{msg}</p>',\n        ],\n        renderData: {\n            title: \"Error\",\n            msg: \"Something went wrong\"\n        },\n        childEls: [\"title\"],\n        listeners: {\n            afterrender: function(cmp){\n                // After rendering the component will have a title property\n                cmp.title.setStyle({color: \"red\"});\n            }\n        }\n    });\n\n**Note:** `childEl`s in the <a href='#!/api/Ext.Component-cfg-renderTpl'>Ext.Component#cfg-renderTpl</a>\nmust be referenced in a **data-ref** attribute.  Notice in the above example\nthat the \"title\" `childEl` is set in the `renderTpl` using\n**data-ref=\"title\"**.\n\nWhen using `select`, the property will be an instance of <a href='#!/api/Ext.dom.CompositeElement'>Ext.CompositeElement</a>.\nIn all other cases, the property will be an <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a> or <a href='#!/api/null'>null</a>\nif not found.\n\nCare should be taken when using `select` or `selectNode` to find child elements.\nThe following issues should be considered:\n\n- Performance: using selectors can be 10x slower than id lookup.\n- Over-selecting: selectors are applied after the DOM elements for all children\n  have been rendered, so selectors can match elements from child components\n  (including nested versions of the same component) accidentally.\n\nThis above issues are most important when using `select` since it returns multiple\nelements.\n",
+                "type": "Object/String[]/Object[]",
+                "src": {
+                  "name": "0,70,44",
+                  "text": "0,71,12,2854",
+                  "type": "0,70,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addChildEl",
+                "since": "6.0.0",
+                "text": "Add a childEl specific to this instance. This must be called before render.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "childEl",
+                    "src": {
+                      "name": "0,231,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,232,12",
+                  "name": "0,235,0",
+                  "since": "0,233,19",
+                  "text": "0,230,12,76"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterClassMixedIn",
+                "text": "Called after the mixin is applied. We need to see if <a href='#!/api/Ext.util.ElementContainer-cfg-childEls'>childEls</a> were used by\nthe `targetClass` and apply them to the config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "targetClass",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,253,31",
+                      "type": "0,253,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,254,12",
+                  "name": "0,256,0",
+                  "text": "0,251,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "attachChildEls",
+                "text": "Sets references to elements inside the component.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "src": {
+                      "name": "0,274,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "src": {
+                      "name": "0,274,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,272,12",
+                  "name": "0,274,0",
+                  "text": "0,271,12,50"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,63,4",
+          "name": "0,65,0",
+          "text": "0,2,4,2113"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

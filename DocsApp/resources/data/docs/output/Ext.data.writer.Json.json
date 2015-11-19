@@ -1,0 +1,373 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/writer/Json.js",
+    "../../../ext/packages/core/src/data/writer/Writer.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "writer.json",
+        "alternateClassNames": "Ext.data.JsonWriter",
+        "extends": "Ext.data.writer.Writer",
+        "name": "Ext.data.writer.Json",
+        "text": "This class is used to write <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> data to the server in a JSON format.\nThe <a href='#!/api/Ext.data.writer.Json-cfg-allowSingle'>allowSingle</a> configuration can be set to false to force the records to always\nbe encoded in an array, even if there is only a single record being sent.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "allDataOptions",
+                "text": "This object contains the options passed to <a href='#!/api/Ext.data.Model-method-getData'>Ext.data.Model#getData</a> when\nwriting <a href='#!/api/Ext.data.Model-property-phantom'>Ext.data.Model#phantom</a> records or when <a href='#!/api/Ext.data.writer.Json-cfg-writeAllFields'>writeAllFields</a> is set\nto `true`.\n\n*NOTE:* The `serialize` option cannot be used here.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,107,26",
+                  "text": "1,108,12,226",
+                  "type": "1,107,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "allowSingle",
+                "optional": true,
+                "text": "Configure with `false` to ensure that records are always wrapped in an array, even if there is only\none record being sent. When there is more than one record, they will always be encoded into an array.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,29,27",
+                  "text": "0,29,45,100:0,30,11,102",
+                  "type": "0,29,17",
+                  "value": "0,29,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "clientIdProperty",
+                "text": "When specified this property causes the <a href='#!/api/Ext.data.Model-cfg-idProperty'>Ext.data.Model#idProperty</a> of\nnewly created records to be sent to the server as this name instead of the\nvalue of the `idProperty`.\n\nFor example, by default, the following code:\n\n     Ext.define('Person', {\n         idProperty: 'id',  // this is the default value (for clarity)\n\n         fields: [ 'name' ]\n     });\n\n     var person = new Person({\n         // no id provided, so one is generated\n         name: 'Clark Kent'\n     });\n\nWill send this to the server:\n\n     {\n         id: 'Person-1',\n         name: 'Clark Kent'\n     }\n\nThis can be an issue if the server expects an integer for the \"id\" property.\nYou can use <a href='#!/api/Ext.data.Model-cfg-identifier'>Ext.data.Model#identifier</a> to produce identifiers that\nthe server would recognize or use this config to send the client's id in a\ndifferent property.\n\n     Ext.define('Person', {\n         idProperty: 'id',  // this is the default value (for clarity)\n\n         proxy: {\n             writer: {\n                 clientIdProperty: 'clientId'\n             }\n         },\n\n         fields: [ 'name' ]\n     });\n\nGiven the above, the server is sent this data now:\n\n     {\n         clientId: 'Person-1',\n         name: 'Clark Kent'\n     }\n\nWhile this config provides the behavior of <a href='#!/api/Ext.data.Model-cfg-clientIdProperty'>Ext.data.Model#clientIdProperty</a>\nfrom previous releases, this property is not as useful as a suitable\n<a href='#!/api/Ext.data.Model-cfg-identifier'>Ext.data.Model#identifier</a> due to id's appearing in foreign-key fields\nand in <a href='#!/api/Ext.data.Model-cfg-manyToMany'>Ext.data.Model#manyToMany</a> associations.\n\nSee <a href='#!/api/Ext.data.Model-cfg-identifier'>Ext.data.Model#identifier</a> for more on id generation.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,48,26",
+                  "text": "1,49,12,1569",
+                  "type": "1,48,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dateFormat",
+                "text": "This is used for each field of type date in the model to format the value before\nit is sent to the server.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,151,26",
+                  "text": "1,152,12,107",
+                  "type": "1,151,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "encode",
+                "optional": true,
+                "text": "Configure `true` to send record data (all record fields if <a href='#!/api/Ext.data.writer.Json-cfg-writeAllFields'>writeAllFields</a> is `true`)\nas a JSON encoded HTTP parameter named by the <a href='#!/api/Ext.data.writer.Json-cfg-rootProperty'>rootProperty</a> configuration.\n\nThe encode option should only be set to true when a <a href='#!/api/Ext.data.writer.Json-cfg-rootProperty'>rootProperty</a> is defined, because the values will be\nsent as part of the request parameters as opposed to a raw post. The root will be the name of the parameter\nsent to the server.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,19,27",
+                  "text": "0,19,41,94:0,20,11,325",
+                  "type": "0,19,17",
+                  "value": "0,19,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "expandData",
+                "optional": true,
+                "text": "By default, when dot-delimited field <a href='#!/api/Ext.data.writer.Json-cfg-nameProperty'>nameProperty</a> are\nused (e.g. `name: 'myProperty', mapping: 'my.nested.property'`) the writer will simply output a flat data\nobject containing the mapping string literal as the property name (e.g. `{ 'my.nested.property': 'foo' }`).\n\nMappings are used to map incoming nested JSON to flat Ext models. In many case, the data output by the\nwriter should preferrably match the original nested data format. Setting this config to `true` will ensure\nthat the output will instead look like `{ my: { nested: { property: 'foo' }}}`. The output is generated\nby <a href='#!/api/Ext.data.writer.Json-method-getExpandedData'>getExpandedData</a>, which can optionally be overridden to apply more customized logic.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,35,27",
+                  "text": "0,35,45,72:0,36,11,625",
+                  "type": "0,35,17",
+                  "value": "0,35,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "nameProperty",
+                "text": "This property is used to read the key for each value that will be sent to the\nserver.\n\nFor example:\n\n    Ext.define('Person', {\n        extend: 'Ext.data.Model',\n        fields: [{\n            name: 'first',\n            mapping: 'firstName'\n        }, {\n            name: 'last',\n            mapping: 'lastName'\n        }, {\n            name: 'age'\n        }]\n    });\n\n    new Ext.data.writer.Writer({\n        nameProperty: 'mapping'\n    });\n\n    // This will be sent to the server\n    {\n        firstName: 'first name value',\n        lastName: 'last name value',\n        age: 1\n    }\n\nIf the value is not present, the field name will always be used.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,158,26",
+                  "text": "1,159,12,651",
+                  "type": "1,158,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "partialDataOptions",
+                "text": "This object contains the options passed to <a href='#!/api/Ext.data.Model-method-getData'>Ext.data.Model#getData</a> when\nwriting non <a href='#!/api/Ext.data.Model-property-phantom'>Ext.data.Model#phantom</a> records or when <a href='#!/api/Ext.data.writer.Json-cfg-writeAllFields'>writeAllFields</a> is\nset to `false`.\n\n*NOTE:* The `serialize` option cannot be used here.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,119,26",
+                  "text": "1,120,12,231",
+                  "type": "1,119,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "rootProperty",
+                "text": "The HTTP parameter name by which JSON encoded records will be passed to the server if the\n<a href='#!/api/Ext.data.writer.Json-cfg-encode'>encode</a> option is `true`.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,13,25",
+                  "text": "0,13,38,90:0,14,11,34",
+                  "type": "0,13,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "transform",
+                "optional": true,
+                "text": "If a transform function is set, it will be invoked just before <a href='#!/api/Ext.data.writer.Json-method-writeRecords'>writeRecords</a>\nexecutes. It is passed the unserialized data object and the <a href='#!/api/Ext.data.Request'>Ext.data.Request</a>\nobject. The transform function returns a data object, which can be a modified version of the original\ndata object, or a completely new data object. The transform can be a function, or an object\nwith a 'fn' key and an optional 'scope' key. Example usage:\n\n    Ext.create('Ext.data.Store', {\n        model: 'User',\n        proxy: {\n            type: 'ajax',\n            url : 'users.json',\n            writer: {\n                type: 'json',\n                transform: {\n                    fn: function(data, request) {\n                        // do some manipulation of the unserialized data object\n                        return data;\n                    },\n                    scope: this\n                }\n            }\n        },\n    });\n",
+                "type": "Function/Object",
+                "src": {
+                  "name": "1,207,36",
+                  "text": "1,208,12,921",
+                  "type": "1,207,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "writeAllFields",
+                "text": "`true` to write all fields from the record to the\nserver. If set to `false` it will only send the fields that were modified. Note\nthat any fields that have <a href='#!/api/Ext.data.field.Field-cfg-persist'>Ext.data.field.Field#persist</a> set to `false`\nwill still be ignored while those with <a href='#!/api/Ext.data.field.Field-cfg-critical'>Ext.data.field.Field#critical</a>\nset to `true` will be included.\n\nThe exact set of fields written is determined by <a href='#!/api/Ext.data.writer.Json-cfg-allDataOptions'>allDataOptions</a> (when `true`)\nor <a href='#!/api/Ext.data.writer.Json-cfg-partialDataOptions'>partialDataOptions</a> (when `false`). This option is ignored and treated as\n`true` when writing <a href='#!/api/Ext.data.Model-property-phantom'>Ext.data.Model#phantom</a> records.\n\nIt is seldom a good idea to use this config. Rather use <a href='#!/api/Ext.data.writer.Json-cfg-allDataOptions'>allDataOptions</a> or\n<a href='#!/api/Ext.data.writer.Json-cfg-partialDataOptions'>partialDataOptions</a> to control what fields are sent for records based on their\n<a href='#!/api/Ext.data.Model-property-phantom'>Ext.data.Model#phantom</a> state.\n\nIn the previous release, this was default `true`.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,132,27",
+                  "text": "1,132,42,50:1,133,12,740",
+                  "type": "1,132,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "writeRecordId",
+                "optional": true,
+                "text": "By default, each record's id is always included in the output for non-phantom\nrecords since in most cases the id will be required on the server to process\nthe record action. This is helpful since the id will normally not be modified,\nand so would not be sent to the server unless <a href='#!/api/Ext.data.writer.Json-cfg-writeAllFields'>writeAllFields</a> was\nexplicitly enabled.\n\nHowever, there are cases where it is not desirable for the record id to be passed\nin the data directly. For example, when using a RESTful API the record id would\ntypically be appended to the url instead.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,193,28",
+                  "text": "1,194,12,533",
+                  "type": "1,193,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Writer.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "Config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,244,25",
+                      "text": "1,244,33,15",
+                      "type": "1,244,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,246,0",
+                  "text": "1,243,8,20"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getExpandedData",
+                "text": "The Reader classes support dot-delimited data mappings for extracting nested raw data into fields, so the\nwriter must support converting the flat <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> structure back into the original nested data\nformat. Using the same mappings when available, the Writer will simply split each delimiter into a nested\nobject in the output, which should exactly match the input format. For example, record data like this:\n\n    my.nested.property: 'foo',\n    my.nested.another: 'bar',\n    my.somethingElse: 123\n\nshould write out as...\n\n    my: {\n        nested: {\n            property: 'foo',\n            another: 'bar\n        },\n        somethingElse: 123\n    }\n\nThis behavior is governed by the <a href='#!/api/Ext.data.writer.Json-cfg-expandData'>expandData</a> config. By default, this option is `false` for\ncompatibility reasons, and will output a flat structure matching the flat record format. Setting this config\nto `true` will enable the expanded mapping behavior as shown here. This method could also be overridden\nto provide an even more customized output data structure.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "0,85,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,60,8",
+                  "name": "0,85,0",
+                  "text": "0,61,8,1035"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRecordData",
+                "text": "Formats the data for each record before sending it to the server. This method should\nbe overridden to format the data in a way that differs from the default.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record that we are writing to the server.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "1,294,32",
+                      "text": "1,294,39,46",
+                      "type": "1,294,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "optional": true,
+                    "text": "An operation object.\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "1,295,47",
+                      "text": "1,295,58,21",
+                      "type": "1,295,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object literal of name/value keys to be written to the server.\nBy default this method returns the data property on the record.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,296,25,66:1,297,8,64",
+                      "type": "1,296,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,299,0",
+                  "text": "1,291,8,159"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "write",
+                "text": "Prepares a Proxy's Ext.data.Request object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request object.\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "1,262,34",
+                      "text": "1,262,42,20",
+                      "type": "1,262,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The modified request object.\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "text": "1,263,35,29",
+                      "type": "1,263,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,265,0",
+                  "text": "1,261,8,44"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "writeRecords",
+                "text": "\nWrite the record data to the request in the appropriate format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request.\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "1,284,34",
+                      "text": "1,284,42,13",
+                      "type": "1,284,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "An array of objects containing data.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "1,285,23",
+                      "text": "1,285,28,37",
+                      "type": "1,285,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The request.\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "text": "1,286,35,13",
+                      "type": "1,286,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,283,8",
+                  "name": "1,288,0",
+                  "text": "1,281,8,65"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,295,28",
+                  "text": "2,296,8,128",
+                  "type": "2,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isWriter",
+                "text": "`true` in this class to identify an object as an instantiated Writer, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,237,28",
+                  "text": "1,238,8,92",
+                  "type": "1,237,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,9,0",
+          "alternateClassNames": "0,8,0",
+          "extends": "0,7,0",
+          "name": "0,6,0",
+          "text": "0,2,4,252"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

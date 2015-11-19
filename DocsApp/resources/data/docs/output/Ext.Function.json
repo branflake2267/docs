@@ -1,0 +1,1154 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/lang/Function.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Function",
+        "singleton": true,
+        "text": "\nA collection of useful static methods to deal with function callbacks.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "flexSetter",
+                "text": "A very commonly used method throughout the framework. It acts as a wrapper around another method\nwhich originally accepts 2 arguments for `name` and `value`.\nThe wrapped function then allows \"flexible\" value setting of either:\n\n- `name` and `value` as 2 arguments\n- one single object argument with multiple key - value pairs\n\nFor example:\n\n    var setValue = Ext.Function.flexSetter(function(name, value) {\n        this[name] = value;\n    });\n\n    // Afterwards\n    // Setting a single name - value\n    setValue('name1', 'value1');\n\n    // Settings multiple name - value pairs\n    setValue({\n        name1: 'value1',\n        name2: 'value2',\n        name3: 'value3'\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "setter",
+                    "text": "The single value setter method.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "name",
+                        "text": "The name of the value being set.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,84,35",
+                          "text": "0,84,40,33",
+                          "type": "0,84,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "The value being set.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,85,35",
+                          "text": "0,85,41,21",
+                          "type": "0,85,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,83,30",
+                      "text": "0,83,37,32",
+                      "type": "0,83,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "0,86,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,88,0",
+                  "text": "0,59,12,675"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "bind",
+                "text": "Create a new function from the provided `fn`, change `this` to the provided scope,\noptionally overrides arguments for the call. Defaults to the arguments passed by\nthe caller.\n\n<a href='#!/api/Ext-bind'>Ext.bind</a> is alias for <a href='#!/api/Ext.Function-method-bind'>Ext.Function#bind</a>\n\n**NOTE:** This method is deprecated. Use the standard <a href='#!/api/Ext.Function-method-bind'>bind</a> method of JavaScript\n<a href='#!/api/Function'>Function</a> instead:\n\n     function foo () {\n         ...\n     }\n\n     var fn = foo.bind(this);\n\nThis method is unavailable natively on IE8 and IE/Quirks but Ext JS provides a\n\"polyfill\" to emulate the important features of the standard <a href='#!/api/Ext.Function-method-bind'>bind</a> method. In\nparticular, the polyfill only provides binding of \"this\" and optional arguments.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to delegate.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,137,30",
+                      "text": "0,137,33,26",
+                      "type": "0,137,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope (`this` reference) in which the function is executed.\n**If omitted, defaults to the default global environment object (usually the browser window).**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,138,28",
+                      "text": "0,138,34,75:0,139,12,96",
+                      "type": "0,138,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "(optional) Overrides arguments for the call. (Defaults to the arguments passed by the caller)\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,140,27",
+                      "text": "0,140,32,94",
+                      "type": "0,140,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "appendArgs",
+                    "text": "(optional) if True args are appended to call args instead of overriding,\nif a number the args are inserted at the specified position.\n",
+                    "type": "Boolean/Number",
+                    "src": {
+                      "name": "0,141,36",
+                      "text": "0,141,47,73:0,142,12,61",
+                      "type": "0,141,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,143,31,18",
+                      "type": "0,143,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,145,0",
+                  "text": "0,118,12,679"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "bindCallback",
+                "since": "5.0.0",
+                "text": "Captures the given parameters for a later call to `Ext.callback`. This binding is\nmost useful for resolving scopes for example to an <a href='#!/api/Ext.app.ViewController'>Ext.app.ViewController</a>.\n\nThe arguments match that of `Ext.callback` except for the `args` which, if provided\nto this method, are prepended to any arguments supplied by the eventual caller of\nthe returned function.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "A function that, when called, uses `Ext.callback` to call the\ncaptured `callback`.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,179,31,62:0,180,12,21",
+                      "type": "0,179,21"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "src": {
+                      "name": "0,183,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "0,183,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "0,183,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "delay",
+                    "src": {
+                      "name": "0,183,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "caller",
+                    "src": {
+                      "name": "0,183,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,183,0",
+                  "since": "0,181,19",
+                  "text": "0,172,12,350"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "pass",
+                "text": "Create a new function from the provided `fn`, the arguments of which are pre-set to `args`.\nNew arguments passed to the newly created callback when it's invoked are appended after the pre-set ones.\nThis is especially useful when creating callbacks.\n\nFor example:\n\n    var originalFunction = function(){\n        alert(Ext.Array.from(arguments).join(' '));\n    };\n\n    var callback = Ext.Function.pass(originalFunction, ['Hello', 'World']);\n\n    callback(); // alerts 'Hello World'\n    callback('by Me'); // alerts 'Hello World by Me'\n\n<a href='#!/api/Ext-pass'>Ext.pass</a> is alias for <a href='#!/api/Ext.Function-method-pass'>Ext.Function#pass</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The original function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,208,30",
+                      "text": "0,208,33,23",
+                      "type": "0,208,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments to pass to new callback.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,209,27",
+                      "text": "0,209,32,39",
+                      "type": "0,209,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope (`this` reference) in which the function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,210,28",
+                      "text": "0,210,34,75",
+                      "type": "0,210,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new callback function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,211,31,27",
+                      "type": "0,211,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,213,0",
+                  "text": "0,191,12,618"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "alias",
+                "text": "Create an alias to the provided method property with name `methodName` of `object`.\nNote that the execution scope will still be bound to the provided `object` itself.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "type": "Object/Function",
+                    "src": {
+                      "name": "0,233,37",
+                      "type": "0,233,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "methodName",
+                    "type": "String",
+                    "src": {
+                      "name": "0,234,28",
+                      "type": "0,234,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "aliasFn\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,235,31,8",
+                      "type": "0,235,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,237,0",
+                  "text": "0,230,12,168"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clone",
+                "text": "Create a \"clone\" of the provided method. The returned method will call the given\nmethod passing along all arguments and the \"this\" pointer and return its result.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "method",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,247,30",
+                      "type": "0,247,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "cloneFn\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,248,31,8",
+                      "type": "0,248,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,250,0",
+                  "text": "0,244,12,163"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createInterceptor",
+                "text": "Creates an interceptor function. The passed function is called before the original one. If it returns false,\nthe original one is not called. The resulting function returns the results of the original function.\nThe passed function is called with the parameters of the original function. Example usage:\n\n    var sayHi = function(name){\n        alert('Hi, ' + name);\n    };\n\n    sayHi('Fred'); // alerts \"Hi, Fred\"\n\n    // create a new function that validates input without\n    // directly modifying the original function:\n    var sayHiToFriend = Ext.Function.createInterceptor(sayHi, function(name){\n        return name === 'Brian';\n    });\n\n    sayHiToFriend('Fred');  // no alert\n    sayHiToFriend('Brian'); // alerts \"Hi, Brian\"\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "origFn",
+                    "text": "The original function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,276,30",
+                      "text": "0,276,37,23",
+                      "type": "0,276,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newFn",
+                    "text": "The function to call before the original.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,277,30",
+                      "text": "0,277,36,42",
+                      "type": "0,277,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the passed function is executed.\n**If omitted, defaults to the scope in which the original function is called or the browser window.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,278,29",
+                      "text": "0,278,36,71:0,279,12,102",
+                      "type": "0,278,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnValue",
+                    "optional": true,
+                    "text": "The value to return if the passed function return `false`.\n",
+                    "type": "Object",
+                    "value": "null",
+                    "src": {
+                      "name": "0,280,29",
+                      "text": "0,280,47,59",
+                      "type": "0,280,20",
+                      "value": "0,280,41"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,281,31,18",
+                      "type": "0,281,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,283,0",
+                  "text": "0,257,12,731"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createDelayed",
+                "text": "Creates a delegate (callback) which, when called, executes after a specific delay.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function which will be called on a delay when the returned function is called.\nOptionally, a replacement (or additional) argument list may be specified.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,302,30",
+                      "text": "0,302,33,83:0,303,12,74",
+                      "type": "0,302,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "delay",
+                    "text": "The number of milliseconds to defer execution by whenever called.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,304,28",
+                      "text": "0,304,34,66",
+                      "type": "0,304,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope (`this` reference) used by the function at execution time.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,305,28",
+                      "text": "0,305,34,80",
+                      "type": "0,305,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "(optional) Override arguments for the call. (Defaults to the arguments passed by the caller)\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,306,27",
+                      "text": "0,306,32,93",
+                      "type": "0,306,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "appendArgs",
+                    "text": "(optional) if True args are appended to call args instead of overriding,\nif a number the args are inserted at the specified position.\n",
+                    "type": "Boolean/Number",
+                    "src": {
+                      "name": "0,307,36",
+                      "text": "0,307,47,73:0,308,12,61",
+                      "type": "0,307,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A function which, when called, executes the original function after the specified delay.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,309,31,89",
+                      "type": "0,309,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,311,0",
+                  "text": "0,300,12,84"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "defer",
+                "text": "Calls this function after the number of milliseconds specified, optionally in a specific scope. Example usage:\n\n    var sayHi = function(name){\n        alert('Hi, ' + name);\n    }\n\n    // executes immediately:\n    sayHi('Fred');\n\n    // executes after 2 seconds:\n    Ext.Function.defer(sayHi, 2000, this, ['Fred']);\n\n    // this syntax is sometimes useful for deferring\n    // execution of an anonymous function:\n    Ext.Function.defer(function(){\n        alert('Anonymous');\n    }, 100);\n\n<a href='#!/api/Ext-defer'>Ext.defer</a> is alias for <a href='#!/api/Ext.Function-method-defer'>Ext.Function#defer</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to defer.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,351,30",
+                      "text": "0,351,33,23",
+                      "type": "0,351,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "millis",
+                    "text": "The number of milliseconds for the `setTimeout` call\n(if less than or equal to 0 the function is executed immediately).\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,352,28",
+                      "text": "0,352,35,53:0,353,12,67",
+                      "type": "0,352,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope (`this` reference) in which the function is executed.\n**If omitted, defaults to the browser window.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,354,28",
+                      "text": "0,354,34,75:0,355,12,48",
+                      "type": "0,354,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "optional": true,
+                    "text": "Overrides arguments for the call. Defaults to the arguments passed by the caller.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,356,28",
+                      "text": "0,356,34,82",
+                      "type": "0,356,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "appendArgs",
+                    "optional": true,
+                    "text": "If `true` args are appended to call args instead of overriding,\nor, if a number, then the args are inserted at the specified position.\n",
+                    "type": "Boolean/Number",
+                    "value": "false",
+                    "src": {
+                      "name": "0,357,37",
+                      "text": "0,357,55,64:0,358,12,71",
+                      "type": "0,357,20",
+                      "value": "0,357,48"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The timeout id that can be used with `clearTimeout`.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,359,29,53",
+                      "type": "0,359,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,361,0",
+                  "text": "0,331,12,578"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "interval",
+                "text": "Calls this function repeatedly at a given interval, optionally in a specific scope.\n\n<a href='#!/api/Ext-defer'>Ext.defer</a> is alias for <a href='#!/api/Ext.Function-method-defer'>Ext.Function#defer</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to defer.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,381,30",
+                      "text": "0,381,33,23",
+                      "type": "0,381,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "millis",
+                    "text": "The number of milliseconds for the `setInterval` call\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,382,28",
+                      "text": "0,382,35,54",
+                      "type": "0,382,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope (`this` reference) in which the function is executed.\n**If omitted, defaults to the browser window.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,383,28",
+                      "text": "0,383,34,75:0,384,12,48",
+                      "type": "0,383,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "optional": true,
+                    "text": "Overrides arguments for the call. Defaults to the arguments passed by the caller.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,385,28",
+                      "text": "0,385,34,82",
+                      "type": "0,385,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "appendArgs",
+                    "optional": true,
+                    "text": "If `true` args are appended to call args instead of overriding,\nor, if a number, then the args are inserted at the specified position.\n",
+                    "type": "Boolean/Number",
+                    "value": "false",
+                    "src": {
+                      "name": "0,386,37",
+                      "text": "0,386,55,64:0,387,12,71",
+                      "type": "0,386,20",
+                      "value": "0,386,48"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The interval id that can be used with `clearInterval`.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,388,29,55",
+                      "type": "0,388,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,390,0",
+                  "text": "0,377,12,173"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createSequence",
+                "text": "Create a combined function call sequence of the original function + the passed function.\nThe resulting function returns the results of the original function.\nThe passed function is called with the parameters of the original function. Example usage:\n\n    var sayHi = function(name){\n        alert('Hi, ' + name);\n    };\n\n    sayHi('Fred'); // alerts \"Hi, Fred\"\n\n    var sayGoodbye = Ext.Function.createSequence(sayHi, function(name){\n        alert('Bye, ' + name);\n    });\n\n    sayGoodbye('Fred'); // both alerts show\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "originalFn",
+                    "text": "The original function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,418,30",
+                      "text": "0,418,41,23",
+                      "type": "0,418,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newFn",
+                    "text": "The function to sequence.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,419,30",
+                      "text": "0,419,36,26",
+                      "type": "0,419,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the passed function is executed.\nIf omitted, defaults to the scope in which the original function is called or the\ndefault global environment object (usually the browser window).\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,420,29",
+                      "text": "0,420,36,71:0,421,12,146",
+                      "type": "0,420,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,423,31,18",
+                      "type": "0,423,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,425,0",
+                  "text": "0,402,12,518"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createBuffered",
+                "text": "Creates a delegate function, optionally with a bound scope which, when called, buffers\nthe execution of the passed function for the configured number of milliseconds.\nIf called again within that period, the impending invocation will be canceled, and the\ntimeout period will begin again.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to invoke on a buffered timer.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,444,30",
+                      "text": "0,444,33,44",
+                      "type": "0,444,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "buffer",
+                    "text": "The number of milliseconds by which to buffer the invocation of the\nfunction.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,445,28",
+                      "text": "0,445,35,68:0,446,12,10",
+                      "type": "0,445,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which.\nthe passed function is executed. If omitted, defaults to the scope specified by the caller.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,447,29",
+                      "text": "0,447,36,39:0,448,12,92",
+                      "type": "0,447,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "optional": true,
+                    "text": "Override arguments for the call. Defaults to the arguments\npassed by the caller.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,449,28",
+                      "text": "0,449,34,59:0,450,12,22",
+                      "type": "0,449,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A function which invokes the passed function after buffering for the specified time.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,451,31,85",
+                      "type": "0,451,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,453,0",
+                  "text": "0,439,12,288"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createAnimationFrame",
+                "text": "Creates a wrapped function that, when invoked, defers execution until the next\nanimation frame\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,478,30",
+                      "text": "0,478,33,22",
+                      "type": "0,478,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the function is executed. Defaults to the window object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,479,29",
+                      "text": "0,479,36,95",
+                      "type": "0,479,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "optional": true,
+                    "text": "The argument list to pass to the function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,480,28",
+                      "text": "0,480,34,43",
+                      "type": "0,480,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "queueStrategy",
+                    "optional": true,
+                    "text": "A bit flag that indicates how multiple calls to\nthe returned function within the same animation frame should be handled.\n\n- 1: All calls will be queued - FIFO order\n- 2: Only the first call will be queued\n- 3: The last call will replace all previous calls\n",
+                    "type": "Number",
+                    "value": "3",
+                    "src": {
+                      "name": "0,481,29",
+                      "text": "0,481,46,48:0,482,12,209",
+                      "type": "0,481,20",
+                      "value": "0,481,43"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "0,488,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,477,12",
+                  "name": "0,490,0",
+                  "text": "0,475,11,95"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "requestAnimationFrame",
+                "text": "Schedules the passed function to be called on the next animation frame.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,516,30",
+                      "text": "0,516,33,22",
+                      "type": "0,516,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the function is executed. Defaults to the window object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,517,29",
+                      "text": "0,517,36,95",
+                      "type": "0,517,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "optional": true,
+                    "text": "The argument list to pass to the function.\n",
+                    "type": "Mixed[]",
+                    "src": {
+                      "name": "0,518,30",
+                      "text": "0,518,36,43",
+                      "type": "0,518,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Timer id for the new animation frame to use when canceling it.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,520,29,63",
+                      "type": "0,520,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,514,12",
+                  "name": "0,522,0",
+                  "text": "0,515,12,72"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createThrottled",
+                "text": "Creates a throttled version of the passed function which, when called repeatedly and\nrapidly, invokes the passed function only after a certain interval has elapsed since the\nprevious invocation.\n\nThis is useful for wrapping functions which may be called repeatedly, such as\na handler of a mouse move event when the processing is expensive.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to execute at a regular time interval.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,554,30",
+                      "text": "0,554,33,52",
+                      "type": "0,554,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "interval",
+                    "text": "The interval in milliseconds on which the passed function is executed.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,555,28",
+                      "text": "0,555,37,71",
+                      "type": "0,555,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which\nthe passed function is executed. If omitted, defaults to the scope specified by the caller.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,556,29",
+                      "text": "0,556,36,38:0,557,12,92",
+                      "type": "0,556,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A function which invokes the passed function at the specified interval.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,558,31,72",
+                      "type": "0,558,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,560,0",
+                  "text": "0,547,12,341"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createBarrier",
+                "text": "Wraps the passed function in a barrier function which will call the passed function after the passed number of invocations.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "count",
+                    "text": "The number of invocations which will result in the calling of the passed function.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,598,28",
+                      "text": "0,598,34,83",
+                      "type": "0,598,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call after the required number of invocations.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,599,30",
+                      "text": "0,599,33,63",
+                      "type": "0,599,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The scope (`this` reference) in which the function will be called.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,600,28",
+                      "text": "0,600,34,67",
+                      "type": "0,600,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,602,0",
+                  "text": "0,597,12,124"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "interceptBefore",
+                "text": "Adds behavior to an existing method that is executed before the\noriginal behavior of the function.  For example:\n\n    var soup = {\n        contents: [],\n        add: function(ingredient) {\n            this.contents.push(ingredient);\n        }\n    };\n    Ext.Function.interceptBefore(soup, \"add\", function(ingredient){\n        if (!this.contents.length && ingredient !== \"water\") {\n            // Always add water to start with\n            this.contents.push(\"water\");\n        }\n    });\n    soup.add(\"onions\");\n    soup.add(\"salt\");\n    soup.contents; // will contain: water, onions, salt\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "The target object\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,630,28",
+                      "text": "0,630,35,18",
+                      "type": "0,630,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "methodName",
+                    "text": "Name of the method to override\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,631,28",
+                      "text": "0,631,39,31",
+                      "type": "0,631,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "Function with the new behavior.  It will\nbe called with the same arguments as the original method.  The\nreturn value of this function will be the return value of the\nnew method.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,632,30",
+                      "text": "0,632,33,41:0,633,12,137",
+                      "type": "0,632,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope to execute the interceptor function. Defaults to the object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,636,29",
+                      "text": "0,636,36,71",
+                      "type": "0,636,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new function just created.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,637,31,31",
+                      "type": "0,637,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,639,0",
+                  "text": "0,611,12,589"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "interceptAfter",
+                "text": "Adds behavior to an existing method that is executed after the\noriginal behavior of the function.  For example:\n\n    var soup = {\n        contents: [],\n        add: function(ingredient) {\n            this.contents.push(ingredient);\n        }\n    };\n    Ext.Function.interceptAfter(soup, \"add\", function(ingredient){\n        // Always add a bit of extra salt\n        this.contents.push(\"salt\");\n    });\n    soup.add(\"water\");\n    soup.add(\"onions\");\n    soup.contents; // will contain: water, salt, onions, salt\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "The target object\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,668,28",
+                      "text": "0,668,35,18",
+                      "type": "0,668,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "methodName",
+                    "text": "Name of the method to override\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,669,28",
+                      "text": "0,669,39,31",
+                      "type": "0,669,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "Function with the new behavior.  It will\nbe called with the same arguments as the original method.  The\nreturn value of this function will be the return value of the\nnew method.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,670,30",
+                      "text": "0,670,33,41:0,671,12,137",
+                      "type": "0,670,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope to execute the interceptor function. Defaults to the object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,674,29",
+                      "text": "0,674,36,71",
+                      "type": "0,674,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new function just created.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,675,31,31",
+                      "type": "0,675,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,677,0",
+                  "text": "0,651,12,512"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "memoize",
+                "since": "6.0.0",
+                "text": "Returns a wrapper function that caches the return value for previously\nprocessed function argument(s).\n\nFor example:\n\n     function factorial (value) {\n         var ret = value;\n\n         while (--value > 1) {\n             ret *= value;\n         }\n\n         return ret;\n     }\n\nEach call to `factorial` will loop and multiply to produce the answer. Using\nthis function we can wrap the above and cache its answers:\n\n     factorial = Ext.Function.memoize(factorial);\n\nThe returned function operates in the same manner as before, but results are\nstored in a cache to avoid calling the wrapped function when given the same\narguments.\n\n     var x = factorial(20);  // first time; call real factorial()\n     var y = factorial(20);  // second time; return value from first call\n\nTo support multi-argument methods, you will need to provide a `hashFn`.\n\n     function permutation (n, k) {\n         return factorial(n) / factorial(n - k);\n     }\n\n     permutation = Ext.Function.memoize(permutation, null, function (n, k) {\n         n + '-' + k;\n     });\n\nIn this case, the <a href='#!/api/Ext.Function-method-memoize'>memoize</a> of `factorial` is sufficient optimization, but the\nexample is simply to illustrate how to generate a unique key for an expensive,\nmulti-argument method.\n\n**IMPORTANT**: This cache is unbounded so be cautious of memory leaks if the\n<a href='#!/api/Ext.Function-method-memoize'>memoize</a>d function is kept indefinitely or is given an unbounded set of\npossible arguments.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "Function to wrap.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,747,30",
+                      "text": "0,747,33,18",
+                      "type": "0,747,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "Optional scope in which to execute the wrapped function.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,748,28",
+                      "text": "0,748,34,57",
+                      "type": "0,748,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "hashFn",
+                    "text": "Optional function used to compute a hash key for\nstoring the result, based on the arguments to the original function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,749,30",
+                      "text": "0,749,37,49:0,750,12,69",
+                      "type": "0,749,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The caching wrapper function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,751,31,30",
+                      "type": "0,751,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,754,0",
+                  "since": "0,752,19",
+                  "text": "0,702,12,1399"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "singleton": "0,5,4",
+          "text": "0,3,4,72"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

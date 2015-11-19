@@ -1,0 +1,618 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/dom/Helper.js",
+    "../../../ext/classic/classic/overrides/dom/Helper.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.DomHelper",
+        "name": "Ext.dom.Helper",
+        "singleton": true,
+        "text": "The DomHelper class provides a layer of abstraction from DOM and transparently supports creating elements via DOM or\nusing HTML fragments. It also has the ability to create HTML fragment templates from your DOM building code.\n\n## DomHelper element specification object\n\nA specification object is used when creating elements. Attributes of this object are assumed to be element\nattributes, except for 4 special attributes:\n\n* **tag**: The tag name of the element\n* **children (or cn)**: An array of the same kind of element definition objects to be created and appended. These\ncan be nested as deep as you want.\n* **cls**: The class attribute of the element. This will end up being either the \"class\" attribute on a HTML\nfragment or className for a DOM node, depending on whether DomHelper is using fragments or DOM.\n* **html**: The innerHTML for the element\n\n## Insertion methods\n\nCommonly used insertion methods:\n\n* <a href='#!/api/Ext.dom.Helper-method-append'>append</a>\n* <a href='#!/api/Ext.dom.Helper-method-insertBefore'>insertBefore</a>\n* <a href='#!/api/Ext.dom.Helper-method-insertAfter'>insertAfter</a>\n* <a href='#!/api/Ext.dom.Helper-method-overwrite'>overwrite</a>\n* <a href='#!/api/Ext.dom.Helper-method-insertHtml'>insertHtml</a>\n\n## Example\n\nThis is an example, where an unordered list with 3 children items is appended to an existing element with id\n'my-div':\n\n    var dh = Ext.DomHelper; // create shorthand alias\n    // specification object\n    var spec = {\n        id: 'my-ul',\n        tag: 'ul',\n        cls: 'my-list',\n        // append children after creating\n        children: [     // may also specify 'cn' instead of 'children'\n            {tag: 'li', id: 'item0', html: 'List Item 0'},\n            {tag: 'li', id: 'item1', html: 'List Item 1'},\n            {tag: 'li', id: 'item2', html: 'List Item 2'}\n        ]\n    };\n    var list = dh.append(\n        'my-div', // the context element 'my-div' can either be the id or the actual node\n        spec      // the specification object\n    );\n\nElement creation specification parameters in this class may also be passed as an Array of specification objects.\nThis can be used to insert multiple sibling nodes into an existing container very efficiently. For example, to add\nmore list items to the example above:\n\n    dh.append('my-ul', [\n        {tag: 'li', id: 'item3', html: 'List Item 3'},\n        {tag: 'li', id: 'item4', html: 'List Item 4'}\n    ]);\n\n## Templating\n\nThe real power is in the built-in templating. Instead of creating or appending any elements, createTemplate returns\na Template object which can be used over and over to insert new elements. Revisiting the example above, we could\nutilize templating this time:\n\n    // create the node\n    var list = dh.append('my-div', {tag: 'ul', cls: 'my-list'});\n    // get template\n    var tpl = dh.createTemplate({tag: 'li', id: 'item{0}', html: 'List Item {0}'});\n\n    for(var i = 0; i < 5; i++){\n        tpl.append(list, i); // use template to append to the actual node\n    }\n\nAn example using a template:\n\n    var html = '\"{0}\" href=\"{1}\" class=\"nav\">{2}';\n\n    var tpl = new Ext.DomHelper.createTemplate(html);\n    tpl.append('blog-roll', ['link1', 'http://www.foxmulder.com/', \"Fox's Site\"]);\n    tpl.append('blog-roll', ['link2', 'http://www.danascully.org/', \"Scully's Site\"]);\n\nThe same example using named parameters:\n\n    var html = '\"{id}\" href=\"{url}\" class=\"nav\">{text}';\n\n    var tpl = new Ext.DomHelper.createTemplate(html);\n    tpl.append('blog-roll', {\n        id: 'link1',\n        url: 'http://www.danascully.org/',\n        text: \"Scully's Site\"\n    });\n    tpl.append('blog-roll', {\n        id: 'link2',\n        url: 'http://www.foxmulder.com/',\n        text: \"Fox's Site\"\n    });\n\n## Compiling Templates\n\nTemplates are applied using regular expressions. The performance is great, but if you are adding a bunch of DOM\nelements using the same template, you can increase performance even further by \"compiling\" the template. The way\n\"compile()\" works is the template is parsed and broken up at the different variable points and a dynamic function is\ncreated and eval'ed. The generated function performs string concatenation of these parts and the passed variables\ninstead of using regular expressions.\n\n    var html = '\"{id}\" href=\"{url}\" class=\"nav\">{text}';\n\n    var tpl = new Ext.DomHelper.createTemplate(html);\n    tpl.compile();\n\n    // ... use template like normal\n\n## Performance Boost\n\nDomHelper will transparently create HTML fragments when it can. Using HTML fragments instead of DOM can\nsignificantly boost performance.\n\nElement creation specification parameters may also be strings which are used as innerHTML.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "generateStyles",
+                "text": "Converts the styles from the given object to text. The styles are CSS style names\nwith their associated value.\n\nThe basic form of this method returns a string:\n\n     var s = Ext.DomHelper.generateStyles({\n         backgroundColor: 'red'\n     });\n\n     // s = 'background-color:red;'\n\nAlternatively, this method can append to an output array.\n\n     var buf = [];\n\n     ...\n\n     Ext.DomHelper.generateStyles({\n         backgroundColor: 'red'\n     }, buf);\n\nIn this case, the style text is pushed on to the array and the array is returned.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "styles",
+                    "text": "The object describing the styles.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,254,28",
+                      "text": "0,254,35,34",
+                      "type": "0,254,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "buffer",
+                    "optional": true,
+                    "text": "The output buffer.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "0,255,31",
+                      "text": "0,255,39,19",
+                      "type": "0,255,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "encode",
+                    "optional": true,
+                    "text": "`true` to <a href='#!/api/Ext.String-method-htmlEncode'>Ext.String#htmlEncode</a> property values if they\nare going to be inserted as HTML attributes.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,256,30",
+                      "text": "0,256,38,64:0,257,12,45",
+                      "type": "0,256,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If buffer is passed, it is returned. Otherwise the style\nstring is returned.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "text": "0,258,38,57:0,259,12,20",
+                      "type": "0,258,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,261,0",
+                  "text": "0,231,12,539"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "markup",
+                "text": "Returns the markup for the passed Element(s) config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "spec",
+                    "text": "The DOM object spec (and children).\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,284,28",
+                      "text": "0,284,33,36",
+                      "type": "0,284,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,285,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,287,0",
+                  "text": "0,283,12,53"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "applyStyles",
+                "text": "Applies a style specification to an element.\n\nStyles in object form should be a valid DOM element style property.\n[Valid style property names](http://www.w3schools.com/jsref/dom_obj_style.asp)\n(_along with the supported CSS version for each_)\n\n    // <div id=\"my-el\">Phineas Flynn</div>\n\n    var el = Ext.get('my-el'),\n        dh = Ext.dom.Helper;\n\n    dh.applyStyles(el, 'color: white;');\n\n    dh.applyStyles(el, {\n        fontWeight: 'bold',\n        backgroundColor: 'gray',\n        padding: '10px'\n    });\n\n    dh.applyStyles(el, function () {\n        if (name.initialConfig.html === 'Phineas Flynn') {\n            return 'font-style: italic;';\n            // OR return { fontStyle: 'italic' };\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The element to apply styles to\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,323,56",
+                      "text": "0,323,59,31",
+                      "type": "0,323,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "styles",
+                    "text": "A style specification string e.g. 'width:100px', or object in the form {width:'100px'}, or\na function which returns such a specification.\n",
+                    "type": "String/Object/Function",
+                    "src": {
+                      "name": "0,324,44",
+                      "text": "0,324,51,91:0,325,12,47",
+                      "type": "0,324,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,327,0",
+                  "text": "0,297,12,717"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createContextualFragment",
+                "text": "Fix for browsers which do not support createContextualFragment\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "html",
+                    "src": {
+                      "name": "0,335,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,332,12",
+                  "name": "0,335,0",
+                  "text": "0,333,12,63"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createDom",
+                "text": "Creates new DOM element(s) without inserting them to the document.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "o",
+                    "text": "The DOM object spec (and children) or raw HTML blob\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "0,353,35",
+                      "text": "0,353,37,52",
+                      "type": "0,353,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new uninserted node\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "text": "0,354,34,24",
+                      "type": "0,354,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,356,0",
+                  "text": "0,352,12,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertHtml",
+                "text": "Inserts an HTML fragment into the DOM.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "where",
+                    "text": "Where to insert the html in relation to el - beforeBegin, afterBegin, beforeEnd, afterEnd.\n\nFor example take the following HTML: `<div>Contents</div>`\n\nUsing different `where` values inserts element to the following places:\n\n- beforeBegin: `<HERE><div>Contents</div>`\n- afterBegin: `<div><HERE>Contents</div>`\n- beforeEnd: `<div>Contents<HERE></div>`\n- afterEnd: `<div>Contents</div><HERE>`\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,380,28",
+                      "text": "0,380,34,91:0,381,12,301",
+                      "type": "0,380,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "HTMLElement/TextNode",
+                    "src": {
+                      "name": "0,391,42",
+                      "text": "0,391,45,20",
+                      "type": "0,391,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "html",
+                    "text": "The HTML fragment\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,392,28",
+                      "text": "0,392,33,18",
+                      "type": "0,392,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "text": "0,393,34,13",
+                      "type": "0,393,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,395,0",
+                  "text": "0,379,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertBefore",
+                "text": "Creates new DOM element(s) and inserts them before el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,481,56",
+                      "text": "0,481,59,20",
+                      "type": "0,481,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "o",
+                    "text": "The DOM object spec (and children) or raw HTML blob\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "0,482,35",
+                      "text": "0,482,37,52",
+                      "type": "0,482,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "optional": true,
+                    "text": "true to return a Ext.Element\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,483,30",
+                      "text": "0,483,45,29",
+                      "type": "0,483,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,484,50,13",
+                      "type": "0,484,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,486,0",
+                  "text": "0,480,12,55"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertAfter",
+                "text": "Creates new DOM element(s) and inserts them after el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,492,56",
+                      "text": "0,492,59,20",
+                      "type": "0,492,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "o",
+                    "text": "The DOM object spec (and children)\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,493,28",
+                      "text": "0,493,30,35",
+                      "type": "0,493,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "optional": true,
+                    "text": "true to return a Ext.Element\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,494,30",
+                      "text": "0,494,45,29",
+                      "type": "0,494,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,495,50,13",
+                      "type": "0,495,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,497,0",
+                  "text": "0,491,12,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertFirst",
+                "text": "Creates new DOM element(s) and inserts them as the first child of el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,503,56",
+                      "text": "0,503,59,20",
+                      "type": "0,503,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "o",
+                    "text": "The DOM object spec (and children) or raw HTML blob\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "0,504,35",
+                      "text": "0,504,37,52",
+                      "type": "0,504,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "optional": true,
+                    "text": "true to return a Ext.Element\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,505,30",
+                      "text": "0,505,45,29",
+                      "type": "0,505,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,506,50,13",
+                      "type": "0,506,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,508,0",
+                  "text": "0,502,12,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "append",
+                "text": "Creates new DOM element(s) and appends them to el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,514,56",
+                      "text": "0,514,59,20",
+                      "type": "0,514,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "o",
+                    "text": "The DOM object spec (and children) or raw HTML blob\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "0,515,35",
+                      "text": "0,515,37,52",
+                      "type": "0,515,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "optional": true,
+                    "text": "true to return a Ext.Element\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,516,30",
+                      "text": "0,516,45,29",
+                      "type": "0,516,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,517,50,13",
+                      "type": "0,517,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,519,0",
+                  "text": "0,513,12,51"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "overwrite",
+                "text": "Creates new DOM element(s) and overwrites the contents of el with them.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,525,56",
+                      "text": "0,525,59,20",
+                      "type": "0,525,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "o",
+                    "text": "The DOM object spec (and children) or raw HTML blob\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "0,526,35",
+                      "text": "0,526,37,52",
+                      "type": "0,526,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "optional": true,
+                    "text": "true to return an Ext.Element\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,527,30",
+                      "text": "0,527,51,30",
+                      "type": "0,527,20",
+                      "value": "0,527,44"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,528,50,13",
+                      "type": "0,528,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,530,0",
+                  "text": "0,524,12,72"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createTemplate",
+                "text": "Creates a new Ext.Template from the DOM object spec.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "o",
+                    "text": "The DOM object spec (and children)\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,583,28",
+                      "text": "0,583,30,35",
+                      "type": "0,583,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new template\n",
+                    "type": "Ext.Template",
+                    "src": {
+                      "text": "0,584,35,17",
+                      "type": "0,584,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,586,0",
+                  "text": "0,582,12,53"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedVersion": "5.0.0",
+                "name": "createHtml",
+                "text": "Alias for <a href='#!/api/Ext.dom.Helper-method-markup'>markup</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "spec",
+                    "src": {
+                      "name": "0,596,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedVersion": "0,594,12",
+                  "name": "0,592,20",
+                  "text": "0,593,12,27"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "insertIntoTable",
+                "text": "workaround for broken table implementation in IE9m\nhttp://www.ericvasilik.com/2006/07/code-karma.html\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "tag",
+                    "src": {
+                      "name": "1,71,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "where",
+                    "src": {
+                      "name": "1,71,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "destinationEl",
+                    "src": {
+                      "name": "1,71,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "html",
+                    "src": {
+                      "name": "1,71,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,65,12",
+                  "name": "1,66,20",
+                  "text": "1,68,12,102"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,2,24",
+          "name": "0,123,0",
+          "singleton": "0,3,4",
+          "text": "0,5,4,4447"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

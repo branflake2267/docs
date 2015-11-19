@@ -1,0 +1,424 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../packages/exporter/src/exporter/file/excel/Workbook.js",
+    "../../../packages/exporter/src/exporter/file/Base.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.exporter.file.Base",
+        "name": "Ext.exporter.file.excel.Workbook",
+        "requires": "Ext.exporter.file.excel.Worksheet,Ext.exporter.file.excel.Table,Ext.exporter.file.excel.Style,Ext.exporter.file.excel.Row,Ext.exporter.file.excel.Column,Ext.exporter.file.excel.Cell",
+        "text": "This class generates an Excel XML workbook.\n\nThe workbook is the top level object of an xml Excel file.\nIt should have at least one Worksheet before rendering.\n\nThis is how an xml Excel file looks like:\n\n - Workbook\n     - Style[]\n     - Worksheet[]\n         - Table[]\n             - Column[]\n             - Row[]\n                 - Cell[]\n\n\nCheck Microsoft's website for more info about Excel XML:\nhttps://msdn.microsoft.com/en-us/Library/aa140066(v=office.10).aspx\n\n\nHere is an example of how to create an Excel XML document:\n\n     var workbook = Ext.create('Ext.exporter.file.excel.Workbook', {\n             title:  'My document',\n             author: 'John Doe'\n         }),\n         table = workbook.addWorksheet({\n             name:   'Sheet 1'\n         }).addTable();\n\n     // add formatting to the first two columns of the spreadsheet\n     table.addColumn({\n         width:  120,\n         styleId: workbook.addStyle({\n             format: 'Long Time'\n         }).getId()\n     });\n     table.addColumn({\n         width:  100,\n         styleId: workbook.addStyle({\n             format: 'Currency'\n         }).getId()\n     });\n\n     // add rows and cells with data\n     table.addRow().addCell([{\n         value: 'Date'\n     },{\n         value: 'Value'\n     }]);\n     table.addRow().addCell([{\n         value: new Date('06/17/2015')\n     },{\n         value: 15\n     }]);\n     table.addRow().addCell([{\n         value: new Date('06/18/2015')\n     },{\n         value: 30\n     }]);\n\n     //add a formula on the 4th row which sums up the previous 2 rows\n     table.addRow().addCell({\n         index: 2,\n         formula: '=SUM(R[-2]C:R[-1]C)'\n     });\n\n     // save the document in the browser\n     Ext.exporter.File.saveAs(workbook.render(), 'document.xml', 'UTF-8');\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "author",
+                "optional": true,
+                "text": "\nThe author of the generated Excel file\n",
+                "type": "String",
+                "value": "\"Sencha\"",
+                "src": {
+                  "name": "0,94,27",
+                  "text": "0,95,12,40",
+                  "type": "0,94,18",
+                  "value": "0,94,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "id",
+                "text": "\nUnique id for this object. Auto generated when missing.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,14,26",
+                  "text": "1,15,12,57",
+                  "type": "1,14,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "protectStructure",
+                "optional": true,
+                "text": "\nProtect structure\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,115,28",
+                  "text": "0,116,12,19",
+                  "type": "0,115,18",
+                  "value": "0,115,45"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "protectWindows",
+                "optional": true,
+                "text": "\nProtect windows\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,122,28",
+                  "text": "0,123,12,17",
+                  "type": "0,122,18",
+                  "value": "0,122,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "styles",
+                "text": "\nCollection of styles available in this workbook\n",
+                "type": "Ext.exporter.file.excel.Style[]",
+                "src": {
+                  "name": "0,129,51",
+                  "text": "0,130,12,49",
+                  "type": "0,129,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "title",
+                "optional": true,
+                "text": "\nThe title of the workbook\n",
+                "type": "String",
+                "value": "\"Workbook\"",
+                "src": {
+                  "name": "0,87,27",
+                  "text": "0,88,12,27",
+                  "type": "0,87,18",
+                  "value": "0,87,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "windowHeight",
+                "optional": true,
+                "text": "\nExcel window height\n",
+                "type": "Number",
+                "value": "9000",
+                "src": {
+                  "name": "0,101,27",
+                  "text": "0,102,12,21",
+                  "type": "0,101,18",
+                  "value": "0,101,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "windowWidth",
+                "optional": true,
+                "text": "\nExcel window width\n",
+                "type": "Number",
+                "value": "50000",
+                "src": {
+                  "name": "0,108,27",
+                  "text": "0,109,12,20",
+                  "type": "0,108,18",
+                  "value": "0,108,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "worksheets",
+                "text": "\nCollection of worksheets available in this workbook\n",
+                "type": "Ext.exporter.file.excel.Worksheet[]",
+                "src": {
+                  "name": "0,136,55",
+                  "text": "0,137,12,53",
+                  "type": "0,136,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "addStyle",
+                "text": "Convenience method to add styles. You can also use workbook.getStyles().add(config).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,207,30",
+                      "type": "0,207,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.exporter.file.excel.Style/Ext.exporter.file.excel.Style[]",
+                    "src": {
+                      "type": "0,208,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,210,0",
+                  "text": "0,206,8,85"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addWorksheet",
+                "text": "Convenience method to add worksheets. You can also use workbook.getWorksheets().add(config).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,225,30",
+                      "type": "0,225,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.exporter.file.excel.Worksheet/Ext.exporter.file.excel.Worksheet[]",
+                    "src": {
+                      "type": "0,226,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,228,0",
+                  "text": "0,224,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "checkCollection",
+                "text": "This method could be used in config appliers that need to initialize a\nCollection that has items of type className.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "1,44,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dataCollection",
+                    "src": {
+                      "name": "1,45,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "1,46,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "*",
+                    "src": {
+                      "type": "1,47,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,49,0",
+                  "text": "1,41,8,117"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "constructCollection",
+                "text": "Create a new Collection with a decoder for the specified className.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "1,64,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.util.Collection",
+                    "src": {
+                      "type": "1,65,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,67,8",
+                  "name": "1,69,0",
+                  "text": "1,62,8,69"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getCollectionDecoder",
+                "text": "Builds a Collection decoder for the specified className.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "1,78,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "1,79,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,81,8",
+                  "name": "1,83,0",
+                  "text": "1,76,8,58"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRenderData",
+                "text": "Return the data used when rendering the template\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "1,101,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,103,0",
+                  "text": "1,99,8,50"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStyle",
+                "text": "Convenience method to fetch a style by its id.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,216,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.exporter.file.excel.Style",
+                    "src": {
+                      "type": "0,217,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,219,0",
+                  "text": "0,215,8,47"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStyles",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "\nReturns the collection of styles available in this workbook\n",
+                    "type": "Ext.util.Collection",
+                    "src": {
+                      "text": "0,146,8,61",
+                      "type": "0,145,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,144,16"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getWorksheet",
+                "text": "Convenience method to fetch a worksheet by its id.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,234,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.exporter.file.excel.Worksheet",
+                    "src": {
+                      "type": "0,235,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,237,0",
+                  "text": "0,233,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getWorksheets",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "\nReturns the collection of worksheets available in this workbook\n",
+                    "type": "Ext.util.Collection",
+                    "src": {
+                      "text": "0,153,8,65",
+                      "type": "0,152,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,151,16"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "render",
+                "text": "Renders the content according to the template provided to the class\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "1,92,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,94,0",
+                  "text": "1,90,8,69"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,74,0",
+          "name": "0,73,0",
+          "requires": "0,77,0,0:0,78,0,0:0,79,0,0:0,80,0,0:0,81,0,0:0,82,0,0",
+          "text": "0,2,4,1770"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

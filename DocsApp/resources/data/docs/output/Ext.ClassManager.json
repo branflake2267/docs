@@ -1,0 +1,1123 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/class/ClassManager.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.ClassManager",
+        "singleton": true,
+        "text": "\nExt.ClassManager manages all classes and handles mapping from string class name to\nactual class objects throughout the whole framework. It is not generally accessed directly, rather through\nthese convenient shorthands:\n\n- <a href='#!/api/Ext-method-define'>Ext#define</a>\n- <a href='#!/api/Ext-method-create'>Ext#create</a>\n- <a href='#!/api/Ext-method-widget'>Ext#widget</a>\n- <a href='#!/api/Ext-method-getClass'>Ext#getClass</a>\n- <a href='#!/api/Ext-method-getClassName'>Ext#getClassName</a>\n\n# Basic syntax:\n\n    Ext.define(className, properties);\n\nin which `properties` is an object represent a collection of properties that apply to the class. See\n<a href='#!/api/Ext.ClassManager-method-create'>Ext.ClassManager#create</a> for more detailed instructions.\n\n    Ext.define('Person', {\n         name: 'Unknown',\n\n         constructor: function(name) {\n             if (name) {\n                 this.name = name;\n             }\n         },\n\n         eat: function(foodType) {\n             alert(\"I'm eating: \" + foodType);\n\n             return this;\n         }\n    });\n\n    var aaron = new Person(\"Aaron\");\n    aaron.eat(\"Sandwich\"); // alert(\"I'm eating: Sandwich\");\n\nExt.Class has a powerful set of extensible <a href='#!/api/Ext.Class-static-method-registerPreprocessor'>Ext.Class#registerPreprocessor</a> which takes care of\neverything related to class creation, including but not limited to inheritance, mixins, configuration, statics, etc.\n\n# Inheritance:\n\n    Ext.define('Developer', {\n         extend: 'Person',\n\n         constructor: function(name, isGeek) {\n             this.isGeek = isGeek;\n\n             // Apply a method from the parent class' prototype\n             this.callParent([name]);\n         },\n\n         code: function(language) {\n             alert(\"I'm coding in: \" + language);\n\n             this.eat(\"Bugs\");\n\n             return this;\n         }\n    });\n\n    var jacky = new Developer(\"Jacky\", true);\n    jacky.code(\"JavaScript\"); // alert(\"I'm coding in: JavaScript\");\n                              // alert(\"I'm eating: Bugs\");\n\nSee <a href='#!/api/Ext.Base-callParent'>Ext.Base#callParent</a> for more details on calling superclass' methods\n\n# Mixins:\n\n    Ext.define('CanPlayGuitar', {\n         playGuitar: function() {\n            alert(\"F#...G...D...A\");\n         }\n    });\n\n    Ext.define('CanComposeSongs', {\n         composeSongs: function() { ... }\n    });\n\n    Ext.define('CanSing', {\n         sing: function() {\n             alert(\"For he's a jolly good fellow...\")\n         }\n    });\n\n    Ext.define('Musician', {\n         extend: 'Person',\n\n         mixins: {\n             canPlayGuitar: 'CanPlayGuitar',\n             canComposeSongs: 'CanComposeSongs',\n             canSing: 'CanSing'\n         }\n    })\n\n    Ext.define('CoolPerson', {\n         extend: 'Person',\n\n         mixins: {\n             canPlayGuitar: 'CanPlayGuitar',\n             canSing: 'CanSing'\n         },\n\n         sing: function() {\n             alert(\"Ahem....\");\n\n             this.mixins.canSing.sing.call(this);\n\n             alert(\"[Playing guitar at the same time...]\");\n\n             this.playGuitar();\n         }\n    });\n\n    var me = new CoolPerson(\"Jacky\");\n\n    me.sing(); // alert(\"Ahem...\");\n               // alert(\"For he's a jolly good fellow...\");\n               // alert(\"[Playing guitar at the same time...]\");\n               // alert(\"F#...G...D...A\");\n\n# Config:\n\n    Ext.define('SmartPhone', {\n         config: {\n             hasTouchScreen: false,\n             operatingSystem: 'Other',\n             price: 500\n         },\n\n         isExpensive: false,\n\n         constructor: function(config) {\n             this.initConfig(config);\n         },\n\n         applyPrice: function(price) {\n             this.isExpensive = (price > 500);\n\n             return price;\n         },\n\n         applyOperatingSystem: function(operatingSystem) {\n             if (!(/^(iOS|Android|BlackBerry)$/i).test(operatingSystem)) {\n                 return 'Other';\n             }\n\n             return operatingSystem;\n         }\n    });\n\n    var iPhone = new SmartPhone({\n         hasTouchScreen: true,\n         operatingSystem: 'iOS'\n    });\n\n    iPhone.getPrice(); // 500;\n    iPhone.getOperatingSystem(); // 'iOS'\n    iPhone.getHasTouchScreen(); // true;\n\n    iPhone.isExpensive; // false;\n    iPhone.setPrice(600);\n    iPhone.getPrice(); // 600\n    iPhone.isExpensive; // true;\n\n    iPhone.setOperatingSystem('AlienOS');\n    iPhone.getOperatingSystem(); // 'Other'\n\n# Statics:\n\n    Ext.define('Computer', {\n         statics: {\n             factory: function(brand) {\n                // 'this' in static methods refer to the class itself\n                 return new this(brand);\n             }\n         },\n\n         constructor: function() { ... }\n    });\n\n    var dellComputer = Computer.factory('Dell');\n\nAlso see <a href='#!/api/Ext.Base-method-statics'>Ext.Base#statics</a> and <a href='#!/api/Ext.Base-property-self'>Ext.Base#self</a> for more details on accessing\nstatic properties within class methods\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "debugHooks",
+                "text": "A collection of diagnostic methods to decorate the real methods of the class. These\nmethods are applied as an `override` if this class has debug enabled as defined by\n`Ext.isDebugEnabled`.\n\nThese will be automatically removed by the Sencha Cmd compiler for production builds.\n\nExample usage:\n\n     Ext.define('Foo.bar.Class', {\n         foo: function (a, b, c) {\n             ...\n         },\n\n         bar: function (a, b) {\n             ...\n             return 42;\n         },\n\n         debugHooks: {\n             foo: function (a, b, c) {\n                 // check arguments...\n                 return this.callParent(arguments);\n             }\n         }\n     });\n\nIf you specify a `$enabled` property in the <a href='#!/api/Ext.ClassManager-cfg-debugHooks'>debugHooks</a> object that will be used\nas the default enabled state for the hooks. If the <a href='#!/api/Ext-cfg-manifest'>Ext#manifest</a> contains\na `debug` object of if <a href='#!/api/Ext-cfg-debugConfig'>Ext#debugConfig</a> is specified, the `$enabled` flag\nwill override its \"*\" value.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,1213,22",
+                  "text": "0,1214,8,945",
+                  "type": "0,1213,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "deprecated",
+                "text": "The object given has properties that describe the versions at which the deprecations\napply.\n\nThe purpose of the <a href='#!/api/Ext.ClassManager-cfg-deprecated'>deprecated</a> declaration is to enable development mode to give\nsuitable error messages when deprecated methods or properties are used. Methods can\nalways be injected to provide this feedback, but properties can only be handled on\nsome browsers (those that support `Object.defineProperty`).\n\nIn some cases, deprecated methods can be restored to their previous behavior or\nadded back if they have been removed.\n\nThe structure of a <a href='#!/api/Ext.ClassManager-cfg-deprecated'>deprecated</a> declaration is this:\n\n     Ext.define('Foo.bar.Class', {\n         ...\n\n         deprecated: {\n             // Optional package name - default is the framework (ext or touch)\n             name: 'foobar',\n\n             '5.0': {\n                 methods: {\n                     // Throws: '\"removedMethod\" is deprecated.'\n                     removedMethod: null,\n\n                     // Throws: '\"oldMethod\" is deprecated. Please use \"newMethod\" instead.'\n                     oldMethod: 'newMethod',\n\n                     // When this block is enabled, this method is applied as an\n                     // override. Otherwise you get same as \"removeMethod\".\n                     method: function () {\n                         // Do what v5 \"method\" did. If \"method\" exists in newer\n                         // versions callParent can call it. If 5.1 has \"method\"\n                         // then it would be next in line, otherwise 5.2 and last\n                         // would be the current class.\n                     },\n\n                     moreHelpful: {\n                         message: 'Something helpful to do instead.',\n                         fn: function () {\n                             // The v5 \"moreHelpful\" method to use when enabled.\n                         }\n                     }\n                 },\n                 properties: {\n                     // Throws: '\"removedProp\" is deprecated.'\n                     removedProp: null,\n\n                     // Throws: '\"oldProp\" is deprecated. Please use \"newProp\" instead.'\n                     oldProp: 'newProp',\n\n                     helpful: {\n                         message: 'Something helpful message about what to do.'\n                     }\n                     ...\n                 },\n                 statics: {\n                     methods: {\n                         ...\n                     },\n                     properties: {\n                         ...\n                     },\n                 }\n             },\n\n             '5.1': {\n                 ...\n             },\n\n             '5.2': {\n                 ...\n             }\n         }\n     });\n\nThe primary content of <a href='#!/api/Ext.ClassManager-cfg-deprecated'>deprecated</a> are the version number keys. These indicate\na version number where methods or properties were deprecated. These versions are\ncompared to the version reported by `Ext.getCompatVersion` to determine the action\nto take for each \"block\".\n\nWhen the compatibility version is set to a value less than a version number key,\nthat block is said to be \"enabled\". For example, if a method was deprecated in\nversion 5.0 but the desired compatibility level is 4.2 then the block is used to\npatch methods and (to some degree) restore pre-5.0 compatibility.\n\nWhen multiple active blocks have the same method name, each method is applied as\nan override in reverse order of version. In the above example, if a method appears\nin the \"5.0\", \"5.1\" and \"5.2\" blocks then the \"5.2\" method is applied as an override\nfirst, followed by the \"5.1\" method and finally the \"5.0\" method. This means that\nthe `callParent` from the \"5.0\" method calls the \"5.1\" method which calls the\n\"5.2\" method which can (if applicable) call the current version.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,1262,22",
+                  "text": "0,1263,8,3755",
+                  "type": "0,1262,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "isCreated",
+                "text": "Checks if a class has already been created.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "type": "String",
+                    "src": {
+                      "name": "0,262,28",
+                      "type": "0,262,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "exist\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,263,30,6",
+                      "type": "0,263,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,265,0",
+                  "text": "0,260,12,45"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "triggerCreated",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,312,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "src": {
+                      "name": "0,312,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,310,12",
+                  "name": "0,312,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onCreated",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "0,321,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "0,321,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,321,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,319,12",
+                  "name": "0,321,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "notify",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,328,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "src": {
+                      "name": "0,328,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "nameListeners",
+                    "src": {
+                      "name": "0,328,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,326,12",
+                  "name": "0,328,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addListener",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "nameListeners",
+                    "src": {
+                      "name": "0,360,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,358,12",
+                  "name": "0,360,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addRootNamespaces",
+                "since": "6.0.0",
+                "text": "See <a href='#!/api/Ext-method-addRootNamespaces'>Ext#addRootNamespaces</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "namespaces",
+                    "src": {
+                      "name": "0,402,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,400,12",
+                  "name": "0,402,0",
+                  "since": "0,399,19",
+                  "text": "0,398,12,59"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clearNamespaceCache",
+                "since": "6.0.0",
+                "text": "Clears the namespace lookup cache. After application launch, this cache can\noften contain several hundred entries that are unlikely to be needed again.\nThese will be rebuilt as needed, so it is harmless to clear this cache even\nif its results will be used again.\n",
+                "src": {
+                  "access": "0,417,12",
+                  "name": "0,419,0",
+                  "since": "0,416,19",
+                  "text": "0,412,12,263"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getNamespaceEntry",
+                "since": "6.0.0",
+                "text": "Return the namespace cache entry for the given a class name or namespace (e.g.,\n\"Ext.grid.Panel\").\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "namespace",
+                    "text": "The namespace or class name to lookup.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,433,28",
+                      "text": "0,433,38,39",
+                      "type": "0,433,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The cache entry.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "name",
+                        "text": "The leaf name (\"Panel\" for \"Ext.grid.Panel\").\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,435,36",
+                          "text": "0,435,41,46",
+                          "type": "0,435,21"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "parent",
+                        "text": "The entry of the parent namespace (i.e., \"Ext.grid\").\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,436,36",
+                          "text": "0,436,43,54",
+                          "type": "0,436,21"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "The namespace object. This is only set for\ntop-level namespace entries to support renaming them for sandboxing (\"Ext6\" vs\n\"Ext\").\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,437,36",
+                          "text": "0,437,42,43:0,438,12,87",
+                          "type": "0,437,21"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "text": "0,434,29,17",
+                      "type": "0,434,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,441,12",
+                  "name": "0,443,0",
+                  "since": "0,440,19",
+                  "text": "0,430,12,100"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "lookupName",
+                "since": "6.0.0",
+                "text": "Return the value of the given \"dot path\" name. This supports remapping (for use\nin sandbox builds) as well as auto-creating of namespaces.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "namespace",
+                    "text": "The name of the namespace or class.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,475,28",
+                      "text": "0,475,38,36",
+                      "type": "0,475,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "autoCreate",
+                    "optional": true,
+                    "text": "Pass `true` to create objects for undefined names.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,476,30",
+                      "text": "0,476,42,51",
+                      "type": "0,476,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The object that is the namespace or class name.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,477,29,48",
+                      "type": "0,477,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,479,12",
+                  "name": "0,481,0",
+                  "since": "0,478,19",
+                  "text": "0,472,12,140"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setNamespace",
+                "text": "Creates a namespace and assign the `value` to the created object.\n\n    Ext.ClassManager.setNamespace('MyCompany.pkg.Example', someObject);\n\n    alert(MyCompany.pkg.Example === someObject); // alerts true\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,517,28",
+                      "type": "0,517,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,518,28",
+                      "type": "0,518,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,520,0",
+                  "text": "0,511,12,205"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setXType",
+                "since": "6.0.1",
+                "text": "Changes the mapping of an `xtype` to map to the specified component class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cls",
+                    "text": "The class or class name to which `xtype` is mapped.\n",
+                    "type": "String/Ext.Class",
+                    "src": {
+                      "name": "0,535,38",
+                      "text": "0,535,42,52",
+                      "type": "0,535,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "xtype",
+                    "text": "The `xtype` to map or redefine as `cls`.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,536,28",
+                      "text": "0,536,34,41",
+                      "type": "0,536,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,538,12",
+                  "name": "0,540,0",
+                  "since": "0,537,19",
+                  "text": "0,534,12,75"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "set",
+                "text": "Sets a name reference to a class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,566,28",
+                      "type": "0,566,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,567,28",
+                      "type": "0,567,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.ClassManager",
+                    "src": {
+                      "text": "0,568,39,5",
+                      "type": "0,568,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,570,0",
+                  "text": "0,564,12,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "get",
+                "text": "Retrieve a class by its name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,585,28",
+                      "type": "0,585,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "class\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,586,32,6",
+                      "type": "0,586,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,588,0",
+                  "text": "0,583,12,31"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addNameAliasMappings",
+                "text": "Adds a batch of class name to alias mappings.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "aliases",
+                    "text": "The set of mappings of the form.\nclassName : [values...]\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,594,28",
+                      "text": "0,594,36,33:0,595,12,24",
+                      "type": "0,594,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,597,0",
+                  "text": "0,593,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addNameAlternateMappings",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alternates",
+                    "text": "The set of mappings of the form\nclassName : [values...]\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,603,28",
+                      "text": "0,603,39,32:0,604,12,24",
+                      "type": "0,603,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,606,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getByAlias",
+                "text": "Get a reference to the class by its alias.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "type": "String",
+                    "src": {
+                      "name": "0,613,28",
+                      "type": "0,613,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "class\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,614,32,6",
+                      "type": "0,614,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,616,0",
+                  "text": "0,611,12,44"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getByConfig",
+                "text": "Get a component class name from a config object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "The config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,622,28",
+                      "text": "0,622,35,19",
+                      "type": "0,622,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "aliasPrefix",
+                    "optional": true,
+                    "text": "A prefix to use when getting\na class name by alias.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,623,29",
+                      "text": "0,623,42,29:0,624,12,23",
+                      "type": "0,623,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The class.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,625,32,11",
+                      "type": "0,625,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,627,12",
+                  "name": "0,629,0",
+                  "text": "0,621,12,49"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getName",
+                "text": "Get the name of the class by its reference or its instance. This is\nusually invoked by the shorthand <a href='#!/api/Ext-method-getClassName'>Ext#getClassName</a>.\n\n    Ext.ClassManager.getName(Ext.Action); // returns \"Ext.Action\"\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "type": "Ext.Class/Object",
+                    "src": {
+                      "name": "0,653,38",
+                      "type": "0,653,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "className\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,654,29,10",
+                      "type": "0,654,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,656,0",
+                  "text": "0,648,12,195"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getClass",
+                "text": "Get the class of the provided object; returns null if it's not an instance\nof any class created with Ext.define. This is usually invoked by the\nshorthand <a href='#!/api/Ext-method-getClass'>Ext#getClass</a>.\n\n    var component = new Ext.Component();\n\n    Ext.getClass(component); // returns Ext.Component\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,669,28",
+                      "type": "0,669,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "class\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,670,32,6",
+                      "type": "0,670,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,672,0",
+                  "text": "0,661,12,274"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "deprecatedMessage": "<a href='#!/api/Ext-define'>Ext#define</a> instead, as that also supports creating overrides.\n",
+                "deprecatedVersion": "Use",
+                "name": "create",
+                "text": "Defines a class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "0,681,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "0,681,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "createdFn",
+                    "src": {
+                      "name": "0,681,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,679,12",
+                  "deprecatedMessage": "0,678,12",
+                  "deprecatedVersion": "0,678,12",
+                  "name": "0,681,0",
+                  "text": "0,677,12,17"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "instantiateByAlias",
+                "text": "Instantiate a class by its alias. This is usually invoked by the\nshorthand <a href='#!/api/Ext-method-createByAlias'>Ext#createByAlias</a>.\n\nIf <a href='#!/api/Ext.Loader'>Ext.Loader</a> is <a href='#!/api/Ext.Loader-property-setConfig'>Ext.Loader#setConfig</a> and the class\nhas not been defined yet, it will attempt to load the class via synchronous\nloading.\n\n    var window = Ext.createByAlias('widget.window', { width: 600, height: 800 });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "type": "String",
+                    "src": {
+                      "name": "0,890,28",
+                      "type": "0,890,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Additional arguments after the alias will be passed to the\nclass constructor.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,891,31",
+                      "text": "0,891,36,59:0,892,12,19",
+                      "type": "0,891,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "instance\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,893,29,9",
+                      "type": "0,893,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,895,0",
+                  "text": "0,881,12,348"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use Ext.create() instead.\n",
+                "deprecatedVersion": "5.0",
+                "name": "instantiate",
+                "text": "Instantiate a class by either full name, alias or alternate name\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,914,28",
+                      "type": "0,914,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Additional arguments after the name will be passed to the class' constructor.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,915,27",
+                      "text": "0,915,32,78",
+                      "type": "0,915,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "instance\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,916,29,9",
+                      "type": "0,916,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "0,917,12",
+                  "deprecatedVersion": "0,917,12",
+                  "name": "0,919,0",
+                  "text": "0,913,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "dynInstantiate",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "0,929,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "0,930,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,928,12",
+                  "name": "0,932,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getInstantiator",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "length",
+                    "src": {
+                      "name": "0,941,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,940,12",
+                  "name": "0,943,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "registerPostprocessor",
+                "text": "Register a post-processor function.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,982,28",
+                      "type": "0,982,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "postprocessor",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,983,30",
+                      "type": "0,983,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,981,12",
+                  "name": "0,985,0",
+                  "text": "0,979,12,37"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setDefaultPostprocessors",
+                "text": "Set the default post processors array stack which are applied to every class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "postprocessors",
+                    "text": "The name of a registered post processor or an array of registered names.\n",
+                    "type": "String/Array",
+                    "src": {
+                      "name": "0,1009,34",
+                      "text": "0,1009,49,73",
+                      "type": "0,1009,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.ClassManager",
+                    "src": {
+                      "text": "0,1010,39,5",
+                      "type": "0,1010,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1008,12",
+                  "name": "0,1012,0",
+                  "text": "0,1006,12,79"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setDefaultPostprocessorPosition",
+                "text": "Insert this post-processor at a specific position in the stack, optionally relative to\nany existing post-processor\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The post-processor name. Note that it needs to be registered with\n<a href='#!/api/Ext.ClassManager-method-registerPostprocessor'>Ext.ClassManager#registerPostprocessor</a> before this\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1023,28",
+                      "text": "0,1023,33,66:0,1024,12,59",
+                      "type": "0,1023,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "offset",
+                    "text": "The insertion position. Four possible values are:\n'first', 'last', or: 'before', 'after' (relative to the name provided in the third argument)\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1025,28",
+                      "text": "0,1025,35,50:0,1026,12,93",
+                      "type": "0,1025,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "relativeName",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1027,28",
+                      "type": "0,1027,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.ClassManager",
+                    "src": {
+                      "text": "0,1028,39,5",
+                      "type": "0,1028,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1022,12",
+                  "name": "0,1030,0",
+                  "text": "0,1019,12,116"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "undefine",
+                "text": "Undefines a class defined using the #define method. Typically used\nfor unit testing where setting up and tearing down a class multiple\ntimes is required.  For example:\n\n    // define a class\n    Ext.define('Foo', {\n       ...\n    });\n\n    // run test\n\n    // undefine the class\n    Ext.undefine('Foo');\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "text": "The class name to undefine in string dot-namespaced format.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1822,28",
+                      "text": "0,1822,38,60",
+                      "type": "0,1822,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1823,12",
+                  "name": "0,1825,0",
+                  "text": "0,1809,12,303"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDisplayName",
+                "text": "Returns the displayName property or className or object. When all else fails, returns \"Anonymous\".\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1861,28",
+                      "type": "0,1861,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,1862,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1864,0",
+                  "text": "0,1860,12,99"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "classes",
+                "text": "All classes which were defined through the ClassManager. Keys are the\nname of the classes and the values are references to the classes.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,233,12",
+                  "name": "0,230,31",
+                  "text": "0,231,12,136",
+                  "type": "0,230,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "existCache",
+                "src": {
+                  "access": "0,252,12",
+                  "name": "0,254,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "instantiators",
+                "src": {
+                  "access": "0,256,13",
+                  "name": "0,257,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "createdListeners",
+                "src": {
+                  "access": "0,285,12",
+                  "name": "0,287,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "nameCreatedListeners",
+                "src": {
+                  "access": "0,290,12",
+                  "name": "0,292,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "existsListeners",
+                "src": {
+                  "access": "0,295,12",
+                  "name": "0,297,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "nameExistsListeners",
+                "src": {
+                  "access": "0,300,12",
+                  "name": "0,302,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "overrideMap",
+                "src": {
+                  "access": "0,305,12",
+                  "name": "0,307,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$namespaceCache",
+                "text": "Supports namespace rewriting.\n",
+                "src": {
+                  "access": "0,393,12",
+                  "name": "0,395,0",
+                  "text": "0,392,12,30"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "postprocessors",
+                "src": {
+                  "access": "0,969,12",
+                  "name": "0,971,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "defaultPostprocessors",
+                "src": {
+                  "access": "0,974,12",
+                  "name": "0,976,0"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,3,11",
+          "singleton": "0,190,4",
+          "text": "0,4,4,4734"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

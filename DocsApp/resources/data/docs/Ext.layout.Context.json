@@ -1,7 +1,8 @@
 {
   "$type": "doxi",
   "files": [
-    "../../../ext/classic/classic/src/layout/Context.js"
+    "../../../ext/classic/classic/src/layout/Context.js",
+    "../../../../docs/docs/js/primitives/Object.js"
   ],
   "global": {
     "$type": "namespace",
@@ -9,6 +10,8 @@
       {
         "$type": "class",
         "access": "private",
+        "extended": "Object",
+        "extends": "Object",
         "name": "Ext.layout.Context",
         "requires": "Ext.perf.Monitor,Ext.util.Queue,Ext.layout.ContextItem,Ext.layout.Layout,Ext.fx.Anim,Ext.fx.Manager",
         "text": "Manages context information during a layout.\n\n# Algorithm\n\nThis class performs the following jobs:\n\n - Cache DOM reads to avoid reading the same values repeatedly.\n - Buffer DOM writes and flush them as a block to avoid read/write interleaving.\n - Track layout dependencies so each layout does not have to figure out the source of\n   its dependent values.\n - Intelligently run layouts when the values on which they depend change (a trigger).\n - Allow layouts to avoid processing when required values are unavailable (a block).\n\nWork done during layout falls into either a \"read phase\" or a \"write phase\" and it is\nessential to always be aware of the current phase. Most methods in\n<a href='#!/api/Ext.layout.Layout'>Ext.layout.Layout</a> are called during a read phase:\n<a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a>,\n<a href='#!/api/Ext.layout.Layout-method-completeLayout'>Ext.layout.Layout#completeLayout</a> and\n<a href='#!/api/Ext.layout.Layout-method-finalizeLayout'>Ext.layout.Layout#finalizeLayout</a>. The exceptions to this are\n<a href='#!/api/Ext.layout.Layout-method-beginLayout'>Ext.layout.Layout#beginLayout</a>,\n<a href='#!/api/Ext.layout.Layout-method-beginLayoutCycle'>Ext.layout.Layout#beginLayoutCycle</a> and\n<a href='#!/api/Ext.layout.Layout-method-finishedLayout'>Ext.layout.Layout#finishedLayout</a> which are called during\na write phase. While <a href='#!/api/Ext.layout.Layout-method-finishedLayout'>Ext.layout.Layout#finishedLayout</a> is called\na write phase, it is really intended to be a catch-all for post-processing after a\nlayout run.\n\nIn a read phase, it is OK to read the DOM but this should be done using the appropriate\n<a href='#!/api/Ext.layout.ContextItem'>Ext.layout.ContextItem</a> where possible since that provides a cache\nto avoid redundant reads. No writes should be made to the DOM in a read phase! Instead,\nthe values should be written to the proper ContextItem for later write-back.\n\nThe rules flip-flop in a write phase. The only difference is that ContextItem methods\nlike <a href='#!/api/Ext.layout.ContextItem-method-getStyle'>Ext.layout.ContextItem#getStyle</a> will still read the DOM unless the\nvalue was previously read. This detail is unknowable from the outside of ContextItem, so\nread calls to ContextItem should also be avoided in a write phase.\n\nCalculating interdependent layouts requires a certain amount of iteration. In a given\ncycle, some layouts will contribute results that allow other layouts to proceed. The\ngeneral flow then is to gather all of the layouts (both component and container) in a\ncomponent tree and queue them all for processing. The initial queue order is bottom-up\nand component layout first, then container layout (if applicable) for each component.\n\nThis initial step also calls the beginLayout method on all layouts to clear any values\nfrom the DOM that might interfere with calculations and measurements. In other words,\nthis is a \"write phase\" and reads from the DOM should be strictly avoided.\n\nNext the layout enters into its iterations or \"cycles\". Each cycle consists of calling\nthe <a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a> method on all layouts in the\n<a href='#!/api/Ext.layout.Context-property-layoutQueue'>layoutQueue</a>. These calls are part of a \"read phase\" and writes to the DOM should\nbe strictly avoided.\n\n# Considerations\n\n**RULE 1**: Respect the read/write cycles. Always use the <a href='#!/api/Ext.layout.ContextItem-method-getProp'>Ext.layout.ContextItem#getProp</a>\nor <a href='#!/api/Ext.layout.ContextItem-method-getDomProp'>Ext.layout.ContextItem#getDomProp</a> methods to get calculated values;\nonly use the <a href='#!/api/Ext.layout.ContextItem-method-getStyle'>Ext.layout.ContextItem#getStyle</a> method to read styles; use\n<a href='#!/api/Ext.layout.ContextItem-method-setProp'>Ext.layout.ContextItem#setProp</a> to set DOM values. Some reads will, of\ncourse, still go directly to the DOM, but if there is a method in\n<a href='#!/api/Ext.layout.ContextItem'>Ext.layout.ContextItem</a> to do a certain job, it should be used instead\nof a lower-level equivalent.\n\nThe basic logic flow in <a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a> consists of gathering\nvalues by calling <a href='#!/api/Ext.layout.ContextItem-method-getProp'>Ext.layout.ContextItem#getProp</a> or\n<a href='#!/api/Ext.layout.ContextItem-method-getDomProp'>Ext.layout.ContextItem#getDomProp</a>, calculating results and publishing\nthem by calling <a href='#!/api/Ext.layout.ContextItem-method-setProp'>Ext.layout.ContextItem#setProp</a>. It is important to realize\nthat <a href='#!/api/Ext.layout.ContextItem-method-getProp'>Ext.layout.ContextItem#getProp</a> will return <a href='#!/api/undefined'>undefined</a> if the value\nis not yet known. But the act of calling the method is enough to track the fact that the\ncalling layout depends (in some way) on this value. In other words, the calling layout is\n\"triggered\" by the properties it requests.\n\n**RULE 2**: Avoid calling <a href='#!/api/Ext.layout.ContextItem-method-getProp'>Ext.layout.ContextItem#getProp</a> unless the value\nis needed. Gratuitous calls cause inefficiency because the layout will appear to depend on\nvalues that it never actually uses. This applies equally to\n<a href='#!/api/Ext.layout.ContextItem-method-getDomProp'>Ext.layout.ContextItem#getDomProp</a> and the test-only methods\n<a href='#!/api/Ext.layout.ContextItem-method-hasProp'>Ext.layout.ContextItem#hasProp</a> and <a href='#!/api/Ext.layout.ContextItem-method-hasDomProp'>Ext.layout.ContextItem#hasDomProp</a>.\n\nBecause <a href='#!/api/Ext.layout.ContextItem-method-getProp'>Ext.layout.ContextItem#getProp</a> can return <a href='#!/api/undefined'>undefined</a>, it is often\nthe case that subsequent math will produce NaN's. This is usually not a problem as the\nNaN's simply propagate along and result in final results that are NaN. Both <a href='#!/api/undefined'>undefined</a>\nand NaN are ignored by <a href='#!/api/Ext.layout.ContextItem-method-setProp'>Ext.layout.ContextItem#setProp</a>, so it is often not necessary\nto even know that this is happening. It does become important for determining if a layout\nis not done or if it might lead to publishing an incorrect (but not NaN or <a href='#!/api/undefined'>undefined</a>)\nvalue.\n\n**RULE 3**: If a layout has not calculated all the values it is required to calculate, it\nmust set <a href='#!/api/Ext.layout.Layout-property-done'>Ext.layout.Layout#done</a> to `false` before returning from\n<a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a>. This value is always `true` on entry because\nit is simpler to detect the incomplete state rather than the complete state (especially up\nand down a class hierarchy).\n\n**RULE 4**: A layout must never publish an incomplete (wrong) result. Doing so would cause\ndependent layouts to run their calculations on those wrong values, producing more wrong\nvalues and some layouts may even incorrectly flag themselves as <a href='#!/api/Ext.layout.Layout-property-done'>Ext.layout.Layout#done</a>\nbefore the correct values are determined and republished. Doing this will poison the\ncalculations.\n\n**RULE 5**: Each value should only be published by one layout. If multiple layouts attempt\nto publish the same values, it would be nearly impossible to avoid breaking **RULE 4**. To\nhelp detect this problem, the layout diagnostics will trap on an attempt to set a value\nfrom different layouts.\n\nComplex layouts can produce many results as part of their calculations. These values are\nimportant for other layouts to proceed and need to be published by the earliest possible\ncall to <a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a> to avoid unnecessary cycles and poor performance. It is\nalso possible, however, for some results to be related in a way such that publishing them\nmay be an all-or-none proposition (typically to avoid breaking *RULE 4*).\n\n**RULE 6**: Publish results as soon as they are known to be correct rather than wait for\nall values to be calculated. Waiting for everything to be complete can lead to deadlock.\nThe key here is not to forget **RULE 4** in the process.\n\nSome layouts depend on certain critical values as part of their calculations. For example,\nHBox depends on width and cannot do anything until the width is known. In these cases, it\nis best to use <a href='#!/api/Ext.layout.ContextItem-method-block'>Ext.layout.ContextItem#block</a> or\n<a href='#!/api/Ext.layout.ContextItem-method-domBlock'>Ext.layout.ContextItem#domBlock</a> and thereby avoid processing the layout\nuntil the needed value is available.\n\n**RULE 7**: Use <a href='#!/api/Ext.layout.ContextItem-method-block'>Ext.layout.ContextItem#block</a> or\n<a href='#!/api/Ext.layout.ContextItem-method-domBlock'>Ext.layout.ContextItem#domBlock</a> when values are required to make progress.\nThis will mimize wasted recalculations.\n\n**RULE 8**: Blocks should only be used when no forward progress can be made. If even one\nvalue could still be calculated, a block could result in a deadlock.\n\nHistorically, layouts have been invoked directly by component code, sometimes in places\nlike an `afterLayout` method for a child component. With the flexibility now available\nto solve complex, iterative issues, such things should be done in a responsible layout\n(be it component or container).\n\n**RULE 9**: Use layouts to solve layout issues and don't wait for the layout to finish to\nperform further layouts. This is especially important now that layouts process entire\ncomponent trees and not each layout in isolation.\n\n# Sequence Diagram\n\nThe simplest sequence diagram for a layout run looks roughly like this:\n\n      Context         Layout 1     Item 1     Layout 2     Item 2\n         |               |           |           |           |\n    ---->X-------------->X           |           |           |\n    run  X---------------|-----------|---------->X           |\n         X beginLayout   |           |           |           |\n         X               |           |           |           |\n       A X-------------->X           |           |           |\n         X  calculate    X---------->X           |           |\n         X             C X  getProp  |           |           |\n       B X               X---------->X           |           |\n         X               |  setProp  |           |           |\n         X               |           |           |           |\n       D X---------------|-----------|---------->X           |\n         X  calculate    |           |           X---------->X\n         X               |           |           |  setProp  |\n       E X               |           |           |           |\n         X---------------|-----------|---------->X           |\n         X completeLayout|           |         F |           |\n         X               |           |           |           |\n       G X               |           |           |           |\n       H X-------------->X           |           |           |\n         X  calculate    X---------->X           |           |\n         X             I X  getProp  |           |           |\n         X               X---------->X           |           |\n         X               |  setProp  |           |           |\n       J X-------------->X           |           |           |\n         X completeLayout|           |           |           |\n         X               |           |           |           |\n       K X-------------->X           |           |           |\n         X---------------|-----------|---------->X           |\n         X finalizeLayout|           |           |           |\n         X               |           |           |           |\n       L X-------------->X           |           |           |\n         X---------------|-----------|---------->X           |\n         X finishedLayout|           |           |           |\n         X               |           |           |           |\n       M X-------------->X           |           |           |\n         X---------------|-----------|---------->X           |\n         X notifyOwner   |           |           |           |\n       N |               |           |           |           |\n         -               -           -           -           -\n\n\nNotes:\n\n**A.** This is a call from the <a href='#!/api/Ext.layout.Context-method-run'>run</a> method to the <a href='#!/api/Ext.layout.Context-method-run'>run</a> method.\nEach layout in the queue will have its <a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a>\nmethod called.\n\n**B.** After each <a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a> method is called the\n<a href='#!/api/Ext.layout.Layout-property-done'>Ext.layout.Layout#done</a> flag is checked to see if the Layout has completed.\nIf it has completed and that layout object implements a\n<a href='#!/api/Ext.layout.Layout-method-completeLayout'>Ext.layout.Layout#completeLayout</a> method, this layout is queued to\nreceive its call. Otherwise, the layout will be queued again unless there are blocks or\ntriggers that govern its requeueing.\n\n**C.** The call to <a href='#!/api/Ext.layout.ContextItem-method-getProp'>Ext.layout.ContextItem#getProp</a> is made to the Item\nand that will be tracked as a trigger (keyed by the name of the property being requested).\nChanges to this property will cause this layout to be requeued. The call to\n<a href='#!/api/Ext.layout.ContextItem-method-setProp'>Ext.layout.ContextItem#setProp</a> will place a value in the item and not\ndirectly into the DOM.\n\n**D.** Call the other layouts now in the first cycle (repeat **B** and **C** for each\nlayout).\n\n**E.** After completing a cycle, if progress was made (new properties were written to\nthe context) and if the <a href='#!/api/Ext.layout.Context-property-layoutQueue'>layoutQueue</a> is not empty, the next cycle is run. If no\nprogress was made or no layouts are ready to run, all buffered values are written to\nthe DOM (a flush).\n\n**F.** After flushing, any layouts that were marked as <a href='#!/api/Ext.layout.Layout-property-done'>Ext.layout.Layout#done</a>\nthat also have a <a href='#!/api/Ext.layout.Layout-method-completeLayout'>Ext.layout.Layout#completeLayout</a> method are called.\nThis can cause them to become no longer done (see <a href='#!/api/Ext.layout.Context-method-invalidate'>invalidate</a>). As with\n<a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a>, this is considered a \"read phase\" and\ndirect DOM writes should be avoided.\n\n**G.** Flushing and calling any pending <a href='#!/api/Ext.layout.Layout-method-completeLayout'>Ext.layout.Layout#completeLayout</a>\nmethods will likely trigger layouts that called <a href='#!/api/Ext.layout.ContextItem-method-getDomProp'>Ext.layout.ContextItem#getDomProp</a>\nand unblock layouts that have called <a href='#!/api/Ext.layout.ContextItem-method-domBlock'>Ext.layout.ContextItem#domBlock</a>.\nThese variants are used when a layout needs the value to be correct in the DOM and not\nsimply known. If this does not cause at least one layout to enter the queue, we have a\nlayout FAILURE. Otherwise, we continue with the next cycle.\n\n**H.** Call <a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a> on any layouts in the queue\nat the start of this cycle. Just a repeat of **B** through **G**.\n\n**I.** Once the layout has calculated all that it is resposible for, it can leave itself\nin the <a href='#!/api/Ext.layout.Layout-property-done'>Ext.layout.Layout#done</a> state. This is the value on entry to\n<a href='#!/api/Ext.layout.Layout-method-calculate'>Ext.layout.Layout#calculate</a> and must be cleared in that call if the\nlayout has more work to do.\n\n**J.** Now that all layouts are done, flush any DOM values and\n<a href='#!/api/Ext.layout.Layout-method-completeLayout'>Ext.layout.Layout#completeLayout</a> calls. This can again cause\nlayouts to become not done, and so we will be back on another cycle if that happens.\n\n**K.** After all layouts are done, call the <a href='#!/api/Ext.layout.Layout-method-finalizeLayout'>Ext.layout.Layout#finalizeLayout</a>\nmethod on any layouts that have one. As with <a href='#!/api/Ext.layout.Layout-method-completeLayout'>Ext.layout.Layout#completeLayout</a>,\nthis can cause layouts to become no longer done. This is less desirable than using\n<a href='#!/api/Ext.layout.Layout-method-completeLayout'>Ext.layout.Layout#completeLayout</a> because it will cause all\n<a href='#!/api/Ext.layout.Layout-method-finalizeLayout'>Ext.layout.Layout#finalizeLayout</a> methods to be called again\nwhen we think things are all wrapped up.\n\n**L.** After finishing the last iteration, layouts that have a\n<a href='#!/api/Ext.layout.Layout-method-finishedLayout'>Ext.layout.Layout#finishedLayout</a> method will be called. This\ncall will only happen once per run and cannot cause layouts to be run further.\n\n**M.** After calling finahedLayout, layouts that have a\n<a href='#!/api/Ext.layout.Layout-method-notifyOwner'>Ext.layout.Layout#notifyOwner</a> method will be called. This\ncall will only happen once per run and cannot cause layouts to be run further.\n\n**N.** One last flush to make sure everything has been written to the DOM.\n\n# Inter-Layout Collaboration\n\nMany layout problems require collaboration between multiple layouts. In some cases, this\nis as simple as a component's container layout providing results used by its component\nlayout or vise-versa. A slightly more distant collaboration occurs in a box layout when\nstretchmax is used: the child item's component layout provides results that are consumed\nby the ownerCt's box layout to determine the size of the children.\n\nThe various forms of interdependence between a container and its children are described by\neach components' <a href='#!/api/Ext.Component-method-getSizeModel'>Ext.Component#getSizeModel</a>.\n\nTo facilitate this collaboration, the following pairs of properties are published to the\ncomponent's <a href='#!/api/Ext.layout.ContextItem'>Ext.layout.ContextItem</a>:\n\n - width/height: These hold the final size of the component. The layout indicated by the\n   <a href='#!/api/Ext.Component-method-getSizeModel'>Ext.Component#getSizeModel</a> is responsible for setting these.\n - contentWidth/contentHeight: These hold size information published by the container\n   layout or from DOM measurement. These describe the content only. These values are\n   used by the component layout to determine the outer width/height when that component\n   is <a href='#!/api/Ext.Component-cfg-shrinkWrap'>Ext.Component#shrinkWrap</a>. They are also used to\n   determine overflow. All container layouts must publish these values for dimensions\n   that are shrink-wrapped. If a component has raw content (not container items), the\n   componentLayout must publish these values instead.\n",
@@ -16,6 +19,29 @@
           {
             "$type": "methods",
             "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to wrap.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,40,21",
+                      "text": "1,40,28,19",
+                      "type": "1,40,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,38,12",
+                  "text": "1,39,4,20"
+                }
+              },
               {
                 "$type": "method",
                 "name": "flush",
@@ -76,6 +102,37 @@
               },
               {
                 "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from <a href='#!/api/Object'>Object</a> inherits the <a href='#!/api/Ext.layout.Context-method-hasOwnProperty'>hasOwnProperty</a> method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,100,20",
+                      "text": "1,100,25,34",
+                      "type": "1,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,101,22,57:1,102,4,15",
+                      "type": "1,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,53,12",
+                  "text": "1,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
                 "name": "invalidate",
                 "text": "Invalidates one or more components' layouts (component and container). This can be\ncalled before run to identify the components that need layout or during the run to\nrestart the layout of a component. This is called internally to flush any queued\ninvalidations at the start of a cycle. If called during a run, it is not expected\nthat new components will be introduced to the layout.\n",
                 "items": [
@@ -105,6 +162,79 @@
                 "src": {
                   "name": "0,630,0",
                   "text": "0,620,8,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n<a href='#!/api/Ext.layout.Context-method-isPrototypeOf'>isPrototypeOf</a> allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,148,20",
+                      "text": "1,148,30,71:1,149,4,18",
+                      "type": "1,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,150,20",
+                      "text": "1,150,27,50",
+                      "type": "1,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,151,22,56",
+                      "type": "1,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,106,12",
+                  "text": "1,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a <a href='#!/api/Ext.layout.Context-method-propertyIsEnumerable'>propertyIsEnumerable</a> method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of <a href='#!/api/Ext.layout.Context-method-propertyIsEnumerable'>propertyIsEnumerable</a> on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,220,20",
+                      "text": "1,220,25,34",
+                      "type": "1,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,221,22,57:1,222,4,22",
+                      "type": "1,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,155,12",
+                  "text": "1,156,4,2313"
                 }
               },
               {
@@ -420,6 +550,66 @@
                   "name": "0,1258,0",
                   "text": "0,1252,8,89"
                 }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n<a href='#!/api/Object'>Object</a>s <a href='#!/api/Ext.layout.Context-method-toLocaleString'>toLocaleString</a> returns the result of calling <a href='#!/api/Ext.layout.Context-method-toString'>toString</a>.\n\nThis function is provided to give objects a generic <a href='#!/api/Ext.layout.Context-method-toLocaleString'>toLocaleString</a> method, even though not all\nmay use it. Currently, only <a href='#!/api/Array'>Array</a>, <a href='#!/api/Number'>Number</a>, and <a href='#!/api/Date'>Date</a> override <a href='#!/api/Ext.layout.Context-method-toLocaleString'>toLocaleString</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,235,21,32",
+                      "type": "1,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,226,12",
+                  "text": "1,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from <a href='#!/api/Object'>Object</a>.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom <a href='#!/api/Object'>Object</a>:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,297,21,32",
+                      "type": "1,297,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,239,12",
+                  "text": "1,240,4,2445"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the <a href='#!/api/Ext.layout.Context-method-valueOf'>valueOf</a> method to convert an object to a primitive value. You rarely need to\ninvoke the <a href='#!/api/Ext.layout.Context-method-valueOf'>valueOf</a> method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the <a href='#!/api/Ext.layout.Context-method-valueOf'>valueOf</a> method is inherited by every object descended from <a href='#!/api/Object'>Object</a>. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, <a href='#!/api/Ext.layout.Context-method-valueOf'>valueOf</a> returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use <a href='#!/api/Ext.layout.Context-method-valueOf'>valueOf</a> within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default <a href='#!/api/Object'>Object</a> method.\n\nYou can create a function to be called in place of the default <a href='#!/api/Ext.layout.Context-method-valueOf'>valueOf</a> method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a <a href='#!/api/Ext.layout.Context-method-valueOf'>valueOf</a> method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's <a href='#!/api/Ext.layout.Context-method-valueOf'>valueOf</a> method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the <a href='#!/api/Ext.layout.Context-method-toString'>toString</a> method, which is different from\n<a href='#!/api/String'>String</a> objects converting to string primitives using <a href='#!/api/Ext.layout.Context-method-valueOf'>valueOf</a>. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,340,21,50",
+                      "type": "1,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,301,12",
+                  "text": "1,302,4,1821"
+                }
               }
             ]
           },
@@ -428,13 +618,11 @@
             "items": [
               {
                 "$type": "property",
-                "name": "state",
-                "text": "One of these values:\n\n - 0 - Before run\n - 1 - Running\n - 2 - Run complete\n",
-                "type": "Number",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their <a href='#!/api/Ext.layout.Context-property-prototype'>prototype</a>:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
                 "src": {
-                  "name": "0,292,27",
-                  "text": "0,292,33,21:0,293,8,54",
-                  "type": "0,292,19"
+                  "name": "1,346,14",
+                  "text": "1,347,3,1996"
                 }
               },
               {
@@ -461,6 +649,26 @@
                   "name": "0,340,39",
                   "text": "0,341,12,28",
                   "type": "0,340,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "1,46,14",
+                  "text": "1,47,4,65"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "state",
+                "text": "One of these values:\n\n - 0 - Before run\n - 1 - Running\n - 2 - Run complete\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,292,27",
+                  "text": "0,292,33,21:0,293,8,54",
+                  "type": "0,292,19"
                 }
               }
             ]

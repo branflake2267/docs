@@ -1,0 +1,927 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/toolbar/Breadcrumb.js",
+    "../../../ext/classic/theme-neutral/sass/var/toolbar/Breadcrumb.scss",
+    "../../../ext/classic/classic/src/util/FocusableContainer.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "widget.breadcrumb",
+        "extends": "Ext.Container",
+        "mixins": "Ext.util.FocusableContainer",
+        "name": "Ext.toolbar.Breadcrumb",
+        "requires": "Ext.data.TreeStore,Ext.button.Split",
+        "text": "A toolbar that displays hierarchical data from a <a href='#!/api/Ext.data.TreeStore'>Ext.data.TreeStore</a>\nas a trail of breadcrumb buttons.  Each button represents a node in the store.  A click\non a button will \"select\" that node in the tree.  Non-leaf nodes will display their\nchild nodes on a dropdown menu of the corresponding button in the breadcrumb trail,\nand a click on an item in the menu will trigger selection of the corresponding child\nnode.\n\nThe selection can be set programmatically  using <a href='#!/api/Ext.toolbar.Breadcrumb-method-setSelection'>setSelection</a>, or retrieved\nusing <a href='#!/api/Ext.toolbar.Breadcrumb-method-getSelection'>getSelection</a>.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "activeChildTabIndex",
+                "optional": true,
+                "text": "DOM tabIndex attribute to set on the\nactive Focusable child of this container when using the \"Roaming tabindex\"\ntechnique. Set this value to > 0 to precisely control the tabbing order\nof the components/containers on the page.\n",
+                "type": "Number",
+                "value": "0",
+                "src": {
+                  "name": "2,43,23",
+                  "text": "2,43,46,37:2,44,8,189",
+                  "type": "2,43,14",
+                  "value": "2,43,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "buttonUI",
+                "optional": true,
+                "text": "Button UI to use for breadcrumb items.  Use <a href='#!/api/Ext.toolbar.Breadcrumb-extjs-breadcrumb-ui'>extjs-breadcrumb-ui</a> to\nadd special styling to the breadcrumb arrows\n",
+                "type": "String",
+                "value": "'plain-toolbar'",
+                "src": {
+                  "name": "0,31,27",
+                  "text": "0,32,12,121",
+                  "type": "0,31,18",
+                  "value": "0,31,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "displayField",
+                "text": "The name of the field in the data model to display in the navigation items of\nthis breadcrumb toolbar\n",
+                "type": "String",
+                "src": {
+                  "name": "0,42,0",
+                  "text": "0,39,12,102",
+                  "type": "0,38,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "enableFocusableContainer",
+                "optional": true,
+                "text": "Enable or disable\nnavigation with arrow keys for this FocusableContainer. This option may\nbe useful with nested FocusableContainers such as Grid column headers,\nwhen only the root container should handle keyboard events.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "2,35,24",
+                  "text": "2,35,55,18:2,36,8,203",
+                  "type": "2,35,14",
+                  "value": "2,35,49"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "inactiveChildTabIndex",
+                "optional": true,
+                "text": "DOM tabIndex attribute to set on\ninactive Focusable children of this container when using the \"Roaming tabindex\"\ntechnique. This value rarely needs to be changed from its default.\n",
+                "type": "Number",
+                "value": "-1",
+                "src": {
+                  "name": "2,51,23",
+                  "text": "2,51,49,33:2,52,8,147",
+                  "type": "2,51,14",
+                  "value": "2,51,45"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "overflowHandler",
+                "optional": true,
+                "text": "The overflowHandler for this Breadcrumb:\n\n- <a href='#!/api/null'>null</a> - hidden overflow\n- `'scroller'` to render left/right scroller buttons on either side of the breadcrumb\n- `'menu'` to render the overflowing buttons as items of an overflow menu.\n",
+                "type": "String",
+                "value": "null",
+                "src": {
+                  "name": "0,45,27",
+                  "text": "0,46,12,230",
+                  "type": "0,45,18",
+                  "value": "0,45,43"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "selection",
+                "text": "The selected node, or `\"root\"` to select the root node\n",
+                "type": "Ext.data.TreeModel/String",
+                "src": {
+                  "accessor": "0,113,12",
+                  "name": "0,111,45",
+                  "text": "0,112,12,55",
+                  "type": "0,111,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showIcons",
+                "optional": true,
+                "text": "\nControls whether or not icons of tree nodes are displayed in the breadcrumb\nbuttons.  There are 3 possible values for this config:\n\n1. unspecified (<a href='#!/api/null'>null</a>) - the default value. In this mode only icons that are\nspecified in the tree data using (<a href='#!/api/Ext.data.NodeInterface-cfg-icon'>Ext.data.NodeInterface#icon</a>\nor <a href='#!/api/Ext.data.NodeInterface-cfg-iconCls'>Ext.data.NodeInterface#iconCls</a> will be displayed, but the\ndefault \"folder\" and \"leaf\" icons will not be displayed.\n\n2. `true` - Icons specified in the tree data will be displayed, and the default\n\"folder\" and \"leaf\" icons will be displayed for nodes that do not specify\nan `icon` or `iconCls`.\n\n3. `false` - No icons will be displayed in the breadcrumb buttons, only text.\n",
+                "type": "Boolean",
+                "value": "null",
+                "src": {
+                  "name": "0,55,28",
+                  "text": "0,56,12,678",
+                  "type": "0,55,18",
+                  "value": "0,55,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showMenuIcons",
+                "optional": true,
+                "text": "\nControls whether or not icons of tree nodes are displayed in the breadcrumb\nmenu items. There are 3 possible values for this config:\n\n1. unspecified (<a href='#!/api/null'>null</a>) - the default value. In this mode only icons that are\nspecified in the tree data using (<a href='#!/api/Ext.data.NodeInterface-cfg-icon'>Ext.data.NodeInterface#icon</a>\nor <a href='#!/api/Ext.data.NodeInterface-cfg-iconCls'>Ext.data.NodeInterface#iconCls</a> will be displayed, but the\ndefault \"folder\" and \"leaf\" icons will not be displayed.\n\n2. `true` - Icons specified in the tree data will be displayed, and the default\n\"folder\" and \"leaf\" icons will be displayed for nodes that do not specify\nan `icon` or `iconCls`.\n\n3. `false` - No icons will be displayed on the breadcrumb menu items, only text.\n",
+                "type": "Boolean",
+                "value": "null",
+                "src": {
+                  "name": "0,74,28",
+                  "text": "0,75,12,683",
+                  "type": "0,74,18",
+                  "value": "0,74,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "store",
+                "text": "The TreeStore that this breadcrumb toolbar should use as its data source\n",
+                "type": "Ext.data.TreeStore",
+                "src": {
+                  "name": "0,93,38",
+                  "text": "0,94,12,73",
+                  "type": "0,93,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "useSplitButtons",
+                "optional": true,
+                "text": "`false` to use regular <a href='#!/api/Ext.button.Button'>Ext.button.Button</a>s instead of <a href='#!/api/Ext.button.Split'>Ext.button.Split</a>.  When `true`, a click on the body of a button\nwill navigate to the specified node, and a click on the arrow will show a menu\ncontaining the the child nodes.  When `false`, the only mode of navigation is\nthe menu, since a click anywhere on the button will show the menu.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,99,28",
+                  "text": "0,100,12,378",
+                  "type": "0,99,18",
+                  "value": "0,99,44"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "change",
+                "text": "Fires when the user changes the selected record. In contrast to the <a href='#!/api/Ext.toolbar.Breadcrumb-event-selectionchange'>selectionchange</a> event, this does\n*not* fire at render time, only in response to user activity.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.toolbar.Breadcrumb",
+                    "src": {
+                      "name": "0,336,48",
+                      "type": "0,336,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The selected node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,337,44",
+                      "text": "0,337,49,19",
+                      "type": "0,337,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prevNode",
+                    "text": "The previously selected node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,338,44",
+                      "text": "0,338,53,30",
+                      "type": "0,338,24"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,333,23",
+                  "text": "0,334,16,172"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "selectionchange",
+                "text": "Fires when the selected node changes. At render time, this event will fire\nindicating that the configured <a href='#!/api/Ext.toolbar.Breadcrumb-cfg-selection'>selection</a> has been selected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.toolbar.Breadcrumb",
+                    "src": {
+                      "name": "0,325,44",
+                      "type": "0,325,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The selected node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,326,40",
+                      "text": "0,326,45,19",
+                      "type": "0,326,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prevNode",
+                    "text": "The previously selected node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,327,40",
+                      "text": "0,327,49,30",
+                      "type": "0,327,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,322,19",
+                  "text": "0,323,12,144"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_onButtonClick",
+                "text": "Handles a click on a breadcrumb button\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "button",
+                    "type": "Ext.button.Split",
+                    "src": {
+                      "name": "0,381,38",
+                      "type": "0,381,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "0,382,37",
+                      "type": "0,382,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,380,12",
+                  "name": "0,384,0",
+                  "text": "0,379,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_onMenuBeforeShow",
+                "text": "Handles the `beforeshow` event of a button menu\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "menu",
+                    "type": "Ext.menu.Menu",
+                    "src": {
+                      "name": "0,406,35",
+                      "type": "0,406,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,405,12",
+                  "name": "0,408,0",
+                  "text": "0,404,12,48"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_onMenuClick",
+                "text": "Handles a click on a button menu\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "menu",
+                    "type": "Ext.menu.Menu",
+                    "src": {
+                      "name": "0,393,35",
+                      "type": "0,393,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Ext.menu.Item",
+                    "src": {
+                      "name": "0,394,35",
+                      "type": "0,394,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "0,395,37",
+                      "type": "0,395,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,392,12",
+                  "name": "0,397,0",
+                  "text": "0,391,12,33"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSelection",
+                "text": "Returns the currently selected <a href='#!/api/Ext.data.TreeModel'>Ext.data.TreeModel</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "node The selected node (or null if there is no\nselection).\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "text": "0,186,37,47:0,187,8,12",
+                      "type": "0,186,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,184,16",
+                  "text": "0,185,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setSelection",
+                "text": "Selects the passed <a href='#!/api/Ext.data.TreeModel'>Ext.data.TreeModel</a> in the breadcrumb component.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The node in the breadcrumb <a href='#!/api/Ext.toolbar.Breadcrumb-cfg-store'>store</a> to\nselect as the active node.\n",
+                    "type": "Ext.data.TreeModel",
+                    "src": {
+                      "name": "0,193,36",
+                      "text": "0,193,41,45:0,194,8,27",
+                      "type": "0,193,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this The breadcrumb component\n",
+                    "type": "Ext.toolbar.Breadcrumb",
+                    "src": {
+                      "text": "0,195,41,30",
+                      "type": "0,195,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,191,16",
+                  "text": "0,192,8,80"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "buttons",
+                "text": "Internal cache of buttons that are re-purposed as the items of this container\nas navigation occurs.\n",
+                "type": "Ext.button.Split[]",
+                "src": {
+                  "access": "0,150,12",
+                  "name": "0,149,43",
+                  "text": "0,147,12,100",
+                  "type": "0,149,23"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "vars",
+            "items": [
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-expanded-glyph",
+                "text": "Glyph for the \"expanded arrow\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-angle-down $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,116,1",
+                  "text": "1,114,4,90",
+                  "type": "1,113,10",
+                  "value": "1,116,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-expanded-glyph-color",
+                "text": "The color to use for the \"expanded arrow\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-arrow-glyph-color",
+                "src": {
+                  "name": "1,122,1",
+                  "text": "1,120,4,101",
+                  "type": "1,119,10",
+                  "value": "1,122,49"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-glyph",
+                "text": "Glyph for the \"arrow\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-angle-right $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,104,1",
+                  "text": "1,102,4,81",
+                  "type": "1,101,10",
+                  "value": "1,104,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-glyph-color",
+                "text": "The color to use for the \"arrow\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-glyph-color",
+                "src": {
+                  "name": "1,110,1",
+                  "text": "1,108,4,92",
+                  "type": "1,107,10",
+                  "value": "1,110,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-arrow-width",
+                "text": "The width of breadcrumb arrows when <a href='#!/api/Ext.toolbar.Breadcrumb-cfg-useSplitButtons'>useSplitButtons</a> is `false`\n",
+                "type": "Number",
+                "value": "$button-small-split-width",
+                "src": {
+                  "name": "1,26,1",
+                  "text": "1,24,4,72",
+                  "type": "1,23,10",
+                  "value": "1,26,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-button-spacing",
+                "text": "The space between the breadcrumb buttons\n",
+                "type": "Number",
+                "value": "0px",
+                "src": {
+                  "name": "1,20,1",
+                  "text": "1,18,4,41",
+                  "type": "1,17,10",
+                  "value": "1,20,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-button-ui",
+                "text": "The UI of buttons that are used in the \"default\" breadcrumb UI\n",
+                "type": "String",
+                "value": "'default-toolbar'",
+                "src": {
+                  "name": "1,14,1",
+                  "text": "1,12,4,63",
+                  "type": "1,11,10",
+                  "value": "1,14,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-classic-scrollers",
+                "text": "`true` to use classic-style scroller buttons.  When `true` scroller buttons are given their\nhover state by changing their background-position,  When `false` scroller buttons are\ngiven their hover state by applying opacity.\n",
+                "type": "Boolean",
+                "value": "$toolbar-classic-scrollers",
+                "src": {
+                  "name": "1,232,1",
+                  "text": "1,228,4,223",
+                  "type": "1,227,10",
+                  "value": "1,232,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-glyph",
+                "text": "Glyph for the \"folder\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-folder-o $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,68,1",
+                  "text": "1,66,4,82",
+                  "type": "1,65,10",
+                  "value": "1,68,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-glyph-color",
+                "text": "The color to use for the \"folder\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-glyph-color",
+                "src": {
+                  "name": "1,74,1",
+                  "text": "1,72,4,93",
+                  "type": "1,71,10",
+                  "value": "1,74,41"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-icon",
+                "text": "The background-image for the default \"folder\" icon\n",
+                "type": "String",
+                "value": "'tree/folder'",
+                "src": {
+                  "name": "1,38,1",
+                  "text": "1,36,4,51",
+                  "type": "1,35,10",
+                  "value": "1,38,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-open-glyph",
+                "text": "Glyph for the \"open folder\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-folder-open-o $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,80,1",
+                  "text": "1,78,4,87",
+                  "type": "1,77,10",
+                  "value": "1,80,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-open-glyph-color",
+                "text": "The color to use for the \"open folder\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-folder-glyph-color",
+                "src": {
+                  "name": "1,86,1",
+                  "text": "1,84,4,98",
+                  "type": "1,83,10",
+                  "value": "1,86,46"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-folder-open-icon",
+                "text": "The background-image for the default \"open folder\" icon\n",
+                "type": "String",
+                "value": "'tree/folder-open'",
+                "src": {
+                  "name": "1,44,1",
+                  "text": "1,42,4,56",
+                  "type": "1,41,10",
+                  "value": "1,44,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-glyph-color",
+                "text": "The color to use for breadcrumb icons when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "color",
+                "value": "$button-toolbar-glyph-color",
+                "src": {
+                  "name": "1,62,1",
+                  "text": "1,60,4,92",
+                  "type": "1,59,10",
+                  "value": "1,62,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-glyph-font-size",
+                "text": "The font size to use for breadcrumb icons when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "Number",
+                "value": "16px",
+                "src": {
+                  "name": "1,56,1",
+                  "text": "1,54,4,96",
+                  "type": "1,53,10",
+                  "value": "1,56,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-include-menu-active-arrow",
+                "text": "`true` to include a separate background-image for menu arrows when a breadcrumb button's\nmenu is open\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,129,1",
+                  "text": "1,126,4,102",
+                  "type": "1,125,10",
+                  "value": "1,129,48"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-include-split-over-arrow",
+                "text": "`true` to include a separate background-image for split arrows when a breadcrumb button's\narrow is hovered\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,136,1",
+                  "text": "1,133,4,107",
+                  "type": "1,132,10",
+                  "value": "1,136,47"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-leaf-glyph",
+                "text": "Glyph for the \"leaf\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-file-o $breadcrumb-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,92,1",
+                  "text": "1,90,4,80",
+                  "type": "1,89,10",
+                  "value": "1,92,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-leaf-glyph-color",
+                "text": "The color to use for the \"leaf\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "color",
+                "value": "$breadcrumb-glyph-color",
+                "src": {
+                  "name": "1,98,1",
+                  "text": "1,96,4,91",
+                  "type": "1,95,10",
+                  "value": "1,98,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-leaf-icon",
+                "text": "The background-image for the default \"leaf\" icon\n",
+                "type": "String",
+                "value": "'tree/leaf'",
+                "src": {
+                  "name": "1,50,1",
+                  "text": "1,48,4,49",
+                  "type": "1,47,10",
+                  "value": "1,50,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-border-color",
+                "text": "The border-color of Breadcrumb scrollers\n",
+                "type": "color",
+                "value": "$toolbar-scroller-border-color",
+                "src": {
+                  "name": "1,154,1",
+                  "text": "1,152,4,41",
+                  "type": "1,151,10",
+                  "value": "1,154,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-border-width",
+                "text": "The border-width of Breadcrumb scrollers\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-border-width",
+                "src": {
+                  "name": "1,160,1",
+                  "text": "1,158,4,41",
+                  "type": "1,157,10",
+                  "value": "1,160,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-bottom-margin",
+                "text": "The margin of \"bottom\" Breadcrumb scroller buttons\n",
+                "type": "Number/list",
+                "value": "$toolbar-scroller-bottom-margin",
+                "src": {
+                  "name": "1,178,1",
+                  "text": "1,176,4,51",
+                  "type": "1,175,10",
+                  "value": "1,178,45"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-cursor",
+                "text": "The cursor of Breadcrumb scrollers\n",
+                "type": "String",
+                "value": "$toolbar-scroller-cursor",
+                "src": {
+                  "name": "1,190,1",
+                  "text": "1,188,4,35",
+                  "type": "1,187,10",
+                  "value": "1,190,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-cursor-disabled",
+                "text": "The cursor of disabled Breadcrumb scrollers\n",
+                "type": "String",
+                "value": "$toolbar-scroller-cursor-disabled",
+                "src": {
+                  "name": "1,196,1",
+                  "text": "1,194,4,44",
+                  "type": "1,193,10",
+                  "value": "1,196,47"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-height",
+                "text": "The height of Breadcrumb scrollers\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-height",
+                "src": {
+                  "name": "1,148,1",
+                  "text": "1,146,4,35",
+                  "type": "1,145,10",
+                  "value": "1,148,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-left-margin",
+                "text": "The margin of \"left\" Breadcrumb scroller buttons\n",
+                "type": "Number/list",
+                "value": "$toolbar-scroller-left-margin",
+                "src": {
+                  "name": "1,184,1",
+                  "text": "1,182,4,49",
+                  "type": "1,181,10",
+                  "value": "1,184,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-opacity",
+                "text": "The opacity of Breadcrumb scroller buttons. Only applicable when\n<a href='#!/api/Ext.toolbar.Breadcrumb-var-$breadcrumb-classic-scrollers'>$breadcrumb-classic-scrollers</a> is `false`.\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-opacity",
+                "src": {
+                  "name": "1,203,1",
+                  "text": "1,200,4,116",
+                  "type": "1,199,10",
+                  "value": "1,203,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-opacity-disabled",
+                "text": "The opacity of disabled Breadcrumb scroller buttons. Only applicable when\n<a href='#!/api/Ext.toolbar.Breadcrumb-var-$breadcrumb-classic-scrollers'>$breadcrumb-classic-scrollers</a> is `false`.\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-opacity-disabled",
+                "src": {
+                  "name": "1,224,1",
+                  "text": "1,221,4,125",
+                  "type": "1,220,10",
+                  "value": "1,224,48"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-opacity-over",
+                "text": "The opacity of hovered Breadcrumb scroller buttons. Only applicable when\n<a href='#!/api/Ext.toolbar.Breadcrumb-var-$breadcrumb-classic-scrollers'>$breadcrumb-classic-scrollers</a> is `false`.\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-opacity-over",
+                "src": {
+                  "name": "1,210,1",
+                  "text": "1,207,4,124",
+                  "type": "1,206,10",
+                  "value": "1,210,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-opacity-pressed",
+                "text": "The opacity of pressed Breadcrumb scroller buttons. Only applicable when\n<a href='#!/api/Ext.toolbar.Breadcrumb-var-$breadcrumb-classic-scrollers'>$breadcrumb-classic-scrollers</a> is `false`.\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-opacity-pressed",
+                "src": {
+                  "name": "1,217,1",
+                  "text": "1,214,4,124",
+                  "type": "1,213,10",
+                  "value": "1,217,47"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-right-margin",
+                "text": "The margin of \"right\" Breadcrumb scroller buttons\n",
+                "type": "Number/list",
+                "value": "$toolbar-scroller-right-margin",
+                "src": {
+                  "name": "1,172,1",
+                  "text": "1,170,4,50",
+                  "type": "1,169,10",
+                  "value": "1,172,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-top-margin",
+                "text": "The margin of \"top\" Breadcrumb scroller buttons\n",
+                "type": "Number/list",
+                "value": "$toolbar-scroller-top-margin",
+                "src": {
+                  "name": "1,166,1",
+                  "text": "1,164,4,48",
+                  "type": "1,163,10",
+                  "value": "1,166,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-scroller-width",
+                "text": "The width of Breadcrumb scrollers\n",
+                "type": "Number",
+                "value": "$toolbar-scroller-width",
+                "src": {
+                  "name": "1,142,1",
+                  "text": "1,140,4,34",
+                  "type": "1,139,10",
+                  "value": "1,142,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$breadcrumb-split-width",
+                "text": "The width of breadcrumb arrows when <a href='#!/api/Ext.toolbar.Breadcrumb-cfg-useSplitButtons'>useSplitButtons</a> is `true`\n",
+                "type": "Number",
+                "value": "$button-small-split-width",
+                "src": {
+                  "name": "1,32,1",
+                  "text": "1,30,4,71",
+                  "type": "1,29,10",
+                  "value": "1,32,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$include-breadcrumb-default-ui",
+                "text": "`true` to include the \"default\" breadcrumb UI\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,238,1",
+                  "text": "1,236,4,46",
+                  "type": "1,235,10",
+                  "value": "1,238,41"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,14,0",
+          "extends": "0,13,0",
+          "mixins": "0,21,0",
+          "name": "1,1,12",
+          "requires": "0,16,0,0:0,17,0,0",
+          "text": "0,2,4,548"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

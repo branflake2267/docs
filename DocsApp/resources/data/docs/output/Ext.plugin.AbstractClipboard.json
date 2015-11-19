@@ -1,0 +1,485 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/plugin/AbstractClipboard.js",
+    "../../../ext/packages/core/src/plugin/Abstract.js",
+    "../../../ext/classic/classic/overrides/plugin/Abstract.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "protected",
+        "extends": "Ext.plugin.Abstract",
+        "name": "Ext.plugin.AbstractClipboard",
+        "requires": "Ext.util.KeyMap",
+        "since": "5.1.0",
+        "text": "This base class manages clipboard data transfer for a component. As an abstract class,\napplications use derived classes such as <a href='#!/api/Ext.grid.plugin.Clipboard'>Ext.grid.plugin.Clipboard</a> instead\nand seldom use this class directly.\n\n## Operation\n\nComponents that interact with the clipboard do so in two directions: copy and paste.\nWhen copying to the clipboard, a component will often provide multiple data formats.\nOn paste, the consumer of the data can then decide what format it prefers and ignore\nthe others.\n\n### Copy (and Cut)\n\nThere are two storage locations provided for holding copied data:\n\n * The system clipboard, used to exchange data with other applications running\n   outside the browser.\n * A memory space in the browser page that can hold data for use only by other\n   components on the page. This allows for richer formats to be transferred.\n\nA component can copy (or cut) data in multiple formats as controlled by the\n<a href='#!/api/Ext.plugin.AbstractClipboard-cfg-memory'>cfg-memory</a> and <a href='#!/api/Ext.plugin.AbstractClipboard-cfg-system'>cfg-system</a> configs.\n\n### Paste\n\nWhile there may be many formats available, when a component is ready to paste, only\none format can ultimately be used. This is specified by the <a href='#!/api/Ext.plugin.AbstractClipboard-cfg-source'>cfg-source</a>\nconfig.\n\n## Browser Limitations\n\nAt the current time, browsers have only a limited ability to interact with the system\nclipboard. The only reliable, cross-browser, plugin-in-free technique for doing so is\nto use invisible elements and focus tricks **during** the processing of clipboard key\npresses like CTRL+C (on Windows/Linux) or CMD+C (on Mac).\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "formats",
+                "text": "This object is keyed by the names of the data formats supported by this plugin.\nThe property values of this object are objects with `get` and `put` properties\nthat name the methods for getting data from (copy) and putting to into (paste)\nthe associated component.\n\nFor example:\n\n     formats: {\n         html: {\n             get: 'getHtmlData',\n             put: 'putHtmlData'\n         }\n     }\n\nThis declares support for the \"html\" data format and indicates that the\n`getHtmlData` method should be called to copy HTML data from the component,\nwhile the `putHtmlData` should be called to paste HTML data into the component.\n\nBy default, all derived classes must support a \"text\" format:\n\n     formats: {\n         text: {\n             get: 'getTextData',\n             put: 'putTextData'\n         }\n     }\n\nTo understand the method signatures required to implement a data format, see the\ndocumentation for <a href='#!/api/Ext.plugin.AbstractClipboard-method-getTextData'>getTextData</a> and  <a href='#!/api/Ext.plugin.AbstractClipboard-method-putTextData'>putTextData</a>.\n\nThe format name \"system\" is not allowed.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,82,12",
+                  "name": "0,49,26",
+                  "text": "0,50,12,999",
+                  "type": "0,49,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "memory",
+                "optional": true,
+                "text": "The data format(s) to copy to the private, memory clipboard. By default, data\nis not saved to the memory clipboard. Specify `true` to include all formats\nof data, or a string to copy a single format, or an array of strings to copy\nmultiple formats.\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "0,94,36",
+                  "text": "0,95,12,249",
+                  "type": "0,94,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pluginId",
+                "text": "A name for the plugin that can be set at creation time to then retrieve the plugin\nthrough <a href='#!/api/Ext.Component-method-getPlugin'>Ext.Component#getPlugin</a> method.  For example:\n\n    var grid = Ext.create('Ext.grid.Panel', {\n        plugins: [{\n            ptype: 'cellediting',\n            clicksToEdit: 2,\n            pluginId: 'cellplugin'\n        }]\n    });\n\n    // later on:\n    var plugin = grid.getPlugin('cellplugin');\n",
+                "type": "String",
+                "src": {
+                  "name": "1,61,22",
+                  "text": "1,62,8,404",
+                  "type": "1,61,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "source",
+                "optional": true,
+                "text": "The format or formats in order of preference when pasting data. This list can\nbe any of the valid formats, plus the name \"system\". When a paste occurs, this\nconfig is consulted. The first format specified by this config that has data\navailable in the private memory space is used. If \"system\" is encountered in\nthe list, whatever data is available on the system clipboard is chosen. At\nthat point, no further source formats will be considered.\n",
+                "type": "String/String[]",
+                "value": "\"system\"",
+                "src": {
+                  "name": "0,103,36",
+                  "text": "0,104,12,444",
+                  "type": "0,103,18",
+                  "value": "0,103,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stateEvents",
+                "text": "The configured list of stateEvents used to (optionally) participate in Owner Component's state management.\n",
+                "type": "String/Array",
+                "src": {
+                  "name": "2,13,28",
+                  "text": "2,14,8,107",
+                  "type": "2,13,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "system",
+                "optional": true,
+                "text": "The data format to set in the system clipboard. By default, the \"text\"\nformat is used. Based on the type of derived class, other formats may be\npossible.\n",
+                "type": "String",
+                "value": "\"text\"",
+                "src": {
+                  "name": "0,114,27",
+                  "text": "0,115,12,154",
+                  "type": "0,114,18",
+                  "value": "0,114,34"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "applyState",
+                "text": "The applyState method is invoked by the client Component's State mixin after initComponent method has been run for the client.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method to utilize it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The current plugin state object to be applied.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,35,24",
+                      "text": "2,35,30,47",
+                      "type": "2,35,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "allState",
+                    "text": "The current aggregate state of the Component and all plugins.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,36,24",
+                      "text": "2,36,33,62",
+                      "type": "2,36,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,39,0",
+                  "text": "2,31,8,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clonePlugin",
+                "text": "Creates clone of the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "overrideCfg",
+                    "optional": true,
+                    "text": "Additional config for the derived plugin.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,38,25",
+                      "text": "1,38,38,42",
+                      "type": "1,38,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,40,0",
+                  "text": "1,37,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Instantiates the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "Configuration object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,27,25",
+                      "text": "1,27,33,22",
+                      "type": "1,27,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,29,0",
+                  "text": "1,26,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "The destroy method is invoked by the owning Component at the time the Component is\nbeing destroyed.\n",
+                "src": {
+                  "name": "1,91,16",
+                  "text": "1,88,8,101"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `true`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "2,57,0",
+                  "text": "2,52,8,171"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `false`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "2,47,0",
+                  "text": "2,42,8,172"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCmp",
+                "text": "Returns the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "1,54,32,17",
+                      "type": "1,54,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,56,0",
+                  "text": "1,53,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getHiddenTextArea",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "type": "0,346,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,345,12",
+                  "name": "0,348,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getState",
+                "text": "The getState method is invoked by the client Component's State mixin when one or more of the the specified <a href='#!/api/Ext.plugin.AbstractClipboard-cfg-stateEvents'>stateEvents</a> are raised.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method which returns a state object.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "state\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,24,25,6",
+                      "type": "2,24,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,27,0",
+                  "text": "2,20,8,352"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTarget",
+                "text": "Returns the element target to listen to copy/paste.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "text": "The component this plugin is initialized on.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,163,31",
+                      "text": "0,163,36,45",
+                      "type": "0,163,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The element target.\n",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "text": "0,164,34,20",
+                      "type": "0,164,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,166,0",
+                  "text": "0,161,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTextData",
+                "text": "This method returns the selected data in text format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "text": "The name of the format (i.e., \"text\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,173,24",
+                      "text": "0,173,31,39",
+                      "type": "0,173,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "erase",
+                    "text": "Pass `true` to erase (cut) the data, `false` to just copy.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,174,25",
+                      "text": "0,174,31,59",
+                      "type": "0,174,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The data in text format.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,175,25,25",
+                      "type": "0,175,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,172,16",
+                  "text": "0,171,8,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "init",
+                "text": "The init method is invoked after initComponent method has been run for the client Component.\n\nThe supplied implementation is empty. Subclasses should perform plugin initialization, and set up bidirectional\nlinks between the plugin and its client Component in their own implementation of this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "client",
+                    "text": "The client Component which owns this plugin.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,83,31",
+                      "text": "1,83,38,45",
+                      "type": "1,83,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,85,0",
+                  "text": "1,79,8,300"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "putTextData",
+                "text": "This method pastes the given text data.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "The data in the indicated `format`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,181,24",
+                      "text": "0,181,29,36",
+                      "type": "0,181,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "text": "The name of the format (i.e., \"text\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,182,24",
+                      "text": "0,182,31,39",
+                      "type": "0,182,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,180,16",
+                  "text": "0,179,8,40"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setCmp",
+                "text": "Sets the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cmp",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,46,31",
+                      "text": "1,46,35,17",
+                      "type": "1,46,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,48,0",
+                  "text": "1,45,8,53"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "isPlugin",
+                "text": "`true` in this class to identify an object as an instantiated Plugin, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,20,28",
+                  "text": "1,21,8,91",
+                  "type": "1,20,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "shared",
+                "text": "The shared state for all clipboard-enabled components.\n",
+                "type": "Object",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "counter",
+                    "text": "The number of clipboard-enabled components\ncurrently using this object.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,189,38",
+                      "text": "0,189,46,43:0,190,12,29",
+                      "type": "0,189,23"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "data",
+                    "text": "The clipboard data for intra-page copy/paste. The\nproperties of the object are keyed by format.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,191,38",
+                      "text": "0,191,43,50:0,192,12,46",
+                      "type": "0,191,23"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,195,12",
+                  "name": "0,187,31",
+                  "text": "0,188,12,55",
+                  "type": "0,187,23"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,38,4",
+          "extends": "0,42,0",
+          "name": "0,41,0",
+          "requires": "0,44,0",
+          "since": "0,39,11",
+          "text": "0,2,4,1499"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

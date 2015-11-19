@@ -1,13 +1,16 @@
 {
   "$type": "doxi",
   "files": [
-    "../../../ext/packages/core/src/lang/Date.js"
+    "../../../ext/packages/core/src/lang/Date.js",
+    "../../../../docs/docs/js/primitives/Object.js"
   ],
   "global": {
     "$type": "namespace",
     "items": [
       {
         "$type": "class",
+        "extended": "Object",
+        "extends": "Object",
         "name": "Ext.Date",
         "singleton": true,
         "text": "This class defines some basic methods for handling dates.\n\nThe date parsing and formatting syntax contains a subset of\n[PHP's `date()` function](http://www.php.net/date), and the formats that are\nsupported will provide results equivalent to their PHP versions.\n\nThe following is a list of all currently supported formats:\n\n     Format      Description                                                               Example returned values\n     ------      -----------------------------------------------------------------------   -----------------------\n       d         Day of the month, 2 digits with leading zeros                             01 to 31\n       D         A short textual representation of the day of the week                     Mon to Sun\n       j         Day of the month without leading zeros                                    1 to 31\n       l         A full textual representation of the day of the week                      Sunday to Saturday\n       N         ISO-8601 numeric representation of the day of the week                    1 (for Monday) through 7 (for Sunday)\n       S         English ordinal suffix for the day of the month, 2 characters             st, nd, rd or th. Works well with j\n       w         Numeric representation of the day of the week                             0 (for Sunday) to 6 (for Saturday)\n       z         The day of the year (starting from 0)                                     0 to 364 (365 in leap years)\n       W         ISO-8601 week number of year, weeks starting on Monday                    01 to 53\n       F         A full textual representation of a month, such as January or March        January to December\n       m         Numeric representation of a month, with leading zeros                     01 to 12\n       M         A short textual representation of a month                                 Jan to Dec\n       n         Numeric representation of a month, without leading zeros                  1 to 12\n       t         Number of days in the given month                                         28 to 31\n       L         Whether it&#39;s a leap year                                                  1 if it is a leap year, 0 otherwise.\n       o         ISO-8601 year number (identical to (Y), but if the ISO week number (W)    Examples: 1998 or 2004\n                 belongs to the previous or next year, that year is used instead)\n       Y         A full numeric representation of a year, 4 digits                         Examples: 1999 or 2003\n       y         A two digit representation of a year                                      Examples: 99 or 03\n       a         Lowercase Ante meridiem and Post meridiem                                 am or pm\n       A         Uppercase Ante meridiem and Post meridiem                                 AM or PM\n       g         12-hour format of an hour without leading zeros                           1 to 12\n       G         24-hour format of an hour without leading zeros                           0 to 23\n       h         12-hour format of an hour with leading zeros                              01 to 12\n       H         24-hour format of an hour with leading zeros                              00 to 23\n       i         Minutes, with leading zeros                                               00 to 59\n       s         Seconds, with leading zeros                                               00 to 59\n       u         Decimal fraction of a second                                              Examples:\n                 (minimum 1 digit, arbitrary number of digits allowed)                     001 (i.e. 0.001s) or\n                                                                                           100 (i.e. 0.100s) or\n                                                                                           999 (i.e. 0.999s) or\n                                                                                           999876543210 (i.e. 0.999876543210s)\n       O         Difference to Greenwich time (GMT) in hours and minutes                   Example: +1030\n       P         Difference to Greenwich time (GMT) with colon between hours and minutes   Example: -08:00\n       T         Timezone abbreviation of the machine running the code                     Examples: EST, MDT, PDT ...\n       Z         Timezone offset in seconds (negative if west of UTC, positive if east)    -43200 to 50400\n       c         ISO 8601 date represented as the local time with an offset to UTC appended.\n                 Notes:                                                                    Examples:\n                 1) If unspecified, the month / day defaults to the current month / day,   1991 or\n                    the time defaults to midnight, while the timezone defaults to the      1992-10 or\n                    browser's timezone. If a time is specified, it must include both hours 1993-09-20 or\n                    and minutes. The \"T\" delimiter, seconds, milliseconds and timezone     1994-08-19T16:20+01:00 or\n                    are optional.                                                          1995-07-18T17:21:28-02:00 or\n                 2) The decimal fraction of a second, if specified, must contain at        1996-06-17T18:22:29.98765+03:00 or\n                    least 1 digit (there is no limit to the maximum number                 1997-05-16T19:23:30,12345-0400 or\n                    of digits allowed), and may be delimited by either a '.' or a ','      1998-04-15T20:24:31.2468Z or\n                 Refer to the examples on the right for the various levels of              1999-03-14T20:24:32Z or\n                 date-time granularity which are supported, or see                         2000-02-13T21:25:33\n                 http://www.w3.org/TR/NOTE-datetime for more info.                         2001-01-12 22:26:34\n       C         An ISO date string as implemented by the native Date object's             1962-06-17T09:21:34.125Z\n                 [Date.toISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)\n                 method. This outputs the numeric part with *UTC* hour and minute\n                 values, and indicates this by appending the `'Z'` timezone\n                 identifier.\n       U         Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)                1193432466 or -2138434463\n       MS        Microsoft AJAX serialized dates                                           \\/Date(1238606590509)\\/ (i.e. UTC milliseconds since epoch) or\n                                                                                           \\/Date(1238606590509+0800)\\/\n       time      A javascript millisecond timestamp                                        1350024476440\n       timestamp A UNIX timestamp (same as U)                                              1350024866\n\nExample usage (note that you must escape format specifiers with '\\\\' to render them as character literals):\n\n    // Sample date:\n    // 'Wed Jan 10 2007 15:05:01 GMT-0600 (Central Standard Time)'\n\n    var dt = new Date('1/10/2007 03:05:01 PM GMT-0600');\n    console.log(Ext.Date.format(dt, 'Y-m-d'));                          // 2007-01-10\n    console.log(Ext.Date.format(dt, 'F j, Y, g:i a'));                  // January 10, 2007, 3:05 pm\n    console.log(Ext.Date.format(dt, 'l, \\\\t\\\\he jS \\\\of F Y h:i:s A')); // Wednesday, the 10th of January 2007 03:05:01 PM\n\nHere are some standard date/time patterns that you might find helpful.  They\nare not part of the source of Ext.Date, but to use them you can simply copy this\nblock of code into any script that is included after Ext.Date and they will also become\nglobally available on the Date object.  Feel free to add or remove patterns as needed in your code.\n\n    Ext.Date.patterns = {\n        ISO8601Long:\"Y-m-d H:i:s\",\n        ISO8601Short:\"Y-m-d\",\n        ShortDate: \"n/j/Y\",\n        LongDate: \"l, F d, Y\",\n        FullDateTime: \"l, F d, Y g:i:s A\",\n        MonthDay: \"F d\",\n        ShortTime: \"g:i A\",\n        LongTime: \"g:i:s A\",\n        SortableDateTime: \"Y-m-d\\\\TH:i:s\",\n        UniversalSortableDateTime: \"Y-m-d H:i:sO\",\n        YearMonth: \"F, Y\"\n    };\n\nExample usage:\n\n    var dt = new Date();\n    console.log(Ext.Date.format(dt, Ext.Date.patterns.ShortDate));\n\nDeveloper-written, custom formats may be used by supplying both a formatting and a parsing function\nwhich perform to specialized requirements. The functions are stored in <a href='#!/api/Ext.Date-property-parseFunctions'>parseFunctions</a> and <a href='#!/api/Ext.Date-property-formatFunctions'>formatFunctions</a>.\n",
@@ -15,1050 +18,6 @@
           {
             "$type": "methods",
             "items": [
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "toString",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "src": {
-                      "name": "0,308,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,306,8",
-                  "name": "0,308,0"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getElapsed",
-                "text": "Returns the number of milliseconds between two dates.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "dateA",
-                    "text": "The first date.\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,323,22",
-                      "text": "0,323,28,16",
-                      "type": "0,323,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "dateB",
-                    "optional": true,
-                    "text": "(optional) The second date.\n",
-                    "type": "Date",
-                    "value": "new Date()",
-                    "src": {
-                      "name": "0,324,23",
-                      "text": "0,324,41,28",
-                      "type": "0,324,16",
-                      "value": "0,324,29"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The difference in milliseconds\n",
-                    "type": "Number",
-                    "src": {
-                      "text": "0,325,25,31",
-                      "type": "0,325,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,327,0",
-                  "text": "0,322,8,54"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "formatCodeToRegex",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "character",
-                    "src": {
-                      "name": "0,343,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "currentGroup",
-                    "src": {
-                      "name": "0,343,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,341,8",
-                  "name": "0,343,0"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getShortMonthName",
-                "text": "Get the short month name for the given month number.\nOverride this function for international dates.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "month",
-                    "text": "A zero-based JavaScript month number.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,638,24",
-                      "text": "0,638,30,38",
-                      "type": "0,638,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The short month name.\n",
-                    "type": "String",
-                    "src": {
-                      "text": "0,639,25,22",
-                      "type": "0,639,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,641,0",
-                  "text": "0,636,8,101"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getShortDayName",
-                "text": "Get the short day name for the given day number.\nOverride this function for international dates.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "day",
-                    "text": "A zero-based JavaScript day number.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,650,24",
-                      "text": "0,650,28,36",
-                      "type": "0,650,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The short day name.\n",
-                    "type": "String",
-                    "src": {
-                      "text": "0,651,25,20",
-                      "type": "0,651,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,653,0",
-                  "text": "0,648,8,97"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getMonthNumber",
-                "text": "Get the zero-based JavaScript month number for the given short/full month name.\nOverride this function for international dates.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "name",
-                    "text": "The short/full month name.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "0,662,24",
-                      "text": "0,662,29,27",
-                      "type": "0,662,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The zero-based JavaScript month number.\n",
-                    "type": "Number",
-                    "src": {
-                      "text": "0,663,25,40",
-                      "type": "0,663,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,665,0",
-                  "text": "0,660,8,128"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "formatContainsHourInfo",
-                "text": "Checks if the specified format contains hour information\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "format",
-                    "text": "The format to check\n",
-                    "type": "String",
-                    "src": {
-                      "name": "0,673,24",
-                      "text": "0,673,31,20",
-                      "type": "0,673,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "True if the format contains hour information\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "0,674,26,45",
-                      "type": "0,674,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,677,0",
-                  "text": "0,672,8,57"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "formatContainsDateInfo",
-                "text": "Checks if the specified format contains information about\nanything other than the time.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "format",
-                    "text": "The format to check\n",
-                    "type": "String",
-                    "src": {
-                      "name": "0,684,24",
-                      "text": "0,684,31,20",
-                      "type": "0,684,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "True if the format contains information about\ndate/day information.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "0,685,26,46:0,686,8,22",
-                      "type": "0,685,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,689,0",
-                  "text": "0,682,8,88"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "unescapeFormat",
-                "text": "Removes all escaping for a date format string. In date formats,\nusing a '\\' can be used to escape special characters.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "format",
-                    "text": "The format to unescape\n",
-                    "type": "String",
-                    "src": {
-                      "name": "0,696,24",
-                      "text": "0,696,31,23",
-                      "type": "0,696,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The unescaped format\n",
-                    "type": "String",
-                    "src": {
-                      "text": "0,697,25,21",
-                      "type": "0,697,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,700,0",
-                  "text": "0,694,8,118"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "isValid",
-                "text": "Checks if the passed Date parameters will cause a JavaScript Date \"rollover\".\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "year",
-                    "text": "4-digit year.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,773,24",
-                      "text": "0,773,29,14",
-                      "type": "0,773,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "month",
-                    "text": "1-based month-of-year.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,774,24",
-                      "text": "0,774,30,23",
-                      "type": "0,774,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "day",
-                    "text": "Day of month.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,775,24",
-                      "text": "0,775,28,14",
-                      "type": "0,775,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "hour",
-                    "text": "(optional) Hour.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,776,24",
-                      "text": "0,776,29,17",
-                      "type": "0,776,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "minute",
-                    "text": "(optional) Minute.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,777,24",
-                      "text": "0,777,31,19",
-                      "type": "0,777,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "second",
-                    "text": "(optional) Second.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,778,24",
-                      "text": "0,778,31,19",
-                      "type": "0,778,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "millisecond",
-                    "text": "(optional) Millisecond.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,779,24",
-                      "text": "0,779,36,24",
-                      "type": "0,779,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "`true` if the passed parameters do not cause a Date \"rollover\", `false` otherwise.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "0,780,26,83",
-                      "type": "0,780,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,782,0",
-                  "text": "0,772,8,78"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "parse",
-                "text": "Parses the passed string using the specified date format.\nNote that this function expects normal calendar dates, meaning that months are 1-based (i.e. 1 = January).\nThe <a href='#!/api/Ext.Date-property-defaults'>defaults</a> hash will be used for any date value (i.e. year, month, day, hour, minute, second or millisecond)\nwhich cannot be found in the passed string. If a corresponding default date value has not been specified in the <a href='#!/api/Ext.Date-property-defaults'>defaults</a> hash,\nthe current date's year, month, day or DST-adjusted zero-hour time value will be used instead.\nKeep in mind that the input date string must precisely match the specified format string\nin order for the parse operation to be successful (failed parse operations return a\n<a href='#!/api/null'>null</a> value).\n\nExample:\n\n    //dt = Fri May 25 2007 (current date)\n    var dt = new Date();\n\n    //dt = Thu May 25 2006 (today&#39;s month/day in 2006)\n    dt = Ext.Date.parse(\"2006\", \"Y\");\n\n    //dt = Sun Jan 15 2006 (all date parts specified)\n    dt = Ext.Date.parse(\"2006-01-15\", \"Y-m-d\");\n\n    //dt = Sun Jan 15 2006 15:20:01\n    dt = Ext.Date.parse(\"2006-01-15 3:20:01 PM\", \"Y-m-d g:i:s A\");\n\n    // attempt to parse Sun Feb 29 2006 03:20:01 in strict mode\n    dt = Ext.Date.parse(\"2006-02-29 03:20:01\", \"Y-m-d H:i:s\", true); // returns null\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "input",
-                    "text": "The raw date string.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "0,828,24",
-                      "text": "0,828,30,21",
-                      "type": "0,828,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "format",
-                    "text": "The expected date string format.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "0,829,24",
-                      "text": "0,829,31,33",
-                      "type": "0,829,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "strict",
-                    "optional": true,
-                    "text": "(optional) `true` to validate date strings while parsing (i.e. prevents JavaScript Date \"rollover\").\nInvalid date strings will return <a href='#!/api/null'>null</a> when parsed.\n",
-                    "type": "Boolean",
-                    "value": "false",
-                    "src": {
-                      "name": "0,830,26",
-                      "text": "0,830,40,101:0,831,8,53",
-                      "type": "0,830,16",
-                      "value": "0,830,33"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The parsed Date, or <a href='#!/api/null'>null</a> if an invalid date string.\n",
-                    "type": "Date/null",
-                    "src": {
-                      "text": "0,832,28,54",
-                      "type": "0,832,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,834,0",
-                  "text": "0,802,8,1238"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "getFormatCode",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "character",
-                    "src": {
-                      "name": "0,851,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,849,8",
-                  "name": "0,851,0"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "createFormat",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "format",
-                    "src": {
-                      "name": "0,866,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,864,8",
-                  "name": "0,866,0"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "createParser",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "format",
-                    "src": {
-                      "name": "0,893,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,891,8",
-                  "name": "0,893,0"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "dateFormat",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "src": {
-                      "name": "0,1196,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "format",
-                    "src": {
-                      "name": "0,1196,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,1194,8",
-                  "name": "0,1196,0"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "isEqual",
-                "text": "Compares if two dates are equal by comparing their values.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date1",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1202,22",
-                      "type": "0,1202,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "date2",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1203,22",
-                      "type": "0,1203,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "`true` if the date values are equal\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "0,1204,26,36",
-                      "type": "0,1204,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1206,0",
-                  "text": "0,1201,8,59"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "format",
-                "text": "Formats a date given the supplied format string.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date to format\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1217,22",
-                      "text": "0,1217,27,19",
-                      "type": "0,1217,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "format",
-                    "text": "The format string\n",
-                    "type": "String",
-                    "src": {
-                      "name": "0,1218,24",
-                      "text": "0,1218,31,18",
-                      "type": "0,1218,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The formatted date or an empty string if date parameter is not a JavaScript Date object\n",
-                    "type": "String",
-                    "src": {
-                      "text": "0,1219,25,88",
-                      "type": "0,1219,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1221,0",
-                  "text": "0,1216,8,49"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getTimezone",
-                "text": "Get the timezone abbreviation of the current date (equivalent to the format specifier 'T').\n\n__Note:__ The date string returned by the JavaScript Date object's `toString()` method varies\nbetween browsers (e.g. FF vs IE) and system region settings (e.g. IE in Asia vs IE in America).\nFor a given date string e.g. \"Thu Oct 25 2007 22:55:35 GMT+0800 (Malay Peninsula Standard Time)\",\n`getTimezone()` first tries to get the timezone abbreviation from between a pair of parentheses\n(which may or may not be present), failing which it proceeds to get the timezone abbreviation\nfrom the GMT offset portion of the date string.\n\n    @example\n    var dt = new Date('9/17/2011');\n    console.log(Ext.Date.getTimezone(dt));\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1249,22",
-                      "text": "0,1249,27,9",
-                      "type": "0,1249,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The abbreviated timezone name (e.g. 'CST', 'PDT', 'EDT', 'MPST' ...).\n",
-                    "type": "String",
-                    "src": {
-                      "text": "0,1250,25,70",
-                      "type": "0,1250,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1252,0",
-                  "text": "0,1236,8,713"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getGMTOffset",
-                "text": "Get the offset from GMT of the current date (equivalent to the format specifier 'O').\n\n    @example\n    var dt = new Date('9/17/2011');\n    console.log(Ext.Date.getGMTOffset(dt));\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1275,22",
-                      "text": "0,1275,27,9",
-                      "type": "0,1275,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "colon",
-                    "optional": true,
-                    "text": "`true` to separate the hours and minutes with a colon.\n",
-                    "type": "Boolean",
-                    "value": "false",
-                    "src": {
-                      "name": "0,1276,26",
-                      "text": "0,1276,39,55",
-                      "type": "0,1276,16",
-                      "value": "0,1276,32"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The 4-character offset string prefixed with + or - (e.g. '-0600').\n",
-                    "type": "String",
-                    "src": {
-                      "text": "0,1277,25,67",
-                      "type": "0,1277,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1279,0",
-                  "text": "0,1269,8,181"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getDayOfYear",
-                "text": "Get the numeric day number of the year, adjusted for leap year.\n\n    @example\n    var dt = new Date('9/17/2011');\n    console.log(Ext.Date.getDayOfYear(dt)); // 259\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1294,22",
-                      "text": "0,1294,27,9",
-                      "type": "0,1294,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "0 to 364 (365 in leap years).\n",
-                    "type": "Number",
-                    "src": {
-                      "text": "0,1295,25,30",
-                      "type": "0,1295,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1297,0",
-                  "text": "0,1288,8,166"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getWeekOfYear",
-                "text": "Get the numeric ISO-8601 week number of the year.\n(equivalent to the format specifier 'W', but without a leading zero).\n\n    @example\n    var dt = new Date('9/17/2011');\n    console.log(Ext.Date.getWeekOfYear(dt)); // 37\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date.\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1317,22",
-                      "text": "0,1317,27,10",
-                      "type": "0,1317,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "1 to 53.\n",
-                    "type": "Number",
-                    "src": {
-                      "text": "0,1318,25,9",
-                      "type": "0,1318,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1321,0",
-                  "text": "0,1310,8,222"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "isLeapYear",
-                "text": "Checks if the current date falls within a leap year.\n\n    @example\n    var dt = new Date('1/10/2011');\n    console.log(Ext.Date.isLeapYear(dt)); // false\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1342,22",
-                      "text": "0,1342,27,9",
-                      "type": "0,1342,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "`true` if the current date falls within a leap year, `false` otherwise.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "0,1343,26,72",
-                      "type": "0,1343,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1345,0",
-                  "text": "0,1336,8,155"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getFirstDayOfMonth",
-                "text": "Get the first day of the current month, adjusted for leap year.  The returned value\nis the numeric day index within the week (0-6) which can be used in conjunction with\nthe <a href='#!/api/Ext.Date-property-monthNames'>monthNames</a> array to retrieve the textual day name.\n\n     @example\n     var dt = new Date('1/10/2007'),\n         firstDay = Ext.Date.getFirstDayOfMonth(dt);\n     console.log(Ext.Date.dayNames[firstDay]); // output: 'Monday'\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1360,22",
-                      "text": "0,1360,27,9",
-                      "type": "0,1360,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The day number (0-6).\n",
-                    "type": "Number",
-                    "src": {
-                      "text": "0,1361,25,22",
-                      "type": "0,1361,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1363,0",
-                  "text": "0,1351,8,406"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getLastDayOfMonth",
-                "text": "Get the last day of the current month, adjusted for leap year.  The returned value\nis the numeric day index within the week (0-6) which can be used in conjunction with\nthe <a href='#!/api/Ext.Date-property-monthNames'>monthNames</a> array to retrieve the textual day name.\n\n     @example\n     var dt = new Date('1/10/2007'),\n         lastDay = Ext.Date.getLastDayOfMonth(dt);\n\n     console.log(Ext.Date.dayNames[lastDay]); // output: 'Wednesday'\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1379,22",
-                      "text": "0,1379,27,9",
-                      "type": "0,1379,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The day number (0-6).\n",
-                    "type": "Number",
-                    "src": {
-                      "text": "0,1380,25,22",
-                      "type": "0,1380,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1382,0",
-                  "text": "0,1369,8,406"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getFirstDateOfMonth",
-                "text": "Get the date of the first day of the month in which this date resides.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1389,22",
-                      "text": "0,1389,27,9",
-                      "type": "0,1389,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "type": "Date",
-                    "src": {
-                      "type": "0,1390,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1392,0",
-                  "text": "0,1388,8,71"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getLastDateOfMonth",
-                "text": "Get the date of the last day of the month in which this date resides.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1398,22",
-                      "text": "0,1398,27,9",
-                      "type": "0,1398,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "type": "Date",
-                    "src": {
-                      "type": "0,1399,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1401,0",
-                  "text": "0,1397,8,70"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getDaysInMonth",
-                "text": "Get the number of days in the current month, adjusted for leap year.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1407,22",
-                      "text": "0,1407,27,9",
-                      "type": "0,1407,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The number of days in the month.\n",
-                    "type": "Number",
-                    "src": {
-                      "text": "0,1408,25,33",
-                      "type": "0,1408,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1411,0",
-                  "text": "0,1406,8,69"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "getSuffix",
-                "text": "Get the English ordinal suffix of the current day (equivalent to the format specifier 'S').\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1424,22",
-                      "text": "0,1424,27,9",
-                      "type": "0,1424,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "'st, 'nd', 'rd' or 'th'.\n",
-                    "type": "String",
-                    "src": {
-                      "text": "0,1425,25,25",
-                      "type": "0,1425,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1427,0",
-                  "text": "0,1423,8,92"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "clone",
-                "text": "Creates and returns a new Date instance with the exact same date value as the called instance.\nDates are copied and passed by reference, so if a copied date variable is modified later, the original\nvariable will also be changed.  When the intention is to create a new variable that will not\nmodify the original instance, you should create a clone.\n\nExample of correctly cloning a date:\n\n    //wrong way:\n    var orig = new Date('10/1/2006');\n    var copy = orig;\n    copy.setDate(5);\n    console.log(orig);  // returns 'Thu Oct 05 2006'!\n\n    //correct way:\n    var orig = new Date('10/1/2006'),\n        copy = Ext.Date.clone(orig);\n    copy.setDate(5);\n    console.log(orig);  // returns 'Thu Oct 01 2006'\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date.\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1465,22",
-                      "text": "0,1465,27,10",
-                      "type": "0,1465,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The new Date instance.\n",
-                    "type": "Date",
-                    "src": {
-                      "text": "0,1466,23,23",
-                      "type": "0,1466,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1468,0",
-                  "text": "0,1446,8,708"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "isDST",
-                "text": "Checks if the current date is affected by Daylight Saving Time (DST).\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1474,22",
-                      "text": "0,1474,27,9",
-                      "type": "0,1474,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "`true` if the current date is affected by DST.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "0,1475,26,47",
-                      "type": "0,1475,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1477,0",
-                  "text": "0,1473,8,70"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "clearTime",
-                "text": "Attempts to clear all time information from this Date by setting the time to midnight of the same day,\nautomatically adjusting for Daylight Saving Time (DST) where applicable.\n\n__Note:__ DST timezone information for the browser's host operating system is assumed to be up-to-date.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1488,22",
-                      "text": "0,1488,27,9",
-                      "type": "0,1488,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "clone",
-                    "optional": true,
-                    "text": "`true` to create a clone of this date, clear the time and return it.\n",
-                    "type": "Boolean",
-                    "value": "false",
-                    "src": {
-                      "name": "0,1489,26",
-                      "text": "0,1489,39,69",
-                      "type": "0,1489,16",
-                      "value": "0,1489,32"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "this or the clone.\n",
-                    "type": "Date",
-                    "src": {
-                      "text": "0,1490,23,19",
-                      "type": "0,1490,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1492,0",
-                  "text": "0,1484,8,281"
-                }
-              },
               {
                 "$type": "method",
                 "name": "add",
@@ -1070,9 +29,9 @@
                     "text": "The date to modify\n",
                     "type": "Date",
                     "src": {
-                      "name": "0,1546,22",
-                      "text": "0,1546,27,19",
-                      "type": "0,1546,16"
+                      "name": "0,1548,22",
+                      "text": "0,1548,27,19",
+                      "type": "0,1548,16"
                     }
                   },
                   {
@@ -1081,9 +40,9 @@
                     "text": "A valid date interval enum value.\n",
                     "type": "String",
                     "src": {
-                      "name": "0,1547,24",
-                      "text": "0,1547,33,34",
-                      "type": "0,1547,16"
+                      "name": "0,1549,24",
+                      "text": "0,1549,33,34",
+                      "type": "0,1549,16"
                     }
                   },
                   {
@@ -1092,9 +51,9 @@
                     "text": "The amount to add to the current date.\n",
                     "type": "Number",
                     "src": {
-                      "name": "0,1548,24",
-                      "text": "0,1548,30,39",
-                      "type": "0,1548,16"
+                      "name": "0,1550,24",
+                      "text": "0,1550,30,39",
+                      "type": "0,1550,16"
                     }
                   },
                   {
@@ -1102,173 +61,14 @@
                     "text": "The new Date instance.\n",
                     "type": "Date",
                     "src": {
-                      "text": "0,1549,23,23",
-                      "type": "0,1549,17"
+                      "text": "0,1551,23,23",
+                      "type": "0,1551,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "0,1551,0",
-                  "text": "0,1528,8,709"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "subtract",
-                "text": "Provides a convenient method for performing basic date arithmetic. This method\ndoes not modify the Date instance being called - it creates and returns\na new Date instance containing the resulting date value.\n\nExamples:\n\n    // Basic usage:\n    var dt = Ext.Date.subtract(new Date('10/29/2006'), Ext.Date.DAY, 5);\n    console.log(dt); // returns 'Tue Oct 24 2006 00:00:00'\n\n    // Negative values will be added:\n    var dt2 = Ext.Date.subtract(new Date('10/1/2006'), Ext.Date.DAY, -5);\n    console.log(dt2); // returns 'Fri Oct 6 2006 00:00:00'\n\n     // Decimal values can be used:\n    var dt3 = Ext.Date.subtract(new Date('10/1/2006'), Ext.Date.DAY, 1.25);\n    console.log(dt3); // returns 'Fri Sep 29 2006 06:00:00'\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date to modify\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1660,22",
-                      "text": "0,1660,27,19",
-                      "type": "0,1660,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "interval",
-                    "text": "A valid date interval enum value.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "0,1661,24",
-                      "text": "0,1661,33,34",
-                      "type": "0,1661,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "value",
-                    "text": "The amount to subtract from the current date.\n",
-                    "type": "Number",
-                    "src": {
-                      "name": "0,1662,24",
-                      "text": "0,1662,30,46",
-                      "type": "0,1662,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The new Date instance.\n",
-                    "type": "Date",
-                    "src": {
-                      "text": "0,1663,23,23",
-                      "type": "0,1663,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1665,0",
-                  "text": "0,1642,8,718"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "between",
-                "text": "Checks if a date falls on or between the given start and end dates.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "date",
-                    "text": "The date to check\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1671,22",
-                      "text": "0,1671,27,18",
-                      "type": "0,1671,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "start",
-                    "text": "Start date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1672,22",
-                      "text": "0,1672,28,11",
-                      "type": "0,1672,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "end",
-                    "text": "End date\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1673,22",
-                      "text": "0,1673,26,9",
-                      "type": "0,1673,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "`true` if this date falls on or between the given start and end dates.\n",
-                    "type": "Boolean",
-                    "src": {
-                      "text": "0,1674,26,71",
-                      "type": "0,1674,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1676,0",
-                  "text": "0,1670,8,68"
-                }
-              },
-              {
-                "$type": "method",
-                "name": "diff",
-                "text": "Calculate how many units are there between two time.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "min",
-                    "text": "The first time.\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1709,22",
-                      "text": "0,1709,26,16",
-                      "type": "0,1709,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "max",
-                    "text": "The second time.\n",
-                    "type": "Date",
-                    "src": {
-                      "name": "0,1710,22",
-                      "text": "0,1710,26,17",
-                      "type": "0,1710,16"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "unit",
-                    "text": "The unit. This unit is compatible with the date interval constants.\n",
-                    "type": "String",
-                    "src": {
-                      "name": "0,1711,24",
-                      "text": "0,1711,29,68",
-                      "type": "0,1711,16"
-                    }
-                  },
-                  {
-                    "$type": "return",
-                    "text": "The maximum number n of units that min + n * unit <= max.\n",
-                    "type": "Number",
-                    "src": {
-                      "text": "0,1712,25,58",
-                      "type": "0,1712,17"
-                    }
-                  }
-                ],
-                "src": {
-                  "name": "0,1714,0",
-                  "text": "0,1708,8,53"
+                  "name": "0,1553,0",
+                  "text": "0,1530,8,709"
                 }
               },
               {
@@ -1282,9 +82,9 @@
                     "text": "The date to be aligned.\n",
                     "type": "Date",
                     "src": {
-                      "name": "0,1747,22",
-                      "text": "0,1747,27,24",
-                      "type": "0,1747,16"
+                      "name": "0,1749,22",
+                      "text": "0,1749,27,24",
+                      "type": "0,1749,16"
                     }
                   },
                   {
@@ -1293,9 +93,18 @@
                     "text": "The unit. This unit is compatible with the date interval constants.\n",
                     "type": "String",
                     "src": {
-                      "name": "0,1748,24",
-                      "text": "0,1748,29,68",
-                      "type": "0,1748,16"
+                      "name": "0,1750,24",
+                      "text": "0,1750,29,68",
+                      "type": "0,1750,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "step",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,1751,24",
+                      "type": "0,1751,16"
                     }
                   },
                   {
@@ -1303,14 +112,1404 @@
                     "text": "The aligned date.\n",
                     "type": "Date",
                     "src": {
-                      "text": "0,1749,23,18",
-                      "type": "0,1749,17"
+                      "text": "0,1752,23,18",
+                      "type": "0,1752,17"
                     }
                   }
                 ],
                 "src": {
-                  "name": "0,1751,0",
-                  "text": "0,1746,8,26"
+                  "name": "0,1754,0",
+                  "text": "0,1748,8,26"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "between",
+                "text": "Checks if a date falls on or between the given start and end dates.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date to check\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1673,22",
+                      "text": "0,1673,27,18",
+                      "type": "0,1673,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "start",
+                    "text": "Start date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1674,22",
+                      "text": "0,1674,28,11",
+                      "type": "0,1674,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "end",
+                    "text": "End date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1675,22",
+                      "text": "0,1675,26,9",
+                      "type": "0,1675,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this date falls on or between the given start and end dates.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,1676,26,71",
+                      "type": "0,1676,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1678,0",
+                  "text": "0,1672,8,68"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearTime",
+                "text": "Attempts to clear all time information from this Date by setting the time to midnight of the same day,\nautomatically adjusting for Daylight Saving Time (DST) where applicable.\n\n__Note:__ DST timezone information for the browser's host operating system is assumed to be up-to-date.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1490,22",
+                      "text": "0,1490,27,9",
+                      "type": "0,1490,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "clone",
+                    "optional": true,
+                    "text": "`true` to create a clone of this date, clear the time and return it.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1491,26",
+                      "text": "0,1491,39,69",
+                      "type": "0,1491,16",
+                      "value": "0,1491,32"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this or the clone.\n",
+                    "type": "Date",
+                    "src": {
+                      "text": "0,1492,23,19",
+                      "type": "0,1492,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1494,0",
+                  "text": "0,1486,8,281"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clone",
+                "text": "Creates and returns a new Date instance with the exact same date value as the called instance.\nDates are copied and passed by reference, so if a copied date variable is modified later, the original\nvariable will also be changed.  When the intention is to create a new variable that will not\nmodify the original instance, you should create a clone.\n\nExample of correctly cloning a date:\n\n    //wrong way:\n    var orig = new Date('10/1/2006');\n    var copy = orig;\n    copy.setDate(5);\n    console.log(orig);  // returns 'Thu Oct 05 2006'!\n\n    //correct way:\n    var orig = new Date('10/1/2006'),\n        copy = Ext.Date.clone(orig);\n    copy.setDate(5);\n    console.log(orig);  // returns 'Thu Oct 01 2006'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date.\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1467,22",
+                      "text": "0,1467,27,10",
+                      "type": "0,1467,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new Date instance.\n",
+                    "type": "Date",
+                    "src": {
+                      "text": "0,1468,23,23",
+                      "type": "0,1468,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1470,0",
+                  "text": "0,1448,8,708"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to wrap.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,40,21",
+                      "text": "1,40,28,19",
+                      "type": "1,40,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,38,12",
+                  "text": "1,39,4,20"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createFormat",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "src": {
+                      "name": "0,868,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,866,8",
+                  "name": "0,868,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createParser",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "src": {
+                      "name": "0,895,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,893,8",
+                  "name": "0,895,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "dateFormat",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "src": {
+                      "name": "0,1198,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "src": {
+                      "name": "0,1198,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1196,8",
+                  "name": "0,1198,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "diff",
+                "text": "Calculate how many units are there between two time.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "min",
+                    "text": "The first time.\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1711,22",
+                      "text": "0,1711,26,16",
+                      "type": "0,1711,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "max",
+                    "text": "The second time.\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1712,22",
+                      "text": "0,1712,26,17",
+                      "type": "0,1712,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "unit",
+                    "text": "The unit. This unit is compatible with the date interval constants.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1713,24",
+                      "text": "0,1713,29,68",
+                      "type": "0,1713,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The maximum number n of units that min + n * unit <= max.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1714,25,58",
+                      "type": "0,1714,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1716,0",
+                  "text": "0,1710,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "format",
+                "text": "Formats a date given the supplied format string.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date to format\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1219,22",
+                      "text": "0,1219,27,19",
+                      "type": "0,1219,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "text": "The format string\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1220,24",
+                      "text": "0,1220,31,18",
+                      "type": "0,1220,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The formatted date or an empty string if date parameter is not a JavaScript Date object\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,1221,25,88",
+                      "type": "0,1221,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1223,0",
+                  "text": "0,1218,8,49"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "formatCodeToRegex",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "character",
+                    "src": {
+                      "name": "0,345,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "currentGroup",
+                    "src": {
+                      "name": "0,345,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,343,8",
+                  "name": "0,345,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "formatContainsDateInfo",
+                "text": "Checks if the specified format contains information about\nanything other than the time.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "text": "The format to check\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,686,24",
+                      "text": "0,686,31,20",
+                      "type": "0,686,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the format contains information about\ndate/day information.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,687,26,46:0,688,8,22",
+                      "type": "0,687,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,691,0",
+                  "text": "0,684,8,88"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "formatContainsHourInfo",
+                "text": "Checks if the specified format contains hour information\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "text": "The format to check\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,675,24",
+                      "text": "0,675,31,20",
+                      "type": "0,675,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the format contains hour information\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,676,26,45",
+                      "type": "0,676,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,679,0",
+                  "text": "0,674,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDayOfYear",
+                "text": "Get the numeric day number of the year, adjusted for leap year.\n\n    @example\n    var dt = new Date('9/17/2011');\n    console.log(Ext.Date.getDayOfYear(dt)); // 259\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1296,22",
+                      "text": "0,1296,27,9",
+                      "type": "0,1296,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "0 to 364 (365 in leap years).\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1297,25,30",
+                      "type": "0,1297,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1299,0",
+                  "text": "0,1290,8,166"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDaysInMonth",
+                "text": "Get the number of days in the current month, adjusted for leap year.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1409,22",
+                      "text": "0,1409,27,9",
+                      "type": "0,1409,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The number of days in the month.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1410,25,33",
+                      "type": "0,1410,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1413,0",
+                  "text": "0,1408,8,69"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getElapsed",
+                "text": "Returns the number of milliseconds between two dates.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "dateA",
+                    "text": "The first date.\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,325,22",
+                      "text": "0,325,28,16",
+                      "type": "0,325,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dateB",
+                    "optional": true,
+                    "text": "(optional) The second date.\n",
+                    "type": "Date",
+                    "value": "new Date()",
+                    "src": {
+                      "name": "0,326,23",
+                      "text": "0,326,41,28",
+                      "type": "0,326,16",
+                      "value": "0,326,29"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The difference in milliseconds\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,327,25,31",
+                      "type": "0,327,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,329,0",
+                  "text": "0,324,8,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getFirstDateOfMonth",
+                "text": "Get the date of the first day of the month in which this date resides.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1391,22",
+                      "text": "0,1391,27,9",
+                      "type": "0,1391,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Date",
+                    "src": {
+                      "type": "0,1392,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1394,0",
+                  "text": "0,1390,8,71"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getFirstDayOfMonth",
+                "text": "Get the first day of the current month, adjusted for leap year.  The returned value\nis the numeric day index within the week (0-6) which can be used in conjunction with\nthe <a href='#!/api/Ext.Date-property-monthNames'>monthNames</a> array to retrieve the textual day name.\n\n     @example\n     var dt = new Date('1/10/2007'),\n         firstDay = Ext.Date.getFirstDayOfMonth(dt);\n     console.log(Ext.Date.dayNames[firstDay]); // output: 'Monday'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1362,22",
+                      "text": "0,1362,27,9",
+                      "type": "0,1362,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The day number (0-6).\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1363,25,22",
+                      "type": "0,1363,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1365,0",
+                  "text": "0,1353,8,406"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getFormatCode",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "character",
+                    "src": {
+                      "name": "0,853,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,851,8",
+                  "name": "0,853,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getGMTOffset",
+                "text": "Get the offset from GMT of the current date (equivalent to the format specifier 'O').\n\n    @example\n    var dt = new Date('9/17/2011');\n    console.log(Ext.Date.getGMTOffset(dt));\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1277,22",
+                      "text": "0,1277,27,9",
+                      "type": "0,1277,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "colon",
+                    "optional": true,
+                    "text": "`true` to separate the hours and minutes with a colon.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1278,26",
+                      "text": "0,1278,39,55",
+                      "type": "0,1278,16",
+                      "value": "0,1278,32"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The 4-character offset string prefixed with + or - (e.g. '-0600').\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,1279,25,67",
+                      "type": "0,1279,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1281,0",
+                  "text": "0,1271,8,181"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getLastDateOfMonth",
+                "text": "Get the date of the last day of the month in which this date resides.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1400,22",
+                      "text": "0,1400,27,9",
+                      "type": "0,1400,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Date",
+                    "src": {
+                      "type": "0,1401,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1403,0",
+                  "text": "0,1399,8,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getLastDayOfMonth",
+                "text": "Get the last day of the current month, adjusted for leap year.  The returned value\nis the numeric day index within the week (0-6) which can be used in conjunction with\nthe <a href='#!/api/Ext.Date-property-monthNames'>monthNames</a> array to retrieve the textual day name.\n\n     @example\n     var dt = new Date('1/10/2007'),\n         lastDay = Ext.Date.getLastDayOfMonth(dt);\n\n     console.log(Ext.Date.dayNames[lastDay]); // output: 'Wednesday'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1381,22",
+                      "text": "0,1381,27,9",
+                      "type": "0,1381,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The day number (0-6).\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1382,25,22",
+                      "type": "0,1382,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1384,0",
+                  "text": "0,1371,8,406"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getMonthNumber",
+                "text": "Get the zero-based JavaScript month number for the given short/full month name.\nOverride this function for international dates.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The short/full month name.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,664,24",
+                      "text": "0,664,29,27",
+                      "type": "0,664,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The zero-based JavaScript month number.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,665,25,40",
+                      "type": "0,665,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,667,0",
+                  "text": "0,662,8,128"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getShortDayName",
+                "text": "Get the short day name for the given day number.\nOverride this function for international dates.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "day",
+                    "text": "A zero-based JavaScript day number.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,652,24",
+                      "text": "0,652,28,36",
+                      "type": "0,652,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The short day name.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,653,25,20",
+                      "type": "0,653,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,655,0",
+                  "text": "0,650,8,97"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getShortMonthName",
+                "text": "Get the short month name for the given month number.\nOverride this function for international dates.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "month",
+                    "text": "A zero-based JavaScript month number.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,640,24",
+                      "text": "0,640,30,38",
+                      "type": "0,640,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The short month name.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,641,25,22",
+                      "type": "0,641,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,643,0",
+                  "text": "0,638,8,101"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSuffix",
+                "text": "Get the English ordinal suffix of the current day (equivalent to the format specifier 'S').\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1426,22",
+                      "text": "0,1426,27,9",
+                      "type": "0,1426,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "'st, 'nd', 'rd' or 'th'.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,1427,25,25",
+                      "type": "0,1427,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1429,0",
+                  "text": "0,1425,8,92"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTimezone",
+                "text": "Get the timezone abbreviation of the current date (equivalent to the format specifier 'T').\n\n__Note:__ The date string returned by the JavaScript Date object's `toString()` method varies\nbetween browsers (e.g. FF vs IE) and system region settings (e.g. IE in Asia vs IE in America).\nFor a given date string e.g. \"Thu Oct 25 2007 22:55:35 GMT+0800 (Malay Peninsula Standard Time)\",\n`getTimezone()` first tries to get the timezone abbreviation from between a pair of parentheses\n(which may or may not be present), failing which it proceeds to get the timezone abbreviation\nfrom the GMT offset portion of the date string.\n\n    @example\n    var dt = new Date('9/17/2011');\n    console.log(Ext.Date.getTimezone(dt));\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1251,22",
+                      "text": "0,1251,27,9",
+                      "type": "0,1251,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The abbreviated timezone name (e.g. 'CST', 'PDT', 'EDT', 'MPST' ...).\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,1252,25,70",
+                      "type": "0,1252,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1254,0",
+                  "text": "0,1238,8,713"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getWeekOfYear",
+                "text": "Get the numeric ISO-8601 week number of the year.\n(equivalent to the format specifier 'W', but without a leading zero).\n\n    @example\n    var dt = new Date('9/17/2011');\n    console.log(Ext.Date.getWeekOfYear(dt)); // 37\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date.\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1319,22",
+                      "text": "0,1319,27,10",
+                      "type": "0,1319,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "1 to 53.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,1320,25,9",
+                      "type": "0,1320,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1323,0",
+                  "text": "0,1312,8,222"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from <a href='#!/api/Object'>Object</a> inherits the <a href='#!/api/Ext.Date-method-hasOwnProperty'>hasOwnProperty</a> method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,100,20",
+                      "text": "1,100,25,34",
+                      "type": "1,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,101,22,57:1,102,4,15",
+                      "type": "1,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,53,12",
+                  "text": "1,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isDST",
+                "text": "Checks if the current date is affected by Daylight Saving Time (DST).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1476,22",
+                      "text": "0,1476,27,9",
+                      "type": "0,1476,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the current date is affected by DST.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,1477,26,47",
+                      "type": "0,1477,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1479,0",
+                  "text": "0,1475,8,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isEqual",
+                "text": "Compares if two dates are equal by comparing their values.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date1",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1204,22",
+                      "type": "0,1204,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "date2",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1205,22",
+                      "type": "0,1205,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the date values are equal\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,1206,26,36",
+                      "type": "0,1206,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1208,0",
+                  "text": "0,1203,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLeapYear",
+                "text": "Checks if the current date falls within a leap year.\n\n    @example\n    var dt = new Date('1/10/2011');\n    console.log(Ext.Date.isLeapYear(dt)); // false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1344,22",
+                      "text": "0,1344,27,9",
+                      "type": "0,1344,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the current date falls within a leap year, `false` otherwise.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,1345,26,72",
+                      "type": "0,1345,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1347,0",
+                  "text": "0,1338,8,155"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n<a href='#!/api/Ext.Date-method-isPrototypeOf'>isPrototypeOf</a> allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,148,20",
+                      "text": "1,148,30,71:1,149,4,18",
+                      "type": "1,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,150,20",
+                      "text": "1,150,27,50",
+                      "type": "1,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,151,22,56",
+                      "type": "1,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,106,12",
+                  "text": "1,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isValid",
+                "text": "Checks if the passed Date parameters will cause a JavaScript Date \"rollover\".\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "year",
+                    "text": "4-digit year.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,775,24",
+                      "text": "0,775,29,14",
+                      "type": "0,775,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "month",
+                    "text": "1-based month-of-year.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,776,24",
+                      "text": "0,776,30,23",
+                      "type": "0,776,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "day",
+                    "text": "Day of month.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,777,24",
+                      "text": "0,777,28,14",
+                      "type": "0,777,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "hour",
+                    "text": "(optional) Hour.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,778,24",
+                      "text": "0,778,29,17",
+                      "type": "0,778,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "minute",
+                    "text": "(optional) Minute.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,779,24",
+                      "text": "0,779,31,19",
+                      "type": "0,779,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "second",
+                    "text": "(optional) Second.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,780,24",
+                      "text": "0,780,31,19",
+                      "type": "0,780,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "millisecond",
+                    "text": "(optional) Millisecond.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,781,24",
+                      "text": "0,781,36,24",
+                      "type": "0,781,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the passed parameters do not cause a Date \"rollover\", `false` otherwise.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,782,26,83",
+                      "type": "0,782,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,784,0",
+                  "text": "0,774,8,78"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "parse",
+                "text": "Parses the passed string using the specified date format.\nNote that this function expects normal calendar dates, meaning that months are 1-based (i.e. 1 = January).\nThe <a href='#!/api/Ext.Date-property-defaults'>defaults</a> hash will be used for any date value (i.e. year, month, day, hour, minute, second or millisecond)\nwhich cannot be found in the passed string. If a corresponding default date value has not been specified in the <a href='#!/api/Ext.Date-property-defaults'>defaults</a> hash,\nthe current date's year, month, day or DST-adjusted zero-hour time value will be used instead.\nKeep in mind that the input date string must precisely match the specified format string\nin order for the parse operation to be successful (failed parse operations return a\n<a href='#!/api/null'>null</a> value).\n\nExample:\n\n    //dt = Fri May 25 2007 (current date)\n    var dt = new Date();\n\n    //dt = Thu May 25 2006 (today&#39;s month/day in 2006)\n    dt = Ext.Date.parse(\"2006\", \"Y\");\n\n    //dt = Sun Jan 15 2006 (all date parts specified)\n    dt = Ext.Date.parse(\"2006-01-15\", \"Y-m-d\");\n\n    //dt = Sun Jan 15 2006 15:20:01\n    dt = Ext.Date.parse(\"2006-01-15 3:20:01 PM\", \"Y-m-d g:i:s A\");\n\n    // attempt to parse Sun Feb 29 2006 03:20:01 in strict mode\n    dt = Ext.Date.parse(\"2006-02-29 03:20:01\", \"Y-m-d H:i:s\", true); // returns null\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "input",
+                    "text": "The raw date string.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,830,24",
+                      "text": "0,830,30,21",
+                      "type": "0,830,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "text": "The expected date string format.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,831,24",
+                      "text": "0,831,31,33",
+                      "type": "0,831,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "strict",
+                    "optional": true,
+                    "text": "(optional) `true` to validate date strings while parsing (i.e. prevents JavaScript Date \"rollover\").\nInvalid date strings will return <a href='#!/api/null'>null</a> when parsed.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,832,26",
+                      "text": "0,832,40,101:0,833,8,53",
+                      "type": "0,832,16",
+                      "value": "0,832,33"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The parsed Date, or <a href='#!/api/null'>null</a> if an invalid date string.\n",
+                    "type": "Date/null",
+                    "src": {
+                      "text": "0,834,28,54",
+                      "type": "0,834,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,836,0",
+                  "text": "0,804,8,1238"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a <a href='#!/api/Ext.Date-method-propertyIsEnumerable'>propertyIsEnumerable</a> method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of <a href='#!/api/Ext.Date-method-propertyIsEnumerable'>propertyIsEnumerable</a> on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,220,20",
+                      "text": "1,220,25,34",
+                      "type": "1,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,221,22,57:1,222,4,22",
+                      "type": "1,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,155,12",
+                  "text": "1,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "subtract",
+                "text": "Provides a convenient method for performing basic date arithmetic. This method\ndoes not modify the Date instance being called - it creates and returns\na new Date instance containing the resulting date value.\n\nExamples:\n\n    // Basic usage:\n    var dt = Ext.Date.subtract(new Date('10/29/2006'), Ext.Date.DAY, 5);\n    console.log(dt); // returns 'Tue Oct 24 2006 00:00:00'\n\n    // Negative values will be added:\n    var dt2 = Ext.Date.subtract(new Date('10/1/2006'), Ext.Date.DAY, -5);\n    console.log(dt2); // returns 'Fri Oct 6 2006 00:00:00'\n\n     // Decimal values can be used:\n    var dt3 = Ext.Date.subtract(new Date('10/1/2006'), Ext.Date.DAY, 1.25);\n    console.log(dt3); // returns 'Fri Sep 29 2006 06:00:00'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "The date to modify\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,1662,22",
+                      "text": "0,1662,27,19",
+                      "type": "0,1662,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "interval",
+                    "text": "A valid date interval enum value.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1663,24",
+                      "text": "0,1663,33,34",
+                      "type": "0,1663,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The amount to subtract from the current date.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,1664,24",
+                      "text": "0,1664,30,46",
+                      "type": "0,1664,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new Date instance.\n",
+                    "type": "Date",
+                    "src": {
+                      "text": "0,1665,23,23",
+                      "type": "0,1665,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1667,0",
+                  "text": "0,1644,8,718"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n<a href='#!/api/Object'>Object</a>s <a href='#!/api/Ext.Date-method-toLocaleString'>toLocaleString</a> returns the result of calling <a href='#!/api/Ext.Date-method-toString'>toString</a>.\n\nThis function is provided to give objects a generic <a href='#!/api/Ext.Date-method-toLocaleString'>toLocaleString</a> method, even though not all\nmay use it. Currently, only <a href='#!/api/Array'>Array</a>, <a href='#!/api/Number'>Number</a>, and <a href='#!/api/Date'>Date</a> override <a href='#!/api/Ext.Date-method-toLocaleString'>toLocaleString</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,235,21,32",
+                      "type": "1,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,226,12",
+                  "text": "1,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "toString",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "src": {
+                      "name": "0,310,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,308,8",
+                  "name": "0,310,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unescapeFormat",
+                "text": "Removes all escaping for a date format string. In date formats,\nusing a '\\' can be used to escape special characters.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "text": "The format to unescape\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,698,24",
+                      "text": "0,698,31,23",
+                      "type": "0,698,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The unescaped format\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,699,25,21",
+                      "type": "0,699,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,702,0",
+                  "text": "0,696,8,118"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the <a href='#!/api/Ext.Date-method-valueOf'>valueOf</a> method to convert an object to a primitive value. You rarely need to\ninvoke the <a href='#!/api/Ext.Date-method-valueOf'>valueOf</a> method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the <a href='#!/api/Ext.Date-method-valueOf'>valueOf</a> method is inherited by every object descended from <a href='#!/api/Object'>Object</a>. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, <a href='#!/api/Ext.Date-method-valueOf'>valueOf</a> returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use <a href='#!/api/Ext.Date-method-valueOf'>valueOf</a> within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default <a href='#!/api/Object'>Object</a> method.\n\nYou can create a function to be called in place of the default <a href='#!/api/Ext.Date-method-valueOf'>valueOf</a> method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a <a href='#!/api/Ext.Date-method-valueOf'>valueOf</a> method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's <a href='#!/api/Ext.Date-method-valueOf'>valueOf</a> method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the <a href='#!/api/Ext.Date-method-toString'>toString</a> method, which is different from\n<a href='#!/api/String'>String</a> objects converting to string primitives using <a href='#!/api/Ext.Date-method-valueOf'>valueOf</a>. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,340,21,50",
+                      "type": "1,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,301,12",
+                  "text": "1,302,4,1821"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "xf",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "text": "Create private copy of Ext JS's `Ext.util.Format.format()` method\n+ to remove unnecessary dependency\n+ to resolve namespace conflict with MS-Ajax's implementation\n",
+                    "src": {
+                      "name": "0,291,15",
+                      "text": "0,292,8,163"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,290,8",
+                  "name": "0,289,16"
                 }
               }
             ]
@@ -1320,88 +1519,11 @@
             "items": [
               {
                 "$type": "property",
-                "ignore": true,
-                "name": "now",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their <a href='#!/api/Ext.Date-property-prototype'>prototype</a>:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
                 "src": {
-                  "ignore": "0,302,9",
-                  "name": "0,303,0"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "useStrict",
-                "text": "Global flag which determines if strict date parsing should be used.\nStrict date parsing will not roll-over invalid dates, which is the\ndefault behavior of JavaScript Date objects.\n(see <a href='#!/api/Ext.Date-method-parse'>parse</a> for more information)\n",
-                "type": "Boolean",
-                "src": {
-                  "name": "0,338,0",
-                  "text": "0,332,8,222",
-                  "type": "0,336,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "parseFunctions",
-                "text": "An object hash in which each property is a date parsing function. The property name is the\nformat string which that function parses.\n\nThis object is automatically populated with date parsing functions as\ndate formats are requested for Ext standard formatting strings.\n\nCustom parsing functions may be inserted into this object, keyed by a name which from then on\nmay be used as a format string to <a href='#!/api/Ext.Date-method-parse'>parse</a>.\n\nExample:\n\n    Ext.Date.parseFunctions['x-date-format'] = myDateParser;\n\n A parsing function should return a Date object, and is passed the following parameters:\n\n- `date`: <a href='#!/api/String'>String</a> - The date string to parse.\n- `strict`: <a href='#!/api/Boolean'>Boolean</a> - `true` to validate date strings while parsing\n(i.e. prevent JavaScript Date \"rollover\"). __The default must be `false`.__\nInvalid date strings should return <a href='#!/api/null'>null</a> when parsed.\n\nTo enable Dates to also be _formatted_ according to that format, a corresponding\nformatting function must be placed into the <a href='#!/api/Ext.Date-property-formatFunctions'>formatFunctions</a> property.\n",
-                "type": "Object",
-                "src": {
-                  "name": "0,384,18",
-                  "text": "0,362,8,997",
-                  "type": "0,385,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "formatFunctions",
-                "text": "An object hash in which each property is a date formatting function. The property name is the\nformat string which corresponds to the produced formatted date string.\n\nThis object is automatically populated with date formatting functions as\ndate formats are requested for Ext standard formatting strings.\n\nCustom formatting functions may be inserted into this object, keyed by a name which from then on\nmay be used as a format string to <a href='#!/api/Ext.Date-method-format'>format</a>.\n\nExample:\n\n    Ext.Date.formatFunctions['x-date-format'] = myDateFormatter;\n\nA formatting function should return a string representation of the Date object which\nis the scope (this) of the function.\n\nTo enable date strings to also be _parsed_ according to that format, a corresponding\nparsing function must be placed into the <a href='#!/api/Ext.Date-property-parseFunctions'>parseFunctions</a> property.\n",
-                "type": "Object",
-                "src": {
-                  "name": "0,430,18",
-                  "text": "0,412,8,812",
-                  "type": "0,431,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "MILLI",
-                "text": "Date interval constant.\n",
-                "type": "String",
-                "src": {
-                  "name": "0,452,0",
-                  "text": "0,449,8,24",
-                  "type": "0,450,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "SECOND",
-                "text": "Date interval constant.\n",
-                "type": "String",
-                "src": {
-                  "name": "0,458,0",
-                  "text": "0,455,8,24",
-                  "type": "0,456,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "MINUTE",
-                "text": "Date interval constant.\n",
-                "type": "String",
-                "src": {
-                  "name": "0,464,0",
-                  "text": "0,461,8,24",
-                  "type": "0,462,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "HOUR",
-                "text": "Date interval constant.\n",
-                "type": "String",
-                "src": {
-                  "name": "0,469,0",
-                  "text": "0,466,2,24",
-                  "type": "0,467,14"
+                  "name": "1,346,14",
+                  "text": "1,347,3,1996"
                 }
               },
               {
@@ -1410,42 +1532,9 @@
                 "text": "Date interval constant.\n",
                 "type": "String",
                 "src": {
-                  "name": "0,475,0",
-                  "text": "0,472,8,24",
-                  "type": "0,473,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "MONTH",
-                "text": "Date interval constant.\n",
-                "type": "String",
-                "src": {
-                  "name": "0,481,0",
-                  "text": "0,478,8,24",
-                  "type": "0,479,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "YEAR",
-                "text": "Date interval constant.\n",
-                "type": "String",
-                "src": {
-                  "name": "0,487,0",
-                  "text": "0,484,8,24",
-                  "type": "0,485,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "defaults",
-                "text": "An object hash containing default date values used during date parsing.\n\nThe following properties are available:\n\n- `y`: <a href='#!/api/Number'>Number</a> - The default year value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `m`: <a href='#!/api/Number'>Number</a> - The default 1-based month value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `d`: <a href='#!/api/Number'>Number</a> - The default day value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `h`: <a href='#!/api/Number'>Number</a> - The default hour value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `i`: <a href='#!/api/Number'>Number</a> - The default minute value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `s`: <a href='#!/api/Number'>Number</a> - The default second value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `ms`: <a href='#!/api/Number'>Number</a> - The default millisecond value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n\nOverride these properties to customize the default date values used by the <a href='#!/api/Ext.Date-method-parse'>parse</a> method.\n\n__Note:__ In countries which experience Daylight Saving Time (i.e. DST), the `h`, `i`, `s`\nand `ms` properties may coincide with the exact time in which DST takes effect.\nIt is the responsibility of the developer to account for this.\n\nExample Usage:\n\n    // set default day value to the first day of the month\n    Ext.Date.defaults.d = 1;\n\n    // parse a February date string containing only year and month values.\n    // setting the default day value to 1 prevents weird date rollover issues\n    // when attempting to parse the following date string on, for example, March 31st 2009.\n    Ext.Date.parse('2009-02', 'Y-m'); // returns a Date object representing February 1st 2009.\n",
-                "type": "Object",
-                "src": {
-                  "name": "0,518,18",
-                  "text": "0,490,8,1426",
-                  "type": "0,519,14"
+                  "name": "0,477,0",
+                  "text": "0,474,8,24",
+                  "type": "0,475,14"
                 }
               },
               {
@@ -1454,31 +1543,9 @@
                 "text": "An array of textual day names.\nOverride these values for international dates.\n\nExample:\n\n    Ext.Date.dayNames = [\n        'SundayInYourLang',\n        'MondayInYourLang'\n        // ...\n    ];\n",
                 "type": "String[]",
                 "src": {
-                  "name": "0,525,29",
-                  "text": "0,526,8,192",
-                  "type": "0,525,19"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "monthNames",
-                "text": "An array of textual month names.\nOverride these values for international dates.\n\nExample:\n\n    Ext.Date.monthNames = [\n        'JanInYourLang',\n        'FebInYourLang'\n        // ...\n    ];\n",
-                "type": "String[]",
-                "src": {
-                  "name": "0,550,29",
-                  "text": "0,551,8,190",
-                  "type": "0,550,19"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "monthNumbers",
-                "text": "An object hash of zero-based JavaScript month numbers (with short month names as keys).\n\n__Note:__ keys are case-sensitive.\n\nOverride these values for international dates.\n\nExample:\n\n    Ext.Date.monthNumbers = {\n        'LongJanNameInYourLang': 0,\n        'ShortJanNameInYourLang':0,\n        'LongFebNameInYourLang':1,\n        'ShortFebNameInYourLang':1\n        // ...\n    };\n",
-                "type": "Object",
-                "src": {
-                  "name": "0,580,27",
-                  "text": "0,581,8,377",
-                  "type": "0,580,19"
+                  "name": "0,527,29",
+                  "text": "0,528,8,192",
+                  "type": "0,527,19"
                 }
               },
               {
@@ -1487,9 +1554,20 @@
                 "text": "The date format string that the <a href='#!/api/Ext.util.Format-method-dateRenderer'>Ext.util.Format#dateRenderer</a>\nand <a href='#!/api/Ext.util.Format-method-date'>Ext.util.Format#date</a> functions use.  See <a href='#!/api/Ext.Date'>Ext.Date</a> for details.\n\nThis may be overridden in a locale file.\n",
                 "type": "String",
                 "src": {
-                  "name": "0,626,27",
-                  "text": "0,627,8,194",
-                  "type": "0,626,19"
+                  "name": "0,628,27",
+                  "text": "0,629,8,194",
+                  "type": "0,628,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaults",
+                "text": "An object hash containing default date values used during date parsing.\n\nThe following properties are available:\n\n- `y`: <a href='#!/api/Number'>Number</a> - The default year value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `m`: <a href='#!/api/Number'>Number</a> - The default 1-based month value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `d`: <a href='#!/api/Number'>Number</a> - The default day value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `h`: <a href='#!/api/Number'>Number</a> - The default hour value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `i`: <a href='#!/api/Number'>Number</a> - The default minute value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `s`: <a href='#!/api/Number'>Number</a> - The default second value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n- `ms`: <a href='#!/api/Number'>Number</a> - The default millisecond value. Defaults to <a href='#!/api/undefined'>undefined</a>.\n\nOverride these properties to customize the default date values used by the <a href='#!/api/Ext.Date-method-parse'>parse</a> method.\n\n__Note:__ In countries which experience Daylight Saving Time (i.e. DST), the `h`, `i`, `s`\nand `ms` properties may coincide with the exact time in which DST takes effect.\nIt is the responsibility of the developer to account for this.\n\nExample Usage:\n\n    // set default day value to the first day of the month\n    Ext.Date.defaults.d = 1;\n\n    // parse a February date string containing only year and month values.\n    // setting the default day value to 1 prevents weird date rollover issues\n    // when attempting to parse the following date string on, for example, March 31st 2009.\n    Ext.Date.parse('2009-02', 'Y-m'); // returns a Date object representing February 1st 2009.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,520,18",
+                  "text": "0,492,8,1426",
+                  "type": "0,521,14"
                 }
               },
               {
@@ -1498,9 +1576,95 @@
                 "text": "The base format-code to formatting-function hashmap used by the <a href='#!/api/Ext.Date-method-format'>format</a> method.\nFormatting functions are strings (or functions which return strings) which\nwill return the appropriate value when evaluated in the context of the Date object\nfrom which the <a href='#!/api/Ext.Date-method-format'>format</a> method is called.\nAdd to / override these mappings for custom date formatting.\n\n__Note:__ `Ext.Date.format()` treats characters as literals if an appropriate mapping cannot be found.\n\nExample:\n\n    Ext.Date.formatCodes.x = \"Ext.util.Format.leftPad(this.getDate(), 2, '0')\";\n    console.log(Ext.Date.format(new Date(), 'X'); // returns the current day of the month\n",
                 "type": "Object",
                 "src": {
-                  "name": "0,722,0",
-                  "text": "0,708,8,641",
-                  "type": "0,720,14"
+                  "name": "0,724,0",
+                  "text": "0,710,8,641",
+                  "type": "0,722,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "formatFunctions",
+                "text": "An object hash in which each property is a date formatting function. The property name is the\nformat string which corresponds to the produced formatted date string.\n\nThis object is automatically populated with date formatting functions as\ndate formats are requested for Ext standard formatting strings.\n\nCustom formatting functions may be inserted into this object, keyed by a name which from then on\nmay be used as a format string to <a href='#!/api/Ext.Date-method-format'>format</a>.\n\nExample:\n\n    Ext.Date.formatFunctions['x-date-format'] = myDateFormatter;\n\nA formatting function should return a string representation of the Date object which\nis the scope (this) of the function.\n\nTo enable date strings to also be _parsed_ according to that format, a corresponding\nparsing function must be placed into the <a href='#!/api/Ext.Date-property-parseFunctions'>parseFunctions</a> property.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,432,18",
+                  "text": "0,414,8,812",
+                  "type": "0,433,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "HOUR",
+                "text": "Date interval constant.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,471,0",
+                  "text": "0,468,2,24",
+                  "type": "0,469,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "MILLI",
+                "text": "Date interval constant.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,454,0",
+                  "text": "0,451,8,24",
+                  "type": "0,452,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "MINUTE",
+                "text": "Date interval constant.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,466,0",
+                  "text": "0,463,8,24",
+                  "type": "0,464,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "MONTH",
+                "text": "Date interval constant.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,483,0",
+                  "text": "0,480,8,24",
+                  "type": "0,481,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "monthNames",
+                "text": "An array of textual month names.\nOverride these values for international dates.\n\nExample:\n\n    Ext.Date.monthNames = [\n        'JanInYourLang',\n        'FebInYourLang'\n        // ...\n    ];\n",
+                "type": "String[]",
+                "src": {
+                  "name": "0,552,29",
+                  "text": "0,553,8,190",
+                  "type": "0,552,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "monthNumbers",
+                "text": "An object hash of zero-based JavaScript month numbers (with short month names as keys).\n\n__Note:__ keys are case-sensitive.\n\nOverride these values for international dates.\n\nExample:\n\n    Ext.Date.monthNumbers = {\n        'LongJanNameInYourLang': 0,\n        'ShortJanNameInYourLang':0,\n        'LongFebNameInYourLang':1,\n        'ShortFebNameInYourLang':1\n        // ...\n    };\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,582,27",
+                  "text": "0,583,8,377",
+                  "type": "0,582,19"
+                }
+              },
+              {
+                "$type": "property",
+                "ignore": true,
+                "name": "now",
+                "src": {
+                  "ignore": "0,304,9",
+                  "name": "0,305,0"
                 }
               },
               {
@@ -1508,8 +1672,61 @@
                 "access": "private",
                 "name": "parseCodes",
                 "src": {
-                  "access": "0,933,8",
-                  "name": "0,935,0"
+                  "access": "0,935,8",
+                  "name": "0,937,0"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "parseFunctions",
+                "text": "An object hash in which each property is a date parsing function. The property name is the\nformat string which that function parses.\n\nThis object is automatically populated with date parsing functions as\ndate formats are requested for Ext standard formatting strings.\n\nCustom parsing functions may be inserted into this object, keyed by a name which from then on\nmay be used as a format string to <a href='#!/api/Ext.Date-method-parse'>parse</a>.\n\nExample:\n\n    Ext.Date.parseFunctions['x-date-format'] = myDateParser;\n\n A parsing function should return a Date object, and is passed the following parameters:\n\n- `date`: <a href='#!/api/String'>String</a> - The date string to parse.\n- `strict`: <a href='#!/api/Boolean'>Boolean</a> - `true` to validate date strings while parsing\n(i.e. prevent JavaScript Date \"rollover\"). __The default must be `false`.__\nInvalid date strings should return <a href='#!/api/null'>null</a> when parsed.\n\nTo enable Dates to also be _formatted_ according to that format, a corresponding\nformatting function must be placed into the <a href='#!/api/Ext.Date-property-formatFunctions'>formatFunctions</a> property.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,386,18",
+                  "text": "0,364,8,997",
+                  "type": "0,387,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "1,46,14",
+                  "text": "1,47,4,65"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "SECOND",
+                "text": "Date interval constant.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,460,0",
+                  "text": "0,457,8,24",
+                  "type": "0,458,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "useStrict",
+                "text": "Global flag which determines if strict date parsing should be used.\nStrict date parsing will not roll-over invalid dates, which is the\ndefault behavior of JavaScript Date objects.\n(see <a href='#!/api/Ext.Date-method-parse'>parse</a> for more information)\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,340,0",
+                  "text": "0,334,8,222",
+                  "type": "0,338,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "YEAR",
+                "text": "Date interval constant.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,489,0",
+                  "text": "0,486,8,24",
+                  "type": "0,487,14"
                 }
               }
             ]

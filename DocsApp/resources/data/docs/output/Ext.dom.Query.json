@@ -1,0 +1,518 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/dom/Query.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.DomQuery,Ext.core.DomQuery",
+        "name": "Ext.dom.Query",
+        "requires": "Ext.dom.Helper,Ext.util.Operators",
+        "singleton": true,
+        "text": "\nProvides high performance selector/xpath processing by compiling queries into reusable functions. New pseudo classes\nand matchers can be plugged. It works on HTML and XML documents (if a content node is passed in).\n\nDomQuery supports most of the [CSS3 selectors spec][1], along with some custom selectors and basic XPath.\n\nAll selectors, attribute filters and pseudos below can be combined infinitely in any order. For example\n`div.foo:nth-child(odd)[@foo=bar].bar:first` would be a perfectly valid selector. Node filters are processed\nin the order in which they appear, which allows you to optimize your queries for your document structure.\n\n## Simple Selectors\n\nFor performance reasons, some query methods accept selectors that are termed as **simple selectors**. A simple\nselector is a selector that does not include contextual information about any parent/sibling elements.\n\nSome examples of valid simple selectors:\n\n    var simple = '.foo'; // Only asking for the class name on the element\n    var simple = 'div.bar'; // Only asking for the tag/class name on the element\n    var simple = '[href];' // Asking for an attribute on the element.\n    var simple = ':not(.foo)'; // Only asking for the non-matches against the class name\n    var simple = 'span:first-child'; // Doesn't require any contextual information about the parent node\n\nSimple examples of invalid simple selectors:\n\n    var notSimple = 'div.foo div.bar'; // Requires matching a parent node by class name\n    var notSimple = 'span + div'; //  Requires matching a sibling by tag name\n\n## Element Selectors:\n\n  - **`*`** any element\n  - **`E`** an element with the tag E\n  - **`E F`** All descendent elements of E that have the tag F\n  - **`E > F`** or **E/F** all direct children elements of E that have the tag F\n  - **`E + F`** all elements with the tag F that are immediately preceded by an element with the tag E\n  - **`E ~ F`** all elements with the tag F that are preceded by a sibling element with the tag E\n\n## Attribute Selectors:\n\nThe use of `@` and quotes are optional. For example, `div[@foo='bar']` is also a valid attribute selector.\n\n  - **`E[foo]`** has an attribute \"foo\"\n  - **`E[foo=bar]`** has an attribute \"foo\" that equals \"bar\"\n  - **`E[foo^=bar]`** has an attribute \"foo\" that starts with \"bar\"\n  - **`E[foo$=bar]`** has an attribute \"foo\" that ends with \"bar\"\n  - **`E[foo*=bar]`** has an attribute \"foo\" that contains the substring \"bar\"\n  - **`E[foo%=2]`** has an attribute \"foo\" that is evenly divisible by 2\n  - **`E[foo!=bar]`** attribute \"foo\" does not equal \"bar\"\n\n## Pseudo Classes:\n\n  - **`E:first-child`** E is the first child of its parent\n  - **`E:last-child`** E is the last child of its parent\n  - **`E:nth-child(_n_)`** E is the _n_th child of its parent (1 based as per the spec)\n  - **`E:nth-child(odd)`** E is an odd child of its parent\n  - **`E:nth-child(even)`** E is an even child of its parent\n  - **`E:only-child`** E is the only child of its parent\n  - **`E:checked`** E is an element that is has a checked attribute that is true (e.g. a radio or checkbox)\n  - **`E:first`** the first E in the resultset\n  - **`E:last`** the last E in the resultset\n  - **`E:nth(_n_)`** the _n_th E in the resultset (1 based)\n  - **`E:odd`** shortcut for :nth-child(odd)\n  - **`E:even`** shortcut for :nth-child(even)\n  - **`E:contains(foo)`** E's innerHTML contains the substring \"foo\"\n  - **`E:nodeValue(foo)`** E contains a textNode with a nodeValue that equals \"foo\"\n  - **`E:not(S)`** an E element that does not match simple selector S\n  - **`E:has(S)`** an E element that has a descendent that matches simple selector S\n  - **`E:next(S)`** an E element whose next sibling matches simple selector S\n  - **`E:prev(S)`** an E element whose previous sibling matches simple selector S\n  - **`E:any(S1|S2|S2)`** an E element which matches any of the simple selectors S1, S2 or S3\n  - **`E:visible(true)`** an E element which is deeply visible according to <a href='#!/api/Ext.dom.Element-method-isVisible'>Ext.dom.Element#isVisible</a>\n\n## CSS Value Selectors:\n\n  - **`E{display=none}`** css value \"display\" that equals \"none\"\n  - **`E{display^=none}`** css value \"display\" that starts with \"none\"\n  - **`E{display$=none}`** css value \"display\" that ends with \"none\"\n  - **`E{display*=none}`** css value \"display\" that contains the substring \"none\"\n  - **`E{display%=2}`** css value \"display\" that is evenly divisible by 2\n  - **`E{display!=none}`** css value \"display\" that does not equal \"none\"\n\n## XML Namespaces:\n  - **`ns|E`** an element with tag E and namespace prefix ns\n\n[1]: http://www.w3.org/TR/2005/WD-css3-selectors-20051215/#selectors\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "compile",
+                "text": "Compiles a selector/xpath query into a reusable function. The returned function\ntakes one parameter \"root\" (optional), which is the context node from where the query should start.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector/xpath query\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,622,28",
+                      "text": "0,622,37,25",
+                      "type": "0,622,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "optional": true,
+                    "text": "Either \"select\" or \"simple\" for a simple selector match\n",
+                    "type": "String",
+                    "value": "\"select\"",
+                    "src": {
+                      "name": "0,623,29",
+                      "text": "0,623,44,56",
+                      "type": "0,623,20",
+                      "value": "0,623,34"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "0,624,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,626,0",
+                  "text": "0,620,12,180"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "jsSelect",
+                "text": "Selects an array of DOM nodes using JavaScript-only implementation.\n\nUse <a href='#!/api/Ext.dom.Query-method-select'>select</a> to take advantage of browsers built-in support for CSS selectors.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector/xpath query (can be a comma separated list of selectors)\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,717,28",
+                      "text": "0,717,37,70",
+                      "type": "0,717,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "root",
+                    "optional": true,
+                    "text": "The start of the query.\n",
+                    "type": "HTMLElement/String",
+                    "value": "document",
+                    "src": {
+                      "name": "0,718,41",
+                      "text": "0,718,56,24",
+                      "type": "0,718,20",
+                      "value": "0,718,46"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An Array of DOM elements which match the selector. If there are\nno matches, and empty Array is returned.\n",
+                    "type": "HTMLElement[]",
+                    "src": {
+                      "text": "0,719,36,64:0,720,12,41",
+                      "type": "0,719,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,722,0",
+                  "text": "0,714,12,155"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "select",
+                "text": "Selects an array of DOM nodes by CSS/XPath selector.\n\nUses [document.querySelectorAll][0] if browser supports that, otherwise falls back to\n<a href='#!/api/Ext.dom.Query-method-jsSelect'>Ext.dom.Query#jsSelect</a> to do the work.\n\n[0]: https://developer.mozilla.org/en/DOM/document.querySelectorAll\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "path",
+                    "text": "The selector/xpath query\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,781,28",
+                      "text": "0,781,33,25",
+                      "type": "0,781,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "root",
+                    "optional": true,
+                    "text": "The start of the query.\n",
+                    "type": "HTMLElement",
+                    "value": "document",
+                    "src": {
+                      "name": "0,782,34",
+                      "text": "0,782,49,24",
+                      "type": "0,782,20",
+                      "value": "0,782,39"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An array of DOM elements (not a NodeList as returned by `querySelectorAll`).\n",
+                    "type": "HTMLElement[]",
+                    "src": {
+                      "text": "0,783,36,77",
+                      "type": "0,783,21"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "optional": true,
+                    "text": "Either \"select\" or \"simple\" for a simple selector match (only valid when\nused when the call is deferred to the jsSelect method)\n",
+                    "type": "String",
+                    "value": "\"select\"",
+                    "src": {
+                      "name": "0,784,29",
+                      "text": "0,784,44,73:0,785,12,55",
+                      "type": "0,784,20",
+                      "value": "0,784,34"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "single",
+                    "optional": true,
+                    "text": "Pass `true` to select only the first matching node using `document.querySelector` (where available)\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,786,30",
+                      "text": "0,786,38,100",
+                      "type": "0,786,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,789,0",
+                  "text": "0,774,12,257"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "selectNode",
+                "text": "Selects a single element.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector/xpath query\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,822,28",
+                      "text": "0,822,37,25",
+                      "type": "0,822,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "root",
+                    "optional": true,
+                    "text": "The start of the query.\n",
+                    "type": "HTMLElement",
+                    "value": "document",
+                    "src": {
+                      "name": "0,823,34",
+                      "text": "0,823,49,24",
+                      "type": "0,823,20",
+                      "value": "0,823,39"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The DOM element which matched the selector.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "text": "0,824,34,44",
+                      "type": "0,824,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,826,0",
+                  "text": "0,821,12,26"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "selectValue",
+                "text": "Selects the value of a node, optionally replacing null with the defaultValue.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector/xpath query\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,832,28",
+                      "text": "0,832,37,25",
+                      "type": "0,832,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "root",
+                    "optional": true,
+                    "text": "The start of the query.\n",
+                    "type": "HTMLElement",
+                    "value": "document",
+                    "src": {
+                      "name": "0,833,34",
+                      "text": "0,833,49,24",
+                      "type": "0,833,20",
+                      "value": "0,833,39"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "defaultValue",
+                    "optional": true,
+                    "text": "When specified, this is return as empty value.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,834,29",
+                      "text": "0,834,43,47",
+                      "type": "0,834,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,835,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,837,0",
+                  "text": "0,831,12,78"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getNodeValue",
+                "text": "Get the text value for a node, optionally replacing null with the defaultValue.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The node\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,855,28",
+                      "text": "0,855,33,9",
+                      "type": "0,855,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "defaultValue",
+                    "optional": true,
+                    "text": "When specified, this is return as empty value.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,856,29",
+                      "text": "0,856,43,47",
+                      "type": "0,856,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,857,29,10",
+                      "type": "0,857,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,859,0",
+                  "text": "0,854,12,80"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "selectNumber",
+                "text": "Selects the value of a node, parsing integers and floats.\nReturns the defaultValue, or 0 if none is specified.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector/xpath query\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,884,28",
+                      "text": "0,884,37,25",
+                      "type": "0,884,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "root",
+                    "optional": true,
+                    "text": "The start of the query.\n",
+                    "type": "HTMLElement",
+                    "value": "document",
+                    "src": {
+                      "name": "0,885,34",
+                      "text": "0,885,49,24",
+                      "type": "0,885,20",
+                      "value": "0,885,39"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "defaultValue",
+                    "optional": true,
+                    "text": "When specified, this is return as empty value.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,886,29",
+                      "text": "0,886,43,47",
+                      "type": "0,886,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,887,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,889,0",
+                  "text": "0,882,12,111"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "is",
+                "text": "Returns true if the passed element(s) match the passed simple selector\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "An element id, element or array of elements\n",
+                    "type": "String/HTMLElement/HTMLElement[]",
+                    "src": {
+                      "name": "0,896,54",
+                      "text": "0,896,57,44",
+                      "type": "0,896,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The simple selector to test\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,897,28",
+                      "text": "0,897,37,28",
+                      "type": "0,897,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,898,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,900,0",
+                  "text": "0,895,12,71"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "filter",
+                "text": "Filters an array of elements to only include matches of a simple selector\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "An array of elements to filter\n",
+                    "type": "HTMLElement[]",
+                    "src": {
+                      "name": "0,911,35",
+                      "text": "0,911,38,31",
+                      "type": "0,911,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The simple selector to test\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,912,28",
+                      "text": "0,912,37,28",
+                      "type": "0,912,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "nonMatches",
+                    "text": "If true, it returns the elements that DON'T match the selector instead of the\nones that match\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,913,29",
+                      "text": "0,913,40,78:0,914,12,16",
+                      "type": "0,913,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An Array of DOM elements which match the selector. If there are no matches, and empty\nArray is returned.\n",
+                    "type": "HTMLElement[]",
+                    "src": {
+                      "text": "0,915,36,86:0,916,12,19",
+                      "type": "0,915,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,918,0",
+                  "text": "0,910,12,74"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "matchers",
+                "text": "Collection of matching regular expressions and code snippets.\nEach capture group within `()` will be replace the `{}` in the select\nstatement as specified by their index.\n",
+                "src": {
+                  "name": "0,939,0",
+                  "text": "0,935,12,171"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "operators",
+                "text": "Collection of operator comparison functions.\nThe default operators are `=`, `!=`, `^=`, `$=`, `*=`, `%=`, `|=` and `~=`.\n\nNew operators can be added as long as the match the format *c*`=` where *c*\nis any character other than space, `>`, or `<`.\n\nOperator functions are passed the following parameters:\n\n* `propValue` : The property value to test.\n* `compareTo` : The value to compare to.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,968,31",
+                  "text": "0,957,12,390",
+                  "type": "0,968,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pseudos",
+                "text": "Object hash of \"pseudo class\" filter functions which are used when filtering selections.\nEach function is passed two parameters:\n\n- **c** : Array\n    An Array of DOM elements to filter.\n\n- **v** : String\n    The argument (if any) supplied in the selector.\n\nA filter function returns an Array of DOM elements which conform to the pseudo class.\nIn addition to the provided pseudo classes listed above such as `first-child` and `nth-child`,\ndevelopers may add additional, custom psuedo class filters to select elements according to application-specific requirements.\n\nFor example, to filter `a` elements to only return links to __external__ resources:\n\n    Ext.DomQuery.pseudos.external = function(c, v) {\n        var r = [], ri = -1;\n        for(var i = 0, ci; ci = c[i]; i++) {\n            // Include in result set only if it's a link to an external resource\n            if (ci.hostname != location.hostname) {\n                r[++ri] = ci;\n            }\n        }\n        return r;\n    };\n\nThen external links could be gathered with the following statement:\n\n    var externalLinks = Ext.select(\"a:external\");\n",
+                "src": {
+                  "name": "0,1002,0",
+                  "text": "0,972,12,1109"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,3,24,24:0,4,24,24",
+          "name": "0,2,11",
+          "requires": "0,591,0,0:0,592,0,0",
+          "singleton": "0,5,4",
+          "text": "0,6,4,4604"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

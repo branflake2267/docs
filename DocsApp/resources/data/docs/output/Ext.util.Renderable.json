@@ -1,0 +1,445 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/util/Renderable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.util.Renderable",
+        "requires": "Ext.dom.Element",
+        "text": "Given a component hierarchy of this:\n\n     {\n         xtype: 'panel',\n         id: 'ContainerA',\n         layout: 'hbox',\n         renderTo: Ext.getBody(),\n         items: [\n             {\n                 id: 'ContainerB',\n                 xtype: 'container',\n                 items: [\n                     { id: 'ComponentA' }\n                 ]\n             }\n         ]\n     }\n\nThe rendering of the above proceeds roughly like this:\n\n - ContainerA's initComponent calls #render passing the `renderTo` property as the\n   container argument.\n - <a href='#!/api/Ext.util.Renderable-method-render'>render</a> calls the `getRenderTree` method to get a complete <a href='#!/api/Ext.dom.Helper'>Ext.dom.Helper</a> spec.\n - `getRenderTree` fires the \"beforerender\" event and calls the #beforeRender\n   method. Its result is obtained by calling #getElConfig.\n - The #getElConfig method uses the `renderTpl` and its render data as the content\n   of the `autoEl` described element.\n - The result of `getRenderTree` is passed to <a href='#!/api/Ext.dom.Helper-method-append'>Ext.dom.Helper#append</a>.\n - The `renderTpl` contains calls to render things like docked items, container items\n   and raw markup (such as the `html` or `tpl` config properties). These calls are to\n   methods added to the <a href='#!/api/Ext.XTemplate'>Ext.XTemplate</a> instance by #setupRenderTpl.\n - The #setupRenderTpl method adds methods such as `renderItems`, `renderContent`, etc.\n   to the template. These are directed to \"doRenderItems\", \"doRenderContent\" etc..\n - The #setupRenderTpl calls traverse from components to their <a href='#!/api/Ext.layout.Layout'>Ext.layout.Layout</a>\n   object.\n - When a container is rendered, it also has a `renderTpl`. This is processed when the\n   `renderContainer` method is called in the component's `renderTpl`. This call goes to\n   Ext.layout.container.Container#doRenderContainer. This method repeats this\n   process for all components in the container.\n - After the top-most component's markup is generated and placed in to the DOM, the next\n   step is to link elements to their components and finish calling the component methods\n   <a href='#!/api/Ext.util.Renderable-method-onRender'>onRender</a> and <a href='#!/api/Ext.util.Renderable-method-afterRender'>afterRender</a> as well as fire the corresponding events.\n - The first step in this is to call #finishRender. This method descends the\n   component hierarchy and calls <a href='#!/api/Ext.util.Renderable-method-onRender'>onRender</a> and fires the <a href='#!/api/Ext.util.Renderable-method-render'>render</a> event. These calls\n   are delivered top-down to approximate the timing of these calls/events from previous\n   versions.\n - During the pass, the component's `el` is set. Likewise, the `renderSelectors` and\n   `childEls` are applied to capture references to the component's elements.\n - These calls are also made on the <a href='#!/api/Ext.layout.container.Container'>Ext.layout.container.Container</a> layout to\n   capture its elements. Both of these classes use <a href='#!/api/Ext.util.ElementContainer'>Ext.util.ElementContainer</a> to\n   handle `childEls` processing.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "afterRender",
+                "template": true,
+                "text": "Allows additional behavior after rendering is complete. At this stage, the\n<a href='#!/api/Ext.Component'>Ext.Component</a> <a href='#!/api/Ext.Component-method-getEl'>Ext.Component#getEl</a> will have\nbeen styled according to the configuration, will have had any configured CSS\nclass names added, and will be in the configured visibility and configured enable\nstate.\n\n**Note:** If the Component has a <a href='#!/api/Ext.Component-cfg-controller'>Ext.Component#controller</a>\nand the controller has an <a href='#!/api/Ext.app.ViewController-method-afterRender'>Ext.app.ViewController#afterRender</a>\nmethod it will be called passing the Component as the single param.\n",
+                "src": {
+                  "access": "0,279,8",
+                  "name": "0,281,0",
+                  "template": "0,278,8",
+                  "text": "0,268,8,553"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "beforeRender",
+                "template": true,
+                "text": "Allows additional behavior before rendering.\n\n**Note:** If the Component has a <a href='#!/api/Ext.Component-cfg-controller'>Ext.Component#controller</a>\nand the controller has a <a href='#!/api/Ext.app.ViewController-method-beforeRender'>Ext.app.ViewController#beforeRender</a>\nmethod it will be called passing the Component as the single param.\n",
+                "src": {
+                  "access": "0,398,8",
+                  "name": "0,400,0",
+                  "template": "0,397,8",
+                  "text": "0,391,8,278"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doApplyRenderTpl",
+                "text": "Called from the selected frame generation template to insert this Component's inner structure inside the framing structure.\n\nWhen framing is used, a selected frame generation template is used as the primary template of the #getElConfig instead\nof the configured <a href='#!/api/Ext.Component-cfg-renderTpl'>Ext.Component#renderTpl</a>. The renderTpl is invoked by this method which is injected into the framing template.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "out",
+                    "src": {
+                      "name": "0,464,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "src": {
+                      "name": "0,464,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,458,8",
+                  "name": "0,464,0",
+                  "text": "0,459,8,390"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInsertPosition",
+                "text": "This function takes the position argument passed to onRender and returns a\nDOM element that you can use in the insertBefore.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "position",
+                    "text": "Index, element id or element you want\nto put this component before.\n",
+                    "type": "String/Number/Ext.dom.Element/HTMLElement",
+                    "src": {
+                      "name": "0,564,59",
+                      "text": "0,564,68,38:0,565,8,30",
+                      "type": "0,564,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "DOM element that you can use in the insertBefore\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "text": "0,566,30,49",
+                      "type": "0,566,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,568,0",
+                  "text": "0,562,8,125"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initRenderData",
+                "text": "Initialized the renderData to be used when rendering the renderTpl.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object with keys and values that are going to be applied to the renderTpl\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,613,25,74",
+                      "type": "0,613,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,614,8",
+                  "name": "0,616,0",
+                  "text": "0,612,8,68"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onRender",
+                "template": true,
+                "text": "Template method called when this Component's DOM structure is created.\n\nAt this point, this Component's (and all descendants') DOM structure *exists* but it has not\nbeen layed out (positioned and sized).\n\nSubclasses which override this to gain access to the structure at render time should\ncall the parent class's method before attempting to access any child elements of the Component.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "parentNode",
+                    "text": "The parent Element in which this Component's encapsulating element is contained.\n",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "name": "0,679,33",
+                      "text": "0,679,44,81",
+                      "type": "0,679,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "containerIdx",
+                    "text": "The index within the parent Container's child collection of this Component.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,680,24",
+                      "text": "0,680,37,76",
+                      "type": "0,680,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,683,8",
+                  "name": "0,685,0",
+                  "template": "0,682,8",
+                  "text": "0,671,8,387"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "render",
+                "text": "Renders the Component into the passed HTML element.\n\n**If you are using a <a href='#!/api/Ext.container.Container'>Ext.container.Container</a> object to house this\nComponent, then do not use the render method.**\n\nA Container's child Components are rendered by that Container's\n<a href='#!/api/Ext.container.Container-cfg-layout'>Ext.container.Container#layout</a> manager when the Container is first rendered.\n\nWhen creating complex UIs, it is important to remember that sizing and positioning\nof child items is the responsibility of the Container's <a href='#!/api/Ext.container.Container-cfg-layout'>Ext.container.Container#layout</a>\nmanager.  If you expect child items to be sized in response to user interactions, you must\nconfigure the Container with a layout manager which creates and manages the type of layout you\nhave in mind.\n\n**Omitting the Container's <a href='#!/api/Ext.container.Container-cfg-layout'>Ext.Container#layout</a> config means that a basic\nlayout manager is used which does nothing but render child components sequentially into the\nContainer. No sizing or positioning will be performed in this situation.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "container",
+                    "optional": true,
+                    "text": "The element this Component should be\nrendered into. If it is being created from existing markup, this should be omitted.\n",
+                    "type": "Ext.dom.Element/HTMLElement/String",
+                    "src": {
+                      "name": "0,758,53",
+                      "text": "0,758,64,37:0,759,8,84",
+                      "type": "0,758,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "position",
+                    "optional": true,
+                    "text": "The element ID or DOM node index within the container **before**\nwhich this component will be inserted (defaults to appending to the end of the container)\n",
+                    "type": "String/Number",
+                    "src": {
+                      "name": "0,760,32",
+                      "text": "0,760,42,65:0,761,8,90",
+                      "type": "0,760,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,763,0",
+                  "text": "0,740,8,986"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "ensureAttachedToBody",
+                "text": "Ensures that this component is attached to `document.body`. If the component was\nrendered to <a href='#!/api/Ext-method-getDetachedBody'>Ext#getDetachedBody</a>, then it will be appended to `document.body`.\nAny configured position is also restored.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "runLayout",
+                    "optional": true,
+                    "text": "True to run the component's layout.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,837,26",
+                      "text": "0,837,43,36",
+                      "type": "0,837,16",
+                      "value": "0,837,36"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,839,0",
+                  "text": "0,834,8,209"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyRenderSelectors",
+                "text": "Sets references to elements inside the component. This applies <a href='#!/api/Ext.Component-cfg-renderSelectors'>Ext.Component#cfg-renderSelectors</a>\nas well as <a href='#!/api/Ext.Component-cfg-childEls'>Ext.Component#cfg-childEls</a>.\n",
+                "src": {
+                  "access": "0,865,12",
+                  "name": "0,867,0",
+                  "text": "0,863,12,177"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "cacheRefEls",
+                "text": "Ensures that all elements with \"data-ref\" attributes get loaded into the cache.\nThis really helps on IE8 where `getElementById` is a search not a lookup. By\npopulating our cache with one search of the DOM we then have random access to\nthe elements as we do our `childEls` wire up.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "src": {
+                      "name": "0,898,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,896,12",
+                  "name": "0,898,0",
+                  "text": "0,892,12,281"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doAutoRender",
+                "text": "Handles autoRender.\nFloating Components may have an ownerCt. If they are asking to be constrained, constrain them within that\nownerCt, and have their z-index managed locally. Floating Components are always rendered to document.body\n",
+                "src": {
+                  "access": "0,920,12",
+                  "name": "0,922,0",
+                  "text": "0,917,12,232"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "finishRender",
+                "text": "This method visits the rendered component tree in a \"top-down\" order. That is, this\ncode runs on a parent component before running on a child. This method calls the\n<a href='#!/api/Ext.util.Renderable-method-onRender'>onRender</a> method of each component.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "containerIdx",
+                    "text": "The index into the Container items of this Component.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,1008,28",
+                      "text": "0,1008,41,54",
+                      "type": "0,1008,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1010,12",
+                  "name": "0,1012,0",
+                  "text": "0,1005,12,209"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getFrameInfo",
+                "text": "On render, reads an encoded style attribute, \"filter\" from the style of this Component's element.\nThis information is memoized based upon the CSS class name of this Component's element.\nBecause child Components are rendered as textual HTML as part of the topmost Container, a dummy div is inserted\ninto the document to receive the document element's CSS class name, and therefore style attributes.\n",
+                "src": {
+                  "access": "0,1172,12",
+                  "name": "0,1178,0",
+                  "text": "0,1173,12,398"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getStyleProxy",
+                "text": "Returns an offscreen div with the same class name as the element this is being rendered.\nThis is because child item rendering takes place in a detached div which, being not\npart of the document, has no styling.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cls",
+                    "src": {
+                      "name": "0,1295,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1290,12",
+                  "name": "0,1295,0",
+                  "text": "0,1291,12,211"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getFrameTpl",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "table",
+                    "src": {
+                      "name": "0,1315,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1313,12",
+                  "name": "0,1315,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initRenderTpl",
+                "text": "Initializes the renderTpl.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The renderTpl XTemplate instance.\n",
+                    "type": "Ext.XTemplate",
+                    "src": {
+                      "text": "0,1393,36,34",
+                      "type": "0,1393,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1394,12",
+                  "name": "0,1396,0",
+                  "text": "0,1392,12,27"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setupFramingTpl",
+                "text": "Inject a reference to the function which applies the render template into the framing template. The framing template\nwraps the content.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "frameTpl",
+                    "src": {
+                      "name": "0,1411,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1407,12",
+                  "name": "0,1411,0",
+                  "text": "0,1408,12,136"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateFrame",
+                "text": "Updates the frame elements to match new framing. The current `frameBody` is\npreserved by transplanting it into the new frame. All other frame `childEls`\nare destroyed and recreated if needed by the new frame. This method cannot\ntransition from framed to non-framed or vise-versa or between table and div\nbased framing.\n",
+                "src": {
+                  "access": "0,1427,12",
+                  "name": "0,1429,0",
+                  "text": "0,1422,12,319"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "_renderState",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property holds one of the following values during the render process:\n\n  * **0** - The component is not rendered.\n  * **1** - The component has fired beforerender and is about to call beforeRender.\n   The component has just started rendering.\n  * **2** - The component has finished the <a href='#!/api/Ext.util.Renderable-method-beforeRender'>beforeRender</a> process and is about to\n   call <a href='#!/api/Ext.util.Renderable-method-onRender'>onRender</a>. This is when `rendering` is set to `true`.\n  * **3** - The component has started <a href='#!/api/Ext.util.Renderable-method-onRender'>onRender</a>. This is when `rendered` is set\n   to `true`.\n  * **4** - The component has finished its afterrender process.\n",
+                "type": "Number",
+                "src": {
+                  "access": "0,136,8",
+                  "name": "0,124,27",
+                  "readonly": "0,137,8",
+                  "since": "0,138,15",
+                  "text": "0,125,8,553",
+                  "type": "0,124,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "ariaEl",
+                "optional": true,
+                "readonly": true,
+                "since": "5.5.0",
+                "text": "The name of the Component property that holds\na reference to the Element that serves as that Component's ARIA element.\nThis property will be replaced with the actual Element reference after rendering.\n\nMost of the simple Components will have their main element as ariaEl.\n",
+                "type": "String",
+                "value": "'el'",
+                "src": {
+                  "access": "0,149,8",
+                  "name": "0,143,28",
+                  "readonly": "0,150,8",
+                  "since": "0,151,15",
+                  "text": "0,143,41,46:0,144,8,227",
+                  "type": "0,143,19",
+                  "value": "0,143,35"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,54,4",
+          "name": "0,56,0",
+          "requires": "0,60,0",
+          "text": "0,2,4,2675"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

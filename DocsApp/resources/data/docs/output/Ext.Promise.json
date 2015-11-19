@@ -1,0 +1,131 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/Promise.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Promise",
+        "requires": "Ext.promise.Promise",
+        "since": "6.0.0",
+        "text": "This class provides an API compatible implementation of the ECMAScript 6 Promises API\n(providing an implementation as necessary for browsers that do not natively support the\n`Promise` class).\n\nThis class will use the native `Promise` implementation if one is available. The\nnative implementation, while standard, does not provide all of the features of the\nExt JS Promises implementation.\n\nTo use the Ext JS enhanced Promises implementation, see <a href='#!/api/Ext.Deferred'>Ext.Deferred</a> for\ncreating enhanced promises and additional static utility methods.\n\nTypical usage:\n\n     function getAjax (url) {\n         // The function passed to Ext.Promise() is called immediately to start\n         // the asynchronous action.\n         //\n         return new Ext.Promise(function (resolve, reject) {\n             Ext.Ajax.request({\n                 url: url,\n\n                 success: function (response) {\n                     // Use the provided \"resolve\" method to deliver the result.\n                     //\n                     resolve(response.responseText);\n                 },\n\n                 failure: function (response) {\n                     // Use the provided \"reject\" method to deliver error message.\n                     //\n                     reject(response.status);\n                 }\n             });\n         });\n     }\n\n     getAjax('http://stuff').then(function (content) {\n         // content is responseText of ajax response\n     });\n\nTo adapt the Ext JS <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> to use a Promise, you might do\nsomething like this:\n\n     loadCompanies: function() {\n         var companyStore = this.companyStore;\n\n         return new Ext.Promise(function (resolve, reject) {\n             companyStore.load({\n                 callback: function(records, operation, success) {\n                     if (success) {\n                         // Use the provided \"resolve\" method  to drive the promise:\n                         resolve(records);\n                     }\n                     else {\n                         // Use the provided \"reject\" method  to drive the promise:\n                         reject(\"Error loading Companies.\");\n                     }\n                 }\n             });\n         });\n     }\n",
+        "items": [
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "all",
+                "static": true,
+                "text": "Returns a new Promise that will only resolve once all the specified\n`promisesOrValues` have resolved.\n\nThe resolution value will be an Array containing the resolution value of each\nof the `promisesOrValues`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promisesOrValues",
+                    "text": "An Array of values\nor Promises, or a Promise of an Array of values or Promises.\n",
+                    "type": "Mixed[]/Ext.Promise[]/Ext.Promise",
+                    "src": {
+                      "name": "0,87,55",
+                      "text": "0,87,72,19:0,88,12,62",
+                      "type": "0,87,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of an Array of the resolved values.\n",
+                    "type": "Ext.Promise",
+                    "src": {
+                      "text": "0,90,34,46",
+                      "type": "0,90,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,93,0",
+                  "static": "0,91,12",
+                  "text": "0,81,12,209"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reject",
+                "static": true,
+                "text": "Convenience method that returns a new Promise rejected with the specified\nreason.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "reason",
+                    "text": "Rejection reason.\n",
+                    "type": "Error",
+                    "src": {
+                      "name": "0,108,27",
+                      "text": "0,108,34,18",
+                      "type": "0,108,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The rejected Promise.\n",
+                    "type": "Ext.Promise",
+                    "src": {
+                      "text": "0,109,34,22",
+                      "type": "0,109,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,112,0",
+                  "static": "0,110,12",
+                  "text": "0,105,12,83"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resolve",
+                "static": true,
+                "text": "Returns a new Promise that either\n\n * Resolves immediately for the specified value, or\n * Resolves or rejects when the specified promise (or third-party Promise or\n   then()-able) is resolved or rejected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promiseOrValue",
+                    "text": "A Promise (or third-party Promise or then()-able)\nor value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,127,27",
+                      "text": "0,127,42,50:0,128,12,10",
+                      "type": "0,127,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of the specified Promise or value.\n",
+                    "type": "Ext.Promise",
+                    "src": {
+                      "text": "0,129,34,45",
+                      "type": "0,129,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,132,0",
+                  "static": "0,130,12",
+                  "text": "0,121,12,206"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,66,0",
+          "requires": "0,71,0",
+          "since": "0,64,11",
+          "text": "0,2,4,2225"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

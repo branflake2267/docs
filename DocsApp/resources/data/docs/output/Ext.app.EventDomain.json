@@ -1,0 +1,233 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/EventDomain.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.app.EventDomain",
+        "requires": "Ext.util.Event",
+        "text": "This class is a base class for an event domain. In the context of MVC, an \"event domain\"\nis one or more base classes that fire events to which a Controller wants to listen. A\ncontroller listens to events by describing the selectors for events of interest to it.\n\nMatching selectors to the firer of an event is one key aspect that defines an event\ndomain. All event domain instances must provide a <a href='#!/api/Ext.app.EventDomain-method-match'>match</a> method that tests selectors\nagainst the event firer.\n\nWhen an event domain instance is created (typically as a `singleton`), its `type`\nproperty is used to catalog the domain in the\n<a href='#!/api/Ext.app.EventDomain-static-property-instances'>Ext.app.EventDomain#instances</a> map.\n\nThere are five event domains provided by default:\n\n-   <a href='#!/api/Ext.app.domain.Component'>Ext.app.domain.Component</a>. This is the primary event domain that\nhas been available since Ext JS MVC was introduced. This domain is defined as any class that\nextends <a href='#!/api/Ext.Component'>Ext.Component</a>, where the selectors use\n<a href='#!/api/Ext.ComponentQuery-method-query'>Ext.ComponentQuery#query</a>.\n-   <a href='#!/api/Ext.app.domain.Global'>Ext.app.domain.Global</a>. This domain provides Controllers with access\nto events fired from <a href='#!/api/Ext.GlobalEvents'>Ext.GlobalEvents</a> Observable instance. These events represent\nthe state of the application as a whole, and are always anonymous. Because of this, Global\ndomain does not provide selectors at all.\n-   <a href='#!/api/Ext.app.domain.Controller'>Ext.app.domain.Controller</a>. This domain includes all classes\nthat extend <a href='#!/api/Ext.app.Controller'>Ext.app.Controller</a>. Events fired by Controllers will be available\nwithin this domain; selectors are either Controller's <a href='#!/api/Ext.app.Controller-cfg-id'>Ext.app.Controller#id</a> or\n'*' wildcard for any Controller.\n-   <a href='#!/api/Ext.app.domain.Store'>Store domain</a>. This domain is for classes extending\n<a href='#!/api/Ext.data.AbstractStore'>Ext.data.AbstractStore</a>. Selectors are either Store's\n<a href='#!/api/Ext.data.AbstractStore-cfg-storeId'>Ext.data.AbstractStore#storeId</a> or '*' wildcard for any Store.\n-   <a href='#!/api/Ext.app.domain.Direct'>Direct domain</a>. This domain includes all classes that extend\n<a href='#!/api/Ext.direct.Provider'>Ext.direct.Provider</a>. Selectors are either Provider's <a href='#!/api/Ext.direct.Provider-cfg-id'>Ext.direct.Provider#id</a>\nor '*' wildcard for any Provider. This domain is optional and will be loaded only if\n<a href='#!/api/Ext.direct.Manager'>Ext.direct.Manager</a> singleton is required in your application.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "idProperty",
+                "text": "Name of the identifier property for this event domain.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,50,22",
+                  "text": "0,50,33,55",
+                  "type": "0,50,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "dispatch",
+                "text": "This method dispatches an event fired by an object monitored by this domain. This\nis not called directly but is called by interceptors injected by the <a href='#!/api/Ext.app.EventDomain-method-monitor'>monitor</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The firer of the event.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,71,24",
+                      "text": "0,71,31,24",
+                      "type": "0,71,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ev",
+                    "text": "The event being fired.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,72,24",
+                      "text": "0,72,27,23",
+                      "type": "0,72,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments for the event. This array **does not** include the event name.\nThat has already been sliced off because this class intercepts the <a href='#!/api/Ext.util.Observable-method-fireEventArgs'>Ext.util.Observable#fireEventArgs</a>\nmethod which takes an array as the event's argument list.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,73,23",
+                      "text": "0,73,28,77:0,74,8,182",
+                      "type": "0,73,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`false` if any listener returned `false`, otherwise `true`.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,77,26,60",
+                      "type": "0,77,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,79,8",
+                  "name": "0,81,0",
+                  "text": "0,68,8,170"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "listen",
+                "text": "This method adds listeners on behalf of a controller. This method is passed an\nobject that is keyed by selectors. The value of these is also an object but now\nkeyed by event name. For example:\n\n     domain.listen({\n         'some[selector]': {\n             click: function() { ... }\n         },\n\n         'other selector': {\n             change: {\n                 fn: function() { ... },\n                 delay: 10\n             }\n         }\n\n     }, controller);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selectors",
+                    "text": "Config object containing selectors and listeners.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,147,24",
+                      "text": "0,147,34,50",
+                      "type": "0,147,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,149,8",
+                  "name": "0,151,0",
+                  "text": "0,129,8,465"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "match",
+                "text": "This method matches the firer of the event (the `target`) to the given `selector`.\nDefault matching is very simple: a match is true when selector equals target's\n<a href='#!/api/Ext.app.EventDomain-cfg-idProperty'>cfg-idProperty</a>, or when selector is '*' wildcard to match any\ntarget.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The firer of the event.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,255,24",
+                      "text": "0,255,31,24",
+                      "type": "0,255,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector to which to match the `target`.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,256,24",
+                      "text": "0,256,33,45",
+                      "type": "0,256,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the `target` matches the `selector`.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,258,26,47",
+                      "type": "0,258,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,260,8",
+                  "name": "0,262,0",
+                  "text": "0,250,8,253"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "monitor",
+                "text": "This method is called by the derived class to monitor `fireEvent` calls. Any call\nto `fireEvent` on the target Observable will be intercepted and dispatched to any\nlistening Controllers. Assuming the original `fireEvent` method does not return\n`false`, the event is passed to the <a href='#!/api/Ext.app.EventDomain-method-dispatch'>dispatch</a> method of this object.\n\nThis is typically called in the `constructor` of derived classes.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "observable",
+                    "text": "The Observable to monitor for events.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,280,27",
+                      "text": "0,280,38,38",
+                      "type": "0,280,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,282,8",
+                  "name": "0,284,0",
+                  "text": "0,273,8,382"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unlisten",
+                "text": "Removes all of a controller's attached listeners.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "controllerId",
+                    "text": "The id of the controller.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,305,24",
+                      "text": "0,305,37,26",
+                      "type": "0,305,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,307,8",
+                  "name": "0,309,0",
+                  "text": "0,303,8,51"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "instances",
+                "static": true,
+                "text": "An object map containing <a href='#!/api/Ext.app.EventDomain'>Ext.app.EventDomain</a> instances keyed by the value\nof their `type` property.\n",
+                "src": {
+                  "name": "0,46,0",
+                  "static": "0,40,-1",
+                  "text": "0,43,12,102"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,36,0",
+          "requires": "0,38,0",
+          "text": "0,2,4,2189"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

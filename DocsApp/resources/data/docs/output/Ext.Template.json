@@ -1,0 +1,617 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/Template.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Template",
+        "requires": "Ext.util.Format",
+        "text": "Represents an HTML fragment template. Templates may be <a href='#!/api/Ext.Template-method-compile'>compile</a> for greater performance.\n\nAn instance of this class may be created by passing to the constructor either a single argument, or multiple\narguments:\n\n# Single argument: String/Array\n\nThe single argument may be either a String or an Array:\n\n- String:\n\n      var t = new Ext.Template(\"<div>Hello {0}.</div>\");\n      t.append('some-element', ['foo']);\n\n- Array:\n\n  An Array will be combined with `join('')`.\n\n      var t = new Ext.Template([\n          '<div name=\"{id}\">',\n              '<span class=\"{cls}\">{name:trim} {value:ellipsis(10)}</span>',\n          '</div>',\n      ]);\n      t.compile();\n      t.append('some-element', {id: 'myid', cls: 'myclass', name: 'foo', value: 'bar'});\n\n# Multiple arguments: String, Object, Array, ...\n\nMultiple arguments will be combined with `join('')`.\n\n    var t = new Ext.Template(\n        '<div name=\"{id}\">',\n            '<span class=\"{cls}\">{name} {value}</span>',\n        '</div>',\n        // a configuration object:\n        {\n            compiled: true,      // <a href='#!/api/Ext.Template-method-compile'>compile</a> immediately\n        }\n    );\n\n# Notes\n\n- For a list of available format functions, see <a href='#!/api/Ext.util.Format'>Ext.util.Format</a>.\n- <a href='#!/api/Ext.Template-cfg-disableFormats'>disableFormats</a> reduces <a href='#!/api/Ext.Template-method-apply'>apply</a> time when no formatting is required.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "compiled",
+                "text": "True to immediately compile the template. Defaults to false.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,130,23",
+                  "text": "0,131,8,61",
+                  "type": "0,130,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disableFormats",
+                "text": "True to disable format functions in the template. If the template doesn't contain\nformat functions, setting disableFormats to true will reduce apply time. Defaults to false.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,135,23",
+                  "text": "0,136,8,174",
+                  "type": "0,135,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new template.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "html",
+                    "text": "List of strings to be concatenated into template.\nAlternatively an array of strings can be given, but then no config object may be passed.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "0,81,27",
+                      "text": "0,81,32,50:0,82,8,89",
+                      "type": "0,81,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "(optional) Config object\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,83,24",
+                      "text": "0,83,31,25",
+                      "type": "0,83,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,85,0",
+                  "text": "0,79,8,23"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "apply",
+                "text": "Returns an HTML fragment of this template with the specified values applied.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. Can be an array if your params are numeric:\n\n    var tpl = new Ext.Template('Name: {0}, Age: {1}');\n    tpl.apply(['John', 25]);\n\nor an object:\n\n    var tpl = new Ext.Template('Name: {name}, Age: {age}');\n    tpl.apply({name: 'John', age: 25});\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,171,30",
+                      "text": "0,171,37,65:0,172,8,202",
+                      "type": "0,171,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The HTML fragment\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,181,25,18",
+                      "type": "0,181,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,183,0",
+                  "text": "0,169,8,78"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "evaluate",
+                "text": "Do not create the substitution closure on every apply call\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "src": {
+                      "name": "0,200,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,197,8",
+                  "name": "0,200,0",
+                  "text": "0,198,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "applyOut",
+                "text": "Appends the result of this template to the provided output array.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.Template-method-apply'>apply</a>.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,242,30",
+                      "text": "0,242,37,41",
+                      "type": "0,242,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "out",
+                    "text": "The array to which output is pushed.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,243,23",
+                      "text": "0,243,27,37",
+                      "type": "0,243,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The given out array.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,244,24,21",
+                      "type": "0,244,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,246,0",
+                  "text": "0,241,8,66"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.Template#apply",
+                "name": "applyTemplate",
+                "text": "Alias for <a href='#!/api/Ext.Template-method-apply'>apply</a>.\n",
+                "src": {
+                  "inheritdoc": "0,265,8",
+                  "name": "0,262,16",
+                  "text": "0,264,8,26"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "set",
+                "text": "Sets the HTML used as the template and optionally compiles it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "html",
+                    "type": "String",
+                    "src": {
+                      "name": "0,273,24",
+                      "type": "0,273,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "compile",
+                    "text": "(optional) True to compile the template.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,274,25",
+                      "text": "0,274,33,41",
+                      "type": "0,274,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Template",
+                    "src": {
+                      "text": "0,275,31,5",
+                      "type": "0,275,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,277,0",
+                  "text": "0,272,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "compile",
+                "text": "Compiles the template into an internal function, eliminating the RegEx overhead.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Template",
+                    "src": {
+                      "text": "0,291,31,5",
+                      "type": "0,291,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,293,0",
+                  "text": "0,290,8,81"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "evalCompiled",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "$",
+                    "src": {
+                      "name": "0,311,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,309,8",
+                  "name": "0,311,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertFirst",
+                "text": "Applies the supplied values to the template and inserts the new node(s) as the first child of el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,358,52",
+                      "text": "0,358,55,20",
+                      "type": "0,358,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.Template-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,359,30",
+                      "text": "0,359,37,61",
+                      "type": "0,359,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return a Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,360,25",
+                      "text": "0,360,39,41",
+                      "type": "0,360,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,361,46,24",
+                      "type": "0,361,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,363,0",
+                  "text": "0,356,8,99"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertBefore",
+                "text": "Applies the supplied values to the template and inserts the new node(s) before el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,370,52",
+                      "text": "0,370,55,20",
+                      "type": "0,370,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.Template-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,371,30",
+                      "text": "0,371,37,61",
+                      "type": "0,371,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return a Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,372,25",
+                      "text": "0,372,39,41",
+                      "type": "0,372,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,373,46,24",
+                      "type": "0,373,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,375,0",
+                  "text": "0,368,8,84"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "insertAfter",
+                "text": "Applies the supplied values to the template and inserts the new node(s) after el.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,382,52",
+                      "text": "0,382,55,20",
+                      "type": "0,382,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.Template-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,383,30",
+                      "text": "0,383,37,61",
+                      "type": "0,383,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return a Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,384,25",
+                      "text": "0,384,39,41",
+                      "type": "0,384,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,385,46,24",
+                      "type": "0,385,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,387,0",
+                  "text": "0,380,8,83"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "append",
+                "text": "Applies the supplied `values` to the template and appends the new node(s) to the specified `el`.\n\nFor example usage see <a href='#!/api/Ext.Template'>Ext.Template</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,396,52",
+                      "text": "0,396,55,20",
+                      "type": "0,396,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.Template-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,397,30",
+                      "text": "0,397,37,61",
+                      "type": "0,397,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return an Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,398,25",
+                      "text": "0,398,39,42",
+                      "type": "0,398,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,399,46,24",
+                      "type": "0,399,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,401,0",
+                  "text": "0,392,8,167"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "overwrite",
+                "text": "Applies the supplied values to the template and overwrites the content of el with the new node(s).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The context element\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,413,52",
+                      "text": "0,413,55,20",
+                      "type": "0,413,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The template values. See <a href='#!/api/Ext.Template-method-applyTemplate'>applyTemplate</a> for details.\n",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,414,30",
+                      "text": "0,414,37,61",
+                      "type": "0,414,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnElement",
+                    "text": "(optional) true to return a Ext.Element.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,415,25",
+                      "text": "0,415,39,41",
+                      "type": "0,415,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new node or Element\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,416,46,24",
+                      "type": "0,416,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,418,0",
+                  "text": "0,411,8,100"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "isTemplate",
+                "text": "`true` in this class to identify an object as an instantiated Template, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,124,28",
+                  "text": "0,125,8,93",
+                  "type": "0,124,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "re",
+                "text": "Regular expression used to extract tokens.\n\nFinds the following expressions within a format string\n\n                    {AND?}\n                    /   \\\n                  /       \\\n                /           \\\n              /               \\\n           OR                  AND?\n          /  \\                 / \\\n         /    \\               /   \\\n        /      \\             /     \\\n   (\\d+)  ([a-z_][\\w\\-]*)   /       \\\n    index       name       /         \\\n                          /           \\\n                         /             \\\n                  \\:([a-z_\\.]*)   (?:\\((.*?)?\\))?\n                     formatFn           args\n\nNumeric index or (name followed by optional formatting function and args)\n",
+                "type": "RegExp",
+                "src": {
+                  "access": "0,164,8",
+                  "name": "0,142,27",
+                  "text": "0,143,8,715",
+                  "type": "0,142,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "from",
+                "static": true,
+                "text": "Creates a template from the passed element's value (_display:none_ textarea, preferred) or innerHTML.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "A DOM element or its id\n",
+                    "type": "String/HTMLElement",
+                    "src": {
+                      "name": "0,59,40",
+                      "text": "0,59,43,24",
+                      "type": "0,59,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "(optional) Config object\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,60,28",
+                      "text": "0,60,35,25",
+                      "type": "0,60,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The created template\n",
+                    "type": "Ext.Template",
+                    "src": {
+                      "text": "0,61,35,21",
+                      "type": "0,61,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "0,63,12",
+                  "name": "0,65,0",
+                  "static": "0,62,12",
+                  "text": "0,58,12,102"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,47,0",
+          "requires": "0,53,0",
+          "text": "0,2,4,1296"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

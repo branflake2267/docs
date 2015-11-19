@@ -1,0 +1,785 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/operation/Read.js",
+    "../../../ext/packages/core/src/data/operation/Operation.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "data.operation.read",
+        "extends": "Ext.data.operation.Operation",
+        "name": "Ext.data.operation.Read",
+        "text": "Enacpsulates a read operation as performed by a <a href='#!/api/Ext.data.proxy.Proxy'>Ext.data.proxy.Proxy</a>.\n\nThis class is instantiated by <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> and <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> and should\nnot need to be instantiated in user code.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "addRecords",
+                "text": "Passed internally to loadRecords when the load completes\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,56,12",
+                  "name": "0,54,27",
+                  "text": "0,55,12,57",
+                  "type": "0,54,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "batch",
+                "text": "The batch for this operation, if applicable\n",
+                "type": "Ext.data.Batch",
+                "src": {
+                  "name": "1,91,0",
+                  "text": "1,89,12,44",
+                  "type": "1,88,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "callback",
+                "text": "Function to execute when operation completed.\n",
+                "type": "Function",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "records",
+                    "text": "Array of records.\n",
+                    "type": "Ext.data.Model[]",
+                    "src": {
+                      "name": "1,36,45",
+                      "text": "1,36,53,18",
+                      "type": "1,36,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "operation",
+                    "text": "The Operation itself.\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "1,37,57",
+                      "text": "1,37,67,22",
+                      "type": "1,37,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "success",
+                    "text": "True when operation completed successfully.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,38,36",
+                      "text": "1,38,44,44",
+                      "type": "1,38,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,34,28",
+                  "text": "1,35,12,46",
+                  "type": "1,34,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "filters",
+                "text": "Optional array of filter objects. Only applies to 'read' actions.\n",
+                "type": "Ext.util.Filter[]",
+                "src": {
+                  "name": "0,18,37",
+                  "text": "0,19,12,66",
+                  "type": "0,18,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "grouper",
+                "text": "Optional grouping configuration. Only applies to 'read' actions where grouping is desired.\n",
+                "type": "Ext.util.Grouper",
+                "src": {
+                  "name": "0,30,36",
+                  "text": "0,31,12,91",
+                  "type": "0,30,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "id",
+                "text": "The id of the operation.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,76,26",
+                  "text": "1,77,12,25",
+                  "type": "1,76,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "internalCallback",
+                "text": "A callback to run before the <a href='#!/api/Ext.data.operation.Read-cfg-callback'>callback</a>.\n",
+                "type": "Function",
+                "src": {
+                  "access": "1,106,12",
+                  "name": "1,104,28",
+                  "text": "1,105,12,48",
+                  "type": "1,104,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "internalScope",
+                "text": "Scope to run the <a href='#!/api/Ext.data.operation.Read-cfg-internalCallback'>internalCallback</a>\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,113,12",
+                  "name": "1,111,26",
+                  "text": "1,112,12,43",
+                  "type": "1,111,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "limit",
+                "text": "The number of records to load. Used on 'read' actions when paging is being used.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,42,26",
+                  "text": "0,43,12,81",
+                  "type": "0,42,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "page",
+                "text": "The page for this operation.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,48,26",
+                  "text": "0,49,12,29",
+                  "type": "0,48,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "params",
+                "text": "Parameters to pass along with the request when performing the operation.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,28,26",
+                  "text": "1,29,12,73",
+                  "type": "1,28,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "proxy",
+                "text": "The proxy for this operation\n",
+                "type": "Ext.data.proxy.Proxy",
+                "src": {
+                  "name": "1,82,40",
+                  "text": "1,83,12,29",
+                  "type": "1,82,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "recordCreator",
+                "text": "Passed to the reader, see <a href='#!/api/Ext.data.reader.Reader-method-read'>Ext.data.reader.Reader#read</a>\n",
+                "type": "Function",
+                "src": {
+                  "access": "1,96,12",
+                  "name": "1,94,28",
+                  "text": "1,95,12,62",
+                  "type": "1,94,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "records",
+                "text": "The records associated with this operation. If this is a `read` operation, this will be\n<a href='#!/api/null'>null</a> until data is returned from the <a href='#!/api/Ext.data.proxy.Proxy'>Ext.data.proxy.Proxy</a>.\n",
+                "type": "Ext.data.Model[]",
+                "src": {
+                  "name": "1,69,36",
+                  "text": "1,70,12,157",
+                  "type": "1,69,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "request",
+                "text": "The request for this operation.\n",
+                "type": "Ext.data.Request",
+                "src": {
+                  "name": "1,63,36",
+                  "text": "1,64,12,32",
+                  "type": "1,63,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "response",
+                "text": "The response for this operation.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,56,12",
+                  "name": "1,57,26",
+                  "text": "1,58,12,33",
+                  "type": "1,57,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "resultSet",
+                "text": "The ResultSet for this operation.\n",
+                "type": "Ext.data.ResultSet",
+                "src": {
+                  "accessor": "1,51,12",
+                  "name": "1,49,38",
+                  "text": "1,50,12,34",
+                  "type": "1,49,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scope",
+                "text": "Scope for the <a href='#!/api/Ext.data.operation.Read-cfg-callback'>callback</a> function.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,43,26",
+                  "text": "1,44,12,42",
+                  "type": "1,43,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "sorters",
+                "text": "Optional array of sorter objects. Only applies to 'read' actions.\n",
+                "type": "Ext.util.Sorter[]",
+                "src": {
+                  "name": "0,24,37",
+                  "text": "0,25,12,66",
+                  "type": "0,24,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "start",
+                "text": "The start index (offset), used in paging when running a 'read' action.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,36,26",
+                  "text": "0,37,12,71",
+                  "type": "0,36,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "synchronous",
+                "text": "True if this Operation is to be executed synchronously. This property is inspected by a\n<a href='#!/api/Ext.data.Batch'>Ext.data.Batch</a> to see if a series of Operations can be executed in parallel or not.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,15,27",
+                  "text": "1,16,12,186",
+                  "type": "1,15,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "url",
+                "text": "The url for this operation. Typically this will be provided by a proxy and not configured here.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,22,26",
+                  "text": "1,23,12,96",
+                  "type": "1,22,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "abort",
+                "text": "Aborts the processing of this operation on the <a href='#!/api/Ext.data.operation.Read-cfg-proxy'>proxy</a>.\nThis is only valid for proxies that make asynchronous requests.\n",
+                "src": {
+                  "name": "1,251,0",
+                  "text": "1,248,8,127"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "allowWrite",
+                "text": "Checks whether this operation should cause writing to occur.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Whether the operation should cause a write to occur.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,490,26,53",
+                      "type": "1,490,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,492,0",
+                  "text": "1,489,8,61"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Operation object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "(optional) Config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,194,24",
+                      "text": "1,194,31,26",
+                      "type": "1,194,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,196,0",
+                  "text": "1,193,8,30"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "doProcess",
+                "text": "Process records in the operation after the response is successful and the result\nset is parsed correctly. The base class implementation of this method is used by\n\"create\" and \"update\" operations to allow the server response to update the client\nside records.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "resultSet",
+                    "text": "The result set\n",
+                    "type": "Ext.data.ResultSet",
+                    "src": {
+                      "name": "1,290,36",
+                      "text": "1,290,46,15",
+                      "type": "1,290,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "1,291,34",
+                      "text": "1,291,42,12",
+                      "type": "1,291,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "response",
+                    "text": "The response\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,292,24",
+                      "text": "1,292,33,13",
+                      "type": "1,292,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,293,8",
+                  "name": "1,295,0",
+                  "text": "1,285,8,260"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "execute",
+                "text": "Executes the operation on the configured <a href='#!/api/Ext.data.operation.Read-cfg-proxy'>proxy</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The request object\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "text": "1,227,35,19",
+                      "type": "1,227,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,225,8",
+                  "name": "1,229,0",
+                  "text": "1,226,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getError",
+                "text": "Returns the error string or object that was set using <a href='#!/api/Ext.data.operation.Read-method-setException'>setException</a>\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The error object\n",
+                    "type": "String/Object",
+                    "src": {
+                      "text": "1,432,32,17",
+                      "type": "1,432,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,434,0",
+                  "text": "1,431,8,76"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRecords",
+                "text": "Returns the <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>s associated with this operation. For read\noperations the records as set by the <a href='#!/api/Ext.data.proxy.Proxy'>Ext.data.proxy.Proxy</a> will be\nreturned (returns <a href='#!/api/null'>null</a> if the proxy has not yet set the records).\n\nFor create, update, and destroy operations the operation's initially configured\nrecords will be returned, although the proxy may modify these records' data at some\npoint after the operation is initialized.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.Model[]",
+                    "src": {
+                      "type": "1,447,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,449,0",
+                  "text": "1,439,8,440"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasException",
+                "text": "Returns true if this Operation encountered an exception (see also <a href='#!/api/Ext.data.operation.Read-method-getError'>getError</a>)\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if there was an exception\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,424,26,31",
+                      "type": "1,424,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,426,0",
+                  "text": "1,423,8,85"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isComplete",
+                "text": "Returns true if the Operation has been completed\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if the Operation is complete\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,474,26,34",
+                      "type": "1,474,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,476,0",
+                  "text": "1,473,8,49"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isRunning",
+                "text": "Returns true if the Operation has been started but has not yet completed.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if the Operation is currently running\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,466,26,43",
+                      "type": "1,466,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,468,0",
+                  "text": "1,465,8,74"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isStarted",
+                "text": "Returns true if the Operation has been started. Note that the Operation may have started AND completed, see\n<a href='#!/api/Ext.data.operation.Read-method-isRunning'>isRunning</a> to test if the Operation is currently running.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if the Operation has started\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,458,26,34",
+                      "type": "1,458,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,460,0",
+                  "text": "1,456,8,174"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setCompleted",
+                "text": "Marks the Operation as completed.\n",
+                "src": {
+                  "name": "1,362,0",
+                  "text": "1,360,8,34"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setException",
+                "text": "Marks the Operation as having experienced an exception. Can be supplied with an option error message/object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "error",
+                    "text": "(optional) error string/object\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "1,390,31",
+                      "text": "1,390,37,31",
+                      "type": "1,390,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,392,0",
+                  "text": "1,389,8,109"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setStarted",
+                "text": "Marks the Operation as started.\n",
+                "src": {
+                  "name": "1,355,0",
+                  "text": "1,353,8,32"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setSuccessful",
+                "text": "Marks the Operation as successful.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "complete",
+                    "optional": true,
+                    "text": "`true` to also mark this operation\nas being complete See <a href='#!/api/Ext.data.operation.Read-method-setCompleted'>setCompleted</a>.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,378,26",
+                      "text": "1,378,36,35:1,379,8,45",
+                      "type": "1,378,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,381,0",
+                  "text": "1,377,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "wasSuccessful",
+                "text": "Returns true if the Operation has completed and was successful\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "True if successful\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,482,26,19",
+                      "type": "1,482,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,484,0",
+                  "text": "1,481,8,63"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "commit",
+                "text": "This private object is used to save on memory allocation. This instance is used to\napply server record updates as part of a record commit performed by calling the\nset() method on the record. See doProcess.\n",
+                "src": {
+                  "access": "1,277,8",
+                  "name": "1,282,0",
+                  "text": "1,278,8,206"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "complete",
+                "readonly": true,
+                "text": "The completion status of this Operation. Use <a href='#!/api/Ext.data.operation.Read-method-isComplete'>isComplete</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,161,8",
+                  "name": "1,158,28",
+                  "readonly": "1,160,8",
+                  "text": "1,159,8,66",
+                  "type": "1,158,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "error",
+                "text": "The error object passed when <a href='#!/api/Ext.data.operation.Read-method-setException'>setException</a> was called. This could be any object or primitive.\n",
+                "type": "String/Object",
+                "src": {
+                  "access": "1,186,8",
+                  "name": "1,184,34",
+                  "text": "1,185,8,102",
+                  "type": "1,184,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "exception",
+                "readonly": true,
+                "text": "The exception status of this Operation. Use <a href='#!/api/Ext.data.operation.Read-method-hasException'>hasException</a> and see <a href='#!/api/Ext.data.operation.Read-method-getError'>getError</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,179,8",
+                  "name": "1,176,28",
+                  "readonly": "1,178,8",
+                  "text": "1,177,8,93",
+                  "type": "1,176,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "foreignKeyDirection",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This number is used by <a href='#!/api/Ext.data.Batch-method-sort'>Ext.data.Batch#sort</a> to order operations of the\nsame type. This value is multipled by the \"entity rank\" (which is determined by\nforeign-key dependencies) to invert the direction of the sort based on the type of\noperation. Only <a href='#!/api/Ext.data.operation.Destroy'>Ext.data.operation.Destroy</a> overrides this value.\n",
+                "type": "Number",
+                "src": {
+                  "access": "1,135,8",
+                  "name": "1,130,27",
+                  "readonly": "1,136,8",
+                  "since": "1,137,15",
+                  "text": "1,131,8,310",
+                  "type": "1,130,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "order",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This number is used by <a href='#!/api/Ext.data.Batch-method-sort'>Ext.data.Batch#sort</a> to order operations. Order of\noperations of the same type is determined by foreign-key dependencies. The array of\noperations is sorted by ascending (increasing) values of <a href='#!/api/Ext.data.operation.Read-property-order'>order</a>.\n",
+                "type": "Number",
+                "src": {
+                  "access": "1,123,8",
+                  "name": "1,119,27",
+                  "readonly": "1,124,8",
+                  "since": "1,125,15",
+                  "text": "1,120,8,233",
+                  "type": "1,119,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "running",
+                "readonly": true,
+                "text": "The run status of this Operation. Use <a href='#!/api/Ext.data.operation.Read-method-isRunning'>isRunning</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,153,8",
+                  "name": "1,150,28",
+                  "readonly": "1,152,8",
+                  "text": "1,151,8,58",
+                  "type": "1,150,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "started",
+                "readonly": true,
+                "text": "The start status of this Operation. Use <a href='#!/api/Ext.data.operation.Read-method-isStarted'>isStarted</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,145,8",
+                  "name": "1,142,28",
+                  "readonly": "1,144,8",
+                  "text": "1,143,8,60",
+                  "type": "1,142,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "success",
+                "readonly": true,
+                "text": "Whether the Operation was successful or not. This starts as undefined and is set to true\nor false by the Proxy that is executing the Operation. It is also set to false by <a href='#!/api/Ext.data.operation.Read-method-setException'>setException</a>. Use\n<a href='#!/api/Ext.data.operation.Read-method-wasSuccessful'>wasSuccessful</a> to query success status.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,171,8",
+                  "name": "1,166,28",
+                  "readonly": "1,170,8",
+                  "text": "1,167,8,246",
+                  "type": "1,166,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,10,0",
+          "extends": "0,9,0",
+          "name": "0,2,11",
+          "text": "0,3,4,233"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

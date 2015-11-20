@@ -1,0 +1,141 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/ux/src/ajax/SimManager.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.ux.ajax.SimManager",
+        "requires": "Ext.data.Connection,Ext.ux.ajax.SimXhr,Ext.ux.ajax.Simlet,Ext.ux.ajax.JsonSimlet",
+        "singleton": true,
+        "text": "This singleton manages simulated Ajax responses. This allows application logic to be\nwritten unaware that its Ajax calls are being handled by simulations (\"simlets\"). This\nis currently done by hooking <a href='#!/api/Ext.data.Connection'>Ext.data.Connection</a> methods, so all users of that\nclass (and <a href='#!/api/Ext.Ajax'>Ext.Ajax</a> since it is a derived class) qualify for simulation.\n\nThe requires hooks are inserted when either the <a href='#!/api/Ext.ux.ajax.SimManager-method-init'>init</a> method is called or the\nfirst <a href='#!/api/Ext.ux.ajax.Simlet'>Ext.ux.ajax.Simlet</a> is registered. For example:\n\n     Ext.onReady(function () {\n         initAjaxSim();\n\n         // normal stuff\n     });\n\n     function initAjaxSim () {\n         Ext.ux.ajax.SimManager.init({\n             delay: 300\n         }).register({\n             '/app/data/url': {\n                 type: 'json',  // use JsonSimlet (type is like xtype for components)\n                 data: [\n                     { foo: 42, bar: 'abc' },\n                     ...\n                 ]\n             }\n         });\n     }\n\nAs many URL's as desired can be registered and associated with a <a href='#!/api/Ext.ux.ajax.Simlet'>Ext.ux.ajax.Simlet</a>. To make\nnon-simulated Ajax requests once this singleton is initialized, add a `nosim:true` option\nto the Ajax options:\n\n     Ext.Ajax.request({\n         url: 'page.php',\n         nosim: true, // ignored by normal Ajax request\n         params: {\n             id: 1\n         },\n         success: function(response){\n             var text = response.responseText;\n             // process server response here\n         }\n     });\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "defaultSimlet",
+                "text": "The <a href='#!/api/Ext.ux.ajax.Simlet'>Ext.ux.ajax.Simlet</a> instance to use for non-matching URL's. By default, this will\nreturn 404. Set this to null to use real Ajax calls for non-matching URL's.\n",
+                "type": "Ext.ux.ajax.Simlet",
+                "src": {
+                  "name": "0,57,34",
+                  "text": "0,58,8,169",
+                  "type": "0,57,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultType",
+                "text": "The default `type` to apply to generic <a href='#!/api/Ext.ux.ajax.Simlet'>Ext.ux.ajax.Simlet</a> configuration objects. The\ndefault is 'basic'.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,63,22",
+                  "text": "0,64,8,113",
+                  "type": "0,63,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "delay",
+                "text": "The number of milliseconds to delay before delivering a response to an async request.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,70,22",
+                  "text": "0,71,8,86",
+                  "type": "0,70,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "init",
+                "text": "Initializes this singleton and applies configuration options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "An optional object with configuration properties to apply.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,129,24",
+                      "text": "0,129,31,59",
+                      "type": "0,129,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.ux.ajax.SimManager",
+                    "src": {
+                      "text": "0,130,41,5",
+                      "type": "0,130,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,132,0",
+                  "text": "0,128,8,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "register",
+                "text": "Registeres one or more <a href='#!/api/Ext.ux.ajax.Simlet'>Ext.ux.ajax.Simlet</a> instances.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "simlet",
+                    "text": "Either a <a href='#!/api/Ext.ux.ajax.Simlet'>Ext.ux.ajax.Simlet</a> instance or config, an Array\nof such elements or an Object keyed by URL with values that are <a href='#!/api/Ext.ux.ajax.Simlet'>Ext.ux.ajax.Simlet</a>\ninstances or configs.\n",
+                    "type": "Array/Object",
+                    "src": {
+                      "name": "0,203,30",
+                      "text": "0,203,37,65:0,204,8,113",
+                      "type": "0,203,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,207,0",
+                  "text": "0,202,8,61"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "ready",
+                "text": "True once this singleton has initialized and applied its Ajax hooks.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,78,8",
+                  "name": "0,76,28",
+                  "text": "0,77,8,69",
+                  "type": "0,76,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,46,0",
+          "requires": "0,50,0,0:0,51,0,0:0,52,0,0:0,53,0,0",
+          "singleton": "0,47,0",
+          "text": "0,2,4,1485"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

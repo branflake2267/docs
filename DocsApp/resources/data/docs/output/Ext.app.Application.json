@@ -1,0 +1,2590 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/Application.js",
+    "../../../ext/packages/core/src/app/Controller.js",
+    "../../../ext/classic/classic/overrides/app/Application.js",
+    "../../../ext/packages/core/src/app/BaseController.js",
+    "../../../ext/packages/core/src/mixin/Observable.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.app.Controller",
+        "name": "Ext.app.Application",
+        "requires": "Ext.util.History,Ext.util.MixedCollection",
+        "text": "Represents an Ext JS application, which is typically a single page app using a\n<a href='#!/api/Ext.container.Viewport'>Ext.container.Viewport</a>.\n\nAn application consists of one or more Views. The behavior of a View is managed by its\ncorresponding <a href='#!/api/Ext.app.ViewController'>Ext.app.ViewController</a> and <a href='#!/api/Ext.app.ViewModel'>Ext.app.ViewModel</a>.\n\nGlobal activities are coordinated by <a href='#!/api/Ext.app.Controller'>Ext.app.Controller</a> which are\nultimately instantiated by an instance of this (or a derived) class.\n\n    Ext.application({\n        name: 'MyApp',\n\n        // An instance of this view is created and set as the Viewport:\n        autoCreateViewport: 'MyApp.view.Main'\n    });\n\nThis does several things. First it creates a global variable called 'MyApp' - all of\nyour Application's classes (such as its Models, Views and Controllers) will reside under\nthis single namespace, which drastically lowers the chances of colliding global variables.\n\nThe MyApp global will also have a getApplication method to get a reference to the current\napplication:\n\n    var app = MyApp.getApplication();\n\n# Telling Application about the rest of the app\n\nBecause an Ext.app.Application represents an entire app, we should tell it about the other\nparts of the app - namely the Models, Views and Controllers that are bundled with the application. Let's say we have a blog management app; we\nmight have Models and Controllers for Posts and Comments, and Views for listing, adding and editing Posts and Comments.\nHere's how we'd tell our Application about all these things:\n\n    Ext.application({\n        name: 'Blog',\n\n        models: ['Post', 'Comment'],\n\n        controllers: ['Posts', 'Comments'],\n\n        launch: function() {\n            ...\n        }\n    });\n\nNote that we didn't actually list the Views directly in the Application itself. This is because Views are managed by\nControllers, so it makes sense to keep those dependencies there. The Application will load each of the specified\nControllers using the pathing conventions laid out in the [application architecture guide](../application_architecture/application_architecture.html) - in this case\nexpecting the controllers to reside in app/controller/Posts.js and app/controller/Comments.js. In turn, each\nController simply needs to list the Views it uses and they will be automatically loaded. Here's how our Posts\ncontroller like be defined:\n\n    Ext.define('MyApp.controller.Posts', {\n        extend: 'Ext.app.Controller',\n        views: ['posts.List', 'posts.Edit'],\n\n        //the rest of the Controller here\n    });\n\nBecause we told our Application about our Models and Controllers, and our Controllers about their Views, Ext JS will\nautomatically load all of our app files for us. This means we don't have to manually add script tags into our html\nfiles whenever we add a new class, but more importantly it enables us to create a minimized build of our entire\napplication using Sencha Cmd.\n\n# Deriving from Ext.app.Application\n\nTypically, applications do not derive directly from Ext.app.Application. Rather, the\nconfiguration passed to `Ext.application` mimics what you might do in a derived class.\nIn some cases, however, it can be desirable to share logic by using a derived class\nfrom <a href='#!/api/Ext.app.Application'>Ext.app.Application</a>.\n\nDerivation works as you would expect, but using the derived class should still be the\njob of the `Ext.application` method.\n\n    Ext.define('MyApp.Application', {\n        extend: 'Ext.app.Application',\n        name: 'MyApp',\n        ...\n    });\n\n    Ext.application('MyApp.Application');\n\nFor more information about writing Ext JS applications, please see the [application architecture guide](../../../application_architecture/application_architecture.html).\n\n[mvc]: #/guide/application_architecture\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "appFolder",
+                "optional": true,
+                "text": "The path to the directory which contains all application's classes.\nThis path will be registered via <a href='#!/api/Ext.Loader-method-setPath'>Ext.Loader#setPath</a> for the namespace specified\nin the <a href='#!/api/Ext.app.Application-cfg-name'>name</a> config.\n",
+                "type": "String",
+                "value": "\"app\"",
+                "src": {
+                  "name": "0,183,23",
+                  "text": "0,184,8,190",
+                  "type": "0,183,14",
+                  "value": "0,183,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "appProperty",
+                "text": "The name of a property to be assigned to the main namespace to gain a reference to\nthis application. Can be set to an empty value to prevent the reference from\nbeing created\n\n    Ext.application({\n        name: 'MyApp',\n        appProperty: 'myProp',\n\n        launch: function() {\n            console.log(MyApp.myProp === this);\n        }\n    });\n",
+                "type": "String",
+                "src": {
+                  "name": "0,201,26",
+                  "text": "0,202,12,347",
+                  "type": "0,201,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "application",
+                "readonly": true,
+                "text": "The <a href='#!/api/Ext.app.Application'>Ext.app.Application</a> for this controller accessible via the getApplication method.\n",
+                "type": "Ext.app.Application",
+                "src": {
+                  "accessor": "1,477,12",
+                  "name": "1,476,39",
+                  "readonly": "1,478,12",
+                  "text": "1,476,51,94",
+                  "type": "1,476,18"
+                }
+              },
+              {
+                "$type": "property",
+                "deprecatedMessage": "Instead use <a href='#!/api/Ext.app.Application-mainView'>mainView</a>\n",
+                "deprecatedVersion": "5.1",
+                "name": "autoCreateViewport",
+                "optional": true,
+                "type": "Boolean/String",
+                "value": "false",
+                "src": {
+                  "deprecatedMessage": "2,13,8",
+                  "deprecatedVersion": "2,13,8",
+                  "name": "2,12,31",
+                  "type": "2,12,14",
+                  "value": "2,12,50"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "control",
+                "text": "\nAdds listeners to components selected via <a href='#!/api/Ext.ComponentQuery'>Ext.ComponentQuery</a>. Accepts an\nobject containing component paths mapped to a hash of listener functions.\nThe function value may also be a string matching the name of a method on the\ncontroller.\n\nIn the following example the `updateUser` function is mapped to to the `click`\nevent on a button component, which is a child of the `useredit` component.\n\n     Ext.define('MyApp.controller.Users', {\n         extend: 'Ext.app.Controller',\n\n         control: {\n             'useredit button[action=save]': {\n                 click: 'updateUser'\n             }\n         },\n\n         updateUser: function(button) {\n             console.log('clicked the Save button');\n         }\n     });\n\nThe method you pass to the listener will automatically be resolved on the controller.\nIn this case, the `updateUser` method that will get executed on the `button` `click`\nevent will resolve to the `updateUser` method on the controller,\n\nSee <a href='#!/api/Ext.ComponentQuery'>Ext.ComponentQuery</a> for more information on component selectors.\n",
+                "type": "Object",
+                "src": {
+                  "accessor": "3,36,12",
+                  "name": "3,35,26",
+                  "text": "3,37,12,1044",
+                  "type": "3,35,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "controllers",
+                "text": "Names of <a href='#!/api/Ext.app.Controller'>Ext.app.Controller</a> that the app uses.  By default,\nthe framework will look for the controllers in the \"controller\" folder within the\n<a href='#!/api/Ext.app.Application-cfg-appFolder'>appFolder</a>.  Controller classes should be named using the syntax of\n\"{appName}.controller.{ClassName}\" with additional sub-folders under the\n\"controller\" folder specified within the class name following \"controller.\".\n\n    // by default, the following controller class would be located at:\n    // app/controller/Main.js\n    controllers: '.Main' // or 'MyApp.controller.Main'\n\n    // while the following would be located at:\n    // app/controller/customer/Main.js\n    controllers: 'customer.Main' // or 'MyApp.controller.customer.Main'\n\n**Note:** If the controller has a different namespace than that of the\napplication you will need to specify the full class name as well as define a path\nin the <a href='#!/api/Ext.Loader-cfg-paths'>Ext.Loader#cfg-paths</a> config or\n<a href='#!/api/Ext.Loader-method-setPath'>Ext.Loader#method-setPath</a> method.\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "0,115,31",
+                  "text": "0,116,8,970",
+                  "type": "0,115,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "currentProfile",
+                "type": "Ext.app.Profile",
+                "src": {
+                  "name": "0,227,0",
+                  "type": "0,225,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultToken",
+                "optional": true,
+                "text": "The default token to be used at application launch\nif one is not present. Often this is set to something like `'home'`.\n",
+                "type": "String",
+                "value": "null",
+                "src": {
+                  "name": "0,239,27",
+                  "text": "0,239,46,51:0,240,12,69",
+                  "type": "0,239,18",
+                  "value": "0,239,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "enableQuickTips",
+                "text": "True to automatically set up Ext.tip.QuickTip support.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,20,27",
+                  "text": "2,21,12,55",
+                  "type": "2,20,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "extend",
+                "text": "A class name to use with the `Ext.application` call. The class must also extend <a href='#!/api/Ext.app.Application'>Ext.app.Application</a>.\n\n    Ext.define('MyApp.Application', {\n        extend: 'Ext.app.Application',\n\n        launch: function() {\n            Ext.direct.Manager.addProvider(Ext.REMOTING_API);\n        }\n    });\n\n    Ext.application({\n        extend: 'MyApp.Application'\n    });\n",
+                "type": "String",
+                "src": {
+                  "name": "0,99,22",
+                  "text": "0,99,29,109:0,100,8,255",
+                  "type": "0,99,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "glyphFontFamily",
+                "text": "The glyphFontFamily to use for this application.  Used as the default font-family\nfor all components that support a `glyph` config.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,245,26",
+                  "text": "0,246,12,132",
+                  "type": "0,245,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "id",
+                "text": "The id of this controller. You can use this id when dispatching.\n\nFor an example of dispatching, see the examples under the\n<a href='#!/api/Ext.app.Controller-cfg-listen'>Ext.app.Controller#cfg-listen</a> config.\n\nIf an id is not explicitly set, it will default to the controller's full classname.\n",
+                "type": "String",
+                "src": {
+                  "accessor": "3,30,12",
+                  "name": "3,23,26",
+                  "text": "3,23,29,65:3,24,12,198",
+                  "type": "3,23,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "listen",
+                "text": "\nAdds listeners to different event sources (also called \"event domains\"). The\nprimary event domain is that of components, but there are also other event domains:\n<a href='#!/api/Ext.app.domain.Global'>Ext.app.domain.Global</a> domain that intercepts events fired from\n<a href='#!/api/Ext.GlobalEvents'>Ext.GlobalEvents</a> Observable instance,\n<a href='#!/api/Ext.app.domain.Controller'>Ext.app.domain.Controller</a> domain can be used to listen to events\nfired by other Controllers, <a href='#!/api/Ext.app.domain.Store'>Store</a> domain gives access to\nStore events, and <a href='#!/api/Ext.app.domain.Direct'>Direct</a> domain can be used with\nExt Direct Providers to listen to their events.\n\nTo listen to \"bar\" events fired by a controller with id=\"foo\":\n\n     Ext.define('AM.controller.Users', {\n         extend: 'Ext.app.Controller',\n\n         listen: {\n             controller: {\n                 '#foo': {\n                     bar: 'onFooBar'\n                 }\n             }\n         }\n     });\n\nTo listen to \"bar\" events fired by any controller, and \"baz\" events\nfired by Store with storeId=\"baz\":\n\n     Ext.define('AM.controller.Users', {\n         extend: 'Ext.app.Controller',\n\n         listen: {\n             controller: {\n                 '*': {\n                     bar: 'onAnyControllerBar'\n                 }\n             },\n             store: {\n                 '#baz': {\n                     baz: 'onStoreBaz'\n                 }\n             }\n         }\n     });\n\nTo listen to \"idle\" events fired by <a href='#!/api/Ext.GlobalEvents'>Ext.GlobalEvents</a> when other event\nprocessing is complete and Ext JS is about to return control to the browser:\n\n     Ext.define('AM.controller.Users', {\n         extend: 'Ext.app.Controller',\n\n         listen: {\n             global: {            // Global events are always fired\n                 idle: 'onIdle'   // from the same object, so there\n             }                    // are no selectors\n         }\n     });\n\nAs this relates to components, the following example:\n\n     Ext.define('AM.controller.Users', {\n         extend: 'Ext.app.Controller',\n\n         listen: {\n             component: {\n                 'useredit button[action=save]': {\n                     click: 'updateUser'\n                 }\n             }\n         }\n     });\n\nIs equivalent to:\n\n     Ext.define('AM.controller.Users', {\n         extend: 'Ext.app.Controller',\n\n         control: {\n             'useredit button[action=save]': {\n                 click: 'updateUser'\n             }\n         }\n     });\n\nOf course, these can all be combined in a single call and used instead of\n`control`, like so:\n\n     Ext.define('AM.controller.Users', {\n         extend: 'Ext.app.Controller',\n\n         listen: {\n             global: {\n                 idle: 'onIdle'\n             },\n             controller: {\n                 '*': {\n                     foobar: 'onAnyFooBar'\n                 },\n                 '#foo': {\n                     bar: 'onFooBar'\n                 }\n             },\n             component: {\n                 'useredit button[action=save]': {\n                     click: 'updateUser'\n                 }\n             },\n             store: {\n                 '#qux': {\n                     load: 'onQuxLoad'\n                 }\n             }\n         }\n     });\n",
+                "type": "Object",
+                "src": {
+                  "accessor": "3,71,12",
+                  "name": "3,70,26",
+                  "text": "3,72,12,3183",
+                  "type": "3,70,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "listeners",
+                "text": "\nA config object containing one or more event handlers to be added to this object during initialization. This\nshould be a valid listeners config object as specified in the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> example for attaching\nmultiple handlers at once.\n\n**DOM events from Ext JS <a href='#!/api/Ext.Component'>Ext.Component</a>**\n\nWhile _some_ Ext JS Component classes export selected DOM events (e.g. \"click\", \"mouseover\" etc), this is usually\nonly done when extra value can be added. For example the <a href='#!/api/Ext.view.View'>Ext.view.View</a>s **<a href='#!/api/Ext.view.View-event-itemclick'>Ext.view.View#itemclick</a>** event passing the node clicked on. To access DOM events directly from a\nchild element of a Component, we need to specify the `element` option to identify the Component property to add a\nDOM listener to:\n\n    new Ext.panel.Panel({\n        width: 400,\n        height: 200,\n        dockedItems: [{\n            xtype: 'toolbar'\n        }],\n        listeners: {\n            click: {\n                element: 'el', //bind to the underlying el property on the panel\n                fn: function(){ console.log('click el'); }\n            },\n            dblclick: {\n                element: 'body', //bind to the underlying body property on the panel\n                fn: function(){ console.log('dblclick body'); }\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "4,243,25",
+                  "text": "4,244,11,1325",
+                  "type": "4,243,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "mainView",
+                "type": "String/Object",
+                "src": {
+                  "name": "0,231,33",
+                  "type": "0,231,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "models",
+                "text": "Array of models to require from AppName.model namespace. For example:\n\n     Ext.define(\"MyApp.controller.Foo\", {\n         extend: \"Ext.app.Controller\",\n         models: ['User', 'Vehicle']\n     });\n\nThis is equivalent to:\n\n     Ext.define(\"MyApp.controller.Foo\", {\n         extend: \"Ext.app.Controller\",\n         requires: ['MyApp.model.User', 'MyApp.model.Vehicle'],\n\n         getUserModel: function() {\n             return this.getModel(\"User\");\n         },\n\n         getVehicleModel: function() {\n             return this.getModel(\"Vehicle\");\n         }\n     });\n\n**Note:** If the model has a different namespace than that of the\napplication you will need to specify the full class name as well as define a path\nin the <a href='#!/api/Ext.Loader-cfg-paths'>Ext.Loader#cfg-paths</a> config or\n<a href='#!/api/Ext.Loader-method-setPath'>Ext.Loader#method-setPath</a> method.\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "1,371,31",
+                  "text": "1,372,8,826",
+                  "type": "1,371,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "moduleClassName",
+                "src": {
+                  "access": "1,535,12",
+                  "name": "1,537,0"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "name",
+                "text": "The name of your application. This will also be the namespace for your views, controllers\nmodels and stores. Don't use spaces or special characters in the name. **Application name\nis mandatory**.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,193,26",
+                  "text": "0,194,12,196",
+                  "type": "0,193,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "namespaces",
+                "optional": true,
+                "text": "\nThe list of namespace prefixes used in the application to resolve dependencies\nlike Views and Stores:\n\n     Ext.application({\n         name: 'MyApp',\n\n         namespaces: ['Common.code'],\n\n         controllers: [ 'Common.code.controller.Foo', 'Bar' ]\n     });\n\n     Ext.define('Common.code.controller.Foo', {\n         extend: 'Ext.app.Controller',\n\n         models: ['Foo'],    // Loads Common.code.model.Foo\n         views:  ['Bar']     // Loads Common.code.view.Bar\n     });\n\n     Ext.define('MyApp.controller.Bar', {\n         extend: 'Ext.app.Controller',\n\n         models: ['Foo'],    // Loads MyApp.model.Foo\n         views:  ['Bar']     // Loads MyApp.view.Bar\n     });\n\nYou don't need to include main namespace (MyApp), it will be added to the list\nautomatically.\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "0,143,32",
+                  "text": "0,144,8,773",
+                  "type": "0,143,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "paths",
+                "text": "Additional load paths to add to Ext.Loader.\nSee <a href='#!/api/Ext.Loader-cfg-paths'>Ext.Loader#paths</a> config for more details.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,176,22",
+                  "text": "0,177,8,98",
+                  "type": "0,176,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "profiles",
+                "text": "Names of the profiles that the app uses.\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "0,219,35",
+                  "text": "0,220,12,41",
+                  "type": "0,219,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "refs",
+                "text": "\nThe refs config creates a getter method on the controller that internally\nuses Ext.ComponentQuery to fetch the component instance using the configured\nselector.  The following example will add the `getList` method to\nthe controller and will return the first component in the application\nhierarchy with an xtype of \"grid\".  By default, *undefined* will be returned\nwhen the query does not locate the target component.\n\n    Ext.define('MyApp.controller.Foo', {\n        extend: 'Ext.app.Controller',\n\n        refs: [{\n            ref: 'list',\n            selector: 'grid'\n        }]\n    });\n\nThe following fields may be used in the ref definition:\n\n- `ref` - name of the reference.\n- `selector` - Ext.ComponentQuery selector to access the component.\n- `autoCreate` - True to create the component automatically if not found on\npage.\n- `forceCreate` - True to force the creation of the component every time\nreference is accessed (when `get<REFNAME>` is called).\n- `xtype` - Used to create the component by its xtype with `autoCreate` or\n`forceCreate`. If you don't provide `xtype`, an Ext.Component instance will\nbe created.\n\nThe following example will create a `getList` and `getUser` method on the\ncontroller.\n\n    Ext.define('MyApp.controller.Foo', {\n        extend: 'Ext.app.Controller',\n\n        refs: [{\n            list: 'grid',\n            user: {\n                autoCreate: true,\n                selector: 'form',\n                xtype: 'form'\n            }\n        }]\n    });\n",
+                "type": "Object/Object[]",
+                "src": {
+                  "accessor": "1,484,12",
+                  "name": "1,483,35",
+                  "text": "1,485,12,1483",
+                  "type": "1,483,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "routes",
+                "text": "\nAn object of routes to handle hash changes. A route can be defined in a simple way:\n\n    routes : {\n        'foo/bar'  : 'handleFoo',\n        'user/:id' : 'showUser'\n    }\n\nWhere the property is the hash (which can accept a parameter defined by a colon) and the value\nis the method on the controller to execute. The parameters will get sent in the action method.\n\nAt the application level, you can define a event that will be executed when no matching\nroutes are found.\n\n    Ext.application({\n        name: 'MyApp',\n        listen: {\n            controller: {\n                '#': {\n                    unmatchedroute: 'onUnmatchedRoute'\n                }\n            }\n        },\n\n        onUnmatchedRoute: function(hash) {\n            console.log('Unmatched', hash);\n            // Do something...\n        }\n    });\n\nThere is also a complex means of defining a route where you can use a before action and even\nspecify your own RegEx for the parameter:\n\n    routes : {\n        'foo/bar'  : {\n            action  : 'handleFoo',\n            before  : 'beforeHandleFoo'\n        },\n        'user/:id' : {\n            action     : 'showUser',\n            before     : 'beforeShowUser',\n            conditions : {\n                ':id' : '([0-9]+)'\n            }\n        }\n    }\n\nThis will only match if the <a href='#!/api/Ext.app.Application-cfg-id'>id</a> parameter is a number.\n\nThe before action allows you to cancel an action. Every before action will get passed an `action` argument with\na `resume` and `stop` methods as the last argument of the method and you *MUST* execute either method:\n\n    beforeHandleFoo : function(action) {\n        //some logic here\n\n        //this will allow the handleFoo action to be executed\n        action.resume();\n    },\n    handleFoo : function() {\n        //will get executed due to true being passed in callback in beforeHandleFoo\n    },\n    beforeShowUser : function(id, action) {\n        //allows for async process like an Ajax\n        Ext.Ajax.request({\n            url     : 'foo.php',\n            success : function() {\n                //will not allow the showUser method to be executed but will continue other queued actions.\n                action.stop();\n            },\n            failure : function() {\n                //will not allow the showUser method to be executed and will not allow other queued actions to be executed.\n                action.stop(true);\n            }\n        });\n    },\n    showUser : function(id) {\n        //will not get executed due to false being passed in callback in beforeShowUser\n    }\n\nYou *MUST* execute the `resume` or `stop` method on the `action` argument. Executing `action.resume();` will continue\nthe action, `action.stop();` will not allow the action to resume but will allow other queued actions to resume,\n`action.stop(true);` will not allow the action and any other queued actions to resume.\n\nThe default RegEx that will be used is `([%a-zA-Z0-9\\\\-\\\\_\\\\s,]+)` but you can specify any\nthat may suit what you need to accomplish. An example of an advanced condition may be to make\na parameter optional and case-insensitive:\n\n    routes : {\n        'user:id' : {\n            action     : 'showUser',\n            before     : 'beforeShowUser',\n            conditions : {\n                ':id' : '(?:(?:\\/){1}([%a-z0-9_,\\s\\-]+))?'\n            }\n        }\n    }\n",
+                "type": "Object",
+                "src": {
+                  "accessor": "3,190,12",
+                  "name": "3,189,26",
+                  "text": "3,191,12,3304",
+                  "type": "3,189,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scope",
+                "text": "The scope to execute the <a href='#!/api/Ext.app.Application-method-launch'>launch</a> function in. Defaults to the Application instance.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,137,22",
+                  "text": "0,138,8,92",
+                  "type": "0,137,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stores",
+                "text": "Array of stores to require from AppName.store namespace and to generate getter methods for.\nFor example:\n\n     Ext.define(\"MyApp.controller.Foo\", {\n         extend: \"Ext.app.Controller\",\n         stores: ['Users', 'Vehicles']\n     });\n\nThis is equivalent to:\n\n     Ext.define(\"MyApp.controller.Foo\", {\n         extend: \"Ext.app.Controller\",\n\n         requires: [\n             'MyApp.store.Users',\n             'MyApp.store.Vehicles'\n         ]\n\n         getUsersStore: function() {\n             return this.getStore(\"Users\");\n         },\n\n         getVehiclesStore: function() {\n             return this.getStore(\"Vehicles\");\n         }\n     });\n\n**Note:** If the store has a different namespace than that of the\napplication you will need to specify the full class name as well as define a path\nin the <a href='#!/api/Ext.Loader-cfg-paths'>Ext.Loader#cfg-paths</a> config or\n<a href='#!/api/Ext.Loader-method-setPath'>Ext.Loader#method-setPath</a> method.\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "1,436,31",
+                  "text": "1,437,8,906",
+                  "type": "1,436,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "views",
+                "text": "Array of views to require from AppName.view namespace and to generate getter methods for.\nFor example:\n\n     Ext.define(\"MyApp.controller.Foo\", {\n         extend: \"Ext.app.Controller\",\n         views: ['List', 'Detail']\n     });\n\nThis is equivalent to:\n\n     Ext.define(\"MyApp.controller.Foo\", {\n         extend: \"Ext.app.Controller\",\n         requires: ['MyApp.view.List', 'MyApp.view.Detail'],\n\n         getListView: function() {\n             return this.getView(\"List\");\n         },\n\n         getDetailView: function() {\n             return this.getView(\"Detail\");\n         }\n     });\n\n**Note:** If the view has a different namespace than that of the\napplication you will need to specify the full class name as well as define a path\nin the <a href='#!/api/Ext.Loader-cfg-paths'>Ext.Loader#cfg-paths</a> config or\n<a href='#!/api/Ext.Loader-method-setPath'>Ext.Loader#method-setPath</a> method.\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "1,403,31",
+                  "text": "1,404,8,847",
+                  "type": "1,403,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_addDeclaredListeners",
+                "text": "Adds declarative listeners as nested arrays of listener objects.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,413,27",
+                      "type": "4,413,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if any listeners were added\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,414,30,35",
+                      "type": "4,414,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,412,12",
+                  "name": "4,416,0",
+                  "text": "4,411,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "activate",
+                "text": "Allow the controller to resume receiving events from the event bus.\nRoutes will also be able to begin firing on this controller.\nAlso see <a href='#!/api/Ext.app.Application-method-deactivate'>deactivate</a>.\n",
+                "src": {
+                  "name": "1,743,0",
+                  "text": "1,739,8,159"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.app.Application-method-onAfter'>onAfter</a>.\n",
+                "src": {
+                  "name": "4,1236,0",
+                  "text": "4,1234,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.app.Application-method-onBefore'>onBefore</a>.\n",
+                "src": {
+                  "name": "4,1230,0",
+                  "text": "4,1228,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addListener",
+                "text": "The <a href='#!/api/Ext.app.Application-method-on'>on</a> method is shorthand for\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.\n\nAppends an event handler to this object.  For example:\n\n    myGridPanel.on(\"itemclick\", this.onItemClick, this);\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple events. For example:\n\n    myGridPanel.on({\n        cellclick: this.onCellClick,\n        select: this.onSelect,\n        viewready: this.onViewReady,\n        scope: this // Important. Ensure \"this\" is correct during handler execution\n    });\n\nOne can also specify options for each event handler separately:\n\n    myGridPanel.on({\n        cellclick: {fn: this.onCellClick, scope: this, single: true},\n        viewready: {fn: panel.onViewReady, scope: panel}\n    });\n\n*Names* of methods in a specified scope may also be used:\n\n    myGridPanel.on({\n        cellclick: {fn: 'onCellClick', scope: this, single: true},\n        viewready: {fn: 'onViewReady', scope: panel}\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\nMay also be an object who's property names are event names.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "4,835,35",
+                      "text": "4,835,45,37:4,836,12,61",
+                      "type": "4,835,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "optional": true,
+                    "text": "The method the event invokes or the *name* of\nthe method within the specified <a href='#!/api/Ext.app.Application-cfg-scope'>scope</a>.  Will be called with arguments\ngiven to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> plus the `options` parameter described\nbelow.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,838,38",
+                      "text": "4,838,42,46:4,839,12,166",
+                      "type": "4,838,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,843,29",
+                      "text": "4,843,36,62:4,844,12,73",
+                      "type": "4,843,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n\n**Note:** The options object will also be passed as the last argument to every\nevent handler.\n\nThis object may contain any of the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "  The scope (`this` reference) in which the handler function is executed. **If omitted,\n  defaults to the object which fired the event.**\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "4,853,36",
+                          "text": "4,854,12,139",
+                          "type": "4,853,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delay",
+                        "text": "  The number of milliseconds to delay the invocation of the handler after the event\n  fires.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,857,36",
+                          "text": "4,858,12,94",
+                          "type": "4,857,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "single",
+                        "text": "  True to add a handler to handle just the next firing of the event, and then remove\n  itself.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,861,37",
+                          "text": "4,862,12,96",
+                          "type": "4,861,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "buffer",
+                        "text": "  Causes the handler to be scheduled to run in an <a href='#!/api/Ext.util.DelayedTask'>Ext.util.DelayedTask</a> delayed\n  by the specified number of milliseconds. If the event fires again within that time,\n  the original handler is _not_ invoked, but the new handler is scheduled in its place.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,865,36",
+                          "text": "4,866,12,262",
+                          "type": "4,865,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onFrame",
+                        "text": "  Causes the handler to be scheduled to run at the next\n  <a href='#!/api/Ext.Function-method-requestAnimationFrame'>Ext.Function#requestAnimationFrame</a>. If the\n  event fires again before that time, the handler is not rescheduled - the handler\n  will only be called once when the next animation frame is fired, with the last set\n  of arguments passed.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,870,36",
+                          "text": "4,871,12,323",
+                          "type": "4,870,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "target",
+                        "text": "  Only call the handler if the event was fired on the target Observable, _not_ if the\n  event was bubbled up from a child Observable.\n",
+                        "type": "Ext.util.Observable",
+                        "src": {
+                          "name": "4,877,49",
+                          "text": "4,878,12,135",
+                          "type": "4,877,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "element",
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.Component'>Ext.Component</a>.**\n  The name of a Component property which references an <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>\n  to add a listener to.\n\n  This option is useful during Component construction to add DOM event listeners to\n  elements of <a href='#!/api/Ext.Component'>Ext.Component</a> which will exist only after the\n  Component is rendered.\n\n  For example, to add a click listener to a Panel's body:\n\n      var panel = new Ext.panel.Panel({\n          title: 'The title',\n          listeners: {\n              click: this.handlePanelClick,\n              element: 'body'\n          }\n      });\n\nIn order to remove listeners attached using the element, you'll need to reference\nthe element itself as seen below.\n\n     panel.body.un(...)\n",
+                        "type": "String",
+                        "src": {
+                          "name": "4,881,36",
+                          "text": "4,882,12,781",
+                          "type": "4,881,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delegate",
+                        "optional": true,
+                        "text": "  A simple selector to filter the event target or look for a descendant of the target.\n\n  The \"delegate\" option is only available on Ext.dom.Element instances (or\n  when attaching a listener to a Ext.dom.Element via a Component using the\n  element option).\n\n  See the *delegate* example below.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "4,905,37",
+                          "text": "4,906,12,295",
+                          "type": "4,905,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopPropagation",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopPropagation'>Ext.event.Event#stopPropagation</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,914,38",
+                          "text": "4,915,12,212",
+                          "type": "4,914,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "preventDefault",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-preventDefault'>Ext.event.Event#preventDefault</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,919,38",
+                          "text": "4,920,12,210",
+                          "type": "4,919,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopEvent",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopEvent'>Ext.event.Event#stopEvent</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,924,38",
+                          "text": "4,925,12,200",
+                          "type": "4,924,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "args",
+                        "optional": true,
+                        "text": "  Optional arguments to pass to the handler function. Any additional arguments\n  passed to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> will be appended\n  to these arguments.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "4,929,36",
+                          "text": "4,930,12,179",
+                          "type": "4,929,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "destroyable",
+                        "optional": true,
+                        "text": "  When specified as `true`, the function returns a `destroyable` object. An object\n  which implements the `destroy` method which removes all listeners added in this call.\n  This syntax can be a helpful shortcut to using <a href='#!/api/Ext.app.Application-method-un'>un</a>; particularly when\n  removing multiple listeners.  *NOTE* - not compatible when using the _element_\n  option.  See <a href='#!/api/Ext.app.Application-method-un'>un</a> for the proper syntax for removing listeners added using the\n  _element_ config.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "4,934,38",
+                          "text": "4,935,12,441",
+                          "type": "4,934,20",
+                          "value": "4,934,50"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "priority",
+                        "optional": true,
+                        "text": "  An optional numeric priority that determines the order in which event handlers\n  are run. Event handlers with no priority will be run as if they had a priority\n  of 0. Handlers with a higher priority will be prioritized to run sooner than\n  those with a lower priority.  Negative numbers can be used to set a priority\n  lower than the default. Internally, the framework uses a range of 1000 or\n  greater, and -1000 or lesser for handlers that are intended to run before or\n  after all others, so it is recommended to stay within the range of -999 to 999\n  when setting the priority of event handlers in application-level code.\n  A priority must be an integer to be valid.  Fractional values are reserved for\n  internal framework use.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,942,37",
+                          "text": "4,943,12,737",
+                          "type": "4,942,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "order",
+                        "optional": true,
+                        "text": "  A legacy option that is provided for backward compatibility.\n  It is recommended to use the `priority` option instead.  Available options are:\n\n  - `'before'`: equal to a priority of `100`\n  - `'current'`: equal to a priority of `0` or default priority\n  - `'after'`: equal to a priority of `-100`\n",
+                        "type": "String",
+                        "value": "'current'",
+                        "src": {
+                          "name": "4,954,37",
+                          "text": "4,955,12,301",
+                          "type": "4,954,20",
+                          "value": "4,954,43"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "4,846,29",
+                      "text": "4,846,38,44:4,847,12,154",
+                      "type": "4,846,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "  A shortcut for the `order` event option.  Provided for backward compatibility.\n  Please use the `priority` event option instead.\n\n**Combining Options**\n\nUsing the options argument, it is possible to combine different types of listeners:\n\nA delayed, one-time listener.\n\n    myPanel.on('hide', this.handleClick, this, {\n        single: true,\n        delay: 100\n    });\n\n**Attaching multiple handlers in 1 call**\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple handlers and handler configs.\n\n    grid.on({\n        itemclick: 'onItemClick',\n        itemcontextmenu: grid.onItemContextmenu,\n        destroy: {\n            fn: function () {\n                // function called within the 'altCmp' scope instead of grid\n            },\n            scope: altCmp // unique scope for the destroy handler\n        },\n        scope: grid       // default scope - provided for example clarity\n    });\n\n**Delegate**\n\nThis is a configuration option that you can pass along when registering a handler for\nan event to assist with event delegation. By setting this configuration option\nto a simple selector, the target element will be filtered to look for a\ndescendant of the target. For example:\n\n    var panel = Ext.create({\n        xtype: 'panel',\n        renderTo: document.body,\n        title: 'Delegate Handler Example',\n        frame: true,\n        height: 220,\n        width: 220,\n        html: '<h1 class=\"myTitle\">BODY TITLE</h1>Body content'\n    });\n\n    // The click handler will only be called when the click occurs on the\n    // delegate: h1.myTitle (\"h1\" tag with class \"myTitle\")\n    panel.on({\n        click: function (e) {\n            console.log(e.getTarget().innerHTML);\n        },\n        element: 'body',\n        delegate: 'h1.myTitle'\n     });\n",
+                    "type": "String",
+                    "value": "'current'",
+                    "src": {
+                      "name": "4,962,29",
+                      "text": "4,963,12,1831",
+                      "type": "4,962,20",
+                      "value": "4,962,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes\n all listeners added in this call. For example:\n\n    this.btnListeners =  = myButton.on({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1021,29,54:4,1022,12,516",
+                      "type": "4,1021,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1041,0",
+                  "text": "4,804,12,1008"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addManagedListener",
+                "text": "The addManagedListener method is used when some object (call it \"A\") is listening\nto an event on another observable object (\"B\") and you want to remove that listener\nfrom \"B\" when \"A\" is destroyed. This is not an issue when \"B\" is destroyed because\nall of its listeners will be removed at that time.\n\nExample:\n\n    Ext.define('Foo', {\n        extend: 'Ext.Component',\n\n        initComponent: function () {\n            this.addManagedListener(MyApp.SomeGlobalSharedMenu, 'show', this.doSomething);\n            this.callParent();\n        }\n    });\n\nAs you can see, when an instance of Foo is destroyed, it ensures that the 'show'\nlistener on the menu (`MyApp.SomeGlobalSharedMenu`) is also removed.\n\nAs of version 5.1 it is no longer necessary to use this method in most cases because\nlisteners are automatically managed if the scope object provided to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> is an Observable instance.\nHowever, if the observable instance and scope are not the same object you\nstill need to use <a href='#!/api/Ext.app.Application-method-mon'>mon</a> or <a href='#!/api/Ext.app.Application-method-addManagedListener'>addManagedListener</a> if you want the listener to be\nmanaged.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item to which to add a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "4,456,56",
+                      "text": "4,456,61,47",
+                      "type": "4,456,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "4,457,34",
+                      "text": "4,457,40,63",
+                      "type": "4,457,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event\nname, this is the handler function or the name of a method on the specified\n<a href='#!/api/Ext.app.Application-cfg-scope'>scope</a>.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,458,36",
+                      "text": "4,458,39,49:4,459,11,85",
+                      "type": "4,458,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,461,27",
+                      "text": "4,461,33,92:4,462,11,43",
+                      "type": "4,461,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> options.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,463,27",
+                      "text": "4,463,35,67:4,464,11,61",
+                      "type": "4,463,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes all listeners added in this call. For example:\n\n    this.btnListeners = myButton.mon({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,465,28,54:4,466,11,513",
+                      "type": "4,465,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,484,0",
+                  "text": "4,430,11,1093"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addRef",
+                "text": "Registers one or more <a href='#!/api/Ext.app.Application-cfg-refs'>refs</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "refs",
+                    "type": "Object/Object[]",
+                    "src": {
+                      "name": "1,791,33",
+                      "type": "1,791,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,793,0",
+                  "text": "1,789,8,49"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyProfiles",
+                "text": "As a convenience developers can locally qualify profile names (e.g. 'MyProfile' vs\n'MyApp.profile.MyProfile'). This just makes sure everything ends up fully qualified.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "profiles",
+                    "src": {
+                      "name": "0,622,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,620,8",
+                  "name": "0,622,0",
+                  "text": "0,618,8,168"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearListeners",
+                "text": "Removes all listeners for this object including the managed listeners\n",
+                "src": {
+                  "name": "4,1255,0",
+                  "text": "4,1253,11,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearManagedListeners",
+                "text": "Removes all managed listeners for this object.\n",
+                "src": {
+                  "name": "4,1291,0",
+                  "text": "4,1289,11,47"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Application.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "Config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,304,25",
+                      "text": "0,304,33,15",
+                      "type": "0,304,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,306,0",
+                  "text": "0,303,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "control",
+                "text": "Adds listeners to components selected via <a href='#!/api/Ext.ComponentQuery'>Ext.ComponentQuery</a>. Accepts an\nobject containing component paths mapped to a hash of listener functions.\n\nIn the following example the `updateUser` function is mapped to to the `click`\nevent on a button component, which is a child of the `useredit` component.\n\n     Ext.define('AM.controller.Users', {\n         init: function() {\n             this.control({\n                 'useredit button[action=save]': {\n                     click: this.updateUser\n                 }\n             });\n         },\n\n         updateUser: function(button) {\n             console.log('clicked the Save button');\n         }\n     });\n\nOr alternatively one call `control` with two arguments:\n\n     this.control('useredit button[action=save]', {\n         click: this.updateUser\n     });\n\nSee <a href='#!/api/Ext.ComponentQuery'>Ext.ComponentQuery</a> for more information on component selectors.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selectors",
+                    "text": "If a String, the second argument is used as the\nlisteners, otherwise an object of selectors -> listeners is assumed\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "3,428,31",
+                      "text": "3,428,41,48:3,429,8,68",
+                      "type": "3,428,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "optional": true,
+                    "text": "Config for listeners.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,430,25",
+                      "text": "3,430,36,22",
+                      "type": "3,430,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,432,0",
+                  "text": "3,400,8,894"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createController",
+                "text": "Create an instance of a controller by name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the controller. For a controller with the\nfull class name `MyApp.controller.Foo`, the name parameter should be `Foo`.\nIf the controller already exists, it will be returned.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,516,24",
+                      "text": "0,516,29,54:0,517,8,132",
+                      "type": "0,516,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "controller\n",
+                    "type": "Ext.app.Controller",
+                    "src": {
+                      "text": "0,520,37,11",
+                      "type": "0,520,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,522,0",
+                  "text": "0,515,8,44"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createRelayer",
+                "text": "Creates an event handling function which re-fires the event from this object as the passed event name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newName",
+                    "text": "The name under which to re-fire the passed parameters.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1522,27",
+                      "text": "4,1522,35,55",
+                      "type": "4,1522,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "beginEnd",
+                    "text": "(optional) The caller can specify on which indices to slice.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,1523,26",
+                      "text": "4,1523,35,61",
+                      "type": "4,1523,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "4,1524,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1520,11",
+                  "name": "4,1526,0",
+                  "text": "4,1521,11,103"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "deactivate",
+                "text": "Prevent this controller from receiving events from the event bus.\nRoutes will also not be triggered on inactive controllers unless\nthe <a href='#!/api/Ext.app.route.Route-cfg-allowInactive'>Ext.app.route.Route#allowInactive</a> flag is set.\nAlso see <a href='#!/api/Ext.app.Application-method-activate'>activate</a>.\n",
+                "src": {
+                  "name": "1,753,0",
+                  "text": "1,748,8,218"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroyController",
+                "text": "Destroys a controller, any listeners are unbound.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "controller",
+                    "text": "The controller\n",
+                    "type": "String/Ext.app.Controller",
+                    "src": {
+                      "name": "0,528,43",
+                      "text": "0,528,54,15",
+                      "type": "0,528,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,530,0",
+                  "text": "0,527,8,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doFireEvent",
+                "text": "Continue to fire event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "type": "String",
+                    "src": {
+                      "name": "4,761,27",
+                      "type": "4,761,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,762,26",
+                      "type": "4,762,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bubbles",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,763,28",
+                      "type": "4,763,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,759,11",
+                  "name": "4,765,0",
+                  "text": "4,758,11,24"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enableBubble",
+                "text": "Enables events fired by this Observable to bubble up an owner hierarchy by calling `this.getBubbleTarget()` if\npresent. There is no implementation in the Observable base class.\n\nThis is commonly used by Ext.Components to bubble events to owner Containers.\nSee <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>. The default implementation in Ext.Component returns the\nComponent's immediate owner. But if a known target is required, this can be overridden to access the\nrequired target more quickly.\n\nExample:\n\n    Ext.define('Ext.overrides.form.field.Base', {\n        override: 'Ext.form.field.Base',\n\n        //  Add functionality to Field's initComponent to enable the change event to bubble\n        initComponent: function () {\n            this.callParent();\n            this.enableBubble('change');\n        }\n    });\n\n    var myForm = Ext.create('Ext.form.Panel', {\n        title: 'User Details',\n        items: [{\n            ...\n        }],\n        listeners: {\n            change: function() {\n                // Title goes red if form has been modified.\n                myForm.header.setStyle('color', 'red');\n            }\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventNames",
+                    "text": "The event name to bubble, or an Array of event names.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "4,1567,36",
+                      "text": "4,1567,47,54",
+                      "type": "4,1567,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1569,0",
+                  "text": "4,1534,11,1138"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use <a href='#!/api/Ext.app.Application-fireEventAction'>fireEventAction</a> instead.\n",
+                "deprecatedVersion": "5.5",
+                "name": "fireAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nBy default, the action function will be executed after any \"before\" event handlers\n(as specified using the `order` option of\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>), but before any other\nhandlers are fired.  This gives the \"before\" handlers an opportunity to\ncancel the event by returning `false`, and prevent the action function from\nbeing called.\n\nThe action can also be configured to run after normal handlers, but before any \"after\"\nhandlers (as specified using the `order` event option) by passing `'after'`\nas the `order` parameter.  This configuration gives any event handlers except\nfor \"after\" handlers the opportunity to cancel the event and prevent the action\nfunction from being called.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,640,28",
+                      "text": "4,640,38,31",
+                      "type": "4,640,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,641,27",
+                      "text": "4,641,32,58",
+                      "type": "4,641,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "4,642,30",
+                      "text": "4,642,33,21",
+                      "type": "4,642,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,643,29",
+                      "text": "4,643,36,62:4,644,12,72",
+                      "type": "4,643,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Event options for the action function.  Accepts any\nof the options of <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,645,29",
+                      "text": "4,645,38,52:4,646,12,72",
+                      "type": "4,645,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "The order to call the action function relative\ntoo the event handlers (`'before'` or `'after'`).  Note that this option is\nsimply used to sort the action function relative to the event handlers by \"priority\".\nAn order of `'before'` is equivalent to a priority of `99.5`, while an order of\n`'after'` is equivalent to a priority of `-99.5`.  See the `priority` option\nof <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> for more details.\n",
+                    "type": "String",
+                    "value": "'before'",
+                    "src": {
+                      "name": "4,647,29",
+                      "text": "4,647,45,47:4,648,12,394",
+                      "type": "4,647,20",
+                      "value": "4,647,35"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "4,653,12",
+                  "deprecatedVersion": "4,653,12",
+                  "name": "4,655,0",
+                  "text": "4,626,12,802"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEvent",
+                "text": "Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed\nto <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>).\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.app.Application-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,568,27",
+                      "text": "4,568,37,31",
+                      "type": "4,568,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Variable number of parameters are passed to handlers.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "4,569,30",
+                      "text": "4,569,35,54",
+                      "type": "4,569,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,570,29,77",
+                      "type": "4,570,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,572,0",
+                  "text": "4,562,11,310"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventArgs",
+                "text": "Fires the specified event with the passed parameter list.\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.app.Application-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,605,27",
+                      "text": "4,605,37,31",
+                      "type": "4,605,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "An array of parameters which are passed to handlers.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "4,606,29",
+                      "text": "4,606,34,53",
+                      "type": "4,606,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,607,29,77",
+                      "type": "4,607,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,609,0",
+                  "text": "4,600,11,202"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventedAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nEvented Actions will automatically dispatch a 'before' event passing. This event will\nbe given a special controller that allows for pausing/resuming of the event flow.\n\nBy pausing the controller the updater and events will not run until resumed. Pausing,\nhowever, will not stop the processing of any other before events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,721,28",
+                      "text": "4,721,38,31",
+                      "type": "4,721,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,722,27",
+                      "text": "4,722,32,58",
+                      "type": "4,722,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,723,37",
+                      "text": "4,723,40,21",
+                      "type": "4,723,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,724,29",
+                      "text": "4,724,36,62:4,725,12,72",
+                      "type": "4,724,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fnArgs",
+                    "optional": true,
+                    "text": "Optional arguments for the action `fn`. If not\ngiven, the normal `args` will be used to call `fn`. If `false` is passed, the\n`args` are used but if the first argument is this instance it will be removed\nfrom the args passed to the action function.\n",
+                    "type": "Array/Boolean",
+                    "src": {
+                      "name": "4,726,36",
+                      "text": "4,726,44,47:4,727,12,201",
+                      "type": "4,726,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,731,0",
+                  "text": "4,714,12,409"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getBubbleParent",
+                "text": "Gets the bubbling parent for an Observable\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The bubble parent. null is returned if no bubble target exists\n",
+                    "type": "Ext.util.Observable",
+                    "src": {
+                      "text": "4,793,41,63",
+                      "type": "4,793,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,792,11",
+                  "name": "4,795,0",
+                  "text": "4,791,11,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getController",
+                "text": "Returns instance of a <a href='#!/api/Ext.app.Controller'>Ext.app.Controller</a> with the given id.\nWhen controller doesn't exist yet, it's created. Note that this method depends\non Application instance and will return undefined when Application is not\naccessible. The only exception is when this Controller instance's id is requested;\nin that case we always return the instance even if Application is no available.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "type": "String",
+                    "src": {
+                      "name": "1,848,24",
+                      "type": "1,848,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "controller instance or undefined.\n",
+                    "type": "Ext.app.Controller",
+                    "src": {
+                      "text": "1,850,37,34",
+                      "type": "1,850,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,852,0",
+                  "text": "1,842,8,396"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "5,75,25,3",
+                      "type": "5,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,77,0",
+                  "text": "5,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getModel",
+                "text": "Returns a <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> class with the given name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "1,894,24",
+                      "type": "1,894,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A class ultimately derived from <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "1,895,28,50",
+                      "type": "1,895,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,897,0",
+                  "text": "1,892,8,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getProfile",
+                "text": "Returns instance of a <a href='#!/api/Ext.app.Profile'>Ext.app.Profile</a> with the given name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "1,911,24",
+                      "type": "1,911,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "a profile instance.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,913,25,20",
+                      "type": "1,913,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,915,0",
+                  "text": "1,909,8,76"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getRefMap",
+                "text": "Returns a map of reference names to selectors\n",
+                "src": {
+                  "access": "1,639,8",
+                  "name": "1,641,0",
+                  "text": "1,638,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStore",
+                "text": "Returns instance of a <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> with the given name.\nWhen store doesn't exist yet, it's created.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "1,866,24",
+                      "type": "1,866,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "a store instance.\n",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "text": "1,868,33,18",
+                      "type": "1,868,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,870,0",
+                  "text": "1,863,8,117"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getView",
+                "text": "Returns a View class with the given name.  To create an instance of the view,\nyou can use it like it's used by Application to create the Viewport:\n\n    this.getView('Viewport').create();\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "view",
+                    "type": "String",
+                    "src": {
+                      "name": "1,926,24",
+                      "type": "1,926,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "a view class.\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "1,928,27,14",
+                      "type": "1,928,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,930,0",
+                  "text": "1,921,8,188"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasListener",
+                "text": "Checks to see if this object has any listeners for a specified event, or whether the event bubbles. The answer\nindicates whether the event needs firing or not.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to check for\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1334,27",
+                      "text": "4,1334,37,35",
+                      "type": "4,1334,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the event is being listened for or bubbles, else `false`\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,1335,29,67",
+                      "type": "4,1335,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1337,0",
+                  "text": "4,1331,11,161"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasRef",
+                "text": "Returns `true` if a <a href='#!/api/Ext.app.Application-cfg-refs'>refs</a> is registered.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ref",
+                    "text": "The name of the ref to check for.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,833,24",
+                      "text": "1,833,28,34",
+                      "type": "1,833,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "1,834,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,836,0",
+                  "text": "1,831,8,60"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "init",
+                "template": true,
+                "text": "\nA template method that is called when your application boots. It is called before the\n<a href='#!/api/Ext.app.Application'>Ext.app.Application</a>s launch function is executed so gives a hook point\nto run any code before your Viewport is created.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "application",
+                    "type": "Ext.app.Application",
+                    "src": {
+                      "name": "1,719,37",
+                      "type": "1,719,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,723,0",
+                  "template": "1,721,8",
+                  "text": "1,714,8,229"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isActive",
+                "text": "Checks if this controller is active. See <a href='#!/api/Ext.app.Application-method-activate'>activate</a> &\n<a href='#!/api/Ext.app.Application-method-deactivate'>deactivate</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "`true` if this controller is active.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,760,26,37",
+                      "type": "1,760,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,762,0",
+                  "text": "1,758,8,82"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSuspended",
+                "text": "Checks if all events, or a specific event, is suspended.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "optional": true,
+                    "text": "The name of the specific event to check\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1344,29",
+                      "text": "4,1344,36,40",
+                      "type": "4,1344,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if events are suspended\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,1345,30,31",
+                      "type": "4,1345,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1347,0",
+                  "text": "4,1343,12,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "launch",
+                "template": true,
+                "text": "Called automatically when the page has completely loaded. This is an empty function that should be\noverridden by each application that needs to take action on page load.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "profile",
+                    "text": "The detected application profile\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,433,24",
+                      "text": "0,433,32,33",
+                      "type": "0,433,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "By default, the Application will dispatch to the configured startup controller and\naction immediately after running the launch function. Return false to prevent this behavior.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,434,26,83:0,435,8,93",
+                      "type": "0,434,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,437,0",
+                  "template": "0,430,8",
+                  "text": "0,431,8,170"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "listen",
+                "text": "Adds listeners to different event sources (also called \"event domains\"). The\nprimary event domain is that of components, but there are also other event domains:\n<a href='#!/api/Ext.app.domain.Global'>Ext.app.domain.Global</a> domain that intercepts events fired from\n<a href='#!/api/Ext.GlobalEvents'>Ext.GlobalEvents</a> Observable instance, <a href='#!/api/Ext.app.domain.Controller'>Ext.app.domain.Controller</a>\ndomain can be used to listen to events fired by other Controllers,\n<a href='#!/api/Ext.app.domain.Store'>Store</a> domain gives access to Store events, and\n<a href='#!/api/Ext.app.domain.Direct'>Direct</a> domain can be used with Ext Direct Providers\nto listen to their events.\n\nTo listen to \"bar\" events fired by a controller with id=\"foo\":\n\n     Ext.define('AM.controller.Users', {\n         init: function() {\n             this.listen({\n                 controller: {\n                     '#foo': {\n                        bar: this.onFooBar\n                     }\n                 }\n             });\n         },\n         ...\n     });\n\nTo listen to \"bar\" events fired by any controller, and \"baz\" events\nfired by Store with storeId=\"baz\":\n\n     Ext.define('AM.controller.Users', {\n         init: function() {\n             this.listen({\n                 controller: {\n                     '*': {\n                        bar: this.onAnyControllerBar\n                     }\n                 },\n                 store: {\n                     '#baz': {\n                         baz: this.onStoreBaz\n                     }\n                 }\n             });\n         },\n         ...\n     });\n\nTo listen to \"idle\" events fired by <a href='#!/api/Ext.GlobalEvents'>Ext.GlobalEvents</a> when other event\nprocessing is complete and Ext JS is about to return control to the browser:\n\n     Ext.define('AM.controller.Users', {\n         init: function() {\n             this.listen({\n                 global: {               // Global events are always fired\n                     idle: this.onIdle   // from the same object, so there\n                 }                       // are no selectors\n             });\n         }\n     });\n\nAs this relates to components, the following example:\n\n     Ext.define('AM.controller.Users', {\n         init: function() {\n             this.listen({\n                 component: {\n                     'useredit button[action=save]': {\n                        click: this.updateUser\n                     }\n                 }\n             });\n         },\n         ...\n     });\n\nIs equivalent to:\n\n     Ext.define('AM.controller.Users', {\n         init: function() {\n             this.control({\n                 'useredit button[action=save]': {\n                    click: this.updateUser\n                 }\n             });\n         },\n         ...\n     });\n\nOf course, these can all be combined in a single call and used instead of\n`control`, like so:\n\n     Ext.define('AM.controller.Users', {\n         init: function() {\n             this.listen({\n                 global: {\n                     idle: this.onIdle\n                 },\n                 controller: {\n                     '*': {\n                        foobar: this.onAnyFooBar\n                     },\n                     '#foo': {\n                        bar: this.onFooBar\n                     }\n                 },\n                 component: {\n                     'useredit button[action=save]': {\n                        click: this.updateUser\n                     }\n                 },\n                 store: {\n                     '#qux': {\n                         load: this.onQuxLoad\n                     }\n                 }\n             });\n         },\n         ...\n     });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "to",
+                    "text": "Config object containing domains, selectors and listeners.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,568,24",
+                      "text": "3,568,27,59",
+                      "type": "3,568,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "controller",
+                    "optional": true,
+                    "text": "The controller to add the listeners to. Defaults to the current controller.\n",
+                    "type": "Ext.app.Controller",
+                    "src": {
+                      "name": "3,569,37",
+                      "text": "3,569,49,76",
+                      "type": "3,569,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,571,0",
+                  "text": "3,450,8,3551"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addManagedListener",
+                "name": "mon",
+                "text": "Shorthand for <a href='#!/api/Ext.app.Application-method-addManagedListener'>addManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "4,1787,12",
+                  "name": "4,1789,0",
+                  "text": "4,1786,12,43"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeManagedListener",
+                "name": "mun",
+                "text": "Shorthand for <a href='#!/api/Ext.app.Application-method-removeManagedListener'>removeManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "4,1793,12",
+                  "name": "4,1795,0",
+                  "text": "4,1792,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "normalizeRefs",
+                "text": "Takes either an object and transforms it into an array. The following are valid refs values:\n\n    refs: {\n        myComponent: 'container'\n    }\n\n    refs: {\n        myComponent: {\n            selector: 'container'\n        }\n    }\n\n    refs: [\n        {\n            ref: 'myComponent',\n            selector: 'container'\n        }\n    ]\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "refs",
+                    "text": "The refs to normalize\n",
+                    "type": "Array/Object",
+                    "src": {
+                      "name": "1,596,30",
+                      "text": "1,596,35,22",
+                      "type": "1,596,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newRefs",
+                    "text": "An array to place the normalized refs on to\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "1,597,23",
+                      "text": "1,597,31,44",
+                      "type": "1,597,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The normalized array of refs\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "1,598,24,29",
+                      "type": "1,598,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,576,8",
+                  "name": "1,600,0",
+                  "text": "1,577,8,337"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addListener",
+                "name": "on",
+                "src": {
+                  "inheritdoc": "4,1775,12",
+                  "name": "4,1777,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onAfter",
+                "text": "Appends an after-event handler.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1190,44",
+                      "text": "4,1190,54,37",
+                      "type": "4,1190,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1191,37",
+                      "text": "4,1191,40,30",
+                      "type": "4,1191,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1192,29",
+                      "text": "4,1192,36,20",
+                      "type": "4,1192,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1193,29",
+                      "text": "4,1193,38,44",
+                      "type": "4,1193,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1195,0",
+                  "text": "4,1185,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onAppUpdate",
+                "template": true,
+                "text": "Called automatically when an update to either the Application Cache or the Local Storage Cache is detected.\nThis is mainly used during production builds.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "updateInfo",
+                    "optional": true,
+                    "text": "updateInfo Update information object contains properties for checking which cache triggered the update\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,337,25",
+                      "text": "0,337,37,103",
+                      "type": "0,337,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,339,0",
+                  "template": "0,334,8",
+                  "text": "0,335,8,154"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onBefore",
+                "text": "Appends a before-event handler.  Returning `false` from the handler will stop the event.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1175,44",
+                      "text": "4,1175,54,37",
+                      "type": "4,1175,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1176,37",
+                      "text": "4,1176,40,30",
+                      "type": "4,1176,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1177,29",
+                      "text": "4,1177,36,20",
+                      "type": "4,1177,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1178,29",
+                      "text": "4,1178,38,44",
+                      "type": "4,1178,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1180,0",
+                  "text": "4,1170,12,183"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onBeforeLaunch",
+                "src": {
+                  "access": "0,440,8",
+                  "name": "0,442,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onLaunch",
+                "template": true,
+                "text": "\nA template method like <a href='#!/api/Ext.app.Application-method-init'>init</a>, but called after the viewport is created.\nThis is called after the <a href='#!/api/Ext.app.Application-method-launch'>Ext.app.Application#launch</a> method of Application\nis executed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "application",
+                    "type": "Ext.app.Application",
+                    "src": {
+                      "name": "1,732,37",
+                      "type": "1,732,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,736,0",
+                  "template": "1,734,8",
+                  "text": "1,727,8,184"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "redirectTo",
+                "text": "Update the hash. By default, it will not execute the routes if the current token and the\ntoken passed are the same.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "token",
+                    "text": "The token to redirect to.  Can be either a String\nor a <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> instance - if a Model instance is passed it will\ninternally be converted into a String token by calling the Model's\n<a href='#!/api/Ext.data.Model-method-toUrl'>Ext.data.Model#toUrl</a> function.\n",
+                    "type": "String/Ext.data.Model",
+                    "src": {
+                      "name": "3,592,39",
+                      "text": "3,592,45,50:3,593,8,196",
+                      "type": "3,592,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "force",
+                    "text": "Force the update of the hash regardless of the current token.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,597,25",
+                      "text": "3,597,31,62",
+                      "type": "3,597,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Will return `true` if the token was updated.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,599,26,45",
+                      "type": "3,599,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,601,0",
+                  "text": "3,589,8,117"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "relayEvents",
+                "text": "Relays selected events from the specified Observable as if the events were fired by `this`.\n\nFor example if you are extending Grid, you might decide to forward some events from store.\nSo you can do this inside your initComponent:\n\n    this.relayEvents(this.getStore(), ['load']);\n\nThe grid instance will then have an observable 'load' event which will be passed\nthe parameters of the store's load event and any function fired with the grid's\nload event would have access to the grid using the this keyword (unless the event\nis handled by a controller's control/listen event listener in which case 'this'\nwill be the controller rather than the grid).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The Observable whose events this object is to relay.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1466,27",
+                      "text": "4,1466,34,53",
+                      "type": "4,1466,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "events",
+                    "text": "Array of event names to relay or an Object with key/value\npairs translating to ActualEventName/NewEventName respectively. For example:\n    this.relayEvents(this, {add:'push', remove:'pop'});\n\nWould now redispatch the add event of this as a push event and the remove event as a pop event.\n",
+                    "type": "String[]/Object",
+                    "src": {
+                      "name": "4,1467,36",
+                      "text": "4,1467,43,58:4,1468,11,231",
+                      "type": "4,1467,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prefix",
+                    "optional": true,
+                    "text": "A common prefix to prepend to the event names. For example:\n\n    this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nNow the grid will forward 'load' and 'clear' events of store as 'storeload' and 'storeclear'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1473,28",
+                      "text": "4,1473,36,60:4,1474,11,164",
+                      "type": "4,1473,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A `Destroyable` object. An object which implements the `destroy` method which, when destroyed, removes all relayers. For example:\n\n    this.storeRelayers = this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nCan be undone by calling\n\n    Ext.destroy(this.storeRelayers);\n\nor\n    this.store.relayers.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1479,28,130:4,1480,11,192",
+                      "type": "4,1479,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1490,0",
+                  "text": "4,1453,11,651"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.app.Application-method-unAfter'>unAfter</a>.\n",
+                "src": {
+                  "name": "4,1248,0",
+                  "text": "4,1246,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.app.Application-method-unBefore'>unBefore</a>.\n",
+                "src": {
+                  "name": "4,1242,0",
+                  "text": "4,1240,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeListener",
+                "text": "Removes an event handler.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The type of event the handler was associated with.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1102,28",
+                      "text": "4,1102,38,51",
+                      "type": "4,1102,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove. **This must be a reference to the function\npassed into the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> call.**\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "4,1103,30",
+                      "text": "4,1103,33,66:4,1104,12,76",
+                      "type": "4,1103,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope originally specified for the handler. It\nmust be the same as the scope argument specified in the original call to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> or the listener will not be removed.\n\n**Convenience Syntax**\n\nYou can use the <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n`destroyable: true` config option in place of calling un().  For example:\n\n    var listeners = cmp.on({\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide,\n        destroyable: true\n    });\n\n    // Remove listeners\n    listeners.destroy();\n    // or\n    cmp.un(\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide\n    );\n\n**Exception - DOM event handlers using the element config option**\n\nYou must go directly through the element to detach an event handler attached using\nthe <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> _element_ option.\n\n    panel.on({\n        element: 'body',\n        click: 'onBodyCLick'\n    });\n\n    panel.body.un({\n        click: 'onBodyCLick'\n    });\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1106,28",
+                      "text": "4,1106,34,62:4,1107,12,1017",
+                      "type": "4,1106,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1145,0",
+                  "text": "4,1100,12,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeManagedListener",
+                "text": "Removes listeners that were added by the <a href='#!/api/Ext.app.Application-method-mon'>mon</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item from which to remove a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "4,526,56",
+                      "text": "4,526,61,52",
+                      "type": "4,526,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "4,527,34",
+                      "text": "4,527,40,63",
+                      "type": "4,527,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the handler function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "4,528,29",
+                      "text": "4,528,32,85",
+                      "type": "4,528,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,529,27",
+                      "text": "4,529,33,92:4,530,11,43",
+                      "type": "4,529,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,532,0",
+                  "text": "4,524,11,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "removeManagedListenerItem",
+                "text": "Remove a single managed listener item\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "isClear",
+                    "text": "True if this is being called during a clear\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,1307,28",
+                      "text": "4,1307,36,44",
+                      "type": "4,1307,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "managedListener",
+                    "text": "The managed listener item\nSee removeManagedListener for other args\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1308,27",
+                      "text": "4,1308,43,26:4,1309,11,41",
+                      "type": "4,1308,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1306,11",
+                  "name": "4,1311,0",
+                  "text": "4,1305,11,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "resolveListenerScope",
+                "text": "Gets the default scope for firing late bound events (string names with\nno scope attached) at runtime.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "defaultScope",
+                    "optional": true,
+                    "text": "The default scope to return if none is found.\n",
+                    "type": "Object",
+                    "value": "this",
+                    "src": {
+                      "name": "4,579,29",
+                      "text": "4,579,48,46",
+                      "type": "4,579,20",
+                      "value": "4,579,42"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The default event scope\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,580,29,24",
+                      "type": "4,580,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,581,12",
+                  "name": "4,583,0",
+                  "text": "4,577,12,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvent",
+                "text": "Resumes firing of the named event(s).\n\nAfter calling this method to resume events, the events will fire when requested to fire.\n\n**Note that if the <a href='#!/api/Ext.app.Application-method-suspendEvent'>suspendEvent</a> method is called multiple times for a certain event,\nthis converse method will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to resume.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "4,1409,32",
+                      "text": "4,1409,42,32",
+                      "type": "4,1409,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1411,0",
+                  "text": "4,1402,12,320"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvents",
+                "text": "Resumes firing events (see <a href='#!/api/Ext.app.Application-method-suspendEvents'>suspendEvents</a>).\n\nIf events were suspended using the `queueSuspended` parameter, then all events fired\nduring event suspension will be sent to any listeners now.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "discardQueue",
+                    "optional": true,
+                    "text": "`true` to prevent any previously queued events from firing\nwhile we were suspended. See <a href='#!/api/Ext.app.Application-method-suspendEvents'>suspendEvents</a>.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,1431,29",
+                      "text": "4,1431,43,59:4,1432,11,53",
+                      "type": "4,1431,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1434,0",
+                  "text": "4,1426,11,198"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setListeners",
+                "text": "An alias for <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.  In\nversions prior to 5.1, <a href='#!/api/Ext.app.Application-cfg-listeners'>listeners</a> had a generated setter which could\nbe called to add listeners.  In 5.1 the listeners config is not processed\nusing the config system and has no generated setter, so this method is\nprovided for backward compatibility.  The preferred way of adding listeners\nis to use the <a href='#!/api/Ext.app.Application-method-on'>on</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "text": "The listeners\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1804,28",
+                      "text": "4,1804,38,14",
+                      "type": "4,1804,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1806,0",
+                  "text": "4,1798,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvent",
+                "text": "Suspends firing of the named event(s).\n\nAfter calling this method to suspend events, the events will no longer fire when requested to fire.\n\n**Note that if this is called multiple times for a certain event, the converse method\n<a href='#!/api/Ext.app.Application-method-resumeEvent'>resumeEvent</a> will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to suspend.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "4,1381,32",
+                      "text": "4,1381,42,33",
+                      "type": "4,1381,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1383,0",
+                  "text": "4,1374,12,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvents",
+                "text": "Suspends the firing of all events. (see <a href='#!/api/Ext.app.Application-method-resumeEvents'>resumeEvents</a>)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "queueSuspended",
+                    "text": "`true` to queue up suspended events to be fired\nafter the <a href='#!/api/Ext.app.Application-method-resumeEvents'>resumeEvents</a> call instead of discarding all suspended events.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,1363,28",
+                      "text": "4,1363,43,48:4,1364,11,81",
+                      "type": "4,1363,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1366,0",
+                  "text": "4,1361,11,64"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeListener",
+                "name": "un",
+                "text": "Shorthand for <a href='#!/api/Ext.app.Application-method-removeListener'>removeListener</a>.\n",
+                "src": {
+                  "inheritdoc": "4,1781,12",
+                  "name": "4,1783,0",
+                  "text": "4,1780,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unAfter",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.app.Application-method-removeListener'>removeListener</a> with `order` set to `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1218,44",
+                      "text": "4,1218,54,55",
+                      "type": "4,1218,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1219,37",
+                      "text": "4,1219,40,23",
+                      "type": "4,1219,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1220,29",
+                      "text": "4,1220,36,41",
+                      "type": "4,1220,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1221,29",
+                      "text": "4,1221,38,22",
+                      "type": "4,1221,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1223,0",
+                  "text": "4,1214,12,97"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unBefore",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.app.Application-method-removeListener'>removeListener</a> with `order` set to `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1204,44",
+                      "text": "4,1204,54,55",
+                      "type": "4,1204,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1205,37",
+                      "text": "4,1205,40,23",
+                      "type": "4,1205,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1206,29",
+                      "text": "4,1206,36,41",
+                      "type": "4,1206,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1207,29",
+                      "text": "4,1207,38,22",
+                      "type": "4,1207,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1209,0",
+                  "text": "4,1200,12,98"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unregister",
+                "text": "Unregister a controller from the application.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "controller",
+                    "text": "The controller to unregister\n",
+                    "type": "Ext.app.Controller",
+                    "src": {
+                      "name": "0,581,36",
+                      "text": "0,581,47,29",
+                      "type": "0,581,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,580,8",
+                  "name": "0,583,0",
+                  "text": "0,579,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateControl",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "control",
+                    "text": "The object to pass to the <a href='#!/api/Ext.app.Application-method-control'>method-control</a> method\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,336,24",
+                      "text": "3,336,32,57",
+                      "type": "3,336,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,337,8",
+                  "name": "3,339,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateListen",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listen",
+                    "text": "The object to pass to the <a href='#!/api/Ext.app.Application-method-listen'>method-listen</a> method\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,347,24",
+                      "text": "3,347,31,56",
+                      "type": "3,347,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,348,8",
+                  "name": "3,350,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateRefs",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "refs",
+                    "text": "The refs to pass to the <a href='#!/api/Ext.app.Application-ref'>ref</a> method.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,666,24",
+                      "text": "1,666,29,45",
+                      "type": "1,666,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,667,8",
+                  "name": "1,669,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateRoutes",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "routes",
+                    "text": "The routes to connect to the <a href='#!/api/Ext.app.route.Router'>Ext.app.route.Router</a>\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,358,24",
+                      "text": "3,358,31,58",
+                      "type": "3,358,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,359,8",
+                  "name": "3,361,0"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$eventOptions",
+                "text": "Matches options property names within a listeners specification object  - property names which are never used as event names.\n",
+                "src": {
+                  "access": "4,389,12",
+                  "name": "4,392,0",
+                  "text": "4,390,12,126"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "eventsSuspended",
+                "text": "Initial suspended call count. Incremented when <a href='#!/api/Ext.app.Application-method-suspendEvents'>suspendEvents</a> is called, decremented when <a href='#!/api/Ext.app.Application-method-resumeEvents'>resumeEvents</a> is called.\n",
+                "src": {
+                  "access": "4,284,11",
+                  "name": "4,287,0",
+                  "text": "4,285,11,131"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hasListeners",
+                "readonly": true,
+                "text": "This object holds a key for any event that has a listener. The listener may be set\ndirectly on the instance, or on its class or a super class (via <a href='#!/api/Ext.app.Application-observe'>observe</a>) or\non the <a href='#!/api/Ext.app.EventBus'>Ext.app.EventBus</a>. The values of this object are truthy\n(a non-zero number) and falsy (0 or undefined). They do not represent an exact count\nof listeners. The value for an event is truthy if the event must be fired and is\nfalsy if there is no need to fire the event.\n\nThe intended use of this property is to avoid the expense of fireEvent calls when\nthere are no listeners. This can be particularly helpful when one would otherwise\nhave to call fireEvent hundreds or thousands of times. It is used like this:\n\n     if (this.hasListeners.foo) {\n         this.fireEvent('foo', this, arg1);\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "4,290,30",
+                  "readonly": "4,291,11",
+                  "text": "4,292,11,790",
+                  "type": "4,290,22"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isObservable",
+                "text": "`true` in this class to identify an object as an instantiated Observable, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "4,278,31",
+                  "text": "4,279,11,95",
+                  "type": "4,278,22"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods"
+          }
+        ],
+        "src": {
+          "extends": "0,89,0",
+          "name": "0,88,0",
+          "requires": "0,92,0,0:0,93,0,0",
+          "text": "0,2,4,3722"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,449 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../packages/exporter/src/exporter/file/excel/Table.js",
+    "../../../packages/exporter/src/exporter/file/Base.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.exporter.file.Base",
+        "name": "Ext.exporter.file.excel.Table",
+        "text": "This class is used to create an xml Excel Table\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "columns",
+                "text": "\nCollection of column definitions available on this table\n",
+                "type": "Ext.exporter.file.excel.Column[]",
+                "src": {
+                  "name": "0,74,52",
+                  "text": "0,75,12,58",
+                  "type": "0,74,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultColumnWidth",
+                "optional": true,
+                "text": "\nSpecifies the default width of columns in this table. This attribute is specified in points.\n",
+                "type": "Number",
+                "value": "48",
+                "src": {
+                  "name": "0,44,27",
+                  "text": "0,45,12,94",
+                  "type": "0,44,18",
+                  "value": "0,44,46"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultRowHeight",
+                "optional": true,
+                "text": "\nSpecifies the default height of rows in this table. This attribute is specified in points.\n",
+                "type": "Number",
+                "value": "12.75",
+                "src": {
+                  "name": "0,50,27",
+                  "text": "0,51,12,92",
+                  "type": "0,50,18",
+                  "value": "0,50,44"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "expandedColumnCount",
+                "text": "This attribute specifies the total number of columns in this table. If specified, this attribute\nmust be in sync with the table. Columns indices in the table should begin at 1 and go to\nExpandedColumnCount. If this value is out-of-sync with the table, the specified XML Spreadsheet\ndocument is invalid.\n",
+                "src": {
+                  "access": "0,14,12",
+                  "name": "0,16,0",
+                  "text": "0,9,12,304"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "expandedRowCount",
+                "text": "Specifies the total number of rows in this table without regard for sparseness. This attribute defines\nthe overall size of the table, if the specified rows and columns were expanded to full size.\nIf specified, this attribute must be in sync with the table. Row indices in the table should begin\nat 1 and go to ExpandedRowCount. If this value is out-of-sync with the table, the specified XML\nSpreadsheet document is invalid.\n",
+                "src": {
+                  "access": "0,24,12",
+                  "name": "0,26,0",
+                  "text": "0,18,12,425"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "fullColumns",
+                "text": "WebCalc will set x:FullColumns to 1 when the data in the table represents full columns of data.\nExcel will save x:FullColumns to 1 if the Table extends the full height. This attribute is ignored\non file load, but on XML Spreadsheet paste it is taken to indicate that the source clip has full columns.\n",
+                "src": {
+                  "access": "0,32,12",
+                  "name": "0,34,0",
+                  "text": "0,28,12,302"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "fullRows",
+                "text": "WebCalc will set x:FullRows to 1 when the data in the table represents full rows of data. Excel will\nsave x:FullRows to 1 if the Table extends the full width. This attribute is ignored on file load, but on\nXML Spreadsheet paste it is taken to indicate that the source clip has full rows.\n",
+                "src": {
+                  "access": "0,40,12",
+                  "name": "0,42,0",
+                  "text": "0,36,12,289"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "id",
+                "text": "\nUnique id for this object. Auto generated when missing.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,14,26",
+                  "text": "1,15,12,57",
+                  "type": "1,14,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "leftCell",
+                "optional": true,
+                "text": "\nSpecifies the column index that this table should be placed at. This value must be greater than zero.\n",
+                "type": "Number",
+                "value": "1",
+                "src": {
+                  "name": "0,62,27",
+                  "text": "0,63,12,103",
+                  "type": "0,62,18",
+                  "value": "0,62,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "rows",
+                "text": "\nCollection of row definitions available on this table\n",
+                "type": "Ext.exporter.file.excel.Row[]",
+                "src": {
+                  "name": "0,80,49",
+                  "text": "0,81,12,55",
+                  "type": "0,80,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "styleId",
+                "text": "\nExcel style attached to this table\n",
+                "type": "String",
+                "src": {
+                  "name": "0,56,26",
+                  "text": "0,57,12,36",
+                  "type": "0,56,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "topCell",
+                "optional": true,
+                "text": "\nSpecifies the row index that this table should be placed at. This value must be greater than zero.\n",
+                "type": "Number",
+                "value": "1",
+                "src": {
+                  "name": "0,68,27",
+                  "text": "0,69,12,100",
+                  "type": "0,68,18",
+                  "value": "0,68,35"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "addColumn",
+                "text": "Convenience method to add columns. You can also use workbook.getColumns().add(config).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,139,30",
+                      "type": "0,139,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.exporter.file.excel.Column/Ext.exporter.file.excel.Column[]",
+                    "src": {
+                      "type": "0,140,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,142,0",
+                  "text": "0,138,8,87"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addRow",
+                "text": "Convenience method to add rows. You can also use workbook.getRows().add(config).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object/Array",
+                    "src": {
+                      "name": "0,157,30",
+                      "type": "0,157,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.exporter.file.excel.Row/Ext.exporter.file.excel.Row[]",
+                    "src": {
+                      "type": "0,158,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,160,0",
+                  "text": "0,156,8,81"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "checkCollection",
+                "text": "This method could be used in config appliers that need to initialize a\nCollection that has items of type className.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "1,44,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dataCollection",
+                    "src": {
+                      "name": "1,45,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "1,46,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "*",
+                    "src": {
+                      "type": "1,47,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,49,0",
+                  "text": "1,41,8,117"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "constructCollection",
+                "text": "Create a new Collection with a decoder for the specified className.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "1,64,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.util.Collection",
+                    "src": {
+                      "type": "1,65,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,67,8",
+                  "name": "1,69,0",
+                  "text": "1,62,8,69"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getCollectionDecoder",
+                "text": "Builds a Collection decoder for the specified className.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "src": {
+                      "name": "1,78,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "1,79,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,81,8",
+                  "name": "1,83,0",
+                  "text": "1,76,8,58"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getColumn",
+                "text": "Convenience method to fetch a column by its id.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,148,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.exporter.file.excel.Column",
+                    "src": {
+                      "type": "0,149,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,151,0",
+                  "text": "0,147,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getColumns",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "\nReturns the collection of columns available in this table\n",
+                    "type": "Ext.util.Collection",
+                    "src": {
+                      "text": "0,90,8,59",
+                      "type": "0,89,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,88,16"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRenderData",
+                "text": "Return the data used when rendering the template\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "1,101,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,103,0",
+                  "text": "1,99,8,50"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRow",
+                "text": "Convenience method to fetch a row by its id.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,166,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.exporter.file.excel.Row",
+                    "src": {
+                      "type": "0,167,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,169,0",
+                  "text": "0,165,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRows",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "\nReturns the collection of rows available in this table\n",
+                    "type": "Ext.util.Collection",
+                    "src": {
+                      "text": "0,97,8,56",
+                      "type": "0,96,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,95,16"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "render",
+                "text": "Renders the content according to the template provided to the class\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "1,92,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,94,0",
+                  "text": "1,90,8,69"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,5,0",
+          "name": "0,4,0",
+          "text": "0,2,4,48"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

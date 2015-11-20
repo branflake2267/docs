@@ -1,0 +1,488 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/lang/Number.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Number",
+        "singleton": true,
+        "text": "\nA collection of useful static methods to deal with numbers\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "clipIndices",
+                "text": "Coerces a given index into a valid index given a `length`.\n\nNegative indexes are interpreted starting at the end of the collection. That is,\na value of -1 indicates the last item, or equivalent to `length - 1`.\n\nWhen handling methods that take \"begin\" and \"end\" arguments like most array or\nstring methods, this method can be used like so:\n\n     function foo (array, begin, end) {\n         var range = Ext.Number.clipIndices(array.length, [begin, end]);\n\n         begin = range[0];\n         end   = range[1];\n\n         // 0 <= begin <= end <= array.length\n\n         var length = end - begin;\n     }\n\nFor example:\n\n     +---+---+---+---+---+---+---+---+\n     |   |   |   |   |   |   |   |   |  length = 8\n     +---+---+---+---+---+---+---+---+\n       0   1   2   3   4   5   6   7\n      -8  -7  -6  -5  -4  -3  -2  -1\n\n     console.log(Ext.Number.clipIndices(8, [3, 10]); // logs \"[3, 8]\"\n     console.log(Ext.Number.clipIndices(8, [-5]);    // logs \"[3, 8]\"\n     console.log(Ext.Number.clipIndices(8, []);\n     console.log(Ext.Number.clipIndices(8, []);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "length",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,70,28",
+                      "type": "0,70,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "indices",
+                    "type": "Number[]",
+                    "src": {
+                      "name": "0,71,30",
+                      "type": "0,71,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object with different option flags.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "count",
+                        "optional": true,
+                        "text": "The second number in `indices` is the\ncount not and an index.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "0,73,38",
+                          "text": "0,73,51,38:0,74,12,24",
+                          "type": "0,73,20",
+                          "value": "0,73,44"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "inclusive",
+                        "optional": true,
+                        "text": "The second number in `indices` is\n\"inclusive\" meaning that the item should be considered in the range. Normally,\nthe second number is considered the first item outside the range or as an\n\"exclusive\" bound.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "0,75,38",
+                          "text": "0,75,55,34:0,76,12,172",
+                          "type": "0,75,20",
+                          "value": "0,75,48"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "wrap",
+                        "optional": true,
+                        "text": "Wraps negative numbers backwards from the\nend of the array. Passing `false` simply clips negative index values at 0.\n",
+                        "type": "Boolean",
+                        "value": "true",
+                        "src": {
+                          "name": "0,79,38",
+                          "text": "0,79,49,42:0,80,12,75",
+                          "type": "0,79,20",
+                          "value": "0,79,43"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,72,29",
+                      "text": "0,72,38,39",
+                      "type": "0,72,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The normalized `[begin, end]` array where `end` is now\nexclusive such that `length = end - begin`. Both values are between 0 and the\ngiven `length` and `end` will not be less-than `begin`.\n",
+                    "type": "Number[]",
+                    "src": {
+                      "text": "0,81,31,55:0,82,12,134",
+                      "type": "0,81,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,85,0",
+                  "text": "0,38,12,1055"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constrain",
+                "text": "Checks whether or not the passed number is within a desired range.  If the number is already within the\nrange it is returned, otherwise the min or max value is returned depending on which side of the range is\nexceeded. Note that this method returns the constrained value but does not change the current number.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "number",
+                    "text": "The number to check\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,128,28",
+                      "text": "0,128,35,20",
+                      "type": "0,128,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "min",
+                    "text": "The minimum number in the range\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,129,28",
+                      "text": "0,129,32,32",
+                      "type": "0,129,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "max",
+                    "text": "The maximum number in the range\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,130,28",
+                      "text": "0,130,32,32",
+                      "type": "0,130,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The constrained value if outside the range, otherwise the current value\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,131,29,72",
+                      "type": "0,131,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,133,0",
+                  "text": "0,125,12,311"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "snap",
+                "text": "Snaps the passed number between stopping points based upon a passed increment value.\n\nThe difference between this and <a href='#!/api/Ext.Number-method-snapInRange'>snapInRange</a> is that <a href='#!/api/Ext.Number-method-snapInRange'>snapInRange</a> uses the minValue\nwhen calculating snap points:\n\n    r = Ext.Number.snap(56, 2, 55, 65);        // Returns 56 - snap points are zero based\n\n    r = Ext.Number.snapInRange(56, 2, 55, 65); // Returns 57 - snap points are based from minValue\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The unsnapped value.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,164,28",
+                      "text": "0,164,34,21",
+                      "type": "0,164,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "increment",
+                    "text": "The increment by which the value must move.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,165,28",
+                      "text": "0,165,38,44",
+                      "type": "0,165,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "minValue",
+                    "text": "The minimum value to which the returned value must be constrained. Overrides the increment.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,166,28",
+                      "text": "0,166,37,92",
+                      "type": "0,166,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "maxValue",
+                    "text": "The maximum value to which the returned value must be constrained. Overrides the increment.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,167,28",
+                      "text": "0,167,37,92",
+                      "type": "0,167,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value of the nearest snap target.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,168,29,38",
+                      "type": "0,168,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,170,0",
+                  "text": "0,155,12,408"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "snapInRange",
+                "text": "Snaps the passed number between stopping points based upon a passed increment value.\n\nThe difference between this and <a href='#!/api/Ext.Number-method-snap'>snap</a> is that <a href='#!/api/Ext.Number-method-snap'>snap</a> does not use the minValue\nwhen calculating snap points:\n\n    r = Ext.Number.snap(56, 2, 55, 65);        // Returns 56 - snap points are zero based\n\n    r = Ext.Number.snapInRange(56, 2, 55, 65); // Returns 57 - snap points are based from minValue\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The unsnapped value.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,203,28",
+                      "text": "0,203,34,21",
+                      "type": "0,203,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "increment",
+                    "text": "The increment by which the value must move.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,204,28",
+                      "text": "0,204,38,44",
+                      "type": "0,204,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "minValue",
+                    "optional": true,
+                    "text": "The minimum value to which the returned value must be constrained.\n",
+                    "type": "Number",
+                    "value": "0",
+                    "src": {
+                      "name": "0,205,29",
+                      "text": "0,205,41,67",
+                      "type": "0,205,20",
+                      "value": "0,205,38"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "maxValue",
+                    "optional": true,
+                    "text": "The maximum value to which the returned value must be constrained.\n",
+                    "type": "Number",
+                    "value": "Infinity",
+                    "src": {
+                      "name": "0,206,29",
+                      "text": "0,206,48,67",
+                      "type": "0,206,20",
+                      "value": "0,206,38"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value of the nearest snap target.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,207,29,38",
+                      "type": "0,207,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,209,0",
+                  "text": "0,194,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "sign",
+                "text": "Returns the sign of the given number. See also MDN for Math.sign documentation\nfor the standard method this method emulates.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "text": "The number.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,242,28",
+                      "text": "0,242,30,12",
+                      "type": "0,242,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The sign of the number `x`, indicating whether the number is\npositive (1), negative (-1) or zero (0).\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,243,29,61:0,244,12,41",
+                      "type": "0,243,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,246,0",
+                  "text": "0,240,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toFixed",
+                "text": "Formats a number using fixed-point notation\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The number to format\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,259,28",
+                      "text": "0,259,34,21",
+                      "type": "0,259,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "precision",
+                    "text": "The number of digits to show after the decimal point\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,260,28",
+                      "text": "0,260,38,53",
+                      "type": "0,260,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,262,0",
+                  "text": "0,258,12,44"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "from",
+                "text": "Validate that a value is numeric and convert it to a number if necessary. Returns the specified default value if\nit is not.\n\n   Ext.Number.from('1.23', 1); // returns 1.23\n   Ext.Number.from('abc', 1); // returns 1\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,277,28",
+                      "type": "0,277,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "defaultValue",
+                    "text": "The value to return if the original value is non-numeric\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,278,28",
+                      "text": "0,278,41,57",
+                      "type": "0,278,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "value, if numeric, defaultValue otherwise\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,279,29,42",
+                      "type": "0,279,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,281,0",
+                  "text": "0,271,12,124:0,273,2,92"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "randomInt",
+                "text": "Returns a random integer between the specified range (inclusive)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "from",
+                    "text": "Lowest value to return.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,291,28",
+                      "text": "0,291,33,24",
+                      "type": "0,291,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "to",
+                    "text": "Highest value to return.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,292,28",
+                      "text": "0,292,31,25",
+                      "type": "0,292,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A random integer within the specified range.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,293,29,45",
+                      "type": "0,293,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,295,0",
+                  "text": "0,290,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "correctFloat",
+                "text": "Corrects floating point numbers that overflow to a non-precise\nvalue because of their floating nature, for example `0.1 + 0.2`\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "n",
+                    "text": "The number\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,302,28",
+                      "text": "0,302,30,11",
+                      "type": "0,302,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The correctly rounded number\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,303,29,29",
+                      "type": "0,303,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,305,0",
+                  "text": "0,300,12,127"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "singleton": "0,5,4",
+          "text": "0,3,4,60"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,224 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../../docs/docs/js/primitives/Function.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Function",
+        "text": "\nEvery function in JavaScript is actually a <a href='#!/api/Function'>Function</a> object.\n\n<a href='#!/api/Function'>Function</a> objects created with the <a href='#!/api/Function'>Function</a> constructor are parsed when the\nfunction is created. This is less efficient than declaring a function and\ncalling it within your code, because functions declared with the function\nstatement are parsed with the rest of the code.\n\nAll arguments passed to the function are treated as the names of the\nidentifiers of the parameters in the function to be created, in the order in\nwhich they are passed.\n\nInvoking the <a href='#!/api/Function'>Function</a> constructor as a function (without using the `new`\noperator) has the same effect as invoking it as a constructor.\n\n# Specifying arguments with the <a href='#!/api/Function'>Function</a> constructor\n\nThe following code creates a <a href='#!/api/Function'>Function</a> object that takes two arguments.\n\n    // Example can be run directly in your JavaScript console\n\n    // Create a function that takes two arguments and returns the sum of those\n    arguments\n    var adder = new Function(\"a\", \"b\", \"return a + b\");\n\n    // Call the function\n    adder(2, 6);\n    // > 8\n\nThe arguments \"a\" and \"b\" are formal argument names that are used in the\nfunction body, \"return a + b\".\n\n<div class=\"notice\">\nDocumentation for this class comes from <a href=\"https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function\">MDN</a>\nand is available under <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">Creative Commons: Attribution-Sharealike license</a>.\n</div>\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Function object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Names to be used by the function as formal argument names. Each must be a\nstring that corresponds to a valid JavaScript identifier or a list of such\nstrings separated with a comma; for example \"`x`\", \"`theValue`\", or \"`a,b`\".\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "0,45,23",
+                      "text": "0,46,4,226",
+                      "type": "0,45,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "functionBody",
+                    "text": "A string containing the JavaScript statements comprising the function\ndefinition.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,49,20",
+                      "text": "0,50,4,82",
+                      "type": "0,49,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,42,12",
+                  "text": "0,43,4,30"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "apply",
+                "text": "Applies the method of another object in the context of a different object (the\ncalling object); arguments can be passed as an Array object.\n\nYou can assign a different this object when calling an existing function. `this` refers to the\ncurrent object, the calling object. With <a href='#!/api/Function-method-apply'>apply</a>, you can write a method once and then inherit it\nin another object, without having to rewrite the method for the new object.\n\n<a href='#!/api/Function-method-apply'>apply</a> is very similar to call, except for the type of arguments it supports. You can use an\narguments array instead of a named set of parameters. With apply, you can use an array literal, for\nexample, `fun.apply(this, ['eat', 'bananas'])`, or an Array object, for example, `fun.apply(this,\nnew Array('eat', 'bananas'))`.\n\nYou can also use arguments for the `argsArray` parameter. `arguments` is a local variable of a\nfunction. It can be used for all unspecified arguments of the called object. Thus, you do not have\nto know the arguments of the called object when you use the <a href='#!/api/Function-method-apply'>apply</a> method. You can use arguments\nto pass all the arguments to the called object. The called object is then responsible for handling\nthe arguments.\n\nSince ECMAScript 5th Edition you can also use any kind of object which is array like, so in\npractice this means it's going to have a property length and integer properties in the range\n`[0...length)`. As an example you can now use a NodeList or a own custom object like `{'length': 2,\n'0': 'eat', '1': 'bananas'}`.\n\nYou can use <a href='#!/api/Function-method-apply'>apply</a> to chain constructors for an object, similar to Java. In the following example,\nthe constructor for the `Product` object is defined with two parameters, `name` and `value`. Two\nother functions `Food` and `Toy` invoke `Product` passing `this` and `arguments`. `Product`\ninitializes the properties `name` and `price`, both specialized functions define the category. In\nthis example, the `arguments` object is fully passed to the product constructor and corresponds to\nthe two defined parameters.\n\n    function Product(name, price) {\n        this.name = name;\n        this.price = price;\n\n        if (price < 0)\n            throw RangeError('Cannot create product \"' + name + '\" with a negative price');\n        return this;\n    }\n\n    function Food(name, price) {\n        Product.apply(this, arguments);\n        this.category = 'food';\n    }\n    Food.prototype = new Product();\n\n    function Toy(name, price) {\n        Product.apply(this, arguments);\n        this.category = 'toy';\n    }\n    Toy.prototype = new Product();\n\n    var cheese = new Food('feta', 5);\n    var fun = new Toy('robot', 40);\n\nClever usage of <a href='#!/api/Function-method-apply'>apply</a> allows you to use built-ins functions for some tasks that otherwise\nprobably would have been written by looping over the array values. As an example here we are going\nto use Math.max/Math.min to find out the maximum/minimum value in an array.\n\n    //min/max number in an array\n    var numbers = [5, 6, 2, 3, 7];\n\n    //using Math.min/Math.max apply\n    var max = Math.max.apply(null, numbers); // This about equal to Math.max(numbers[0], ...) or\n    // Math.max(5, 6, ..)\n    var min = Math.min.apply(null, numbers);\n\n    //vs. simple loop based algorithm\n    max = -Infinity, min = +Infinity;\n\n    for (var i = 0; i < numbers.length; i++) {\n    if (numbers[i] > max)\n        max = numbers[i];\n    if (numbers[i] < min)\n        min = numbers[i];\n    }\n\nBut beware: in using <a href='#!/api/Function-method-apply'>apply</a> this way, you run the risk of exceeding the JavaScript engine's\nargument length limit. The consequences of applying a function with too many arguments (think more\nthan tens of thousands of arguments) vary across engines, because the limit (indeed even the nature\nof any excessively-large-stack behavior) is unspecified. Some engines will throw an exception. More\nperniciously, others will arbitrarily limit the number of arguments actually passed to the applied\nfunction. (To illustrate this latter case: if such an engine had a limit of four arguments [actual\nlimits are of course significantly higher], it would be as if the arguments 5, 6, 2, 3 had been\npassed to apply in the examples above, rather than the full array.)  If your value array might grow\ninto the tens of thousands, use a hybrid strategy: apply your function to chunks of the array at a\ntime:\n\n    function minOfArray(arr)\n    {\n        var min = Infinity;\n        var QUANTUM = 32768;\n        for (var i = 0, len = arr.length; i < len; i += QUANTUM)\n        {\n            var submin = Math.min.apply(null, numbers.slice(i, Math.min(i + QUANTUM, len)));\n            min = Math.min(submin, min);\n        }\n    return min;\n    }\n\n    var min = minOfArray([5, 6, 2, 3, 7]);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "thisArg",
+                    "text": "The value of this provided for the call to fun. Note that this may not be\nthe actual value seen by the method: if the method is a function in non-strict mode code, null and\nundefined will be replaced with the global object, and primitive values will be boxed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,166,20",
+                      "text": "0,166,28,74:0,167,4,186",
+                      "type": "0,166,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "argsArray",
+                    "text": "An array like object, specifying the arguments with which fun should be\ncalled, or null or undefined if no arguments should be provided to the function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,169,19",
+                      "text": "0,169,29,72:0,170,4,81",
+                      "type": "0,169,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns what the function returns.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,171,21,35",
+                      "type": "0,171,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,64,12",
+                  "text": "0,65,4,4622"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "call",
+                "text": "Calls (executes) a method of another object in the context of a different\nobject (the calling object); arguments can be passed as they are.\n\nYou can assign a different this object when calling an existing function. `this` refers to the\ncurrent object, the calling object.\n\nWith <a href='#!/api/Function-method-call'>call</a>, you can write a method once and then inherit it in another object, without having to\nrewrite the method for the new object.\n\nYou can use call to chain constructors for an object, similar to Java. In the following example,\nthe constructor for the product object is defined with two parameters, name and value. Another\nobject, `prod_dept`, initializes its unique variable (`dept`) and calls the constructor for\n`product` in its constructor to initialize the other variables.\n\n    function Product(name, price) {\n        this.name = name;\n        this.price = price;\n\n        if (price < 0)\n            throw RangeError('Cannot create product \"' + name + '\" with a negative price');\n        return this;\n    }\n\n    function Food(name, price) {\n        Product.call(this, name, price);\n        this.category = 'food';\n    }\n    Food.prototype = new Product();\n\n    function Toy(name, price) {\n        Product.call(this, name, price);\n        this.category = 'toy';\n    }\n    Toy.prototype = new Product();\n\n    var cheese = new Food('feta', 5);\n    var fun = new Toy('robot', 40);\n\nIn this purely constructed example, we create anonymous function and use <a href='#!/api/Function-method-call'>call</a> to invoke it on\nevery object in an array. The main purpose of the anonymous function here is to add a print\nfunction to every object, which is able to print the right index of the object in the array.\nPassing the object as `this` value was not strictly necessary, but is done for explanatory purpose.\n\n    var animals = [\n    {species: 'Lion', name: 'King'},\n    {species: 'Whale', name: 'Fail'}\n    ];\n\n    for (var i = 0; i < animals.length; i++) {\n        (function (i) {\n        this.print = function () {\n            console.log('#' + i  + ' ' + this.species + ': ' + this.name);\n        }\n    }).call(animals[i], i);\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "thisArg",
+                    "text": "The value of this provided for the call to `fun`.Note that this may not be\nthe actual value seen by the method: if the method is a function in non-strict mode code, <a href='#!/api/null'>null</a>\nand <a href='#!/api/undefined'>undefined</a> will be replaced with the global object, and primitive values will be boxed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,232,20",
+                      "text": "0,232,28,75:0,233,4,190",
+                      "type": "0,232,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments for the object.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,235,23",
+                      "text": "0,235,28,26",
+                      "type": "0,235,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns what the function returns.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,236,21,35",
+                      "type": "0,236,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,175,12",
+                  "text": "0,176,4,2074"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representing the source code of the function. Overrides the\n`Object.toString` method.\n\nThe <a href='#!/api/Function'>Function</a> object overrides the <a href='#!/api/Function-method-toString'>toString</a> method of the Object object; it does\nnot inherit Object.toString. For <a href='#!/api/Function'>Function</a> objects, the <a href='#!/api/Function-method-toString'>toString</a> method returns a string\nrepresentation of the object.\n\nJavaScript calls the <a href='#!/api/Function-method-toString'>toString</a> method automatically when a <a href='#!/api/Function'>Function</a> is to be represented as a\ntext value or when a Function is referred to in a string concatenation.\n\nFor <a href='#!/api/Function'>Function</a> objects, the built-in <a href='#!/api/Function-method-toString'>toString</a> method decompiles the function back into the\nJavaScript source that defines the function. This string includes the `function` keyword, the\nargument list, curly braces, and function body.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The function as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,255,21,26",
+                      "type": "0,255,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,240,12",
+                  "text": "0,241,4,723"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "bind",
+                "text": "\nCreates a new function that, when called, has its `this` keyword set\nto the provided value, with a given sequence of arguments preceding\nany provided when the new function was called.\n\nThe `bind()` function creates a new function (a bound function) with\nthe same function body (internal Call attribute in ECMAScript 5\nterms) as the function it is being called on (the bound function's\ntarget function) with the `this` value bound to the first argument of\n`bind()`, which cannot be overridden. `bind()` also accepts leading\ndefault arguments to provide to the target function when the bound\nfunction is called. A bound function may also be constructed using\nthe new operator: doing so acts as though the target function had\ninstead been constructed. The provided `this` value is ignored, while\nprepended arguments are provided to the emulated function.\n\n## Creating a bound function\n\nThe simplest use of `bind()` is to make a function that, no matter\nhow it is called, is called with a particular `this` value. A common\nmistake for new JavaScript programmers is to extract a method from\nan object, then to later call that function and expect it to use\nthe original object as its `this` (e.g. by using that method in\ncallback-based code). Without special care, however, the original\nobject is usually lost. Creating a bound function from the\nfunction, using the original object, neatly solves `this` problem:\n\n    var x = 9;\n    var module = {\n      x: 81,\n      getX: function() { return this.x; }\n    };\n\n    module.getX(); // 81\n\n    var getX = module.getX;\n    getX(); // 9, because in this case, \"this\" refers to the global object\n\n    // create a new function with 'this' bound to module\n    var boundGetX = getX.bind(module);\n    boundGetX(); // 81\n\n## Partial functions\n\nThe next simplest use of `bind()` is to make a function with\npre-specified initial arguments. These arguments (if any) follow\nthe provided this value and are then inserted at the start of the\narguments passed to the target function, followed by the arguments\npassed to the bound function, whenever the bound function is\ncalled.\n\n    function list() {\n      return Array.prototype.slice.call(arguments);\n    }\n\n    var list1 = list(1, 2, 3); // [1, 2, 3]\n\n    //  Create a function with a preset leading argument\n    var leadingZeroList = list.bind(undefined, 37);\n\n    var list2 = leadingZeroList(); // [37]\n    var list3 = leadingZeroList(1, 2, 3); // [37, 1, 2, 3]\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "thisArg",
+                    "text": "The value to be passed as the `this`\nparameter to the target function when the bound function is\ncalled. The value is ignored if the bound function is constructed\nusing the new operator.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,327,20",
+                      "text": "0,327,28,37:0,328,4,151",
+                      "type": "0,327,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "optional": true,
+                    "text": "Arguments to prepend to arguments provided\nto the bound function when invoking the target function.\n",
+                    "type": "Mixed...",
+                    "src": {
+                      "name": "0,332,23",
+                      "text": "0,332,29,43:0,333,4,58",
+                      "type": "0,332,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The bound function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,335,23,20",
+                      "type": "0,335,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,261,12",
+                  "text": "0,262,4,2507"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "length",
+                "text": "Specifies the number of arguments expected by the function.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,57,23",
+                  "text": "0,58,4,60",
+                  "type": "0,57,15"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "text": "0,3,4,1449"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

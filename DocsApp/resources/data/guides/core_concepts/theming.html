@@ -69,16 +69,16 @@ here that will use your custom theme.  Next, change your working directory to th
 </code></pre><p>You should now see two directories inside your workspace folder:</p>
 <p><strong>&quot;ext&quot;</strong> – contains the Ext JS SDK
 <strong>&quot;packages&quot;</strong> – will contain the packages/themes used by applications in the workspace</p>
-<p>##Generating an Application for Testing the Theme
-Before creating a custom theme we need to set up a way to test the theme. Generate a skeleton 
+<h2 id="core_concepts-_-theming_-_generating_an_application_for_testing_the_theme">Generating an Application for Testing the Theme</h2>
+<p>Before creating a custom theme we need to set up a way to test the theme. Generate a skeleton 
 Ext JS application using the classic toolkit.  Run the following command from the 
 &quot;my-workspace&quot; directory:</p>
 <pre><code>sencha -sdk ext generate app -classic ThemeDemoApp theme-demo-app
 </code></pre><p>Sencha Cmd has now generated an application named ThemeDemoApp in a new sub-directory named 
 &quot;theme-demo-app&quot;.  Change the working directory to the newly created application directory:</p>
 <pre><code>cd theme-demo-app
-</code></pre><p>##Generating the Custom Theme Package and File Structure
-Sencha Cmd simplifies the process of creating a custom theme by generating a theme package 
+</code></pre><h2 id="core_concepts-_-theming_-_generating_the_custom_theme_package_and_file_structure">Generating the Custom Theme Package and File Structure</h2>
+<p>Sencha Cmd simplifies the process of creating a custom theme by generating a theme package 
 containing all the necessary files required for your custom theme.  Run the following 
 command from the “theme-demo-app” directory:</p>
 <pre><code>sencha generate theme my-classic-theme
@@ -123,8 +123,8 @@ a second.</p>
 only.  Most changes to styling in the theme will update near real time with no browser 
 refresh required.  However, theme changes that modify a component’s dimensions may require 
 a manual browser refresh.</p>
-<p>##Configuring Theme Inheritance
-All Sencha theme packages are part of a larger hierarchy of themes and each theme package must extend a parent theme. The next step in creating your custom theme is to select which theme to extend. Ext JS ships with the following themes:</p>
+<h2 id="core_concepts-_-theming_-_configuring_theme_inheritance">Configuring Theme Inheritance</h2>
+<p>All Sencha theme packages are part of a larger hierarchy of themes and each theme package must extend a parent theme. The next step in creating your custom theme is to select which theme to extend. Ext JS ships with the following themes:</p>
 <p><strong>&quot;theme-base&quot;</strong> - This package is the base theme for all other themes and is the only theme that does not have a parent theme. It contains the bare minimum set of CSS rules that are absolutely required for Ext JS components and layouts to work correctly. The style rules in &quot;theme-base&quot; are not configurable in a derived theme. You should avoid overriding any of the style rules that are created by this theme.</p>
 <p><strong>&quot;theme-neutral&quot;</strong> - The neutral theme extends &quot;theme-base&quot;, and contains the vast majority of configurable style rules. Most of the variables that are available for configuring the appearance of Ext JS components are defined in &quot;theme-neutral&quot;. These are the variables that can be overridden by your custom theme.</p>
 <p><strong>&quot;theme-neptune&quot;</strong> - Modern borderless theme. Extends &quot;theme-neutral&quot;.</p>
@@ -161,8 +161,8 @@ its default value as shown here:</p>
 </code></pre><p>Your custom theme is now configured to use the Crisp theme as a base and your custom theme 
 is identical to the default Crisp theme. In the following steps you’ll make your own changes 
 to begin to differentiate your custom theme from Crisp.</p>
-<p>##Configuring Global Theme Variables
-Let’s start by modifying the base color from which many Ext JS components’ colors are 
+<h2 id="core_concepts-_-theming_-_configuring_global_theme_variables">Configuring Global Theme Variables</h2>
+<p>Let’s start by modifying the base color from which many Ext JS components’ colors are 
 derived.  Due to the use of <code>$base-color</code> through the default themes making a global change 
 to <code>$base-color</code> will have an effect on most all components in the Ext JS library.  Create 
 a new folder / file: “packages/local/my-classic-theme/sass/var/Component.scss”.  Add the 
@@ -175,8 +175,8 @@ following code to the Component.scss file:</p>
 <strong>“dynamic()”</strong> around the variable value like a function call. This ensures that Sencha tooling
 picks up the variable correctly.  When assigning values to an existing variable you can 
 leave off the “dynamic()” wrapping.</p>
-<p>##Using a Theme in an Application
-To configure your test application to use your custom theme, find the following line in 
+<h2 id="core_concepts-_-theming_-_using_a_theme_in_an_application">Using a Theme in an Application</h2>
+<p>To configure your test application to use your custom theme, find the following line in 
 “theme-demo-app/app.json”</p>
 <pre><code>&quot;theme&quot;: &quot;theme-triton&quot;,
 </code></pre><p>and replace it with:</p>
@@ -187,8 +187,8 @@ the change you can view the application in your browser at “localhost:1841/the
 (or when not using app watch: “localhost/my-workspace/theme-demo-app/”).  At this time you 
 should see the green color we specified earlier as “$base-color” applied to the components 
 on the screen.</p>
-<p>##Configuring Component Variables
-Each themeable Ext JS component has a list of variables that can be used to configure its 
+<h2 id="core_concepts-_-theming_-_configuring_component_variables">Configuring Component Variables</h2>
+<p>Each themeable Ext JS component has a list of variables that can be used to configure its 
 appearance. Let’s change the font-family of Panel Headers in &quot;my-classic-theme&quot;. Create a 
 file named &quot;my-classic-theme/sass/var/panel/Panel.scss&quot; and add the following code:</p>
 <pre><code>$panel-header-font-family: dynamic(Times New Roman);
@@ -196,8 +196,8 @@ file named &quot;my-classic-theme/sass/var/panel/Panel.scss&quot; and add the fo
 font.  You can find the complete list of variables for each component in the “CSS Variables” 
 section of the component’s API doc. For example, see [[ext:Ext.panel.Panel]] and scroll 
 down to the section titled “CSS Variables”</p>
-<p>##Creating Custom Component UIs
-Every component in the Ext JS framework has a user interface (<code>ui</code>) configuration, which 
+<h2 id="core_concepts-_-theming_-_creating_custom_component_uis">Creating Custom Component UIs</h2>
+<p>Every component in the Ext JS framework has a user interface (<code>ui</code>) configuration, which 
 defaults to <code>default</code>. This property can be configured on individual component instances 
 to give them a different appearance from other instances of the same type. This config is 
 used within the Neptune theme to create different types of [[ext:Ext.panel.Panel Panels]] 
@@ -255,8 +255,8 @@ Panel with “highlight” as its <code>ui</code> property (along with <code>fra
 <p>While UI mixins are a handy way to configure multiple appearances for a component, they 
 should not be overused. Each call to a UI mixin generates additional CSS rules. Gratuitous 
 calls to UI mixins can produce an overly large CSS file.</p>
-<p>##Slicing Images for CSS3 effects in IE
-Many of the components within Ext JS have rounded corners and linear gradient 
+<h2 id="core_concepts-_-theming_-_slicing_images_for_css3_effects_in_ie">Slicing Images for CSS3 effects in IE</h2>
+<p>Many of the components within Ext JS have rounded corners and linear gradient 
 backgrounds.  These effects are simple to accomplish in modern browsers using CSS3.  However, 
 ExtJS supports IE8 and IE9; which either do not support these effects or do so in a way 
 that makes combining the effects a challenge when generating cross-browser themes.</p>
@@ -291,8 +291,8 @@ the custom component for slicing.</p>
 “Ext.theme.addManifest”,refer to the inline documentation descriptions for each method 
 found in “my-classic-theme/sass/example/render.js”.  You can refer to examples of “addShortcuts” 
 for the framework components within the “ext/classic/theme-base/sass/example/shortcuts.js” file.</p>
-<p>##Theme JS Overrides
-Sometimes a theme needs to change the appearance of some aspect of a component that is only 
+<h2 id="core_concepts-_-theming_-_theme_js_overrides">Theme JS Overrides</h2>
+<p>Sometimes a theme needs to change the appearance of some aspect of a component that is only 
 configurable via JavaScript. This can easily be accomplished by adding a JavaScript 
 override to your theme package. To demonstrate how this is done, let’s change the 
 [[ext:Ext.panel.Panel#cfg-titleAlign titleAlign]] config of Panels in the custom theme. Create 
@@ -305,8 +305,8 @@ a new file named &quot;my-classic-theme/overrides/panel/Panel.js&quot; and add t
 centered titles.  Although any Ext JS component config can be overridden in this manner, best 
 practice is to only use theme overrides to change those configs that directly affect the 
 visual appearance of a component.</p>
-<p>##Modifying Image Assets
-All required image assets are inherited from the parent theme by default, but in some 
+<h2 id="core_concepts-_-theming_-_modifying_image_assets">Modifying Image Assets</h2>
+<p>All required image assets are inherited from the parent theme by default, but in some 
 cases you may need to override an image. This can be easily done by placing the desired 
 image in &quot;my-classic-theme/resources/images/&quot; and giving it the same name as the image it 
 is intended to override. For example, let’s change the info icon of the MessageBox 
@@ -331,21 +331,21 @@ tbar: [{
 ...
 </code></pre><p>Now, view the app in the browser. When you click the “Show Message” button you should see 
 that the MessageBox contains a friendly face.</p>
-<p>##Adding Custom Utility Fashion
-If your theme requires functions or mixins that are not related to component styling 
+<h2 id="core_concepts-_-theming_-_adding_custom_utility_fashion">Adding Custom Utility Fashion</h2>
+<p>If your theme requires functions or mixins that are not related to component styling 
 (e.g. utilities), these should be placed in the theme’s &quot;my-classic-theme/sass/etc&quot; 
 directory.  You can organize files in this directory however you like, but the only file 
 that Sencha Cmd includes in the build is &quot;my-classic-theme/sass/etc/all.scss&quot;.  Any other 
 files must be imported (<code>@import</code>) by the &quot;all.scss&quot; file. For an example that follows 
 this pattern see &quot;ext/classic/theme-base/sass/etc/&quot;.</p>
-<p>##Styling Your Application
-Styling that is not shared between applications belongs in the application itself, not in 
+<h2 id="core_concepts-_-theming_-_styling_your_application">Styling Your Application</h2>
+<p>Styling that is not shared between applications belongs in the application itself, not in 
 the theme. Sencha Cmd provides an easy way to add application-level styling by following 
 the same pattern as theme styling. The application acts as the final level in the theme 
 hierarchy. Applications can change theme variables and may add their own custom variables 
 and rules for styling the application’s views.</p>
-<p>##Changing Theme Variables in Your Application
-Let’s continue using the &quot;theme-demo-app&quot; application created above, and override the 
+<h2 id="core_concepts-_-theming_-_changing_theme_variables_in_your_application">Changing Theme Variables in Your Application</h2>
+<p>Let’s continue using the &quot;theme-demo-app&quot; application created above, and override the 
 theme’s <strong>$base-color</strong> in the application. Open &quot;theme-demo-app/sass/var/all.scss&quot; and 
 add the following code:</p>
 <pre><code>$base-color: #724289;
@@ -361,8 +361,8 @@ to check the application “sass” directory is the application name (“ThemeD
 Cmd will not check the application “sass” directory for the “Ext” namespaced class.</p>
 <p><strong>Note:</strong> You can read more about how Sencha Cmd processes theming paths / namespaces in 
 the “Namespace” section of the guide.</p>
-<p>##Styling Your Application’s Views
-CSS style rules for your application’s views should go in the app’s &quot;sass/src/&quot; directory 
+<h2 id="core_concepts-_-theming_-_styling_your_application_s_views">Styling Your Application’s Views</h2>
+<p>CSS style rules for your application’s views should go in the app’s &quot;sass/src/&quot; directory 
 in a scss file that has the same path and name as the view it is styling.  Let’s style the 
 content of the <strong>Users</strong> tab in the ThemeDemoApp application. Since the main view is 
 defined as <code>ThemeDemoApp.view.main.Main</code> in “theme-demo-app/app/view/main/Main.js”, the CSS 
@@ -385,8 +385,8 @@ styles offers maximum flexibility, any styling applied directly to application v
 extending Ext JS components should be styled using the Ext JS theming API whenever 
 possible.  Using the theming API safeguards your styling against breaking markup changes 
 in future versions of Ext JS.</p>
-<p>##The Namespace
-Sencha Cmd looks for “.scss” files within a theme / application’s “sass/var” and 
+<h2 id="core_concepts-_-theming_-_the_namespace">The Namespace</h2>
+<p>Sencha Cmd looks for “.scss” files within a theme / application’s “sass/var” and 
 “sass/src” folders for each framework / application class it parses.  The file path on disc 
 maps to the structure of the full class name.  For each class parsed, Sencha Cmd will use 
 the configured <code>sass.namespace</code> to determine where to find associated “.scss” files.</p>
@@ -413,8 +413,8 @@ value within “them-demo-app/app.json”.</p>
 explicitly.  For example, the “Ext.button.Button” class variables would need to be set in 
 “sass/var/Ext/button/Button.scss”.  Mixins for “ThemeDemoApp.view.main.Main” would need 
 to be defined in “sass/src/ThemeDemoApp/view/main/Main.scss”.</p>
-<p>##Organization of Generated Styles
-When using themes as described above, the styling from your theme, your application, and 
+<h2 id="core_concepts-_-theming_-_organization_of_generated_styles">Organization of Generated Styles</h2>
+<p>When using themes as described above, the styling from your theme, your application, and 
 from any required packages (see the 
 <a href="../../cmd/5.x/cmd_packages/cmd_packages.html">Sencha Cmd Packages guide</a>) are all 
 combined in an &quot;app-all.scss&quot; file that is then compiled by Sencha Cmd.  It is important 
@@ -480,8 +480,8 @@ variables to derive the values from the current theme (most importantly, from th
 <p>In the &quot;sass/src&quot; section, the order is the same as for &quot;sass/etc&quot;. This provides the proper 
 cascade of rules so that derived theme rules can easily “win” over rules from their base theme(s).</p>
 <p>The application cascades in last so that its rules always have the final authority.</p>
-<p>###Inclusion Flags
-The “inclusion flag” variables are a set of read-only variables defined to be true or false 
+<h3 id="core_concepts-_-theming_-_inclusion_flags">Inclusion Flags</h3>
+<p>The “inclusion flag” variables are a set of read-only variables defined to be true or false 
 for each JavaScript class that may be included. The value of this variable is true if that 
 class is being included in the application build. The variables are created dynamically by 
 Sencha Cmd with a prefix of “$include-” followed by the full class name with its parts 
@@ -497,8 +497,8 @@ the environment “sencha app watch” operates within).  In order to test your 
 “$include-” variable checks you’ll need to build your application for testing or production:</p>
 <pre><code>sencha app build testing
 sencha app build
-</code></pre><p>##Sharing a Theme Between Applications
-It’s easy to share the theme you’ve just built with a second application. Simply navigate 
+</code></pre><h2 id="core_concepts-_-theming_-_sharing_a_theme_between_applications">Sharing a Theme Between Applications</h2>
+<p>It’s easy to share the theme you’ve just built with a second application. Simply navigate 
 to the “my-workspace” directory and run the following command (note: if you’re following 
 along using the steps above and have “sencha app watch” running you’ll first need to end 
 it using “ctrl-c”):</p>
@@ -522,18 +522,18 @@ and replace the following line:</p>
 &quot;theme&quot;: &quot;my-classic-theme&quot;,
 </code></pre><p>When you view the “another-app/index.html” page in your browser you will now see a starter 
 app that uses the same custom theme as “ThemeDemoApp”.</p>
-<p>##Building the Theme
-Building the theme creates a “build” directory in your theme package directory. Inside 
+<h2 id="core_concepts-_-theming_-_building_the_theme">Building the Theme</h2>
+<p>Building the theme creates a “build” directory in your theme package directory. Inside 
 &quot;my-classic-theme/build/resources&quot; you will find a file named “my-classic-theme-all.css”. This 
 file contains all the style rules for all Ext JS components for your theme. You can link 
 directly to this file from your app however this is not recommended.  When Sencha Cmd 
 builds an application for production it incorporates only the js and styles needed for 
 that particular application.  The built theme’s &quot;all&quot; file contains all styles for every 
 Ext JS component and should only be used outside of a Sencha Cmd generated app.</p>
-<p>##Triton Theme Icons</p>
-<p>##Additional Notes</p>
-<p>###‘default’ Component Images
-Various components have images relating the the component’s “default” <code>ui</code> (Buttons, 
+<h2 id="core_concepts-_-theming_-_triton_theme_icons">Triton Theme Icons</h2>
+<h2 id="core_concepts-_-theming_-_additional_notes">Additional Notes</h2>
+<h3 id="core_concepts-_-theming_-__default_component_images">‘default’ Component Images</h3>
+<p>Various components have images relating the the component’s “default” <code>ui</code> (Buttons, 
 Menus, etc.).  When you create a custom ui for one of these components you’ll notice when 
 the theme is compiled it warns that images for your theme were not found. </p>
 <pre><code>WARNING: @theme-background-image: Theme image not found:
@@ -552,8 +552,8 @@ then rename all “default” instances to “admin”.  For instance:</p>
 </code></pre><p>would be become:</p>
 <pre><code>admin-small-arrow.png
 </code></pre><p><strong>Note:</strong> A bulk file name change utility may come in handy here.</p>
-<p>###Ext.button.Button
-Button ui images will need to be copied from the parent theme to the custom theme when 
+<h3 id="core_concepts-_-theming_-_ext_button_button">Ext.button.Button</h3>
+<p>Button ui images will need to be copied from the parent theme to the custom theme when 
 creating a custom ui.  See the “‘default’ Component Images” section above for more detail.</p>
 <p>Button scale can be configured as <code>small</code>, <code>medium</code>, or <code>large</code> with <code>small</code> being the 
 default.  When creating custom UIs for buttons you’ll need to provide a button mixin for 
@@ -589,8 +589,8 @@ items: [{
     text: &#39;Toolbar Button&#39;,
     ui: &#39;green-toolbar&#39;
 }]
-</code></pre><p>###Ext.panel.Panel
-Panels may be configured with <code>frame: true</code> and are <code>frame: false</code> by default.  So, by 
+</code></pre><h3 id="core_concepts-_-theming_-_ext_panel_panel">Ext.panel.Panel</h3>
+<p>Panels may be configured with <code>frame: true</code> and are <code>frame: false</code> by default.  So, by 
 default if you have a ui config of <code>ui: ‘highlight’</code> then the resulting <code>Panel.scss</code> 
 would look like:</p>
 <pre><code>@include extjs-panel-ui(
@@ -624,29 +624,29 @@ be represented in Panel.scss</p>
     $ui-border-width: 5px,
     $ui-border-radius: 5px
 );</p>
-<p>###Ext.menu.Menu
-Menu ui images will need to be copied from the parent theme to the custom theme when 
+<h3 id="core_concepts-_-theming_-_ext_menu_menu">Ext.menu.Menu</h3>
+<p>Menu ui images will need to be copied from the parent theme to the custom theme when 
 creating a custom ui.  See the “‘default’ Component Images” section above for more detail.</p>
-<p>###Ext.toolbar.Breadcrumb
-Breadcrumb ui images will need to be copied from the parent theme to the custom theme 
+<h3 id="core_concepts-_-theming_-_ext_toolbar_breadcrumb">Ext.toolbar.Breadcrumb</h3>
+<p>Breadcrumb ui images will need to be copied from the parent theme to the custom theme 
 when creating a custom ui.  See the “‘default’ Component Images” section above for more detail.</p>
-<p>###Ext.tab.Tab
-Tab ui images will need to be copied from the parent theme to the custom theme when 
+<h3 id="core_concepts-_-theming_-_ext_tab_tab">Ext.tab.Tab</h3>
+<p>Tab ui images will need to be copied from the parent theme to the custom theme when 
 creating a custom ui.  See the “‘default’ Component Images” section above for more detail.</p>
 <p>When creating a tab ui be sure to include all applicable state vars you want to style 
 including the “-active” tab states such as <code>$ui-color-active</code>, <code>$ui-background-color-active</code>, etc.</p>
-<p>###Ext.tab.Bar
-TabBar ui images will need to be copied from the parent theme to the custom theme when 
+<h3 id="core_concepts-_-theming_-_ext_tab_bar">Ext.tab.Bar</h3>
+<p>TabBar ui images will need to be copied from the parent theme to the custom theme when 
 creating a custom ui.  See the “‘default’ Component Images” section above for more detail.</p>
 <p><strong>Note:</strong> When creating a tab bar UI with the extjs-tab-bar-ui mixin, you will need to 
 create a corresponding tab-ui of the same name.</p>
 <p>This will ensure that the tabs render properly in your theme. Not creating a matching 
 tab theme may result in unpredictable tab rendering.</p>
-<p>###Ext.toolbar.Toolbar
-Toolbar ui images will need to be copied from the parent theme to the custom theme when 
+<h3 id="core_concepts-_-theming_-_ext_toolbar_toolbar">Ext.toolbar.Toolbar</h3>
+<p>Toolbar ui images will need to be copied from the parent theme to the custom theme when 
 creating a custom ui.  See the “‘default’ Component Images” section above for more detail.</p>
-<p>##Upgrade from Ext 5 to Ext 6 Classic
-While most of the updates to themeing occurred behind the scenes between Ext JS 5 and 6, 
+<h2 id="core_concepts-_-theming_-_upgrade_from_ext_5_to_ext_6_classic">Upgrade from Ext 5 to Ext 6 Classic</h2>
+<p>While most of the updates to themeing occurred behind the scenes between Ext JS 5 and 6, 
 there are a few changes to note when upgrading your theme.</p>
 <p>Any variables defined in <strong>{appRoot}/sass/etc/all.scss</strong> should be moved to 
 <strong>{appRoot}/sass/var/all.scss</strong> (or a .scss file @import’d by all.scss)</p>
@@ -665,6 +665,36 @@ your application / workspace to <strong>”packages/local/”</strong>.</p>
         <div class="toc-item"><a href="#core_concepts-_-theming_-_ext_js">Ext JS</a></div>
         <div class="toc-item"><a href="#core_concepts-_-theming_-_building_a_custom_theme">Building a Custom Theme</a></div>
         <div class="toc-item"><a href="#core_concepts-_-theming_-_set_up_the_workspace_optional_">Set up the Workspace (optional)</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_generating_an_application_for_testing_the_theme">Generating an Application for Testing the Theme</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_generating_the_custom_theme_package_and_file_structure">Generating the Custom Theme Package and File Structure</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_configuring_theme_inheritance">Configuring Theme Inheritance</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_configuring_global_theme_variables">Configuring Global Theme Variables</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_using_a_theme_in_an_application">Using a Theme in an Application</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_configuring_component_variables">Configuring Component Variables</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_creating_custom_component_uis">Creating Custom Component UIs</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_slicing_images_for_css3_effects_in_ie">Slicing Images for CSS3 effects in IE</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_theme_js_overrides">Theme JS Overrides</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_modifying_image_assets">Modifying Image Assets</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_adding_custom_utility_fashion">Adding Custom Utility Fashion</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_styling_your_application">Styling Your Application</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_changing_theme_variables_in_your_application">Changing Theme Variables in Your Application</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_styling_your_application_s_views">Styling Your Application’s Views</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_the_namespace">The Namespace</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_organization_of_generated_styles">Organization of Generated Styles</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_inclusion_flags">Inclusion Flags</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_sharing_a_theme_between_applications">Sharing a Theme Between Applications</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_building_the_theme">Building the Theme</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_triton_theme_icons">Triton Theme Icons</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_additional_notes">Additional Notes</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-__default_component_images">‘default’ Component Images</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_ext_button_button">Ext.button.Button</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_ext_panel_panel">Ext.panel.Panel</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_ext_menu_menu">Ext.menu.Menu</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_ext_toolbar_breadcrumb">Ext.toolbar.Breadcrumb</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_ext_tab_tab">Ext.tab.Tab</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_ext_tab_bar">Ext.tab.Bar</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_ext_toolbar_toolbar">Ext.toolbar.Toolbar</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-theming_-_upgrade_from_ext_5_to_ext_6_classic">Upgrade from Ext 5 to Ext 6 Classic</a></div>
     </div>
 </body>
 </html>

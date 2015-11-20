@@ -1,0 +1,321 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/promise/Consequence.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.promise.Consequence",
+        "since": "6.0.0",
+        "text": "Consequences are used internally by a Deferred to capture and notify callbacks, and\npropagate their transformed results as fulfillment or rejection.\n\nDevelopers never directly interact with a Consequence.\n\nA Consequence forms a chain between two Deferreds, where the result of the first\nDeferred is transformed by the corresponding callback before being applied to the\nsecond Deferred.\n\nEach time a Deferred's `then` method is called, it creates a new Consequence that will\nbe triggered once its originating Deferred has been fulfilled or rejected. A Consequence\ncaptures a pair of optional onFulfilled and onRejected callbacks.\n\nEach Consequence has its own Deferred (which in turn has a Promise) that is resolved or\nrejected when the Consequence is triggered. When a Consequence is triggered by its\noriginating Deferred, it calls the corresponding callback and propagates the transformed\nresult to its own Deferred; resolved with the callback return value or rejected with any\nerror thrown by the callback.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "onFulfilled",
+                    "text": "Callback to execute to transform a fulfillment value.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,70,26",
+                      "text": "0,70,38,54",
+                      "type": "0,70,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "onRejected",
+                    "text": "Callback to execute to transform a rejection reason.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,71,26",
+                      "text": "0,71,37,53",
+                      "type": "0,71,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,73,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "trigger",
+                "text": "Trigger this Consequence with the specified action and value.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "action",
+                    "text": "Completion action (i.e. fulfill or reject).\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,86,24",
+                      "text": "0,86,31,44",
+                      "type": "0,86,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "Fulfillment value or rejection reason.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,87,23",
+                      "text": "0,87,29,39",
+                      "type": "0,87,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,89,0",
+                  "text": "0,84,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "update",
+                "text": "Update this Consequence with the specified progress value.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "Progress value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,107,23",
+                      "text": "0,107,29,16",
+                      "type": "0,107,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,109,0",
+                  "text": "0,105,8,60"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "propagate",
+                "text": "Transform and propagate the specified value using the\noptional callback and propagate the transformed result.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "Value to transform and/or propagate.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,121,23",
+                      "text": "0,121,29,37",
+                      "type": "0,121,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "optional": true,
+                    "text": "Callback to use to transform the value.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,122,27",
+                      "text": "0,122,37,40",
+                      "type": "0,122,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "deferred",
+                    "text": "Deferred to use to propagate the value, if no callback\nwas specified.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,123,26",
+                      "text": "0,123,35,55:0,124,8,15",
+                      "type": "0,123,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "deferredMethod",
+                    "text": "Deferred method to call to propagate the value,\nif no callback was specified.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,125,26",
+                      "text": "0,125,41,48:0,126,8,31",
+                      "type": "0,125,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,128,8",
+                  "name": "0,130,0",
+                  "text": "0,118,8,111"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "schedule",
+                "text": "Schedules the specified callback function to be executed on the next turn of the\nevent loop.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "Callback function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,150,26",
+                      "text": "0,150,35,19",
+                      "type": "0,150,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,152,8",
+                  "name": "0,154,0",
+                  "text": "0,147,8,94"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "promise",
+                "text": "Promise of the future value of this Consequence.\n",
+                "type": "Ext.promise.Promise",
+                "src": {
+                  "name": "0,36,0",
+                  "text": "0,34,8,49",
+                  "type": "0,33,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "deferred",
+                "text": "Internal Deferred for this Consequence.\n",
+                "type": "Ext.promise.Deferred",
+                "src": {
+                  "access": "0,41,8",
+                  "name": "0,39,41",
+                  "text": "0,39,50,40",
+                  "type": "0,39,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "onFulfilled",
+                "text": "Callback to execute when this Consequence is triggered\nwith a fulfillment value.\n",
+                "type": "Function",
+                "src": {
+                  "access": "0,49,8",
+                  "name": "0,46,29",
+                  "text": "0,46,41,55:0,47,8,27",
+                  "type": "0,46,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "onRejected",
+                "text": "Callback to execute when this Consequence is triggered\nwith a rejection reason.\n",
+                "type": "Function",
+                "src": {
+                  "access": "0,57,8",
+                  "name": "0,54,29",
+                  "text": "0,54,40,55:0,55,8,26",
+                  "type": "0,54,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "onProgress",
+                "text": "Callback to execute when this Consequence is updated\nwith a progress value.\n",
+                "type": "Function",
+                "src": {
+                  "access": "0,65,8",
+                  "name": "0,62,29",
+                  "text": "0,62,40,53:0,63,8,24",
+                  "type": "0,62,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "dispatch",
+                "static": true,
+                "text": "This method drains the callback queue and calls each callback in order.\n",
+                "src": {
+                  "access": "0,183,12",
+                  "name": "0,185,0",
+                  "static": "0,163,-1",
+                  "text": "0,181,12,73"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "queue",
+                "static": true,
+                "text": "The queue of callbacks pending. This array is never\nshrunk to reduce GC thrash but instead its elements will be set to <a href='#!/api/null'>null</a>.\n",
+                "type": "Function[]",
+                "src": {
+                  "access": "0,169,12",
+                  "name": "0,166,35",
+                  "static": "0,163,-1",
+                  "text": "0,166,41,52:0,167,12,76",
+                  "type": "0,166,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "queueSize",
+                "static": true,
+                "text": "The number of callbacks in the <a href='#!/api/Ext.promise.Consequence-static-property-queue'>queue</a>.\n",
+                "type": "Number",
+                "src": {
+                  "access": "0,176,12",
+                  "name": "0,174,31",
+                  "static": "0,163,-1",
+                  "text": "0,174,41,40",
+                  "type": "0,174,23"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,29,4",
+          "name": "0,31,0",
+          "since": "0,28,11",
+          "text": "0,9,4,1010"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

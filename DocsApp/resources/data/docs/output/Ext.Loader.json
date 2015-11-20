@@ -1,0 +1,705 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/class/Loader.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Loader",
+        "singleton": true,
+        "text": "This class provides dynamic loading support for JavaScript classes. Application code\ndoes not typically need to call <a href='#!/api/Ext.Loader'>Ext.Loader</a> except perhaps to configure path mappings\nwhen not using [Sencha Cmd](http://www.sencha.com/products/sencha-cmd/).\n\n     Ext.Loader.setPath('MyApp', 'app');\n\nWhen using Sencha Cmd, this is handled by the \"bootstrap\" provided by the application\nbuild script and such configuration is not necessary.\n\n# Typical Usage\n\nThe <a href='#!/api/Ext.Loader'>Ext.Loader</a> is most often used behind the scenes to satisfy class references in\nclass declarations. Like so:\n\n     Ext.define('MyApp.view.Main', {\n         extend: 'Ext.panel.Panel',\n\n         mixins: [\n             'MyApp.util.Mixin'\n         ],\n\n         requires: [\n             'Ext.grid.Panel'\n         ],\n\n         uses: [\n             'MyApp.util.Stuff'\n         ]\n     });\n\nIn all of these cases, <a href='#!/api/Ext.Loader'>Ext.Loader</a> is used internally to resolve these class names\nand ensure that the necessary class files are loaded.\n\nDuring development, these files are loaded individually for optimal debugging. For a\nproduction use, [Sencha Cmd](http://www.sencha.com/products/sencha-cmd/) will replace\nall of these strings with the actual resolved class references because it ensures that\nthe classes are all contained in the build in the correct order. In development, these\nfiles will not be loaded until the `MyApp.view.Main` class indicates they are needed\nas shown above.\n\n# Loading Classes\n\nYou can also use <a href='#!/api/Ext.Loader'>Ext.Loader</a> directly to load classes or files. The simplest form of\nuse is <a href='#!/api/Ext-method-require'>Ext#require</a>.\n\nFor example:\n\n     Ext.require('MyApp.view.Main', function () {\n         // On callback, the MyApp.view.Main class is now loaded\n\n         var view = new MyApp.view.Main();\n     });\n\nYou can alternatively require classes by alias or wildcard.\n\n    Ext.require('widget.window');\n\n    Ext.require(['widget.window', 'layout.border', 'Ext.data.Connection']);\n\n    Ext.require(['widget.*', 'layout.*', 'Ext.data.*']);\n\nThe callback function is optional.\n\n**Note** Using `Ext.require` at global scope will cause <a href='#!/api/Ext-method-onReady'>Ext#onReady</a> and\n<a href='#!/api/Ext.app.Application-method-launch'>Ext.app.Application#launch</a> methods to be deferred until the required classes\nare loaded. It is these cases where the callback function is most often unnecessary.\n\n## Using Excludes\n\nAlternatively, you can exclude what you don't need:\n\n    // Include everything except Ext.tree.*\n    Ext.exclude('Ext.tree.*').require('*');\n\n    // Include all widgets except widget.checkbox* (this will exclude\n    // widget.checkbox, widget.checkboxfield, widget.checkboxgroup, etc.)\n    Ext.exclude('widget.checkbox*').require('widget.*');\n\n# Dynamic Instantiation\n\nAnother feature enabled by <a href='#!/api/Ext.Loader'>Ext.Loader</a> is instantiation using class names or aliases.\n\nFor example:\n\n     var win = Ext.create({\n         xtype: 'window',\n\n         // or\n         // xclass: 'Ext.window.Window'\n\n         title: 'Hello'\n     });\n\nThis form of creation can be useful if the type to create (`window` in the above) is\nnot known statically. Internally, <a href='#!/api/Ext-method-create'>Ext#create</a> may need to *synchronously*\nload the desired class and its requirements. Doing this will generate a warning in\nthe console:\n\n     [Ext.Loader] Synchronously loading 'Ext.window.Window'...\n\nIf you see these in your debug console, you should add the indicated class(es) to the\nappropriate `requires` array (as above) or make an <a href='#!/api/Ext-method-require'>Ext#require</a> call.\n\n\n**Note** Using <a href='#!/api/Ext-method-create'>Ext#create</a> has some performance overhead and is best reserved\nfor cases where the target class is not known until run-time.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "enabled",
+                "optional": true,
+                "text": "Whether or not to enable the dynamic dependency loading feature.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,137,32",
+                  "text": "0,138,16,65",
+                  "type": "0,137,22",
+                  "value": "0,137,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scriptChainDelay",
+                "optional": true,
+                "text": "millisecond delay between asynchronous script injection (prevents stack\noverflow on some user agents) 'false' disables delay but potentially\nincreases stack load.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,143,32",
+                  "text": "0,144,16,163",
+                  "type": "0,143,22",
+                  "value": "0,143,49"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disableCaching",
+                "optional": true,
+                "text": "Appends current timestamp to script files to prevent caching.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,151,32",
+                  "text": "0,152,16,62",
+                  "type": "0,151,22",
+                  "value": "0,151,47"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disableCachingParam",
+                "optional": true,
+                "text": "The get parameter name for the cache buster's timestamp.\n",
+                "type": "String",
+                "value": "\"_dc\"",
+                "src": {
+                  "name": "0,157,31",
+                  "text": "0,158,16,57",
+                  "type": "0,157,22",
+                  "value": "0,157,51"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "paths",
+                "text": "The mapping from namespaces to file paths\n\n    {\n        'Ext': '.', // This is set by default, Ext.layout.container.Container will be\n                    // loaded from ./layout/Container.js\n\n        'My': './src/my_own_folder' // My.layout.Container will be loaded from\n                                    // ./src/my_own_folder/layout/Container.js\n    }\n\nNote that all relative paths are relative to the current HTML document.\nIf not being specified, for example, `Other.awesome.Class` will simply be\nloaded from `\"./Other/awesome/Class.js\"`.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,163,30",
+                  "text": "0,164,16,546",
+                  "type": "0,163,22"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "preserveScripts",
+                "text": "`false` to remove asynchronously loaded scripts, `true` to retain script\nelement for browser debugger compatibility and improved load performance.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,181,31",
+                  "text": "0,182,16,147",
+                  "type": "0,181,22"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scriptCharset",
+                "text": "Optional charset to specify encoding of dynamic script content.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,188,30",
+                  "text": "0,189,16,64",
+                  "type": "0,188,22"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "getConfig",
+                "text": "Get the config value corresponding to the specified name. If no name is given, will return the config object\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The config property name\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,367,28",
+                      "text": "0,367,33,25",
+                      "type": "0,367,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,368,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,370,0",
+                  "text": "0,366,12,109"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setPath",
+                "text": "Sets the path of a namespace.\nFor Example:\n\n    Ext.Loader.setPath('Ext', '.');\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "See <a href='#!/api/Ext.Function-method-flexSetter'>Ext.Function#flexSetter</a>\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,380,35",
+                      "text": "0,380,40,47",
+                      "type": "0,380,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "path",
+                    "optional": true,
+                    "text": "See <a href='#!/api/Ext.Function-method-flexSetter'>Ext.Function#flexSetter</a>\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,381,29",
+                      "text": "0,381,35,47",
+                      "type": "0,381,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Loader",
+                    "src": {
+                      "text": "0,382,33,5",
+                      "type": "0,382,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,385,0",
+                  "text": "0,375,12,81"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addClassPathMappings",
+                "text": "Sets a batch of path entries\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "paths",
+                    "text": "a set of className: path mappings\n",
+                    "type": "Object ",
+                    "src": {
+                      "name": "0,394,29",
+                      "text": "0,394,35,34",
+                      "type": "0,394,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Loader",
+                    "src": {
+                      "text": "0,395,33,5",
+                      "type": "0,395,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,397,0",
+                  "text": "0,392,12,30"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getPath",
+                "text": "Translates a className to a file path by adding the\nthe proper prefix and converting the .'s to /'s. For example:\n\n    Ext.Loader.setPath('My', '/path/to/My');\n\n    alert(Ext.Loader.getPath('My.awesome.Class')); // alerts '/path/to/My/awesome/Class.js'\n\nNote that the deeper namespace levels, if explicitly set, are always resolved first. For example:\n\n    Ext.Loader.setPath({\n        'My': '/path/to/lib',\n        'My.awesome': '/other/path/for/awesome/stuff',\n        'My.awesome.more': '/more/awesome/path'\n    });\n\n    alert(Ext.Loader.getPath('My.awesome.Class')); // alerts '/other/path/for/awesome/stuff/Class.js'\n\n    alert(Ext.Loader.getPath('My.awesome.more.Class')); // alerts '/more/awesome/path/Class.js'\n\n    alert(Ext.Loader.getPath('My.cool.Class')); // alerts '/path/to/lib/cool/Class.js'\n\n    alert(Ext.Loader.getPath('Unknown.strange.Stuff')); // alerts 'Unknown/strange/Stuff.js'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "type": "String",
+                    "src": {
+                      "name": "0,441,28",
+                      "type": "0,441,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "path\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,442,29,5",
+                      "type": "0,442,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,444,0",
+                  "text": "0,418,12,902"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onReady",
+                "text": "Add a new listener to be executed when all required scripts are fully loaded\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function callback to be executed\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,652,30",
+                      "text": "0,652,33,37",
+                      "type": "0,652,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The execution scope (`this`) of the callback function.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,653,28",
+                      "text": "0,653,34,55",
+                      "type": "0,653,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "withDomReady",
+                    "optional": true,
+                    "text": "Pass `false` to not also wait for document\ndom ready.\n",
+                    "type": "Boolean",
+                    "value": "true",
+                    "src": {
+                      "name": "0,654,30",
+                      "text": "0,654,49,43:0,655,12,11",
+                      "type": "0,654,20",
+                      "value": "0,654,43"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Additional callback options.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "delay",
+                        "optional": true,
+                        "text": "A number of milliseconds to delay.\n",
+                        "type": "Number",
+                        "value": "0",
+                        "src": {
+                          "name": "0,657,37",
+                          "text": "0,657,46,35",
+                          "type": "0,657,20",
+                          "value": "0,657,43"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "priority",
+                        "optional": true,
+                        "text": "Relative priority of this callback. Negative\nnumbers are reserved.\n",
+                        "type": "Number",
+                        "value": "0",
+                        "src": {
+                          "name": "0,658,37",
+                          "text": "0,658,49,45:0,659,12,22",
+                          "type": "0,658,20",
+                          "value": "0,658,46"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,656,29",
+                      "text": "0,656,38,29",
+                      "type": "0,656,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,661,0",
+                  "text": "0,650,12,78"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addUsedClasses",
+                "text": "Ensure that any classes referenced in the `uses` property are loaded.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "classes",
+                    "src": {
+                      "name": "0,679,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,676,12",
+                  "name": "0,679,0",
+                  "text": "0,677,12,70"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "triggerReady",
+                "src": {
+                  "access": "0,696,12",
+                  "name": "0,698,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "historyPush",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "type": "String",
+                    "src": {
+                      "name": "0,742,28",
+                      "type": "0,742,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,741,12",
+                  "name": "0,744,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "loadScripts",
+                "text": "This is an internal method that delegate content loading to the\nbootstrap layer.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "params",
+                    "src": {
+                      "name": "0,756,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,755,12",
+                  "name": "0,758,0",
+                  "text": "0,753,12,81"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "loadScriptsSync",
+                "text": "This method is provide for use by the bootstrap layer.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "urls",
+                    "type": "String[]",
+                    "src": {
+                      "name": "0,795,30",
+                      "type": "0,795,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,794,12",
+                  "name": "0,797,0",
+                  "text": "0,793,12,55"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "loadScriptsSyncBasePrefix",
+                "text": "This method is provide for use by the bootstrap layer.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "urls",
+                    "type": "String[]",
+                    "src": {
+                      "name": "0,807,30",
+                      "type": "0,807,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,806,12",
+                  "name": "0,809,0",
+                  "text": "0,805,12,55"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "loadScript",
+                "text": "Loads the specified script URL and calls the supplied callbacks. If this method\nis called before <a href='#!/api/Ext-property-isReady'>Ext#isReady</a>, the script's load will delay the transition\nto ready. This can be used to load arbitrary scripts that may contain further\n<a href='#!/api/Ext-method-require'>Ext#require</a> calls.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "The options object or simply the URL(s) to load.\n",
+                    "type": "Object/String/String[]",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "url",
+                        "text": "The URL from which to load the script.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,823,36",
+                          "text": "0,823,40,39",
+                          "type": "0,823,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onLoad",
+                        "optional": true,
+                        "text": "The callback to call on successful load.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,824,39",
+                          "text": "0,824,47,41",
+                          "type": "0,824,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onError",
+                        "optional": true,
+                        "text": "The callback to call on failure to load.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,825,39",
+                          "text": "0,825,48,41",
+                          "type": "0,825,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "optional": true,
+                        "text": "The scope (`this`) for the supplied callbacks.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,826,37",
+                          "text": "0,826,44,47",
+                          "type": "0,826,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,822,44",
+                      "text": "0,822,52,49",
+                      "type": "0,822,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,828,0",
+                  "text": "0,817,12,280"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "flushMissingQueue",
+                "src": {
+                  "access": "0,848,12",
+                  "name": "0,850,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "checkReady",
+                "src": {
+                  "access": "0,868,12",
+                  "name": "0,870,0"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "isInHistory",
+                "src": {
+                  "access": "0,203,12",
+                  "name": "0,205,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "isLoading",
+                "text": "Flag indicating whether there are still files being loaded\n",
+                "src": {
+                  "access": "0,209,12",
+                  "name": "0,211,0",
+                  "text": "0,208,12,59"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "history",
+                "text": "An array of class names to keep track of the dependency loading order.\nThis is not guaranteed to be the same everytime due to the asynchronous\nnature of the Loader.\n",
+                "type": "Array",
+                "src": {
+                  "name": "0,218,30",
+                  "text": "0,214,12,166",
+                  "type": "0,218,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "config",
+                "text": "Configuration\n",
+                "src": {
+                  "access": "0,224,12",
+                  "name": "0,226,0",
+                  "text": "0,223,12,14"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "readyListeners",
+                "text": "Maintain the list of listeners to execute when all required scripts are fully loaded\n",
+                "src": {
+                  "access": "0,230,12",
+                  "name": "0,232,0",
+                  "text": "0,229,12,85"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "optionalRequires",
+                "text": "Contains classes referenced in `uses` properties.\n",
+                "src": {
+                  "access": "0,236,12",
+                  "name": "0,238,0",
+                  "text": "0,235,12,50"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "requiresMap",
+                "text": "Map of fully qualified class names to an array of dependent classes.\n",
+                "src": {
+                  "access": "0,242,12",
+                  "name": "0,244,0",
+                  "text": "0,241,12,69"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "hasFileLoadError",
+                "src": {
+                  "access": "0,246,13",
+                  "name": "0,247,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "scriptsLoading",
+                "text": "The number of scripts loading via loadScript.\n",
+                "src": {
+                  "access": "0,251,12",
+                  "name": "0,253,0",
+                  "text": "0,250,12,46"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "classesLoading",
+                "src": {
+                  "access": "0,257,12",
+                  "name": "0,259,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "syncModeEnabled",
+                "src": {
+                  "access": "0,263,12",
+                  "name": "0,265,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "missingQueue",
+                "src": {
+                  "access": "0,269,12",
+                  "name": "0,271,0"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "setConfig",
+                "text": "Set the configuration for the loader. This should be called right after ext-(debug).js\nis included in the page, and before Ext.onReady. i.e:\n\n    <script type=\"text/javascript\" src=\"ext-core-debug.js\"></script>\n    <script type=\"text/javascript\">\n        Ext.Loader.setConfig({\n          enabled: true,\n          paths: {\n              'My': 'my_own_path'\n          }\n        });\n    </script>\n    <script type=\"text/javascript\">\n        Ext.require(...);\n\n        Ext.onReady(function() {\n          // application code here\n        });\n    </script>\n\nRefer to config options of <a href='#!/api/Ext.Loader'>Ext.Loader</a> for the list of possible properties\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "The config object to override the default values\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,347,28",
+                      "text": "0,347,35,49",
+                      "type": "0,347,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Loader",
+                    "src": {
+                      "text": "0,348,33,5",
+                      "type": "0,348,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,350,0",
+                  "text": "0,325,12,635"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,110,11",
+          "singleton": "0,111,4",
+          "text": "0,3,4,3541"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

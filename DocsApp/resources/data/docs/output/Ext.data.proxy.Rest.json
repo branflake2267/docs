@@ -1,0 +1,3023 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/proxy/Rest.js",
+    "../../../ext/packages/core/src/data/proxy/Server.js",
+    "../../../ext/packages/core/src/data/proxy/Proxy.js",
+    "../../../ext/packages/core/src/data/proxy/Ajax.js",
+    "../../../ext/packages/core/src/mixin/Observable.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "proxy.rest",
+        "alternateClassNames": "Ext.data.RestProxy",
+        "extends": "Ext.data.proxy.Ajax",
+        "name": "Ext.data.proxy.Rest",
+        "text": "The Rest proxy is a specialization of the <a href='#!/api/Ext.data.proxy.Ajax'>Ext.data.proxy.Ajax</a> which simply maps the four actions\n(create, read, update and destroy) to RESTful HTTP verbs. For example, let's set up a <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>\nwith an inline Rest proxy\n\n    Ext.define('User', {\n        extend: 'Ext.data.Model',\n        fields: ['id', 'name', 'email'],\n\n        proxy: {\n            type: 'rest',\n            url : '/users'\n        }\n    });\n\nNow we can create a new User instance and save it via the Rest proxy. Doing this will cause the Proxy to send a POST\nrequest to '/users':\n\n    var user = Ext.create('User', {name: 'Ed Spencer', email: 'ed@sencha.com'});\n\n    user.save(); //POST /users\n\nLet's expand this a little and provide a callback for the <a href='#!/api/Ext.data.Model-method-save'>Ext.data.Model#save</a> call to update the Model once\nit has been created. We'll assume the creation went successfully and that the server gave this user an ID of 123:\n\n    user.save({\n        success: function(user) {\n            user.set('name', 'Khan Noonien Singh');\n\n            user.save(); //PUT /users/123\n        }\n    });\n\nNow that we're no longer creating a new Model instance, the request method is changed to an HTTP PUT, targeting the\nrelevant url for that user. Now let's delete this user, which will use the DELETE method:\n\n        user.erase(); //DELETE /users/123\n\nFinally, when we perform a load of a Model or Store, Rest proxy will use the GET method:\n\n    //1. Load via Store\n\n    //the Store automatically picks up the Proxy from the User model\n    var store = Ext.create('Ext.data.Store', {\n        model: 'User'\n    });\n\n    store.load(); //GET /users\n\n    //2. Load directly from the Model\n\n    //GET /users/123\n    User.load(123, {\n        success: function(user) {\n            console.log(user.getId()); //outputs 123\n        }\n    });\n\n# Url generation\n\nThe Rest proxy is able to automatically generate the urls above based on two configuration options - <a href='#!/api/Ext.data.proxy.Rest-cfg-appendId'>appendId</a> and\n<a href='#!/api/Ext.data.proxy.Rest-cfg-format'>format</a>. If appendId is true (it is by default) then Rest proxy will automatically append the ID of the Model\ninstance in question to the configured url, resulting in the '/users/123' that we saw above.\n\nIf the request is not for a specific Model instance (e.g. loading a Store), the url is not appended with an id.\nThe Rest proxy will automatically insert a '/' before the ID if one is not already present.\n\n    new Ext.data.proxy.Rest({\n        url: '/users',\n        appendId: true //default\n    });\n\n    // Collection url: /users\n    // Instance url  : /users/123\n\nThe Rest proxy can also optionally append a format string to the end of any generated url:\n\n    new Ext.data.proxy.Rest({\n        url: '/users',\n        format: 'json'\n    });\n\n    // Collection url: /users.json\n    // Instance url  : /users/123.json\n\nIf further customization is needed, simply implement the <a href='#!/api/Ext.data.proxy.Rest-method-buildUrl'>buildUrl</a> method and add your custom generated url\nonto the <a href='#!/api/Ext.data.Request'>Ext.data.Request</a> object that is passed to buildUrl. See [Rest proxy's implementation][1] for\nan example of how to achieve this.\n\nNote that Rest proxy inherits from <a href='#!/api/Ext.data.proxy.Ajax'>Ext.data.proxy.Ajax</a>, which already injects all of the sorter,\nfilter, group and paging options into the generated url. See the <a href='#!/api/Ext.data.proxy.Ajax'>Ext.data.proxy.Ajax</a> for more\ndetails.\n\n[1]: source/Rest.html#Ext-data-proxy-Rest-method-buildUrl\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "inheritdoc": true,
+                "name": "actionMethods",
+                "type": "Object",
+                "src": {
+                  "inheritdoc": "0,142,12",
+                  "name": "0,141,26",
+                  "type": "0,141,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "api",
+                "text": "Specific urls to call on CRUD action methods \"create\", \"read\", \"update\" and \"destroy\". Defaults to:\n\n    api: {\n        create  : undefined,\n        read    : undefined,\n        update  : undefined,\n        destroy : undefined\n    }\n\nThe url is built based upon the action being executed [create|read|update|destroy] using the commensurate\n<a href='#!/api/Ext.data.proxy.Rest-cfg-api'>api</a> property, or if undefined default to the configured\n<a href='#!/api/Ext.data.Store'>Ext.data.Store</a>.<a href='#!/api/Ext.data.proxy.Server-cfg-url'>Ext.data.proxy.Server#url</a>.\n\nFor example:\n\n    api: {\n        create  : '/controller/new',\n        read    : '/controller/load',\n        update  : '/controller/update',\n        destroy : '/controller/destroy_action'\n    }\n\nIf the specific URL for a given CRUD action is undefined, the CRUD action request will be directed to the\nconfigured <a href='#!/api/Ext.data.proxy.Server-cfg-url'>Ext.data.proxy.Server#url</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,118,26",
+                  "text": "1,119,12,818",
+                  "type": "1,118,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "appendId",
+                "text": "True to automatically append the ID of a Model instance when performing a request based on that single instance.\nSee Rest proxy intro docs for more details. Defaults to true.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,121,26",
+                  "text": "0,122,11,175",
+                  "type": "0,121,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "batchActions",
+                "text": "True to batch actions of a particular type when synchronizing the store. Defaults to false.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,135,26",
+                  "text": "0,136,11,92",
+                  "type": "0,135,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "batchOrder",
+                "text": "Comma-separated ordering 'create', 'update' and 'destroy' actions when batching. Override this to set a different\norder for the batched CRUD actions to be executed in. Defaults to 'create,update,destroy'.\n",
+                "type": "String",
+                "src": {
+                  "name": "2,62,26",
+                  "text": "2,63,12,205",
+                  "type": "2,62,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "binary",
+                "text": "True to request binary data from the server.  This feature requires\nthe use of a binary reader such as <a href='#!/api/Ext.data.amf.Reader'>Ext.data.amf.Reader</a>\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "3,230,26",
+                  "text": "3,231,11,142",
+                  "type": "3,230,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "cacheString",
+                "optional": true,
+                "text": "The name of the cache param added to the url when using noCache. Defaults to \"_dc\".\n",
+                "type": "String",
+                "value": "\"_dc\"",
+                "src": {
+                  "name": "1,106,27",
+                  "text": "1,107,12,84",
+                  "type": "1,106,18",
+                  "value": "1,106,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "directionParam",
+                "optional": true,
+                "text": "The name of the direction parameter to send in a request. **This is only used when simpleSortMode is set to\ntrue.**\n",
+                "type": "String",
+                "value": "\"dir\"",
+                "src": {
+                  "name": "1,71,27",
+                  "text": "1,72,12,116",
+                  "type": "1,71,18",
+                  "value": "1,71,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "extraParams",
+                "text": "Extra parameters that will be included on every request. Individual requests with params of the same name\nwill override these params when they are in conflict.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,152,26",
+                  "text": "1,153,12,160",
+                  "type": "1,152,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "filterParam",
+                "optional": true,
+                "text": "The name of the 'filter' parameter to send in a request. Defaults to 'filter'. Set this to `''` if you don't\nwant to send a filter parameter.\n",
+                "type": "String",
+                "value": "\"filter\"",
+                "src": {
+                  "name": "1,64,27",
+                  "text": "1,65,12,142",
+                  "type": "1,64,18",
+                  "value": "1,64,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "format",
+                "text": "Optional data format to send to the server when making any request (e.g. 'json'). See the Rest proxy intro docs\nfor full details. Defaults to undefined.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,128,25",
+                  "text": "0,129,11,153",
+                  "type": "0,128,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "groupDirectionParam",
+                "optional": true,
+                "text": "The name of the direction parameter to send in a request. **This is only used when simpleGroupMode is set to\ntrue.**\n",
+                "type": "String",
+                "value": "\"groupDir\"",
+                "src": {
+                  "name": "1,50,27",
+                  "text": "1,51,12,117",
+                  "type": "1,50,18",
+                  "value": "1,50,47"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "groupParam",
+                "optional": true,
+                "text": "The name of the 'group' parameter to send in a request. Defaults to 'group'. Set this to `''` if you don't\nwant to send a group parameter.\n",
+                "type": "String",
+                "value": "\"group\"",
+                "src": {
+                  "name": "1,43,27",
+                  "text": "1,44,12,139",
+                  "type": "1,43,18",
+                  "value": "1,43,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "headers",
+                "optional": true,
+                "text": "Any headers to add to the Ajax request.\n\nexample:\n\n    proxy: {\n        headers: {'Content-Type': \"text/plain\" }\n        ...\n    }\n",
+                "type": "Object",
+                "src": {
+                  "name": "3,237,27",
+                  "text": "3,238,12,131",
+                  "type": "3,237,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "idParam",
+                "optional": true,
+                "text": "The name of the parameter which carries the id of the entity being operated upon.\n",
+                "type": "String",
+                "value": "\"id\"",
+                "src": {
+                  "name": "1,78,27",
+                  "text": "1,79,12,82",
+                  "type": "1,78,18",
+                  "value": "1,78,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "limitParam",
+                "optional": true,
+                "text": "The name of the 'limit' parameter to send in a request. Defaults to 'limit'. Set this to `''` if you don't\nwant to send a limit parameter.\n",
+                "type": "String",
+                "value": "\"limit\"",
+                "src": {
+                  "name": "1,36,27",
+                  "text": "1,37,12,139",
+                  "type": "1,36,18",
+                  "value": "1,36,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "listeners",
+                "text": "\nA config object containing one or more event handlers to be added to this object during initialization. This\nshould be a valid listeners config object as specified in the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> example for attaching\nmultiple handlers at once.\n\n**DOM events from Ext JS <a href='#!/api/Ext.Component'>Ext.Component</a>**\n\nWhile _some_ Ext JS Component classes export selected DOM events (e.g. \"click\", \"mouseover\" etc), this is usually\nonly done when extra value can be added. For example the <a href='#!/api/Ext.view.View'>Ext.view.View</a>s **<a href='#!/api/Ext.view.View-event-itemclick'>Ext.view.View#itemclick</a>** event passing the node clicked on. To access DOM events directly from a\nchild element of a Component, we need to specify the `element` option to identify the Component property to add a\nDOM listener to:\n\n    new Ext.panel.Panel({\n        width: 400,\n        height: 200,\n        dockedItems: [{\n            xtype: 'toolbar'\n        }],\n        listeners: {\n            click: {\n                element: 'el', //bind to the underlying el property on the panel\n                fn: function(){ console.log('click el'); }\n            },\n            dblclick: {\n                element: 'body', //bind to the underlying body property on the panel\n                fn: function(){ console.log('dblclick body'); }\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "4,243,25",
+                  "text": "4,244,11,1325",
+                  "type": "4,243,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "model",
+                "text": "The name of the Model to tie to this Proxy. Can be either the string name of the Model, or a reference to the\nModel constructor. Required.\n",
+                "type": "String/Ext.data.Model",
+                "src": {
+                  "name": "2,75,41",
+                  "text": "2,76,12,139",
+                  "type": "2,75,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "noCache",
+                "optional": true,
+                "text": "Disable caching by adding a unique parameter name to the request. Set to false to allow caching. Defaults to true.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "1,100,28",
+                  "text": "1,101,12,115",
+                  "type": "1,100,18",
+                  "value": "1,100,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pageParam",
+                "optional": true,
+                "text": "The name of the 'page' parameter to send in a request. Defaults to 'page'. Set this to `''` if you don't\nwant to send a page parameter.\n",
+                "type": "String",
+                "value": "\"page\"",
+                "src": {
+                  "name": "1,22,27",
+                  "text": "1,23,12,136",
+                  "type": "1,22,18",
+                  "value": "1,22,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "paramsAsJson",
+                "text": "`true` to have any request parameters sent as <a href='#!/api/Ext.data.Connection-method-request'>Ext.data.Connection#method-request</a>\nwhere they can be parsed from the raw request. By default, parameters are sent via the\n<a href='#!/api/Ext.data.Connection-method-request'>Ext.data.Connection#method-request</a> property. **Note**: This setting does not apply when the\nrequest is sent as a 'GET' request. See <a href='#!/api/Ext.data.proxy.Rest-actionMethods'>actionMethods</a> for controlling the HTTP verb\nthat is used when sending requests.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "3,250,26",
+                  "text": "3,250,39,98:3,251,11,323",
+                  "type": "3,250,17"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "password",
+                "text": "Most oData feeds require basic HTTP authentication. This configuration allows\nyou to specify the password.\n",
+                "type": "String",
+                "src": {
+                  "accessor": "3,285,12",
+                  "name": "3,282,26",
+                  "text": "3,283,12,107",
+                  "type": "3,282,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "reader",
+                "text": "The Ext.data.reader.Reader to use to decode the server's response or data read\nfrom client. This can either be a Reader instance, a config object or just a\nvalid Reader type name (e.g. 'json', 'xml').\n",
+                "type": "Object/String/Ext.data.reader.Reader",
+                "src": {
+                  "name": "2,83,56",
+                  "text": "2,84,12,201",
+                  "type": "2,83,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "simpleGroupMode",
+                "optional": true,
+                "text": "Enabling simpleGroupMode in conjunction with remoteGroup will only send one group property and a direction when a\nremote group is requested. The <a href='#!/api/Ext.data.proxy.Rest-cfg-groupDirectionParam'>groupDirectionParam</a> and <a href='#!/api/Ext.data.proxy.Rest-cfg-groupParam'>groupParam</a> will be sent with the property name and either 'ASC'\nor 'DESC'.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "1,92,28",
+                  "text": "1,93,12,262",
+                  "type": "1,92,18",
+                  "value": "1,92,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "simpleSortMode",
+                "optional": true,
+                "text": "Enabling simpleSortMode in conjunction with remoteSort will only send one sort property and a direction when a\nremote sort is requested. The <a href='#!/api/Ext.data.proxy.Rest-cfg-directionParam'>directionParam</a> and <a href='#!/api/Ext.data.proxy.Rest-cfg-sortParam'>sortParam</a> will be sent with the property name\nand either 'ASC' or 'DESC'.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "1,84,28",
+                  "text": "1,85,12,252",
+                  "type": "1,84,18",
+                  "value": "1,84,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "sortParam",
+                "optional": true,
+                "text": "The name of the 'sort' parameter to send in a request. Defaults to 'sort'. Set this to `''` if you don't\nwant to send a sort parameter.\n",
+                "type": "String",
+                "value": "\"sort\"",
+                "src": {
+                  "name": "1,57,27",
+                  "text": "1,58,12,136",
+                  "type": "1,57,18",
+                  "value": "1,57,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "startParam",
+                "optional": true,
+                "text": "The name of the 'start' parameter to send in a request. Defaults to 'start'. Set this to `''` if you don't\nwant to send a start parameter.\n",
+                "type": "String",
+                "value": "\"start\"",
+                "src": {
+                  "name": "1,29,27",
+                  "text": "1,30,12,139",
+                  "type": "1,29,18",
+                  "value": "1,29,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "timeout",
+                "text": "The number of milliseconds to wait for a response. Defaults to 30000 milliseconds (30 seconds).\n",
+                "type": "Number",
+                "src": {
+                  "name": "1,112,26",
+                  "text": "1,113,12,96",
+                  "type": "1,112,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "url",
+                "text": "The URL from which to request the data object.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,16,26",
+                  "text": "1,17,12,47",
+                  "type": "1,16,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "useDefaultXhrHeader",
+                "text": "Set this to false to not send the default Xhr header (X-Requested-With) with every request.\nThis should be set to false when making CORS (cross-domain) requests.\n",
+                "type": "Boolean",
+                "src": {
+                  "accessor": "3,269,12",
+                  "name": "3,266,27",
+                  "text": "3,267,12,162",
+                  "type": "3,266,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "username",
+                "text": "Most oData feeds require basic HTTP authentication. This configuration allows\nyou to specify the username.\n",
+                "type": "String",
+                "src": {
+                  "accessor": "3,277,12",
+                  "name": "3,274,26",
+                  "text": "3,275,12,107",
+                  "type": "3,274,18"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "withCredentials",
+                "text": "This configuration is sometimes necessary when using cross-origin resource sharing.\n",
+                "type": "Boolean",
+                "src": {
+                  "accessor": "3,261,12",
+                  "name": "3,259,27",
+                  "text": "3,260,12,84",
+                  "type": "3,259,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "writer",
+                "text": "The Ext.data.writer.Writer to use to encode any request sent to the server or\nsaved to client. This can either be a Writer instance, a config object or just\na valid Writer type name (e.g. 'json', 'xml').\n",
+                "type": "Object/String/Ext.data.writer.Writer",
+                "src": {
+                  "name": "2,94,56",
+                  "text": "2,95,12,204",
+                  "type": "2,94,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "exception",
+                "text": "Fires when the server returns an exception. This event may also be listened\nto in the event that a request has timed out or has been aborted.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.data.proxy.Proxy",
+                    "src": {
+                      "name": "1,163,38",
+                      "type": "1,163,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request that was sent\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "1,164,34",
+                      "text": "1,164,42,26",
+                      "type": "1,164,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "text": "The operation that triggered the request\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "1,165,46",
+                      "text": "1,165,56,41",
+                      "type": "1,165,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,160,15",
+                  "text": "1,161,8,142"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "metachange",
+                "text": "Fires when this proxy's reader provides new metadata. Metadata usually consists\nof new field definitions, but can include any configuration data required by an\napplication, and can be processed as needed in the event handler.\nThis event is currently only fired for JsonReaders. Note that this event is also\npropagated by <a href='#!/api/Ext.data.Store'>Ext.data.Store</a>, which is typically where it would be handled.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.data.proxy.Proxy",
+                    "src": {
+                      "name": "2,123,38",
+                      "type": "2,123,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "meta",
+                    "text": "The JSON metadata\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,124,24",
+                      "text": "2,124,29,18",
+                      "type": "2,124,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,117,15",
+                  "text": "2,118,8,391"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_addDeclaredListeners",
+                "text": "Adds declarative listeners as nested arrays of listener objects.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,413,27",
+                      "type": "4,413,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if any listeners were added\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,414,30,35",
+                      "type": "4,414,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,412,12",
+                  "name": "4,416,0",
+                  "text": "4,411,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "abort",
+                "text": "Aborts a running request.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "optional": true,
+                    "text": "The request to abort. If not passed, the most recent active\nrequest will be aborted.\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "3,363,35",
+                      "text": "3,363,44,60:3,364,8,25",
+                      "type": "3,363,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,366,0",
+                  "text": "3,362,8,26"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.data.proxy.Rest-method-onAfter'>onAfter</a>.\n",
+                "src": {
+                  "name": "4,1236,0",
+                  "text": "4,1234,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.data.proxy.Rest-method-onBefore'>onBefore</a>.\n",
+                "src": {
+                  "name": "4,1230,0",
+                  "text": "4,1228,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addListener",
+                "text": "The <a href='#!/api/Ext.data.proxy.Rest-method-on'>on</a> method is shorthand for\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.\n\nAppends an event handler to this object.  For example:\n\n    myGridPanel.on(\"itemclick\", this.onItemClick, this);\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple events. For example:\n\n    myGridPanel.on({\n        cellclick: this.onCellClick,\n        select: this.onSelect,\n        viewready: this.onViewReady,\n        scope: this // Important. Ensure \"this\" is correct during handler execution\n    });\n\nOne can also specify options for each event handler separately:\n\n    myGridPanel.on({\n        cellclick: {fn: this.onCellClick, scope: this, single: true},\n        viewready: {fn: panel.onViewReady, scope: panel}\n    });\n\n*Names* of methods in a specified scope may also be used:\n\n    myGridPanel.on({\n        cellclick: {fn: 'onCellClick', scope: this, single: true},\n        viewready: {fn: 'onViewReady', scope: panel}\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\nMay also be an object who's property names are event names.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "4,835,35",
+                      "text": "4,835,45,37:4,836,12,61",
+                      "type": "4,835,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "optional": true,
+                    "text": "The method the event invokes or the *name* of\nthe method within the specified `scope`.  Will be called with arguments\ngiven to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> plus the `options` parameter described\nbelow.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,838,38",
+                      "text": "4,838,42,46:4,839,12,166",
+                      "type": "4,838,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,843,29",
+                      "text": "4,843,36,62:4,844,12,73",
+                      "type": "4,843,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n\n**Note:** The options object will also be passed as the last argument to every\nevent handler.\n\nThis object may contain any of the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "  The scope (`this` reference) in which the handler function is executed. **If omitted,\n  defaults to the object which fired the event.**\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "4,853,36",
+                          "text": "4,854,12,139",
+                          "type": "4,853,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delay",
+                        "text": "  The number of milliseconds to delay the invocation of the handler after the event\n  fires.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,857,36",
+                          "text": "4,858,12,94",
+                          "type": "4,857,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "single",
+                        "text": "  True to add a handler to handle just the next firing of the event, and then remove\n  itself.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,861,37",
+                          "text": "4,862,12,96",
+                          "type": "4,861,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "buffer",
+                        "text": "  Causes the handler to be scheduled to run in an <a href='#!/api/Ext.util.DelayedTask'>Ext.util.DelayedTask</a> delayed\n  by the specified number of milliseconds. If the event fires again within that time,\n  the original handler is _not_ invoked, but the new handler is scheduled in its place.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,865,36",
+                          "text": "4,866,12,262",
+                          "type": "4,865,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onFrame",
+                        "text": "  Causes the handler to be scheduled to run at the next\n  <a href='#!/api/Ext.Function-method-requestAnimationFrame'>Ext.Function#requestAnimationFrame</a>. If the\n  event fires again before that time, the handler is not rescheduled - the handler\n  will only be called once when the next animation frame is fired, with the last set\n  of arguments passed.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,870,36",
+                          "text": "4,871,12,323",
+                          "type": "4,870,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "target",
+                        "text": "  Only call the handler if the event was fired on the target Observable, _not_ if the\n  event was bubbled up from a child Observable.\n",
+                        "type": "Ext.util.Observable",
+                        "src": {
+                          "name": "4,877,49",
+                          "text": "4,878,12,135",
+                          "type": "4,877,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "element",
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.Component'>Ext.Component</a>.**\n  The name of a Component property which references an <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>\n  to add a listener to.\n\n  This option is useful during Component construction to add DOM event listeners to\n  elements of <a href='#!/api/Ext.Component'>Ext.Component</a> which will exist only after the\n  Component is rendered.\n\n  For example, to add a click listener to a Panel's body:\n\n      var panel = new Ext.panel.Panel({\n          title: 'The title',\n          listeners: {\n              click: this.handlePanelClick,\n              element: 'body'\n          }\n      });\n\nIn order to remove listeners attached using the element, you'll need to reference\nthe element itself as seen below.\n\n     panel.body.un(...)\n",
+                        "type": "String",
+                        "src": {
+                          "name": "4,881,36",
+                          "text": "4,882,12,781",
+                          "type": "4,881,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delegate",
+                        "optional": true,
+                        "text": "  A simple selector to filter the event target or look for a descendant of the target.\n\n  The \"delegate\" option is only available on Ext.dom.Element instances (or\n  when attaching a listener to a Ext.dom.Element via a Component using the\n  element option).\n\n  See the *delegate* example below.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "4,905,37",
+                          "text": "4,906,12,295",
+                          "type": "4,905,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopPropagation",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopPropagation'>Ext.event.Event#stopPropagation</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,914,38",
+                          "text": "4,915,12,212",
+                          "type": "4,914,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "preventDefault",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-preventDefault'>Ext.event.Event#preventDefault</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,919,38",
+                          "text": "4,920,12,210",
+                          "type": "4,919,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopEvent",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopEvent'>Ext.event.Event#stopEvent</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,924,38",
+                          "text": "4,925,12,200",
+                          "type": "4,924,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "args",
+                        "optional": true,
+                        "text": "  Optional arguments to pass to the handler function. Any additional arguments\n  passed to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> will be appended\n  to these arguments.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "4,929,36",
+                          "text": "4,930,12,179",
+                          "type": "4,929,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "destroyable",
+                        "optional": true,
+                        "text": "  When specified as `true`, the function returns a `destroyable` object. An object\n  which implements the `destroy` method which removes all listeners added in this call.\n  This syntax can be a helpful shortcut to using <a href='#!/api/Ext.data.proxy.Rest-method-un'>un</a>; particularly when\n  removing multiple listeners.  *NOTE* - not compatible when using the _element_\n  option.  See <a href='#!/api/Ext.data.proxy.Rest-method-un'>un</a> for the proper syntax for removing listeners added using the\n  _element_ config.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "4,934,38",
+                          "text": "4,935,12,441",
+                          "type": "4,934,20",
+                          "value": "4,934,50"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "priority",
+                        "optional": true,
+                        "text": "  An optional numeric priority that determines the order in which event handlers\n  are run. Event handlers with no priority will be run as if they had a priority\n  of 0. Handlers with a higher priority will be prioritized to run sooner than\n  those with a lower priority.  Negative numbers can be used to set a priority\n  lower than the default. Internally, the framework uses a range of 1000 or\n  greater, and -1000 or lesser for handlers that are intended to run before or\n  after all others, so it is recommended to stay within the range of -999 to 999\n  when setting the priority of event handlers in application-level code.\n  A priority must be an integer to be valid.  Fractional values are reserved for\n  internal framework use.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,942,37",
+                          "text": "4,943,12,737",
+                          "type": "4,942,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "order",
+                        "optional": true,
+                        "text": "  A legacy option that is provided for backward compatibility.\n  It is recommended to use the `priority` option instead.  Available options are:\n\n  - `'before'`: equal to a priority of `100`\n  - `'current'`: equal to a priority of `0` or default priority\n  - `'after'`: equal to a priority of `-100`\n",
+                        "type": "String",
+                        "value": "'current'",
+                        "src": {
+                          "name": "4,954,37",
+                          "text": "4,955,12,301",
+                          "type": "4,954,20",
+                          "value": "4,954,43"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "4,846,29",
+                      "text": "4,846,38,44:4,847,12,154",
+                      "type": "4,846,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "  A shortcut for the `order` event option.  Provided for backward compatibility.\n  Please use the `priority` event option instead.\n\n**Combining Options**\n\nUsing the options argument, it is possible to combine different types of listeners:\n\nA delayed, one-time listener.\n\n    myPanel.on('hide', this.handleClick, this, {\n        single: true,\n        delay: 100\n    });\n\n**Attaching multiple handlers in 1 call**\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple handlers and handler configs.\n\n    grid.on({\n        itemclick: 'onItemClick',\n        itemcontextmenu: grid.onItemContextmenu,\n        destroy: {\n            fn: function () {\n                // function called within the 'altCmp' scope instead of grid\n            },\n            scope: altCmp // unique scope for the destroy handler\n        },\n        scope: grid       // default scope - provided for example clarity\n    });\n\n**Delegate**\n\nThis is a configuration option that you can pass along when registering a handler for\nan event to assist with event delegation. By setting this configuration option\nto a simple selector, the target element will be filtered to look for a\ndescendant of the target. For example:\n\n    var panel = Ext.create({\n        xtype: 'panel',\n        renderTo: document.body,\n        title: 'Delegate Handler Example',\n        frame: true,\n        height: 220,\n        width: 220,\n        html: '<h1 class=\"myTitle\">BODY TITLE</h1>Body content'\n    });\n\n    // The click handler will only be called when the click occurs on the\n    // delegate: h1.myTitle (\"h1\" tag with class \"myTitle\")\n    panel.on({\n        click: function (e) {\n            console.log(e.getTarget().innerHTML);\n        },\n        element: 'body',\n        delegate: 'h1.myTitle'\n     });\n",
+                    "type": "String",
+                    "value": "'current'",
+                    "src": {
+                      "name": "4,962,29",
+                      "text": "4,963,12,1831",
+                      "type": "4,962,20",
+                      "value": "4,962,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes\n all listeners added in this call. For example:\n\n    this.btnListeners =  = myButton.on({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1021,29,54:4,1022,12,516",
+                      "type": "4,1021,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1041,0",
+                  "text": "4,804,12,1008"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addManagedListener",
+                "text": "The addManagedListener method is used when some object (call it \"A\") is listening\nto an event on another observable object (\"B\") and you want to remove that listener\nfrom \"B\" when \"A\" is destroyed. This is not an issue when \"B\" is destroyed because\nall of its listeners will be removed at that time.\n\nExample:\n\n    Ext.define('Foo', {\n        extend: 'Ext.Component',\n\n        initComponent: function () {\n            this.addManagedListener(MyApp.SomeGlobalSharedMenu, 'show', this.doSomething);\n            this.callParent();\n        }\n    });\n\nAs you can see, when an instance of Foo is destroyed, it ensures that the 'show'\nlistener on the menu (`MyApp.SomeGlobalSharedMenu`) is also removed.\n\nAs of version 5.1 it is no longer necessary to use this method in most cases because\nlisteners are automatically managed if the scope object provided to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> is an Observable instance.\nHowever, if the observable instance and scope are not the same object you\nstill need to use <a href='#!/api/Ext.data.proxy.Rest-method-mon'>mon</a> or <a href='#!/api/Ext.data.proxy.Rest-method-addManagedListener'>addManagedListener</a> if you want the listener to be\nmanaged.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item to which to add a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "4,456,56",
+                      "text": "4,456,61,47",
+                      "type": "4,456,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "4,457,34",
+                      "text": "4,457,40,63",
+                      "type": "4,457,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event\nname, this is the handler function or the name of a method on the specified\n`scope`.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,458,36",
+                      "text": "4,458,39,49:4,459,11,85",
+                      "type": "4,458,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,461,27",
+                      "text": "4,461,33,92:4,462,11,43",
+                      "type": "4,461,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> options.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,463,27",
+                      "text": "4,463,35,67:4,464,11,61",
+                      "type": "4,463,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes all listeners added in this call. For example:\n\n    this.btnListeners = myButton.mon({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,465,28,54:4,466,11,513",
+                      "type": "4,465,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,484,0",
+                  "text": "4,430,11,1093"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "afterRequest",
+                "template": true,
+                "text": "Optional callback function which can be used to clean up after a request has been completed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The Request object\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "1,521,34",
+                      "text": "1,521,42,19",
+                      "type": "1,521,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "success",
+                    "text": "True if the request was successful\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,522,25",
+                      "text": "1,522,33,35",
+                      "type": "1,522,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,523,8",
+                  "name": "1,527,0",
+                  "template": "1,524,8",
+                  "text": "1,520,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "applyEncoding",
+                "text": "Encode any values being sent to the server. Can be overridden in subclasses.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "An array of sorters/filters.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "1,339,23",
+                      "text": "1,339,29,29",
+                      "type": "1,339,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The encoded value\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,340,25,18",
+                      "type": "1,340,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,338,8",
+                  "name": "1,342,0",
+                  "text": "1,337,8,77"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "batch",
+                "text": "Performs a batch of <a href='#!/api/Ext.data.operation.Operation'>Ext.data.operation.Operation</a>, in the order specified by <a href='#!/api/Ext.data.proxy.Rest-cfg-batchOrder'>batchOrder</a>. Used\ninternally by <a href='#!/api/Ext.data.Store'>Ext.data.Store</a>s <a href='#!/api/Ext.data.Store-method-sync'>Ext.data.Store#sync</a> method. Example usage:\n\n    myProxy.batch({\n        create : [myModel1, myModel2],\n        update : [myModel3],\n        destroy: [myModel4, myModel5]\n    });\n\nWhere the myModel* above are <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> instances - in this case 1 and 2 are new instances and\nhave not been saved before, 3 has been saved previously but needs to be updated, and 4 and 5 have already been\nsaved but should now be destroyed.\n\nNote that the previous version of this method took 2 arguments (operations and listeners). While this is still\nsupported for now, the current signature is now a single `options` argument that can contain both operations and\nlisteners, in addition to other options. The multi-argument signature will likely be deprecated in a future release.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "Object containing one or more properties supported by the batch method:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "operations",
+                        "text": "Object containing the Model instances to act upon, keyed by action name\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "2,256,32",
+                          "text": "2,256,43,72",
+                          "type": "2,256,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "listeners",
+                        "optional": true,
+                        "text": "Event listeners object passed straight through to the Batch -\nsee <a href='#!/api/Ext.data.Batch'>Ext.data.Batch</a> for details\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "2,258,33",
+                          "text": "2,258,44,62:2,259,8,40",
+                          "type": "2,258,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "batch",
+                        "optional": true,
+                        "text": "A <a href='#!/api/Ext.data.Batch'>Ext.data.Batch</a> object (or batch config to apply\nto the created batch). If unspecified a default batch will be auto-created.\n",
+                        "type": "Ext.data.Batch/Object",
+                        "src": {
+                          "name": "2,261,48",
+                          "text": "2,261,55,58:2,262,8,77",
+                          "type": "2,261,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "callback",
+                        "optional": true,
+                        "text": "The function to be called upon completion of processing the batch.\nThe callback is called regardless of success or failure and is passed the following parameters:\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "batch",
+                            "text": "The <a href='#!/api/Ext.data.Batch'>Ext.data.Batch</a> that was processed,\ncontaining all operations in their current state after processing\n",
+                            "type": "Ext.data.Batch",
+                            "src": {
+                              "name": "2,266,49",
+                              "text": "2,266,55,53:2,267,8,66",
+                              "type": "2,266,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "options",
+                            "text": "The options argument that was originally passed into batch\n",
+                            "type": "Object",
+                            "src": {
+                              "name": "2,268,41",
+                              "text": "2,268,49,59",
+                              "type": "2,268,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "2,264,35",
+                          "text": "2,264,45,67:2,265,8,96",
+                          "type": "2,264,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "success",
+                        "optional": true,
+                        "text": "The function to be called upon successful completion of the batch. The\nsuccess function is called only if no exceptions were reported in any operations. If one or more exceptions\noccurred then the `failure` function will be called instead. The success function is called\nwith the following parameters:\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "batch",
+                            "text": "The <a href='#!/api/Ext.data.Batch'>Ext.data.Batch</a> that was processed,\ncontaining all operations in their current state after processing\n",
+                            "type": "Ext.data.Batch",
+                            "src": {
+                              "name": "2,274,48",
+                              "text": "2,274,54,53:2,275,8,66",
+                              "type": "2,274,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "options",
+                            "text": "The options argument that was originally passed into batch\n",
+                            "type": "Object",
+                            "src": {
+                              "name": "2,276,40",
+                              "text": "2,276,48,59",
+                              "type": "2,276,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "2,270,35",
+                          "text": "2,270,44,71:2,271,8,231",
+                          "type": "2,270,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "failure",
+                        "optional": true,
+                        "text": "The function to be called upon unsuccessful completion of the batch. The\nfailure function is called when one or more operations returns an exception during processing (even if some\noperations were also successful). In this case you can check the batch's <a href='#!/api/Ext.data.Batch-property-exceptions'>Ext.data.Batch#exceptions</a> array to see exactly which operations had exceptions. The failure function is called with the\nfollowing parameters:\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "batch",
+                            "text": "The <a href='#!/api/Ext.data.Batch'>Ext.data.Batch</a> that was processed,\ncontaining all operations in their current state after processing\n",
+                            "type": "Ext.data.Batch",
+                            "src": {
+                              "name": "2,283,48",
+                              "text": "2,283,54,53:2,284,8,66",
+                              "type": "2,283,16"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "options",
+                            "text": "The options argument that was originally passed into batch\n",
+                            "type": "Object",
+                            "src": {
+                              "name": "2,285,40",
+                              "text": "2,285,48,59",
+                              "type": "2,285,16"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "2,278,35",
+                          "text": "2,278,44,73:2,279,8,342",
+                          "type": "2,278,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "optional": true,
+                        "text": "The scope in which to execute any callbacks (i.e. the `this` object inside\nthe callback, success and/or failure functions). Defaults to the proxy.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "2,287,33",
+                          "text": "2,287,40,75:2,288,8,73",
+                          "type": "2,287,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "2,254,24",
+                      "text": "2,254,32,72",
+                      "type": "2,254,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The newly created Batch\n",
+                    "type": "Ext.data.Batch",
+                    "src": {
+                      "text": "2,290,33,24",
+                      "type": "2,290,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,292,0",
+                  "text": "2,237,8,954"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "buildRequest",
+                "text": "Creates an <a href='#!/api/Ext.data.Request'>Ext.data.Request</a> object from <a href='#!/api/Ext.data.operation.Operation'>Ext.data.operation.Operation</a>.\n\nThis gets called from doRequest methods in subclasses of Server proxy.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "text": "The operation to execute\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "1,205,46",
+                      "text": "1,205,56,25",
+                      "type": "1,205,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The request object\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "text": "1,206,35,19",
+                      "type": "1,206,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,208,0",
+                  "text": "1,201,8,177"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "buildUrl",
+                "text": "Specialized version of buildUrl that incorporates the <a href='#!/api/Ext.data.proxy.Rest-cfg-appendId'>appendId</a> and <a href='#!/api/Ext.data.proxy.Rest-cfg-format'>format</a> options into the\ngenerated url. Override this to provide further customizations, but remember to call the superclass buildUrl so\nthat additional parameters like the cache buster string are appended.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,156,24",
+                      "type": "0,156,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,158,0",
+                  "text": "0,153,8,291"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearListeners",
+                "text": "Removes all listeners for this object including the managed listeners\n",
+                "src": {
+                  "name": "4,1255,0",
+                  "text": "4,1253,11,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearManagedListeners",
+                "text": "Removes all managed listeners for this object.\n",
+                "src": {
+                  "name": "4,1291,0",
+                  "text": "4,1289,11,47"
+                }
+              },
+              {
+                "$type": "method",
+                "constructor": true,
+                "name": "constructor",
+                "text": "Note that if this HttpProxy is being used by a <a href='#!/api/Ext.data.Store'>Ext.data.Store</a>, then the Store's call to\n<a href='#!/api/Ext.data.Store-method-load'>Ext.data.Store#method-load</a> will override any specified callback and params options. In this case, use the\n<a href='#!/api/Ext.data.Store'>Ext.data.Store</a>s events to modify parameters, or react to loading events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "(optional) Config object.\nIf an options parameter is passed, the singleton <a href='#!/api/Ext.Ajax'>Ext.Ajax</a> object will be used to make the request.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,206,20",
+                      "text": "3,206,27,26:3,207,4,107",
+                      "type": "3,206,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "constructor": "3,201,4",
+                  "text": "3,202,4,310"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "create",
+                "text": "Performs the given create operation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "text": "The Operation to perform\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "2,210,46",
+                      "text": "2,210,56,25",
+                      "type": "2,210,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,213,0",
+                  "text": "2,209,8,37"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createRelayer",
+                "text": "Creates an event handling function which re-fires the event from this object as the passed event name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newName",
+                    "text": "The name under which to re-fire the passed parameters.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1522,27",
+                      "text": "4,1522,35,55",
+                      "type": "4,1522,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "beginEnd",
+                    "text": "(optional) The caller can specify on which indices to slice.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,1523,26",
+                      "text": "4,1523,35,61",
+                      "type": "4,1523,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "4,1524,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1520,11",
+                  "name": "4,1526,0",
+                  "text": "4,1521,11,103"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createRequestCallback",
+                "text": "TODO: This is currently identical to the JsonPProxy version except for the return function's signature. There is a lot\nof code duplication inside the returned function so we need to find a way to DRY this up.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The Request object\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "3,394,34",
+                      "text": "3,394,42,19",
+                      "type": "3,394,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "text": "The Operation being executed\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "3,395,46",
+                      "text": "3,395,56,29",
+                      "type": "3,395,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The callback function\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "3,396,27,22",
+                      "type": "3,396,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,391,8",
+                  "name": "3,398,0",
+                  "text": "3,392,8,209"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doFireEvent",
+                "text": "Continue to fire event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "type": "String",
+                    "src": {
+                      "name": "4,761,27",
+                      "type": "4,761,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,762,26",
+                      "type": "4,762,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bubbles",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,763,28",
+                      "type": "4,763,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,759,11",
+                  "name": "4,765,0",
+                  "text": "4,758,11,24"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "doRequest",
+                "text": "In ServerProxy subclasses, the <a href='#!/api/Ext.data.proxy.Rest-method-create'>create</a>, <a href='#!/api/Ext.data.proxy.Rest-method-read'>read</a>, <a href='#!/api/Ext.data.proxy.Rest-method-update'>update</a> and <a href='#!/api/Ext.data.proxy.Rest-method-erase'>erase</a> methods all\npass through to doRequest. Each ServerProxy subclass must implement the doRequest method - see <a href='#!/api/Ext.data.proxy.JsonP'>Ext.data.proxy.JsonP</a> and <a href='#!/api/Ext.data.proxy.Ajax'>Ext.data.proxy.Ajax</a> for examples. This method carries the same signature as\neach of the methods that delegate to it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "text": "The Ext.data.operation.Operation object\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "1,509,46",
+                      "text": "1,509,56,40",
+                      "type": "1,509,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "The callback function to call when the Operation has completed\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "1,510,26",
+                      "text": "1,510,35,63",
+                      "type": "1,510,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The scope in which to execute the callback\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,511,24",
+                      "text": "1,511,30,43",
+                      "type": "1,511,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,513,0",
+                  "text": "1,504,8,364"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enableBubble",
+                "text": "Enables events fired by this Observable to bubble up an owner hierarchy by calling `this.getBubbleTarget()` if\npresent. There is no implementation in the Observable base class.\n\nThis is commonly used by Ext.Components to bubble events to owner Containers.\nSee <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>. The default implementation in Ext.Component returns the\nComponent's immediate owner. But if a known target is required, this can be overridden to access the\nrequired target more quickly.\n\nExample:\n\n    Ext.define('Ext.overrides.form.field.Base', {\n        override: 'Ext.form.field.Base',\n\n        //  Add functionality to Field's initComponent to enable the change event to bubble\n        initComponent: function () {\n            this.callParent();\n            this.enableBubble('change');\n        }\n    });\n\n    var myForm = Ext.create('Ext.form.Panel', {\n        title: 'User Details',\n        items: [{\n            ...\n        }],\n        listeners: {\n            change: function() {\n                // Title goes red if form has been modified.\n                myForm.header.setStyle('color', 'red');\n            }\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventNames",
+                    "text": "The event name to bubble, or an Array of event names.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "4,1567,36",
+                      "text": "4,1567,47,54",
+                      "type": "4,1567,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1569,0",
+                  "text": "4,1534,11,1138"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeFilters",
+                "text": "Encodes the array of <a href='#!/api/Ext.util.Filter'>Ext.util.Filter</a> objects into a string to be sent in the request url. By default,\nthis simply JSON-encodes the filter data\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "filters",
+                    "text": "The array of <a href='#!/api/Ext.util.Filter'>Ext.util.Filter</a> objects\n",
+                    "type": "Ext.util.Filter[]",
+                    "src": {
+                      "name": "1,368,35",
+                      "text": "1,368,43,52",
+                      "type": "1,368,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The encoded filters\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,369,25,20",
+                      "type": "1,369,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,371,0",
+                  "text": "1,366,8,151"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeSorters",
+                "text": "Encodes the array of <a href='#!/api/Ext.util.Sorter'>Ext.util.Sorter</a> objects into a string to be sent in the request url. By default,\nthis simply JSON-encodes the sorter data\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "sorters",
+                    "text": "The array of <a href='#!/api/Ext.util.Sorter'>Ext.util.Sorter</a> objects\n",
+                    "type": "Ext.util.Sorter[]",
+                    "src": {
+                      "name": "1,349,35",
+                      "text": "1,349,43,52",
+                      "type": "1,349,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "preventArray",
+                    "optional": true,
+                    "text": "Prevents the items from being output as an array.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,350,26",
+                      "text": "1,350,46,50",
+                      "type": "1,350,16",
+                      "value": "1,350,39"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The encoded sorters\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,351,25,20",
+                      "type": "1,351,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,353,0",
+                  "text": "1,347,8,151"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "erase",
+                "text": "Performs the given destroy operation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "text": "The Operation to perform\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "2,231,46",
+                      "text": "2,231,56,25",
+                      "type": "2,231,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,234,0",
+                  "text": "2,230,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "extractResponseData",
+                "template": true,
+                "text": "Template method to allow subclasses to specify how to get the response for the reader.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "response",
+                    "text": "The server response\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,331,24",
+                      "text": "1,331,33,20",
+                      "type": "1,331,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The response data to be used by the reader\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,332,25,43",
+                      "type": "1,332,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,330,8",
+                  "name": "1,334,0",
+                  "template": "1,329,8",
+                  "text": "1,328,8,87"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use <a href='#!/api/Ext.data.proxy.Rest-fireEventAction'>fireEventAction</a> instead.\n",
+                "deprecatedVersion": "5.5",
+                "name": "fireAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nBy default, the action function will be executed after any \"before\" event handlers\n(as specified using the `order` option of\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>), but before any other\nhandlers are fired.  This gives the \"before\" handlers an opportunity to\ncancel the event by returning `false`, and prevent the action function from\nbeing called.\n\nThe action can also be configured to run after normal handlers, but before any \"after\"\nhandlers (as specified using the `order` event option) by passing `'after'`\nas the `order` parameter.  This configuration gives any event handlers except\nfor \"after\" handlers the opportunity to cancel the event and prevent the action\nfunction from being called.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,640,28",
+                      "text": "4,640,38,31",
+                      "type": "4,640,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,641,27",
+                      "text": "4,641,32,58",
+                      "type": "4,641,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "4,642,30",
+                      "text": "4,642,33,21",
+                      "type": "4,642,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,643,29",
+                      "text": "4,643,36,62:4,644,12,72",
+                      "type": "4,643,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Event options for the action function.  Accepts any\nof the options of <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,645,29",
+                      "text": "4,645,38,52:4,646,12,72",
+                      "type": "4,645,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "The order to call the action function relative\ntoo the event handlers (`'before'` or `'after'`).  Note that this option is\nsimply used to sort the action function relative to the event handlers by \"priority\".\nAn order of `'before'` is equivalent to a priority of `99.5`, while an order of\n`'after'` is equivalent to a priority of `-99.5`.  See the `priority` option\nof <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> for more details.\n",
+                    "type": "String",
+                    "value": "'before'",
+                    "src": {
+                      "name": "4,647,29",
+                      "text": "4,647,45,47:4,648,12,394",
+                      "type": "4,647,20",
+                      "value": "4,647,35"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "4,653,12",
+                  "deprecatedVersion": "4,653,12",
+                  "name": "4,655,0",
+                  "text": "4,626,12,802"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEvent",
+                "text": "Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed\nto <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>).\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.data.proxy.Rest-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,568,27",
+                      "text": "4,568,37,31",
+                      "type": "4,568,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Variable number of parameters are passed to handlers.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "4,569,30",
+                      "text": "4,569,35,54",
+                      "type": "4,569,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,570,29,77",
+                      "type": "4,570,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,572,0",
+                  "text": "4,562,11,310"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventArgs",
+                "text": "Fires the specified event with the passed parameter list.\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.data.proxy.Rest-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,605,27",
+                      "text": "4,605,37,31",
+                      "type": "4,605,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "An array of parameters which are passed to handlers.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "4,606,29",
+                      "text": "4,606,34,53",
+                      "type": "4,606,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,607,29,77",
+                      "type": "4,607,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,609,0",
+                  "text": "4,600,11,202"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventedAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nEvented Actions will automatically dispatch a 'before' event passing. This event will\nbe given a special controller that allows for pausing/resuming of the event flow.\n\nBy pausing the controller the updater and events will not run until resumed. Pausing,\nhowever, will not stop the processing of any other before events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,721,28",
+                      "text": "4,721,38,31",
+                      "type": "4,721,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,722,27",
+                      "text": "4,722,32,58",
+                      "type": "4,722,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,723,37",
+                      "text": "4,723,40,21",
+                      "type": "4,723,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,724,29",
+                      "text": "4,724,36,62:4,725,12,72",
+                      "type": "4,724,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fnArgs",
+                    "optional": true,
+                    "text": "Optional arguments for the action `fn`. If not\ngiven, the normal `args` will be used to call `fn`. If `false` is passed, the\n`args` are used but if the first argument is this instance it will be removed\nfrom the args passed to the action function.\n",
+                    "type": "Array/Boolean",
+                    "src": {
+                      "name": "4,726,36",
+                      "text": "4,726,44,47:4,727,12,201",
+                      "type": "4,726,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,731,0",
+                  "text": "4,714,12,409"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getBubbleParent",
+                "text": "Gets the bubbling parent for an Observable\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The bubble parent. null is returned if no bubble target exists\n",
+                    "type": "Ext.util.Observable",
+                    "src": {
+                      "text": "4,793,41,63",
+                      "type": "4,793,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,792,11",
+                  "name": "4,795,0",
+                  "text": "4,791,11,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "5,75,25,3",
+                      "type": "5,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,77,0",
+                  "text": "5,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getMethod",
+                "text": "Returns the HTTP method name for a given request. By default this returns based on a lookup on\n<a href='#!/api/Ext.data.proxy.Rest-actionMethods'>actionMethods</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request object\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "3,376,34",
+                      "text": "3,376,42,19",
+                      "type": "3,376,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The HTTP method to use (should be one of 'GET', 'POST', 'PUT' or 'DELETE')\n",
+                    "type": "String",
+                    "src": {
+                      "text": "3,377,25,75",
+                      "type": "3,377,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,379,0",
+                  "text": "3,374,8,119"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getParams",
+                "text": "Copy any sorters, filters etc into the params so they can be sent over the wire\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "src": {
+                      "name": "1,393,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,390,8",
+                  "name": "1,393,0",
+                  "text": "1,391,8,80"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getUrl",
+                "text": "Get the url for the request taking into account the order of priority,\n- The request\n- The api\n- The url\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "1,492,34",
+                      "text": "1,492,42,12",
+                      "type": "1,492,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The url\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,493,25,8",
+                      "type": "1,493,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,491,8",
+                  "name": "1,495,0",
+                  "text": "1,487,8,105"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasListener",
+                "text": "Checks to see if this object has any listeners for a specified event, or whether the event bubbles. The answer\nindicates whether the event needs firing or not.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to check for\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1334,27",
+                      "text": "4,1334,37,35",
+                      "type": "4,1334,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the event is being listened for or bubbles, else `false`\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,1335,29,67",
+                      "type": "4,1335,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1337,0",
+                  "text": "4,1331,11,161"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSuspended",
+                "text": "Checks if all events, or a specific event, is suspended.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "optional": true,
+                    "text": "The name of the specific event to check\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1344,29",
+                      "text": "4,1344,36,40",
+                      "type": "4,1344,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if events are suspended\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,1345,30,31",
+                      "type": "4,1345,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1347,0",
+                  "text": "4,1343,12,57"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addManagedListener",
+                "name": "mon",
+                "text": "Shorthand for <a href='#!/api/Ext.data.proxy.Rest-method-addManagedListener'>addManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "4,1787,12",
+                  "name": "4,1789,0",
+                  "text": "4,1786,12,43"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeManagedListener",
+                "name": "mun",
+                "text": "Shorthand for <a href='#!/api/Ext.data.proxy.Rest-method-removeManagedListener'>removeManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "4,1793,12",
+                  "name": "4,1795,0",
+                  "text": "4,1792,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addListener",
+                "name": "on",
+                "src": {
+                  "inheritdoc": "4,1775,12",
+                  "name": "4,1777,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onAfter",
+                "text": "Appends an after-event handler.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1190,44",
+                      "text": "4,1190,54,37",
+                      "type": "4,1190,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1191,37",
+                      "text": "4,1191,40,30",
+                      "type": "4,1191,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1192,29",
+                      "text": "4,1192,36,20",
+                      "type": "4,1192,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1193,29",
+                      "text": "4,1193,38,44",
+                      "type": "4,1193,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1195,0",
+                  "text": "4,1185,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onBatchComplete",
+                "text": "The internal callback that the proxy uses to call any specified user callbacks after completion of a batch\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "batchOptions",
+                    "src": {
+                      "name": "2,366,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "batch",
+                    "src": {
+                      "name": "2,366,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,363,8",
+                  "name": "2,366,0",
+                  "text": "2,364,8,107"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onBefore",
+                "text": "Appends a before-event handler.  Returning `false` from the handler will stop the event.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1175,44",
+                      "text": "4,1175,54,37",
+                      "type": "4,1175,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1176,37",
+                      "text": "4,1176,40,30",
+                      "type": "4,1176,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1177,29",
+                      "text": "4,1177,36,20",
+                      "type": "4,1177,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1178,29",
+                      "text": "4,1178,38,44",
+                      "type": "4,1178,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1180,0",
+                  "text": "4,1170,12,183"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onMetaChange",
+                "text": "Called each time the reader's onMetaChange is called so that the proxy can fire the metachange event\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "meta",
+                    "src": {
+                      "name": "2,204,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,201,8",
+                  "name": "2,204,0",
+                  "text": "2,202,8,101"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "processResponse",
+                "text": "Processes response, which may involve updating or committing records, each of which\nwill inform the owning stores and their interested views. Finally, we may perform\nan additional layout if the data shape has changed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "success",
+                    "src": {
+                      "name": "1,259,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "src": {
+                      "name": "1,259,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "src": {
+                      "name": "1,259,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "response",
+                    "src": {
+                      "name": "1,259,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,257,8",
+                  "name": "1,259,0",
+                  "text": "1,253,8,219"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "read",
+                "text": "Performs the given read operation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "text": "The Operation to perform\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "2,217,46",
+                      "text": "2,217,56,25",
+                      "type": "2,217,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,220,0",
+                  "text": "2,216,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "relayEvents",
+                "text": "Relays selected events from the specified Observable as if the events were fired by `this`.\n\nFor example if you are extending Grid, you might decide to forward some events from store.\nSo you can do this inside your initComponent:\n\n    this.relayEvents(this.getStore(), ['load']);\n\nThe grid instance will then have an observable 'load' event which will be passed\nthe parameters of the store's load event and any function fired with the grid's\nload event would have access to the grid using the this keyword (unless the event\nis handled by a controller's control/listen event listener in which case 'this'\nwill be the controller rather than the grid).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The Observable whose events this object is to relay.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1466,27",
+                      "text": "4,1466,34,53",
+                      "type": "4,1466,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "events",
+                    "text": "Array of event names to relay or an Object with key/value\npairs translating to ActualEventName/NewEventName respectively. For example:\n    this.relayEvents(this, {add:'push', remove:'pop'});\n\nWould now redispatch the add event of this as a push event and the remove event as a pop event.\n",
+                    "type": "String[]/Object",
+                    "src": {
+                      "name": "4,1467,36",
+                      "text": "4,1467,43,58:4,1468,11,231",
+                      "type": "4,1467,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prefix",
+                    "optional": true,
+                    "text": "A common prefix to prepend to the event names. For example:\n\n    this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nNow the grid will forward 'load' and 'clear' events of store as 'storeload' and 'storeclear'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1473,28",
+                      "text": "4,1473,36,60:4,1474,11,164",
+                      "type": "4,1473,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A `Destroyable` object. An object which implements the `destroy` method which, when destroyed, removes all relayers. For example:\n\n    this.storeRelayers = this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nCan be undone by calling\n\n    Ext.destroy(this.storeRelayers);\n\nor\n    this.store.relayers.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1479,28,130:4,1480,11,192",
+                      "type": "4,1479,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1490,0",
+                  "text": "4,1453,11,651"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.data.proxy.Rest-method-unAfter'>unAfter</a>.\n",
+                "src": {
+                  "name": "4,1248,0",
+                  "text": "4,1246,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.data.proxy.Rest-method-unBefore'>unBefore</a>.\n",
+                "src": {
+                  "name": "4,1242,0",
+                  "text": "4,1240,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeListener",
+                "text": "Removes an event handler.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The type of event the handler was associated with.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1102,28",
+                      "text": "4,1102,38,51",
+                      "type": "4,1102,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove. **This must be a reference to the function\npassed into the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> call.**\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "4,1103,30",
+                      "text": "4,1103,33,66:4,1104,12,76",
+                      "type": "4,1103,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope originally specified for the handler. It\nmust be the same as the scope argument specified in the original call to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> or the listener will not be removed.\n\n**Convenience Syntax**\n\nYou can use the <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n`destroyable: true` config option in place of calling un().  For example:\n\n    var listeners = cmp.on({\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide,\n        destroyable: true\n    });\n\n    // Remove listeners\n    listeners.destroy();\n    // or\n    cmp.un(\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide\n    );\n\n**Exception - DOM event handlers using the element config option**\n\nYou must go directly through the element to detach an event handler attached using\nthe <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> _element_ option.\n\n    panel.on({\n        element: 'body',\n        click: 'onBodyCLick'\n    });\n\n    panel.body.un({\n        click: 'onBodyCLick'\n    });\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1106,28",
+                      "text": "4,1106,34,62:4,1107,12,1017",
+                      "type": "4,1106,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1145,0",
+                  "text": "4,1100,12,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeManagedListener",
+                "text": "Removes listeners that were added by the <a href='#!/api/Ext.data.proxy.Rest-method-mon'>mon</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item from which to remove a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "4,526,56",
+                      "text": "4,526,61,52",
+                      "type": "4,526,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "4,527,34",
+                      "text": "4,527,40,63",
+                      "type": "4,527,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the handler function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "4,528,29",
+                      "text": "4,528,32,85",
+                      "type": "4,528,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,529,27",
+                      "text": "4,529,33,92:4,530,11,43",
+                      "type": "4,529,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,532,0",
+                  "text": "4,524,11,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "removeManagedListenerItem",
+                "text": "Remove a single managed listener item\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "isClear",
+                    "text": "True if this is being called during a clear\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,1307,28",
+                      "text": "4,1307,36,44",
+                      "type": "4,1307,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "managedListener",
+                    "text": "The managed listener item\nSee removeManagedListener for other args\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1308,27",
+                      "text": "4,1308,43,26:4,1309,11,41",
+                      "type": "4,1308,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1306,11",
+                  "name": "4,1311,0",
+                  "text": "4,1305,11,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "resolveListenerScope",
+                "text": "Gets the default scope for firing late bound events (string names with\nno scope attached) at runtime.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "defaultScope",
+                    "optional": true,
+                    "text": "The default scope to return if none is found.\n",
+                    "type": "Object",
+                    "value": "this",
+                    "src": {
+                      "name": "4,579,29",
+                      "text": "4,579,48,46",
+                      "type": "4,579,20",
+                      "value": "4,579,42"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The default event scope\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,580,29,24",
+                      "type": "4,580,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,581,12",
+                  "name": "4,583,0",
+                  "text": "4,577,12,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvent",
+                "text": "Resumes firing of the named event(s).\n\nAfter calling this method to resume events, the events will fire when requested to fire.\n\n**Note that if the <a href='#!/api/Ext.data.proxy.Rest-method-suspendEvent'>suspendEvent</a> method is called multiple times for a certain event,\nthis converse method will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to resume.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "4,1409,32",
+                      "text": "4,1409,42,32",
+                      "type": "4,1409,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1411,0",
+                  "text": "4,1402,12,320"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvents",
+                "text": "Resumes firing events (see <a href='#!/api/Ext.data.proxy.Rest-method-suspendEvents'>suspendEvents</a>).\n\nIf events were suspended using the `queueSuspended` parameter, then all events fired\nduring event suspension will be sent to any listeners now.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "discardQueue",
+                    "optional": true,
+                    "text": "`true` to prevent any previously queued events from firing\nwhile we were suspended. See <a href='#!/api/Ext.data.proxy.Rest-method-suspendEvents'>suspendEvents</a>.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,1431,29",
+                      "text": "4,1431,43,59:4,1432,11,53",
+                      "type": "4,1431,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1434,0",
+                  "text": "4,1426,11,198"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "sendRequest",
+                "text": "Fires a request\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "request",
+                    "text": "The request\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "name": "3,350,34",
+                      "text": "3,350,42,12",
+                      "type": "3,350,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The request\n",
+                    "type": "Ext.data.Request",
+                    "src": {
+                      "text": "3,351,35,12",
+                      "type": "3,351,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,352,8",
+                  "name": "3,354,0",
+                  "text": "3,349,8,16"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setException",
+                "text": "Sets up an exception on the operation\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "text": "The operation\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "1,315,46",
+                      "text": "1,315,56,14",
+                      "type": "1,315,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "response",
+                    "text": "The response\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,316,24",
+                      "text": "1,316,33,13",
+                      "type": "1,316,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,314,8",
+                  "name": "1,318,0",
+                  "text": "1,313,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setExtraParam",
+                "text": "Sets a value in the underlying <a href='#!/api/Ext.data.proxy.Rest-cfg-extraParams'>extraParams</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The key for the new value\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,187,24",
+                      "text": "1,187,29,26",
+                      "type": "1,187,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,188,24",
+                      "text": "1,188,30,10",
+                      "type": "1,188,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,190,0",
+                  "text": "1,186,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setListeners",
+                "text": "An alias for <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.  In\nversions prior to 5.1, <a href='#!/api/Ext.data.proxy.Rest-cfg-listeners'>listeners</a> had a generated setter which could\nbe called to add listeners.  In 5.1 the listeners config is not processed\nusing the config system and has no generated setter, so this method is\nprovided for backward compatibility.  The preferred way of adding listeners\nis to use the <a href='#!/api/Ext.data.proxy.Rest-method-on'>on</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "text": "The listeners\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1804,28",
+                      "text": "4,1804,38,14",
+                      "type": "4,1804,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1806,0",
+                  "text": "4,1798,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvent",
+                "text": "Suspends firing of the named event(s).\n\nAfter calling this method to suspend events, the events will no longer fire when requested to fire.\n\n**Note that if this is called multiple times for a certain event, the converse method\n<a href='#!/api/Ext.data.proxy.Rest-method-resumeEvent'>resumeEvent</a> will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to suspend.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "4,1381,32",
+                      "text": "4,1381,42,33",
+                      "type": "4,1381,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1383,0",
+                  "text": "4,1374,12,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvents",
+                "text": "Suspends the firing of all events. (see <a href='#!/api/Ext.data.proxy.Rest-method-resumeEvents'>resumeEvents</a>)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "queueSuspended",
+                    "text": "`true` to queue up suspended events to be fired\nafter the <a href='#!/api/Ext.data.proxy.Rest-method-resumeEvents'>resumeEvents</a> call instead of discarding all suspended events.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,1363,28",
+                      "text": "4,1363,43,48:4,1364,11,81",
+                      "type": "4,1363,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1366,0",
+                  "text": "4,1361,11,64"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeListener",
+                "name": "un",
+                "text": "Shorthand for <a href='#!/api/Ext.data.proxy.Rest-method-removeListener'>removeListener</a>.\n",
+                "src": {
+                  "inheritdoc": "4,1781,12",
+                  "name": "4,1783,0",
+                  "text": "4,1780,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unAfter",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.data.proxy.Rest-method-removeListener'>removeListener</a> with `order` set to `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1218,44",
+                      "text": "4,1218,54,55",
+                      "type": "4,1218,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1219,37",
+                      "text": "4,1219,40,23",
+                      "type": "4,1219,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1220,29",
+                      "text": "4,1220,36,41",
+                      "type": "4,1220,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1221,29",
+                      "text": "4,1221,38,22",
+                      "type": "4,1221,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1223,0",
+                  "text": "4,1214,12,97"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unBefore",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.data.proxy.Rest-method-removeListener'>removeListener</a> with `order` set to `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1204,44",
+                      "text": "4,1204,54,55",
+                      "type": "4,1204,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1205,37",
+                      "text": "4,1205,40,23",
+                      "type": "4,1205,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1206,29",
+                      "text": "4,1206,36,41",
+                      "type": "4,1206,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1207,29",
+                      "text": "4,1207,38,22",
+                      "type": "4,1207,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1209,0",
+                  "text": "4,1200,12,98"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "update",
+                "text": "Performs the given update operation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "operation",
+                    "text": "The Operation to perform\n",
+                    "type": "Ext.data.operation.Operation",
+                    "src": {
+                      "name": "2,224,46",
+                      "text": "2,224,56,25",
+                      "type": "2,224,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,227,0",
+                  "text": "2,223,8,37"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$eventOptions",
+                "text": "Matches options property names within a listeners specification object  - property names which are never used as event names.\n",
+                "src": {
+                  "access": "4,389,12",
+                  "name": "4,392,0",
+                  "text": "4,390,12,126"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "actionMethods",
+                "text": "Mapping of action name to HTTP request method. These default to RESTful conventions for the 'create', 'read',\n'update' and 'destroy' actions (which map to 'POST', 'GET', 'PUT' and 'DELETE' respectively). This object\nshould not be changed except globally via <a href='#!/api/Ext-method-override'>Ext#override</a> - the <a href='#!/api/Ext.data.proxy.Rest-method-getMethod'>getMethod</a> function\ncan be overridden instead.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,102,27",
+                  "text": "0,103,8,353",
+                  "type": "0,102,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "eventsSuspended",
+                "text": "Initial suspended call count. Incremented when <a href='#!/api/Ext.data.proxy.Rest-method-suspendEvents'>suspendEvents</a> is called, decremented when <a href='#!/api/Ext.data.proxy.Rest-method-resumeEvents'>resumeEvents</a> is called.\n",
+                "src": {
+                  "access": "4,284,11",
+                  "name": "4,287,0",
+                  "text": "4,285,11,131"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "6,295,28",
+                  "text": "6,296,8,128",
+                  "type": "6,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hasListeners",
+                "readonly": true,
+                "text": "This object holds a key for any event that has a listener. The listener may be set\ndirectly on the instance, or on its class or a super class (via <a href='#!/api/Ext.data.proxy.Rest-observe'>observe</a>) or\non the <a href='#!/api/Ext.app.EventBus'>Ext.app.EventBus</a>. The values of this object are truthy\n(a non-zero number) and falsy (0 or undefined). They do not represent an exact count\nof listeners. The value for an event is truthy if the event must be fired and is\nfalsy if there is no need to fire the event.\n\nThe intended use of this property is to avoid the expense of fireEvent calls when\nthere are no listeners. This can be particularly helpful when one would otherwise\nhave to call fireEvent hundreds or thousands of times. It is used like this:\n\n     if (this.hasListeners.foo) {\n         this.fireEvent('foo', this, arg1);\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "4,290,30",
+                  "readonly": "4,291,11",
+                  "text": "4,292,11,790",
+                  "type": "4,290,22"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isObservable",
+                "text": "`true` in this class to identify an object as an instantiated Observable, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "4,278,31",
+                  "text": "4,279,11,95",
+                  "type": "4,278,22"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isProxy",
+                "text": "`true` in this class to identify an object as an instantiated Proxy, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,105,28",
+                  "text": "2,106,8,90",
+                  "type": "2,105,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isSynchronous",
+                "optional": true,
+                "text": "Identifies the proxy as (a)synchronous.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "2,111,29",
+                  "text": "2,112,8,40",
+                  "type": "2,111,19",
+                  "value": "2,111,43"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods"
+          }
+        ],
+        "src": {
+          "alias": "0,99,0",
+          "alternateClassNames": "0,98,0",
+          "extends": "0,97,0",
+          "name": "0,96,0",
+          "text": "0,2,4,3366"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

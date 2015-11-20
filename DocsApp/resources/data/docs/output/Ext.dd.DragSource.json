@@ -1,0 +1,2950 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/dd/DragSource.js",
+    "../../../ext/classic/classic/src/dd/DDProxy.js",
+    "../../../ext/classic/classic/src/dd/DragDrop.js",
+    "../../../ext/classic/classic/src/dd/DD.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.dd.DDProxy",
+        "name": "Ext.dd.DragSource",
+        "requires": "Ext.dd.StatusProxy,Ext.dd.DragDropManager",
+        "text": "A simple class that provides the basic implementation needed to make any element draggable.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "animRepair",
+                "text": "If true, animates the proxy element back to the position of the handle element used to trigger the drag.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,36,23",
+                  "text": "0,37,8,105",
+                  "type": "0,36,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ddGroup",
+                "text": "A named drag drop group to which this object belongs.  If a group is specified, then this object will only\ninteract with other drag drop objects in the same group.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,12,22",
+                  "text": "0,13,8,164",
+                  "type": "0,12,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dropAllowed",
+                "text": "The CSS class returned to the drag source when drop is allowed.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,25,22",
+                  "text": "0,26,8,64",
+                  "type": "0,25,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dropNotAllowed",
+                "text": "The CSS class returned to the drag source when drop is not allowed.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,30,22",
+                  "text": "0,31,8,68",
+                  "type": "0,30,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "repairHighlightColor",
+                "text": "The color to use when visually highlighting the drag source in the afterRepair\nmethod after a failed drop (defaults to light blue). The color must be a 6 digit hex value, without\na preceding '#'.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,42,22",
+                  "text": "0,43,8,196",
+                  "type": "0,42,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_resizeProxy",
+                "text": "The proxy is automatically resized to the dimensions of the linked\nelement when a drag is initiated, unless resizeFrame is set to false\n",
+                "src": {
+                  "access": "1,143,8",
+                  "name": "1,145,0",
+                  "text": "1,141,8,136"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addInvalidHandleClass",
+                "text": "Lets you specify a css class of elements that will not initiate a drag\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cssClass",
+                    "text": "the class of the elements you wish to ignore\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,867,24",
+                      "text": "2,867,33,45",
+                      "type": "2,867,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,869,0",
+                  "text": "2,866,8,71"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addInvalidHandleId",
+                "text": "Lets you to specify an element id for a child of a drag handle\nthat should not initiate a drag\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "the element id of the element you wish to ignore\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,856,24",
+                      "text": "2,856,27,49",
+                      "type": "2,856,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,855,16",
+                  "text": "2,853,8,95"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addInvalidHandleType",
+                "text": "Allows you to specify a tag name that should not start a drag operation\nwhen clicked.  This is designed to facilitate embedding links within a\ndrag handle that do something other than start the drag.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "tagName",
+                    "text": "the type of element to exclude\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,845,24",
+                      "text": "2,845,32,31",
+                      "type": "2,845,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,844,16",
+                  "text": "2,841,8,200"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addToGroup",
+                "text": "Adds this instance to a group of related drag/drop objects.  All\ninstances belong to at least one group, and can belong to as many\ngroups as needed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "sGroup",
+                    "text": "the name of the group\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,711,24",
+                      "text": "2,711,31,22",
+                      "type": "2,711,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,713,0",
+                  "text": "2,708,8,149"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "afterDragDrop",
+                "text": "An empty function by default, but provided so that you can perform a custom action\nafter a valid drag drop has occurred by providing an implementation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The drop target\n",
+                    "type": "Ext.dd.DragDrop",
+                    "src": {
+                      "name": "0,221,45",
+                      "text": "0,221,52,16",
+                      "type": "0,221,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,222,35",
+                      "text": "0,222,37,17",
+                      "type": "0,222,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dropped element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,223,36",
+                      "text": "0,223,39,30",
+                      "type": "0,223,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,224,28",
+                  "text": "0,219,20,152"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "afterDragEnter",
+                "text": "An empty function by default, but provided so that you can perform a custom action\nwhen the dragged item enters the drop target by providing an implementation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The drop target\n",
+                    "type": "Ext.dd.DragDrop",
+                    "src": {
+                      "name": "0,101,45",
+                      "text": "0,101,52,16",
+                      "type": "0,101,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,102,35",
+                      "text": "0,102,37,17",
+                      "type": "0,102,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dragged element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,103,36",
+                      "text": "0,103,39,30",
+                      "type": "0,103,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,104,28",
+                  "text": "0,99,20,160"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "afterDragOut",
+                "text": "An empty function by default, but provided so that you can perform a custom action\nafter the dragged item is dragged out of the target without dropping.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The drop target\n",
+                    "type": "Ext.dd.DragDrop",
+                    "src": {
+                      "name": "0,177,45",
+                      "text": "0,177,52,16",
+                      "type": "0,177,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,178,35",
+                      "text": "0,178,37,17",
+                      "type": "0,178,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dragged element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,179,36",
+                      "text": "0,179,39,30",
+                      "type": "0,179,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,180,28",
+                  "text": "0,175,20,153"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "afterDragOver",
+                "text": "An empty function by default, but provided so that you can perform a custom action\nwhile the dragged item is over the drop target by providing an implementation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The drop target\n",
+                    "type": "Ext.dd.DragDrop",
+                    "src": {
+                      "name": "0,140,45",
+                      "text": "0,140,52,16",
+                      "type": "0,140,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,141,35",
+                      "text": "0,141,37,17",
+                      "type": "0,141,28"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dragged element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,142,36",
+                      "text": "0,142,39,30",
+                      "type": "0,142,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,143,28",
+                  "text": "0,138,20,162"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "afterInvalidDrop",
+                "text": "An empty function by default, but provided so that you can perform a custom action\nafter an invalid drop has occurred by providing an implementation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,297,34",
+                      "text": "0,297,36,17",
+                      "type": "0,297,27"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dropped element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,298,35",
+                      "text": "0,298,38,30",
+                      "type": "0,298,27"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,299,27",
+                  "text": "0,295,19,150"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterRepair",
+                "src": {
+                  "access": "0,307,8",
+                  "name": "0,309,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "afterValidDrop",
+                "text": "An empty function by default, but provided so that you can perform a custom action\nafter a valid drop has occurred by providing an implementation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The target DD\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,254,32",
+                      "text": "0,254,39,14",
+                      "type": "0,254,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,255,31",
+                      "text": "0,255,33,17",
+                      "type": "0,255,24"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dropped element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,256,32",
+                      "text": "0,256,35,30",
+                      "type": "0,256,24"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,257,24",
+                  "text": "0,252,16,147"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "alignElWithMouse",
+                "text": "Sets the element to the location of the mousedown or click event,\nmaintaining the cursor location relative to the location on the element\nthat was clicked.  Override this if you want to place the element in a\nlocation other than where the cursor is.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "the element to move\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "3,83,29",
+                      "text": "3,83,32,20",
+                      "type": "3,83,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iPageX",
+                    "text": "the X coordinate of the mousedown or drag event\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,84,24",
+                      "text": "3,84,31,48",
+                      "type": "3,84,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iPageY",
+                    "text": "the Y coordinate of the mousedown or drag event\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,85,24",
+                      "text": "3,85,31,48",
+                      "type": "3,85,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,87,0",
+                  "text": "3,79,8,250"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "applyConfig",
+                "text": "Sets up config options specific to this class. Overrides\nExt.dd.DragDrop, but all versions of this method through the\ninheritance chain are called\n",
+                "src": {
+                  "name": "3,250,0",
+                  "text": "3,246,8,147"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "autoOffset",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "src": {
+                      "name": "0,441,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "src": {
+                      "name": "0,441,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,439,8",
+                  "name": "0,441,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "autoScroll",
+                "text": "Auto-scroll the window if the dragged object has been moved beyond the\nvisible window boundary.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "text": "the drag element's x position\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,145,24",
+                      "text": "3,145,26,30",
+                      "type": "3,145,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "text": "the drag element's y position\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,146,24",
+                      "text": "3,146,26,30",
+                      "type": "3,146,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "h",
+                    "text": "the height of the drag element\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,147,24",
+                      "text": "3,147,26,31",
+                      "type": "3,147,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "w",
+                    "text": "the width of the drag element\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,148,24",
+                      "text": "3,148,26,30",
+                      "type": "3,148,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,149,8",
+                  "name": "3,151,0",
+                  "text": "3,143,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "b4Drag",
+                "text": "Event that fires prior to the onDrag event.  Overrides\nExt.dd.DragDrop.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "3,269,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,269,0",
+                  "text": "3,266,8,72"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "b4DragDrop",
+                "text": "Code that executes immediately before the onDragDrop event\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "2,390,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,388,8",
+                  "name": "2,390,0",
+                  "text": "2,387,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "b4DragOut",
+                "text": "Code that executes immediately before the onDragOut event\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "2,375,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,373,8",
+                  "name": "2,375,0",
+                  "text": "2,372,8,58"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "b4DragOver",
+                "text": "Code that executes immediately before the onDragOver event\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "2,359,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,357,8",
+                  "name": "2,359,0",
+                  "text": "2,356,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "b4EndDrag",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,422,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,420,8",
+                  "name": "0,422,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "b4MouseDown",
+                "text": "Event that fires prior to the onMouseDown event.  Overrides\nExt.dd.DragDrop.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "3,259,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,259,0",
+                  "text": "3,256,8,77"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "b4StartDrag",
+                "text": "Code that executes immediately before the startDrag event\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "src": {
+                      "name": "2,322,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "src": {
+                      "name": "2,322,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,320,8",
+                  "name": "2,322,0",
+                  "text": "2,319,8,58"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beforeDragDrop",
+                "template": true,
+                "text": "An empty function by default, but provided so that you can perform a custom action before the dragged\nitem is dropped onto the target and optionally cancel the onDragDrop.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The drop target\n",
+                    "type": "Ext.dd.DragDrop",
+                    "src": {
+                      "name": "0,235,33",
+                      "text": "0,235,40,16",
+                      "type": "0,235,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,236,23",
+                      "text": "0,236,25,17",
+                      "type": "0,236,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dragged element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,237,24",
+                      "text": "0,237,27,30",
+                      "type": "0,237,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "isValid True if the drag drop event is valid, else false to cancel\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,238,26,67",
+                      "type": "0,238,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,241,0",
+                  "template": "0,239,8",
+                  "text": "0,233,8,172"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beforeDragEnter",
+                "template": true,
+                "text": "An empty function by default, but provided so that you can perform a custom action\nbefore the dragged item enters the drop target and optionally cancel the onDragEnter.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The drop target\n",
+                    "type": "Ext.dd.DragDrop",
+                    "src": {
+                      "name": "0,114,33",
+                      "text": "0,114,40,16",
+                      "type": "0,114,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,115,23",
+                      "text": "0,115,25,17",
+                      "type": "0,115,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dragged element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,116,24",
+                      "text": "0,116,27,30",
+                      "type": "0,116,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "isValid True if the drag event is valid, else false to cancel\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,117,26,62",
+                      "type": "0,117,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,120,0",
+                  "template": "0,118,8",
+                  "text": "0,112,8,169"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beforeDragOut",
+                "template": true,
+                "text": "An empty function by default, but provided so that you can perform a custom action before the dragged\nitem is dragged out of the target without dropping, and optionally cancel the onDragOut.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The drop target\n",
+                    "type": "Ext.dd.DragDrop",
+                    "src": {
+                      "name": "0,191,33",
+                      "text": "0,191,40,16",
+                      "type": "0,191,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,192,23",
+                      "text": "0,192,25,17",
+                      "type": "0,192,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dragged element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,193,24",
+                      "text": "0,193,27,30",
+                      "type": "0,193,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "isValid True if the drag event is valid, else false to cancel\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,194,26,62",
+                      "type": "0,194,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,197,0",
+                  "template": "0,195,8",
+                  "text": "0,189,8,191"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beforeDragOver",
+                "template": true,
+                "text": "An empty function by default, but provided so that you can perform a custom action\nwhile the dragged item is over the drop target and optionally cancel the onDragOver.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The drop target\n",
+                    "type": "Ext.dd.DragDrop",
+                    "src": {
+                      "name": "0,153,33",
+                      "text": "0,153,40,16",
+                      "type": "0,153,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,154,23",
+                      "text": "0,154,25,17",
+                      "type": "0,154,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dragged element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,155,24",
+                      "text": "0,155,27,30",
+                      "type": "0,155,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "isValid True if the drag event is valid, else false to cancel\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,156,26,62",
+                      "type": "0,156,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,159,0",
+                  "template": "0,157,8",
+                  "text": "0,151,8,168"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beforeInvalidDrop",
+                "template": true,
+                "text": "An empty function by default, but provided so that you can perform a custom action after an invalid\ndrop has occurred.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The drop target\n",
+                    "type": "Ext.dd.DragDrop",
+                    "src": {
+                      "name": "0,320,33",
+                      "text": "0,320,40,16",
+                      "type": "0,320,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,321,23",
+                      "text": "0,321,25,17",
+                      "type": "0,321,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the dragged element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,322,24",
+                      "text": "0,322,27,30",
+                      "type": "0,322,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "isValid True if the invalid drop should proceed, else false to cancel\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,323,26,70",
+                      "type": "0,323,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,326,0",
+                  "template": "0,324,8",
+                  "text": "0,318,8,119"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "cachePosition",
+                "text": "Saves the most recent position so that we can reset the constraints and\ntick marks on-demand.  We need to know this so that we can calculate the\nnumber of pixels the element is offset from its original position.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iPageX",
+                    "optional": true,
+                    "text": "the current x position (this just makes it so we\ndon't have to look it up again)\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,126,25",
+                      "text": "3,126,33,49:3,127,8,32",
+                      "type": "3,126,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iPageY",
+                    "optional": true,
+                    "text": "the current y position (this just makes it so we\ndon't have to look it up again)\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,128,25",
+                      "text": "3,128,33,49:3,129,8,32",
+                      "type": "3,128,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,131,0",
+                  "text": "3,122,8,213"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearConstraints",
+                "text": "Clears any constraints applied to this instance.  Also clears ticks\nsince they can't exist independent of a constraint at this time.\n",
+                "src": {
+                  "name": "2,1022,0",
+                  "text": "2,1019,8,133"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearTicks",
+                "text": "Clears any tick interval defined for this instance\n",
+                "src": {
+                  "name": "2,1031,0",
+                  "text": "2,1029,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constrainTo",
+                "text": "Initializes the drag drop object's constraints to restrict movement to a certain element.\n\nUsage:\n\n    var dd = new Ext.dd.DDProxy(\"dragDiv1\", \"proxytest\",\n                   { dragElId: \"existingProxyDiv\" });\n    dd.startDrag = function(){\n        this.constrainTo(\"parent-id\");\n    };\n\nOr you can initalize it using the <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a> object:\n\n    Ext.get(\"dragDiv1\").initDDProxy(\"proxytest\", {dragElId: \"existingProxyDiv\"}, {\n        startDrag : function(){\n            this.constrainTo(\"parent-id\");\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "constrainTo",
+                    "text": "The element or element ID to constrain to.\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "2,477,52",
+                      "text": "2,477,64,43",
+                      "type": "2,477,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "pad",
+                    "text": "(optional) Pad provides a way to specify \"padding\" of the constraints,\nand can be either a number for symmetrical padding (4 would be equal to `{left:4, right:4, top:4, bottom:4}`) or\nan object containing the sides to pad. For example: `{right:10, bottom:10}`\n",
+                    "type": "Object/Number",
+                    "src": {
+                      "name": "2,478,31",
+                      "text": "2,478,35,71:2,479,8,189",
+                      "type": "2,478,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "inContent",
+                    "text": "(optional) Constrain the draggable in the content box of the element (inside padding and borders)\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,481,25",
+                      "text": "2,481,35,98",
+                      "type": "2,481,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,483,0",
+                  "text": "2,459,8,532"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new drag-source.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The container element or ID of it.\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,51,52",
+                      "text": "0,51,55,35",
+                      "type": "0,51,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "(optional) Config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,52,24",
+                      "text": "0,52,31,26",
+                      "type": "0,52,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,54,0",
+                  "text": "0,50,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createFrame",
+                "text": "Creates the proxy element if it does not yet exist\n",
+                "src": {
+                  "name": "1,68,0",
+                  "text": "1,66,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "endDrag",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,428,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,426,8",
+                  "name": "0,428,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDragData",
+                "text": "Returns the data object associated with this drag source\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "data An object containing arbitrary data\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,76,25,41",
+                      "type": "0,76,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,78,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,78,0",
+                  "text": "0,75,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDragEl",
+                "text": "Returns a reference to the actual element to drag.  By default this is\nthe same as the html element, but it can be assigned to another\nelement. An example of this can be found in Ext.dd.DDProxy\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "the html element\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "text": "2,544,30,17",
+                      "type": "2,544,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,546,0",
+                  "text": "2,541,8,194"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getEl",
+                "text": "Returns a reference to the linked element\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "the html element\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "text": "2,530,30,17",
+                      "type": "2,530,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,532,0",
+                  "text": "2,529,8,42"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getProxy",
+                "text": "Returns the drag source's underlying <a href='#!/api/Ext.dd.StatusProxy'>Ext.dd.StatusProxy</a>\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "proxy The StatusProxy\n",
+                    "type": "Ext.dd.StatusProxy",
+                    "src": {
+                      "text": "0,397,37,22",
+                      "type": "0,397,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,399,0",
+                  "text": "0,396,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getRepairXY",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,266,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "0,266,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,264,8",
+                  "name": "0,266,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getTargetCoord",
+                "text": "Finds the location the element should be placed if we want to move\nit to where the mouse location less the click offset would place us.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iPageX",
+                    "text": "the X coordinate of the click\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,209,24",
+                      "text": "3,209,31,30",
+                      "type": "3,209,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iPageY",
+                    "text": "the Y coordinate of the click\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,210,24",
+                      "text": "3,210,31,30",
+                      "type": "3,210,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object that contains the coordinates (Object.x and Object.y)\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "x",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,212,32",
+                          "type": "3,212,17"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "y",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,213,32",
+                          "type": "3,213,17"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "text": "3,211,25,64",
+                      "type": "3,211,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,214,8",
+                  "name": "3,216,0",
+                  "text": "3,207,8,136"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getTick",
+                "text": "Normally the drag element is moved pixel by pixel, but we can specify\nthat it move a number of pixels at a time.  This method resolves the\nlocation when we have it set up like this.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "val",
+                    "text": "where we want to place the object\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,1094,24",
+                      "text": "2,1094,28,34",
+                      "type": "2,1094,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "tickArray",
+                    "text": "sorted array of valid points\n",
+                    "type": "Number[]",
+                    "src": {
+                      "name": "2,1095,26",
+                      "text": "2,1095,36,29",
+                      "type": "2,1095,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "the closest tick\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "2,1096,25,17",
+                      "type": "2,1096,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,1097,8",
+                  "name": "2,1099,0",
+                  "text": "2,1091,8,182"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "handleMouseDown",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,333,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,331,8",
+                  "name": "0,333,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "handleOnAvailable",
+                "text": "Executed when the linked element is available\n",
+                "src": {
+                  "access": "2,636,8",
+                  "name": "2,638,0",
+                  "text": "2,635,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hideProxy",
+                "text": "Hides the drag source's <a href='#!/api/Ext.dd.StatusProxy'>Ext.dd.StatusProxy</a>\n",
+                "src": {
+                  "name": "0,406,0",
+                  "text": "0,404,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "init",
+                "text": "Sets up the DragDrop object.  Must be called in the constructor of any\nExt.dd.DragDrop subclass\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "the id of the linked element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,553,24",
+                      "text": "2,553,27,29",
+                      "type": "2,553,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "sGroup",
+                    "text": "the group of related items\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,554,24",
+                      "text": "2,554,31,27",
+                      "type": "2,554,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "configuration attributes\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,555,24",
+                      "text": "2,555,31,25",
+                      "type": "2,555,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,557,0",
+                  "text": "2,551,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "initFrame",
+                "text": "Initialization for the drag frame element.  Must be called in the\nconstructor of all subclasses\n",
+                "src": {
+                  "name": "1,104,0",
+                  "text": "1,101,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "initTarget",
+                "text": "Initializes Targeting functionality only... the object does not\nget a mousedown handler.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "the id of the linked element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,575,24",
+                      "text": "2,575,27,29",
+                      "type": "2,575,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "sGroup",
+                    "text": "the group of related items\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,576,24",
+                      "text": "2,576,31,27",
+                      "type": "2,576,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "configuration attributes\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,577,24",
+                      "text": "2,577,31,25",
+                      "type": "2,577,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,579,0",
+                  "text": "2,573,8,89"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLocked",
+                "text": "Returns true if this instance is locked, or the drag drop mgr is locked\n(meaning that all drag/drop is disabled on the page.)\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "true if this obj or all drag/drop is locked, else\nfalse\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,797,26,50:2,798,8,6",
+                      "type": "2,797,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,800,0",
+                  "text": "2,795,8,126"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isValidHandleChild",
+                "text": "Checks the tag exclusion list to see if this click should be ignored\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "the HTMLElement to evaluate\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "2,913,29",
+                      "text": "2,913,34,28",
+                      "type": "2,913,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "true if this is a valid tag type, false if not\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,914,26,47",
+                      "type": "2,914,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,916,0",
+                  "text": "2,912,8,69"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lock",
+                "text": "Locks this instance\n",
+                "src": {
+                  "name": "2,178,0",
+                  "text": "2,176,8,20"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onAvailable",
+                "text": "Override the onAvailable method to do what is needed after the initial\nposition was determined.\n",
+                "src": {
+                  "name": "2,444,0",
+                  "text": "2,441,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onBeforeDrag",
+                "template": true,
+                "text": "An empty function by default, but provided so that you can perform a custom action before the initial\ndrag event begins and optionally cancel it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "An object containing arbitrary data to be shared with drop targets\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,348,24",
+                      "text": "0,348,29,67",
+                      "type": "0,348,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "The event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "0,349,23",
+                      "text": "0,349,25,17",
+                      "type": "0,349,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "isValid True if the drag event is valid, else false to cancel\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,350,26,62",
+                      "type": "0,350,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,353,0",
+                  "template": "0,351,8",
+                  "text": "0,346,8,146"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onDrag",
+                "text": "Abstract method called during the onMouseMove event while dragging an\nobject.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "the mousemove event\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "2,341,23",
+                      "text": "2,341,25,20",
+                      "type": "2,341,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,343,0",
+                  "text": "2,339,8,78"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onDragDrop",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,204,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,204,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,202,8",
+                  "name": "0,204,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onDragEnter",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,85,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,85,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,83,8",
+                  "name": "0,85,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onDragOut",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,166,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,166,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,164,8",
+                  "name": "0,166,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onDragOver",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,127,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,127,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,125,8",
+                  "name": "0,127,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onEndDrag",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "0,435,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,435,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,433,8",
+                  "name": "0,435,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onInitDrag",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "src": {
+                      "name": "0,387,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "src": {
+                      "name": "0,387,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,385,8",
+                  "name": "0,387,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onInvalidDrop",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "src": {
+                      "name": "0,273,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,273,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,273,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,271,8",
+                  "name": "0,273,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onMouseDown",
+                "text": "Called when a drag/drop obj gets a mousedown\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "the mousedown event\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "2,430,23",
+                      "text": "2,430,25,20",
+                      "type": "2,430,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,432,0",
+                  "text": "2,429,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onMouseUp",
+                "text": "Called when a drag/drop obj gets a mouseup\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "text": "the mouseup event\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "2,436,23",
+                      "text": "2,436,25,18",
+                      "type": "2,436,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,438,0",
+                  "text": "2,435,8,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onStartDrag",
+                "template": true,
+                "text": "An empty function by default, but provided so that you can perform a custom action once the initial\ndrag event has begun.  The drag cannot be canceled from this function.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "text": "The x position of the click on the dragged object\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,360,24",
+                      "text": "0,360,26,50",
+                      "type": "0,360,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "text": "The y position of the click on the dragged object\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,361,24",
+                      "text": "0,361,26,50",
+                      "type": "0,361,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,365,0",
+                  "template": "0,363,8",
+                  "text": "0,358,8,171"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onValidDrop",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "src": {
+                      "name": "0,248,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "0,248,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "src": {
+                      "name": "0,248,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,246,8",
+                  "name": "0,248,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeFromGroup",
+                "text": "Removes this instance from the supplied interaction group\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "sGroup",
+                    "text": "The group to drop\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,720,24",
+                      "text": "2,720,31,18",
+                      "type": "2,720,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,722,0",
+                  "text": "2,719,8,58"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeInvalidHandleClass",
+                "text": "Unsets an invalid css class\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cssClass",
+                    "text": "the class of the element(s) you wish to\nre-enable\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,896,24",
+                      "text": "2,896,33,40:2,897,8,10",
+                      "type": "2,896,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,899,0",
+                  "text": "2,895,8,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeInvalidHandleId",
+                "text": "Unsets an invalid handle id\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "the id of the element to re-enable\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,885,24",
+                      "text": "2,885,27,35",
+                      "type": "2,885,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,887,0",
+                  "text": "2,884,8,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeInvalidHandleType",
+                "text": "Unsets an excluded tag name set by addInvalidHandleType\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "tagName",
+                    "text": "the type of element to unexclude\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,875,24",
+                      "text": "2,875,32,33",
+                      "type": "2,875,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,877,0",
+                  "text": "2,874,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resetConstraints",
+                "text": "Must be called if you manually reposition a dd element.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "maintainOffset",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,1061,25",
+                      "type": "2,1061,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1063,0",
+                  "text": "2,1060,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setDelta",
+                "text": "Sets the pointer offset.  You can call this directly to force the\noffset to be in a particular location (e.g., pass in 0,0 to set it\nto the center of the object)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iDeltaX",
+                    "text": "the distance from the left\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,54,24",
+                      "text": "3,54,32,27",
+                      "type": "3,54,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iDeltaY",
+                    "text": "the distance from the top\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,55,24",
+                      "text": "3,55,32,26",
+                      "type": "3,55,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,57,0",
+                  "text": "3,51,8,162"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setDragElId",
+                "text": "Allows you to specify that an element other than the linked element\nwill be moved with the cursor during a drag\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "the id of the element that will be used to initiate the drag\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,733,24",
+                      "text": "2,733,27,61",
+                      "type": "2,733,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,735,0",
+                  "text": "2,731,8,112"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setDragElPos",
+                "text": "Sets the drag element to the location of the mousedown or click event,\nmaintaining the cursor location relative to the location on the element\nthat was clicked.  Override this if you want to place the element in a\nlocation other than where the cursor is.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iPageX",
+                    "text": "the X coordinate of the mousedown or drag event\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,67,24",
+                      "text": "3,67,31,48",
+                      "type": "3,67,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iPageY",
+                    "text": "the Y coordinate of the mousedown or drag event\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,68,24",
+                      "text": "3,68,31,48",
+                      "type": "3,68,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,70,0",
+                  "text": "3,63,8,255"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setHandleElId",
+                "text": "Allows you to specify a child of the linked element that should be\nused to initiate the drag operation.  An example of this would be if\nyou have a content div with text and links.  Clicking anywhere in the\ncontent area would normally start the drag operation.  Use this method\nto specify that an element inside of the content div is the element\nthat starts the drag operation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "the id of the element that will be used to\ninitiate the drag.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,746,24",
+                      "text": "2,746,27,43:2,747,8,19",
+                      "type": "2,746,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,749,0",
+                  "text": "2,740,8,377"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setInitPosition",
+                "text": "Stores the initial placement of the linked element.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "diffX",
+                    "text": "the X offset, default 0\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,668,24",
+                      "text": "2,668,30,24",
+                      "type": "2,668,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "diffY",
+                    "text": "the Y offset, default 0\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,669,24",
+                      "text": "2,669,30,24",
+                      "type": "2,669,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,671,0",
+                  "text": "2,667,8,52"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setOuterHandleElId",
+                "text": "Allows you to set an element outside of the linked element as a drag\nhandle\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "the id of the element that will be used to initiate the drag\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,760,24",
+                      "text": "2,760,27,61",
+                      "type": "2,760,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,762,0",
+                  "text": "2,758,8,76"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setPadding",
+                "text": "Configures the padding for the target zone in px.  Effectively expands\n(or reduces) the virtual object size for targeting calculations.\nSupports css-style shorthand; if only one parameter is passed, all sides\nwill have that padding, and if only two are passed, the top and bottom\nwill have the first param, the left and right the second.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iTop",
+                    "text": "Top pad\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,650,24",
+                      "text": "2,650,29,8",
+                      "type": "2,650,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iRight",
+                    "text": "Right pad\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,651,24",
+                      "text": "2,651,31,10",
+                      "type": "2,651,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iBot",
+                    "text": "Bot pad\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,652,24",
+                      "text": "2,652,29,8",
+                      "type": "2,652,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iLeft",
+                    "text": "Left pad\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,653,24",
+                      "text": "2,653,30,9",
+                      "type": "2,653,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,655,0",
+                  "text": "2,645,8,338"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setStartPosition",
+                "text": "Sets the start position of the element.  This is set when the obj\nis initialized, the reset when a drag is started.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "pos",
+                    "text": "current position (from previous lookup)\n",
+                    "src": {
+                      "name": "2,696,15",
+                      "text": "2,696,19,40"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,697,8",
+                  "name": "2,699,0",
+                  "text": "2,694,8,116"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setXConstraint",
+                "text": "By default, the element can be dragged any place on the screen.  Use\nthis method to limit the horizontal travel of the element.  Pass in\n0,0 for the parameters if you want to lock the drag to the y axis.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iLeft",
+                    "text": "the number of pixels the element can move to the left\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,1001,24",
+                      "text": "2,1001,30,54",
+                      "type": "2,1001,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iRight",
+                    "text": "the number of pixels the element can move to the\nright\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,1002,24",
+                      "text": "2,1002,31,49:2,1003,8,6",
+                      "type": "2,1002,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iTickSize",
+                    "text": "(optional) parameter for specifying that the\nelement should move iTickSize pixels at a time.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,1004,24",
+                      "text": "2,1004,34,45:2,1005,8,48",
+                      "type": "2,1004,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1007,0",
+                  "text": "2,998,8,204"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setXTicks",
+                "text": "Creates the array of horizontal tick marks if an interval was specified\nin setXConstraint().\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iStartX",
+                    "src": {
+                      "name": "2,944,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iTickSize",
+                    "src": {
+                      "name": "2,944,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,942,8",
+                  "name": "2,944,0",
+                  "text": "2,940,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setYConstraint",
+                "text": "By default, the element can be dragged any place on the screen.  Set\nthis to limit the vertical travel of the element.  Pass in 0,0 for the\nparameters if you want to lock the drag to the x axis.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iUp",
+                    "text": "the number of pixels the element can move up\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,1042,24",
+                      "text": "2,1042,28,45",
+                      "type": "2,1042,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iDown",
+                    "text": "the number of pixels the element can move down\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,1043,24",
+                      "text": "2,1043,30,47",
+                      "type": "2,1043,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iTickSize",
+                    "text": "(optional) parameter for specifying that the\nelement should move iTickSize pixels at a time.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,1044,24",
+                      "text": "2,1044,34,45:2,1045,8,48",
+                      "type": "2,1044,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1047,0",
+                  "text": "2,1039,8,195"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setYTicks",
+                "text": "Creates the array of vertical tick marks if an interval was specified in\nsetYConstraint().\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iStartY",
+                    "src": {
+                      "name": "2,973,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iTickSize",
+                    "src": {
+                      "name": "2,973,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,971,8",
+                  "name": "2,973,0",
+                  "text": "2,969,8,91"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "showFrame",
+                "text": "Resizes the drag frame to the dimensions of the clicked object, positions\nit over the object, and finally displays it\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "iPageX",
+                    "text": "X click position\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "1,119,24",
+                      "text": "1,119,31,17",
+                      "type": "1,119,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "iPageY",
+                    "text": "Y click position\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "1,120,24",
+                      "text": "1,120,31,17",
+                      "type": "1,120,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,121,8",
+                  "name": "1,123,0",
+                  "text": "1,117,8,118"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "startDrag",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "src": {
+                      "name": "0,375,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "src": {
+                      "name": "0,375,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,373,8",
+                  "name": "0,375,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "toString method\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "string representation of the dd obj\n",
+                    "type": "String",
+                    "src": {
+                      "text": "2,1127,25,36",
+                      "type": "2,1127,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1129,0",
+                  "text": "2,1126,8,16"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "triggerCacheRefresh",
+                "src": {
+                  "access": "0,413,8",
+                  "name": "0,415,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unlock",
+                "text": "Unlocks this instace\n",
+                "src": {
+                  "name": "2,192,0",
+                  "text": "2,190,8,21"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unreg",
+                "text": "Removes all drag and drop hooks for this element\n",
+                "src": {
+                  "name": "2,775,0",
+                  "text": "2,773,8,49"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "__ygDragDrop",
+                "text": "Internal typeof flag\n",
+                "src": {
+                  "access": "2,221,8",
+                  "name": "2,219,18",
+                  "text": "2,220,8,21"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "_domRef",
+                "text": "Cached reference to the linked element\n",
+                "src": {
+                  "access": "2,214,8",
+                  "name": "2,212,18",
+                  "text": "2,213,8,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "available",
+                "text": "The available property is false until the linked dom element is accessible.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,301,28",
+                  "text": "2,302,8,76",
+                  "type": "2,301,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "centerFrame",
+                "text": "By default the frame is positioned exactly where the drag element is, so\nwe use the cursor offset provided by Ext.dd.DD.  Another option that works only if\nyou do not have constraints on the obj is to have the drag frame centered\naround the cursor.  Set centerFrame to true for this effect.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,57,28",
+                  "text": "1,58,8,291",
+                  "type": "1,57,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "config",
+                "text": "Configuration attributes passed into the constructor\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,86,27",
+                  "text": "2,87,8,53",
+                  "type": "2,86,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "constrainX",
+                "text": "Set to true when horizontal contraints are applied\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "2,228,8",
+                  "name": "2,226,28",
+                  "text": "2,227,8,51",
+                  "type": "2,226,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "constrainY",
+                "text": "Set to true when vertical contraints are applied\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "2,235,8",
+                  "name": "2,233,28",
+                  "text": "2,234,8,49",
+                  "type": "2,233,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultPadding",
+                "text": "Provides default constraint padding to \"constrainTo\" elements.\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,448,27",
+                  "text": "2,449,8,63",
+                  "type": "2,448,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dragData",
+                "text": "This property contains the data representing the dragged object. This data is set up by the implementation of the\n<a href='#!/api/Ext.dd.DragSource-method-getDragData'>getDragData</a> method. It must contain a ddel property, but can contain any other data according to the\napplication's needs.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,18,27",
+                  "text": "0,19,8,245",
+                  "type": "0,18,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "dragElId",
+                "text": "The id of the element that will be dragged.  By default this is same\nas the linked element, but could be changed to another element. Ex:\nExt.dd.DDProxy\n",
+                "type": "String",
+                "src": {
+                  "access": "2,96,8",
+                  "name": "2,92,27",
+                  "text": "2,93,8,152",
+                  "type": "2,92,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "groups",
+                "text": "The group defines a logical collection of DragDrop objects that are\nrelated.  Instances only get events when interacting with other\nDragDrop object in the same group.  This lets us define multiple\ngroups using a single DragDrop subclass if we want.\n\nAn object in the format {'group1':true, 'group2':true}\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,157,27",
+                  "text": "2,158,8,305",
+                  "type": "2,157,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "handleElId",
+                "text": "The ID of the element that initiates the drag operation.  By default\nthis is the linked element, but could be changed to be a child of this\nelement.  This lets us do things like only starting the drag when the\nheader element within the linked html element is clicked.\n",
+                "type": "String",
+                "src": {
+                  "access": "2,106,8",
+                  "name": "2,101,27",
+                  "text": "2,102,8,268",
+                  "type": "2,101,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hasOuterHandles",
+                "text": "By default, drags can only be initiated if the mousedown occurs in the\nregion the linked element is.  This is done in part to work around a\nbug in some browsers that mis-report the mousedown if the previous\nmouseup happened outside of the window.  This property is set to true\nif outer handles are defined. Defaults to false.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,307,28",
+                  "text": "2,308,8,326",
+                  "type": "2,307,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "id",
+                "text": "The id of the element associated with this object.  This is what we\nrefer to as the \"linked element\" because the size and position of\nthis element is used to determine when the drag and drop objects have\ninteracted.\n",
+                "type": "String",
+                "src": {
+                  "name": "2,77,27",
+                  "text": "2,78,8,216",
+                  "type": "2,77,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ignoreSelf",
+                "text": "Set to false to enable a DragDrop object to fire drag events while dragging\nover its own Element. Defaults to true - DragDrop objects do not by default\nfire drag events to themselves.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,70,28",
+                  "text": "2,71,8,184",
+                  "type": "2,70,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "invalidHandleClasses",
+                "text": "An Array of CSS class names for elements to be considered in valid as drag handles.\n",
+                "type": "String[]",
+                "src": {
+                  "name": "2,135,29",
+                  "text": "2,136,8,84",
+                  "type": "2,135,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "invalidHandleIds",
+                "text": "An object who's property names identify the IDs of elements to be considered invalid as drag handles.\nA non-null property value identifies the ID as invalid. For example, to prevent\ndragging from being initiated on element ID \"foo\", use:\n\n    {\n        foo: true\n    }\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,123,27",
+                  "text": "2,124,8,269",
+                  "type": "2,123,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "invalidHandleTypes",
+                "text": "An object who's property names identify HTML tags to be considered invalid as drag handles.\nA non-null property value identifies the tag as invalid. Defaults to the\nfollowing value which prevents drag operations from being initiated by `<a>` elements:\n\n    {\n        A: \"A\"\n    }\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,111,27",
+                  "text": "2,112,8,280",
+                  "type": "2,111,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isTarget",
+                "text": "By default, all instances can be a drop target.  This can be disabled by\nsetting isTarget to false.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,197,28",
+                  "text": "2,198,8,100",
+                  "type": "2,197,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "locked",
+                "text": "Individual drag/drop instances can be locked.  This will prevent\nonmousedown start drag.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "2,171,8",
+                  "name": "2,168,28",
+                  "text": "2,169,8,89",
+                  "type": "2,168,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "maintainOffset",
+                "text": "Maintain offsets when we resetconstraints.  Set to true when you want\nthe position of the element relative to its parent to stay the same\nwhen the page changes\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,268,28",
+                  "text": "2,269,8,160",
+                  "type": "2,268,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "maxX",
+                "text": "The right constraint\n",
+                "type": "Number",
+                "src": {
+                  "access": "2,249,8",
+                  "name": "2,247,27",
+                  "text": "2,248,8,21",
+                  "type": "2,247,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "maxY",
+                "text": "The down constraint\n",
+                "type": "Number",
+                "src": {
+                  "access": "2,263,8",
+                  "name": "2,261,27",
+                  "text": "2,262,8,20",
+                  "type": "2,261,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "minX",
+                "text": "The left constraint\n",
+                "type": "Number",
+                "src": {
+                  "access": "2,242,8",
+                  "name": "2,240,27",
+                  "text": "2,241,8,20",
+                  "type": "2,240,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "minY",
+                "text": "The up constraint\n",
+                "type": "Number",
+                "src": {
+                  "access": "2,256,8",
+                  "name": "2,254,27",
+                  "text": "2,255,8,18",
+                  "type": "2,254,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "moveOnly",
+                "text": "When set to true, other DD objects in cooperating DDGroups do not receive\nnotification events when this DD object is dragged over them.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,183,28",
+                  "text": "2,184,8,136",
+                  "type": "2,183,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "padding",
+                "text": "The padding configured for this drag and drop object for calculating\nthe drop zone intersection with this object.\nAn array containing the 4 padding values: [top, right, bottom, left]\n",
+                "type": "Number[]",
+                "src": {
+                  "name": "2,204,29",
+                  "text": "2,205,8,183",
+                  "type": "2,204,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "primaryButtonOnly",
+                "text": "By default the drag and drop instance will only respond to the primary\nbutton click (left button for a right-handed mouse).  Set to true to\nallow drag and drop to start with any mouse click that is propogated\nby the browser\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,292,28",
+                  "text": "2,293,8,224",
+                  "type": "2,292,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "resizeFrame",
+                "text": "By default we resize the drag frame to be the same size as the element\nwe want to drag (this is to get the frame effect).  We can turn it off\nif we want a different behavior.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,49,28",
+                  "text": "1,50,8,175",
+                  "type": "1,49,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scroll",
+                "text": "When set to true, the utility automatically tries to scroll the browser\nwindow when a drag and drop element is dragged near the viewport boundary.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "3,32,28",
+                  "text": "3,33,8,147",
+                  "type": "3,32,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "startPageX",
+                "text": "The linked element's absolute X position at the time the drag was\nstarted\n",
+                "type": "Number",
+                "src": {
+                  "access": "2,144,8",
+                  "name": "2,141,27",
+                  "text": "2,142,8,74",
+                  "type": "2,141,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "startPageY",
+                "text": "The linked element's absolute X position at the time the drag was\nstarted\n",
+                "type": "Number",
+                "src": {
+                  "access": "2,152,8",
+                  "name": "2,149,27",
+                  "text": "2,150,8,74",
+                  "type": "2,149,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "xTicks",
+                "text": "Array of pixel locations the element will snap to if we specified a\nhorizontal graduation/interval.  This array is generated automatically\nwhen you define a tick interval.\n",
+                "type": "Number[]",
+                "src": {
+                  "name": "2,276,29",
+                  "text": "2,277,8,172",
+                  "type": "2,276,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "yTicks",
+                "text": "Array of pixel locations the element will snap to if we specified a\nvertical graduation/interval.  This array is generated automatically\nwhen you define a tick interval.\n",
+                "type": "Number[]",
+                "src": {
+                  "name": "2,284,29",
+                  "text": "2,285,8,170",
+                  "type": "2,284,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties"
+          }
+        ],
+        "src": {
+          "extends": "0,5,0",
+          "name": "0,4,0",
+          "requires": "0,7,0,0:0,8,0,0",
+          "text": "0,2,4,92"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,146 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/bind/Formula.js",
+    "../../../ext/packages/core/src/util/Schedulable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.util.Schedulable",
+        "name": "Ext.app.bind.Formula",
+        "requires": "Ext.util.LruCache",
+        "text": "This class manages a formula defined for an <a href='#!/api/Ext.app.ViewModel'>Ext.app.ViewModel</a>.\n\n## Formula Basics\n\nFormulas in a `ViewModel` can be defined as simply as just a function:\n\n     formulas: {\n         xy: function (get) { return get('x') * get('y'); }\n     }\n\nWhen you need to be more explicit, \"xy\" can become an object. The following means the\nsame thing as above:\n\n     formulas: {\n         xy: {\n             get: function (get) { return get('x') * get('y'); }\n         }\n     }\n\n### Data Dependencies\n\nOne of the important aspects of a `ViewModel` is notification of change. In order to\nmanage this, a `ViewModel` *must* know the dependencies between data. In the above case\nthis is accomplished by **parsing the text of the function**. While this is convenient\nand reduces the maintenance/risk that would come from explicitly listing dependencies\nseparately, there are some rules to be aware of:\n\n  * All dependencies are resolved by matching the binding statements in the getter function.\n  * If you need to use these values in other ways, cache them as a `var` (following\n    the first rule to capture the value) and use that `var`.\n\nIn the above formulas, the \"xy\" formula depends on \"x\" and \"y\" in the `ViewModel`. As\nthese values change, the formula is called to produce the correct value for \"xy\". This\nin turn can be used by other formulas. For example:\n\n     formulas: {\n         xy: function (get) {  // \"get\" is arbitrary but a good convention\n             return get('x') * get('y');\n         },\n\n         xyz: function (get) {\n             return get('xy') * get('z');\n         }\n     }\n\nIn the above, \"xyz\" depends on \"xy\" and \"z\" values in the `ViewModel`.\n\n### The Getter Method\n\nThe argument passed to the formula is a function that allows you to retrieve\nthe matched bind statements.\n\n     formulas: {\n         foo: function (get) {\n             return get('theUser.address.city');\n         }\n     }\n\nIn the above, the dependency is resolved to `theUser.address.city`. The formula will not\nbe triggered until the value for `city` is present.\n\n### Capturing Values\n\nIf values need to be used repeatedly, you can use a `var` as long as the Rules are not\nbroken.\n\n     formulas: {\n         x2y2: function (get) {\n             // These are still \"visible\" as \"get('x')\" and \"get('y')\" so this is OK:\n             var x = get('x'),\n                 y = get('y');\n\n             return x * x * y * y;\n         }\n     }\n\n## Explicit Binding\n\nWhile function parsing is convenient, there are times it is not the best solution. In\nthese cases, an explicit <a href='#!/api/Ext.app.bind.Formula-cfg-bind'>bind</a> can be given. To revisit the previous example with an\nexplicit binding:\n\n     formulas: {\n         zip: {\n             bind: '{foo.bar.zip}',\n\n             get: function (zip) {\n                 // NOTE: the only thing we get is what our bind produces.\n                 return zip * 2;\n             }\n         }\n     }\n\nIn this case we have given the formula an explicit <a href='#!/api/Ext.app.bind.Formula-cfg-bind'>bind</a> value so it will no longer\nparse the <a href='#!/api/Ext.app.bind.Formula-cfg-get'>get</a> function. Instead, it will call <a href='#!/api/Ext.app.ViewModel-method-bind'>Ext.app.ViewModel#bind</a> with\nthe value of the <a href='#!/api/Ext.app.bind.Formula-cfg-bind'>bind</a> property and pass the produced value to <a href='#!/api/Ext.app.bind.Formula-cfg-get'>get</a> whenever it\nchanges.\n\n## Settable Formulas\n\nWhen a formula is \"reversible\" it can be given a <a href='#!/api/Ext.app.bind.Formula-cfg-set'>set</a> method to allow it to participate\nin two-way binding. For example:\n\n     formulas: {\n            fullName: {\n                get: function (get) {\n                    var ret = get('firstName') || '';\n\n                    if (get('lastName')) {\n                        ret += ' ' +  get('lastName');\n                    }\n\n                    return ret;\n                },\n\n                set: function (value) {\n                    var space = value.indexOf(' '),\n                        split = (space < 0) ? value.length : space;\n\n                    this.set({\n                        firstName: value.substring(0, split),\n                        lastName: value.substring(split + 1)\n                    });\n                }\n            }\n        }\n\nWhen the <a href='#!/api/Ext.app.bind.Formula-cfg-set'>set</a> method is called the `this` reference is the <a href='#!/api/Ext.app.ViewModel'>Ext.app.ViewModel</a> so it\njust calls its <a href='#!/api/Ext.app.ViewModel-method-set'>Ext.app.ViewModel#method-set</a>.\n\n## Single Run Formulas\n\nIf a formula only needs to produce an initial value, it can be marked as <a href='#!/api/Ext.app.bind.Formula-cfg-single'>single</a>.\n\n     formulas: {\n         xy: {\n             single: true,\n\n             get: function (get) {\n                 return get('x') * get('y');\n             }\n         }\n     }\n\nThis formulas <a href='#!/api/Ext.app.bind.Formula-cfg-get'>get</a> method will be called with `x` and `y` once and then its binding\nto these properties will be destroyed. This means the <a href='#!/api/Ext.app.bind.Formula-cfg-get'>get</a> method (and hence the value\nof `xy`) will only be executed/calculated once.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "bind",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "An explicit bind request to produce data to provide the <a href='#!/api/Ext.app.bind.Formula-cfg-get'>get</a> function. If this is\nspecified, the result of this bind is the first argument to <a href='#!/api/Ext.app.bind.Formula-cfg-get'>get</a>. If not given,\nthen <a href='#!/api/Ext.app.bind.Formula-cfg-get'>get</a> receives a getter function that can retrieve bind expressions. For details on what can\nbe specified for this property see <a href='#!/api/Ext.app.ViewModel-method-bind'>Ext.app.ViewModel#bind</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,186,23",
+                  "since": "0,191,15",
+                  "text": "0,187,8,331",
+                  "type": "0,186,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "get",
+                "since": "5.0.0",
+                "text": "The function to call to calculate the formula's value. The <a href='#!/api/Ext.app.bind.Formula-cfg-get'>get</a> method executes\nwith a `this` pointer of the `ViewModel` and receives a getter function or the result of a configured <a href='#!/api/Ext.app.bind.Formula-cfg-bind'>bind</a>.\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,195,24",
+                  "since": "0,198,15",
+                  "text": "0,196,8,191",
+                  "type": "0,195,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "set",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "If provided this method allows a formula to be set. This method is typically called\nwhen <a href='#!/api/Ext.app.bind.Binding-method-setValue'>Ext.app.bind.Binding#setValue</a> is called. The <a href='#!/api/Ext.app.bind.Formula-cfg-set'>set</a> method executes\nwith a `this` pointer of the `ViewModel`. Whatever values need to be updated can\nbe set by calling <a href='#!/api/Ext.app.ViewModel-method-set'>Ext.app.ViewModel#set</a>.\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,202,25",
+                  "since": "0,207,15",
+                  "text": "0,203,8,298",
+                  "type": "0,202,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "single",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "This option instructs the binding to call its `destroy` method immediately after\ndelivering the initial value.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,212,24",
+                  "since": "0,215,15",
+                  "text": "0,213,8,111",
+                  "type": "0,212,14",
+                  "value": "0,212,31"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getScheduler",
+                "text": "This method returns the `Scheduler` for this item.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.util.Scheduler",
+                    "src": {
+                      "type": "1,37,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,33,-1",
+                  "name": "1,39,0",
+                  "text": "1,36,12,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "schedule",
+                "text": "Schedules this item with the associated <a href='#!/api/Ext.util.Scheduler'>Ext.util.Scheduler</a>.\n",
+                "src": {
+                  "access": "1,33,-1",
+                  "name": "1,46,0",
+                  "text": "1,44,12,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "sort",
+                "text": "This method should be overridden by items that have dependencies to insert. The\nstandard form would be:\n\n     sort: function () {\n         this.getScheduler().sortItems(this.dependencies);\n     }\n\nThis example assumes the item has a \"dependencies\" array to pass to the scheduler.\n",
+                "src": {
+                  "name": "1,83,20",
+                  "text": "1,84,12,280"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unschedule",
+                "text": "Unschedules this item with the associated <a href='#!/api/Ext.util.Scheduler'>Ext.util.Scheduler</a>.\n",
+                "src": {
+                  "access": "1,33,-1",
+                  "name": "1,68,0",
+                  "text": "1,66,12,64"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,151,0",
+          "name": "0,150,0",
+          "requires": "0,154,0",
+          "text": "0,2,4,4630"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

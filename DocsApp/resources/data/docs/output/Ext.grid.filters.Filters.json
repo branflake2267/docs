@@ -1,0 +1,829 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/filters/Filters.js",
+    "../../../ext/classic/theme-neutral/sass/var/grid/filters/Filters.scss",
+    "../../../ext/packages/core/src/plugin/Abstract.js",
+    "../../../ext/classic/classic/overrides/plugin/Abstract.js",
+    "../../../ext/classic/classic/src/util/StoreHolder.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "plugin.gridfilters",
+        "extends": "Ext.plugin.Abstract",
+        "mixins": "Ext.util.StoreHolder",
+        "name": "Ext.grid.filters.Filters",
+        "requires": "Ext.grid.filters.filter.*",
+        "text": "This class is a grid <a href='#!/api/Ext.plugin.Abstract'>Ext.AbstractPlugin</a> that adds a simple and flexible\npresentation for <a href='#!/api/Ext.data.AbstractStore-cfg-filters'>Ext.data.AbstractStore#filters</a>.\n\nFilters can be modified by the end-user using the grid's column header menu. Through\nthis menu users can configure, enable, and disable filters for each column.\n\n# Example Usage\n\n    @example\n    var shows = Ext.create('Ext.data.Store', {\n        fields: ['id','show'],\n        data: [\n            {id: 0, show: 'Battlestar Galactica'},\n            {id: 1, show: 'Doctor Who'},\n            {id: 2, show: 'Farscape'},\n            {id: 3, show: 'Firefly'},\n            {id: 4, show: 'Star Trek'},\n            {id: 5, show: 'Star Wars: Christmas Special'}\n        ]\n    });\n\n    Ext.create('Ext.grid.Panel', {\n        renderTo: Ext.getBody(),\n        title: 'Sci-Fi Television',\n        height: 250,\n        width: 250,\n        store: shows,\n        plugins: 'gridfilters',\n        columns: [{\n            dataIndex: 'id',\n            text: 'ID',\n            width: 50\n        },{\n            dataIndex: 'show',\n            text: 'Show',\n            flex: 1,\n            filter: {\n                // required configs\n                type: 'string',\n                // optional configs\n                value: 'star',  // setting a value makes the filter active.\n                itemDefaults: {\n                    // any Ext.form.field.Text configs accepted\n                }\n            }\n        }]\n    });\n\n# Features\n\n## Filtering implementations\n\nCurrently provided filter types are:\n\n  * <a href='#!/api/Ext.grid.filters.filter.Boolean'>Ext.grid.filters.filter.Boolean</a>\n  * <a href='#!/api/Ext.grid.filters.filter.Date'>Ext.grid.filters.filter.Date</a>\n  * <a href='#!/api/Ext.grid.filters.filter.List'>Ext.grid.filters.filter.List</a>\n  * <a href='#!/api/Ext.grid.filters.filter.Number'>Ext.grid.filters.filter.Number</a>\n  * <a href='#!/api/Ext.grid.filters.filter.String'>Ext.grid.filters.filter.String</a>\n\n**Note:** You can find inline examples for each filter on its specific filter page.\n\n## Graphical Indicators\n\nColumns that are filtered have <a href='#!/api/Ext.grid.filters.Filters-property-filterCls'>filterCls</a> applied to their column\nheaders. This style can be managed using that CSS class or by setting these Sass\nvariables in your theme or application:\n\n     $grid-filters-column-filtered-font-style: italic !default;\n\n     $grid-filters-column-filtered-font-weight: bold !default;\n\n## Stateful\n\nFilter information will be persisted across page loads by specifying a <a href='#!/api/Ext.grid.filters.Filters-cfg-stateId'>stateId</a>\nin the Grid configuration. In actuality this state is saved by the `store`, but this\nplugin ensures that saved filters are properly identified and reclaimed on subsequent\nvisits to the page.\n\n## Grid Changes\n\n- A `filters` property is added to the Grid using this plugin.\n\n# Upgrading From Ext.ux.grid.FilterFeature\n\nThe biggest change for developers converting from the user extension is most likely the\nconversion to standard <a href='#!/api/Ext.data.AbstractStore-cfg-filters'>Ext.data.AbstractStore#filters</a>. In the\nprocess, the \"like\" and \"in\" operators are now supported by <a href='#!/api/Ext.util.Filter'>Ext.util.Filter</a>.\nThese filters and all other filters added to the store will be sent in the standard\nway (using the \"filters\" parameter by default).\n\nSince this plugin now uses actual store filters, the `onBeforeLoad` listener and all\nhelper methods that were used to clean and build the params have been removed. The store\nwill send the filters managed by this plugin along in its normal request.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "menuFilterText",
+                "optional": true,
+                "text": "The text for the filters menu.\n",
+                "type": "String",
+                "value": "\"Filters\"",
+                "src": {
+                  "name": "0,133,23",
+                  "text": "0,134,8,31",
+                  "type": "0,133,14",
+                  "value": "0,133,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pluginId",
+                "text": "A name for the plugin that can be set at creation time to then retrieve the plugin\nthrough <a href='#!/api/Ext.Component-method-getPlugin'>Ext.Component#getPlugin</a> method.  For example:\n\n    var grid = Ext.create('Ext.grid.Panel', {\n        plugins: [{\n            ptype: 'cellediting',\n            clicksToEdit: 2,\n            pluginId: 'cellplugin'\n        }]\n    });\n\n    // later on:\n    var plugin = grid.getPlugin('cellplugin');\n",
+                "type": "String",
+                "src": {
+                  "name": "2,61,22",
+                  "text": "2,62,8,404",
+                  "type": "2,61,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showMenu",
+                "text": "Defaults to true, including a filter submenu in the default header menu.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,140,23",
+                  "text": "0,141,8,73",
+                  "type": "0,140,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stateEvents",
+                "text": "The configured list of stateEvents used to (optionally) participate in Owner Component's state management.\n",
+                "type": "String/Array",
+                "src": {
+                  "name": "3,13,28",
+                  "text": "3,14,8,107",
+                  "type": "3,13,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stateId",
+                "text": "Name of the value to be used to store state information.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,146,22",
+                  "text": "0,147,8,57",
+                  "type": "0,146,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "addFilter",
+                "text": "Adds a filter to the collection and creates a store filter if has a `value` property.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "filters",
+                    "text": "A filter\nconfiguration or a filter object.\n",
+                    "type": "Object/Object[]/Ext.util.Filter/Ext.util.Filter[]",
+                    "src": {
+                      "name": "0,433,67",
+                      "text": "0,433,75,9:0,434,8,34",
+                      "type": "0,433,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,436,0",
+                  "text": "0,432,8,86"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addFilters",
+                "text": "Adds filters to the collection.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "filters",
+                    "text": "An Array of filter configuration objects.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,488,23",
+                      "text": "0,488,31,42",
+                      "type": "0,488,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,490,0",
+                  "text": "0,487,8,32"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "applyState",
+                "text": "The applyState method is invoked by the client Component's State mixin after initComponent method has been run for the client.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method to utilize it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The current plugin state object to be applied.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,35,24",
+                      "text": "3,35,30,47",
+                      "type": "3,35,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "allState",
+                    "text": "The current aggregate state of the Component and all plugins.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,36,24",
+                      "text": "3,36,33,62",
+                      "type": "3,36,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,39,0",
+                  "text": "3,31,8,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "bindStore",
+                "text": "Binds a store to this instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "optional": true,
+                    "text": "The store to bind or ID of the store.\nWhen no store given (or when <a href='#!/api/null'>null</a> or <a href='#!/api/undefined'>undefined</a> passed), unbinds the existing store.\n",
+                    "type": "Ext.data.AbstractStore/String",
+                    "src": {
+                      "name": "4,19,48",
+                      "text": "4,19,55,38:4,20,8,88",
+                      "type": "4,19,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,22,0",
+                  "text": "4,18,8,32"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "bindStoreListeners",
+                "text": "Binds listeners for this component to the store. By default it will add\nanything bound by the getStoreListeners method, however it can be overridden\nin a subclass to provide any more complicated handling.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The store to bind to\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "name": "4,93,40",
+                      "text": "4,93,46,21",
+                      "type": "4,93,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,92,8",
+                  "name": "4,95,0",
+                  "text": "4,89,8,205"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearFilters",
+                "text": "Turns all filters off. This does not clear the configuration information.\n",
+                "src": {
+                  "name": "0,499,0",
+                  "text": "0,497,8,74"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clonePlugin",
+                "text": "Creates clone of the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "overrideCfg",
+                    "optional": true,
+                    "text": "Additional config for the derived plugin.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,38,25",
+                      "text": "2,38,38,42",
+                      "type": "2,38,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,40,0",
+                  "text": "2,37,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Instantiates the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "Configuration object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,27,25",
+                      "text": "2,27,33,22",
+                      "type": "2,27,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,29,0",
+                  "text": "2,26,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "The destroy method is invoked by the owning Component at the time the Component is\nbeing destroyed.\n",
+                "src": {
+                  "name": "2,91,16",
+                  "text": "2,88,8,101"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `true`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "3,57,0",
+                  "text": "3,52,8,171"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `false`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "3,47,0",
+                  "text": "3,42,8,172"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCmp",
+                "text": "Returns the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "2,54,32,17",
+                      "type": "2,54,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,56,0",
+                  "text": "2,53,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getMenuFilter",
+                "text": "Get the filter menu from the filters MixedCollection based on the clicked header.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "headerCt",
+                    "src": {
+                      "name": "0,403,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,400,8",
+                  "name": "0,403,0",
+                  "text": "0,401,8,82"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getState",
+                "text": "The getState method is invoked by the client Component's State mixin when one or more of the the specified <a href='#!/api/Ext.grid.filters.Filters-cfg-stateEvents'>stateEvents</a> are raised.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method which returns a state object.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "state\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,24,25,6",
+                      "type": "3,24,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,27,0",
+                  "text": "3,20,8,352"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStore",
+                "text": "Gets the current store instance.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The store, null if one does not exist.\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "text": "4,58,41,39",
+                      "type": "4,58,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,60,0",
+                  "text": "4,57,8,33"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getStoreListeners",
+                "text": "Gets the listeners to bind to a new store.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The Store which is being bound to for which a listeners object should be returned.\n",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "name": "4,113,32",
+                      "text": "4,113,38,83",
+                      "type": "4,113,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The listeners to be bound to the store in object literal form. The scope\nmay be omitted, it is assumed to be the current instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,114,25,73:4,115,8,58",
+                      "type": "4,114,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,112,8",
+                  "name": "4,117,0",
+                  "text": "4,111,8,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "init",
+                "text": "The init method is invoked after initComponent method has been run for the client Component.\n\nThe supplied implementation is empty. Subclasses should perform plugin initialization, and set up bidirectional\nlinks between the plugin and its client Component in their own implementation of this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "client",
+                    "text": "The client Component which owns this plugin.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "2,83,31",
+                      "text": "2,83,38,45",
+                      "type": "2,83,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,85,0",
+                  "text": "2,79,8,300"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initColumns",
+                "text": "Creates the Filter objects for the current configuration.\nReconfigure and on add handlers.\n",
+                "src": {
+                  "access": "0,195,8",
+                  "name": "0,197,0",
+                  "text": "0,193,8,91"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isStateful",
+                "text": "Checks the plugin's grid for statefulness.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,425,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,427,0",
+                  "text": "0,424,8,43"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onBindStore",
+                "text": "Template method, it is called when a new store is bound\nto the current instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The store being bound\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "name": "4,134,40",
+                      "text": "4,134,46,22",
+                      "type": "4,134,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "initial",
+                    "text": "True if this store is being bound as initialization of the instance.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,135,25",
+                      "text": "4,135,33,69",
+                      "type": "4,135,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,133,8",
+                  "name": "4,137,0",
+                  "text": "4,131,8,81"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onCheckChange",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "0,411,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "src": {
+                      "name": "0,411,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,408,8",
+                  "name": "0,411,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onGridDestroy",
+                "text": "Handler called by the grid 'beforedestroy' event\n",
+                "src": {
+                  "name": "0,335,0",
+                  "text": "0,333,8,49"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onMenuBeforeShow",
+                "text": "Handle showing of the grid's header menu. Sets up the filter item and menu\nappropriate for the target column.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "menu",
+                    "src": {
+                      "name": "0,278,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,274,8",
+                  "name": "0,278,0",
+                  "text": "0,275,8,110"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onMenuCreate",
+                "text": "Handle creation of the grid's header menu.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "headerCt",
+                    "src": {
+                      "name": "0,266,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "menu",
+                    "src": {
+                      "name": "0,266,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,263,8",
+                  "name": "0,266,0",
+                  "text": "0,264,8,43"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onUnbindStore",
+                "text": "Template method, it is called when an existing store is unbound\nfrom the current instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The store being unbound\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "name": "4,124,40",
+                      "text": "4,124,46,24",
+                      "type": "4,124,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "initial",
+                    "text": "True if this store is being bound as initialization of the instance.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,125,25",
+                      "text": "4,125,33,69",
+                      "type": "4,125,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,123,8",
+                  "name": "4,127,0",
+                  "text": "4,121,8,91"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setCmp",
+                "text": "Sets the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cmp",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "2,46,31",
+                      "text": "2,46,35,17",
+                      "type": "2,46,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,48,0",
+                  "text": "2,45,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setStore",
+                "since": "5.0.0",
+                "text": "Sets the store to the specified store.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "src": {
+                      "name": "4,66,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,69,0",
+                  "since": "4,67,15",
+                  "text": "4,65,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "unbindStoreListeners",
+                "text": "Unbinds listeners from this component to the store. By default it will remove\nanything bound by the bindStoreListeners method, however it can be overridden\nin a subclass to provide any more complicated handling.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "text": "The store to unbind from\n",
+                    "type": "Ext.data.AbstractStore",
+                    "src": {
+                      "name": "4,78,40",
+                      "text": "4,78,46,25",
+                      "type": "4,78,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,77,8",
+                  "name": "4,80,0",
+                  "text": "4,74,8,212"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "defaultFilterTypes",
+                "text": "This property maps <a href='#!/api/Ext.data.Model-cfg-fields'>Ext.data.Model#cfg-fields</a> to the\nappropriate grid filter type.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,116,8",
+                  "name": "0,113,27",
+                  "text": "0,114,8,101",
+                  "type": "0,113,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "filterCls",
+                "optional": true,
+                "text": "The CSS applied to column headers with active filters.\n",
+                "type": "String",
+                "value": "\"x-grid-filters-filtered-column\"",
+                "src": {
+                  "name": "0,126,28",
+                  "text": "0,127,8,55",
+                  "type": "0,126,19",
+                  "value": "0,126,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isPlugin",
+                "text": "`true` in this class to identify an object as an instantiated Plugin, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,20,28",
+                  "text": "2,21,8,91",
+                  "type": "2,20,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "vars",
+            "items": [
+              {
+                "$type": "property",
+                "name": "$grid-filters-column-filtered-font-style",
+                "text": "The font-style of the filtered column.\n",
+                "type": "String",
+                "value": "italic",
+                "src": {
+                  "name": "1,9,1",
+                  "text": "1,7,4,39",
+                  "type": "1,6,10",
+                  "value": "1,9,51"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-filters-column-filtered-font-weight",
+                "text": "The font-weight of the filtered column.\n",
+                "type": "String",
+                "value": "$font-weight-bold",
+                "src": {
+                  "name": "1,15,1",
+                  "text": "1,13,4,40",
+                  "type": "1,12,10",
+                  "value": "1,15,52"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-filters-column-filtered-text-decoration",
+                "text": "The text-decoration of the filtered column.\n",
+                "type": "String",
+                "value": "inherit",
+                "src": {
+                  "name": "1,21,1",
+                  "text": "1,19,4,44",
+                  "type": "1,18,10",
+                  "value": "1,21,56"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-filters-header-menu-equals-glyph",
+                "text": "Glyph for the grid header menu \"equals\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$ext-var-equals $grid-header-menu-glyph-font-size ExtJS",
+                "src": {
+                  "name": "1,45,1",
+                  "text": "1,43,4,99",
+                  "type": "1,42,10",
+                  "value": "1,45,49"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-filters-header-menu-find-glyph",
+                "text": "Glyph for the grid header menu \"text filter\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-search $grid-header-menu-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,27,1",
+                  "text": "1,25,4,104",
+                  "type": "1,24,10",
+                  "value": "1,27,47"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-filters-header-menu-greater-than-glyph",
+                "text": "Glyph for the grid header menu \"greater than\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-chevron-right $grid-header-menu-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,33,1",
+                  "text": "1,31,4,105",
+                  "type": "1,30,10",
+                  "value": "1,33,55"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-filters-header-menu-less-than-glyph",
+                "text": "Glyph for the grid header menu \"less than\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-chevron-left $grid-header-menu-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,39,1",
+                  "text": "1,37,4,102",
+                  "type": "1,36,10",
+                  "value": "1,39,52"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,108,0",
+          "extends": "0,98,0",
+          "mixins": "0,105,0",
+          "name": "1,2,11",
+          "requires": "0,101,0",
+          "text": "0,2,4,3296"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

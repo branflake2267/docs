@@ -1,0 +1,1485 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../../docs/docs/js/primitives/Date.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Date",
+        "text": "\nCreates <a href='#!/api/Date'>Date</a> instances which let you work with dates and times.\n\nIf you supply no arguments, the constructor creates a <a href='#!/api/Date'>Date</a> object for today's\ndate and time according to local time. If you supply some arguments but not\nothers, the missing arguments are set to 0. If you supply any arguments, you\nmust supply at least the year, month, and day. You can omit the hours, minutes,\nseconds, and milliseconds.\n\nThe date is measured in milliseconds since midnight 01 January, 1970 UTC. A day\nholds 86,400,000 milliseconds. The <a href='#!/api/Date'>Date</a> object range is -100,000,000 days to\n100,000,000 days relative to 01 January, 1970 UTC.\n\nThe <a href='#!/api/Date'>Date</a> object provides uniform behavior across platforms.\n\nThe <a href='#!/api/Date'>Date</a> object supports a number of UTC (universal) methods, as well as\nlocal time methods. UTC, also known as Greenwich Mean Time (GMT), refers to the\ntime as set by the World Time Standard. The local time is the time known to the\ncomputer where JavaScript is executed.\n\nInvoking <a href='#!/api/Date'>Date</a> in a non-constructor context (i.e., without the `new` operator)\nwill return a string representing the current time.\n\nNote that <a href='#!/api/Date'>Date</a> objects can only be instantiated by calling <a href='#!/api/Date'>Date</a> or using it\nas a constructor; unlike other JavaScript object types, <a href='#!/api/Date'>Date</a> objects have no\nliteral syntax.\n\n# Several ways to assign dates\n\nThe following example shows several ways to assign dates:\n\n    today = new Date();\n    birthday = new Date(\"December 19, 1989 03:24:00\");\n    birthday = new Date(1989,11,19);\n    birthday = new Date(1989,11,17,3,24,0);\n\n# Calculating elapsed time\n\nThe following examples show how to determine the elapsed time between two dates:\n\n    // using static methods\n    var start = Date.now();\n    // the event you'd like to time goes here:\n    doSomethingForALongTime();\n    var end = Date.now();\n    var elapsed = end - start; // time in milliseconds\n\n    // if you have Date objects\n    var start = new Date();\n    // the event you'd like to time goes here:\n    doSomethingForALongTime();\n    var end = new Date();\n    var elapsed = end.getTime() - start.getTime(); // time in milliseconds\n\n    // if you want to test a function and get back its return\n    function printElapsedTime (fTest) {\n        var nStartTime = Date.now(), vReturn = fTest(), nEndTime = Date.now();\n        alert(\"Elapsed time: \" + String(nEndTime - nStartTime) + \"\n        milliseconds\");\n        return vReturn;\n    }\n\n    yourFunctionReturn = printElapsedTime(yourFunction);\n\n# ISO 8601 formatted dates\n\nThe following example shows how to formate a date in an ISO 8601 format using\nUTC:\n\n    // use a function for the exact format desired...\n    function ISODateString(d){\n    function pad(n){return n<10 ? '0'+n : n}\n    return d.getUTCFullYear()+'-'\n        + pad(d.getUTCMonth()+1)+'-'\n        + pad(d.getUTCDate())+'T'\n        + pad(d.getUTCHours())+':'\n        + pad(d.getUTCMinutes())+':'\n        + pad(d.getUTCSeconds())+'Z'}\n\n    var d = new Date();\n    print(ISODateString(d)); // prints something like 2009-09-28T19:03:12Z\n\n<div class=\"notice\">\nDocumentation for this class comes from <a href=\"https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date\">MDN</a>\nand is available under <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">Creative Commons: Attribution-Sharealike license</a>.\n</div>\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Date object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "year",
+                    "optional": true,
+                    "text": "Either UNIX timestamp, date string, or year (when month and day parameters also provided):\n\n- Integer value representing the number of milliseconds since 1 January 1970\n  00:00:00 UTC (Unix Epoch).\n\n- String value representing a date. The string should be in a format recognized\n  by the parse method (IETF-compliant RFC 1123 timestamps).\n\n- Integer value representing the year. For compatibility (in order to avoid the\n  Y2K problem), you should always specify the year in full; use 1998, rather\n  than 98.\n",
+                    "type": "Number/String",
+                    "src": {
+                      "name": "0,95,28",
+                      "text": "0,96,4,509",
+                      "type": "0,95,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "month",
+                    "optional": true,
+                    "text": "Integer value representing the month, beginning with 0 for January to 11\nfor December.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,108,21",
+                      "text": "0,109,4,87",
+                      "type": "0,108,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "day",
+                    "optional": true,
+                    "text": "Integer value representing the day of the month (1-31).\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,111,21",
+                      "text": "0,112,4,56",
+                      "type": "0,111,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "hour",
+                    "optional": true,
+                    "text": "Integer value representing the hour of the day (0-23).\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,113,21",
+                      "text": "0,114,4,55",
+                      "type": "0,113,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "minute",
+                    "optional": true,
+                    "text": "Integer value representing the minute segment (0-59) of a time reading.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,115,21",
+                      "text": "0,116,4,72",
+                      "type": "0,115,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "second",
+                    "optional": true,
+                    "text": "Integer value representing the second segment (0-59) of a time reading.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,117,21",
+                      "text": "0,118,4,72",
+                      "type": "0,117,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "millisecond",
+                    "optional": true,
+                    "text": "Integer value representing the millisecond segment (0-999) of a time reading.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,119,21",
+                      "text": "0,120,4,78",
+                      "type": "0,119,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,92,12",
+                  "text": "0,93,4,26"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDate",
+                "text": "Returns the day of the month for the specified date according to local time.\n\nThe second statement below assigns the value 25 to the variable `day`, based on the value of the\n<a href='#!/api/Date'>Date</a> object `Xmas95`.\n\n    Xmas95 = new Date(\"December 25, 1995 23:15:00\")\n    day = Xmas95.getDate()\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Value between 1 and 31.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,245,21,24",
+                      "type": "0,245,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,236,12",
+                  "text": "0,237,4,280"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDay",
+                "text": "Returns the day of the week for the specified date according to local time.\n\nThe value returned by <a href='#!/api/Date-method-getDay'>getDay</a> is an integer corresponding to the day of the week: 0 for Sunday, 1\nfor Monday, 2 for Tuesday, and so on.\n\nThe second statement below assigns the value 1 to `weekday`, based on the value of the <a href='#!/api/Date'>Date</a>\nobject `Xmas95`. December 25, 1995, is a Monday.\n\n    Xmas95 = new Date(\"December 25, 1995 23:15:00\");\n    weekday = Xmas95.getDay();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "A numeric representation of the day from Sunday (0) to\nSaturday (6).\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,261,21,55:0,262,4,14",
+                      "type": "0,261,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,249,12",
+                  "text": "0,250,4,444"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getFullYear",
+                "text": "Returns the year of the specified date according to local time.\n\nThe value returned by <a href='#!/api/Date-method-getFullYear'>getFullYear</a> is an absolute number. For dates between the years 1000 and\n9999, <a href='#!/api/Date-method-getFullYear'>getFullYear</a> returns a four-digit number, for example, 1995. Use this function to make sure\na year is compliant with years after 2000.\n\nUse this method instead of the `getYear` method.\n\nThe following example assigns the four-digit value of the current year to the variable yr.\n\n    var today = new Date();\n    var yr = today.getFullYear();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Four digit representation of the year.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,280,21,39",
+                      "type": "0,280,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,266,12",
+                  "text": "0,267,4,509"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getHours",
+                "text": "Returns the hour for the specified date according to local time.\n\nThe second statement below assigns the value 23 to the variable `hours`, based on the value of the\n<a href='#!/api/Date'>Date</a> object `Xmas95`.\n\n    Xmas95 = new Date(\"December 25, 1995 23:15:00\")\n    hours = Xmas95.getHours()\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Value between 0 and 23, using 24-hour clock.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,293,21,45",
+                      "type": "0,293,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,284,12",
+                  "text": "0,285,4,273"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getMilliseconds",
+                "text": "Returns the milliseconds in the specified date according to local time.\n\nThe following example assigns the milliseconds portion of the current time to the variable ms.\n\n    var ms;\n    Today = new Date();\n    ms = Today.getMilliseconds();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "A number between 0 and 999.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,306,21,28",
+                      "type": "0,306,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,297,12",
+                  "text": "0,298,4,240"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getMinutes",
+                "text": "Returns the minutes in the specified date according to local time.\n\nThe second statement below assigns the value 15 to the variable `minutes`, based on the value of\nthe <a href='#!/api/Date'>Date</a> object `Xmas95`.\n\n    Xmas95 = new Date(\"December 25, 1995 23:15:00\")\n    minutes = Xmas95.getMinutes()\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Value between 0 and 59.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,319,21,24",
+                      "type": "0,319,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,310,12",
+                  "text": "0,311,4,281"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getMonth",
+                "text": "Returns the month in the specified date according to local time.\n\nThe second statement below assigns the value 11 to the variable `month`, based on the value of the\n<a href='#!/api/Date'>Date</a> object `Xmas95`.\n\n    Xmas95 = new Date(\"December 25, 1995 23:15:00\")\n    month = Xmas95.getMonth()\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "An integer between 0 and 11. 0 corresponds to January, 1 to February, and so on.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,332,21,81",
+                      "type": "0,332,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,323,12",
+                  "text": "0,324,4,273"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSeconds",
+                "text": "Returns the seconds in the specified date according to local time.\n\nThe second statement below assigns the value 30 to the variable `secs`, based on the value of the\n<a href='#!/api/Date'>Date</a> object `Xmas95`.\n\n    Xmas95 = new Date(\"December 25, 1995 23:15:30\")\n    secs = Xmas95.getSeconds()\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Value between 0 and 59.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,345,21,24",
+                      "type": "0,345,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,336,12",
+                  "text": "0,337,4,275"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTime",
+                "text": "Returns the numeric value corresponding to the time for the specified date according to\nuniversal time.\n\nThe value returned by the <a href='#!/api/Date-method-getTime'>getTime</a> method is the number of milliseconds since 1 January 1970\n00:00:00 UTC. You can use this method to help assign a date and time to another <a href='#!/api/Date'>Date</a> object.\n\nThis method is functionally equivalent to the <a href='#!/api/Date-method-valueOf'>valueOf</a> method.\n\nUsing getTime for copying dates\n\nConstructing a date object with the identical time value.\n\n    var birthday = new Date(1994, 12, 10);\n    var copy = new Date();\n    copy.setTime(birthday.getTime());\n\nMeasuring execution time\n\nSubtracting two subsequent getTime calls on newly generated Date objects, give the time span\nbetween these two calls. This can be used to calculate the executing time of some operations.\n\n    var end, start;\n\n    start = new Date();\n    for (var i = 0; i < 1000; i++)\n        Math.sqrt(i);\n    end = new Date();\n\n    console.log(\"Operation took \" + (end.getTime() - start.getTime()) + \" msec\");\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Number of milliseconds since 1/1/1970 (GMT).\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,380,21,45",
+                      "type": "0,380,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,349,12",
+                  "text": "0,350,4,983"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTimezoneOffset",
+                "text": "Returns the time-zone offset from UTC, in minutes, for the current locale.\n\nThe time-zone offset is the difference, in minutes, between UTC and local time. Note that this\nmeans that the offset is positive if the local timezone is behind UTC and negative if it is ahead.\nFor example, if your time zone is UTC+10 (Australian Eastern Standard Time), -600 will be returned.\nDaylight savings time prevents this value from being a constant even for a given locale\n\n    x = new Date()\n    currentTimeZoneOffsetInHours = x.getTimezoneOffset()/60\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Minutes between GMT and local time.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,395,21,36",
+                      "type": "0,395,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,384,12",
+                  "text": "0,385,4,539"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getUTCDate",
+                "text": "Returns the day (date) of the month in the specified date according to universal time.\n\nThe following example assigns the day portion of the current date to the variable `d`.\n\n    var d;\n    Today = new Date();\n    d = Today.getUTCDate();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Integer between 1 and 31 representing the day.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,408,21,47",
+                      "type": "0,408,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,399,12",
+                  "text": "0,400,4,240"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getUTCDay",
+                "text": "Returns the day of the week in the specified date according to universal time.\n\nThe following example assigns the weekday portion of the current date to the variable `weekday`.\n\n    var weekday;\n    Today = new Date()\n    weekday = Today.getUTCDay()\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "A numeric representation of the day from Sunday (0) to\nSaturday (6).\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,421,21,55:0,422,4,14",
+                      "type": "0,421,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,412,12",
+                  "text": "0,413,4,251"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getUTCFullYear",
+                "text": "Returns the year in the specified date according to universal time.\n\nThe following example assigns the four-digit value of the current year to the variable `yr`.\n\n    var yr;\n    Today = new Date();\n    yr = Today.getUTCFullYear();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Four digit representation of the year.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,435,21,39",
+                      "type": "0,435,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,426,12",
+                  "text": "0,427,4,233"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getUTCHours",
+                "text": "Returns the hours in the specified date according to universal time.\n\nThe following example assigns the hours portion of the current time to the variable `hrs`.\n\n    var hrs;\n    Today = new Date();\n    hrs = Today.getUTCHours();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Value between 0 and 23.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,448,21,24",
+                      "type": "0,448,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,439,12",
+                  "text": "0,440,4,231"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getUTCMilliseconds",
+                "text": "Returns the milliseconds in the specified date according to universal time.\n\nThe following example assigns the milliseconds portion of the current time to the variable `ms`.\n\n    var ms;\n    Today = new Date();\n    ms = Today.getUTCMilliseconds();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Milliseconds portion of the Date.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,461,21,34",
+                      "type": "0,461,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,452,12",
+                  "text": "0,453,4,249"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getUTCMinutes",
+                "text": "Returns the minutes in the specified date according to universal time.\n\nThe following example assigns the minutes portion of the current time to the variable `min`.\n\n    var min;\n    Today = new Date();\n    min = Today.getUTCMinutes();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Value between 0 and 59.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,474,21,24",
+                      "type": "0,474,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,465,12",
+                  "text": "0,466,4,237"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getUTCMonth",
+                "text": "Returns the month of the specified date according to universal time.\n\nThe following example assigns the month portion of the current date to the variable `mon`.\n\n    var mon;\n    Today = new Date();\n    mon = Today.getUTCMonth();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Value between 0 (January) and 11 (December).\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,487,21,45",
+                      "type": "0,487,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,478,12",
+                  "text": "0,479,4,231"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getUTCSeconds",
+                "text": "Returns the seconds in the specified date according to universal time.\n\nThe following example assigns the seconds portion of the current time to the variable `sec`.\n\n    var sec;\n    Today = new Date();\n    sec = Today.getUTCSeconds();\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Value between 0 and 59.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,500,21,24",
+                      "type": "0,500,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,491,12",
+                  "text": "0,492,4,237"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setDate",
+                "text": "Sets the day of the month (1-31) for a specified date according to local time.\n\nIf the parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setDate'>setDate</a> attempts to update the\ndate information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 0 for `dayValue`, the\ndate will be set to the last day of the previous month.\n\nThe second statement below changes the day for theBigDay to July 24 from its original value.\n\n    theBigDay = new Date(\"July 27, 1962 23:30:00\")\n    theBigDay.setDate(24)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "dayValue",
+                    "text": "An integer from 1 to 31, representing the day of the month.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,516,20",
+                      "text": "0,516,29,60",
+                      "type": "0,516,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,517,21,38",
+                      "type": "0,517,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,504,12",
+                  "text": "0,505,4,502"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setFullYear",
+                "text": "Sets the full year (4 digits for 4-digit years) for a specified date according to\nlocal time.\n\nIf you do not specify the `monthValue` and `dayValue` parameters, the values returned from the\n<a href='#!/api/Date-method-getMonth'>getMonth</a> and <a href='#!/api/Date-method-getDate'>getDate</a> methods are used.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setFullYear'>setFullYear</a> attempts to update the\nother parameters and the date information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you\nspecify 15 for monthValue, the year is incremented by 1 (year + 1), and 3 is used for the month.\n\ntheBigDay = new Date();\ntheBigDay.setFullYear(1997);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "yearValue",
+                    "text": "An integer specifying the numeric value of the year, for example, 1995.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,535,20",
+                      "text": "0,535,30,72",
+                      "type": "0,535,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "monthValue",
+                    "text": "An integer between 0 and 11 representing the months January through\nDecember.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,536,20",
+                      "text": "0,536,31,68:0,537,4,10",
+                      "type": "0,536,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dayValue",
+                    "text": "An integer between 1 and 31 representing the day of the month. If you\nspecify the `dayValue` parameter, you must also specify the `monthValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,538,20",
+                      "text": "0,538,29,70:0,539,4,74",
+                      "type": "0,538,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,540,21,38",
+                      "type": "0,540,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,521,12",
+                  "text": "0,522,4,580"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setHours",
+                "text": "Sets the hours (0-23) for a specified date according to local time.\n\nIf you do not specify the `minutesValue`, `secondsValue`, and `msValue` parameters, the values\nreturned from the <a href='#!/api/Date-method-getUTCMinutes'>getUTCMinutes</a>, <a href='#!/api/Date-method-getUTCSeconds'>getUTCSeconds</a>, and <a href='#!/api/Date-method-getMilliseconds'>getMilliseconds</a> methods are used.\n\nIf a parameter you specify is outside of the expected range, setHours attempts to update the date\ninformation in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 100 for `secondsValue`, the\nminutes will be incremented by 1 (min + 1), and 40 will be used for seconds.\n\n    theBigDay.setHours(7)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "hoursValue",
+                    "text": "An integer between 0 and 23, representing the hour.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,556,20",
+                      "text": "0,556,31,52",
+                      "type": "0,556,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "minutesValue",
+                    "text": "An integer between 0 and 59, representing the minutes.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,557,20",
+                      "text": "0,557,33,55",
+                      "type": "0,557,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "secondsValue",
+                    "text": "An integer between 0 and 59, representing the seconds. If you specify the\n`secondsValue` parameter, you must also specify the `minutesValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,558,20",
+                      "text": "0,558,33,74:0,559,4,68",
+                      "type": "0,558,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "msValue",
+                    "text": "A number between 0 and 999, representing the milliseconds. If you specify the\n`msValue` parameter, you must also specify the `minutesValue` and `secondsValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,560,20",
+                      "text": "0,560,28,78:0,561,4,82",
+                      "type": "0,560,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,562,21,38",
+                      "type": "0,562,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,544,12",
+                  "text": "0,545,4,558"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setMilliseconds",
+                "text": "Sets the milliseconds (0-999) for a specified date according to local time.\n\nIf you specify a number outside the expected range, the date information in the <a href='#!/api/Date'>Date</a> object is\nupdated accordingly. For example, if you specify 1005, the number of seconds is incremented by 1,\nand 5 is used for the milliseconds.\n\n    theBigDay = new Date();\n    theBigDay.setMilliseconds(100);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "millisecondsValue",
+                    "text": "A number between 0 and 999, representing the milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,576,20",
+                      "text": "0,576,38,59",
+                      "type": "0,576,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,577,21,38",
+                      "type": "0,577,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,566,12",
+                  "text": "0,567,4,374"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setMinutes",
+                "text": "Sets the minutes (0-59) for a specified date according to local time.\n\nIf you do not specify the `secondsValue` and `msValue` parameters, the values returned from\n<a href='#!/api/Date-method-getSeconds'>getSeconds</a> and <a href='#!/api/Date-method-getMilliseconds'>getMilliseconds</a> methods are used.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setMinutes'>setMinutes</a> attempts to update the\ndate information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 100 for `secondsValue`,\nthe minutes (`minutesValue`) will be incremented by 1 (minutesValue + 1), and 40 will be used for\nseconds.\n\n    theBigDay.setMinutes(45)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "minutesValue",
+                    "text": "An integer between 0 and 59, representing the minutes.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,594,20",
+                      "text": "0,594,33,55",
+                      "type": "0,594,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "secondsValue",
+                    "text": "An integer between 0 and 59, representing the seconds. If you\nspecify the secondsValue parameter, you must also specify the `minutesValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,595,20",
+                      "text": "0,595,33,62:0,596,4,78",
+                      "type": "0,595,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "msValue",
+                    "text": "A number between 0 and 999, representing the milliseconds. If you specify\nthe `msValue` parameter, you must also specify the `minutesValue` and `secondsValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,597,20",
+                      "text": "0,597,28,74:0,598,4,86",
+                      "type": "0,597,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,599,21,38",
+                      "type": "0,599,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,581,12",
+                  "text": "0,582,4,551"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setMonth",
+                "text": "Sets the month (0-11) for a specified date according to local time.\n\nIf you do not specify the `dayValue` parameter, the value returned from the <a href='#!/api/Date-method-getDate'>getDate</a> method is\nused.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setMonth'>setMonth</a> attempts to update the date\ninformation in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 15 for `monthValue`, the year\nwill be incremented by 1 (year + 1), and 3 will be used for month.\n\n    theBigDay.setMonth(6)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "monthValue",
+                    "text": "An integer between 0 and 11 (representing the months January through\nDecember).\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,615,20",
+                      "text": "0,615,31,69:0,616,4,11",
+                      "type": "0,615,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dayValue",
+                    "text": "An integer from 1 to 31, representing the day of the month.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,617,20",
+                      "text": "0,617,29,60",
+                      "type": "0,617,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,618,21,38",
+                      "type": "0,618,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,603,12",
+                  "text": "0,604,4,467"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setSeconds",
+                "text": "Sets the seconds (0-59) for a specified date according to local time.\n\nIf you do not specify the `msValue` parameter, the value returned from the <a href='#!/api/Date-method-getMilliseconds'>getMilliseconds</a> method\nis used.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setSeconds'>setSeconds</a> attempts to update the\ndate information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 100 for `secondsValue`,\nthe minutes stored in the <a href='#!/api/Date'>Date</a> object will be incremented by 1, and 40 will be used for seconds.\n\n    theBigDay.setSeconds(30)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "secondsValue",
+                    "text": "An integer between 0 and 59.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,634,20",
+                      "text": "0,634,33,29",
+                      "type": "0,634,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "msValue",
+                    "text": "A number between 0 and 999, representing the milliseconds. If you specify\nthe`msValue` parameter, you must also specify the `minutesValue` and `secondsValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,635,20",
+                      "text": "0,635,28,74:0,636,4,85",
+                      "type": "0,635,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,637,21,38",
+                      "type": "0,637,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,622,12",
+                  "text": "0,623,4,507"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setTime",
+                "text": "Sets the Date object to the time represented by a number of milliseconds since\nJanuary 1, 1970, 00:00:00 UTC, allowing for negative numbers for times prior.\n\nUse the <a href='#!/api/Date-method-setTime'>setTime</a> method to help assign a date and time to another <a href='#!/api/Date'>Date</a> object.\n\n    theBigDay = new Date(\"July 1, 1999\")\n    sameAsBigDay = new Date()\n    sameAsBigDay.setTime(theBigDay.getTime())\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "timeValue",
+                    "text": "An integer representing the number of milliseconds since 1 January\n1970, 00:00:00 UTC.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,651,20",
+                      "text": "0,651,30,67:0,652,4,20",
+                      "type": "0,651,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,653,21,38",
+                      "type": "0,653,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,641,12",
+                  "text": "0,642,4,359"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setUTCDate",
+                "text": "Sets the day of the month (1-31) for a specified date according to universal time.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setUTCDate'>setUTCDate</a> attempts to update the\ndate information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 40 for `dayValue`, and\nthe month stored in the <a href='#!/api/Date'>Date</a> object is June, the day will be changed to 10 and the month will be\nincremented to July.\n\n    theBigDay = new Date();\n    theBigDay.setUTCDate(20);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "dayValue",
+                    "text": "An integer from 1 to 31, representing the day of the month.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,668,20",
+                      "text": "0,668,29,60",
+                      "type": "0,668,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,669,21,38",
+                      "type": "0,669,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,657,12",
+                  "text": "0,658,4,459"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setUTCFullYear",
+                "text": "Sets the full year (4 digits for 4-digit years) for a specified date according\nto universal time.\n\nIf you do not specify the `monthValue` and `dayValue` parameters, the values returned from the\n<a href='#!/api/Date-method-getMonth'>getMonth</a> and <a href='#!/api/Date-method-getDate'>getDate</a> methods are used.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setUTCFullYear'>setUTCFullYear</a> attempts to update\nthe other parameters and the date information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you\nspecify 15 for `monthValue`, the year is incremented by 1 (year + 1), and 3 is used for the month.\n\n    theBigDay = new Date();\n    theBigDay.setUTCFullYear(1997);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "yearValue",
+                    "text": "An integer specifying the numeric value of the year, for example, 1995.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,687,20",
+                      "text": "0,687,30,72",
+                      "type": "0,687,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "monthValue",
+                    "text": "An integer between 0 and 11 representing the months January through\nDecember.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,688,20",
+                      "text": "0,688,31,68:0,689,4,10",
+                      "type": "0,688,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dayValue",
+                    "text": "An integer between 1 and 31 representing the day of the month. If you\nspecify the `dayValue` parameter, you must also specify the `monthValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,690,20",
+                      "text": "0,690,29,70:0,691,4,74",
+                      "type": "0,690,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,692,21,38",
+                      "type": "0,692,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,673,12",
+                  "text": "0,674,4,600"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setUTCHours",
+                "text": "Sets the hour (0-23) for a specified date according to universal time.\n\nIf you do not specify the `minutesValue`, `secondsValue`, and `msValue` parameters, the values\nreturned from the <a href='#!/api/Date-method-getUTCMinutes'>getUTCMinutes</a>, <a href='#!/api/Date-method-getUTCSeconds'>getUTCSeconds</a>, and <a href='#!/api/Date-method-getUTCMilliseconds'>getUTCMilliseconds</a> methods are used.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setUTCHours'>setUTCHours</a> attempts to update the\ndate information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 100 for `secondsValue`,\nthe minutes will be incremented by 1 (min + 1), and 40 will be used for seconds.\n\n    theBigDay = new Date();\n    theBigDay.setUTCHours(8);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "hoursValue",
+                    "text": "An integer between 0 and 23, representing the hour.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,709,20",
+                      "text": "0,709,31,52",
+                      "type": "0,709,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "minutesValue",
+                    "text": "An integer between 0 and 59, representing the minutes.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,710,20",
+                      "text": "0,710,33,55",
+                      "type": "0,710,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "secondsValue",
+                    "text": "An integer between 0 and 59, representing the seconds. If you specify the\n`secondsValue` parameter, you must also specify the `minutesValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,711,20",
+                      "text": "0,711,33,74:0,712,4,68",
+                      "type": "0,711,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "msValue",
+                    "text": "A number between 0 and 999, representing the milliseconds. If you specify the\n`msValue` parameter, you must also specify the `minutesValue` and `secondsValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,713,20",
+                      "text": "0,713,28,78:0,714,4,82",
+                      "type": "0,713,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,715,21,38",
+                      "type": "0,715,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,696,12",
+                  "text": "0,697,4,601"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setUTCMilliseconds",
+                "text": "Sets the milliseconds (0-999) for a specified date according to universal time.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setUTCMilliseconds'>setUTCMilliseconds</a> attempts to\nupdate the date information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 1100 for\n`millisecondsValue`, the seconds stored in the Date object will be incremented by 1, and 100 will\nbe used for milliseconds.\n\n    theBigDay = new Date();\n    theBigDay.setUTCMilliseconds(500);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "millisecondsValue",
+                    "text": "A number between 0 and 999, representing the milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,730,20",
+                      "text": "0,730,38,59",
+                      "type": "0,730,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,731,21,38",
+                      "type": "0,731,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,719,12",
+                  "text": "0,720,4,463"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setUTCMinutes",
+                "text": "Sets the minutes (0-59) for a specified date according to universal time.\n\nIf you do not specify the `secondsValue` and `msValue` parameters, the values returned from\n<a href='#!/api/Date-method-getUTCSeconds'>getUTCSeconds</a> and <a href='#!/api/Date-method-getUTCMilliseconds'>getUTCMilliseconds</a> methods are used.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setUTCMinutes'>setUTCMinutes</a> attempts to update the\ndate information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 100 for `secondsValue`,\nthe minutes (`minutesValue`) will be incremented by 1 (`minutesValue` + 1), and 40 will be used for\nseconds.\n\n    theBigDay = new Date();\n    theBigDay.setUTCMinutes(43);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "minutesValue",
+                    "text": "An integer between 0 and 59, representing the minutes.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,749,20",
+                      "text": "0,749,33,55",
+                      "type": "0,749,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "secondsValue",
+                    "text": "An integer between 0 and 59, representing the seconds. If you specify the `secondsValue` parameter, you must also specify the `minutesValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,750,20",
+                      "text": "0,750,33,142",
+                      "type": "0,750,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "msValue",
+                    "text": "A number between 0 and 999, representing the milliseconds. If you specify the `msValue` parameter, you must also specify the `minutesValue` and `secondsValue`.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,751,20",
+                      "text": "0,751,28,160",
+                      "type": "0,751,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,752,21,38",
+                      "type": "0,752,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,735,12",
+                  "text": "0,736,4,598"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setUTCMonth",
+                "text": "Sets the month (0-11) for a specified date according to universal time.\n\nIf you do not specify the `dayValue` parameter, the value returned from the <a href='#!/api/Date-method-getUTCDate'>getUTCDate</a> method is\nused.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setUTCMonth'>setUTCMonth</a> attempts to update the\ndate information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 15 for `monthValue`, the\nyear will be incremented by 1 (year + 1), and 3 will be used for month.\n\n    theBigDay = new Date();\n    theBigDay.setUTCMonth(11);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "monthValue",
+                    "text": "An integer between 0 and 11, representing the months January through\nDecember.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,769,20",
+                      "text": "0,769,31,69:0,770,4,10",
+                      "type": "0,769,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dayValue",
+                    "text": "An integer from 1 to 31, representing the day of the month.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,771,20",
+                      "text": "0,771,29,60",
+                      "type": "0,771,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,772,21,38",
+                      "type": "0,772,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,756,12",
+                  "text": "0,757,4,510"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setUTCSeconds",
+                "text": "Sets the seconds (0-59) for a specified date according to universal time.\n\nIf you do not specify the `msValue` parameter, the value returned from the <a href='#!/api/Date-method-getUTCMilliseconds'>getUTCMilliseconds</a>\nmethods is used.\n\nIf a parameter you specify is outside of the expected range, <a href='#!/api/Date-method-setUTCSeconds'>setUTCSeconds</a> attempts to update the\ndate information in the <a href='#!/api/Date'>Date</a> object accordingly. For example, if you use 100 for `secondsValue`,\nthe minutes stored in the <a href='#!/api/Date'>Date</a> object will be incremented by 1, and 40 will be used for seconds.\n\n    theBigDay = new Date();\n    theBigDay.setUTCSeconds(20);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "secondsValue",
+                    "text": "An integer between 0 and 59.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,789,20",
+                      "text": "0,789,33,29",
+                      "type": "0,789,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "msValue",
+                    "text": "A number between 0 and 999, representing the milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,790,20",
+                      "text": "0,790,28,59",
+                      "type": "0,790,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,791,21,38",
+                      "type": "0,791,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,776,12",
+                  "text": "0,777,4,550"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toDateString",
+                "text": "Returns the \"date\" portion of the Date as a human-readable string in American English.\n\n<a href='#!/api/Date'>Date</a> instances refer to a specific point in time. Calling <a href='#!/api/Date-method-toString'>toString</a> will return the\ndate formatted in a human readable form in American English. In SpiderMonkey, this consists of the\ndate portion (day, month, and year) followed by the time portion (hours, minutes, seconds, and time\nzone). Sometimes it is desirable to obtain a string of the date portion; such a thing can be\naccomplished with the <a href='#!/api/Date-method-toDateString'>toDateString</a> method.\n\nThe <a href='#!/api/Date-method-toDateString'>toDateString</a> method is especially useful because compliant engines implementing ECMA-262 may\ndiffer in the string obtained from <a href='#!/api/Date-method-toString'>toString</a> for <a href='#!/api/Date'>Date</a> objects, as the format is implementation-\ndependent and simple string slicing approaches may not produce consistent results across multiple\nengines.\n\n    var d = new Date(1993, 6, 28, 14, 39, 7);\n    println(d.toString()); // prints Wed Jul 28 1993 14:39:07 GMT-0600 (PDT)\n    println(d.toDateString()); // prints Wed Jul 28 1993\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Human-readable string, in local time.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,813,21,38",
+                      "type": "0,813,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,795,12",
+                  "text": "0,796,4,1006"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleDateString",
+                "text": "Returns the \"date\" portion of the Date as a string, using the current locale's\nconventions.\n\nThe <a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> method relies on the underlying operating system in formatting dates. It\nconverts the date to a string using the formatting convention of the operating system where the\nscript is running. For example, in the United States, the month appears before the date (04/15/98),\nwhereas in Germany the date appears before the month (15.04.98). If the operating system is not\nyear-2000 compliant and does not use the full year for years before 1900 or over 2000,\n<a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> returns a string that is not year-2000 compliant. <a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> behaves\nsimilarly to <a href='#!/api/Date-method-toString'>toString</a> when converting a year that the operating system does not properly format.\n\nMethods such as <a href='#!/api/Date-method-getDate'>getDate</a>, <a href='#!/api/Date-method-getMonth'>getMonth</a>, and <a href='#!/api/Date-method-getFullYear'>getFullYear</a> give more portable results than\n<a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a>. Use <a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> when the intent is to display to the user a string\nformatted using the regional format chosen by the user. Be aware that this method, due to its\nnature, behaves differently depending on the operating system and on the user's settings.\n\nIn the following example, `today` is a <a href='#!/api/Date'>Date</a> object:\n\n    today = new Date(95,11,18,17,28,35) //months are represented by 0 to 11\n    today.toLocaleDateString()\n\nIn this example, <a href='#!/api/Date-method-toLocaleDateString'>toLocaleDateString</a> returns a string value that is similar to the following form.\nThe exact format depends on the platform, locale and user's settings.\n\n    12/18/95\n\nYou shouldn't use this method in contexts where you rely on a particular format or locale.\n\n    \"Last visit: \" + someDate.toLocaleDateString(); // Good example\n    \"Last visit was at \" + someDate.toLocaleDateString(); // Bad example\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Human-readable string that may be formatted differently depending\non the country.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,849,21,66:0,850,4,16",
+                      "type": "0,849,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,817,12",
+                  "text": "0,818,4,1724"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Converts a date to a string, using the current locale's conventions. Overrides\nthe `Object.toLocaleString` method.\n\nThe <a href='#!/api/Date-method-toLocaleString'>toLocaleString</a> method relies on the underlying operating system in formatting dates. It\nconverts the date to a string using the formatting convention of the operating system where the\nscript is running. For example, in the United States, the month appears before the date (04/15/98),\nwhereas in Germany the date appears before the month (15.04.98). If the operating system is not\nyear-2000 compliant and does not use the full year for years before 1900 or over 2000,\n<a href='#!/api/Date-method-toLocaleString'>toLocaleString</a> returns a string that is not year-2000 compliant. <a href='#!/api/Date-method-toLocaleString'>toLocaleString</a> behaves\nsimilarly to <a href='#!/api/Date-method-toString'>toString</a> when converting a year that the operating system does not properly format.\n\nMethods such as <a href='#!/api/Date-method-getDate'>getDate</a>, <a href='#!/api/Date-method-getMonth'>getMonth</a>, <a href='#!/api/Date-method-getFullYear'>getFullYear</a>, <a href='#!/api/Date-method-getHours'>getHours</a>, <a href='#!/api/Date-method-getMinutes'>getMinutes</a>, and <a href='#!/api/Date-method-getSeconds'>getSeconds</a>\ngive more portable results than <a href='#!/api/Date-method-toLocaleString'>toLocaleString</a>. Use <a href='#!/api/Date-method-toLocaleString'>toLocaleString</a> when the intent is to\ndisplay to the user a string formatted using the regional format chosen by the user. Be aware that\nthis method, due to its nature, behaves differently depending on the operating system and on the\nuser's settings.\n\nIn the following example, `today` is a <a href='#!/api/Date'>Date</a> object:\n\n    today = new Date(95,11,18,17,28,35); //months are represented by 0 to 11\n    today.toLocaleString();\n\nIn this example, <a href='#!/api/Date-method-toLocaleString'>toLocaleString</a> returns a string value that is similar to the following form. The\nexact format depends on the platform, locale and user's settings.\n\n    12/18/95 17:28:35\n\nYou shouldn't use this method in contexts where you rely on a particular format or locale.\n\n    \"Last visit: \" + someDate.toLocaleString(); // Good example\n    \"Last visit was at \" + someDate.toLocaleString(); // Bad example\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Human-readable string that may be formatted differently depending\non the country.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,887,21,66:0,888,4,16",
+                      "type": "0,887,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,854,12",
+                  "text": "0,855,4,1762"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleTimeString",
+                "text": "Returns the \"time\" portion of the Date as a string, using the current locale's\nconventions.\n\nThe <a href='#!/api/Date-method-toLocaleTimeString'>toLocaleTimeString</a> method relies on the underlying operating system in formatting dates. It\nconverts the date to a string using the formatting convention of the operating system where the\nscript is running. For example, in the United States, the month appears before the date (04/15/98),\nwhereas in Germany the date appears before the month (15.04.98).\n\nMethods such as <a href='#!/api/Date-method-getHours'>getHours</a>, <a href='#!/api/Date-method-getMinutes'>getMinutes</a>, and <a href='#!/api/Date-method-getSeconds'>getSeconds</a> give more consistent results than\n<a href='#!/api/Date-method-toLocaleTimeString'>toLocaleTimeString</a>. Use <a href='#!/api/Date-method-toLocaleTimeString'>toLocaleTimeString</a> when the intent is to display to the user a string\nformatted using the regional format chosen by the user. Be aware that this method, due to its\nnature, behaves differently depending on the operating system and on the user's settings.\n\nIn the following example, `today` is a <a href='#!/api/Date'>Date</a> object:\n\n    today = new Date(95,11,18,17,28,35) //months are represented by 0 to 11\n    today.toLocaleTimeString()\n\nIn this example, <a href='#!/api/Date-method-toLocaleTimeString'>toLocaleTimeString</a> returns a string value that is similar to the following form.\nThe exact format depends on the platform.\n\n    17:28:35\n\nYou shouldn't use this method in contexts where you rely on a particular format or locale.\n\n    \"Last visit: \" + someDate.toLocaleTimeString(); // Good example\n    \"Last visit was at \" + someDate.toLocaleTimeString(); // Bad example\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Human-readable string that may be formatted differently depending\non the country.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,921,21,66:0,922,4,16",
+                      "type": "0,921,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,892,12",
+                  "text": "0,893,4,1383"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representing the specified Date object. Overrides the\n`Object.prototype.toString` method.\n\nThe <a href='#!/api/Date'>Date</a> object overrides the toString method of the Object object; it does not inherit\n`Object.toString`. For <a href='#!/api/Date'>Date</a> objects, the <a href='#!/api/Date-method-toString'>toString</a> method returns a string representation of the\nobject.\n\n<a href='#!/api/Date-method-toString'>toString</a> always returns a string representation of the date in American English.\n\nJavaScript calls the <a href='#!/api/Date-method-toString'>toString</a> method automatically when a date is to be represented as a text\nvalue or when a date is referred to in a string concatenation.\n\nThe following assigns the <a href='#!/api/Date-method-toString'>toString</a> value of a <a href='#!/api/Date'>Date</a> object to `myVar`:\n\n    x = new Date();\n    myVar=x.toString();   //assigns a value to myVar similar to:\n    //Mon Sep 28 1998 14:36:22 GMT-0700 (Pacific Daylight Time)\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Human-readable string of the date in local time.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,945,21,49",
+                      "type": "0,945,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,926,12",
+                  "text": "0,927,4,776"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toTimeString",
+                "text": "Returns the \"time\" portion of the Date as a human-readable string.\n\n<a href='#!/api/Date'>Date</a> instances refer to a specific point in time. Calling <a href='#!/api/Date-method-toString'>toString</a> will return the\ndate formatted in a human readable form in American English. In SpiderMonkey, this consists of the\ndate portion (day, month, and year) followed by the time portion (hours, minutes, seconds, and\ntime zone). Sometimes it is desirable to obtain a string of the time portion; such a thing can be\naccomplished with the <a href='#!/api/Date-method-toTimeString'>toTimeString</a> method.\n\nThe <a href='#!/api/Date-method-toTimeString'>toTimeString</a> method is especially useful because compliant engines implementing ECMA-262 may\ndiffer in the string obtained from <a href='#!/api/Date-method-toString'>toString</a> for <a href='#!/api/Date'>Date</a> objects, as the format is implementation-\ndependent; simple string slicing approaches may not produce consistent results across multiple\nengines.\n\n    var d = new Date(1993, 6, 28, 14, 39, 7);\n    println(d.toString()); // prints Wed Jul 28 1993 14:39:07 GMT-0600 (PDT)\n    println(d.toTimeString()); // prints 14:39:07 GMT-0600 (PDT)\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Human-readable string of the date in local time.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,967,21,49",
+                      "type": "0,967,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,949,12",
+                  "text": "0,950,4,991"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toUTCString",
+                "text": "Converts a date to a string, using the universal time convention.\n\nThe value returned by <a href='#!/api/Date-method-toUTCString'>toUTCString</a> is a readable string in American English in the UTC time zone.\nThe format of the return value may vary according to the platform.\n\n    var today = new Date();\n    var UTCstring = today.toUTCString();\n    // Mon, 03 Jul 2006 21:44:38 GMT\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "String of the date in UTC.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,981,21,27",
+                      "type": "0,981,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,971,12",
+                  "text": "0,972,4,341"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of a Date object. Overrides the\nObject.prototype.valueOf method.\n\nThe <a href='#!/api/Date-method-valueOf'>valueOf</a> method returns the primitive value of a <a href='#!/api/Date'>Date</a> object as a number data type, the\nnumber of milliseconds since midnight 01 January, 1970 UTC.\n\nThis method is functionally equivalent to the <a href='#!/api/Date-method-getTime'>getTime</a> method.\n\nThis method is usually called internally by JavaScript and not explicitly in code.\n\n    x = new Date(56, 6, 17);\n    myVar = x.valueOf();      //assigns -424713600000 to myVar\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Date represented as milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,999,21,34",
+                      "type": "0,999,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,985,12",
+                  "text": "0,986,4,492"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toJSON",
+                "text": "Returns a JSON representation of the Date object.\n\nDate instances refer to a specific point in time. Calling `toJSON()`\nreturns a JSON formatted string representing the Date object's\nvalue.  This method is generally intended to, by default, usefully\nserialize Date objects during JSON serialization.\n\n    var jsonDate = (new Date()).toJSON();\n    var backToDate = new Date(jsonDate);\n\n    console.log(\"Serialized date object: \" + jsonDate);\n    // Serialized date object: 2013-01-17T12:59:08.449Z\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Date value in `YYYY-MM-DDTHH-MM-SS.MMMZ` format.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,1021,21,49",
+                      "type": "0,1021,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1005,12",
+                  "text": "0,1006,4,559"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "now",
+                "static": true,
+                "text": "Returns the numeric value corresponding to the current time.\n\nThe <a href='#!/api/Date-static-method-now'>now</a> method returns the milliseconds elapsed since 1 January 1970 00:00:00 UTC up until now as\na number.\n\nWhen using <a href='#!/api/Date-static-method-now'>now</a> to create timestamps or unique IDs, keep in mind that the resolution may be 15\nmilliseconds on Windows, so you could end up with several equal values if <a href='#!/api/Date-static-method-now'>now</a> is called multiple\ntimes within a short time span.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns the number of milliseconds elapsed since 1 January 1970 00:00:00 UTC.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,138,21,78",
+                      "type": "0,138,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,127,12",
+                  "static": "0,128,4",
+                  "text": "0,129,4,401"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "parse",
+                "static": true,
+                "text": "Parses a string representation of a date, and returns the number of milliseconds\nsince January 1, 1970, 00:00:00, local time.\n\nThe <a href='#!/api/Date-static-method-parse'>parse</a> method takes a date string (such as `\"Dec 25, 1995\"`) and returns the number of\nmilliseconds since January 1, 1970, 00:00:00 UTC. The local time zone is used to interpret\narguments that do not contain time zone information. This function is useful for setting date\nvalues based on string values, for example in conjunction with the <a href='#!/api/Date-method-setTime'>setTime</a> method and the\n<a href='#!/api/Date'>Date</a> object.\n\nGiven a string representing a time, parse returns the time value. It accepts the IETF standard (RFC\n1123 Section 5.2.14 and elsewhere) date syntax: `\"Mon, 25 Dec 1995 13:30:00 GMT\"`. It understands\nthe continental US time-zone abbreviations, but for general use, use a time-zone offset, for\nexample, `\"Mon, 25 Dec 1995 13:30:00 GMT+0430\"` (4 hours, 30 minutes east of the Greenwich\nmeridian). If you do not specify a time zone, the local time zone is assumed. GMT and UTC are\nconsidered equivalent.\n\n### Using parse\n\nIf `IPOdate` is an existing <a href='#!/api/Date'>Date</a> object, then you can set it to August 9, 1995 (local time) as\nfollows:\n\n    IPOdate.setTime(Date.parse(\"Aug 9, 1995\"));\n\nSome other examples:\n\n    // Returns 807937200000 in time zone GMT-0300, and other values in other\n    // timezones, since the argument does not specify a time zone.\n    Date.parse(\"Aug 9, 1995\");\n\n    // Returns 807926400000 no matter the local time zone.\n    Date.parse(\"Wed, 09 Aug 1995 00:00:00 GMT\");\n\n    // Returns 807937200000 in timezone GMT-0300, and other values in other\n    // timezones, since there is no time zone specifier in the argument.\n    Date.parse(\"Wed, 09 Aug 1995 00:00:00\");\n\n    // Returns 0 no matter the local time zone.\n    Date.parse(\"Thu, 01 Jan 1970 00:00:00 GMT\");\n\n    // Returns 14400000 in timezone GMT-0400, and other values in other\n    // timezones, since there is no time zone specifier in the argument.\n    Date.parse(\"Thu, 01 Jan 1970 00:00:00\");\n\n    // Returns 14400000 no matter the local time zone.\n    Date.parse(\"Thu, 01 Jan 1970 00:00:00 GMT-0400\");\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "dateString",
+                    "text": "A string representing a date.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,190,20",
+                      "text": "0,190,31,30",
+                      "type": "0,190,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Number of milliseconds since January 1, 1970, 00:00:00, local time.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,191,21,68",
+                      "type": "0,191,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,142,12",
+                  "static": "0,143,4",
+                  "text": "0,144,4,2092"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "UTC",
+                "static": true,
+                "text": "Accepts the same parameters as the longest form of the constructor, and returns\nthe number of milliseconds in a <a href='#!/api/Date'>Date</a> object since January 1, 1970, 00:00:00,\nuniversal time.\n\n<a href='#!/api/Date-static-method-UTC'>UTC</a> takes comma-delimited date parameters and returns the number of milliseconds between January\n1, 1970, 00:00:00, universal time and the time you specified.\n\nYou should specify a full year for the year; for example, 1998. If a year between 0 and 99 is\nspecified, the method converts the year to a year in the 20th century (1900 + year); for example,\nif you specify 95, the year 1995 is used.\n\nThe <a href='#!/api/Date-static-method-UTC'>UTC</a> method differs from the <a href='#!/api/Date'>Date</a> constructor in two ways.\n*   `Date.UTC` uses universal time instead of the local time.\n*   `Date.UTC` returns a time value as a number instead of creating a <a href='#!/api/Date'>Date</a> object.\n\nIf a parameter you specify is outside of the expected range, the <a href='#!/api/Date-static-method-UTC'>UTC</a> method updates the other\nparameters to allow for your number. For example, if you use 15 for month, the year will be\nincremented by 1 (year + 1), and 3 will be used for the month.\n\nBecause <a href='#!/api/Date-static-method-UTC'>UTC</a> is a static method of <a href='#!/api/Date'>Date</a>, you always use it as `Date.UTC()`, rather than as a\nmethod of a <a href='#!/api/Date'>Date</a> object you created.\nThe following statement creates a <a href='#!/api/Date'>Date</a> object using GMT instead of local time:\n\n    gmtDate = new Date(Date.UTC(96, 11, 1, 0, 0, 0));\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "year",
+                    "text": "A year after 1900.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,223,20",
+                      "text": "0,223,25,19",
+                      "type": "0,223,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "month",
+                    "text": "An integer between 0 and 11 representing the month.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,224,20",
+                      "text": "0,224,26,52",
+                      "type": "0,224,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "An integer between 1 and 31 representing the day of the month.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,225,20",
+                      "text": "0,225,25,63",
+                      "type": "0,225,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "hrs",
+                    "text": "An integer between 0 and 23 representing the hours.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,226,20",
+                      "text": "0,226,24,52",
+                      "type": "0,226,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "min",
+                    "text": "An integer between 0 and 59 representing the minutes.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,227,20",
+                      "text": "0,227,24,54",
+                      "type": "0,227,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "sec",
+                    "text": "An integer between 0 and 59 representing the seconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,228,20",
+                      "text": "0,228,24,54",
+                      "type": "0,228,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ms",
+                    "text": "An integer between 0 and 999 representing the milliseconds.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,229,20",
+                      "text": "0,229,23,60",
+                      "type": "0,229,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Number of milliseconds since January 1, 1970, 00:00:00, universal time.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,230,21,72",
+                      "type": "0,230,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,195,12",
+                  "static": "0,196,4",
+                  "text": "0,197,4,1174:0,219,4,137"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "text": "0,3,4,3298"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

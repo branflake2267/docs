@@ -1,0 +1,125 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/schema/Association.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.data.schema.Association",
+        "requires": "Ext.data.schema.Role",
+        "text": "This class and its derivatives describe how two entities are related to each other.\nAssociations have the following forms:\n\n  * *<a href='#!/api/Ext.data.schema.ManyToOne'>Ext.data.schema.ManyToOne</a>*\n  * *<a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a>*\n  * *<a href='#!/api/Ext.data.schema.OneToOne'>Ext.data.schema.OneToOne</a>*\n\nAssociations are first-class objects in a <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a> but\nare not created directly. They are created based on <a href='#!/api/Ext.data.field.Field-cfg-reference'>Ext.data.field.Field#reference</a>\nproperties but also on <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a> declarations.\n\nAssociations have unique names within the <a href='#!/api/Ext.data.schema.Association-property-schema'>schema</a> as do <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\nIn many cases, the association names can be generated. These names have uses beyond the\nbasic needs of tracking such as when communicating with the server. If the generated\nnames are not satisfactory, they can be given explicitly or the default naming can be\nreplaced by implementing a custom <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a> class.\n\n# Life Cycle\n\nIntimately connected with many associations is the concept of life-cycle. It is often\nthe case that one entity is \"owned\" by another so that if the owner is to be deleted,\nthe owned entity must also be deleted.\n\nThere are also associations that work in the reverse direction. That is, the presence of\nan associated entity prevents the other entity from being deleted.\n\nFinally, some associations just need to be dissolved if one of the related entities is\ndeleted. This is the case in a <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a>\nassociation, but can also be for others if the `reference` field can be set to <a href='#!/api/null'>null</a>.\n\n# Left and Right\n\nBecause associations are data that span entity types, they are not rightly viewed as\n\"belonging\" to either entity. Instead, associations are owned by the `Schema`. Even so,\nbecause belonging to an association effects both entities, associations are often\nviewed from two perspectives or \"sides\". To distinguish them we call one \"left\" and the\nother \"right\".\n\nThe reason for this choice derives from <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a>\nassociations and their typical underlying \"matrix\" table. If you were to view the matrix\ntable in a grid, you would see one id on the left and the other id on the right. There\nis no further significance to these labels.\n\nWhile the concept of left and right might makes sense in a matrix relationship, the\nlabels also apply to the other relationships. In those cases, the \"left\" entity is the\nentity that contains the <a href='#!/api/Ext.data.field.Field-cfg-reference'>Ext.data.Field#reference</a> (or foreign key).\n\n# Example\n\nTo help illustrate the various associations, consider a data model with Users, Groups\nand Organizations. The Users are owned by an Organization. Deleting an Organization,\nshould delete all of the Users it contains. The Users can also be added to one or more\nGroups, for example, the \"moderator\" or \"admin\" Group. Further, a a Level is assigned\nto each User. Levels represent the subscriber's or customer's rank, such as \"premium\"\nor \"basic\".\n\nTo summarize:\n\n * Users are *<a href='#!/api/Ext.data.schema.ManyToOne'>Ext.data.schema.ManyToOne</a>* to Organizations\n * Users are *<a href='#!/api/Ext.data.schema.ManyToOne'>Ext.data.schema.ManyToOne</a>* to Levels\n * Users are *<a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a>* to Groups\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "name",
+                "text": "The name of this association.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,74,22",
+                  "text": "0,75,8,30",
+                  "type": "0,74,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "owner",
+                "readonly": true,
+                "text": "Points at either <a href='#!/api/Ext.data.schema.Association-property-left'>left</a> or <a href='#!/api/Ext.data.schema.Association-property-right'>right</a> objects if one is the owning party in this\nassociation or is <a href='#!/api/null'>null</a> if there is no owner.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,79,27",
+                  "readonly": "0,82,8",
+                  "text": "0,80,8,125",
+                  "type": "0,79,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "definedBy",
+                "readonly": true,
+                "type": "Ext.Class",
+                "src": {
+                  "name": "0,87,30",
+                  "readonly": "0,88,8",
+                  "type": "0,87,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "field",
+                "readonly": true,
+                "type": "Ext.data.field.Field",
+                "src": {
+                  "name": "0,92,41",
+                  "readonly": "0,93,8",
+                  "type": "0,92,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "schema",
+                "readonly": true,
+                "type": "Ext.data.schema.Schema",
+                "src": {
+                  "name": "0,98,43",
+                  "readonly": "0,99,8",
+                  "type": "0,98,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "nullable",
+                "readonly": true,
+                "type": "Boolean",
+                "src": {
+                  "name": "0,103,28",
+                  "readonly": "0,104,8",
+                  "type": "0,103,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "left",
+                "readonly": true,
+                "type": "Ext.data.schema.Role",
+                "src": {
+                  "name": "0,108,41",
+                  "readonly": "0,109,8",
+                  "type": "0,108,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "right",
+                "readonly": true,
+                "type": "Ext.data.schema.Role",
+                "src": {
+                  "name": "0,113,41",
+                  "readonly": "0,114,8",
+                  "type": "0,113,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,64,0",
+          "requires": "0,66,0",
+          "text": "0,2,4,3209"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

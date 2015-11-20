@@ -1,0 +1,1048 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/class/Base.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Base",
+        "text": "\nThe root of all classes created with <a href='#!/api/Ext-method-define'>Ext#define</a>.\n\nExt.Base is the building block of all Ext classes. All classes in Ext inherit from Ext.Base.\nAll prototype and static members of this class are inherited by all other classes.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addDeprecations",
+                "text": "This method applies a versioned, deprecation declaration to this class. This\nis typically called by the `deprecated` config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "deprecations",
+                    "src": {
+                      "name": "0,120,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,118,12",
+                  "name": "0,120,0",
+                  "text": "0,116,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "statics",
+                "text": "Get the reference to the class from which this object was instantiated. Note that unlike <a href='#!/api/Ext.Base-property-self'>Ext.Base#self</a>,\n`this.statics()` is scope-independent and it always returns the class from which it was called, regardless of what\n`this` points to during run-time\n\n    Ext.define('My.Cat', {\n        statics: {\n            totalCreated: 0,\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            var statics = this.statics();\n\n            alert(statics.speciesName);     // always equals to 'Cat' no matter what 'this' refers to\n                                            // equivalent to: My.Cat.speciesName\n\n            alert(this.self.speciesName);   // dependent on 'this'\n\n            statics.totalCreated++;\n        },\n\n        clone: function() {\n            var cloned = new this.self();   // dependent on 'this'\n\n            cloned.groupName = this.statics().speciesName;   // equivalent to: My.Cat.speciesName\n\n            return cloned;\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n\n        statics: {\n            speciesName: 'Snow Leopard'     // My.SnowLeopard.speciesName = 'Snow Leopard'\n        },\n\n        constructor: function() {\n            this.callParent();\n        }\n    });\n\n    var cat = new My.Cat();                 // alerts 'Cat', then alerts 'Cat'\n\n    var snowLeopard = new My.SnowLeopard(); // alerts 'Cat', then alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));         // alerts 'My.SnowLeopard'\n    alert(clone.groupName);                 // alerts 'Cat'\n\n    alert(My.Cat.totalCreated);             // alerts 3\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Class",
+                    "src": {
+                      "type": "0,1161,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1160,12",
+                  "name": "0,1163,0",
+                  "text": "0,1107,12,1691"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callParent",
+                "text": "Call the \"parent\" method of the current method. That is the method previously\noverridden by derivation or by an override (see <a href='#!/api/Ext-method-define'>Ext#define</a>).\n\n     Ext.define('My.Base', {\n         constructor: function (x) {\n             this.x = x;\n         },\n\n         statics: {\n             method: function (x) {\n                 return x;\n             }\n         }\n     });\n\n     Ext.define('My.Derived', {\n         extend: 'My.Base',\n\n         constructor: function () {\n             this.callParent([21]);\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // alerts 21\n\nThis can be used with an override as follows:\n\n     Ext.define('My.DerivedOverride', {\n         override: 'My.Derived',\n\n         constructor: function (x) {\n             this.callParent([x*2]); // calls original My.Derived constructor\n         }\n     });\n\n     var obj = new My.Derived();\n\n     alert(obj.x);  // now alerts 42\n\nThis also works with static and private methods.\n\n     Ext.define('My.Derived2', {\n         extend: 'My.Base',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Base.method\n             }\n         }\n     });\n\n     alert(My.Base.method(10));     // alerts 10\n     alert(My.Derived2.method(10)); // alerts 20\n\nLastly, it also works with overridden static methods.\n\n     Ext.define('My.Derived2Override', {\n         override: 'My.Derived2',\n\n         // privates: {\n         statics: {\n             method: function (x) {\n                 return this.callParent([x*2]); // calls My.Derived2.method\n             }\n         }\n     });\n\n     alert(My.Derived2.method(10); // now alerts 40\n\nTo override a method and replace it and also call the superclass method, use\n<a href='#!/api/Ext.Base-method-callSuper'>method-callSuper</a>. This is often done to patch a method to fix a bug.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callParent(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "0,1251,37",
+                      "text": "0,1251,42,57:0,1252,12,67",
+                      "type": "0,1251,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the parent method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,1253,29,48",
+                      "type": "0,1253,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1250,12",
+                  "name": "0,1255,0",
+                  "text": "0,1175,12,1853"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "callSuper",
+                "text": "This method is used by an **override** to call the superclass method but\nbypass any overridden method. This is often done to \"patch\" a method that\ncontains a bug but for whatever reason cannot be fixed directly.\n\nConsider:\n\n     Ext.define('Ext.some.Class', {\n         method: function () {\n             console.log('Good');\n         }\n     });\n\n     Ext.define('Ext.some.DerivedClass', {\n         extend: 'Ext.some.Class',\n\n         method: function () {\n             console.log('Bad');\n\n             // ... logic but with a bug ...\n\n             this.callParent();\n         }\n     });\n\nTo patch the bug in `Ext.some.DerivedClass.method`, the typical solution is to create an\noverride:\n\n     Ext.define('App.patches.DerivedClass', {\n         override: 'Ext.some.DerivedClass',\n\n         method: function () {\n             console.log('Fixed');\n\n             // ... logic but with bug fixed ...\n\n             this.callSuper();\n         }\n     });\n\nThe patch method cannot use <a href='#!/api/Ext.Base-method-callParent'>method-callParent</a> to call the superclass\n`method` since that would call the overridden method containing the bug. In\nother words, the above patch would only produce \"Fixed\" then \"Good\" in the\nconsole log, whereas, using `callParent` would produce \"Fixed\" then \"Bad\"\nthen \"Good\".\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments, either an array or the `arguments` object\nfrom the current method, for example: `this.callSuper(arguments)`\n",
+                    "type": "Array/Arguments",
+                    "src": {
+                      "name": "0,1338,37",
+                      "text": "0,1338,42,57:0,1339,12,66",
+                      "type": "0,1338,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns the result of calling the superclass method\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,1340,29,52",
+                      "type": "0,1340,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1337,12",
+                  "name": "0,1342,0",
+                  "text": "0,1292,12,1266"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initConfig",
+                "text": "Initialize configuration for this class. a typical example:\n\n    Ext.define('My.awesome.Class', {\n        // The default config\n        config: {\n            name: 'Awesome',\n            isAwesome: true\n        },\n\n        constructor: function(config) {\n            this.initConfig(config);\n        }\n    });\n\n    var awesome = new My.awesome.Class({\n        name: 'Super Awesome'\n    });\n\n    alert(awesome.getName()); // 'Super Awesome'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1449,28",
+                      "type": "0,1449,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "0,1450,31,5",
+                      "type": "0,1450,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1448,12",
+                  "name": "0,1452,0",
+                  "text": "0,1428,12,441"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getConfig",
+                "text": "Returns a specified config property value. If the name parameter is not passed,\nall current configuration options will be returned as key value pairs.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "The name of the config property to get.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1469,29",
+                      "text": "0,1469,35,40",
+                      "type": "0,1469,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "peek",
+                    "optional": true,
+                    "text": "`true` to peek at the raw value without calling the getter.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,1470,30",
+                      "text": "0,1470,42,60",
+                      "type": "0,1470,20",
+                      "value": "0,1470,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The config property value.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,1471,29,27",
+                      "type": "0,1471,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1473,0",
+                  "text": "0,1466,12,151"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setConfig",
+                "text": "Sets a single/multiple configuration options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the property to set, or a set of key value pairs to set.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,1478,35",
+                      "text": "0,1478,40,69",
+                      "type": "0,1478,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to set for the name parameter.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1479,29",
+                      "text": "0,1479,36,41",
+                      "type": "0,1479,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "0,1480,31,5",
+                      "type": "0,1480,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1482,0",
+                  "text": "0,1476,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getCurrentConfig",
+                "src": {
+                  "access": "0,1506,12",
+                  "name": "0,1508,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "hasConfig",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "0,1516,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1515,12",
+                  "name": "0,1518,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInitialConfig",
+                "text": "Returns the initial configuration passed to the constructor when\ninstantiating this class.\n\nGiven this example Ext.button.Button definition and instance:\n\n    Ext.define('MyApp.view.Button', {\n        extend: 'Ext.button.Button',\n        xtype: 'mybutton',\n\n        scale: 'large',\n        enableToggle: true\n    });\n\n    var btn = Ext.create({\n        xtype: 'mybutton',\n        renderTo: Ext.getBody(),\n        text: 'Test Button'\n    });\n\nCalling `btn.getInitialConfig()` would return an object including the config\noptions passed to the <a href='#!/api/Ext.Base-static-method-create'>create</a> method:\n\n    xtype: 'mybutton',\n    renderTo: // The document body itself\n    text: 'Test Button'\n\nCalling `btn.getInitialConfig('text')`returns **'Test Button'**.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "optional": true,
+                    "text": "Name of the config option to return.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1551,29",
+                      "text": "0,1551,35,37",
+                      "type": "0,1551,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The full config object or a single config value\nwhen `name` parameter specified.\n",
+                    "type": "Object/Mixed",
+                    "src": {
+                      "text": "0,1552,35,48:0,1553,12,33",
+                      "type": "0,1552,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1555,0",
+                  "text": "0,1523,12,715"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "link",
+                "text": "Adds a \"destroyable\" object to an internal list of objects that will be destroyed\nwhen this instance is destroyed (via <a href='#!/api/Ext.Base-method-destroy'>destroy</a>).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1571,28",
+                      "type": "0,1571,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1572,28",
+                      "type": "0,1572,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `value` passed.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,1573,29,20",
+                      "type": "0,1573,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1574,12",
+                  "name": "0,1576,0",
+                  "text": "0,1569,12,140"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unlink",
+                "text": "Destroys a given set of <a href='#!/api/Ext.Base-method-link'>link</a> objects. This is only needed if\nthe linked object is being destroyed before this instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "names",
+                    "text": "The names of the linked objects to destroy.\n",
+                    "type": "String[]",
+                    "src": {
+                      "name": "0,1589,30",
+                      "text": "0,1589,36,44",
+                      "type": "0,1589,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "0,1590,31,5",
+                      "type": "0,1590,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1591,12",
+                  "name": "0,1593,0",
+                  "text": "0,1587,12,138"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "This method is called to cleanup an object and its resources. After calling\nthis method, the object should not be used any further.\n",
+                "src": {
+                  "name": "0,1626,0",
+                  "text": "0,1623,12,132"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$className",
+                "src": {
+                  "access": "0,1049,13",
+                  "name": "0,1050,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isInstance",
+                "readonly": true,
+                "text": "This value is `true` and is used to identify plain objects from instances of\na defined class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,1056,12",
+                  "name": "0,1053,32",
+                  "readonly": "0,1057,12",
+                  "text": "0,1054,12,94",
+                  "type": "0,1053,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configPrefixed",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` causes `config` values to be stored on instances using a\nproperty name prefixed with an underscore (\"_\") character. A value of `false`\nstores `config` values as properties using their exact name (no prefix).\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,1066,12",
+                  "name": "0,1062,33",
+                  "since": "0,1067,19",
+                  "text": "0,1063,12,225",
+                  "type": "0,1062,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$configStrict",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The value `true` instructs the <a href='#!/api/Ext.Base-method-initConfig'>initConfig</a> method to only honor values for\nproperties declared in the `config` block of a class. When `false`, properties\nthat are not declared in a `config` block will be placed on the instance.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,1076,12",
+                  "name": "0,1072,33",
+                  "since": "0,1077,19",
+                  "text": "0,1073,12,229",
+                  "type": "0,1072,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isConfiguring",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` during the call to <a href='#!/api/Ext.Base-method-initConfig'>initConfig</a>.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,1084,12",
+                  "name": "0,1082,32",
+                  "readonly": "0,1085,12",
+                  "since": "0,1086,19",
+                  "text": "0,1083,12,64",
+                  "type": "0,1082,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "isFirstInstance",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is set to `true` if this instance is the first of its class.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,1093,12",
+                  "name": "0,1091,32",
+                  "readonly": "0,1094,12",
+                  "since": "0,1095,19",
+                  "text": "0,1092,12,75",
+                  "type": "0,1091,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "destroyed",
+                "text": "This property is set to `true` after the <a href='#!/api/Ext.Base-method-destroy'>destroy</a> method is called.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "0,1102,12",
+                  "name": "0,1100,32",
+                  "text": "0,1101,12,69",
+                  "type": "0,1100,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "self",
+                "text": "\nGet the reference to the current class from which this object was instantiated. Unlike <a href='#!/api/Ext.Base-method-statics'>Ext.Base#statics</a>,\n`this.self` is scope-dependent and it's meant to be used for dynamic inheritance. See <a href='#!/api/Ext.Base-method-statics'>Ext.Base#statics</a>\nfor a detailed comparison\n\n    Ext.define('My.Cat', {\n        statics: {\n            speciesName: 'Cat' // My.Cat.speciesName = 'Cat'\n        },\n\n        constructor: function() {\n            alert(this.self.speciesName); // dependent on 'this'\n        },\n\n        clone: function() {\n            return new this.self();\n        }\n    });\n\n\n    Ext.define('My.SnowLeopard', {\n        extend: 'My.Cat',\n        statics: {\n            speciesName: 'Snow Leopard'         // My.SnowLeopard.speciesName = 'Snow Leopard'\n        }\n    });\n\n    var cat = new My.Cat();                     // alerts 'Cat'\n    var snowLeopard = new My.SnowLeopard();     // alerts 'Snow Leopard'\n\n    var clone = snowLeopard.clone();\n    alert(Ext.getClassName(clone));             // alerts 'My.SnowLeopard'\n",
+                "type": "Ext.Class",
+                "src": {
+                  "access": "0,1413,12",
+                  "name": "0,1379,34",
+                  "text": "0,1380,12,1011",
+                  "type": "0,1379,23"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "create",
+                "static": true,
+                "text": "Create a new instance of this Class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.create({\n        someConfig: true\n    });\n\nAll parameters are passed to the constructor of the class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "the created instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,107,29,22",
+                      "type": "0,107,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "0,109,12",
+                  "name": "0,111,0",
+                  "static": "0,108,12",
+                  "text": "0,95,12,214"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "extend",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "src": {
+                      "name": "0,350,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,347,12",
+                  "inheritable": "0,349,12",
+                  "name": "0,352,0",
+                  "static": "0,348,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "triggerExtended",
+                "static": true,
+                "src": {
+                  "access": "0,402,12",
+                  "inheritable": "0,404,12",
+                  "name": "0,406,0",
+                  "static": "0,403,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "onExtended",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "0,428,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "0,428,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,424,12",
+                  "inheritable": "0,426,12",
+                  "name": "0,428,0",
+                  "static": "0,425,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addStatics",
+                "static": true,
+                "text": "Add / override static properties of this class.\n\n    Ext.define('My.cool.Class', {\n        ...\n    });\n\n    My.cool.Class.addStatics({\n        someProperty: 'someValue',      // My.cool.Class.someProperty = 'someValue'\n        method1: function() { ... },    // My.cool.Class.method1 = function() { ... };\n        method2: function() { ... }     // My.cool.Class.method2 = function() { ... };\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,450,28",
+                      "type": "0,450,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "0,451,31,5",
+                      "type": "0,451,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "0,453,12",
+                  "name": "0,455,0",
+                  "static": "0,452,12",
+                  "text": "0,438,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addInheritableStatics",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,464,28",
+                      "type": "0,464,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,461,12",
+                  "inheritable": "0,463,12",
+                  "name": "0,466,0",
+                  "static": "0,462,12"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "addMembers",
+                "static": true,
+                "text": "Add methods / properties to the prototype of this class.\n\n    Ext.define('My.awesome.Cat', {\n        constructor: function() {\n            ...\n        }\n    });\n\n     My.awesome.Cat.addMembers({\n         meow: function() {\n            alert('Meowww...');\n         }\n     });\n\n     var kitty = new My.awesome.Cat();\n     kitty.meow();\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The members to add to this class.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,522,28",
+                      "text": "0,522,36,34",
+                      "type": "0,522,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "isStatic",
+                    "optional": true,
+                    "text": "Pass `true` if the members are static.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,523,30",
+                      "text": "0,523,46,39",
+                      "type": "0,523,20",
+                      "value": "0,523,39"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "privacy",
+                    "optional": true,
+                    "text": "Pass `true` if the members are private. This\nonly has meaning in debug mode and only for methods.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,524,30",
+                      "text": "0,524,45,45:0,525,12,53",
+                      "type": "0,524,20",
+                      "value": "0,524,38"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "0,527,12",
+                  "name": "0,529,0",
+                  "static": "0,526,12",
+                  "text": "0,505,12,335"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addMember",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "0,662,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "member",
+                    "src": {
+                      "name": "0,663,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,659,12",
+                  "inheritable": "0,661,12",
+                  "name": "0,665,0",
+                  "static": "0,660,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "borrow",
+                "static": true,
+                "text": "Borrow another class' members to the prototype of this class.\n\n    Ext.define('Bank', {\n        money: '$$$',\n        printMoney: function() {\n            alert('$$$$$$$');\n        }\n    });\n\n    Ext.define('Thief', {\n        ...\n    });\n\n    Thief.borrow(Bank, ['money', 'printMoney']);\n\n    var steve = new Thief();\n\n    alert(steve.money); // alerts '$$$'\n    steve.printMoney(); // alerts '$$$$$$$'\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fromClass",
+                    "text": "The class to borrow members from\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "name": "0,693,30",
+                      "text": "0,693,40,33",
+                      "type": "0,693,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The names of the members to borrow\n",
+                    "type": "Array/String",
+                    "src": {
+                      "name": "0,694,34",
+                      "text": "0,694,42,35",
+                      "type": "0,694,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "0,695,31,5",
+                      "type": "0,695,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,698,12",
+                  "inheritable": "0,697,12",
+                  "name": "0,700,0",
+                  "static": "0,696,12",
+                  "text": "0,673,12,404"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "override",
+                "static": true,
+                "text": "Override members of this class. Overridden methods can be invoked via\n<a href='#!/api/Ext.Base-callParent'>Ext.Base#callParent</a>.\n\n    Ext.define('My.Cat', {\n        constructor: function() {\n            alert(\"I'm a cat!\");\n        }\n    });\n\n    My.Cat.override({\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\n    var kitty = new My.Cat(); // alerts \"I'm going to be a cat!\"\n                              // alerts \"I'm a cat!\"\n                              // alerts \"Meeeeoooowwww\"\n\nDirect use of this method should be rare. Use <a href='#!/api/Ext-method-define'>Ext#define</a>\ninstead:\n\n    Ext.define('My.CatOverride', {\n        override: 'My.Cat',\n        constructor: function() {\n            alert(\"I'm going to be a cat!\");\n\n            this.callParent(arguments);\n\n            alert(\"Meeeeoooowwww\");\n        }\n    });\n\nThe above accomplishes the same result but can be managed by the <a href='#!/api/Ext.Loader'>Ext.Loader</a>\nwhich can properly order the override and its target class and the build process\ncan determine whether the override is needed based on the required state of the\ntarget class (My.Cat).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "members",
+                    "text": "The properties to add to this class. This should be\nspecified as an object literal containing one or more properties.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,762,28",
+                      "text": "0,762,36,52:0,763,12,66",
+                      "type": "0,762,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this class\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "0,764,31,11",
+                      "type": "0,764,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "0,766,12",
+                  "name": "0,768,0",
+                  "static": "0,765,12",
+                  "text": "0,720,12,1180"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callParent",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "0,814,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,810,12",
+                  "inheritable": "0,812,12",
+                  "name": "0,814,0",
+                  "static": "0,811,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "inheritable": true,
+                "name": "callSuper",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "0,828,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,824,12",
+                  "inheritable": "0,826,12",
+                  "name": "0,828,0",
+                  "static": "0,825,12"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "mixin",
+                "static": true,
+                "text": "Used internally by the mixins pre-processor\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "0,844,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "src": {
+                      "name": "0,844,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,840,12",
+                  "inheritable": "0,842,12",
+                  "name": "0,844,0",
+                  "static": "0,841,12",
+                  "text": "0,839,12,44"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "addConfig",
+                "static": true,
+                "text": "Adds new config properties to this class. This is called for classes when they\nare declared, then for any mixins that class may define and finally for any\noverrides defined that target the class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,940,28",
+                      "type": "0,940,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mixinClass",
+                    "optional": true,
+                    "text": "The mixin class if the configs are from a mixin.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,941,32",
+                      "text": "0,941,44,49",
+                      "type": "0,941,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,942,12",
+                  "inheritable": "0,944,12",
+                  "name": "0,946,0",
+                  "static": "0,943,12",
+                  "text": "0,936,12,197"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "getConfigurator",
+                "static": true,
+                "text": "Returns the <a href='#!/api/Ext.Configurator'>Ext.Configurator</a> for this class.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.Configurator",
+                    "src": {
+                      "type": "0,967,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,968,12",
+                  "inheritable": "0,970,12",
+                  "name": "0,972,0",
+                  "static": "0,969,12",
+                  "text": "0,965,12,48"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "getName",
+                "static": true,
+                "text": "Get the current class' name in string format.\n\n    Ext.define('My.cool.Class', {\n        constructor: function() {\n            alert(this.self.getName()); // alerts 'My.cool.Class'\n        }\n    });\n\n    My.cool.Class.getName(); // 'My.cool.Class'\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "className\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,989,29,10",
+                      "type": "0,989,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "0,991,12",
+                  "name": "0,993,0",
+                  "static": "0,990,12",
+                  "text": "0,979,12,249"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritable": true,
+                "name": "createAlias",
+                "static": true,
+                "text": "Create aliases for existing prototype methods. Example:\n\n    Ext.define('My.cool.Class', {\n        method1: function() { ... },\n        method2: function() { ... }\n    });\n\n    var test = new My.cool.Class();\n\n    My.cool.Class.createAlias({\n        method3: 'method1',\n        method4: 'method2'\n    });\n\n    test.method3(); // test.method1()\n\n    My.cool.Class.createAlias('method5', 'method3');\n\n    test.method5(); // test.method3() -> test.method1()\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "alias",
+                    "text": "The new method name, or an object to set multiple aliases. See\n<a href='#!/api/Ext.Function-method-flexSetter'>Ext.Function#flexSetter</a>\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,1018,35",
+                      "text": "0,1018,41,63:0,1019,12,43",
+                      "type": "0,1018,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The original method name\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,1020,35",
+                      "text": "0,1020,42,25",
+                      "type": "0,1020,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "inheritable": "0,1022,12",
+                  "name": "0,1025,0",
+                  "static": "0,1021,12",
+                  "text": "0,998,12,456"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "inheritable": true,
+                "name": "$onExtended",
+                "static": true,
+                "src": {
+                  "access": "0,395,12",
+                  "inheritable": "0,397,12",
+                  "name": "0,399,0",
+                  "static": "0,396,12"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,3,11",
+          "text": "0,4,4,235"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

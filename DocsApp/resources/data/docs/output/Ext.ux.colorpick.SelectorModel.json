@@ -1,0 +1,558 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/ux/classic/src/colorpick/SelectorModel.js",
+    "../../../ext/packages/core/src/app/ViewModel.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "viewmodel.colorpick-selectormodel",
+        "extends": "Ext.app.ViewModel",
+        "name": "Ext.ux.colorpick.SelectorModel",
+        "requires": "Ext.ux.colorpick.ColorUtils",
+        "text": "View Model that holds the \"selectedColor\" of the color picker container.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "data",
+                "since": "5.0.0",
+                "text": "This object holds the arbitrary data that populates the `ViewModel` and is\nthen available for binding.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,377,26",
+                  "since": "1,380,19",
+                  "text": "1,378,12,103",
+                  "type": "1,377,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "formulas",
+                "since": "5.0.0",
+                "text": "An object that defines named values whose value is managed by function calls.\nThe names of the properties of this object are assigned as values in the\nViewModel.\n\nFor example:\n\n     formulas: {\n         xy: function (get) { return get('x') * get('y'); }\n     }\n\nFor more details about defining a formula, see <a href='#!/api/Ext.app.bind.Formula'>Ext.app.bind.Formula</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,385,26",
+                  "since": "1,397,19",
+                  "text": "1,386,12,341",
+                  "type": "1,385,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "links",
+                "since": "5.0.0",
+                "text": "Links provide a way to assign a simple name to a more complex bind. The primary\nuse for this is to assign names to records in the data model.\n\n     links: {\n         theUser: {\n             type: 'User',\n             id: 12\n         }\n     }\n\nIt is also possible to force a new phantom record to be created by not specifying an\nid but passing `create: true` as part of the descriptor. This is often useful when\ncreating a new record for a child session.\n\n    links: {\n        newUser: {\n            type: 'User',\n            create: true\n        }\n    }\n\n`create` can also be an object containing initial data for the record.\n\n    links: {\n        newUser: {\n            type: 'User',\n            create: {\n                firstName: 'John',\n                lastName: 'Smith'\n            }\n        }\n    }\n\nWhile that is the typical use, the value of each property in <a href='#!/api/Ext.ux.colorpick.SelectorModel-cfg-links'>links</a> may also be\na bind descriptor (see <a href='#!/api/Ext.ux.colorpick.SelectorModel-method-bind'>method-bind</a> for the various forms of bind\ndescriptors).\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,407,26",
+                  "since": "1,444,19",
+                  "text": "1,408,12,978",
+                  "type": "1,407,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "parent",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "The parent `ViewModel` of this `ViewModel`. Once set, this cannot be changed.\n",
+                "type": "Ext.app.ViewModel",
+                "src": {
+                  "name": "1,449,37",
+                  "readonly": "1,451,12",
+                  "since": "1,452,19",
+                  "text": "1,450,12,78",
+                  "type": "1,449,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "root",
+                "since": "5.0.0",
+                "text": "A reference to the root \"stub\" (an object that manages bindings).\n",
+                "type": "Ext.app.bind.RootStub",
+                "src": {
+                  "access": "1,459,12",
+                  "name": "1,457,41",
+                  "since": "1,460,19",
+                  "text": "1,458,12,66",
+                  "type": "1,457,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "scheduler",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "The scheduler used to schedule and manage the delivery of notifications for\nall connections to this `ViewModel` and any other attached to it. The normal\nprocess to initialize the <a href='#!/api/Ext.ux.colorpick.SelectorModel-cfg-scheduler'>scheduler</a> is to get the scheduler used by the\n<a href='#!/api/Ext.ux.colorpick.SelectorModel-cfg-parent'>parent</a> or <a href='#!/api/Ext.ux.colorpick.SelectorModel-cfg-session'>session</a> and failing either of those, create one.\n",
+                "type": "Ext.util.Scheduler",
+                "src": {
+                  "access": "1,471,12",
+                  "name": "1,465,38",
+                  "readonly": "1,470,12",
+                  "since": "1,472,19",
+                  "text": "1,466,12,290",
+                  "type": "1,465,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "schema",
+                "text": "The schema to use for getting information about entities.\n",
+                "type": "String/Ext.data.schema.Schema",
+                "src": {
+                  "name": "1,477,49",
+                  "text": "1,478,12,58",
+                  "type": "1,477,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "session",
+                "since": "5.0.0",
+                "text": "The session used to manage the data model (records and stores).\n",
+                "type": "Ext.data.Session",
+                "src": {
+                  "name": "1,483,36",
+                  "since": "1,485,19",
+                  "text": "1,484,12,64",
+                  "type": "1,483,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stores",
+                "since": "5.0.0",
+                "text": "A declaration of <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> configurations that are first processed as\nbinds to produce an effective store configuration.\n\nA simple store definition. We can reference this in our bind statements using the\n`{users}` as we would with other data values.\n\n    new Ext.app.ViewModel({\n        stores: {\n            users: {\n                model: 'User',\n                autoLoad: true\n            }\n        }\n    });\n\nThis store definition contains a dynamic binding. The store will not be created until\nthe initial value for groupId is set. Once that occurs, the store is created with the appropriate\nfilter configuration. Subsequently, once we change the group value, the old filter will be\noverwritten with the new value.\n\n    var viewModel = new Ext.app.ViewModel({\n        stores: {\n            users: {\n                model: 'User',\n                filters: [{\n                    property: 'groupId',\n                    value: '{groupId}'\n                }]\n            }\n        }\n    });\n    viewModel.set('groupId', 1); // This will trigger the store creation with the filter.\n    viewModel.set('groupId', 2); // The filter value will be changed.\n\nThis store uses <a href='#!/api/Ext.data.ChainedStore'>Ext.data.ChainedStore</a> to create a store backed by the\ndata in another store. By specifying a string as the store, it will bind our creation and backing\nto the other store. This functionality is especially useful when wanting to display a different \"view\"\nof a store, for example a different sort order or different filters.\n\n    var viewModel = new Ext.app.ViewModel({\n        stores: {\n            allUsers: {\n                model: 'User',\n                autoLoad: true\n            },\n            children: {\n                source: '{allUsers}',\n                filters: [{\n                    property: 'age',\n                    value: 18,\n                    operator: '<'\n                }]\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,491,26",
+                  "since": "1,548,19",
+                  "text": "1,492,12,1933",
+                  "type": "1,491,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "view",
+                "since": "5.0.0",
+                "text": "The Container that owns this `ViewModel` instance.\n",
+                "type": "Ext.container.Container",
+                "src": {
+                  "name": "1,553,43",
+                  "since": "1,555,19",
+                  "text": "1,554,12,51",
+                  "type": "1,553,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "bind",
+                "text": "This method requests that data in this `ViewModel` be delivered to the specified\n`callback`. The data desired is given in a \"bind descriptor\" which is the first\nargument.\n\nA simple call might look like this:\n\n    var binding = vm.bind('{foo}', this.onFoo, this);\n\n    binding.destroy();  // when done with the binding\n\nOptions for the binding can be provided in the last argument:\n\n    var binding = vm.bind('{foo}', this.onFoo, this, {\n        deep: true\n    });\n\nAlternatively, bind options can be combined with the bind descriptor using only\nthe first argument:\n\n    var binding = vm.bind({\n        bindTo: '{foo}',  // the presence of bindTo identifies this form\n        deep: true\n    }, this.onFoo, this);\n\nSee the class documentation for more details on Bind Descriptors and options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "descriptor",
+                    "text": "The bind descriptor. See class description\nfor details.\n",
+                    "type": "String/Object/Array",
+                    "src": {
+                      "name": "1,677,37",
+                      "text": "1,677,48,43:1,678,8,13",
+                      "type": "1,677,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "The function to call with the value of the bound property.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "1,679,26",
+                      "text": "1,679,35,59",
+                      "type": "1,679,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` pointer) for the `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,680,25",
+                      "text": "1,680,32,47",
+                      "type": "1,680,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Additional options to configure the <a href='#!/api/Ext.app.bind.Binding'>Ext.app.bind.Binding</a>.\nIf this parameter is provided, the `bindTo` form of combining options and bind descriptor is not\nrecognized.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,681,25",
+                      "text": "1,681,34,74:1,682,8,109",
+                      "type": "1,681,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The binding.\n",
+                    "type": "Ext.app.bind.BaseBinding/Ext.app.bind.Binding",
+                    "src": {
+                      "text": "1,684,64,13",
+                      "type": "1,684,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,686,0",
+                  "text": "1,651,8,792"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "get",
+                "text": "Get a value from the data for this viewmodel.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "path",
+                    "text": "The path of the data to retrieve.\n\n   var value = vm.get('theUser.address.city');\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,819,24",
+                      "text": "1,819,29,34:1,820,8,49",
+                      "type": "1,819,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The data stored at the passed path.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,823,25,36",
+                      "type": "1,823,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,825,0",
+                  "text": "1,818,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "2,75,25,3",
+                      "type": "2,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,77,0",
+                  "text": "2,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getRecord",
+                "text": "Get a record instance given a reference descriptor. Will ask\nthe session if one exists.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "text": "The model type.\n",
+                    "type": "String/Ext.Class",
+                    "src": {
+                      "name": "1,893,38",
+                      "text": "1,893,43,16",
+                      "type": "1,893,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The model id.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,894,28",
+                      "text": "1,894,31,14",
+                      "type": "1,894,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The model instance.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "1,895,37,20",
+                      "type": "1,895,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,896,12",
+                  "name": "1,898,0",
+                  "text": "1,891,12,88"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSession",
+                "text": "Gets the session attached to this (or a parent) ViewModel. See the <a href='#!/api/Ext.ux.colorpick.SelectorModel-cfg-session'>session</a> configuration.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The session. <a href='#!/api/null'>null</a> if no session exists.\n",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "text": "1,718,35,42",
+                      "type": "1,718,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,720,0",
+                  "text": "1,717,8,99"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStore",
+                "text": "Gets a store configured via the <a href='#!/api/Ext.ux.colorpick.SelectorModel-cfg-stores'>stores</a> configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The name of the store.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,734,24",
+                      "text": "1,734,28,23",
+                      "type": "1,734,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The store. <a href='#!/api/null'>null</a> if no store exists.\n",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "text": "1,735,33,38",
+                      "type": "1,735,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,737,0",
+                  "text": "1,733,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "hide": true,
+                "name": "getStores",
+                "src": {
+                  "hide": "1,749,8",
+                  "name": "1,748,16"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getStub",
+                "text": "This method looks up the `Stub` for a single bind descriptor.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "bindDescr",
+                    "text": "The bind descriptor.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "1,980,35",
+                      "text": "1,980,45,21",
+                      "type": "1,980,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `Stub` associated to the bind descriptor.\n",
+                    "type": "Ext.app.bind.AbstractStub",
+                    "src": {
+                      "text": "1,981,48,46",
+                      "type": "1,981,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,982,12",
+                  "name": "1,984,0",
+                  "text": "1,979,12,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "linkTo",
+                "text": "Create a link to a reference. See the <a href='#!/api/Ext.ux.colorpick.SelectorModel-cfg-links'>links</a> configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The name for the link.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,754,24",
+                      "text": "1,754,28,23",
+                      "type": "1,754,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "reference",
+                    "text": "The reference descriptor.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,755,24",
+                      "text": "1,755,34,26",
+                      "type": "1,755,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,757,0",
+                  "text": "1,753,8,68"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "notify",
+                "text": "Forces all bindings in this ViewModel hierarchy to evaluate immediately. Use this to do a synchronous flush\nof all bindings.\n",
+                "src": {
+                  "name": "1,813,0",
+                  "text": "1,810,8,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "set",
+                "text": "Set  a value in the data for this viewmodel.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "path",
+                    "text": "The path of the value to set, or an object literal to set\nat the root of the viewmodel.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "1,831,31",
+                      "text": "1,831,36,58:1,832,8,30",
+                      "type": "1,831,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The data to set at the value. If the value is an object literal,\nany required paths will be created.\n\n    // Set a single property at the root level\n    viewModel.set('expiry', Ext.Date.add(new Date(), Ext.Date.DAY, 7));\n    console.log(viewModel.get('expiry'));\n    // Sets a single property in user.address, does not overwrite any hierarchy.\n    viewModel.set('user.address.city', 'London');\n    console.log(viewModel.get('user.address.city'));\n    // Sets 2 properties of \"user\". Overwrites any existing hierarchy.\n    viewModel.set('user', {firstName: 'Foo', lastName: 'Bar'});\n    console.log(viewModel.get('user.firstName'));\n    // Sets a single property at the root level. Overwrites any existing hierarchy.\n    viewModel.set({rootKey: 1});\n    console.log(viewModel.get('rootKey'));\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,833,24",
+                      "text": "1,833,30,65:1,834,8,727",
+                      "type": "1,833,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,849,0",
+                  "text": "1,830,8,45"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "data",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This object holds all of the properties of this `ViewModel`. It is\nprototype chained to the <a href='#!/api/Ext.ux.colorpick.SelectorModel-property-linkData'>linkData</a> which is, in turn, prototype chained\nto (if present) the `data` object of the parent `ViewModel`.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,1074,20",
+                  "name": "1,1070,39",
+                  "readonly": "1,1075,20",
+                  "since": "1,1076,27",
+                  "text": "1,1071,20,201",
+                  "type": "1,1070,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "3,295,28",
+                  "text": "3,296,8,128",
+                  "type": "3,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "linkData",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This object is used to hold the result of a linked value. This is done\nso that the data object hasOwnProperty equates to whether or not this\nproperty is owned by this instance or inherited.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,1063,20",
+                  "name": "1,1059,39",
+                  "readonly": "1,1064,20",
+                  "since": "1,1065,27",
+                  "text": "1,1060,20,190",
+                  "type": "1,1059,31"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,6,0",
+          "extends": "0,5,0",
+          "name": "0,4,0",
+          "requires": "0,9,0",
+          "text": "0,2,4,73"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

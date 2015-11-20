@@ -1,0 +1,1086 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/amf/src/data/amf/Encoder.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "data.amf.Encoder",
+        "name": "Ext.data.amf.Encoder",
+        "text": "This class serializes data in the Action Message Format (AMF) format.\nIt can write simple and complex objects, to be used in conjunction with an\nAMF-compliant server.\nTo encode a byte array, first construct an Encoder, optionally setting the format:\n\n    var encoder = Ext.create('Ext.data.amf.Encoder', {\n      format: 3\n    });\n\nThen use the writer methods to out data to the :\n\n    encoder.writeObject(1);\n\nAnd access the data through the #bytes property:\n    encoder.bytes;\n\nYou can also reset the class to start a new byte array:\n\n    encoder.clear();\n\nCurrent limitations:\nAMF3 format (format:3)\n- writeObject will write out XML object, not legacy XMLDocument objects. A\n  writeXmlDocument method is provided for explicitly writing XMLDocument\n  objects.\n- Each object is written out explicitly, not using the reference tables\n  supported by the AMF format. This means the function does NOT support\n  circular reference objects.\n- Array objects: only the numbered indices and data will be written out.\n  Associative values will be ignored.\n- Objects that aren't Arrays, Dates, Strings, Document (XML) or primitive\n  values will be written out as anonymous objects with dynamic data.\n- There's no JavaScript equivalent to the ByteArray type in ActionScript,\n  hence data will never be searialized as ByteArrays by the writeObject\n  function. A writeByteArray method is provided for writing out ByteArray objects.\n\nAMF0 format (format:0)\n- Each object is written out explicitly, not using the reference tables\n  supported by the AMF format. This means the function does NOT support\n  circular reference objects.\n- Array objects: the function always writes an associative array (following\n  the behavior of flex).\n- Objects that aren't Arrays, Dates, Strings, Document (XML) or primitive\n  values will be written out as anonymous objects.\n\nFor more information on working with AMF data please refer to the\n[AMF Guide](#/guide/amf).\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Encoder.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "Configuration options\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,69,24",
+                      "text": "0,69,31,22",
+                      "type": "0,69,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,71,0",
+                  "text": "0,68,8,21"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clear",
+                "text": "Reset all class states and starts a new empty array for encoding data.\nThe method generates a new array for encoding, so it's safe to keep a\nreference to the old one.\n",
+                "src": {
+                  "name": "0,81,0",
+                  "text": "0,77,8,167"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "applyFormat",
+                "text": "Sets the functions that will correctly serialize for the relevant\nprotocol version.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "protocol_version",
+                    "text": "the protocol version to support\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,88,24",
+                      "text": "0,88,41,32",
+                      "type": "0,88,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,90,0",
+                  "text": "0,86,8,84"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeObject",
+                "text": "Write the appropriate data items to the byte array. Supported types:\n- undefined\n- null\n- boolean\n- integer (if AMF3 - limited by 29-bit int, otherwise passed as double)\n- double\n- UTF-8 string\n- XML Document (identified by being instaneof Document. Can be generated with: new DOMParser()).parseFromString(xml, \"text/xml\");\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "A primitive or object to write to the stream\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,137,24",
+                      "text": "0,137,29,45",
+                      "type": "0,137,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,139,0",
+                  "text": "0,129,8,324"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3Undefined",
+                "text": "Writes the AMF3 undefined value to the byte array.\n",
+                "src": {
+                  "access": "0,173,8",
+                  "name": "0,175,0",
+                  "text": "0,172,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write0Undefined",
+                "text": "Writes the AMF0 undefined value to the byte array.\n",
+                "src": {
+                  "access": "0,181,8",
+                  "name": "0,183,0",
+                  "text": "0,180,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3Null",
+                "text": "Writes the AMF3 null value to the byte array.\n",
+                "src": {
+                  "access": "0,189,8",
+                  "name": "0,191,0",
+                  "text": "0,188,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write0Null",
+                "text": "Writes the AMF0 null value to the byte array.\n",
+                "src": {
+                  "access": "0,197,8",
+                  "name": "0,199,0",
+                  "text": "0,196,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3Boolean",
+                "text": "Writes the appropriate AMF3 boolean value to the byte array.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The value to write\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,205,25",
+                      "text": "0,205,30,19",
+                      "type": "0,205,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,206,8",
+                  "name": "0,208,0",
+                  "text": "0,204,8,61"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write0Boolean",
+                "text": "Writes the appropriate AMF0 boolean value to the byte array.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The value to write\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,223,25",
+                      "text": "0,223,30,19",
+                      "type": "0,223,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,224,8",
+                  "name": "0,226,0",
+                  "text": "0,222,8,61"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "encode29Int",
+                "text": "Encodes a U29 int, returning a byte array with the encoded number.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "unsigned int value\n",
+                    "src": {
+                      "name": "0,242,15",
+                      "text": "0,242,20,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,243,8",
+                  "name": "0,245,0",
+                  "text": "0,241,8,67"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3Number",
+                "text": "Writes a numberic value to the byte array in AMF3 format\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "A native numeric value, Number instance or one of Infinity, -Infinity or NaN\n",
+                    "src": {
+                      "name": "0,276,15",
+                      "text": "0,276,20,77"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,277,8",
+                  "name": "0,279,0",
+                  "text": "0,275,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write0Number",
+                "text": "Writes a numberic value to the byte array in AMF0 format\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "A native numeric value, Number instance or one of Infinity, -Infinity or NaN\n",
+                    "src": {
+                      "name": "0,313,15",
+                      "text": "0,313,20,77"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,314,8",
+                  "name": "0,316,0",
+                  "text": "0,312,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeUtf8Char",
+                "text": "Convert a UTF 16 char to a UTF 8 char\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "c",
+                    "text": "char 16-bit code to convert\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,336,24",
+                      "text": "0,336,26,28",
+                      "type": "0,336,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "byte array with the UTF 8 values\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,337,24,33",
+                      "type": "0,337,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,339,0",
+                  "text": "0,335,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "encodeUtf8String",
+                "text": "Accepts a string and returns a byte array encoded in UTF-8\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "str",
+                    "text": "String to encode\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,379,24",
+                      "text": "0,379,28,17",
+                      "type": "0,379,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "byte array with string encoded in UTF-8 format\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,380,24,47",
+                      "type": "0,380,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,381,8",
+                  "name": "0,383,0",
+                  "text": "0,378,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "encode3Utf8StringLen",
+                "text": "Encode the length of a UTF-8 string in AMF3 format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "utf8Data",
+                    "text": "byte array with the encoded data\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,401,23",
+                      "text": "0,401,32,33",
+                      "type": "0,401,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "byte array encoding of length\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,402,24,30",
+                      "type": "0,402,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,404,8",
+                  "name": "0,406,0",
+                  "text": "0,400,8,52"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3String",
+                "text": "Write an AMF3 UTF-8 string to the byte array\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The string to write\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,426,24",
+                      "text": "0,426,29,20",
+                      "type": "0,426,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,427,8",
+                  "name": "0,429,0",
+                  "text": "0,425,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeXInt",
+                "text": "Encode 16- or 32-bit integers into big-endian (network order) bytes\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "the number to encode.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,451,24",
+                      "text": "0,451,30,22",
+                      "type": "0,451,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "byte_count",
+                    "text": "2 or 4 byte encoding\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,452,24",
+                      "text": "0,452,35,21",
+                      "type": "0,452,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "byte array with encoded number\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,453,24,31",
+                      "type": "0,453,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,455,0",
+                  "text": "0,450,8,68"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write0String",
+                "text": "Write an AMF0 UTF-8 string to the byte array\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The string to write\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,467,24",
+                      "text": "0,467,29,20",
+                      "type": "0,467,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,468,8",
+                  "name": "0,470,0",
+                  "text": "0,466,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3XmlWithType",
+                "text": "Writes an XML document in AMF3 format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xml",
+                    "text": "XML document (type Document typically)\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,501,24",
+                      "text": "0,501,28,39",
+                      "type": "0,501,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "amfType",
+                    "text": "Either 0x07 or 0x0B - the AMF3 object type to use\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,502,24",
+                      "text": "0,502,32,50",
+                      "type": "0,502,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,503,8",
+                  "name": "0,505,0",
+                  "text": "0,500,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "write3XmlDocument",
+                "text": "Writes an Legacy XMLDocument (ActionScript Legacy XML object) in AMF3\nformat. Must be called explicitly.\nThe writeObject method will call writeXml and not writeXmlDocument.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xml",
+                    "text": "XML document (type Document typically) to write\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,534,24",
+                      "text": "0,534,28,48",
+                      "type": "0,534,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,536,0",
+                  "text": "0,531,8,173"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3Xml",
+                "text": "Writes an XML object (ActionScript 3 new XML object) in AMF3 format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xml",
+                    "text": "XML document (type Document typically) to write\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,542,24",
+                      "text": "0,542,28,48",
+                      "type": "0,542,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,543,8",
+                  "name": "0,545,0",
+                  "text": "0,541,8,69"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write0Xml",
+                "text": "Writes an XMLDocument in AMF0 format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xml",
+                    "text": "XML document (type Document typically) to write\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,551,24",
+                      "text": "0,551,28,48",
+                      "type": "0,551,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,552,8",
+                  "name": "0,554,0",
+                  "text": "0,550,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3Date",
+                "text": "Writes a date in AMF3 format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "the date object\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,574,22",
+                      "text": "0,574,27,16",
+                      "type": "0,574,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,575,8",
+                  "name": "0,577,0",
+                  "text": "0,573,8,30"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write0Date",
+                "text": "Writes a date in AMF0 format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "the date object\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,592,22",
+                      "text": "0,592,27,16",
+                      "type": "0,592,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,593,8",
+                  "name": "0,595,0",
+                  "text": "0,591,8,30"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3Array",
+                "text": "Writes an array in AMF3 format. Only the ordered part of the array use handled.\nUnordered parts are ignored (e.g. a[\"hello\"] will not be encoded).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "arr",
+                    "text": "the array to serialize.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,611,23",
+                      "text": "0,611,27,24",
+                      "type": "0,611,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,612,8",
+                  "name": "0,614,0",
+                  "text": "0,609,8,147"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "write0ObjectProperty",
+                "text": "Writes a key-value pair in AMF0 format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "the name of the property\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,642,24",
+                      "text": "0,642,28,25",
+                      "type": "0,642,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "to write in AMF0 format\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,643,24",
+                      "text": "0,643,30,24",
+                      "type": "0,643,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,645,0",
+                  "text": "0,641,8,40"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write0Array",
+                "text": "Writes an associative array in AMF0 format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "arr",
+                    "text": "the array to serialize.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,662,23",
+                      "text": "0,662,27,24",
+                      "type": "0,662,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,663,8",
+                  "name": "0,665,0",
+                  "text": "0,661,8,44"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "write0StrictArray",
+                "text": "Writes a strict-array in AMF0 format. Unordered parts are ignored (e.g.\na[\"hello\"] will not be encoded). This function is included for\ncompleteness and will never be called by writeObject.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "arr",
+                    "text": "the array to serialize.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,707,23",
+                      "text": "0,707,27,24",
+                      "type": "0,707,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,709,0",
+                  "text": "0,704,8,189"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "write3ByteArray",
+                "text": "Write a byte array in AMF3 format. This function is never called directly\nby writeObject since there's no way to distinguish a regular array from a\nbyte array.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "arr",
+                    "text": "the object to serialize.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,733,23",
+                      "text": "0,733,27,25",
+                      "type": "0,733,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,735,0",
+                  "text": "0,730,8,160"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write3GenericObject",
+                "text": "Write an object to the byte array in AMF3 format.\nSince we don't have the class information form Flex, the object\nis written as an anonymous object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "the object to serialize.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,762,23",
+                      "text": "0,762,27,25",
+                      "type": "0,762,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,763,8",
+                  "name": "0,765,0",
+                  "text": "0,759,8,149"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write0GenericObject",
+                "text": "Write an object to the byte array in AMF0 format.\nSince we don't have the class information form Flex, the object\nis written as an anonymous object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "the object to serialize.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,815,23",
+                      "text": "0,815,27,25",
+                      "type": "0,815,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,816,8",
+                  "name": "0,818,0",
+                  "text": "0,812,8,149"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "writeByte",
+                "text": "Writes a byte to the byte array\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "b",
+                    "text": "Byte to write to the array\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,846,24",
+                      "text": "0,846,26,27",
+                      "type": "0,846,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,847,8",
+                  "name": "0,849,0",
+                  "text": "0,845,8,32"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "writeBytes",
+                "text": "Writes a byte array to the byte array\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "b",
+                    "text": "Byte array to append to the array\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,861,24",
+                      "text": "0,861,26,34",
+                      "type": "0,861,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,862,8",
+                  "name": "0,864,0",
+                  "text": "0,860,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "convertXmlToString",
+                "text": "Converts an XML Document object to a string.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xml",
+                    "text": "XML document (type Document typically) to convert\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,881,24",
+                      "text": "0,881,28,50",
+                      "type": "0,881,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A string representing the document\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,882,25,35",
+                      "type": "0,882,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,883,8",
+                  "name": "0,885,0",
+                  "text": "0,880,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isXmlDocument",
+                "text": "Tries to determine if an object is an XML document\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "to identify\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,900,24",
+                      "text": "0,900,29,12",
+                      "type": "0,900,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "true if it's an XML document, false otherwise\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,901,26,46",
+                      "type": "0,901,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,903,0",
+                  "text": "0,899,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "encodeDouble",
+                "text": "Encodes an IEEE-754 double-precision number.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "num",
+                    "text": "the number to encode\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,945,24",
+                      "text": "0,945,28,21",
+                      "type": "0,945,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "byte array containing the encoded number\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,946,24,41",
+                      "type": "0,946,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,947,8",
+                  "name": "0,949,0",
+                  "text": "0,944,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "write0ShortUtf8String",
+                "text": "Writes a short UTF8 string preceded with a 16-bit length.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "str",
+                    "text": "the string to write\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1010,24",
+                      "text": "0,1010,28,20",
+                      "type": "0,1010,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1012,0",
+                  "text": "0,1009,8,58"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeAmfPacket",
+                "text": "Writes an AMF packet to the byte array\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "headers",
+                    "text": "the headers to serialize. Each item in the array\n               should be an object with three fields:\n               name, mustUnderstand, value\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,1022,23",
+                      "text": "0,1022,31,49:0,1023,8,97",
+                      "type": "0,1022,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "messages",
+                    "text": "the messages to serialize. Each item in the array\n               should be an object with three fields:\n               targetUri, responseUri, body\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,1025,23",
+                      "text": "0,1025,32,50:0,1026,8,98",
+                      "type": "0,1025,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,1029,0",
+                  "text": "0,1021,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "writeAmfHeader",
+                "text": "Write an AMF header to the byte array. AMF headers are always encoded in AMF0.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "headerName",
+                    "text": "the header name\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1060,24",
+                      "text": "0,1060,35,16",
+                      "type": "0,1060,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mustUnderstand",
+                    "text": "true if the receiver must understand this header or else reject it, false otherwise\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,1061,25",
+                      "text": "0,1061,40,84",
+                      "type": "0,1061,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "the value to serialize. Must be an object that can be serialized by AMF\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1062,24",
+                      "text": "0,1062,30,72",
+                      "type": "0,1062,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1063,8",
+                  "name": "0,1065,0",
+                  "text": "0,1059,8,79"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "writeAmfMessage",
+                "text": "Writes an AMF message to the byte array. AMF messages are always encoded in AMF0.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "targetUri",
+                    "text": "the class / method to call\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1090,24",
+                      "text": "0,1090,34,27",
+                      "type": "0,1090,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "responseUri",
+                    "text": "the response should call here\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,1091,24",
+                      "text": "0,1091,36,30",
+                      "type": "0,1091,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "body",
+                    "text": "the parameters to pass to the called method, wrapped in an array\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,1092,23",
+                      "text": "0,1092,28,65",
+                      "type": "0,1092,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1093,8",
+                  "name": "0,1095,0",
+                  "text": "0,1089,8,82"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "bytes",
+                "readonly": true,
+                "text": "The constructed byte array.\n",
+                "type": "Array",
+                "src": {
+                  "name": "0,61,26",
+                  "readonly": "0,62,8",
+                  "text": "0,63,8,28",
+                  "type": "0,61,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,54,0",
+          "name": "0,3,11",
+          "text": "0,4,4,1935"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

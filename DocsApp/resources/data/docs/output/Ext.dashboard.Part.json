@@ -1,0 +1,222 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/dashboard/Part.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "part.part",
+        "mixins": "Ext.mixin.Factoryable,Ext.mixin.Identifiable",
+        "name": "Ext.dashboard.Part",
+        "requires": "Ext.util.ObjectTemplate",
+        "since": "5.0.0",
+        "text": "This class encapsulates the creation of items for a `Dashboard`. Generally a `Part` is a\ncomponent factory that allows all parts of a common type to be easily coordinated as\nneeded for that type. For example, an RSS feed might need certain configuration data to\nproperly initialize. Perahps not all of this data can or should be supplied from the UI\nthat creates new instances for the `Dashboard`.\n\n## Part Configuration\n\nThe primary role of a `Part` is to provide an abstract way to define the configuration\nneeded to create views. For example, an RSS Part would at least need the URL for the\nfeed.\n\nTo implement this a derived class provides a <a href='#!/api/Ext.dashboard.Part-method-displayForm'>displayForm</a> method:\n\n     Ext.define('App.parts.RSS', {\n         extend: 'Ext.dashboard.Part',\n         alias: 'part.rss',\n\n         displayForm: function (instance, currentConfig, callback, scope) {\n             var me = this,\n                 title = instance ? 'Edit RSS Feed' : 'Add RSS Feed';\n\n             // Display a prompt using current URL as default text.\n             //\n             Ext.Msg.prompt(title, 'RSS Feed URL', function (btn, text) {\n                 if (btn === 'ok') {\n                     var config = {\n                         feedUrl: text\n                     };\n\n                     callback.call(scope || me, config);\n                 }\n             }, me, false, currentConfig ? currentConfig.feedUrl : '');\n         }\n     });\n\nThe returned configuration object is used to create views. It is also passed back to\n<a href='#!/api/Ext.dashboard.Part-method-displayForm'>displayForm</a> to allow the user to edit the configuration for an existing view.\n\n## Creating Views\n\nThe next step is to define the view (the components) appropriate for the part. To\ncontinue with the above example.\n\n     Ext.define('App.parts.RSS', {\n         extend: 'Ext.dashboard.Part',\n         alias: 'part.rss',\n\n         // The viewTemplate is \"component template\" that is evaluated against the\n         // configuration (as returned by displayForm). The top-most component is\n         // a panel specific to the Dashboard so it can be configured but should\n         // not be replaced. Instead, fit an appropriate component to the panel.\n         //\n         viewTemplate: {\n             layout: 'fit',\n             items: [{\n                 xtype: 'feedpanel',\n                 feedUrl: '{feedUrl}'  // from the configuration object\n             }]\n         },\n\n         displayForm: ...\n     });\n\nYou can instead choose to override the <a href='#!/api/Ext.dashboard.Part-method-createView'>createView</a> method if <a href='#!/api/Ext.dashboard.Part-cfg-viewTemplate'>viewTemplate</a> does not\nprovide enough flexibility. It is usually a better solution to create a class (like\nin the above example) and pass basic configurations to it rather than over-complicate\neither the <a href='#!/api/Ext.dashboard.Part-cfg-viewTemplate'>viewTemplate</a> or a custom <a href='#!/api/Ext.dashboard.Part-method-createView'>createView</a> method.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "viewTemplate",
+                "text": "The configuration object used for creating instances of this `Part`. This is\nused by the <a href='#!/api/Ext.dashboard.Part-method-createView'>createView</a> method to create views.\n",
+                "type": "Object/Ext.util.ObjectTemplate",
+                "src": {
+                  "name": "0,108,50",
+                  "text": "0,109,12,126",
+                  "type": "0,108,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "createView",
+                "since": "5.0.0",
+                "text": "This method is responsible for converting a configuration object from <a href='#!/api/Ext.dashboard.Part-method-displayForm'>displayForm</a>\ninto a \"view\" (an object that can be passed to `Ext.widget`).\n\nIf you override this method it is recommended that you `callParent` to get the view\nproduced and then edit that result. This is because there are several private\nproperties placed on the returned configuration object.\n\n     createView: function (config) {\n         var view = this.callParent([config]);\n\n         // edit view\n\n         return view;\n     }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "The object returned from <a href='#!/api/Ext.dashboard.Part-method-displayForm'>displayForm</a>.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,185,24",
+                      "text": "0,185,31,40",
+                      "type": "0,185,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The view configuration object.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,186,25,31",
+                      "type": "0,186,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,187,8",
+                  "name": "0,190,0",
+                  "since": "0,188,15",
+                  "text": "0,170,8,504"
+                }
+              },
+              {
+                "$type": "method",
+                "abstract": true,
+                "name": "displayForm",
+                "since": "5.0.0",
+                "text": "This method should display an appropriate edit form (probably a modal `Ext.Window`\nor `Ext.Msg.prompt`) to get or edit configuration for an instance of this part.\n\nSee the class documentation for examples on implementing this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "instance",
+                    "text": "The already existing view or <a href='#!/api/null'>null</a> if called to\nconfigure a new instance.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "0,149,31",
+                      "text": "0,149,40,49:0,150,8,27",
+                      "type": "0,149,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "currentConfig",
+                    "text": "The configuration returned from this method for the\nexisting view (`instance`) or <a href='#!/api/null'>null</a> if called to configure a new instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,152,24",
+                      "text": "0,152,38,52:0,153,8,77",
+                      "type": "0,152,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "The function to call passing\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "config",
+                        "text": "The configuration that defines the instance to be\ncreated. This value is passed to <a href='#!/api/Ext.dashboard.Part-method-createView'>createView</a> and applied to the <a href='#!/api/Ext.dashboard.Part-cfg-viewTemplate'>viewTemplate</a>.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,156,33",
+                          "text": "0,156,40,50:0,157,8,82",
+                          "type": "0,156,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,155,26",
+                      "text": "0,155,35,29",
+                      "type": "0,155,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The scope with which to call the `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,159,24",
+                      "text": "0,159,30,45",
+                      "type": "0,159,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "abstract": "0,162,8",
+                  "name": "0,161,16",
+                  "since": "0,163,15",
+                  "text": "0,144,8,235"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,75,25,3",
+                      "type": "1,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,77,0",
+                  "text": "1,74,8,93"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "_lastId",
+                "text": "The last assigned identifier for instances created by this `Part`.\n",
+                "src": {
+                  "access": "0,93,8",
+                  "name": "0,95,0",
+                  "text": "0,92,8,67"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dashboard",
+                "readonly": true,
+                "text": "The `Dashboard` instance that owns this `part`.\n",
+                "type": "Ext.dashboard.Panel",
+                "src": {
+                  "name": "0,102,44",
+                  "readonly": "0,103,12",
+                  "text": "0,101,12,48",
+                  "type": "0,102,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,295,28",
+                  "text": "2,296,8,128",
+                  "type": "2,295,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,83,0",
+          "mixins": "0,75,0,0:0,76,0,0",
+          "name": "0,73,0",
+          "requires": "0,80,0",
+          "since": "0,71,11",
+          "text": "0,2,4,2720"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

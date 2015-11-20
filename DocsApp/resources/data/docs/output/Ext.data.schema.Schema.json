@@ -1,0 +1,790 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/schema/Schema.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "schema.default",
+        "mixins": "Ext.mixin.Factoryable",
+        "name": "Ext.data.schema.Schema",
+        "requires": "Ext.util.ObjectTemplate,Ext.data.schema.OneToOne,Ext.data.schema.ManyToOne,Ext.data.schema.ManyToMany,Ext.data.schema.Namer",
+        "text": "A Schema is a collection of related <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> and their respective\n<a href='#!/api/Ext.data.schema.Association'>Ext.data.schema.Association</a>.\n\n# Schema Instances\n\nBy default a single instance of this class is created which serves as the schema for all\nentities that do not have an explicit <a href='#!/api/Ext.data.Model-cfg-schema'>Ext.data.Model#cfg-schema</a> config\neither specified or inherited. This is sufficient in most cases.\n\nWhen an entity does specify a <a href='#!/api/Ext.data.Model-cfg-schema'>Ext.data.Model#cfg-schema</a>, however, that\nlooks up (or creates) an instance for that entity class which is then inherited.\n\n**Important:** All related entities *must* belong to a single schema instance in order\nto properly link up their associations.\n\n## Configuring Schemas\n\nThe best way to control the configuration of your `schema` is to define a base class for\nall of your entities and use the <a href='#!/api/Ext.data.Model-cfg-schema'>Ext.data.Model#cfg-schema</a> config like\nthis:\n\n     Ext.define('MyApp.model.Base', {\n         extend: 'Ext.data.Model',\n\n         // This configures the default schema because we don't assign an \"id\":\n         schema: {\n             // configs go here\n         }\n     });\n\n**Note:** Only one explicit configuration can be applied to the default schema. In most\napplications this will not be an issue.\n\nBy using a base class for your entities you can ensure that the default schema is fully\nconfigured before declaration of your classes proceeds. This is especially helpful if\nyou need to set the <a href='#!/api/Ext.data.schema.Schema-cfg-namespace'>namespace</a> for your schema (see below).\n\n## Relative Naming\n\nWhen describing associations between entities, it is desirable to use shorthand names\nthat do not contain the common namespace portion. This is called the `entityName` as\nopposed to its class name. By default, the `entityName` is the full class name. However,\nif a namespace is used, the common portion can be discarded and we can derive a shorter name.\nIn the following code, `\"MyApp.model.Foo\"` has an `entityName` of `\"Foo\"` and the schema has\na <a href='#!/api/Ext.data.schema.Schema-cfg-namespace'>namespace</a> of \"MyApp.model\".\n\nIf you use deeper nesting for entities, you may need to set the <a href='#!/api/Ext.data.schema.Schema-cfg-namespace'>namespace</a> config to\naccount for this. For example:\n\n     Ext.define('MyApp.model.Base', {\n         extend: 'Ext.data.Model',\n\n         schema: {\n             namespace: 'MyApp.model'\n         }\n     });\n\nYour derived classes now will generate proper default `entityName` values even if they\nhave further namespaces. For example, \"MyApp.model.foo.Thing\" will produce \"foo.Thing\"\nas the `entityName` given the above as a base class.\n\n# Association Naming\n\nThere are various terms involved when describing associations. Perhaps the simplest\nexample that will clarify these terms is that of the common many-to-many association\nof User and Group.\n\n  * `entityName` - The names \"User\" and \"Group\" are the `entityName` values associated\n  with these two classes. These are derived from their full classnames (perhaps\n  something like \"App.model.User\" and \"App.model.Group\").\n\n  * `associationName` - When talking about associations, especially the many-to-many\n  variety, it is important to give them names. Associations are not owned by either of\n  the entities involved, so this name is similar to an `entityName`. In the case of\n  \"User\" and \"Group\", the default `associationName` would be \"GroupUsers\".\n\n  * `left` and `right` - Associations describe a relationship between two entities. To\n  talk about specific associations we would use the `entityName` of the parties (such\n  as \"User\" or \"Group\"). When discussing associations in the abstract, however, it is\n  very helpful to be able to talk about the entities in an association in a general way.\n  In the case of the \"GroupUsers\" association, \"User\" is said to be the `left` while\n  \"Group\" is said to be the `right`. In a many-to-many association the selection of\n  `left` and `right` is arbitrary. When a foreign-key is involved, the `left` entity\n  is the one containing the foreign-key.\n\n## Custom Naming Conventions\n\nOne of the jobs the the `Schema` is to manage name generation (such as `entityName`).\nThis job is delegated to a class called the <a href='#!/api/Ext.data.schema.Schema-cfg-namer'>namer</a>. If you need to generate names in\nother ways, you can provide a custom <a href='#!/api/Ext.data.schema.Schema-cfg-namer'>namer</a> for your classes:\n\n     Ext.define('MyApp.model.Base', {\n         extend: 'Ext.data.Model',\n\n         schema: {\n             namespace: 'MyApp.model',\n             namer: 'custom'\n         }\n     });\n\nThis will create a class using the alias \"namer.custom\". For example:\n\n     Ext.define('MyApp.model.CustomNamer', {\n         extend: 'Ext.data.schema.Namer',\n\n         alias: 'namer.custom',\n         ...\n     });\n\nFor details see the documentation for <a href='#!/api/Ext.data.schema.Namer'>Ext.data.schema.Namer</a>.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "defaultIdentifier",
+                "text": "This config is used to initialize the <a href='#!/api/Ext.data.Model-cfg-identifier'>Ext.data.Model#identifier</a> config\nfor classes that do not define one.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,293,26",
+                  "text": "0,294,12,117",
+                  "type": "0,293,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "keyCheckDelay",
+                "since": "5.0.1",
+                "text": "The time to wait (in ms) before checking for null foreign keys on records that\nwill cause them to be dropped. This is useful for allowing records to be moved to a different\nsource.\n",
+                "type": "Number",
+                "src": {
+                  "access": "0,304,11",
+                  "name": "0,300,25",
+                  "since": "0,305,18",
+                  "text": "0,301,11,181",
+                  "type": "0,300,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "namer",
+                "text": "Specifies or configures the name generator for the schema.\n",
+                "type": "String/Object/Ext.data.schema.Namer",
+                "src": {
+                  "name": "0,310,55",
+                  "text": "0,311,12,59",
+                  "type": "0,310,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "namespace",
+                "text": "The namespace for entity classes in this schema.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,316,26",
+                  "text": "0,317,12,49",
+                  "type": "0,316,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "proxy",
+                "text": "This is a template used to produce <a href='#!/api/Ext.data.proxy.Proxy'>Ext.data.proxy.Proxy</a> configurations for\nModels that do not define an explicit <a href='#!/api/Ext.data.Model-cfg-proxy'>Ext.data.Model#cfg-proxy</a>.\n\nThis template is processed with the Model class as the data object which means\nany static properties of the Model are available. The most useful of these are\n\n * `prefix` - The <a href='#!/api/Ext.data.schema.Schema-cfg-urlPrefix'>urlPrefix</a> property of this instance.\n * `entityName` - The <a href='#!/api/Ext.data.Model-property-entityName'>Ext.data.Model#entityName</a> of the Model\n     (for example, \"User\").\n * `schema` - This instance.\n",
+                "type": "Object/Ext.util.ObjectTemplate",
+                "src": {
+                  "name": "0,322,50",
+                  "text": "0,323,12,505",
+                  "type": "0,322,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "urlPrefix",
+                "optional": true,
+                "text": "This is the URL prefix used for all requests to the server. It could be something\nlike \"/~api\". This value is included in the <a href='#!/api/Ext.data.schema.Schema-cfg-proxy'>proxy</a> template data as \"prefix\".\n",
+                "type": "String",
+                "value": "\"\"",
+                "src": {
+                  "name": "0,340,27",
+                  "text": "0,341,12,161",
+                  "type": "0,340,18",
+                  "value": "0,340,37"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addEntity",
+                "text": "Adds an <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> to this `schema`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "A class derived from <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,744,31",
+                      "text": "0,744,42,45",
+                      "type": "0,744,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,745,12",
+                  "name": "0,747,0",
+                  "text": "0,743,12,56"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addMatrices",
+                "text": "Adds the matrix associations of an <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> to this `schema`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "A class derived from <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,798,31",
+                      "text": "0,798,42,52",
+                      "type": "0,798,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "matrices",
+                    "text": "The manyToMany matrices for the class.\n",
+                    "type": "Object/String[]",
+                    "src": {
+                      "name": "0,799,37",
+                      "text": "0,799,46,39",
+                      "type": "0,799,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,800,12",
+                  "name": "0,802,0",
+                  "text": "0,797,12,83"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "addMatrix",
+                "text": "Adds an entry from a <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a> declared by an\nentity.\n\nThis is the ideal method to override in a derived class if the standard, default\nnaming conventions need to be adjusted. In the override, apply whatever logic is\nappropriate to determine the missing values and pass along the proper results to\nthis method in the `callParent`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "A class derived from <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,509,27",
+                      "text": "0,509,38,39",
+                      "type": "0,509,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "matrixName",
+                    "text": "The name of the matrix association.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,511,24",
+                      "text": "0,511,35,36",
+                      "type": "0,511,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "relation",
+                    "optional": true,
+                    "text": "A base name for the matrix. For information about the\nmeaning of this see <a href='#!/api/Ext.data.Schema-ManyToMany'>Ext.data.Schema#ManyToMany</a>.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,513,25",
+                      "text": "0,513,35,54:0,514,8,57",
+                      "type": "0,513,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "left",
+                    "text": "The descriptor for the \"left\" of the matrix.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "type",
+                        "text": "The type of the entity on the \"left\" of the matrix.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,517,29",
+                          "text": "0,517,34,52",
+                          "type": "0,517,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "field",
+                        "optional": true,
+                        "text": "The name of the field in the matrix table for the \"left\"\nside entity. If not provided, this defaults to the `left.type` name\n<a href='#!/api/Ext.util.Inflector-method-singularize'>Ext.util.Inflector#singularize</a> and uncapitalized followed by\n\"Id\". For example, \"userId\" for a `left.type` of \"Users\".\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,519,30",
+                          "text": "0,519,37,57:0,520,8,209",
+                          "type": "0,519,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "role",
+                        "optional": true,
+                        "text": "The name of the relationship from the `left.type` to the\n`right.type`. If not provided, this defaults to the `left.type` name\n<a href='#!/api/Ext.util.Inflector-method-pluralize'>Ext.util.Inflector#pluralize</a> and uncapitalized. For example,\n\"users\" for a `left.type` of \"User\".\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,524,30",
+                          "text": "0,524,36,57:0,525,8,187",
+                          "type": "0,524,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,516,24",
+                      "text": "0,516,29,45",
+                      "type": "0,516,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "right",
+                    "text": "The descriptor for the \"right\" of the matrix.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "type",
+                        "text": "The type of the entity on the \"right\" of the matrix.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,530,30",
+                          "text": "0,530,35,53",
+                          "type": "0,530,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "field",
+                        "optional": true,
+                        "text": "The name of the field in the matrix table for the\n\"right\" side entity. If not provided, this defaults in the same way as `left.field`\nexcept this is based on `right.type`.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,532,31",
+                          "text": "0,532,38,50:0,533,8,123",
+                          "type": "0,532,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "role",
+                        "optional": true,
+                        "text": "The name of the relationship from the `right.type` to\nthe `left.type`. If not provided, this defaults in the same way as `left.role`\nexcept this is based on `right.type`.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,536,31",
+                          "text": "0,536,37,54:0,537,8,118",
+                          "type": "0,536,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,529,24",
+                      "text": "0,529,30,46",
+                      "type": "0,529,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,540,8",
+                  "name": "0,542,0",
+                  "text": "0,501,8,371"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addMatrixDescr",
+                "text": "Adds an entry from a <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a> declared by an\n<a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "A class derived from <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,823,31",
+                      "text": "0,823,42,52",
+                      "type": "0,823,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "matrixName",
+                    "optional": true,
+                    "text": "The name of the matrix association.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,824,29",
+                      "text": "0,824,41,36",
+                      "type": "0,824,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "matrixDef",
+                    "text": "A <a href='#!/api/Ext.data.schema.ManyToMany'>Ext.data.schema.ManyToMany</a>\ndeclared by an <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,825,35",
+                      "text": "0,825,45,51:0,826,12,46",
+                      "type": "0,825,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,827,12",
+                  "name": "0,829,0",
+                  "text": "0,820,12,117"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "addReference",
+                "text": "Adds a <a href='#!/api/Ext.data.field.Field-cfg-reference'>Ext.data.Field#reference</a> field association for an entity\nto this `schema`.\n\nThis is the ideal method to override in a derived class if the standard, default\nnaming conventions need to be adjusted. In the override, apply whatever logic is\nappropriate to determine the missing values and pass along the proper results to\nthis method in the `callParent`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "A class derived from <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,605,27",
+                      "text": "0,605,38,39",
+                      "type": "0,605,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "referenceField",
+                    "text": "The `field` with the `reference` config.\n",
+                    "type": "Ext.data.field.Field",
+                    "src": {
+                      "name": "0,607,38",
+                      "text": "0,607,53,41",
+                      "type": "0,607,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "association",
+                    "optional": true,
+                    "text": "The name of the association. If empty or null, this\nwill be derived from `entityType`, `role`, `inverse` and\n`referenceField.unique`.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,609,25",
+                      "text": "0,609,38,52:0,610,8,83",
+                      "type": "0,609,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "role",
+                    "optional": true,
+                    "text": "The name of the relationship from `entityType` to the target\n<a href='#!/api/Ext.data.schema.Schema-property-type'>type</a>. If not specified, the default is the `referenceField.name` (minus any \"Id\"\nsuffix if present).\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,613,25",
+                      "text": "0,613,31,61:0,614,8,104",
+                      "type": "0,613,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "inverse",
+                    "optional": true,
+                    "text": "The name of the relationship from the target <a href='#!/api/Ext.data.schema.Schema-property-type'>type</a>\nto the `entityType`. If not specified, this is derived from the\n<a href='#!/api/Ext.data.Model-property-entityName'>Ext.data.Model#entityName</a> of the `entityType`\n(<a href='#!/api/Ext.util.Inflector-method-singularize'>Ext.util.Inflector#singularize</a> or\n<a href='#!/api/Ext.util.Inflector-method-pluralize'>Ext.util.Inflector#pluralize</a> based on `referenceField.unique`).\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,617,25",
+                      "text": "0,617,34,52:0,618,8,269",
+                      "type": "0,617,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "text": "The <a href='#!/api/Ext.data.Model-property-entityName'>Ext.data.Model#entityName</a> of the target\nof the reference.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,623,24",
+                      "text": "0,623,29,63:0,624,8,19",
+                      "type": "0,623,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "descr",
+                    "optional": true,
+                    "text": "The `reference` descriptor from the `referenceField` if one\nwas given in the field definition.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,626,25",
+                      "text": "0,626,32,60:0,627,8,36",
+                      "type": "0,626,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "unique",
+                    "optional": true,
+                    "text": "Indicates if the reference is one-to-one.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,629,26",
+                      "text": "0,629,40,42",
+                      "type": "0,629,16",
+                      "value": "0,629,33"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,631,8",
+                  "name": "0,633,0",
+                  "text": "0,597,8,378"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addReferenceDescr",
+                "text": "Adds a <a href='#!/api/Ext.data.field.Field-cfg-reference'>Ext.data.Field#reference</a> <a href='#!/api/Ext.data.field.Field'>Ext.data.Field</a>\nassociation for an entity to this `schema`. This method decodes the `reference`\nconfig of the `referenceField` and calls <a href='#!/api/Ext.data.schema.Schema-method-addReference'>addReference</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "A class derived from <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,993,31",
+                      "text": "0,993,42,51",
+                      "type": "0,993,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "referenceField",
+                    "text": "The `field` with the `reference` config.\n",
+                    "type": "Ext.data.field.Field",
+                    "src": {
+                      "name": "0,994,36",
+                      "text": "0,994,51,41",
+                      "type": "0,994,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,995,12",
+                  "name": "0,997,0",
+                  "text": "0,989,12,224"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getAssociation",
+                "text": "Returns an `Association` by name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the association.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,426,24",
+                      "text": "0,426,29,29",
+                      "type": "0,426,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The association instance.\n",
+                    "type": "Ext.data.schema.Association",
+                    "src": {
+                      "text": "0,427,46,26",
+                      "type": "0,427,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,429,0",
+                  "text": "0,425,8,34"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getEntity",
+                "text": "Returns an entity by name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the entity\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,436,24",
+                      "text": "0,436,29,23",
+                      "type": "0,436,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The entity class.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "0,437,33,18",
+                      "type": "0,437,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,439,0",
+                  "text": "0,435,8,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getEntityName",
+                "text": "Get the entity name taking into account the <a href='#!/api/Ext.data.schema.Schema-cfg-namespace'>namespace</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cls",
+                    "text": "The model class or name of the class.\n",
+                    "type": "String/Ext.data.Model",
+                    "src": {
+                      "name": "0,446,39",
+                      "text": "0,446,43,38",
+                      "type": "0,446,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The entity name\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,447,25,16",
+                      "type": "0,447,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,449,0",
+                  "text": "0,445,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasAssociations",
+                "text": "Checks if the passed entity has attached associations that need to be read when\nusing nested loading.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name, instance, or Model class.\n",
+                    "type": "String/Ext.Class/Ext.data.Model",
+                    "src": {
+                      "name": "0,479,49",
+                      "text": "0,479,54,36",
+                      "type": "0,479,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if there are associations attached to the entity.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,480,26,57",
+                      "type": "0,480,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,482,0",
+                  "text": "0,476,8,103"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasEntity",
+                "text": "Checks if an entity is defined\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entity",
+                    "text": "The name or model\n",
+                    "type": "String/Ext.data.Model",
+                    "src": {
+                      "name": "0,489,39",
+                      "text": "0,489,46,18",
+                      "type": "0,489,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if this entity is defined\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,490,26,31",
+                      "type": "0,490,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,492,0",
+                  "text": "0,488,8,31"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "assocCount",
+                "readonly": true,
+                "text": "The number of <a href='#!/api/Ext.data.schema.Association'>Ext.data.schema.Association</a>\nin this `schema`.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,278,27",
+                  "readonly": "0,280,8",
+                  "text": "0,278,38,63:0,279,8,18",
+                  "type": "0,278,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "entityCount",
+                "readonly": true,
+                "text": "The number of <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> in this\n`schema`.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,285,27",
+                  "readonly": "0,287,8",
+                  "text": "0,285,39,54:0,286,8,10",
+                  "type": "0,285,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,295,28",
+                  "text": "1,296,8,128",
+                  "type": "1,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "type",
+                "readonly": true,
+                "text": "The name of the schema's type. This should be the suffix of the `alias` for this\nclass following the \"schema.\" prefix. For example, if the `alias` for a schema is\n\"schema.foo\" then <a href='#!/api/Ext.data.schema.Schema-property-type'>type</a> should \"foo\". If an `alias` is specified on the derived\nclass, this property is set automatically.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,134,27",
+                  "readonly": "0,139,8",
+                  "text": "0,135,8,287",
+                  "type": "0,134,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "get",
+                "static": true,
+                "text": "Returns the `Schema` instance given its `id` or config object. If only the `id`\nis specified, that `Schema` instance is looked up and returned. If there is no\ninstance already created, the `id` is assumed to be the <a href='#!/api/Ext.data.schema.Schema-property-type'>type</a>. For example:\n\n     schema: 'foo'\n\nWould be created from the alias `\"schema.foo\"` and assigned the `id` of \"foo\"\nas well.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "The id, type or config object of the schema.\n",
+                    "type": "String/Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "type",
+                        "optional": true,
+                        "text": "The type alias of the schema. A \"schema.\" prefix\nis added to this string, if provided, to complete the alias. This should match\nmatch the \"alias\" of some class derived from <a href='#!/api/Ext.data.schema.Schema'>Ext.data.schema.Schema</a>.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,183,36",
+                          "text": "0,183,42,49:0,184,12,150",
+                          "type": "0,183,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,182,35",
+                      "text": "0,182,42,45",
+                      "type": "0,182,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The previously existing or newly created\ninstance.\n",
+                    "type": "Ext.data.schema.Schema",
+                    "src": {
+                      "text": "0,186,45,41:0,187,12,10",
+                      "type": "0,186,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,189,0",
+                  "static": "0,142,-1",
+                  "text": "0,173,12,345"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "instances",
+                "readonly": true,
+                "static": true,
+                "text": "A collection of `Schema` instances keyed by its <a href='#!/api/Ext.data.schema.Schema-property-type'>type</a>.\n\n     var mySchema = Ext.data.schema.Schema.instances.mySchema;\n\nIf the `Schema` may not have been created yet, use the <a href='#!/api/Ext.data.schema.Schema-static-method-get'>get</a> method to\ncreate the instance on first request:\n\n     var mySchema = Ext.data.schema.Schema.get('mySchema');\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,156,12",
+                  "name": "0,145,31",
+                  "readonly": "0,155,12",
+                  "static": "0,142,-1",
+                  "text": "0,146,12,299",
+                  "type": "0,145,23"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,127,0",
+          "mixins": "0,115,0",
+          "name": "0,113,0",
+          "requires": "0,119,0,0:0,121,0,0:0,122,0,0:0,123,0,0:0,124,0,0",
+          "text": "0,2,4,4648"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

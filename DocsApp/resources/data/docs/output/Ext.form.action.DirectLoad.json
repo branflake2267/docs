@@ -1,0 +1,488 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/form/action/DirectLoad.js",
+    "../../../ext/classic/classic/src/form/action/Action.js",
+    "../../../ext/classic/classic/src/form/action/Load.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "formaction.directload",
+        "alternateClassNames": "Ext.form.Action.DirectLoad",
+        "extends": "Ext.form.action.Load",
+        "mixins": "Ext.form.action.DirectAction",
+        "name": "Ext.form.action.DirectLoad",
+        "requires": "Ext.direct.Manager",
+        "text": "Provides Ext Direct support for loading form data.\n\nThis example illustrates usage of Ext Direct to load a form.\n\n    var myFormPanel = new Ext.form.Panel({\n        // configs for FormPanel\n        title: 'Basic Information',\n        renderTo: document.body,\n        width: 300, height: 160,\n        padding: 10,\n\n        // configs apply to child items\n        defaults: {anchor: '100%'},\n        defaultType: 'textfield',\n        items: [{\n            fieldLabel: 'Name',\n            name: 'name'\n        },{\n            fieldLabel: 'Email',\n            name: 'email'\n        },{\n            fieldLabel: 'Company',\n            name: 'company'\n        }],\n\n        // configs for BasicForm\n        api: {\n            // The server-side method to call for load() requests\n            load: 'Profile.getBasicInfo',\n            // The server-side must mark the submit handler as a 'formHandler'\n            submit: 'Profile.updateBasicInfo'\n        },\n        // specify the order for the passed params\n        paramOrder: ['uid', 'foo']\n    });\n\n    // load the form\n    myFormPanel.getForm().load({\n        // pass 2 arguments to server side getBasicInfo method (len=2)\n        params: {\n            foo: 'bar',\n            uid: 34\n        }\n    });\n\nBefore using DirectLoad action, make sure you set up Ext Direct remoting provider.\nSee <a href='#!/api/Ext.direct.Manager'>Ext.direct.Manager</a> for more information.\n\nFor corresponding submit action, see <a href='#!/api/Ext.form.action.DirectSubmit'>Ext.form.action.DirectSubmit</a>.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "failure",
+                "text": "The function to call when a failure packet was received, or when an error\noccurred in the Ajax communication.\n",
+                "type": "Function/String",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "form",
+                    "text": "The form that requested the action\n",
+                    "type": "Ext.form.Basic",
+                    "src": {
+                      "name": "1,77,38",
+                      "text": "1,77,43,35",
+                      "type": "1,77,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "action",
+                    "text": "The Action class. If an Ajax error\noccurred, the failure type will be in <a href='#!/api/Ext.form.action.DirectLoad-property-failureType'>failureType</a>. The <a href='#!/api/Ext.form.action.DirectLoad-property-result'>result</a>\nproperty of this object may be examined to perform custom post-processing.\n",
+                    "type": "Ext.form.action.Action",
+                    "src": {
+                      "name": "1,78,46",
+                      "text": "1,78,53,35:1,79,8,156",
+                      "type": "1,78,14"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,74,31",
+                  "text": "1,75,8,110",
+                  "type": "1,74,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "form",
+                "text": "The <a href='#!/api/Ext.form.Basic'>Ext.form.Basic</a> instance that is invoking this Action. Required.\n",
+                "type": "Ext.form.Basic",
+                "src": {
+                  "name": "1,17,30",
+                  "text": "1,18,8,86",
+                  "type": "1,17,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "headers",
+                "text": "Extra headers to be sent in the AJAX request for submit and load actions.\nSee <a href='#!/api/Ext.data.proxy.Ajax-cfg-headers'>Ext.data.proxy.Ajax#headers</a>.\n\n**Note:** Headers are not sent during file upload.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,49,22",
+                  "text": "1,50,8,167",
+                  "type": "1,49,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "method",
+                "text": "The HTTP method to use to access the requested URL.\nDefaults to the <a href='#!/api/Ext.form.Basic-cfg-method'>Ext.form.Basic#method</a>, or 'POST' if not specified.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,35,22",
+                  "text": "1,36,8,146",
+                  "type": "1,35,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "params",
+                "text": "Extra parameter values to pass. These are added to the Form's <a href='#!/api/Ext.form.Basic-cfg-baseParams'>Ext.form.Basic#baseParams</a> and passed to the\nspecified URL along with the Form's input fields.\n\nParameters are encoded as standard HTTP parameters using <a href='#!/api/Ext-method-urlEncode'>Ext#urlEncode</a>.\n",
+                "type": "Object/String",
+                "src": {
+                  "name": "1,41,29",
+                  "text": "1,42,8,270",
+                  "type": "1,41,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "reset",
+                "text": "When set to **true**, causes the Form to be <a href='#!/api/Ext.form.Basic-method-reset'>Ext.form.Basic#reset</a> on Action success. If specified,\nthis happens before the <a href='#!/api/Ext.form.action.DirectLoad-cfg-success'>success</a> callback is called and before the Form's\n<a href='#!/api/Ext.form.Basic-event-actioncomplete'>Ext.form.Basic#actioncomplete</a> event fires.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,28,23",
+                  "text": "1,29,8,260",
+                  "type": "1,28,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scope",
+                "text": "The scope in which to call the configured #success and #failure callback functions\n(the `this` reference for the callback functions).\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,86,22",
+                  "text": "1,87,8,134",
+                  "type": "1,86,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "submitEmptyText",
+                "text": "If set to true, the emptyText value will be sent with the form when it is submitted.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,104,23",
+                  "text": "1,105,8,85",
+                  "type": "1,104,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "success",
+                "text": "The function to call when a valid success return packet is received.\n",
+                "type": "Function/String",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "form",
+                    "text": "The form that requested the action\n",
+                    "type": "Ext.form.Basic",
+                    "src": {
+                      "name": "1,66,38",
+                      "text": "1,66,43,35",
+                      "type": "1,66,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "action",
+                    "text": "The Action class. The <a href='#!/api/Ext.form.action.DirectLoad-property-result'>result</a> property of this object may\nbe examined to perform custom post-processing.\n",
+                    "type": "Ext.form.action.Action",
+                    "src": {
+                      "name": "1,67,46",
+                      "text": "1,67,53,66:1,68,8,48",
+                      "type": "1,67,14"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,64,31",
+                  "text": "1,65,8,69",
+                  "type": "1,64,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "timeout",
+                "text": "The number of seconds to wait for a server response before failing with the <a href='#!/api/Ext.form.action.DirectLoad-property-failureType'>failureType</a> as\n<a href='#!/api/Ext.form.action.Action-static-property-CONNECT_FAILURE'>Ext.form.action.Action#CONNECT_FAILURE</a>. If not specified, defaults to the configured\n<a href='#!/api/Ext.form.Basic-cfg-timeout'>Ext.form.Basic#timeout</a> of the <a href='#!/api/Ext.form.action.DirectLoad-cfg-form'>form</a>.\n",
+                "type": "Number",
+                "src": {
+                  "name": "1,57,22",
+                  "text": "1,58,8,254",
+                  "type": "1,57,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "url",
+                "text": "The URL that the Action is to invoke. Will default to the <a href='#!/api/Ext.form.Basic-cfg-url'>Ext.form.Basic#url</a> configured on the\n<a href='#!/api/Ext.form.action.DirectLoad-cfg-form'>form</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,22,22",
+                  "text": "1,23,8,122",
+                  "type": "1,22,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "waitMsg",
+                "text": "The message to be displayed by a call to <a href='#!/api/Ext.window.MessageBox-method-wait'>Ext.window.MessageBox#wait</a> during the time the action is being\nprocessed.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,92,22",
+                  "text": "1,93,8,123",
+                  "type": "1,92,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "waitTitle",
+                "text": "The title to be displayed by a call to <a href='#!/api/Ext.window.MessageBox-method-wait'>Ext.window.MessageBox#wait</a> during the time the action is being\nprocessed.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,98,22",
+                  "text": "1,99,8,121",
+                  "type": "1,98,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Action.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "Config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,169,25",
+                      "text": "1,169,33,15",
+                      "type": "1,169,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,171,0",
+                  "text": "1,168,8,20"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createCallback",
+                "text": "Creates a callback object.\n",
+                "src": {
+                  "access": "1,265,8",
+                  "name": "1,268,0",
+                  "text": "1,266,8,27"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getMethod",
+                "text": "Determine the HTTP method to be used for the request.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The HTTP method\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,248,25,16",
+                      "type": "1,248,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,246,8",
+                  "name": "1,250,0",
+                  "text": "1,247,8,54"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getParams",
+                "text": "Get the set of parameters specified in the BasicForm's baseParams and/or the params option.\nItems in params override items of the same name in baseParams.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "the full set of parameters\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,258,25,27",
+                      "type": "1,258,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,255,8",
+                  "name": "1,260,0",
+                  "text": "1,256,8,155"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getUrl",
+                "text": "Build the URL for the AJAX request. Used by the standard AJAX submit and load actions.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The URL.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,239,25,9",
+                      "type": "1,239,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,237,8",
+                  "name": "1,241,0",
+                  "text": "1,238,8,87"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "handleResponse",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "response",
+                    "src": {
+                      "name": "2,119,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,117,8",
+                  "name": "2,119,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onFailure",
+                "text": "Handles a failure response.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "response",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,206,24",
+                      "type": "1,206,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,204,8",
+                  "name": "1,208,0",
+                  "text": "1,205,8,28"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onSuccess",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "response",
+                    "src": {
+                      "name": "2,94,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,92,8",
+                  "name": "2,94,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "processResponse",
+                "text": "Validates that a response contains either responseText or responseXML and invokes\n<a href='#!/api/Ext.form.action.DirectLoad-method-handleResponse'>handleResponse</a> to build the result object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "response",
+                    "text": "The raw response object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,224,24",
+                      "text": "1,224,33,25",
+                      "type": "1,224,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The result object as built by handleResponse, or `true` if\nthe response had empty responseText and responseXML.\n",
+                    "type": "Object/Boolean",
+                    "src": {
+                      "text": "1,225,33,59:1,226,8,53",
+                      "type": "1,225,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,221,8",
+                  "name": "1,228,0",
+                  "text": "1,222,8,134"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "run",
+                "src": {
+                  "access": "2,77,8",
+                  "name": "2,79,0"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "failureType",
+                "text": "The type of failure detected will be one of these:\n<a href='#!/api/Ext.form.action.DirectLoad-CLIENT_INVALID'>CLIENT_INVALID</a>, <a href='#!/api/Ext.form.action.DirectLoad-SERVER_INVALID'>SERVER_INVALID</a>, <a href='#!/api/Ext.form.action.DirectLoad-CONNECT_FAILURE'>CONNECT_FAILURE</a>, or <a href='#!/api/Ext.form.action.DirectLoad-LOAD_FAILURE'>LOAD_FAILURE</a>.\n\nUsage:\n\n    var fp = new Ext.form.Panel({\n    ...\n    buttons: [{\n        text: 'Save',\n        formBind: true,\n        handler: function(){\n            if(fp.getForm().isValid()){\n                fp.getForm().submit({\n                    url: 'form-submit.php',\n                    waitMsg: 'Submitting your data...',\n                    success: function(form, action){\n                        // server responded with success = true\n                        var result = action.result;\n                    },\n                    failure: function(form, action){\n                        if (action.<a href='#!/api/Ext.form.action.DirectLoad-property-failureType'>failureType</a> === Ext.form.action.Action.CONNECT_FAILURE) {\n                            Ext.Msg.alert('Error',\n                                'Status:'+action.response.status+': '+\n                                action.response.statusText);\n                        }\n                        if (action.failureType === Ext.form.action.Action.SERVER_INVALID){\n                            // server responded with success = false\n                            Ext.Msg.alert('Invalid', action.result.errormsg);\n                        }\n                    }\n                });\n            }\n        }\n    },{\n        text: 'Reset',\n        handler: function(){\n            fp.getForm().reset();\n        }\n    }]\n",
+                "type": "String",
+                "src": {
+                  "name": "1,115,27",
+                  "text": "1,116,8,1470",
+                  "type": "1,115,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "response",
+                "text": "The raw XMLHttpRequest object used to perform the action.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,158,27",
+                  "text": "1,159,8,58",
+                  "type": "1,158,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "result",
+                "text": "The decoded response object containing a boolean <a href='#!/api/Ext.form.action.DirectLoad-cfg-success'>success</a> property and other, action-specific properties.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,163,27",
+                  "text": "1,164,8,107",
+                  "type": "1,163,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "type",
+                "text": "The type of action this Action instance performs. Currently only \"submit\" and \"load\" are supported.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,110,27",
+                  "text": "1,111,8,100",
+                  "type": "1,110,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties"
+          }
+        ],
+        "src": {
+          "alias": "0,55,0",
+          "alternateClassNames": "0,54,0",
+          "extends": "0,53,0",
+          "mixins": "0,62,0",
+          "name": "0,52,0",
+          "requires": "0,58,0",
+          "text": "0,2,4,1463"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

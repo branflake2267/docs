@@ -5,28 +5,28 @@
     <link rel="stylesheet" type="text/css" href="../../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#Ext Direct Specification</p>
-<p>##Overview</p>
+<div class="contents"><h1 id="backend_connectors-_-direct-_-specification_-_ext_direct_specification">Ext Direct Specification</h1>
+<h2 id="backend_connectors-_-direct-_-specification_-_overview">Overview</h2>
 <p>Ext Direct is a platform and language agnostic remote procedure call
 (RPC) protocol. Ext Direct allows for seamless communication between
 the client side of an Ext JS application and any server platform that
 conforms to the specification. Ext Direct is stateless and lightweight,
 supporting features like API discovery, call batching, and server to
 client events.</p>
-<p>##Conventions</p>
+<h2 id="backend_connectors-_-direct-_-specification_-_conventions">Conventions</h2>
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
 &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
 document are to be interpreted as described in <a href="https://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>.</p>
 <p>Ext Direct is partially based on JSON (see <a href="http://www.json.org">http://www.json.org</a> or
 <a href="https://www.ietf.org/rfc/rfc4627.txt">RFC 4627</a> ), and utilizes HTML Form-based File Uploads
 ( <a href="https://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a>, <a href="https://www.ietf.org/rfc/rfc2388.txt">RFC 2388</a> ).</p>
-<p>##API discovery</p>
+<h2 id="backend_connectors-_-direct-_-specification_-_api_discovery">API discovery</h2>
 <p>Server MAY support publishing its API to Clients via API discovery
 mechanism. If API discovery is supported the Server MUST respond
 to HTTP GET requests at preconfigured URI, returning a document with
 a correct content type for the browser to interpret this document as
 JavaScript code.</p>
-<p>###API declaration</p>
+<h3 id="backend_connectors-_-direct-_-specification_-_api_declaration">API declaration</h3>
 <p>The Server API declaration MUST be valid JavaScript code that results
 in creation of a set of nested Objects assigned to a variable that can
 later be passed to Ext Direct initialization code in the Client
@@ -53,7 +53,7 @@ Ext.REMOTING_API = {
         }]
     }
 };
-</code></pre><p>###API declaration properties</p>
+</code></pre><h3 id="backend_connectors-_-direct-_-specification_-_api_declaration_properties">API declaration properties</h3>
 <p>The JavaScript Object of the API declaration MUST contain the following
 mandatory properties:</p>
 <ul>
@@ -73,7 +73,7 @@ useful when there are more than one API in use.</li>
 for every Method invocation in this Remoting API.</li>
 </ul>
 <p>Any other properties are OPTIONAL.</p>
-<p>###Action and Method declarations</p>
+<h3 id="backend_connectors-_-direct-_-specification_-_action_and_method_declarations">Action and Method declarations</h3>
 <p>Each Action within the <code>actions</code> property of the API declaration is an
 Array of Objects that represent Methods. Actions do not have properties
 in themselves. Action names MAY be nested, i.e. an Action may contain
@@ -87,7 +87,7 @@ with dot character (.), prefixed by optional Namespace:</p>
 <pre><code>[Namespace.]Foo.Bar.baz
 </code></pre><p>Where <code>Foo</code> is outer Action name, <code>Bar</code> is inner Action name, and <code>baz</code>
 is the Method name.</p>
-<p>####Method calling conventions</p>
+<h4 id="backend_connectors-_-direct-_-specification_-_method_calling_conventions">Method calling conventions</h4>
 <p>Method declaration MUST have <strong>one</strong> of the following mutually exclusive
 properties that describe the Method&#39;s calling convention:</p>
 <ul>
@@ -126,7 +126,7 @@ Method.</p>
         &quot;strict&quot;: false
     }]
 }
-</code></pre><p>####Call metadata</p>
+</code></pre><h4 id="backend_connectors-_-direct-_-specification_-_call_metadata">Call metadata</h4>
 <p>Method declaration MAY contain the optional <strong><code>metadata</code></strong> property that
 defines the type of Call Metadata accepted by the Method. If the <code>metadata</code>
 property is not present in Method declaration, the Client MUST NOT send
@@ -176,7 +176,7 @@ Named Method MAY accept by-position Call Metadata.</p>
         }
     }]
 }
-</code></pre><p>###Polling API declaration</p>
+</code></pre><h3 id="backend_connectors-_-direct-_-specification_-_polling_api_declaration">Polling API declaration</h3>
 <p>Declaring Polling API is OPTIONAL. If the Server implements more than one
 Event Provider, it is RECOMMENDED to include Polling API declarations
 along with Remoting API declaration in the same JavaScript document.</p>
@@ -201,7 +201,7 @@ Ext.POLLING_API = {
     &quot;type&quot;: &quot;polling&quot;,
     &quot;url&quot;: &quot;ext/direct/events&quot;
 };
-</code></pre><p>##Remoting function calls</p>
+</code></pre><h2 id="backend_connectors-_-direct-_-specification_-_remoting_function_calls">Remoting function calls</h2>
 <p>A remoting call is represented by sending a Request object, or multiple
 Request objects, to a Server. Request(s) are encoded in JSON and are
 sent as raw payload in a HTTP POST request to the Service URI advertised
@@ -210,7 +210,7 @@ in the HTTP POST, except valid JSON document containing one or more
 Requests. Among HTTP headers for the POST request, there MUST be the
 Content-Type header with the value of &quot;application/json&quot;. The Client
 MUST use UTF-8 character encoding for the Request document.</p>
-<p>###Remoting function call requests</p>
+<h3 id="backend_connectors-_-direct-_-specification_-_remoting_function_call_requests">Remoting function call requests</h3>
 <p>A Request is an Object with the following members:</p>
 <ul>
 <li><strong><code>type</code></strong> – MUST be a string &quot;rpc&quot;.</li>
@@ -246,7 +246,7 @@ sent as an Array of Request Objects with unique <code>tid</code> members:</p>
 ]
 </code></pre><p>The Server MUST support Request batching, and SHOULD attempt to return call
 invocation Results or Exceptions in the same order.</p>
-<p>###Remoting responses</p>
+<h3 id="backend_connectors-_-direct-_-specification_-_remoting_responses">Remoting responses</h3>
 <p>A response to a Remoting call MUST contain either a Result, or an
 Exception for each Request. Responses are encoded in JSON and returned
 to the Client as raw HTTP response payload, with Content-Type header
@@ -256,7 +256,7 @@ Responses only after all Requests were processed by the Router, and the
 Responses SHOULD follow the same order as the original Requests. For each
 Response, the corresponding <code>tid</code> member of the original Request MUST be
 passed back unchanged by the Server.</p>
-<p>####Remoting call Result</p>
+<h4 id="backend_connectors-_-direct-_-specification_-_remoting_call_result">Remoting call Result</h4>
 <p>A Result is an Object with the following members:</p>
 <ul>
 <li><strong><code>type</code></strong> — MUST be a string &quot;rpc&quot;.</li>
@@ -275,7 +275,7 @@ return any data.</li>
     {&quot;type&quot;:&quot;rpc&quot;,&quot;tid&quot;:1,&quot;action&quot;:&quot;Foo&quot;,&quot;method&quot;:&quot;bar&quot;,&quot;result&quot;:0},
     {&quot;type&quot;:&quot;rpc&quot;,&quot;tid&quot;:2,&quot;action&quot;:&quot;Foo&quot;,&quot;method&quot;:&quot;baz&quot;,&quot;result&quot;:null}
 ]
-</code></pre><p>####Remoting call Exception</p>
+</code></pre><h4 id="backend_connectors-_-direct-_-specification_-_remoting_call_exception">Remoting call Exception</h4>
 <p>An Exception is an Object with the following members:</p>
 <ul>
 <li><strong><code>type</code></strong> — MUST be a string &quot;exception&quot;.</li>
@@ -298,7 +298,7 @@ was raised. MAY contain stack trace, or additional information.</li>
     &quot;message&quot;: &quot;Division by zero&quot;,
     &quot;where&quot;: &quot;... stack trace here ...&quot;
 }
-</code></pre><p>###Remoting form submission</p>
+</code></pre><h3 id="backend_connectors-_-direct-_-specification_-_remoting_form_submission">Remoting form submission</h3>
 <p>A remoting form invocation is represented by submitting an HTML form
 with HTTP POST request. The form content MUST conform to (HTML 4.01
 specification)[5]. The Server MUST support both &quot;application/x-www-form-urlencoded&quot;
@@ -307,7 +307,7 @@ The Client MAY choose to implement only &quot;multipart/form-data&quot; encoding
 <p>There MUST be only one Method invocation per submitted form. The Client
 MUST use form submission for each Method with Form Handler calling
 convention declared in Remoting API.</p>
-<p>####Remoting form requests</p>
+<h4 id="backend_connectors-_-direct-_-specification_-_remoting_form_requests">Remoting form requests</h4>
 <p>The form SHALL contain the following fields:</p>
 <ul>
 <li><strong><code>extType</code></strong> - MUST be a string &quot;rpc&quot;.</li>
@@ -327,12 +327,12 @@ listed above. These additional fields MUST be passed to the invoked
 Method as Named arguments.</p>
 <p>When the form is used to upload files, encoding type MUST be
 &quot;multipart/form-data&quot;.</p>
-<p>####Remoting form responses</p>
+<h4 id="backend_connectors-_-direct-_-specification_-_remoting_form_responses">Remoting form responses</h4>
 <p>The Server MUST respond to the form submission with a JSON document
 containing a valid Response or Exception object as described in sections
 4.2.1 and 4.2.2. The document MUST have content type of &quot;application/json&quot;
 and UTF-8 character encoding.</p>
-<p>####Remoting file upload responses</p>
+<h4 id="backend_connectors-_-direct-_-specification_-_remoting_file_upload_responses">Remoting file upload responses</h4>
 <p>When the form request contained one or more file uploads, the Server
 MUST return a valid HTML document with correct content type for the
 browser to interpret this document as HTML. The document MUST have
@@ -350,26 +350,26 @@ tags.</p>
         &lt;textarea&gt;{JSON RESPONSE HERE}&lt;/textarea&gt;
     &lt;/body&gt;
 &lt;/html&gt;
-</code></pre><p>##Event polling</p>
+</code></pre><h2 id="backend_connectors-_-direct-_-specification_-_event_polling">Event polling</h2>
 <p>The Server MAY implement OPTIONAL event polling mechanism. Event polling
 is performed by periodically making HTTP GET requests to the Server. There
 MAY be more than one Event Provider per Server; in that case each Event
 Provider MUST have a separate Service URI.</p>
-<p>###Event poll request</p>
+<h3 id="backend_connectors-_-direct-_-specification_-_event_poll_request">Event poll request</h3>
 <p>An event poll request in its basic form is an HTTP GET request to the
 Service URI of the polled Event Provider. The Server MUST maintain a list
 of active Poll Handler methods for every Event Provider, and invoke each
 Poll Handler method every time a poll request is made. The Server MAY
 support passing arguments to Poll Handler methods via HTTP GET request
 URI but it is not required.</p>
-<p>####Event poll response</p>
+<h4 id="backend_connectors-_-direct-_-specification_-_event_poll_response">Event poll response</h4>
 <p>An event poll response MUST be a valid JSON document with a correct
 content type for the browser to interpret this document as JSON. The
 document MUST use UTF-8 character encoding.</p>
 <p>The event poll response should contain an array of Event objects. This
 array MAY be empty if no Events are pending for the given request. The
 Server MUST NOT include Exception objects in the response array.</p>
-<p>####Event object</p>
+<h4 id="backend_connectors-_-direct-_-specification_-_event_object">Event object</h4>
 <p>An event object MUST contain the following properties:</p>
 <ul>
 <li><strong><code>type</code></strong> - MUST be a string &quot;event&quot;.</li>
@@ -385,7 +385,7 @@ Server MUST NOT include Exception objects in the response array.</p>
         &quot;progress&quot;: 100
     }
 }
-</code></pre><p>##Terminology</p>
+</code></pre><h2 id="backend_connectors-_-direct-_-specification_-_terminology">Terminology</h2>
 <p>Ext Direct makes use of the following terms:</p>
 <ul>
 <li><strong>Server</strong> — A computing system that provides functions to be executed
@@ -474,6 +474,29 @@ the Server, instead of sending each Request separately.</li>
 </div>
 
     <div class="toc">
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_overview">Overview</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_conventions">Conventions</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_api_discovery">API discovery</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_api_declaration">API declaration</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_api_declaration_properties">API declaration properties</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_action_and_method_declarations">Action and Method declarations</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_method_calling_conventions">Method calling conventions</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_call_metadata">Call metadata</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_polling_api_declaration">Polling API declaration</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_remoting_function_calls">Remoting function calls</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_remoting_function_call_requests">Remoting function call requests</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_remoting_responses">Remoting responses</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_remoting_call_result">Remoting call Result</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_remoting_call_exception">Remoting call Exception</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_remoting_form_submission">Remoting form submission</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_remoting_form_requests">Remoting form requests</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_remoting_form_responses">Remoting form responses</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_remoting_file_upload_responses">Remoting file upload responses</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_event_polling">Event polling</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_event_poll_request">Event poll request</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_event_poll_response">Event poll response</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_event_object">Event object</a></div>
+        <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_terminology">Terminology</a></div>
         <div class="toc-item"><a href="#backend_connectors-_-direct-_-specification_-_references">References</a></div>
     </div>
 </body>

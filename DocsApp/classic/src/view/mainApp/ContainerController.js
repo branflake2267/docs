@@ -45,8 +45,9 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
 
             if (!tab) {
                 tab = tabpanel.add({
-                    xtype  : 'mainapp-guide-view',
-                    guideId: id
+                    xtype       : 'mainapp-guide-view',
+                    guideId     : id,
+                    focusHeading: heading
                 });
             }
 
@@ -62,11 +63,13 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
     },
 
     focusHeader: function (tab, id, heading) {
+        //console.log(tab, id, heading);
         var el, header, scroller;
 
         if (tab.rendered) {
             if (tab.html) {
                 el = tab.getEl();
+                console.log('#' + id.replace(/_-_/g, '-_-') + '_-_' + heading);
                 header = el.down('#' + id.replace(/_-_/g, '-_-') + '_-_' + heading);
                 // core_concepts-_-memory_management_-_framework_level_leaks   HEADER ID
                 // core_concepts_-_memory_management_-_framework_level_leaks   TREE ID + HEADER
@@ -149,16 +152,17 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
                 if (store.type == 'chained') {
                     if (member) {
                         rec    = store.findRecord('name', member);
-                        target = Ext.fly(target = view.getNode(rec));
+                        target = Ext.get(target = view.getNode(rec));
                     } else {
                         target = view.prev().getEl();
                     }
                     scroller = tab.getScrollable();
-                    scroller.scrollTo(0, -1);
                     Ext.on({
-                        idle  : function () {
+                        idle: function () {
+                            scroller.scrollTo(0, -1);
                             target.scrollIntoView(scroller.getElement(), false, false, true);
                         },
+                        delay: 1,
                         single: true
                     });
                 } else {

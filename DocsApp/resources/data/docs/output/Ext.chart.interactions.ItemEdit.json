@@ -1,0 +1,1932 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/charts/src/chart/interactions/ItemEdit.js",
+    "../../../ext/packages/charts/src/chart/interactions/Abstract.js",
+    "../../../ext/packages/core/src/mixin/Observable.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "interaction.itemedit",
+        "extends": "Ext.chart.interactions.ItemHighlight",
+        "name": "Ext.chart.interactions.ItemEdit",
+        "requires": "Ext.tip.ToolTip",
+        "text": "\nThe 'itemedit' interaction allows the user to edit store data\nby dragging series items in the chart.\n\nThe 'itemedit' interaction extends the\n<a href='#!/api/Ext.chart.interactions.ItemHighlight'>Ext.chart.interactions.ItemHighlight</a> interaction,\nso it also acts like one. If you need both interactions in a single chart,\n'itemedit' should be sufficient. Hovering/tapping will result in highlighting,\nand dragging will result in editing.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "chart",
+                "text": "The chart that the interaction is bound.\n",
+                "type": "Ext.chart.AbstractChart",
+                "src": {
+                  "name": "1,28,43",
+                  "text": "1,28,49,41",
+                  "type": "1,28,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "enabled",
+                "text": "'true' if the interaction is enabled.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,33,27",
+                  "text": "1,33,35,38",
+                  "type": "1,33,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "gesture",
+                "text": "Maps gestures that should be used for starting/maintaining/ending the interaction\nto corresponding class methods.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,21,12",
+                  "name": "1,18,26",
+                  "text": "1,19,12,114",
+                  "type": "1,18,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "listeners",
+                "text": "\nA config object containing one or more event handlers to be added to this object during initialization. This\nshould be a valid listeners config object as specified in the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> example for attaching\nmultiple handlers at once.\n\n**DOM events from Ext JS <a href='#!/api/Ext.Component'>Ext.Component</a>**\n\nWhile _some_ Ext JS Component classes export selected DOM events (e.g. \"click\", \"mouseover\" etc), this is usually\nonly done when extra value can be added. For example the <a href='#!/api/Ext.view.View'>Ext.view.View</a>s **<a href='#!/api/Ext.view.View-event-itemclick'>Ext.view.View#itemclick</a>** event passing the node clicked on. To access DOM events directly from a\nchild element of a Component, we need to specify the `element` option to identify the Component property to add a\nDOM listener to:\n\n    new Ext.panel.Panel({\n        width: 400,\n        height: 200,\n        dockedItems: [{\n            xtype: 'toolbar'\n        }],\n        listeners: {\n            click: {\n                element: 'el', //bind to the underlying el property on the panel\n                fn: function(){ console.log('click el'); }\n            },\n            dblclick: {\n                element: 'body', //bind to the underlying body property on the panel\n                fn: function(){ console.log('dblclick body'); }\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,243,25",
+                  "text": "2,244,11,1325",
+                  "type": "2,243,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "renderer",
+                "optional": true,
+                "text": "A function that returns style attributes for the item that's being dragged.\nThis is useful if you want to give a visual feedback to the user when\nthey dragged to a certain point.\n",
+                "type": "Function/String",
+                "value": "null",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "optional": true,
+                    "text": "The following properties are available:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "target",
+                        "text": "The object containing the xField/xValue or/and\nyField/yValue properties, where the xField/yField specify the store records\nbeing edited and the xValue/yValue the target values to be set when\nthe interaction ends. The object also contains the 'index' of the record\nbeing edited.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,42,33",
+                          "text": "0,42,40,47:0,43,12,231",
+                          "type": "0,42,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "style",
+                        "text": "The style that is going to be used for the dragged item.\nThe attributes returned by the renderer will be applied on top of this style.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,47,33",
+                          "text": "0,47,39,57:0,48,12,78",
+                          "type": "0,47,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "item",
+                        "text": "The series item being dragged.\nThis is actually the <a href='#!/api/Ext.chart.AbstractChart-cfg-highlightItem'>Ext.chart.AbstractChart#highlightItem</a>.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,49,33",
+                          "text": "0,49,38,31:0,50,12,69",
+                          "type": "0,49,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,40,29",
+                      "text": "0,40,35,40",
+                      "type": "0,40,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The style attributes to be set on the dragged item.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,52,29,52",
+                      "type": "0,52,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,35,36",
+                  "text": "0,36,12,180",
+                  "type": "0,35,18",
+                  "value": "0,35,45"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "sticky",
+                "optional": true,
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "access": "0,74,12",
+                  "name": "0,75,28",
+                  "type": "0,75,18",
+                  "value": "0,75,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "style",
+                "optional": true,
+                "text": "The style that will be applied to the series item on dragging.\nBy default, series item will have no fill,\nand will have a dashed stroke of the same color.\n",
+                "type": "Object",
+                "value": "null",
+                "src": {
+                  "name": "0,27,27",
+                  "text": "0,28,12,155",
+                  "type": "0,27,18",
+                  "value": "0,27,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "tooltip",
+                "optional": true,
+                "type": "Object/Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,57,35",
+                  "type": "0,57,18",
+                  "value": "0,57,43"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "beginitemedit",
+                "text": "Fires when item edit operation (dragging) begins.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "chart",
+                    "text": "The chart the interaction belongs to.\n",
+                    "type": "Ext.chart.AbstractChart",
+                    "src": {
+                      "name": "0,82,41",
+                      "text": "0,82,47,38",
+                      "type": "0,82,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "interaction",
+                    "text": "The interaction.\n",
+                    "type": "Ext.chart.interactions.ItemEdit",
+                    "src": {
+                      "name": "0,83,49",
+                      "text": "0,83,61,17",
+                      "type": "0,83,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item that is about to be edited.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,84,24",
+                      "text": "0,84,29,37",
+                      "type": "0,84,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,80,15",
+                  "text": "0,81,8,50"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "enditemedit",
+                "text": "Fires when item edit operation (dragging) ends.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "chart",
+                    "text": "The chart the interaction belongs to.\n",
+                    "type": "Ext.chart.AbstractChart",
+                    "src": {
+                      "name": "0,90,41",
+                      "text": "0,90,47,38",
+                      "type": "0,90,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "interaction",
+                    "text": "The interaction.\n",
+                    "type": "Ext.chart.interactions.ItemEdit",
+                    "src": {
+                      "name": "0,91,49",
+                      "text": "0,91,61,17",
+                      "type": "0,91,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item that was edited.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,92,24",
+                      "text": "0,92,29,26",
+                      "type": "0,92,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The object containing target values the were used.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,93,24",
+                      "text": "0,93,31,51",
+                      "type": "0,93,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,88,15",
+                  "text": "0,89,8,48"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_addDeclaredListeners",
+                "text": "Adds declarative listeners as nested arrays of listener objects.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "type": "Array",
+                    "src": {
+                      "name": "2,413,27",
+                      "type": "2,413,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if any listeners were added\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,414,30,35",
+                      "type": "2,414,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,412,12",
+                  "name": "2,416,0",
+                  "text": "2,411,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.chart.interactions.ItemEdit-method-onAfter'>onAfter</a>.\n",
+                "src": {
+                  "name": "2,1236,0",
+                  "text": "2,1234,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.chart.interactions.ItemEdit-method-onBefore'>onBefore</a>.\n",
+                "src": {
+                  "name": "2,1230,0",
+                  "text": "2,1228,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addChartListener",
+                "src": {
+                  "access": "1,135,8",
+                  "name": "1,137,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addListener",
+                "text": "The <a href='#!/api/Ext.chart.interactions.ItemEdit-method-on'>on</a> method is shorthand for\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.\n\nAppends an event handler to this object.  For example:\n\n    myGridPanel.on(\"itemclick\", this.onItemClick, this);\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple events. For example:\n\n    myGridPanel.on({\n        cellclick: this.onCellClick,\n        select: this.onSelect,\n        viewready: this.onViewReady,\n        scope: this // Important. Ensure \"this\" is correct during handler execution\n    });\n\nOne can also specify options for each event handler separately:\n\n    myGridPanel.on({\n        cellclick: {fn: this.onCellClick, scope: this, single: true},\n        viewready: {fn: panel.onViewReady, scope: panel}\n    });\n\n*Names* of methods in a specified scope may also be used:\n\n    myGridPanel.on({\n        cellclick: {fn: 'onCellClick', scope: this, single: true},\n        viewready: {fn: 'onViewReady', scope: panel}\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\nMay also be an object who's property names are event names.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "2,835,35",
+                      "text": "2,835,45,37:2,836,12,61",
+                      "type": "2,835,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "optional": true,
+                    "text": "The method the event invokes or the *name* of\nthe method within the specified `scope`.  Will be called with arguments\ngiven to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> plus the `options` parameter described\nbelow.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "2,838,38",
+                      "text": "2,838,42,46:2,839,12,166",
+                      "type": "2,838,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,843,29",
+                      "text": "2,843,36,62:2,844,12,73",
+                      "type": "2,843,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n\n**Note:** The options object will also be passed as the last argument to every\nevent handler.\n\nThis object may contain any of the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "  The scope (`this` reference) in which the handler function is executed. **If omitted,\n  defaults to the object which fired the event.**\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "2,853,36",
+                          "text": "2,854,12,139",
+                          "type": "2,853,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delay",
+                        "text": "  The number of milliseconds to delay the invocation of the handler after the event\n  fires.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "2,857,36",
+                          "text": "2,858,12,94",
+                          "type": "2,857,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "single",
+                        "text": "  True to add a handler to handle just the next firing of the event, and then remove\n  itself.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "2,861,37",
+                          "text": "2,862,12,96",
+                          "type": "2,861,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "buffer",
+                        "text": "  Causes the handler to be scheduled to run in an <a href='#!/api/Ext.util.DelayedTask'>Ext.util.DelayedTask</a> delayed\n  by the specified number of milliseconds. If the event fires again within that time,\n  the original handler is _not_ invoked, but the new handler is scheduled in its place.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "2,865,36",
+                          "text": "2,866,12,262",
+                          "type": "2,865,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onFrame",
+                        "text": "  Causes the handler to be scheduled to run at the next\n  <a href='#!/api/Ext.Function-method-requestAnimationFrame'>Ext.Function#requestAnimationFrame</a>. If the\n  event fires again before that time, the handler is not rescheduled - the handler\n  will only be called once when the next animation frame is fired, with the last set\n  of arguments passed.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "2,870,36",
+                          "text": "2,871,12,323",
+                          "type": "2,870,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "target",
+                        "text": "  Only call the handler if the event was fired on the target Observable, _not_ if the\n  event was bubbled up from a child Observable.\n",
+                        "type": "Ext.util.Observable",
+                        "src": {
+                          "name": "2,877,49",
+                          "text": "2,878,12,135",
+                          "type": "2,877,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "element",
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.Component'>Ext.Component</a>.**\n  The name of a Component property which references an <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>\n  to add a listener to.\n\n  This option is useful during Component construction to add DOM event listeners to\n  elements of <a href='#!/api/Ext.Component'>Ext.Component</a> which will exist only after the\n  Component is rendered.\n\n  For example, to add a click listener to a Panel's body:\n\n      var panel = new Ext.panel.Panel({\n          title: 'The title',\n          listeners: {\n              click: this.handlePanelClick,\n              element: 'body'\n          }\n      });\n\nIn order to remove listeners attached using the element, you'll need to reference\nthe element itself as seen below.\n\n     panel.body.un(...)\n",
+                        "type": "String",
+                        "src": {
+                          "name": "2,881,36",
+                          "text": "2,882,12,781",
+                          "type": "2,881,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delegate",
+                        "optional": true,
+                        "text": "  A simple selector to filter the event target or look for a descendant of the target.\n\n  The \"delegate\" option is only available on Ext.dom.Element instances (or\n  when attaching a listener to a Ext.dom.Element via a Component using the\n  element option).\n\n  See the *delegate* example below.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "2,905,37",
+                          "text": "2,906,12,295",
+                          "type": "2,905,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopPropagation",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopPropagation'>Ext.event.Event#stopPropagation</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "2,914,38",
+                          "text": "2,915,12,212",
+                          "type": "2,914,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "preventDefault",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-preventDefault'>Ext.event.Event#preventDefault</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "2,919,38",
+                          "text": "2,920,12,210",
+                          "type": "2,919,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopEvent",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopEvent'>Ext.event.Event#stopEvent</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "2,924,38",
+                          "text": "2,925,12,200",
+                          "type": "2,924,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "args",
+                        "optional": true,
+                        "text": "  Optional arguments to pass to the handler function. Any additional arguments\n  passed to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> will be appended\n  to these arguments.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "2,929,36",
+                          "text": "2,930,12,179",
+                          "type": "2,929,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "destroyable",
+                        "optional": true,
+                        "text": "  When specified as `true`, the function returns a `destroyable` object. An object\n  which implements the `destroy` method which removes all listeners added in this call.\n  This syntax can be a helpful shortcut to using <a href='#!/api/Ext.chart.interactions.ItemEdit-method-un'>un</a>; particularly when\n  removing multiple listeners.  *NOTE* - not compatible when using the _element_\n  option.  See <a href='#!/api/Ext.chart.interactions.ItemEdit-method-un'>un</a> for the proper syntax for removing listeners added using the\n  _element_ config.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "2,934,38",
+                          "text": "2,935,12,441",
+                          "type": "2,934,20",
+                          "value": "2,934,50"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "priority",
+                        "optional": true,
+                        "text": "  An optional numeric priority that determines the order in which event handlers\n  are run. Event handlers with no priority will be run as if they had a priority\n  of 0. Handlers with a higher priority will be prioritized to run sooner than\n  those with a lower priority.  Negative numbers can be used to set a priority\n  lower than the default. Internally, the framework uses a range of 1000 or\n  greater, and -1000 or lesser for handlers that are intended to run before or\n  after all others, so it is recommended to stay within the range of -999 to 999\n  when setting the priority of event handlers in application-level code.\n  A priority must be an integer to be valid.  Fractional values are reserved for\n  internal framework use.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "2,942,37",
+                          "text": "2,943,12,737",
+                          "type": "2,942,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "order",
+                        "optional": true,
+                        "text": "  A legacy option that is provided for backward compatibility.\n  It is recommended to use the `priority` option instead.  Available options are:\n\n  - `'before'`: equal to a priority of `100`\n  - `'current'`: equal to a priority of `0` or default priority\n  - `'after'`: equal to a priority of `-100`\n",
+                        "type": "String",
+                        "value": "'current'",
+                        "src": {
+                          "name": "2,954,37",
+                          "text": "2,955,12,301",
+                          "type": "2,954,20",
+                          "value": "2,954,43"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "2,846,29",
+                      "text": "2,846,38,44:2,847,12,154",
+                      "type": "2,846,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "  A shortcut for the `order` event option.  Provided for backward compatibility.\n  Please use the `priority` event option instead.\n\n**Combining Options**\n\nUsing the options argument, it is possible to combine different types of listeners:\n\nA delayed, one-time listener.\n\n    myPanel.on('hide', this.handleClick, this, {\n        single: true,\n        delay: 100\n    });\n\n**Attaching multiple handlers in 1 call**\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple handlers and handler configs.\n\n    grid.on({\n        itemclick: 'onItemClick',\n        itemcontextmenu: grid.onItemContextmenu,\n        destroy: {\n            fn: function () {\n                // function called within the 'altCmp' scope instead of grid\n            },\n            scope: altCmp // unique scope for the destroy handler\n        },\n        scope: grid       // default scope - provided for example clarity\n    });\n\n**Delegate**\n\nThis is a configuration option that you can pass along when registering a handler for\nan event to assist with event delegation. By setting this configuration option\nto a simple selector, the target element will be filtered to look for a\ndescendant of the target. For example:\n\n    var panel = Ext.create({\n        xtype: 'panel',\n        renderTo: document.body,\n        title: 'Delegate Handler Example',\n        frame: true,\n        height: 220,\n        width: 220,\n        html: '<h1 class=\"myTitle\">BODY TITLE</h1>Body content'\n    });\n\n    // The click handler will only be called when the click occurs on the\n    // delegate: h1.myTitle (\"h1\" tag with class \"myTitle\")\n    panel.on({\n        click: function (e) {\n            console.log(e.getTarget().innerHTML);\n        },\n        element: 'body',\n        delegate: 'h1.myTitle'\n     });\n",
+                    "type": "String",
+                    "value": "'current'",
+                    "src": {
+                      "name": "2,962,29",
+                      "text": "2,963,12,1831",
+                      "type": "2,962,20",
+                      "value": "2,962,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes\n all listeners added in this call. For example:\n\n    this.btnListeners =  = myButton.on({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,1021,29,54:2,1022,12,516",
+                      "type": "2,1021,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1041,0",
+                  "text": "2,804,12,1008"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addManagedListener",
+                "text": "The addManagedListener method is used when some object (call it \"A\") is listening\nto an event on another observable object (\"B\") and you want to remove that listener\nfrom \"B\" when \"A\" is destroyed. This is not an issue when \"B\" is destroyed because\nall of its listeners will be removed at that time.\n\nExample:\n\n    Ext.define('Foo', {\n        extend: 'Ext.Component',\n\n        initComponent: function () {\n            this.addManagedListener(MyApp.SomeGlobalSharedMenu, 'show', this.doSomething);\n            this.callParent();\n        }\n    });\n\nAs you can see, when an instance of Foo is destroyed, it ensures that the 'show'\nlistener on the menu (`MyApp.SomeGlobalSharedMenu`) is also removed.\n\nAs of version 5.1 it is no longer necessary to use this method in most cases because\nlisteners are automatically managed if the scope object provided to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> is an Observable instance.\nHowever, if the observable instance and scope are not the same object you\nstill need to use <a href='#!/api/Ext.chart.interactions.ItemEdit-method-mon'>mon</a> or <a href='#!/api/Ext.chart.interactions.ItemEdit-method-addManagedListener'>addManagedListener</a> if you want the listener to be\nmanaged.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item to which to add a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "2,456,56",
+                      "text": "2,456,61,47",
+                      "type": "2,456,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "2,457,34",
+                      "text": "2,457,40,63",
+                      "type": "2,457,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event\nname, this is the handler function or the name of a method on the specified\n`scope`.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "2,458,36",
+                      "text": "2,458,39,49:2,459,11,85",
+                      "type": "2,458,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,461,27",
+                      "text": "2,461,33,92:2,462,11,43",
+                      "type": "2,461,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> options.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,463,27",
+                      "text": "2,463,35,67:2,464,11,61",
+                      "type": "2,463,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes all listeners added in this call. For example:\n\n    this.btnListeners = myButton.mon({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,465,28,54:2,466,11,513",
+                      "type": "2,465,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,484,0",
+                  "text": "2,430,11,1093"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearListeners",
+                "text": "Removes all listeners for this object including the managed listeners\n",
+                "src": {
+                  "name": "2,1255,0",
+                  "text": "2,1253,11,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearManagedListeners",
+                "text": "Removes all managed listeners for this object.\n",
+                "src": {
+                  "name": "2,1291,0",
+                  "text": "2,1289,11,47"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createRelayer",
+                "text": "Creates an event handling function which re-fires the event from this object as the passed event name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newName",
+                    "text": "The name under which to re-fire the passed parameters.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,1522,27",
+                      "text": "2,1522,35,55",
+                      "type": "2,1522,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "beginEnd",
+                    "text": "(optional) The caller can specify on which indices to slice.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "2,1523,26",
+                      "text": "2,1523,35,61",
+                      "type": "2,1523,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "2,1524,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,1520,11",
+                  "name": "2,1526,0",
+                  "text": "2,1521,11,103"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doFireEvent",
+                "text": "Continue to fire event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "type": "String",
+                    "src": {
+                      "name": "2,761,27",
+                      "type": "2,761,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "type": "Array",
+                    "src": {
+                      "name": "2,762,26",
+                      "type": "2,762,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bubbles",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,763,28",
+                      "type": "2,763,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,759,11",
+                  "name": "2,765,0",
+                  "text": "2,758,11,24"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enableBubble",
+                "text": "Enables events fired by this Observable to bubble up an owner hierarchy by calling `this.getBubbleTarget()` if\npresent. There is no implementation in the Observable base class.\n\nThis is commonly used by Ext.Components to bubble events to owner Containers.\nSee <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>. The default implementation in Ext.Component returns the\nComponent's immediate owner. But if a known target is required, this can be overridden to access the\nrequired target more quickly.\n\nExample:\n\n    Ext.define('Ext.overrides.form.field.Base', {\n        override: 'Ext.form.field.Base',\n\n        //  Add functionality to Field's initComponent to enable the change event to bubble\n        initComponent: function () {\n            this.callParent();\n            this.enableBubble('change');\n        }\n    });\n\n    var myForm = Ext.create('Ext.form.Panel', {\n        title: 'User Details',\n        items: [{\n            ...\n        }],\n        listeners: {\n            change: function() {\n                // Title goes red if form has been modified.\n                myForm.header.setStyle('color', 'red');\n            }\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventNames",
+                    "text": "The event name to bubble, or an Array of event names.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "2,1567,36",
+                      "text": "2,1567,47,54",
+                      "type": "2,1567,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1569,0",
+                  "text": "2,1534,11,1138"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use <a href='#!/api/Ext.chart.interactions.ItemEdit-fireEventAction'>fireEventAction</a> instead.\n",
+                "deprecatedVersion": "5.5",
+                "name": "fireAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nBy default, the action function will be executed after any \"before\" event handlers\n(as specified using the `order` option of\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>), but before any other\nhandlers are fired.  This gives the \"before\" handlers an opportunity to\ncancel the event by returning `false`, and prevent the action function from\nbeing called.\n\nThe action can also be configured to run after normal handlers, but before any \"after\"\nhandlers (as specified using the `order` event option) by passing `'after'`\nas the `order` parameter.  This configuration gives any event handlers except\nfor \"after\" handlers the opportunity to cancel the event and prevent the action\nfunction from being called.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,640,28",
+                      "text": "2,640,38,31",
+                      "type": "2,640,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "2,641,27",
+                      "text": "2,641,32,58",
+                      "type": "2,641,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "2,642,30",
+                      "text": "2,642,33,21",
+                      "type": "2,642,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,643,29",
+                      "text": "2,643,36,62:2,644,12,72",
+                      "type": "2,643,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Event options for the action function.  Accepts any\nof the options of <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,645,29",
+                      "text": "2,645,38,52:2,646,12,72",
+                      "type": "2,645,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "The order to call the action function relative\ntoo the event handlers (`'before'` or `'after'`).  Note that this option is\nsimply used to sort the action function relative to the event handlers by \"priority\".\nAn order of `'before'` is equivalent to a priority of `99.5`, while an order of\n`'after'` is equivalent to a priority of `-99.5`.  See the `priority` option\nof <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> for more details.\n",
+                    "type": "String",
+                    "value": "'before'",
+                    "src": {
+                      "name": "2,647,29",
+                      "text": "2,647,45,47:2,648,12,394",
+                      "type": "2,647,20",
+                      "value": "2,647,35"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "2,653,12",
+                  "deprecatedVersion": "2,653,12",
+                  "name": "2,655,0",
+                  "text": "2,626,12,802"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEvent",
+                "text": "Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed\nto <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>).\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.chart.interactions.ItemEdit-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,568,27",
+                      "text": "2,568,37,31",
+                      "type": "2,568,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Variable number of parameters are passed to handlers.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "2,569,30",
+                      "text": "2,569,35,54",
+                      "type": "2,569,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,570,29,77",
+                      "type": "2,570,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,572,0",
+                  "text": "2,562,11,310"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventArgs",
+                "text": "Fires the specified event with the passed parameter list.\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.chart.interactions.ItemEdit-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,605,27",
+                      "text": "2,605,37,31",
+                      "type": "2,605,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "An array of parameters which are passed to handlers.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "2,606,29",
+                      "text": "2,606,34,53",
+                      "type": "2,606,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,607,29,77",
+                      "type": "2,607,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,609,0",
+                  "text": "2,600,11,202"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventedAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nEvented Actions will automatically dispatch a 'before' event passing. This event will\nbe given a special controller that allows for pausing/resuming of the event flow.\n\nBy pausing the controller the updater and events will not run until resumed. Pausing,\nhowever, will not stop the processing of any other before events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,721,28",
+                      "text": "2,721,38,31",
+                      "type": "2,721,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "2,722,27",
+                      "text": "2,722,32,58",
+                      "type": "2,722,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "2,723,37",
+                      "text": "2,723,40,21",
+                      "type": "2,723,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,724,29",
+                      "text": "2,724,36,62:2,725,12,72",
+                      "type": "2,724,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fnArgs",
+                    "optional": true,
+                    "text": "Optional arguments for the action `fn`. If not\ngiven, the normal `args` will be used to call `fn`. If `false` is passed, the\n`args` are used but if the first argument is this instance it will be removed\nfrom the args passed to the action function.\n",
+                    "type": "Array/Boolean",
+                    "src": {
+                      "name": "2,726,36",
+                      "text": "2,726,44,47:2,727,12,201",
+                      "type": "2,726,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,731,0",
+                  "text": "2,714,12,409"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getBubbleParent",
+                "text": "Gets the bubbling parent for an Observable\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The bubble parent. null is returned if no bubble target exists\n",
+                    "type": "Ext.util.Observable",
+                    "src": {
+                      "text": "2,793,41,63",
+                      "type": "2,793,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,792,11",
+                  "name": "2,795,0",
+                  "text": "2,791,11,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "3,75,25,3",
+                      "type": "3,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,77,0",
+                  "text": "3,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getItemForEvent",
+                "text": "Find and return a single series item corresponding to the given event,\nor null if no matching item is found.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,109,23",
+                      "type": "1,109,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "the item object or null if none found.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,110,25,39",
+                      "type": "1,110,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,106,8",
+                  "name": "1,112,0",
+                  "text": "1,107,8,109"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getItemsForEvent",
+                "text": "Find and return all series items corresponding to the given event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,123,23",
+                      "type": "1,123,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "array of matching item objects\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "1,124,24,31",
+                      "type": "1,124,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,121,8",
+                  "name": "1,126,0",
+                  "text": "1,122,8,67"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasListener",
+                "text": "Checks to see if this object has any listeners for a specified event, or whether the event bubbles. The answer\nindicates whether the event needs firing or not.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to check for\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,1334,27",
+                      "text": "2,1334,37,35",
+                      "type": "2,1334,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the event is being listened for or bubbles, else `false`\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,1335,29,67",
+                      "type": "2,1335,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1337,0",
+                  "text": "2,1331,11,161"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSuspended",
+                "text": "Checks if all events, or a specific event, is suspended.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "optional": true,
+                    "text": "The name of the specific event to check\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,1344,29",
+                      "text": "2,1344,36,40",
+                      "type": "2,1344,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if events are suspended\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,1345,30,31",
+                      "type": "2,1345,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1347,0",
+                  "text": "2,1343,12,57"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addManagedListener",
+                "name": "mon",
+                "text": "Shorthand for <a href='#!/api/Ext.chart.interactions.ItemEdit-method-addManagedListener'>addManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "2,1787,12",
+                  "name": "2,1789,0",
+                  "text": "2,1786,12,43"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeManagedListener",
+                "name": "mun",
+                "text": "Shorthand for <a href='#!/api/Ext.chart.interactions.ItemEdit-method-removeManagedListener'>removeManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "2,1793,12",
+                  "name": "2,1795,0",
+                  "text": "2,1792,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addListener",
+                "name": "on",
+                "src": {
+                  "inheritdoc": "2,1775,12",
+                  "name": "2,1777,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onAfter",
+                "text": "Appends an after-event handler.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "2,1190,44",
+                      "text": "2,1190,54,37",
+                      "type": "2,1190,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "2,1191,37",
+                      "text": "2,1191,40,30",
+                      "type": "2,1191,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1192,29",
+                      "text": "2,1192,36,20",
+                      "type": "2,1192,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1193,29",
+                      "text": "2,1193,38,44",
+                      "type": "2,1193,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1195,0",
+                  "text": "2,1185,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onBefore",
+                "text": "Appends a before-event handler.  Returning `false` from the handler will stop the event.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "2,1175,44",
+                      "text": "2,1175,54,37",
+                      "type": "2,1175,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "2,1176,37",
+                      "text": "2,1176,40,30",
+                      "type": "2,1176,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1177,29",
+                      "text": "2,1177,36,20",
+                      "type": "2,1177,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1178,29",
+                      "text": "2,1178,38,44",
+                      "type": "2,1178,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1180,0",
+                  "text": "2,1170,12,183"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "relayEvents",
+                "text": "Relays selected events from the specified Observable as if the events were fired by `this`.\n\nFor example if you are extending Grid, you might decide to forward some events from store.\nSo you can do this inside your initComponent:\n\n    this.relayEvents(this.getStore(), ['load']);\n\nThe grid instance will then have an observable 'load' event which will be passed\nthe parameters of the store's load event and any function fired with the grid's\nload event would have access to the grid using the this keyword (unless the event\nis handled by a controller's control/listen event listener in which case 'this'\nwill be the controller rather than the grid).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The Observable whose events this object is to relay.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1466,27",
+                      "text": "2,1466,34,53",
+                      "type": "2,1466,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "events",
+                    "text": "Array of event names to relay or an Object with key/value\npairs translating to ActualEventName/NewEventName respectively. For example:\n    this.relayEvents(this, {add:'push', remove:'pop'});\n\nWould now redispatch the add event of this as a push event and the remove event as a pop event.\n",
+                    "type": "String[]/Object",
+                    "src": {
+                      "name": "2,1467,36",
+                      "text": "2,1467,43,58:2,1468,11,231",
+                      "type": "2,1467,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prefix",
+                    "optional": true,
+                    "text": "A common prefix to prepend to the event names. For example:\n\n    this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nNow the grid will forward 'load' and 'clear' events of store as 'storeload' and 'storeclear'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,1473,28",
+                      "text": "2,1473,36,60:2,1474,11,164",
+                      "type": "2,1473,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A `Destroyable` object. An object which implements the `destroy` method which, when destroyed, removes all relayers. For example:\n\n    this.storeRelayers = this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nCan be undone by calling\n\n    Ext.destroy(this.storeRelayers);\n\nor\n    this.store.relayers.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,1479,28,130:2,1480,11,192",
+                      "type": "2,1479,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1490,0",
+                  "text": "2,1453,11,651"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.chart.interactions.ItemEdit-method-unAfter'>unAfter</a>.\n",
+                "src": {
+                  "name": "2,1248,0",
+                  "text": "2,1246,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.chart.interactions.ItemEdit-method-unBefore'>unBefore</a>.\n",
+                "src": {
+                  "name": "2,1242,0",
+                  "text": "2,1240,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeListener",
+                "text": "Removes an event handler.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The type of event the handler was associated with.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,1102,28",
+                      "text": "2,1102,38,51",
+                      "type": "2,1102,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove. **This must be a reference to the function\npassed into the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> call.**\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "2,1103,30",
+                      "text": "2,1103,33,66:2,1104,12,76",
+                      "type": "2,1103,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope originally specified for the handler. It\nmust be the same as the scope argument specified in the original call to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> or the listener will not be removed.\n\n**Convenience Syntax**\n\nYou can use the <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n`destroyable: true` config option in place of calling un().  For example:\n\n    var listeners = cmp.on({\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide,\n        destroyable: true\n    });\n\n    // Remove listeners\n    listeners.destroy();\n    // or\n    cmp.un(\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide\n    );\n\n**Exception - DOM event handlers using the element config option**\n\nYou must go directly through the element to detach an event handler attached using\nthe <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> _element_ option.\n\n    panel.on({\n        element: 'body',\n        click: 'onBodyCLick'\n    });\n\n    panel.body.un({\n        click: 'onBodyCLick'\n    });\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1106,28",
+                      "text": "2,1106,34,62:2,1107,12,1017",
+                      "type": "2,1106,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1145,0",
+                  "text": "2,1100,12,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeManagedListener",
+                "text": "Removes listeners that were added by the <a href='#!/api/Ext.chart.interactions.ItemEdit-method-mon'>mon</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item from which to remove a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "2,526,56",
+                      "text": "2,526,61,52",
+                      "type": "2,526,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "2,527,34",
+                      "text": "2,527,40,63",
+                      "type": "2,527,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the handler function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "2,528,29",
+                      "text": "2,528,32,85",
+                      "type": "2,528,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,529,27",
+                      "text": "2,529,33,92:2,530,11,43",
+                      "type": "2,529,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,532,0",
+                  "text": "2,524,11,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "removeManagedListenerItem",
+                "text": "Remove a single managed listener item\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "isClear",
+                    "text": "True if this is being called during a clear\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,1307,28",
+                      "text": "2,1307,36,44",
+                      "type": "2,1307,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "managedListener",
+                    "text": "The managed listener item\nSee removeManagedListener for other args\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1308,27",
+                      "text": "2,1308,43,26:2,1309,11,41",
+                      "type": "2,1308,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,1306,11",
+                  "name": "2,1311,0",
+                  "text": "2,1305,11,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "resolveListenerScope",
+                "text": "Gets the default scope for firing late bound events (string names with\nno scope attached) at runtime.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "defaultScope",
+                    "optional": true,
+                    "text": "The default scope to return if none is found.\n",
+                    "type": "Object",
+                    "value": "this",
+                    "src": {
+                      "name": "2,579,29",
+                      "text": "2,579,48,46",
+                      "type": "2,579,20",
+                      "value": "2,579,42"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The default event scope\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,580,29,24",
+                      "type": "2,580,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,581,12",
+                  "name": "2,583,0",
+                  "text": "2,577,12,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvent",
+                "text": "Resumes firing of the named event(s).\n\nAfter calling this method to resume events, the events will fire when requested to fire.\n\n**Note that if the <a href='#!/api/Ext.chart.interactions.ItemEdit-method-suspendEvent'>suspendEvent</a> method is called multiple times for a certain event,\nthis converse method will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to resume.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "2,1409,32",
+                      "text": "2,1409,42,32",
+                      "type": "2,1409,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1411,0",
+                  "text": "2,1402,12,320"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvents",
+                "text": "Resumes firing events (see <a href='#!/api/Ext.chart.interactions.ItemEdit-method-suspendEvents'>suspendEvents</a>).\n\nIf events were suspended using the `queueSuspended` parameter, then all events fired\nduring event suspension will be sent to any listeners now.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "discardQueue",
+                    "optional": true,
+                    "text": "`true` to prevent any previously queued events from firing\nwhile we were suspended. See <a href='#!/api/Ext.chart.interactions.ItemEdit-method-suspendEvents'>suspendEvents</a>.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,1431,29",
+                      "text": "2,1431,43,59:2,1432,11,53",
+                      "type": "2,1431,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1434,0",
+                  "text": "2,1426,11,198"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setListeners",
+                "text": "An alias for <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.  In\nversions prior to 5.1, <a href='#!/api/Ext.chart.interactions.ItemEdit-cfg-listeners'>listeners</a> had a generated setter which could\nbe called to add listeners.  In 5.1 the listeners config is not processed\nusing the config system and has no generated setter, so this method is\nprovided for backward compatibility.  The preferred way of adding listeners\nis to use the <a href='#!/api/Ext.chart.interactions.ItemEdit-method-on'>on</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "text": "The listeners\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1804,28",
+                      "text": "2,1804,38,14",
+                      "type": "2,1804,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1806,0",
+                  "text": "2,1798,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvent",
+                "text": "Suspends firing of the named event(s).\n\nAfter calling this method to suspend events, the events will no longer fire when requested to fire.\n\n**Note that if this is called multiple times for a certain event, the converse method\n<a href='#!/api/Ext.chart.interactions.ItemEdit-method-resumeEvent'>resumeEvent</a> will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to suspend.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "2,1381,32",
+                      "text": "2,1381,42,33",
+                      "type": "2,1381,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1383,0",
+                  "text": "2,1374,12,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvents",
+                "text": "Suspends the firing of all events. (see <a href='#!/api/Ext.chart.interactions.ItemEdit-method-resumeEvents'>resumeEvents</a>)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "queueSuspended",
+                    "text": "`true` to queue up suspended events to be fired\nafter the <a href='#!/api/Ext.chart.interactions.ItemEdit-method-resumeEvents'>resumeEvents</a> call instead of discarding all suspended events.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "2,1363,28",
+                      "text": "2,1363,43,48:2,1364,11,81",
+                      "type": "2,1363,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1366,0",
+                  "text": "2,1361,11,64"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeListener",
+                "name": "un",
+                "text": "Shorthand for <a href='#!/api/Ext.chart.interactions.ItemEdit-method-removeListener'>removeListener</a>.\n",
+                "src": {
+                  "inheritdoc": "2,1781,12",
+                  "name": "2,1783,0",
+                  "text": "2,1780,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unAfter",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.chart.interactions.ItemEdit-method-removeListener'>removeListener</a> with `order` set to `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "2,1218,44",
+                      "text": "2,1218,54,55",
+                      "type": "2,1218,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "2,1219,37",
+                      "text": "2,1219,40,23",
+                      "type": "2,1219,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1220,29",
+                      "text": "2,1220,36,41",
+                      "type": "2,1220,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1221,29",
+                      "text": "2,1221,38,22",
+                      "type": "2,1221,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1223,0",
+                  "text": "2,1214,12,97"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unBefore",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.chart.interactions.ItemEdit-method-removeListener'>removeListener</a> with `order` set to `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "2,1204,44",
+                      "text": "2,1204,54,55",
+                      "type": "2,1204,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "2,1205,37",
+                      "text": "2,1205,40,23",
+                      "type": "2,1205,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1206,29",
+                      "text": "2,1206,36,41",
+                      "type": "2,1206,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,1207,29",
+                      "text": "2,1207,38,22",
+                      "type": "2,1207,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,1209,0",
+                  "text": "2,1200,12,98"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$eventOptions",
+                "text": "Matches options property names within a listeners specification object  - property names which are never used as event names.\n",
+                "src": {
+                  "access": "2,389,12",
+                  "name": "2,392,0",
+                  "text": "2,390,12,126"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "eventsSuspended",
+                "text": "Initial suspended call count. Incremented when <a href='#!/api/Ext.chart.interactions.ItemEdit-method-suspendEvents'>suspendEvents</a> is called, decremented when <a href='#!/api/Ext.chart.interactions.ItemEdit-method-resumeEvents'>resumeEvents</a> is called.\n",
+                "src": {
+                  "access": "2,284,11",
+                  "name": "2,287,0",
+                  "text": "2,285,11,131"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hasListeners",
+                "readonly": true,
+                "text": "This object holds a key for any event that has a listener. The listener may be set\ndirectly on the instance, or on its class or a super class (via <a href='#!/api/Ext.chart.interactions.ItemEdit-observe'>observe</a>) or\non the <a href='#!/api/Ext.app.EventBus'>Ext.app.EventBus</a>. The values of this object are truthy\n(a non-zero number) and falsy (0 or undefined). They do not represent an exact count\nof listeners. The value for an event is truthy if the event must be fired and is\nfalsy if there is no need to fire the event.\n\nThe intended use of this property is to avoid the expense of fireEvent calls when\nthere are no listeners. This can be particularly helpful when one would otherwise\nhave to call fireEvent hundreds or thousands of times. It is used like this:\n\n     if (this.hasListeners.foo) {\n         this.fireEvent('foo', this, arg1);\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,290,30",
+                  "readonly": "2,291,11",
+                  "text": "2,292,11,790",
+                  "type": "2,290,22"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "initialize",
+                "text": "A method to be implemented by subclasses where all event attachment should occur.\n",
+                "src": {
+                  "access": "1,65,8",
+                  "name": "1,68,0",
+                  "text": "1,66,8,82"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isObservable",
+                "text": "`true` in this class to identify an object as an instantiated Observable, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,278,31",
+                  "text": "2,279,11,95",
+                  "type": "2,278,22"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "onGesture",
+                "text": "Placeholder method.\n",
+                "src": {
+                  "access": "1,100,8",
+                  "name": "1,103,0",
+                  "text": "1,101,8,20"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "throttleGap",
+                "text": "Android device is emerging too many events so if we re-render every frame it will take forever to finish a frame.\nThis throttle technique will limit the timespan between two frames.\n",
+                "src": {
+                  "name": "1,42,0",
+                  "text": "1,39,8,182"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods"
+          }
+        ],
+        "src": {
+          "alias": "0,21,0",
+          "extends": "0,3,13",
+          "name": "0,2,11",
+          "requires": "0,17,0",
+          "text": "0,4,4,407"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

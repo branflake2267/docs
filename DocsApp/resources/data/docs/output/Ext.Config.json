@@ -1,0 +1,355 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/class/Config.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.Config",
+        "text": "This class manages a config property. Instances of this type are created and cached as\nclasses declare their config properties. One instance of this class is created per\nconfig property name.\n\n     Ext.define('MyClass', {\n         config: {\n             foo: 42\n         }\n     });\n\nThis uses the cached <a href='#!/api/Ext.Config'>Ext.Config</a> instance for the \"foo\" property.\n\nWhen config properties apply options to config properties a prototype chained object is\ncreated from the cached instance. For example:\n\n     Ext.define('MyClass', {\n         config: {\n             foo: {\n                 $value: 42,\n                 lazy: true\n             }\n         }\n     });\n\nThis creates a prototype chain to the cached \"foo\" instance of <a href='#!/api/Ext.Config'>Ext.Config</a> and applies\nthe <a href='#!/api/Ext.Config-cfg-lazy'>lazy</a> option to that new instance. This chained instance is then kept by the\n<a href='#!/api/Ext.Configurator'>Ext.Configurator</a> for that class.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "cached",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "When set as `true` the config property will be stored on the class prototype once\nthe first instance has had a chance to process the default value.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "access": "0,109,8",
+                  "name": "0,106,24",
+                  "since": "0,110,15",
+                  "text": "0,107,8,148",
+                  "type": "0,106,14",
+                  "value": "0,106,31"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "lazy",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "When set as `true` the config property will not be immediately initialized during\nthe `initConfig` call.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "access": "0,117,8",
+                  "name": "0,114,24",
+                  "since": "0,118,15",
+                  "text": "0,115,8,105",
+                  "type": "0,114,14",
+                  "value": "0,114,29"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "evented",
+                "optional": true,
+                "since": "5.5.0",
+                "text": "When set as `true` the config property will be treated as a <a href='#!/api/Ext.Evented'>Ext.Evented</a>.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "access": "0,124,8",
+                  "name": "0,122,24",
+                  "since": "0,125,15",
+                  "text": "0,123,8,96",
+                  "type": "0,122,14",
+                  "value": "0,122,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "merge",
+                "optional": true,
+                "text": "This function if supplied will be called as classes or instances provide values\nthat need to be combined with inherited values. The function should return the\nvalue that will be the config value. Further calls may receive such returned\nvalues as `oldValue`.\n",
+                "type": "Function",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "newValue",
+                    "text": "The new value to merge with the old.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,135,27",
+                      "text": "0,135,36,37",
+                      "type": "0,135,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "oldValue",
+                    "text": "The current value prior to `newValue` being merged.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,137,27",
+                      "text": "0,137,36,52",
+                      "type": "0,137,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "target",
+                    "text": "The class or instance to which the merged config value\nwill be applied.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,139,27",
+                      "text": "0,139,34,55:0,140,8,18",
+                      "type": "0,139,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "mixinClass",
+                    "text": "The mixin providing the `newValue` or <a href='#!/api/null'>null</a> if\nthe `newValue` is not being provided by a mixin.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,142,31",
+                      "text": "0,142,42,48:0,143,8,49",
+                      "type": "0,142,14"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,129,25",
+                  "text": "0,130,8,259",
+                  "type": "0,129,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "getInternalName",
+                "text": "Returns the name of the property that stores this config on the given instance or\nclass prototype.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,165,24",
+                      "type": "0,165,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,166,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,168,0",
+                  "text": "0,163,8,99"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "mergeSets",
+                "since": "5.0.0",
+                "text": "Merges the `newValue` and the `oldValue` assuming that these are basically objects\nthe represent sets. For example something like:\n\n     {\n         foo: true,\n         bar: true\n     }\n\nThe merge process converts arrays like the following into the above:\n\n     [ 'foo', 'bar' ]\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newValue",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "0,204,40",
+                      "type": "0,204,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldValue",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,205,24",
+                      "type": "0,205,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "preserveExisting",
+                    "optional": true,
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,206,26",
+                      "type": "0,206,16",
+                      "value": "0,206,43"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,207,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,208,8",
+                  "name": "0,211,0",
+                  "since": "0,209,15",
+                  "text": "0,192,8,279"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "name",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "The name of this config property.\n",
+                "type": "String",
+                "src": {
+                  "access": "0,43,8",
+                  "name": "0,40,27",
+                  "readonly": "0,42,8",
+                  "since": "0,44,15",
+                  "text": "0,41,8,34",
+                  "type": "0,40,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "names",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This object holds the cached names used to lookup properties or methods for this\nconfig property. The properties of this object are explained in the context of an\nexample property named \"foo\".\n",
+                "type": "Object",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "internal",
+                    "text": "The default backing property (\"_foo\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,54,33",
+                      "text": "0,54,42,39",
+                      "type": "0,54,19"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "initializing",
+                    "text": "The property that is `true` when the config\nis being initialized (\"isFooInitializing\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,56,33",
+                      "text": "0,56,46,44:0,57,8,45",
+                      "type": "0,56,19"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "apply",
+                    "text": "The name of the applier method (\"applyFoo\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,59,33",
+                      "text": "0,59,39,45",
+                      "type": "0,59,19"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "update",
+                    "text": "The name of the updater method (\"updateFoo\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,61,33",
+                      "text": "0,61,40,46",
+                      "type": "0,61,19"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "get",
+                    "text": "The name of the getter method (\"getFoo\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,63,33",
+                      "text": "0,63,37,42",
+                      "type": "0,63,19"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "set",
+                    "text": "The name of the setter method (\"setFoo\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,65,33",
+                      "text": "0,65,37,42",
+                      "type": "0,65,19"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "initGet",
+                    "text": "The name of the initializing getter (\"initGetFoo\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,67,33",
+                      "text": "0,67,41,52",
+                      "type": "0,67,19"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "changeEvent",
+                    "text": "The name of the change event (\"foochange\").\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,69,33",
+                      "text": "0,69,45,44",
+                      "type": "0,69,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,72,8",
+                  "name": "0,49,27",
+                  "readonly": "0,71,8",
+                  "since": "0,73,15",
+                  "text": "0,50,8,194",
+                  "type": "0,49,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,30,4",
+          "name": "0,2,11",
+          "text": "0,3,4,853"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

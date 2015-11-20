@@ -1,0 +1,700 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/plugin/DragDrop.js",
+    "../../../ext/packages/core/src/plugin/Abstract.js",
+    "../../../ext/classic/classic/overrides/plugin/Abstract.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "plugin.gridviewdragdrop",
+        "extends": "Ext.plugin.Abstract",
+        "name": "Ext.grid.plugin.DragDrop",
+        "text": "This plugin provides drag and drop functionality for a <a href='#!/api/Ext.view.Table'>Ext.grid.View</a>.\n\nA specialized instance of <a href='#!/api/Ext.dd.DragZone'>Ext.dd.DragZone</a> and <a href='#!/api/Ext.dd.DropZone'>Ext.dd.DropZone</a> are attached to the grid view.  The DropZone will participate in drops\nfrom DragZones having the same <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-ddGroup'>ddGroup</a> including drops from within the same\ngrid.\n\nDuring the drop operation a data object is passed to a participating DropZone's drop\nhandlers.  The drag data object has the following properties:\n\n- **copy:** <a href='#!/api/Boolean'>Boolean</a> <br> The value of <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-copy'>copy</a>.  Or `true` if\n<a href='#!/api/Ext.grid.plugin.DragDrop-cfg-allowCopy'>allowCopy</a> is true **and** the control key was pressed as the drag operation\nbegan.\n\n- **view:** <a href='#!/api/Ext.view.Table'>Ext.grid.View</a> <br> The source grid view from which the\ndrag originated\n\n- **ddel:** HTMLElement <br> The drag proxy element which moves with the cursor\n\n- **item:** HTMLElement <br> The grid view node upon which the mousedown event was\nregistered\n\n- **records:** <a href='#!/api/Array'>Array</a> <br> An Array of <a href='#!/api/Ext.data.Model'>Ext.data.Model</a>s\nrepresenting the selected data being dragged from the source grid view\n\nBy adding this plugin to a view, two new events will be fired from the client\ngrid view as well as its owning Grid: <a href='#!/api/Ext.grid.plugin.DragDrop-event-beforedrop'>beforedrop</a> and <a href='#!/api/Ext.grid.plugin.DragDrop-event-drop'>drop</a>.\n\n    @example\n    var store = Ext.create('Ext.data.Store', {\n        fields: ['name'],\n        data: [\n            [\"Lisa\"],\n            [\"Bart\"],\n            [\"Homer\"],\n            [\"Marge\"]\n        ],\n        proxy: {\n            type: 'memory',\n            reader: 'array'\n        }\n    });\n\n    Ext.create('Ext.grid.Panel', {\n        store: store,\n        enableLocking: true,\n        columns: [{\n            header: 'Name',\n            dataIndex: 'name',\n            flex: true\n        }],\n        viewConfig: {\n            plugins: {\n                ptype: 'gridviewdragdrop',\n                dragText: 'Drag and drop to reorganize'\n            }\n        },\n        height: 200,\n        width: 400,\n        renderTo: Ext.getBody()\n    });\n",
+        "uses": "Ext.view.DragZone,Ext.grid.ViewDropZone",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "allowCopy",
+                "optional": true,
+                "text": "Set as `true` to allow the user to hold down the control key at the start of the\ndrag operation and copy the dragged records between grids.  Otherwise, dragged\nrecords will be moved.\n\n**Note:** This only applies to records dragged between two different grids with\nunique stores.\n\nSee <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-copy'>copy</a> to enable the copying of all dragged records.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,185,24",
+                  "text": "0,186,8,344",
+                  "type": "0,185,14",
+                  "value": "0,185,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "containerScroll",
+                "text": "`true` to register this container with the Scrollmanager for auto scrolling during drag operations.\nA <a href='#!/api/Ext.dd.ScrollManager'>Ext.dd.ScrollManager</a> configuration may also be passed.\n",
+                "type": "Object/Boolean",
+                "src": {
+                  "name": "0,247,30",
+                  "text": "0,245,8,165",
+                  "type": "0,247,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "copy",
+                "optional": true,
+                "text": "Set as `true` to copy the records from the source grid to the destination drop\ngrid.  Otherwise, dragged records will be moved.\n\n**Note:** This only applies to records dragged between two different grids with\nunique stores.\n\nSee <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-allowCopy'>allowCopy</a> to allow only control-drag operations to copy records.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,174,24",
+                  "text": "0,175,8,303",
+                  "type": "0,174,14",
+                  "value": "0,174,29"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ddGroup",
+                "optional": true,
+                "text": "A named drag drop group to which this object belongs. If a group is specified, then both the DragZones and\nDropZone used by this plugin will only interact with other drag drop objects in the same group.\n",
+                "type": "String",
+                "value": "gridDD",
+                "src": {
+                  "name": "0,210,23",
+                  "text": "0,211,8,203",
+                  "type": "0,210,14",
+                  "value": "0,210,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dragGroup",
+                "optional": true,
+                "text": "The <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-ddGroup'>ddGroup</a> to which the DragZone will belong.\n\nThis defines which other DropZones the DragZone will interact with. Drag/DropZones only interact with other\nDrag/DropZones which are members of the same <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-ddGroup'>ddGroup</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,217,23",
+                  "text": "0,218,8,228",
+                  "type": "0,217,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dragText",
+                "text": "The text to show while dragging.\n\nTwo placeholders can be used in the text:\n\n- `{0}` The number of selected items.\n- `{1}` 's' when more than 1 items (only useful for English).\n",
+                "src": {
+                  "name": "0,206,0",
+                  "text": "0,199,8,177"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dragZone",
+                "optional": true,
+                "text": "A config object to apply to the creation of the <a href='#!/api/Ext.grid.plugin.DragDrop-property-dragZone'>property-dragZone</a> which handles for drag start gestures.\n\nTemplate methods of the DragZone may be overridden using this config.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,252,23",
+                  "text": "0,253,8,194",
+                  "type": "0,252,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dropGroup",
+                "optional": true,
+                "text": "The <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-ddGroup'>ddGroup</a> to which the DropZone will belong.\n\nThis defines which other DragZones the DropZone will interact with. Drag/DropZones only interact with other\nDrag/DropZones which are members of the same <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-ddGroup'>ddGroup</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,225,23",
+                  "text": "0,226,8,228",
+                  "type": "0,225,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dropZone",
+                "optional": true,
+                "text": "A config object to apply to the creation of the <a href='#!/api/Ext.grid.plugin.DragDrop-property-dropZone'>property-dropZone</a> which handles mouseover and drop gestures.\n\nTemplate methods of the DropZone may be overridden using this config.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,259,23",
+                  "text": "0,260,8,198",
+                  "type": "0,259,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "enableDrag",
+                "text": "`false` to disallow dragging items from the View.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,239,23",
+                  "text": "0,240,8,50",
+                  "type": "0,239,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "enableDrop",
+                "text": "`false` to disallow the View from accepting drop gestures.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,233,23",
+                  "text": "0,234,8,59",
+                  "type": "0,233,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pluginId",
+                "text": "A name for the plugin that can be set at creation time to then retrieve the plugin\nthrough <a href='#!/api/Ext.Component-method-getPlugin'>Ext.Component#getPlugin</a> method.  For example:\n\n    var grid = Ext.create('Ext.grid.Panel', {\n        plugins: [{\n            ptype: 'cellediting',\n            clicksToEdit: 2,\n            pluginId: 'cellplugin'\n        }]\n    });\n\n    // later on:\n    var plugin = grid.getPlugin('cellplugin');\n",
+                "type": "String",
+                "src": {
+                  "name": "1,61,22",
+                  "text": "1,62,8,404",
+                  "type": "1,61,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stateEvents",
+                "text": "The configured list of stateEvents used to (optionally) participate in Owner Component's state management.\n",
+                "type": "String/Array",
+                "src": {
+                  "name": "2,13,28",
+                  "text": "2,14,8,107",
+                  "type": "2,13,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "beforedrop",
+                "text": "**This event is fired through the <a href='#!/api/Ext.view.Table'>Ext.grid.View</a> and its owning\n<a href='#!/api/Ext.grid.Panel'>Ext.grid.Panel</a>. You can add listeners to the grid or grid <a href='#!/api/Ext.grid.Panel-cfg-viewConfig'>Ext.grid.Panel#viewConfig</a> object**\n\nFired when a drop gesture has been triggered by a mouseup event in a valid drop\nposition in the grid view.\n\nReturning `false` to this event signals that the drop gesture was invalid and\nanimates the drag proxy back to the point from which the drag began.\n\nThe dropHandlers parameter can be used to defer the processing of this event. For\nexample, you can force the handler to wait for the result of a message box\nconfirmation or an asynchronous server call (_see the details of the dropHandlers\nproperty for more information_).\n\n    grid.on('beforedrop', function(node, data, overModel, dropPosition, dropHandlers) {\n        // Defer the handling\n        dropHandlers.wait = true;\n        Ext.MessageBox.confirm('Drop', 'Are you sure', function(btn){\n            if (btn === 'yes') {\n                dropHandlers.processDrop();\n            } else {\n                dropHandlers.cancelDrop();\n            }\n        });\n    });\n\nAny other return value continues with the data transfer operation unless the wait\nproperty is set.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The <a href='#!/api/Ext.view.Table'>Ext.grid.View</a> node **if any** over\nwhich the cursor was positioned.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "0,105,29",
+                      "text": "0,105,34,57:0,106,8,34",
+                      "type": "0,105,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "The data object gathered at mousedown time by the\ncooperating <a href='#!/api/Ext.dd.DragZone'>Ext.dd.DragZone</a>s <a href='#!/api/Ext.dd.DragZone-method-getDragData'>Ext.dd.DragZone#getDragData</a> method.  It contains the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "copy",
+                        "text": "The value of <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-copy'>copy</a>.  Or `true` if\n<a href='#!/api/Ext.grid.plugin.DragDrop-cfg-allowCopy'>allowCopy</a> is true **and** the control key was pressed as the drag\noperation began.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,111,30",
+                          "text": "0,111,35,42:0,112,8,92",
+                          "type": "0,111,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "view",
+                        "text": "The source grid view from which the drag\noriginated\n",
+                        "type": "Ext.view.Table",
+                        "src": {
+                          "name": "0,114,36",
+                          "text": "0,114,41,41:0,115,8,11",
+                          "type": "0,114,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "ddel",
+                        "text": "The drag proxy element which moves with the cursor\n",
+                        "type": "HTMLElement",
+                        "src": {
+                          "name": "0,116,34",
+                          "text": "0,116,39,51",
+                          "type": "0,116,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "item",
+                        "text": "The grid view node upon which the mousedown event\nwas registered\n",
+                        "type": "HTMLElement",
+                        "src": {
+                          "name": "0,117,34",
+                          "text": "0,117,39,50:0,118,8,15",
+                          "type": "0,117,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "records",
+                        "text": "An Array of Models representing the\nselected data being dragged from the source grid view\n",
+                        "type": "Ext.data.Model[]",
+                        "src": {
+                          "name": "0,119,39",
+                          "text": "0,119,47,36:0,120,8,55",
+                          "type": "0,119,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,108,24",
+                      "text": "0,108,29,50:0,109,8,142",
+                      "type": "0,108,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "overModel",
+                    "text": "The Model over which the drop gesture took place\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "0,122,32",
+                      "text": "0,122,42,49",
+                      "type": "0,122,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dropPosition",
+                    "text": "`\"before\"` or `\"after\"` depending on whether the\ncursor is above or below the mid-line of the node.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,124,24",
+                      "text": "0,124,37,49:0,125,8,52",
+                      "type": "0,124,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dropHandlers",
+                    "text": "This parameter allows the developer to control when the drop action takes place.\nIt is useful if any asynchronous processing needs to be completed before\nperforming the drop. This object has the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "wait",
+                        "text": "Indicates whether the drop should be deferred.\nSet this property to true to defer the drop.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,132,38",
+                          "text": "0,132,43,47:0,133,8,45",
+                          "type": "0,132,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "processDrop",
+                        "text": "A function to be called to complete\nthe drop operation.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,134,39",
+                          "text": "0,134,51,36:0,135,8,20",
+                          "type": "0,134,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "cancelDrop",
+                        "text": "A function to be called to cancel the\ndrop operation.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,136,39",
+                          "text": "0,136,50,38:0,137,8,16",
+                          "type": "0,136,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,127,24",
+                      "text": "0,128,8,218",
+                      "type": "0,127,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,74,15",
+                  "text": "0,75,8,1234"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "drop",
+                "text": "**This event is fired through the <a href='#!/api/Ext.view.Table'>Ext.grid.View</a> and its owning\n<a href='#!/api/Ext.grid.Panel'>Ext.grid.Panel</a>. You can add listeners to the grid or grid <a href='#!/api/Ext.grid.Panel-cfg-viewConfig'>Ext.grid.Panel#viewConfig</a> object**\n\nFired when a drop operation has been completed and the data has been moved or\ncopied.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "node",
+                    "text": "The <a href='#!/api/Ext.view.Table'>Ext.grid.View</a> node **if any** over\nwhich the cursor was positioned.\n",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "0,149,29",
+                      "text": "0,149,34,56:0,150,8,34",
+                      "type": "0,149,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "The data object gathered at mousedown time by the\ncooperating <a href='#!/api/Ext.dd.DragZone'>Ext.dd.DragZone</a>s <a href='#!/api/Ext.dd.DragZone-method-getDragData'>Ext.dd.DragZone#getDragData</a> method.  It contains the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "copy",
+                        "text": "The value of <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-copy'>copy</a>.  Or `true` if\n<a href='#!/api/Ext.grid.plugin.DragDrop-cfg-allowCopy'>allowCopy</a> is true **and** the control key was pressed as the drag\noperation began.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,155,30",
+                          "text": "0,155,35,42:0,156,8,92",
+                          "type": "0,155,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "view",
+                        "text": "The source grid view from which the drag\noriginated\n",
+                        "type": "Ext.view.Table",
+                        "src": {
+                          "name": "0,158,36",
+                          "text": "0,158,41,41:0,159,8,11",
+                          "type": "0,158,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "ddel",
+                        "text": "The drag proxy element which moves with the cursor\n",
+                        "type": "HTMLElement",
+                        "src": {
+                          "name": "0,160,34",
+                          "text": "0,160,39,51",
+                          "type": "0,160,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "item",
+                        "text": "The grid view node upon which the mousedown event\nwas registered\n",
+                        "type": "HTMLElement",
+                        "src": {
+                          "name": "0,161,34",
+                          "text": "0,161,39,50:0,162,8,15",
+                          "type": "0,161,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "records",
+                        "text": "An Array of Models representing the\nselected data being dragged from the source grid view\n",
+                        "type": "Ext.data.Model[]",
+                        "src": {
+                          "name": "0,163,39",
+                          "text": "0,163,47,36:0,164,8,55",
+                          "type": "0,163,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,152,24",
+                      "text": "0,152,29,50:0,153,8,142",
+                      "type": "0,152,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "overModel",
+                    "text": "The Model over which the drop gesture took\nplace.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "0,166,32",
+                      "text": "0,166,42,43:0,167,8,8",
+                      "type": "0,166,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dropPosition",
+                    "text": "`\"before\"` or `\"after\"` depending on whether the\ncursor is above or below the mid-line of the node.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,169,24",
+                      "text": "0,169,37,49:0,170,8,51",
+                      "type": "0,169,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,141,15",
+                  "text": "0,142,8,294"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "applyState",
+                "text": "The applyState method is invoked by the client Component's State mixin after initComponent method has been run for the client.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method to utilize it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The current plugin state object to be applied.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,35,24",
+                      "text": "2,35,30,47",
+                      "type": "2,35,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "allState",
+                    "text": "The current aggregate state of the Component and all plugins.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,36,24",
+                      "text": "2,36,33,62",
+                      "type": "2,36,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,39,0",
+                  "text": "2,31,8,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clonePlugin",
+                "text": "Creates clone of the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "overrideCfg",
+                    "optional": true,
+                    "text": "Additional config for the derived plugin.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,38,25",
+                      "text": "1,38,38,42",
+                      "type": "1,38,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,40,0",
+                  "text": "1,37,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Instantiates the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "Configuration object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,27,25",
+                      "text": "1,27,33,22",
+                      "type": "1,27,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,29,0",
+                  "text": "1,26,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "destroy",
+                "text": "Component calls destroy on all its plugins at destroy time.\n",
+                "src": {
+                  "access": "0,284,8",
+                  "name": "0,287,0",
+                  "text": "0,285,8,60"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `true`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "2,57,0",
+                  "text": "2,52,8,171"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `false`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "2,47,0",
+                  "text": "2,42,8,172"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCmp",
+                "text": "Returns the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "1,54,32,17",
+                      "type": "1,54,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,56,0",
+                  "text": "1,53,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getState",
+                "text": "The getState method is invoked by the client Component's State mixin when one or more of the the specified <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-stateEvents'>stateEvents</a> are raised.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method which returns a state object.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "state\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,24,25,6",
+                      "type": "2,24,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,27,0",
+                  "text": "2,20,8,352"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "init",
+                "text": "The init method is invoked after initComponent method has been run for the client Component.\n\nThe supplied implementation is empty. Subclasses should perform plugin initialization, and set up bidirectional\nlinks between the plugin and its client Component in their own implementation of this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "client",
+                    "text": "The client Component which owns this plugin.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,83,31",
+                      "text": "1,83,38,45",
+                      "type": "1,83,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,85,0",
+                  "text": "1,79,8,300"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setCmp",
+                "text": "Sets the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cmp",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,46,31",
+                      "text": "1,46,35,17",
+                      "type": "1,46,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,48,0",
+                  "text": "1,45,8,53"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "dragZone",
+                "text": "An <a href='#!/api/Ext.view.DragZone'>Ext.view.DragZone</a> which handles mousedown and dragging of records from the grid.\n",
+                "type": "Ext.view.DragZone",
+                "src": {
+                  "name": "0,266,38",
+                  "text": "0,267,8,101",
+                  "type": "0,266,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dropZone",
+                "text": "An <a href='#!/api/Ext.grid.ViewDropZone'>Ext.grid.ViewDropZone</a> which handles mouseover and dropping records in any grid which shares the same <a href='#!/api/Ext.grid.plugin.DragDrop-cfg-dropGroup'>dropGroup</a>.\n",
+                "type": "Ext.grid.ViewDropZone",
+                "src": {
+                  "name": "0,271,42",
+                  "text": "0,272,8,141",
+                  "type": "0,271,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isPlugin",
+                "text": "`true` in this class to identify an object as an instantiated Plugin, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,20,28",
+                  "text": "1,21,8,91",
+                  "type": "1,20,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,66,0",
+          "extends": "0,65,0",
+          "name": "0,64,0",
+          "text": "0,2,4,1992",
+          "uses": "0,69,0,0:0,70,0,0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,413 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../packages/pivot/src/pivot/dimension/Item.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Mz.aggregate.dimension.Item",
+        "name": "Ext.pivot.dimension.Item",
+        "requires": "Ext.pivot.MixedCollection,Ext.pivot.filter.Label,Ext.pivot.filter.Value",
+        "text": "This class is used to initialize the dimensions defined on the pivot grid leftAxis,\ntopAxis and aggregate.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "header",
+                "text": "(required)\n\nThis text is visible in the pivot grid in the following cases:\n\n- the dimension is defined on the left axis. The pivot grid will generate one grid column per dimension and\nthis header will go into the grid column header.\n\n- the dimension is defined on the aggregate. The pivot grid will generate one grid column per dimension per top\naxis label. If there are at least 2 aggregate dimensions then this header will be visible. When only one is\ndefined the aggregate dimension header is replaced by the top axis label.\n\n- if the <a href='#!/api/Ext.pivot.plugin.Configurator'>Ext.pivot.plugin.Configurator</a> is used then this header will be visible\nin the axis panels.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,19,22",
+                  "text": "0,19,29,11:0,20,8,647",
+                  "type": "0,19,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dataIndex",
+                "text": "(required)\nThe field name on the record from where this dimension extracts data.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,37,22",
+                  "text": "0,37,32,11:0,38,8,70",
+                  "type": "0,37,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "sortIndex",
+                "text": "Field name on the record used when sorting this dimension results. Defaults to <a href='#!/api/Ext.pivot.dimension.Item-cfg-dataIndex'>dataIndex</a> if\nnone is specified.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,43,22",
+                  "text": "0,44,8,120",
+                  "type": "0,43,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "width",
+                "optional": true,
+                "text": "Default column width when this dimension is used on the top/left axis.\nUsed by the generated columns.\n",
+                "type": "Number",
+                "value": "100",
+                "src": {
+                  "name": "0,50,23",
+                  "text": "0,51,8,102",
+                  "type": "0,50,14",
+                  "value": "0,50,29"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "flex",
+                "optional": true,
+                "text": "Column flex when this dimension is used on the top/left axis.\nUsed by the generated columns.\n",
+                "type": "Number",
+                "value": "0",
+                "src": {
+                  "name": "0,57,23",
+                  "text": "0,58,8,93",
+                  "type": "0,57,14",
+                  "value": "0,57,28"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "align",
+                "optional": true,
+                "text": "Column alignment when this dimension is used on the top/left axis.\nUsed by the generated columns.\n",
+                "type": "String",
+                "value": "\"left\"",
+                "src": {
+                  "name": "0,64,23",
+                  "text": "0,65,8,98",
+                  "type": "0,64,14",
+                  "value": "0,64,29"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "sortable",
+                "optional": true,
+                "text": "Is this dimension sortable when the pivot is generated?\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,71,24",
+                  "text": "0,72,8,56",
+                  "type": "0,71,14",
+                  "value": "0,71,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "direction",
+                "optional": true,
+                "text": "If this dimension is sortable then this is the type of sorting.\n",
+                "type": "\"ASC\"/\"DESC\"",
+                "value": "\"ASC\"",
+                "src": {
+                  "name": "0,77,29",
+                  "text": "0,78,8,64",
+                  "type": "0,77,14",
+                  "value": "0,77,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "sorterFn",
+                "text": "Provide here your own sorting function for this dimension.\nIf none is specified then the defaultSorterFn is used.\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,83,24",
+                  "text": "0,84,8,114",
+                  "type": "0,83,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "caseSensitiveSort",
+                "optional": true,
+                "text": "If this dimension is sortable, should we do a case sensitive sort?\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,90,24",
+                  "text": "0,91,8,67",
+                  "type": "0,90,14",
+                  "value": "0,90,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "filter",
+                "text": "Provide a filter configuration to filter your axis items.\nThis works only on left/top axis dimensions.\n\nExample for a label filter:\n\n     {\n         dataIndex:  'year',\n         header:     'Year',\n         filter: {\n             type:       'label',\n             operator:   '=',\n             value:      2012\n         }\n     }\n\n\nExample for a value filter:\n\n     {\n         dataIndex:  'year',\n         header:     'Year',\n         filter: {\n             type:       'value',\n             operator:   'between',\n             value:      [2012, 2015]\n         }\n     }\n\n\nExample for a top 10 value filter:\n\n     {\n         dataIndex:  'year',\n         header:     'Year',\n         filter: {\n             type:           'value',\n             operator:       'top10',\n             dimensionId:    'value',   // this is the id of an aggregate dimension\n             topType:        'items',\n             topOrder:       'bottom'\n         }\n     }\n",
+                "type": "Ext.pivot.filter.Base",
+                "src": {
+                  "name": "0,96,37",
+                  "text": "0,97,8,946",
+                  "type": "0,96,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "renderer",
+                "text": "Default renderer for this dimension. This renderer is used when displaying the data in the pivot table.\nYou can either provide a string value with a number format or your own function.\nThe renderer function will have only one parameter and that is the value that need to be formatted.\nThe renderer function is running in the Dimension scope.\n\nIf a renderer function is defined for a left or top axis dimension then this is NOT used in the grid.\nIt is instead used for formatting the value as you wish.\n\nOn the other hand if you define a renderer function on an aggregate dimension then this will be\nused in the grid and allows you to change cell formatting as well.\n",
+                "type": "String/Function",
+                "src": {
+                  "name": "0,143,31",
+                  "text": "0,144,8,666",
+                  "type": "0,143,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "grouperFn",
+                "text": "This function is used when the groups are generated for the axis.\nIt will return the value that will uniquely identify a group on the axis.\nie: you have a Date field that you want to group by year.\nThis renderer could return the year from that Date value.\n\nThe function receives one parameter and that is the record.\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,158,24",
+                  "text": "0,159,8,317",
+                  "type": "0,158,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "blankText",
+                "optional": true,
+                "text": "Default text to use when a group name is blank. This value is applied even if you set your own group renderer.\n",
+                "type": "String",
+                "value": "\"(blank)\"",
+                "src": {
+                  "name": "0,169,23",
+                  "text": "0,170,8,111",
+                  "type": "0,169,14",
+                  "value": "0,169,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showZeroAsBlank",
+                "optional": true,
+                "text": "Should 0 values be displayed as blank? This config is used when\nthis is an aggregate dimension.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,175,24",
+                  "text": "0,176,8,96",
+                  "type": "0,175,14",
+                  "value": "0,175,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "aggregator",
+                "optional": true,
+                "text": "This is the function that should be used to aggregate when this is an aggregate dimension.\nYou can either provide a function name available in <a href='#!/api/Ext.pivot.Aggregators'>Ext.pivot.Aggregators</a> or\nset your own function.\n\nIt's probably best to override <a href='#!/api/Ext.pivot.Aggregators'>Ext.pivot.Aggregators</a> to add you own function\nand use that function name on this config. This way the stateles pivot will save this value.\n",
+                "type": "String/Function",
+                "value": "\"sum\"",
+                "src": {
+                  "name": "0,182,32",
+                  "text": "0,183,8,378",
+                  "type": "0,182,14",
+                  "value": "0,182,43"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "id",
+                "text": "Unique id of this dimension.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,199,22",
+                  "text": "0,200,8,29",
+                  "type": "0,199,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "values",
+                "text": "Collection of unique values on this dimension; each item has a \"value\" and a \"display\".\n",
+                "type": "Object[]",
+                "src": {
+                  "name": "0,205,24",
+                  "text": "0,206,8,88",
+                  "type": "0,205,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "serialize",
+                "text": "Returns the serialized dimension data.\n",
+                "src": {
+                  "name": "0,293,0",
+                  "text": "0,291,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addValue",
+                "text": "Add unique values available for this dimension. These are used when filtering.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "src": {
+                      "name": "0,316,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "display",
+                    "src": {
+                      "name": "0,317,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,319,0",
+                  "text": "0,314,8,80"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getValues",
+                "text": "Returns the collection of unique values available for this dimension.\n",
+                "src": {
+                  "name": "0,331,0",
+                  "text": "0,329,8,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Returns the internal id of this dimension.\n",
+                "src": {
+                  "name": "0,338,0",
+                  "text": "0,336,8,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "defaultSorterFn",
+                "text": "Default sorter function used to sort the axis dimensions on the same tree level.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "o1",
+                    "src": {
+                      "name": "0,345,15"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "o2",
+                    "src": {
+                      "name": "0,346,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,348,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,350,0",
+                  "text": "0,343,8,82"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getDefaultFormatRenderer",
+                "text": "Builds a renderer function by using the specified format.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "format",
+                    "text": "Could be either a function or a string\n",
+                    "src": {
+                      "name": "0,380,15",
+                      "text": "0,380,22,39"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,382,0",
+                  "text": "0,378,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "defaultGrouperFn",
+                "text": "Default grouper function used for rendering axis item values.\nThe grouper function can be used to group together multiple items.\nReturns a group value\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "src": {
+                      "name": "0,417,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,419,0",
+                  "text": "0,413,8,152"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "isAggregate",
+                "text": "True to identify a dimension of an aggregate configuration.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,193,28",
+                  "text": "0,194,8,60",
+                  "type": "0,193,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "matrix",
+                "readonly": true,
+                "text": "Reference to the matrix object.\n",
+                "type": "Ext.pivot.matrix.Base",
+                "src": {
+                  "name": "0,211,42",
+                  "readonly": "0,212,8",
+                  "text": "0,213,8,32",
+                  "type": "0,211,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,9,0",
+          "name": "0,7,0",
+          "requires": "0,13,0,0:0,14,0,0:0,15,0,0",
+          "text": "0,2,4,109"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

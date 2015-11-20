@@ -5,26 +5,26 @@
     <link rel="stylesheet" type="text/css" href="../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#Pivot Grid Upgrade Guide</p>
-<p>##Package Structure</p>
+<div class="contents"><h1 id="upgrades_migrations-_-pivot_grid_update_guide_-_pivot_grid_upgrade_guide">Pivot Grid Upgrade Guide</h1>
+<h2 id="upgrades_migrations-_-pivot_grid_update_guide_-_package_structure">Package Structure</h2>
 <p>The <code>mzPivotGrid</code> and <code>mzPivotMatrix</code> packages have been merged into a single package called 
 <code>pivot</code>. The resulting structure looks like this:</p>
 <p><img src="images/pivot_structure.png" alt="PivotGrid File Structure"></p>
-<p>##Package Inclusion
-If you used the <code>mzPivotGrid</code> package in your MVC app, you will need to change your 
+<h2 id="upgrades_migrations-_-pivot_grid_update_guide_-_package_inclusion">Package Inclusion</h2>
+<p>If you used the <code>mzPivotGrid</code> package in your MVC app, you will need to change your 
 <code>requires</code> block in the Sencha Cmd generated <code>app.json</code> file. Previously, it was named 
 <code>mzPivotGrid</code>. It should be updated to <code>pivot</code> and the <code>exporter</code> package should also be copied
 to the app packages folder since it is required by <code>pivot</code>.</p>
-<p>##Build Files
-If you used the built version of <code>mzPivotGrid</code>, be sure to change all paths to point towards 
+<h2 id="upgrades_migrations-_-pivot_grid_update_guide_-_build_files">Build Files</h2>
+<p>If you used the built version of <code>mzPivotGrid</code>, be sure to change all paths to point towards 
 the compiled file in the package&#39;s build directory. </p>
 <p>For instance:</p>
 <pre><code> pivot/build/pivot{-debug}.js
 </code></pre><p>You will also need to utilize the appropriate CSS file that can also be found in the build 
 directory&#39;s theme folders.</p>
 <pre><code> pivot/build/{theme}/resources/pivot-{flavor}.js
-</code></pre><p>##Updated Namespace
-Several classes have been changed: </p>
+</code></pre><h2 id="upgrades_migrations-_-pivot_grid_update_guide_-_updated_namespace">Updated Namespace</h2>
+<p>Several classes have been changed: </p>
 <ul>
 <li>Mz namespace has been moved to the Ext namespace.</li>
 <li>Mz.aggregate.<em> have been moved to Ext.pivot.</em>.</li>
@@ -36,8 +36,8 @@ Several classes have been changed: </p>
 <li>Ext.pivot.MixedCollection and all Ext.pivot.plugin.configurator.* classes are now private.</li>
 <li>All plugins have new ptypes prefixed with <code>pivot</code>: <code>pivotconfigurator</code>, <code>pivotdrilldown</code>, <code>pivotrangeeditor</code> and <code>pivotexporter</code></li>
 </ul>
-<p>##Updated Configs
-The pivot grid component used to have <code>mzpivotgrid</code> as xtype which is now <code>pivotgrid</code>. <code>mzpivotgrid</code> 
+<h2 id="upgrades_migrations-_-pivot_grid_update_guide_-_updated_configs">Updated Configs</h2>
+<p>The pivot grid component used to have <code>mzpivotgrid</code> as xtype which is now <code>pivotgrid</code>. <code>mzpivotgrid</code> 
 is still available but will be dropped in future versions.</p>
 <p>All Abstract (Base) classes have been changed to use factoriable configs. Ext.Factory is used
 now internally to instantiate objects instead of Ext.createByAlias. Previously the <code>mztype</code> config
@@ -86,15 +86,15 @@ be used to set the <code>operator</code>.</p>
       }
  }]
 </code></pre><p>Please take a look at the Ext.pivot.filter.* classes to see what other operators are available.</p>
-<p>##Remote calculations
-Matrix configs <code>keysSeparator</code> and <code>grandTotalKey</code> are sent to the server together
+<h2 id="upgrades_migrations-_-pivot_grid_update_guide_-_remote_calculations">Remote calculations</h2>
+<p>Matrix configs <code>keysSeparator</code> and <code>grandTotalKey</code> are sent to the server together
 will all configured dimensions and should be used on the server when the JSON response
 is generated.</p>
-<p>##Localization</p>
+<h2 id="upgrades_migrations-_-pivot_grid_update_guide_-_localization">Localization</h2>
 <p><img src="images/pivot-locale_structure.png" alt="image alt text"></p>
 <p>All pivot grid locales have been moved to the <code>pivot-locale</code> package.</p>
-<p>##Export to Excel plugin
-This plugin has been refactored. The Mz.pivot.plugin.ExcelExport class has been renamed to
+<h2 id="upgrades_migrations-_-pivot_grid_update_guide_-_export_to_excel_plugin">Export to Excel plugin</h2>
+<p>This plugin has been refactored. The Mz.pivot.plugin.ExcelExport class has been renamed to
 Ext.pivot.plugin.Exporter which has now the <code>ptype: &quot;pivotexporter&quot;</code>.</p>
 <p>For instance:</p>
 <pre><code> {
@@ -204,5 +204,15 @@ Ext.exporter.Base which can have its own set of configs.</p>
 the Ext.exporter.file.excel.Style class for more styling options.</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#upgrades_migrations-_-pivot_grid_update_guide_-_package_structure">Package Structure</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-pivot_grid_update_guide_-_package_inclusion">Package Inclusion</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-pivot_grid_update_guide_-_build_files">Build Files</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-pivot_grid_update_guide_-_updated_namespace">Updated Namespace</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-pivot_grid_update_guide_-_updated_configs">Updated Configs</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-pivot_grid_update_guide_-_remote_calculations">Remote calculations</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-pivot_grid_update_guide_-_localization">Localization</a></div>
+        <div class="toc-item"><a href="#upgrades_migrations-_-pivot_grid_update_guide_-_export_to_excel_plugin">Export to Excel plugin</a></div>
+    </div>
 </body>
 </html>

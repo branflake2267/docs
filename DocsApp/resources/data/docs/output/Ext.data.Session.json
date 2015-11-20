@@ -1,0 +1,1106 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/Session.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.data.Session",
+        "requires": "Ext.data.schema.Schema,Ext.data.Batch,Ext.data.matrix.Matrix,Ext.data.session.ChangesVisitor,Ext.data.session.ChildChangesVisitor,Ext.data.session.BatchVisitor",
+        "since": "5.0.0",
+        "text": "This class manages models and their associations. Instances of `Session` are typically\nassociated with some `Component` (perhaps the Viewport or a Window) and then used by\ntheir <a href='#!/api/Ext.app.ViewModel'>Ext.app.ViewModel</a> to enable data binding.\n\nThe primary job of a Session is to manage a collection of records of many different\ntypes and their associations. This often starts by loading records when requested (via\nbind - see below) and culminates when it is time to save to the server.\n\nBecause the Session tracks all records it loads, it ensures that for any given type of\nmodel, only one record exists with a given `id`. This means that all edits of that\nrecord are properly targeted at that one instance.\n\nSimilarly, when associations are loaded, the <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> created to hold the\nassociated records is tracked by the Session. So all requests for the \"OrderItems\" of\na particular Order id will result in the same Store. Adding and removing items from\nthat Order then is sure to remain consistent.\n\n# Data\n\nSince the Session is managing all this data, there are several methods it provides\nto give convenient access to that data. The most important of these is <a href='#!/api/Ext.data.Session-method-update'>update</a> and\n<a href='#!/api/Ext.data.Session-method-getChanges'>getChanges</a>.\n\nThe <a href='#!/api/Ext.data.Session-method-update'>update</a> and <a href='#!/api/Ext.data.Session-method-getChanges'>getChanges</a> methods both operate on object that contains a summary\nof records and associations and different CRUD operations.\n\n## Saving\n\nThere are two basic ways to save the contents of a Session: <a href='#!/api/Ext.data.Session-method-getChanges'>getChanges</a> and\n<a href='#!/api/Ext.data.Session-method-getSaveBatch'>getSaveBatch</a>. We've already seen <a href='#!/api/Ext.data.Session-method-getChanges'>getChanges</a>. The data contained in the CRUD object\ncan be translated into whatever shape is needed by the server.\n\nTo leverage the <a href='#!/api/Ext.data.Model-cfg-proxy'>Ext.data.Model#proxy</a> facilities defined by each Model\nclass, there is the <a href='#!/api/Ext.data.Session-method-getSaveBatch'>getSaveBatch</a> method. That method returns an <a href='#!/api/Ext.data.Batch'>Ext.data.Batch</a>\nobject populated with the necessary `create`, <a href='#!/api/Ext.data.Session-method-update'>update</a> and `destory` operations to\nsave all of the changes in the Session.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "schema",
+                "type": "String/Ext.data.schema.Schema",
+                "src": {
+                  "name": "0,55,49",
+                  "type": "0,55,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "parent",
+                "text": "The parent session for this session.\n",
+                "type": "Ext.data.Session",
+                "src": {
+                  "name": "0,60,36",
+                  "text": "0,61,12,37",
+                  "type": "0,60,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "autoDestroy",
+                "since": "5.0.1",
+                "text": "`true` to automatically destroy this session when a component it is attached\nto is destroyed. This should be set to false if the session is intended to be\nused across multiple root level components.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,66,27",
+                  "since": "0,71,19",
+                  "text": "0,67,12,200",
+                  "type": "0,66,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "adopt",
+                "text": "Adds an existing record instance to the session. The record\nmay not belong to another session. The record cannot be a phantom record, instead\nuse <a href='#!/api/Ext.data.Session-method-createRecord'>createRecord</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record to adopt.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "0,175,32",
+                      "text": "0,175,39,21",
+                      "type": "0,175,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,177,0",
+                  "text": "0,172,8,169"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "commit",
+                "since": "5.1.0",
+                "text": "Marks the session as \"clean\" by calling <a href='#!/api/Ext.data.Model-method-commit'>Ext.data.Model#commit</a> on each record\nthat is known to the session.\n\n- Phantom records will no longer be phantom.\n- Modified records will no longer be dirty.\n- Dropped records will be erased.\n",
+                "src": {
+                  "name": "0,209,0",
+                  "since": "0,207,15",
+                  "text": "0,200,8,240"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "createRecord",
+                "text": "Creates a new record and tracks it in this session.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "text": "The `entityName` or the actual class of record to create.\n",
+                    "type": "String/Ext.Class",
+                    "src": {
+                      "name": "0,232,34",
+                      "text": "0,232,39,58",
+                      "type": "0,232,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "optional": true,
+                    "text": "The data for the record.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,233,25",
+                      "text": "0,233,31,25",
+                      "type": "0,233,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new record.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "0,234,33,16",
+                      "type": "0,234,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,236,0",
+                  "text": "0,230,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getChanges",
+                "text": "Returns an object describing all of the modified fields, created or dropped records\nand many-to-many association changes maintained by this session.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "An object in the CRUD format (see the intro docs). <a href='#!/api/null'>null</a> if there are no changes.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,259,25,83",
+                      "type": "0,259,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,261,0",
+                  "text": "0,256,8,150"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getChangesForParent",
+                "text": "The same functionality as <a href='#!/api/Ext.data.Session-method-getChanges'>getChanges</a>, however we also take into account our\nparent session.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "An object in the CRUD format (see the intro docs). <a href='#!/api/null'>null</a> if there are no changes.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,271,25,83",
+                      "type": "0,271,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,273,8",
+                  "name": "0,275,0",
+                  "text": "0,268,8,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRecord",
+                "text": "Get a cached record from the session. If the record does not exist, it will\nbe created. If the `autoLoad` parameter is not set to `false`, the record will\nbe loaded via the <a href='#!/api/Ext.data.Model-cfg-proxy'>Ext.data.Model#proxy</a> of the Model.\n\nIf this session is configured with a <a href='#!/api/Ext.data.Session-cfg-parent'>parent</a> session, a *copy* of any existing record\nin the <a href='#!/api/Ext.data.Session-cfg-parent'>parent</a> will be adopted into this session. If the <a href='#!/api/Ext.data.Session-cfg-parent'>parent</a> does not contain the record,\nthe record will be created and *not* inserted into the parent.\n\nSee also <a href='#!/api/Ext.data.Session-method-peekRecord'>peekRecord</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "text": "The `entityName` or the actual class of record to create.\nThis may also be a record instance, where the type and id will be inferred from the record. If the record is\nnot attached to a session, it will be adopted. If it exists in a parent, an appropriate copy will be made as\ndescribed.\n",
+                    "type": "String/Ext.Class/Ext.data.Model",
+                    "src": {
+                      "name": "0,292,49",
+                      "text": "0,292,54,58:0,293,8,229",
+                      "type": "0,292,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the record.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,296,24",
+                      "text": "0,296,27,22",
+                      "type": "0,296,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "autoLoad",
+                    "optional": true,
+                    "text": "`false` to prevent the record from being loaded if\nit does not exist. If this parameter is an object, it will be passed to the <a href='#!/api/Ext.data.Model-load'>Ext.data.Model#load</a> call.\n",
+                    "type": "Boolean/Object",
+                    "value": "true",
+                    "src": {
+                      "name": "0,297,33",
+                      "text": "0,297,48,51:0,298,8,110",
+                      "type": "0,297,16",
+                      "value": "0,297,42"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The record.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "0,299,33,12",
+                      "type": "0,299,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,301,0",
+                  "text": "0,282,8,510"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSaveBatch",
+                "text": "Returns an <a href='#!/api/Ext.data.Batch'>Ext.data.Batch</a> containing the <a href='#!/api/Ext.data.operation.Operation'>Ext.data.operation.Operation</a> instances\nthat are needed to save all of the changes in this session. This sorting is based\non operation type, associations and foreign keys. Generally speaking the operations\nin the batch can be committed to a server sequentially and the server will never be\nsent a request with an invalid (client-generated) id in a foreign key field.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "sort",
+                    "optional": true,
+                    "text": "Pass `false` to disable the batch operation sort.\n",
+                    "type": "Boolean",
+                    "value": "true",
+                    "src": {
+                      "name": "0,353,26",
+                      "text": "0,353,37,50",
+                      "type": "0,353,16",
+                      "value": "0,353,31"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.Batch",
+                    "src": {
+                      "type": "0,354,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,356,0",
+                  "text": "0,347,8,412"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onInvalidAssociationEntity",
+                "template": true,
+                "text": "Triggered when an associated item from <a href='#!/api/Ext.data.Session-method-update'>update</a> references a record\nthat does not exist in the session.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,367,27",
+                      "text": "0,367,38,17",
+                      "type": "0,367,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the model.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,368,24",
+                      "text": "0,368,27,21",
+                      "type": "0,368,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,370,8",
+                  "name": "0,373,0",
+                  "template": "0,371,8",
+                  "text": "0,365,8,111"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onInvalidEntityCreate",
+                "template": true,
+                "text": "Triggered when an drop block from <a href='#!/api/Ext.data.Session-method-update'>update</a> tries to create a record\nthat already exists.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,380,27",
+                      "text": "0,380,38,17",
+                      "type": "0,380,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the model.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,381,24",
+                      "text": "0,381,27,21",
+                      "type": "0,381,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,383,8",
+                  "name": "0,386,0",
+                  "template": "0,384,8",
+                  "text": "0,378,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onInvalidEntityDrop",
+                "template": true,
+                "text": "Triggered when an drop block from <a href='#!/api/Ext.data.Session-method-update'>update</a> references a record\nthat does not exist in the session.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,393,27",
+                      "text": "0,393,38,17",
+                      "type": "0,393,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the model.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,394,24",
+                      "text": "0,394,27,21",
+                      "type": "0,394,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,396,8",
+                  "name": "0,399,0",
+                  "template": "0,397,8",
+                  "text": "0,391,8,106"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onInvalidEntityRead",
+                "template": true,
+                "text": "Triggered when an drop block from <a href='#!/api/Ext.data.Session-method-update'>update</a> tries to create a record\nthat already exists.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,406,27",
+                      "text": "0,406,38,17",
+                      "type": "0,406,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the model.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,407,24",
+                      "text": "0,407,27,21",
+                      "type": "0,407,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,409,8",
+                  "name": "0,412,0",
+                  "template": "0,410,8",
+                  "text": "0,404,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "onInvalidEntityUpdate",
+                "template": true,
+                "text": "Triggered when an update block from <a href='#!/api/Ext.data.Session-method-update'>update</a> references a record\nthat does not exist in the session.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,419,27",
+                      "text": "0,419,38,17",
+                      "type": "0,419,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the model.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,420,24",
+                      "text": "0,420,27,21",
+                      "type": "0,420,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "dropped",
+                    "text": "`true` if the record was dropped.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,421,25",
+                      "text": "0,421,33,34",
+                      "type": "0,421,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,423,8",
+                  "name": "0,426,0",
+                  "template": "0,424,8",
+                  "text": "0,417,8,108"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "peekRecord",
+                "text": "Gets an existing record from the session. The record will *not* be created if it does\nnot exist.\n\nSee also: <a href='#!/api/Ext.data.Session-method-getRecord'>getRecord</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "text": "The `entityName` or the actual class of record to create.\n",
+                    "type": "String/Ext.Class",
+                    "src": {
+                      "name": "0,440,34",
+                      "text": "0,440,39,58",
+                      "type": "0,440,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the record.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,441,24",
+                      "text": "0,441,27,22",
+                      "type": "0,441,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "deep",
+                    "optional": true,
+                    "text": "`true` to consult\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,442,26",
+                      "text": "0,442,38,18",
+                      "type": "0,442,16",
+                      "value": "0,442,31"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The record, <a href='#!/api/null'>null</a> if it does not exist.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "0,443,33,41",
+                      "type": "0,443,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,445,0",
+                  "text": "0,435,8,129"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "save",
+                "text": "Save any changes in this session to a <a href='#!/api/Ext.data.Session-cfg-parent'>parent</a> session.\n",
+                "src": {
+                  "name": "0,469,0",
+                  "text": "0,467,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "spawn",
+                "text": "Create a child session with this session as the <a href='#!/api/Ext.data.Session-cfg-parent'>parent</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The copied session.\n",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "text": "0,482,35,20",
+                      "type": "0,482,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,484,0",
+                  "text": "0,481,8,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "update",
+                "text": "Complete a bulk update for this session.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "Data in the CRUD format (see the intro docs).\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,493,24",
+                      "text": "0,493,29,46",
+                      "type": "0,493,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,495,0",
+                  "text": "0,492,8,41"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "add",
+                "text": "Add a record instance to this session. Called by model.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "0,553,36",
+                      "text": "0,553,43,12",
+                      "type": "0,553,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,555,12",
+                  "name": "0,557,0",
+                  "text": "0,552,12,56"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterErase",
+                "text": "Template method, will be called by Model after a record is dropped.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "0,580,36",
+                      "text": "0,580,43,12",
+                      "type": "0,580,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,582,12",
+                  "name": "0,584,0",
+                  "text": "0,579,12,68"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applySchema",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "schema",
+                    "src": {
+                      "name": "0,591,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,589,12",
+                  "name": "0,591,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "checkModelType",
+                "text": "Checks if the model type being referenced is valid for this session. That includes checking\nif the model name is correct & is one used in this <a href='#!/api/Ext.data.Session-cfg-schema'>schema</a> for this session. Will raise\nan exception if the model type is not correct.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The model name or model type.\n",
+                    "type": "String/Ext.Class",
+                    "src": {
+                      "name": "0,600,38",
+                      "text": "0,600,43,30",
+                      "type": "0,600,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,602,12",
+                  "name": "0,604,0",
+                  "text": "0,597,12,235"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createEntities",
+                "text": "Process a create block of entities from the <a href='#!/api/Ext.data.Session-method-update'>update</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,619,31",
+                      "text": "0,619,42,17",
+                      "type": "0,619,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "text": "The data objects to create.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "0,620,30",
+                      "text": "0,620,36,28",
+                      "type": "0,620,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,622,12",
+                  "name": "0,624,0",
+                  "text": "0,618,12,68"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "dropEntities",
+                "text": "Process a drop block for entities from the <a href='#!/api/Ext.data.Session-method-update'>update</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,645,31",
+                      "text": "0,645,42,17",
+                      "type": "0,645,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ids",
+                    "text": "The identifiers of the items to drop.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "0,646,30",
+                      "text": "0,646,34,38",
+                      "type": "0,646,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,648,12",
+                  "name": "0,650,0",
+                  "text": "0,644,12,67"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "evict",
+                "text": "Remove a record and any references from the session.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "0,675,36",
+                      "text": "0,675,43,11",
+                      "type": "0,675,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,677,12",
+                  "name": "0,679,0",
+                  "text": "0,674,12,53"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getEntityList",
+                "text": "Transforms a list of ids into a list of records for a particular type.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,692,31",
+                      "text": "0,692,42,17",
+                      "type": "0,692,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ids",
+                    "text": "The ids to transform.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "0,693,30",
+                      "text": "0,693,34,22",
+                      "type": "0,693,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The models corresponding to the ids.\n",
+                    "type": "Ext.data.Model[]",
+                    "src": {
+                      "text": "0,694,39,37",
+                      "type": "0,694,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,549,-1",
+                  "name": "0,696,0",
+                  "text": "0,691,12,71"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getEntry",
+                "text": "Return an entry for the data property for a particular type/id.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "text": "The entity name or model type.\n",
+                    "type": "String/Ext.Class",
+                    "src": {
+                      "name": "0,719,38",
+                      "text": "0,719,43,31",
+                      "type": "0,719,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the record\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,720,28",
+                      "text": "0,720,31,21",
+                      "type": "0,720,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The data entry.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,721,29,16",
+                      "type": "0,721,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,723,12",
+                  "name": "0,725,0",
+                  "text": "0,718,12,64"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getModelIdentifier",
+                "text": "Gets a user friendly identifier for a Model.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,816,31",
+                      "text": "0,816,42,17",
+                      "type": "0,816,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The id of the entity.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,817,28",
+                      "text": "0,817,31,22",
+                      "type": "0,817,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The identifier.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,818,29,16",
+                      "type": "0,818,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,549,-1",
+                  "name": "0,820,0",
+                  "text": "0,815,12,45"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readEntities",
+                "text": "Process a read block of entities from the <a href='#!/api/Ext.data.Session-method-update'>update</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,914,31",
+                      "text": "0,914,42,17",
+                      "type": "0,914,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "text": "The data objects to read.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "0,915,30",
+                      "text": "0,915,36,26",
+                      "type": "0,915,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,917,12",
+                  "name": "0,919,0",
+                  "text": "0,913,12,66"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateEntities",
+                "text": "Process an update block for entities from the <a href='#!/api/Ext.data.Session-method-update'>update</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "entityType",
+                    "text": "The entity type.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "0,997,31",
+                      "text": "0,997,42,17",
+                      "type": "0,997,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "text": "The data objects to update.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "0,998,30",
+                      "text": "0,998,36,28",
+                      "type": "0,998,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1000,12",
+                  "name": "0,1002,0",
+                  "text": "0,996,12,70"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "visitData",
+                "text": "Walks the internal data tracked by this session and calls methods on the provided\n`visitor` object. The visitor can then accumulate whatever data it finds important.\nThe visitor object can provide a number of methods, but all are optional.\n\nThis method does not enumerate associations since these can be traversed given the\nrecords that are enumerated. For many-to-many associations, however, this method\ndoes enumerate the changes because these changes are not \"owned\" by either side of\nsuch associations.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "visitor",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "onCleanRecord",
+                        "optional": true,
+                        "text": "This method is called to describe a record\nthat is known but unchanged.\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The unmodified record.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "0,1065,58",
+                              "text": "0,1065,65,23",
+                              "type": "0,1065,20"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "0,1063,39",
+                          "text": "0,1063,54,43:0,1064,12,29",
+                          "type": "0,1063,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onDirtyRecord",
+                        "optional": true,
+                        "text": "This method is called to describe a record\nthat has either been created, dropped or modified.\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The modified record.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "0,1068,58",
+                              "text": "0,1068,65,21",
+                              "type": "0,1068,20"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "0,1066,39",
+                          "text": "0,1066,54,43:0,1067,12,51",
+                          "type": "0,1066,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onMatrixChange",
+                        "optional": true,
+                        "text": "This method is called to describe a\nchange in a many-to-many association (a \"matrix\").\n",
+                        "type": "Function",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "association",
+                            "text": "The object\ndescribing the many-to-many (\"matrix\") association.\n",
+                            "type": "Ext.data.schema.Association",
+                            "src": {
+                              "name": "0,1071,72",
+                              "text": "0,1071,84,11:0,1072,12,52",
+                              "type": "0,1071,20"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "leftId",
+                            "text": "The `idProperty` of the record on the\n\"left\" of the association.\n",
+                            "type": "Mixed",
+                            "src": {
+                              "name": "0,1073,50",
+                              "text": "0,1073,57,38:0,1074,12,27",
+                              "type": "0,1073,20"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "rightId",
+                            "text": "The `idProperty` of the record on the\n\"right\" of the association.\n",
+                            "type": "Mixed",
+                            "src": {
+                              "name": "0,1075,50",
+                              "text": "0,1075,58,38:0,1076,12,28",
+                              "type": "0,1075,20"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "state",
+                            "text": "A negative number if the two records\nare being disassociated or a positive number if they are being associated. For\nexample, when adding User 10 to Group 20, this would be 1. When removing the User\nthis argument would be -1.\n",
+                            "type": "Number",
+                            "src": {
+                              "name": "0,1077,51",
+                              "text": "0,1077,57,37:0,1078,12,188",
+                              "type": "0,1077,20"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "0,1069,39",
+                          "text": "0,1069,55,36:0,1070,12,51",
+                          "type": "0,1069,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,1062,28",
+                      "type": "0,1062,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The visitor instance\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,1081,29,21",
+                      "type": "0,1081,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,549,-1",
+                  "name": "0,1083,0",
+                  "text": "0,1053,12,508"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,41,0",
+          "requires": "0,43,0,0:0,44,0,0:0,45,0,0:0,46,0,0:0,47,0,0:0,48,0,0",
+          "since": "0,39,11",
+          "text": "0,2,4,1875"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

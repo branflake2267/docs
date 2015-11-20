@@ -5,28 +5,28 @@
     <link rel="stylesheet" type="text/css" href="../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#ViewControllers in Ext JS</p>
+<div class="contents"><h1 id="application_architecture-_-view_controllers_-_viewcontrollers_in_ext_js">ViewControllers in Ext JS</h1>
 <p>Ext JS delivers some exciting improvements for you to use in your application 
 architecture. We have added support for ViewModels and MVVM as well as ViewControllers 
 to enhance MVC applications. Best of all, these choices are not mutually exclusive, so 
 you can introduce these features incrementally or even blend them.</p>
-<p>##Application-level Controllers
-A Controller is a class derived from [[ext:Ext.app.Controller]]. These Controllers use 
+<h2 id="application_architecture-_-view_controllers_-_application_level_controllers">Application-level Controllers</h2>
+<p>A Controller is a class derived from [[ext:Ext.app.Controller]]. These Controllers use 
 CSS-like selectors (called “Component Queries”) to match components and respond to their 
 events. They also use “refs” to select and retrieve component instances.</p>
 <p>These controllers are created at application launch and remain present for the life of 
 the application. During its lifetime, views of interest to a controller will come and go. 
 There may even be multiple instances of views that the controller manages.</p>
-<p>###Challenges
-For large applications, these techniques can create certain challenges.</p>
+<h3 id="application_architecture-_-view_controllers_-_challenges">Challenges</h3>
+<p>For large applications, these techniques can create certain challenges.</p>
 <p>In such environments, views and controllers may be authored by multiple development 
 teams and integrated into the final application. Ensuring that controllers only react to 
 their intended views can be difficult. Further, it is common for developers to want to 
 limit the number of controllers created at application launch. While lazily creating 
 controllers is possible with some effort, they can’t be destroyed, so they remain even 
 if they are no longer needed.</p>
-<p>##ViewControllers
-While Ext JS 5+ is backwards compatible with legacy application-level controllers, it 
+<h2 id="application_architecture-_-view_controllers_-_viewcontrollers">ViewControllers</h2>
+<p>While Ext JS 5+ is backwards compatible with legacy application-level controllers, it 
 introduces a new type of controller designed to handle these challenges: 
 [[ext:Ext.app.ViewController]]. ViewController does this in the following ways:</p>
 <ul>
@@ -39,8 +39,8 @@ managed view.</li>
 <li>Retains the ability to select components and listen to their events at any level below 
 the associated view.</li>
 </ul>
-<p>###Listeners
-For the purposes of ViewControllers, we can look at just two examples. The first is a 
+<h3 id="application_architecture-_-view_controllers_-_listeners">Listeners</h3>
+<p>For the purposes of ViewControllers, we can look at just two examples. The first is a 
 basic use of a listeners config on a child item in a view:</p>
 <pre><code>Ext.define(&#39;MyApp.view.foo.Foo&#39;, {
     extend: &#39;Ext.panel.Panel&#39;,
@@ -109,8 +109,8 @@ one. For example:</p>
 Further, it is listening to the collapse event just like the Foo view. The listeners 
 declared by the Foo view will fire on Foo’s ViewController while the listeners declared 
 in the Bar view will fire on Bar’s ViewController.</p>
-<p>###Reference
-One of the most common loose ends when writing controller logic is getting ahold of the 
+<h3 id="application_architecture-_-view_controllers_-_reference">Reference</h3>
+<p>One of the most common loose ends when writing controller logic is getting ahold of the 
 necessary components to complete a particular action. Something as simple as:</p>
 <pre><code>Ext.define(&#39;MyApp.view.foo.Foo&#39;, {
     extend: &#39;Ext.panel.Panel&#39;,
@@ -190,8 +190,8 @@ in pseudo-code:</p>
 </code></pre><p>In other words, there is no search and the linkages damaged by adding or removing items 
 from containers are fixed in one go, when they are needed. As we will see below, this 
 approach has benefits other than efficiency.</p>
-<p>###Encapsulation
-The use of selectors along with the controller <code>refs</code> config was very flexible, but at 
+<h3 id="application_architecture-_-view_controllers_-_encapsulation">Encapsulation</h3>
+<p>The use of selectors along with the controller <code>refs</code> config was very flexible, but at 
 the same time had certain risks. The fact that these selectors “see” everything at all 
 levels of the component hierarchy is both powerful and prone to mistakes. For example, a 
 controller could be working 100% when it runs in isolation but then fails as soon as 
@@ -235,7 +235,7 @@ view’s ViewController. There is a helper method in ViewController for this pur
         }
     }]
 });
-</code></pre><p>###Listeners and Event Domains</p>
+</code></pre><h3 id="application_architecture-_-view_controllers_-_listeners_and_event_domains">Listeners and Event Domains</h3>
 <p>In Ext JS 4.2, the MVC event dispatcher was generalized with the introduction of event 
 domains. These event domains intercepted events as they were fired and dispatched them 
 to controllers controlled by selector matching. The “component” event domain had full 
@@ -269,8 +269,8 @@ standard listeners. Then, it’s delivered to its owning ViewController, followe
 parent ViewController (if any) on up the hierarchy. Eventually, the event is delivered 
 to the standard “component” event domain to be handled by Ext.app.Controller-derived 
 controllers.</p>
-<p>###Life cycle
-A common technique with large applications is to dynamically create controllers when 
+<h3 id="application_architecture-_-view_controllers_-_life_cycle">Life cycle</h3>
+<p>A common technique with large applications is to dynamically create controllers when 
 they are first needed. This could help reduce the load time of the application and help 
 runtime performance as well by not activating all potential controllers. The limitation 
 to this in previous versions was that, once created, these controllers would remain 
@@ -295,12 +295,23 @@ initialized.</li>
 <li>initViewModel - Called when the view’s ViewModel is created (if one is defined).</li>
 <li>destroy - Cleanup and return resources (be sure to call <code>callParent</code>).</li>
 </ul>
-<p>##Conclusion
-We think ViewControllers will greatly streamline your MVC applications. They also work 
+<h2 id="application_architecture-_-view_controllers_-_conclusion">Conclusion</h2>
+<p>We think ViewControllers will greatly streamline your MVC applications. They also work 
 very well with ViewModels, so you can combine these approaches and their respective 
 strengths. We’re excited about the upcoming release and seeing these improvements at 
 work in your applications.</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#application_architecture-_-view_controllers_-_application_level_controllers">Application-level Controllers</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_controllers_-_challenges">Challenges</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_controllers_-_viewcontrollers">ViewControllers</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_controllers_-_listeners">Listeners</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_controllers_-_reference">Reference</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_controllers_-_encapsulation">Encapsulation</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_controllers_-_listeners_and_event_domains">Listeners and Event Domains</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_controllers_-_life_cycle">Life cycle</a></div>
+        <div class="toc-item"><a href="#application_architecture-_-view_controllers_-_conclusion">Conclusion</a></div>
+    </div>
 </body>
 </html>

@@ -1,0 +1,237 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/util/Sorter.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.util.Sorter",
+        "text": "Represents a single sorter that can be used as part of the sorters configuration in Ext.mixin.Sortable.\n\nA common place for Sorters to be used are <a href='#!/api/Ext.data.Store'>Ext.data.Store</a>. For example:\n\n     @example\n     var store = Ext.create('Ext.data.Store', {\n          fields: ['firstName', 'lastName'],\n          sorters: 'level',\n\n          data: [\n              { firstName: 'Mitch',  level: 9000},\n              { firstName: 'Seth',   level: 42},\n              { firstName: 'Fred',   level: 510},\n              { firstName: 'Israel', level: 690},\n              { firstName: 'Greg',   level: 101},\n              { firstName: 'Pat',    level: 0},\n              { firstName: 'Kevin',  level: 17},\n              { firstName: 'Brandon',level: 690},\n              { firstName: 'Gary',   level: 409},\n              { firstName: 'Scott',  level: 789}\n          ]\n       });\n\n       Ext.create('Ext.grid.Panel', {\n           title: 'Support',\n           store: store,\n           columns: [\n               { text: 'Name',  dataIndex: 'firstName' },\n               { text: 'Level', dataIndex: 'level' }\n           ],\n           height: 300,\n           width: 200,\n           renderTo: Ext.getBody()\n       });\n\nIn the next example, we specify a custom sorter function:\n\n       @example\n       var store = Ext.create('Ext.data.Store', {\n          fields: ['firstName', 'lastName'],\n           sorters: [\n               {\n                   // Sort by first letter of second word of spirit animal, in descending order\n                   sorterFn: function(record1, record2) {\n                       var name1 = record1.data.spiritAnimal.split(' ')[1].substr(0,1),\n                           name2 = record2.data.spiritAnimal.split(' ')[1].substr(0,1);\n\n                       return name1 > name2 ? 1 : (name1 === name2) ? 0 : -1;\n                   },\n                   direction: 'DESC'\n               }\n           ],\n\n          data: [\n              { firstName: 'Mitch',  spiritAnimal: \"Panda Bear\"},\n              { firstName: 'Seth',   spiritAnimal: \"Tina Belcher\"},\n              { firstName: 'Fred',   spiritAnimal: \"Honey Badger\"},\n              { firstName: 'Israel', spiritAnimal: \"Mysterious Capybara\"},\n              { firstName: 'Greg',   spiritAnimal: \"Majestic Platypus\"},\n              { firstName: 'Kevin',  spiritAnimal: \"Sparkling Unicorn\"},\n              { firstName: 'Brandon',spiritAnimal: \"Pygmy Goat\"},\n              { firstName: 'Gary',   spiritAnimal: \"Suri Alpaca\"},\n              { firstName: 'Scott',  spiritAnimal: \"Ripe Armadillo\"},\n              { firstName: 'Pat',    spiritAnimal: \"The Cougar\"}\n          ]\n       });\n\n       Ext.create('Ext.grid.Panel', {\n           title: 'Support',\n           store: store,\n           columns: [\n               { text: 'Name',          dataIndex: 'firstName' },\n               { text: 'Spirit Animal', dataIndex: 'spiritAnimal', flex: 1 }\n           ],\n           height: 310,\n           renderTo: Ext.getBody()\n       });\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "property",
+                "text": "The property to sort by. Required unless <a href='#!/api/Ext.util.Sorter-cfg-sorterFn'>sorterFn</a> is provided\n",
+                "type": "String",
+                "src": {
+                  "name": "0,86,26",
+                  "text": "0,86,35,64",
+                  "type": "0,86,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "sorterFn",
+                "text": "A specific sorter function to execute. Can be passed instead of <a href='#!/api/Ext.util.Sorter-cfg-property'>property</a>.\nThis function should compare the two passed arguments, returning -1, 0 or 1 depending on if item 1 should be\nsorted before, at the same level, or after item 2.\n\n    sorterFn: function(person1, person2) {\n        return (person1.age > person2.age) ? 1 : (person1.age === person2.age ? 0 : -1);\n    }\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,91,28",
+                  "text": "0,91,37,83:0,92,12,299",
+                  "type": "0,91,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "root",
+                "text": "Optional root property. This is mostly useful when sorting a Store, in which case we set the\nroot to 'data' to make the filter pull the <a href='#!/api/Ext.util.Sorter-cfg-property'>property</a> out of the data object of each item\n",
+                "type": "String",
+                "src": {
+                  "name": "0,102,26",
+                  "text": "0,102,31,93:0,103,12,97",
+                  "type": "0,102,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "transform",
+                "text": "A function that will be run on each value before\nit is compared in the sorter. The function will receive a single argument,\nthe value.\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,108,28",
+                  "text": "0,108,38,49:0,109,12,86",
+                  "type": "0,108,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "direction",
+                "text": "The direction to sort by. Valid values are \"ASC\", and \"DESC\".\n",
+                "type": "String",
+                "src": {
+                  "name": "0,115,26",
+                  "text": "0,115,36,62",
+                  "type": "0,115,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "id",
+                "text": "An optional id this sorter can be keyed by in Collections. If\nno id is specified it will use the property name used in this Sorter. If no\nproperty is specified, e.g. when adding a custom sorter function we will generate\na random id.\n",
+                "type": "Mixed",
+                "src": {
+                  "name": "0,120,25",
+                  "text": "0,120,28,62:0,121,12,171",
+                  "type": "0,120,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "sortFn",
+                "text": "Basic default sorter function that just compares the defined property of each object.\nThis is hidden by the <a href='#!/api/Ext.util.Sorter-cfg-sorterFn'>sorterFn</a> provided by the user.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item1",
+                    "src": {
+                      "name": "0,206,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item2",
+                    "src": {
+                      "name": "0,206,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,202,8",
+                  "name": "0,206,0",
+                  "text": "0,203,8,141"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toggle",
+                "text": "Toggles the direction of this Sorter. Note that when you call this function,\nthe Collection this Sorter is part of does not get refreshed automatically.\n",
+                "src": {
+                  "name": "0,253,0",
+                  "text": "0,250,8,153"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getState",
+                "text": "Returns this sorter's state.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,259,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,261,0",
+                  "text": "0,258,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "serialize",
+                "text": "Returns this sorter's serialized state. This is used when transmitting this sorter\nto a server.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,281,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,283,0",
+                  "text": "0,279,8,96"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "multiplier",
+                "readonly": true,
+                "text": "This value is set based on the <a href='#!/api/Ext.util.Sorter-cfg-direction'>direction</a> config to be either 1 or -1. This is used\nas a multiplier for the raw comparison value to factor in the direction.\n",
+                "src": {
+                  "access": "0,165,8",
+                  "name": "0,168,0",
+                  "readonly": "0,166,8",
+                  "text": "0,163,8,158"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "createComparator",
+                "static": true,
+                "text": "Creates a comparator function (a function that can be passed to `Array.sort`)\ngiven one or more `Sorter` instances.\n\nThe returned function retains a reference to the collection or array of sorters\npassed. This means the function will produce a comparison based on the current\ncontent of the collection or array, and not based on the content at the time of\nthis call.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "sorters",
+                    "text": "The `Sorter` instances.\n",
+                    "type": "Ext.util.Sorter[]/Ext.util.Collection",
+                    "src": {
+                      "name": "0,138,59",
+                      "text": "0,138,67,24",
+                      "type": "0,138,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "nextFn",
+                    "optional": true,
+                    "text": "The next comparator function to call if all the `sorters` end\nwith equality.\n",
+                    "src": {
+                      "name": "0,139,20",
+                      "text": "0,139,28,62:0,140,12,15"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The comparator function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,141,31,25",
+                      "type": "0,141,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,143,0",
+                  "static": "0,127,-1",
+                  "text": "0,130,12,368"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,81,0",
+          "text": "0,3,4,2982"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

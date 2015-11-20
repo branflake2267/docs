@@ -1,0 +1,147 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/plugin/Responsive.js",
+    "../../../ext/packages/core/src/mixin/Responsive.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "plugin.responsive",
+        "extends": "Ext.mixin.Responsive",
+        "name": "Ext.plugin.Responsive",
+        "text": "This plugin can be added to component instances to process a <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveConfig'>responsiveConfig</a>. For\nexample:\n\n     Ext.create({\n         xtype: 'viewport',\n         layout: 'border',\n\n         items: [{\n             title: 'Some Title',\n             plugins: 'responsive',\n\n             responsiveConfig: {\n                 'width < 800': {\n                     region: 'north'\n                 },\n\n                 'width >= 800': {\n                     region: 'west'\n                 }\n             }\n         }]\n     });\n\nFor details see <a href='#!/api/Ext.mixin.Responsive-cfg-responsiveConfig'>Ext.mixin.Responsive#responsiveConfig</a>.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "responsiveConfig",
+                "since": "5.0.0",
+                "text": "This object consists of keys that represent the conditions on which configs\nwill be applied. For example:\n\n     responsiveConfig: {\n         landscape: {\n             region: 'west'\n         },\n         portrait: {\n             region: 'north'\n         }\n     }\n\nIn this case the keys (\"landscape\" and \"portrait\") are the criteria (or \"rules\")\nand the object to their right contains the configs that will apply when that\nrule is true.\n\nThese rules can be any valid JavaScript expression but the following values\nare considered in scope:\n\n * `landscape` - True if the device orientation is landscape (always `true` on\n  desktop devices).\n * `portrait` - True if the device orientation is portrait (always `false` on\n  desktop devices).\n * `tall` - True if `width` < `height` regardless of device type.\n * `wide` - True if `width` > `height` regardless of device type.\n * `width` - The width of the viewport in pixels.\n * `height` - The height of the viewport in pixels.\n * `platform` - An object containing various booleans describing the platform\n (see <a href='#!/api/Ext-property-platformTags'>Ext#platformTags</a>). The properties of this\n object are also available implicitly (without \"platform.\" prefix) but this\n sub-object may be useful to resolve ambiguity (for example, if one of the\n <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveFormulas'>responsiveFormulas</a> overlaps and hides any of these properties).\n Previous to Ext JS 5.1, the `platformTags` were only available using this\n prefix.\n\nA more complex example:\n\n     responsiveConfig: {\n         'desktop || width > 800': {\n             region: 'west'\n         },\n\n         '!(desktop || width > 800)': {\n             region: 'north'\n         }\n     }\n\n**NOTE**: If multiple rules set a single config (like above), it is important\nthat the rules be mutually exclusive. That is, only one rule should set each\nconfig. If multiple rules are actively setting a single config, the order of\nthese (and therefore the config's value) is unspecified.\n\nFor a config to participate as a <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> it must have a \"setter\"\nmethod. In the above example, a \"setRegion\" method must exist.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,84,26",
+                  "since": "1,140,19",
+                  "text": "1,85,12,2080",
+                  "type": "1,84,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "responsiveFormulas",
+                "since": "5.0.1",
+                "text": "It is common when using <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> to have recurring expressions that\nmake for complex configurations. Using <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveFormulas'>responsiveFormulas</a> allows you to cut\ndown on this repetition by adding new properties to the \"scope\" for the rules\nin a <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveConfig'>responsiveConfig</a>.\n\nFor example:\n\n     Ext.define('MyApp.view.main.Main', {\n         extend: 'Ext.container.Container',\n\n         mixins: [\n             'Ext.mixin.Responsive'\n         ],\n\n         responsiveFormulas: {\n             small: 'width < 600',\n\n             medium: 'width >= 600 && width < 800',\n\n             large: 'width >= 800',\n\n             tuesday: function (context) {\n                 return (new Date()).getDay() === 2;\n             }\n         }\n     });\n\nWith the above declaration, any <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> can now use these values\nlike so:\n\n     responsiveConfig: {\n         small: {\n             hidden: true\n         },\n         'medium && !tuesday': {\n             hidden: false,\n             region: 'north'\n         },\n         large: {\n             hidden: false,\n             region: 'west'\n         }\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,167,26",
+                  "since": "1,212,19",
+                  "text": "1,168,12,1080",
+                  "type": "1,167,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterClassMixedIn",
+                "text": "This class system hook method is called at the tail end of the mixin process.\nWe need to see if the `targetClass` has already got a <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> and\nif so, we must add its value to the real config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "targetClass",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "1,439,31",
+                      "type": "1,439,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,440,12",
+                  "name": "1,442,0",
+                  "text": "1,436,12,204"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "This method removes this instance from the Responsive collection.\n",
+                "src": {
+                  "name": "1,226,0",
+                  "text": "1,224,8,66"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getResponsiveState",
+                "text": "Evaluates and returns the configs based on the <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveConfig'>responsiveConfig</a>. This\nmethod relies on the state being captured by the `updateContext` method.\n",
+                "src": {
+                  "access": "1,496,12",
+                  "name": "1,498,0",
+                  "text": "1,494,12,145"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "transformInstanceConfig",
+                "text": "This config system hook method is called just prior to processing the specified\n\"instanceConfig\". This hook returns the instanceConfig that will actually be\nprocessed by the config system.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "instanceConfig",
+                    "text": "The user-supplied instance config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,532,28",
+                      "text": "1,532,43,42",
+                      "type": "1,532,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,533,12",
+                  "name": "1,535,0",
+                  "text": "1,529,12,189"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateResponsiveState",
+                "text": "Evaluates and applies the <a href='#!/api/Ext.plugin.Responsive-cfg-responsiveConfig'>responsiveConfig</a> to this instance. This is called\nby `notify` automatically.\n",
+                "src": {
+                  "access": "1,573,12",
+                  "name": "1,575,0",
+                  "text": "1,571,12,105"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods"
+          },
+          {
+            "$type": "static-properties"
+          }
+        ],
+        "src": {
+          "alias": "0,30,0",
+          "extends": "0,28,0",
+          "name": "0,27,0",
+          "text": "0,2,4,593"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

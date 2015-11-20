@@ -1,0 +1,238 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/form/field/VTypes.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.form.VTypes",
+        "name": "Ext.form.field.VTypes",
+        "singleton": true,
+        "text": "This is a singleton object which contains a set of commonly used field validation functions\nand provides a mechanism for creating reusable custom field validations.\nThe following field validation functions are provided out of the box:\n\n- <a href='#!/api/Ext.form.field.VTypes-method-alpha'>alpha</a>\n- <a href='#!/api/Ext.form.field.VTypes-method-alphanum'>alphanum</a>\n- <a href='#!/api/Ext.form.field.VTypes-method-email'>email</a>\n- <a href='#!/api/Ext.form.field.VTypes-method-url'>url</a>\n\nVTypes can be applied to a <a href='#!/api/Ext.form.field.Text'>Ext.form.field.Text</a> using the <a href='#!/api/Ext.form.field.Text-cfg-vtype'>Ext.form.field.Text#vtype</a> configuration:\n\n    Ext.create('Ext.form.field.Text', {\n        fieldLabel: 'Email Address',\n        name: 'email',\n        vtype: 'email' // applies email validation rules to this field\n    });\n\nTo create custom VTypes:\n\n    // custom Vtype for vtype:'time'\n    Ext.define('Override.form.field.VTypes', {\n        override: 'Ext.form.field.VTypes',\n\n        // vtype validation function\n        time: function(value) {\n            return this.timeRe.test(value);\n        },\n        // RegExp for the value to be tested against within the validation function\n        timeRe: /^([1-9]|1[0-9]):([0-5][0-9])(\\s[a|p]m)$/i,\n        // vtype Text property: The error text to display when the validation function returns false\n        timeText: 'Not a valid time.  Must be in the format \"12:34 PM\".',\n        // vtype Mask property: The keystroke filter mask\n        timeMask: /[\\d\\s:amp]/i\n    });\n\nIn the above example the `time` function is the validator that will run when field validation occurs,\n`timeText` is the error message, and `timeMask` limits what characters can be typed into the field.\nNote that the `Text` and `Mask` functions must begin with the same name as the validator function.\n\nUsing a custom validator is the same as using one of the build-in validators - just use the name of the validator function\nas the <a href='#!/api/Ext.form.field.Text-cfg-vtype'>Ext.form.field.Text#vtype</a> configuration on a <a href='#!/api/Ext.form.field.Text'>Ext.form.field.Text</a>:\n\n    Ext.create('Ext.form.field.Text', {\n        fieldLabel: 'Departure Time',\n        name: 'departureTime',\n        vtype: 'time' // applies custom time validation rules to this field\n    });\n\nAnother example of a custom validator:\n\n    // custom Vtype for vtype:'IPAddress'\n    Ext.define('Override.form.field.VTypes', {\n        override: 'Ext.form.field.VTypes',\n\n        IPAddress:  function(value) {\n            return this.IPAddressRe.test(value);\n        },\n        IPAddressRe: /^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$/,\n        IPAddressText: 'Must be a numeric IP address',\n        IPAddressMask: /[\\d\\.]/i\n    });\n\nIt's important to note that using <a href='#!/api/Ext-method-define'>Ext#define</a> with the <a href='#!/api/Ext.Class-cfg-override'>Ext.Class#override</a> property\nmeans that the custom validator function as well as `Text` and `Mask` fields are added as properties\nof the <a href='#!/api/Ext.form.field.VTypes'>Ext.form.field.VTypes</a> singleton.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "email",
+                "text": "The function used to validate email addresses. Note that complete validation per the email RFC\nspecifications is very complex and beyond the scope of this class, although this function can be\noverridden if a more comprehensive validation scheme is desired. See the validation section\nof the [Wikipedia article on email addresses][1] for additional information. This implementation is\nintended to validate the following types of emails:\n\n- `barney@example.de`\n- `barney.rubble@example.com`\n- `barney-rubble@example.coop`\n- `barney+rubble@example.com`\n- `barney'rubble@example.com`\n- `b.arne.y_r.ubbl.e@example.com`\n- `barney4rubble@example.com`\n- `barney4rubble!@example.com`\n- `_barney+rubble@example.com`\n- `\"barney+rubble\"@example.com`\n\n[1]: http://en.wikipedia.org/wiki/E-mail_address\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The email address\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,132,28",
+                      "text": "0,132,34,18",
+                      "type": "0,132,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "true if the RegExp test passed, and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,133,30,50",
+                      "type": "0,133,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,135,0",
+                  "text": "0,113,12,789"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "url",
+                "text": "The function used to validate URLs\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The URL\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,155,28",
+                      "text": "0,155,34,8",
+                      "type": "0,155,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "true if the RegExp test passed, and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,156,30,50",
+                      "type": "0,156,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,158,0",
+                  "text": "0,154,12,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "alpha",
+                "text": "The function used to validate alpha values\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,172,28",
+                      "text": "0,172,34,10",
+                      "type": "0,172,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "true if the RegExp test passed, and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,173,30,50",
+                      "type": "0,173,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,175,0",
+                  "text": "0,171,12,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "alphanum",
+                "text": "The function used to validate alphanumeric values\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,194,28",
+                      "text": "0,194,34,10",
+                      "type": "0,194,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "true if the RegExp test passed, and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,195,30,50",
+                      "type": "0,195,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,197,0",
+                  "text": "0,193,12,50"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "emailText",
+                "text": "The error text to display when the email validation function returns false.\nDefaults to: 'This field should be an e-mail address in the format \"user@example.com\"'\n",
+                "type": "String",
+                "src": {
+                  "name": "0,140,31",
+                  "text": "0,141,12,163",
+                  "type": "0,140,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "emailMask",
+                "text": "The keystroke filter mask to be applied on email input. See the <a href='#!/api/Ext.form.field.VTypes-method-email'>email</a> method for information about\nmore complex email validation. Defaults to: /[a-z0-9_\\.\\-@]/i\n",
+                "type": "RegExp",
+                "src": {
+                  "name": "0,147,31",
+                  "text": "0,148,12,170",
+                  "type": "0,147,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "urlText",
+                "text": "The error text to display when the url validation function returns false.\nDefaults to: 'This field should be a URL in the format \"http:/'+'/www.example.com\"'\n",
+                "type": "String",
+                "src": {
+                  "name": "0,163,31",
+                  "text": "0,164,12,158",
+                  "type": "0,163,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "alphaText",
+                "text": "The error text to display when the alpha validation function returns false.\nDefaults to: 'This field should only contain letters and _'\n",
+                "type": "String",
+                "src": {
+                  "name": "0,180,31",
+                  "text": "0,181,12,136",
+                  "type": "0,180,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "alphaMask",
+                "text": "The keystroke filter mask to be applied on alpha input. Defaults to: /[a-z_]/i\n",
+                "type": "RegExp",
+                "src": {
+                  "name": "0,187,31",
+                  "text": "0,188,12,79",
+                  "type": "0,187,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "alphanumText",
+                "text": "The error text to display when the alphanumeric validation function returns false.\nDefaults to: 'This field should only contain letters, numbers and _'\n",
+                "type": "String",
+                "src": {
+                  "name": "0,202,31",
+                  "text": "0,203,12,152",
+                  "type": "0,202,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "alphanumMask",
+                "text": "The keystroke filter mask to be applied on alphanumeric input. Defaults to: /[a-z0-9_]/i\n",
+                "type": "RegExp",
+                "src": {
+                  "name": "0,209,31",
+                  "text": "0,210,12,89",
+                  "type": "0,209,23"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,3,24",
+          "name": "0,71,0",
+          "singleton": "0,2,4",
+          "text": "0,5,4,2736"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

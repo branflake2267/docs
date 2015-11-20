@@ -1,5 +1,3 @@
-var myCount = 0;
-
 Ext.define('DocsApp.view.mainApp.doc.MemberDataview', {
     extend: 'Ext.view.View',
     xtype : 'main-member-dataview',
@@ -80,6 +78,7 @@ Ext.define('DocsApp.view.mainApp.doc.MemberDataview', {
                     '</tpl>',
                 '</h3>',
 
+                //'<div>{[Ext.util.Format.ellipsis(values.text, 70, true)]}</div>',
                 '<div class="da-member-detail">',
                     '<tpl if="text"><div class="da-member-text">{text}</div></tpl>',
                     '<tpl if="value"><div class="da-defaults-to">Defaults to: {type}</div></tpl>',

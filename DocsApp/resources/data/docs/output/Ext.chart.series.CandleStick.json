@@ -1,0 +1,3701 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/charts/src/chart/series/CandleStick.js",
+    "../../../ext/packages/charts/src/chart/series/Series.js",
+    "../../../ext/packages/core/src/mixin/Bindable.js",
+    "../../../ext/packages/core/src/mixin/Observable.js",
+    "../../../ext/packages/charts/src/chart/series/Cartesian.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "series.candlestick",
+        "extends": "Ext.chart.series.Cartesian",
+        "name": "Ext.chart.series.CandleStick",
+        "requires": "Ext.chart.series.sprite.CandleStick",
+        "text": "\nCreates a candlestick or OHLC Chart.\n\n    @example\n    Ext.create({\n       xtype: 'cartesian',\n       renderTo: document.body,\n       width: 600,\n       height: 400,\n       insetPadding: 40,\n       store: {\n           fields: ['time', 'open', 'high', 'low', 'close'],\n           data: [{\n               'time': new Date('Jan 1 2010').getTime(),\n               'open': 600,\n               'high': 614,\n               'low': 578,\n               'close': 590\n           }, {\n               'time': new Date('Jan 2 2010').getTime(),\n               'open': 590,\n               'high': 609,\n               'low': 580,\n               'close': 580\n           }, {\n               'time': new Date('Jan 3 2010').getTime(),\n               'open': 580,\n               'high': 602,\n               'low': 578,\n               'close': 602\n           }, {\n               'time': new Date('Jan 4 2010').getTime(),\n               'open': 602,\n               'high': 614,\n               'low': 586,\n               'close': 586\n           }, {\n               'time': new Date('Jan 5 2010').getTime(),\n               'open': 586,\n               'high': 602,\n               'low': 565,\n               'close': 565\n           }]\n       },\n       axes: [{\n           type: 'numeric',\n           position: 'left',\n           fields: ['open', 'high', 'low', 'close'],\n           title: {\n               text: 'Sample Values',\n               fontSize: 15\n           },\n           grid: true,\n           minimum: 560,\n           maximum: 640\n       }, {\n           type: 'time',\n           position: 'bottom',\n           fields: ['time'],\n           fromDate: new Date('Dec 31 2009'),\n           toDate: new Date('Jan 6 2010'),\n           title: {\n               text: 'Sample Values',\n               fontSize: 15\n           },\n           style: {\n               axisLine: false\n           }\n       }],\n       series: {\n           type: 'candlestick',\n           xField: 'time',\n           openField: 'open',\n           highField: 'high',\n           lowField: 'low',\n           closeField: 'close',\n           style: {\n               dropStyle: {\n                   fill: 'rgb(222, 87, 87)',\n                   stroke: 'rgb(222, 87, 87)',\n                   lineWidth: 3\n               },\n               raiseStyle: {\n                   fill: 'rgb(48, 189, 167)',\n                   stroke: 'rgb(48, 189, 167)',\n                   lineWidth: 3\n               }\n           }\n       }\n    });\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "animation",
+                "text": "The series animation configuration.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,473,26",
+                  "text": "1,473,36,36",
+                  "type": "1,473,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "background",
+                "text": "Sets the background of the surface the series is attached.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,419,26",
+                  "text": "1,419,37,59",
+                  "type": "1,419,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "bind",
+                "optional": true,
+                "text": "Setting this config option adds or removes data bindings for other configs.\nFor example, to bind the <a href='#!/api/Ext.chart.series.CandleStick-cfg-title'>title</a> config:\n\n     var panel = Ext.create({\n         xtype: 'panel',\n         bind: {\n             title: 'Hello {user.name}'\n         }\n     });\n\nTo dynamically add bindings:\n\n     panel.setBind({\n         title: 'Greetings {user.name}!'\n     });\n\nTo remove bindings:\n\n     panel.setBind({\n         title: null\n     });\n\nThe bind expressions are presented to <a href='#!/api/Ext.app.ViewModel-method-bind'>Ext.app.ViewModel#bind</a>. The\n`ViewModel` instance is determined by <a href='#!/api/Ext.chart.series.CandleStick-method-lookupViewModel'>lookupViewModel</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,12,27",
+                  "text": "2,13,12,559",
+                  "type": "2,12,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "chart",
+                "text": "The chart that the series is bound.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,189,12",
+                  "name": "1,190,26",
+                  "text": "1,190,32,36",
+                  "type": "1,190,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "closeField",
+                "text": "The store record field name that represents the closing value of the given period.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,118,26",
+                  "text": "0,119,12,83",
+                  "type": "0,118,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "colors",
+                "text": "An array of color values which is used, in order of appearance, by the series. Each series\ncan request one or more colors from the array. Radar, Scatter or Line charts require just\none color each. Candlestick and OHLC require two (1 for drops + 1 for rises). Pie charts\nand Stacked charts (like Column or Pie charts) require one color for each data category\nthey represent, so one color for each slice of a Pie chart or each segment of a Column chart.\nIt overrides the colors that are provided by the current theme.\n",
+                "type": "Array",
+                "src": {
+                  "name": "1,272,25",
+                  "text": "1,273,12,516",
+                  "type": "1,272,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "controller",
+                "text": "A string alias, a configuration object or an instance of a `ViewController` for\nthis container. Sample usage:\n\n    Ext.define('MyApp.UserController', {\n        alias: 'controller.user'\n    });\n\n    Ext.define('UserContainer', {\n        extend: 'Ext.container.container',\n        controller: 'user'\n    });\n    // Or\n    Ext.define('UserContainer', {\n        extend: 'Ext.container.container',\n        controller: {\n            type: 'user',\n            someConfig: true\n        }\n    });\n\n    // Can also instance at runtime\n    var ctrl = new MyApp.UserController();\n    var view = new UserContainer({\n        controller: ctrl\n    });\n",
+                "type": "String/Object/Ext.app.ViewController",
+                "src": {
+                  "name": "2,45,56",
+                  "text": "2,46,12,637",
+                  "type": "2,45,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultListenerScope",
+                "text": "If `true`, this component will be the default scope (this pointer) for events\nspecified with string names so that the scope can be dynamically resolved. The\ncomponent will automatically become the defaultListenerScope if a\n<a href='#!/api/Ext.chart.series.CandleStick-cfg-controller'>controller</a> is specified.\n\nSee the introductory docs for <a href='#!/api/Ext.container.Container'>Ext.container.Container</a> for some sample\nusages.\n\n**NOTE**: This value can only be reliably set at construction time. Setting it\nafter that time may not correctly rewire all of the potentially effected\nlisteners.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,84,27",
+                  "text": "2,85,12,508",
+                  "type": "2,84,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hidden",
+                "type": "Boolean/Array",
+                "src": {
+                  "name": "1,441,33",
+                  "type": "1,441,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "highField",
+                "text": "The store record field name that represents the highest value of the time interval represented.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,108,26",
+                  "text": "0,109,12,96",
+                  "type": "0,108,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "highlight",
+                "text": "The sprite attributes that will be applied to the highlighted items in the series.\nIf set to 'true', the default highlight style from <a href='#!/api/Ext.chart.series.CandleStick-cfg-highlightCfg'>highlightCfg</a> will be used.\nIf the value of this config is an object, it will be merged with the <a href='#!/api/Ext.chart.series.CandleStick-cfg-highlightCfg'>highlightCfg</a>.\nIn case merging of 'highlight' and 'highlightCfg' configs in not the desired behavior,\nprovide the 'highlightCfg' instead.\n",
+                "type": "Boolean/Object",
+                "src": {
+                  "name": "1,446,34",
+                  "text": "1,447,12,385",
+                  "type": "1,446,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "highlightCfg",
+                "text": "The default style for the highlighted item.\nUsed when <a href='#!/api/Ext.chart.series.CandleStick-cfg-highlight'>highlight</a> config was simply set to 'true' instead of specifying a style.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,456,12",
+                  "name": "1,457,26",
+                  "text": "1,458,12,136",
+                  "type": "1,457,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "highlightItem",
+                "text": "The item currently highlighted in the series.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,424,26",
+                  "text": "1,424,40,46",
+                  "type": "1,424,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "itemInstancing",
+                "text": "The sprite template used to create sprite instances in the series.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,413,12",
+                  "name": "1,414,26",
+                  "text": "1,414,41,67",
+                  "type": "1,414,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "label",
+                "text": "Object with the following properties:\n",
+                "type": "Object",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "display",
+                    "text": "\nSpecifies the presence and position of the labels. The possible values depend on the series type.\nFor Line and Scatter series: 'under' | 'over' | 'rotate'.\nFor Bar and 3D Bar series: 'insideStart' | 'insideEnd' | 'outside'.\nFor Pie series: 'outside' | 'rotate' | 'horizontal' | 'vertical'.\nArea, Radar and Candlestick series don't support labels.\nFor Area and Radar series please consider using <a href='#!/api/Ext.chart.series.CandleStick-cfg-tooltip'>tooltip</a> instead.\n3D Pie series currently always display labels 'outside'.\nFor all series: 'none' hides the labels.\n\nDefault value: 'none'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,304,32",
+                      "text": "1,305,12,554",
+                      "type": "1,304,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "color",
+                    "text": "\nThe color of the label text.\n\nDefault value: '#000' (black).\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,317,32",
+                      "text": "1,318,12,63",
+                      "type": "1,317,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "field",
+                    "text": "\nThe name(s) of the field(s) to be displayed in the labels. If your chart has 3 series\nthat correspond to the fields 'a', 'b', and 'c' of your model, and you only want to\ndisplay labels for the series 'c', you must still provide an array `[null, null, 'c']`.\n\nDefault value: null.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "1,323,41",
+                      "text": "1,324,12,282",
+                      "type": "1,323,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "font",
+                    "text": "\nThe font used for the labels.\n\nDefault value: '14px Helvetica'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,331,32",
+                      "text": "1,332,12,66",
+                      "type": "1,331,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "orientation",
+                    "text": "\nEither 'horizontal' or 'vertical'. If not set (default), the orientation is inferred\nfrom the value of the flipXY property of the series.\n\nDefault value: ''.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,337,32",
+                      "text": "1,338,12,160",
+                      "type": "1,337,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "renderer",
+                    "text": "\nOptional function for formatting the label into a displayable value.\n\nThe arguments to the method are:\n\n  - *`text`*, *`sprite`*, *`config`*, *`rendererData`*, *`index`*\n\n    Label's renderer is passed the same arguments as <a href='#!/api/Ext.chart.series.CandleStick-cfg-renderer'>renderer</a>\n    plus one extra 'text' argument which comes first.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "1,344,34",
+                      "text": "1,345,12,298",
+                      "type": "1,344,18"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The attributes that have been changed or added, or the text for the label.\nExample to enclose every other label in parentheses:\n\n     renderer: function (text) {\n         if (index % 2 == 0) {\n             return '(' + text + ')'\n         }\n     }\n\nDefault value: null.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "text": "1,355,36,75:1,356,12,195",
+                      "type": "1,355,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,301,26",
+                  "text": "1,302,12,39",
+                  "type": "1,301,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "labelOverflowPadding",
+                "text": "Extra distance value for which the labelOverflow listener is triggered.\n",
+                "type": "Number",
+                "src": {
+                  "name": "1,369,26",
+                  "text": "1,370,12,72",
+                  "type": "1,369,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "listeners",
+                "text": "\nA config object containing one or more event handlers to be added to this object during initialization. This\nshould be a valid listeners config object as specified in the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> example for attaching\nmultiple handlers at once.\n\n**DOM events from Ext JS <a href='#!/api/Ext.Component'>Ext.Component</a>**\n\nWhile _some_ Ext JS Component classes export selected DOM events (e.g. \"click\", \"mouseover\" etc), this is usually\nonly done when extra value can be added. For example the <a href='#!/api/Ext.view.View'>Ext.view.View</a>s **<a href='#!/api/Ext.view.View-event-itemclick'>Ext.view.View#itemclick</a>** event passing the node clicked on. To access DOM events directly from a\nchild element of a Component, we need to specify the `element` option to identify the Component property to add a\nDOM listener to:\n\n    new Ext.panel.Panel({\n        width: 400,\n        height: 200,\n        dockedItems: [{\n            xtype: 'toolbar'\n        }],\n        listeners: {\n            click: {\n                element: 'el', //bind to the underlying el property on the panel\n                fn: function(){ console.log('click el'); }\n            },\n            dblclick: {\n                element: 'body', //bind to the underlying body property on the panel\n                fn: function(){ console.log('dblclick body'); }\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "3,243,25",
+                  "text": "3,244,11,1325",
+                  "type": "3,243,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "lowField",
+                "text": "The store record field name that represents the lowest value of the time interval represented.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,113,26",
+                  "text": "0,114,12,95",
+                  "type": "0,113,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "marker",
+                "text": "The sprite template used by marker instances on the series.\nIf the value of the marker config is set to `true` or the type\nof the sprite instance is not specified, the <a href='#!/api/Ext.draw.sprite.Circle'>Ext.draw.sprite.Circle</a>\nsprite will be used.\n\nExamples:\n\n    marker: true\n\n    marker: {\n        radius: 8\n    }\n\n    marker: {\n        type: 'arrow',\n        fx: {\n            duration: 200,\n            easing: 'backOut'\n        }\n    }\n",
+                "type": "Object/Boolean",
+                "src": {
+                  "name": "1,382,34",
+                  "text": "1,383,12,413",
+                  "type": "1,382,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "markerSubStyle",
+                "text": "This is cyclic used if series have multiple marker sprites.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,407,26",
+                  "text": "1,408,12,60",
+                  "type": "1,407,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "openField",
+                "text": "The store record field name that represents the opening value of the given period.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,103,26",
+                  "text": "0,104,12,83",
+                  "type": "0,103,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "overlaySurface",
+                "text": "The surface used to render series labels.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,435,12",
+                  "name": "1,436,26",
+                  "text": "1,436,41,42",
+                  "type": "1,436,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "publishes",
+                "since": "5.0.0",
+                "text": "One or more names of config properties that this component should publish\nto its ViewModel. Generally speaking, only properties defined in a class config\nblock (including ancestor config blocks and mixins) are eligible for publishing\nto the viewModel. Some components override this and publish their most useful\nconfigs by default.\n\n**Note:** We'll discuss publishing properties **not** found in the config block below.\n\nValues determined to be invalid by component (often form fields and model validations)\nwill not be published to the ViewModel.\n\nThis config uses the <a href='#!/api/Ext.chart.series.CandleStick-cfg-reference'>cfg-reference</a> to determine the name of the data\nobject to place in the `ViewModel`. If <a href='#!/api/Ext.chart.series.CandleStick-cfg-reference'>reference</a> is not set then this config\nis ignored.\n\nBy using this config and <a href='#!/api/Ext.chart.series.CandleStick-cfg-reference'>cfg-reference</a> you can bind configs between\ncomponents. For example:\n\n     ...\n         items: [{\n             xtype: 'textfield',\n             reference: 'somefield',  // component's name in the ViewModel\n             publishes: 'value' // value is not published by default\n         },{\n             ...\n         },{\n             xtype: 'displayfield',\n             bind: 'You have entered \"{somefield.value}\"'\n         }]\n     ...\n\nClasses must provide this config as an Object:\n\n     Ext.define('App.foo.Bar', {\n         publishes: {\n             foo: true,\n             bar: true\n         }\n     });\n\nThis is required for the config system to properly merge values from derived\nclasses.\n\nFor instances this value can be specified as a value as show above or an array\nor object as follows:\n\n     {\n         xtype: 'textfield',\n         reference: 'somefield',\n         publishes: [\n             'value',\n             'rawValue',\n             'dirty'\n         ]\n     }\n\n     // This achieves the same result as the above array form.\n     {\n         xtype: 'textfield',\n         reference: 'somefield',\n         publishes: {\n             value: true,\n             rawValue: true,\n             dirty: true\n         }\n     }\n\nIn some cases, users may want to publish a property to the viewModel that is not found in a class\nconfig block. In these situations, you may utilize <a href='#!/api/Ext.chart.series.CandleStick-method-publishState'>publishState</a> if the property has a\nsetter method.  Let's use <a href='#!/api/Ext.form.Labelable-method-setFieldLabel'>Ext.form.Labelable#setFieldLabel</a> as an example:\n\n      setFieldLabel: function(fieldLabel) {\n          this.callParent(arguments);\n          this.publishState('fieldLabel', fieldLabel);\n      }\n\nWith the above chunk of code, fieldLabel may now be published to the viewModel.\n",
+                "type": "String/String[]/Object",
+                "src": {
+                  "name": "2,100,42",
+                  "since": "2,179,19",
+                  "text": "2,101,12,2498",
+                  "type": "2,100,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "reference",
+                "text": "Specifies a name for this component inside its component hierarchy. This name\nmust be unique within its <a href='#!/api/Ext.container.Container-cfg-referenceHolder'>Ext.container.Container#referenceHolder</a>\nor its <a href='#!/api/Ext.app.ViewController'>Ext.app.ViewController</a>. See the documentation in\n<a href='#!/api/Ext.container.Container'>Ext.container.Container</a> for more information about references.\n\n**Note**: Valid identifiers start with a letter or underscore and are followed\nby zero or more additional letters, underscores or digits. References are case\nsensitive.\n",
+                "type": "String",
+                "src": {
+                  "name": "2,190,26",
+                  "text": "2,191,12,477",
+                  "type": "2,190,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "renderer",
+                "text": "A function that can be provided to set custom styling properties to each rendered element.\nIt receives `(sprite, config, rendererData, index)` as parameters.\n",
+                "type": "Function",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "sprite",
+                    "text": "The sprite affected by the renderer. The visual attributes are in `sprite.attr`.\nThe data field is available in `sprite.getField()`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,205,28",
+                      "text": "1,205,35,81:1,206,12,52",
+                      "type": "1,205,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "The sprite configuration. It varies with the series and the type of sprite:\nfor instance, a Line chart sprite might have just the `x` and `y` properties while a Bar\nchart sprite also has `width` and `height`. A <a href='#!/api/Ext.chart.series.CandleStick-property-type'>type</a> might be present too. For instance to\ndraw each marker and each segment of a Line chart, the renderer is called with the\n`config.type` set to either <a href='#!/api/Ext.chart.series.CandleStick-cfg-marker'>marker</a> or `line`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,207,28",
+                      "text": "1,207,35,76:1,208,12,311",
+                      "type": "1,207,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "rendererData",
+                    "text": "A record with different properties depending on the type of chart.\nThe only guaranteed property is `rendererData.store`, the store used by the series.\nIn some cases, a store may not exist: for instance a Gauge chart may read its value directly\nfrom its configuration; in this case rendererData.store is null and the value is\navailable in rendererData.value.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,212,28",
+                      "text": "1,212,41,67:1,213,12,291",
+                      "type": "1,212,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The index of the sprite. It is usually the index of the store record associated\nwith the sprite, in which case the record can be obtained with `store.getData().items[index]`.\nIf the chart is not associated with a store, the index represents the index of the sprite within\nthe series. For instance a Gauge chart may have as many sprites as there are sectors in the\nbackground of the gauge, plus one for the needle.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "1,217,28",
+                      "text": "1,217,34,80:1,218,12,335",
+                      "type": "1,217,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The attributes that have been changed or added. Note: it is usually possible to\nadd or modify the attributes directly into the `config` parameter and not return anything,\nbut returning an object with only those attributes that have been changed may allow for\noptimizations in the rendering of some series. Example to draw every other marker in red:\n\n     renderer: function (sprite, config, rendererData, index) {\n         if (config.type === 'marker') {\n             return { strokeStyle: (index % 2 === 0 ? 'red' : 'black') };\n         }\n     }\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,223,29,80:1,224,12,467",
+                      "type": "1,223,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,201,28",
+                  "text": "1,202,12,159",
+                  "type": "1,201,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "session",
+                "optional": true,
+                "text": "If provided this creates a new `Session` instance for this component. If this\nis a `Container`, this will then be inherited by all child components.\n\nTo create a new session you can specify `true`:\n\n     Ext.create({\n         xtype: 'viewport',\n         session: true,\n\n         items: [{\n             ...\n         }]\n     });\n\nAlternatively, a config object can be provided:\n\n     Ext.create({\n         xtype: 'viewport',\n         session: {\n             ...\n         },\n\n         items: [{\n             ...\n         }]\n     });\n",
+                "type": "Boolean/Object/Ext.data.Session",
+                "value": "null",
+                "src": {
+                  "name": "2,204,52",
+                  "text": "2,205,12,531",
+                  "type": "2,204,18",
+                  "value": "2,204,60"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showInLegend",
+                "text": "Whether to show this series in the legend.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,237,27",
+                  "text": "1,238,12,43",
+                  "type": "1,237,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showMarkers",
+                "text": "Whether markers should be displayed at the data points along the line. If true,\nthen the <a href='#!/api/Ext.chart.series.CandleStick-cfg-marker'>marker</a> config item will determine the markers' styling.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,375,27",
+                  "text": "1,376,12,154",
+                  "type": "1,375,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "store",
+                "text": "The store of values used in the series.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,295,12",
+                  "name": "1,296,26",
+                  "text": "1,296,32,40",
+                  "type": "1,296,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "style",
+                "text": "Custom style configuration for the sprite used in the series.\nIt overrides the style that is provided by the current theme.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,249,26",
+                  "text": "1,249,32,62:1,250,12,62",
+                  "type": "1,249,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "subStyle",
+                "text": "This is the cyclic used if the series has multiple sprites.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,255,26",
+                  "text": "1,255,35,60",
+                  "type": "1,255,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "surface",
+                "text": "The surface that the series is attached.\n",
+                "type": "Object",
+                "src": {
+                  "access": "1,429,12",
+                  "name": "1,430,26",
+                  "text": "1,430,34,41",
+                  "type": "1,430,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "themeStyle",
+                "text": "Style configuration that is provided by the current theme.\nIt is composed of five objects:\n",
+                "type": "Object",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "style",
+                    "text": "Properties common to all the series, for instance the 'lineWidth'.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,263,37",
+                      "text": "1,263,43,67",
+                      "type": "1,263,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "subStyle",
+                    "text": "Cyclic used if the series has multiple sprites.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,264,37",
+                      "text": "1,264,46,48",
+                      "type": "1,264,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "label",
+                    "text": "Sprite config for the labels, for instance the font and color.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,265,37",
+                      "text": "1,265,43,63",
+                      "type": "1,265,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "marker",
+                    "text": "Sprite config for the markers, for instance the size and stroke color.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,266,37",
+                      "text": "1,266,44,71",
+                      "type": "1,266,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "markerSubStyle",
+                    "text": "Cyclic used if series have multiple marker sprites.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,267,37",
+                      "text": "1,267,52,52",
+                      "type": "1,267,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,260,12",
+                  "name": "1,261,26",
+                  "text": "1,261,37,59:1,262,12,32",
+                  "type": "1,261,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "title",
+                "text": "The human-readable name of the series (displayed in the legend).\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "1,195,35",
+                  "text": "1,196,12,65",
+                  "type": "1,195,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "tooltip",
+                "text": "Add tooltips to the visualization's markers. The config options for the\ntooltip are the same configuration used with <a href='#!/api/Ext.tip.ToolTip'>Ext.tip.ToolTip</a> plus a\n<a href='#!/api/Ext.chart.series.CandleStick-cfg-renderer'>renderer</a> config option and a `scope` for the renderer. For example:\n\n    tooltip: {\n      trackMouse: true,\n      width: 140,\n      height: 28,\n      renderer: function (toolTip, record, ctx) {\n          toolTip.setHtml(record.get('name') + ': ' + record.get('data1') + ' views');\n      }\n    }\n\nNote that tooltips are shown for series markers and won't work\nif the <a href='#!/api/Ext.chart.series.CandleStick-cfg-marker'>marker</a> is not configured.\n",
+                "type": "Object",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "scope",
+                    "text": "The scope to use when the renderer function is\ncalled.  Defaults to the Series instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,494,34",
+                      "text": "1,494,40,47:1,495,12,42",
+                      "type": "1,494,18"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "renderer",
+                    "text": "An 'interceptor' method which can be used to\nmodify the tooltip attributes before it is shown.  The renderer function is\npassed the following params:\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "toolTip",
+                        "text": "The tooltip instance\n",
+                        "type": "Ext.tip.ToolTip",
+                        "src": {
+                          "name": "1,499,52",
+                          "text": "1,499,60,21",
+                          "type": "1,499,18"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "record",
+                        "text": "The record instance for the\nchart item (sprite) currently targeted by the tooltip.\n",
+                        "type": "Ext.data.Model",
+                        "src": {
+                          "name": "1,500,51",
+                          "text": "1,500,58,28:1,501,12,55",
+                          "type": "1,500,18"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "ctx",
+                        "text": "A data object with values relating to the\ncurrently targeted chart sprite\n",
+                        "type": "Object",
+                        "items": [
+                          {
+                            "$type": "property",
+                            "name": "category",
+                            "text": "The type of sprite passed to the\nrenderer function (will be \"items\", \"markers\", or \"labels\" depending on the\ntarget sprite of the tooltip)\n",
+                            "type": "String",
+                            "src": {
+                              "name": "1,504,47",
+                              "text": "1,504,56,33:1,505,12,106",
+                              "type": "1,504,18"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "field",
+                            "text": "The <a href='#!/api/Ext.chart.series.CandleStick-cfg-yField'>yField</a> for the series\n",
+                            "type": "String",
+                            "src": {
+                              "name": "1,507,47",
+                              "text": "1,507,53,35",
+                              "type": "1,507,18"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "index",
+                            "text": "The target sprite's index within the\nseries' items\n",
+                            "type": "Number",
+                            "src": {
+                              "name": "1,508,47",
+                              "text": "1,508,53,37:1,509,12,14",
+                              "type": "1,508,18"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "record",
+                            "text": "The record instance for the\nchart item (sprite) currently targeted by the tooltip.\n",
+                            "type": "Ext.data.Model",
+                            "src": {
+                              "name": "1,510,55",
+                              "text": "1,510,62,28:1,511,12,55",
+                              "type": "1,510,18"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "series",
+                            "text": "The series instance\ncontaining the tooltip's target sprite\n",
+                            "type": "Ext.chart.series.Series",
+                            "src": {
+                              "name": "1,512,64",
+                              "text": "1,512,71,20:1,513,12,39",
+                              "type": "1,512,18"
+                            }
+                          },
+                          {
+                            "$type": "property",
+                            "name": "sprite",
+                            "text": "The sprite (item)\ntarget of the tooltip\n",
+                            "type": "Ext.draw.sprite.Sprite",
+                            "src": {
+                              "name": "1,514,63",
+                              "text": "1,514,70,18:1,515,12,22",
+                              "type": "1,514,18"
+                            }
+                          }
+                        ],
+                        "src": {
+                          "name": "1,502,43",
+                          "text": "1,502,47,42:1,503,12,32",
+                          "type": "1,502,18"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "1,496,36",
+                      "text": "1,496,45,45:1,497,12,105",
+                      "type": "1,496,18"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,478,26",
+                  "text": "1,479,12,551",
+                  "type": "1,478,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "triggerAfterDraw",
+                "text": "Trigger drawlistener flag\n",
+                "src": {
+                  "access": "1,243,12",
+                  "name": "1,246,0",
+                  "text": "1,244,12,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "twoWayBindable",
+                "text": "This object holds a map of `config` properties that will update their binding\nas they are modified. For example, `value` is a key added by form fields. The\nform of this config is the same as <a href='#!/api/Ext.chart.series.CandleStick-cfg-publishes'>publishes</a>.\n\nThis config is defined so that updaters are not created and added for all\nbound properties since most cannot be modified by the end-user and hence are\nnot appropriate for two-way binding.\n",
+                "type": "String/String[]/Object",
+                "src": {
+                  "name": "2,239,42",
+                  "text": "2,240,12,402",
+                  "type": "2,239,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "useDarkerStrokeColor",
+                "text": "Colors for the series can be set directly through the 'colors' config, or indirectly\nwith the current theme or the 'colors' config that is set onto the chart. These colors\nare used as \"fill color\". Set this config to true, if you want a darker color for the\nstrokes. Set it to false if you want to use the same color as the fill color.\nAlternatively, you can set it to a number between 0 and 1 to control how much darker\nthe strokes should be.\nNote: this should be initial config and cannot be changed later on.\n",
+                "type": "Boolean/Number",
+                "src": {
+                  "name": "1,283,34",
+                  "text": "1,284,12,512",
+                  "type": "1,283,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "viewModel",
+                "text": "The `ViewModel` is a data provider for this component and its children. The\ndata contained in the `ViewModel` is typically used by adding <a href='#!/api/Ext.chart.series.CandleStick-cfg-bind'>bind</a> configs\nto the components that want present or edit this data.\n\nWhen set, the `ViewModel` is created and links to any inherited <a href='#!/api/Ext.chart.series.CandleStick-cfg-viewModel'>viewModel</a>\ninstance from an ancestor container as the \"parent\". The `ViewModel` hierarchy,\nonce established, only supports creation or destruction of children. The\nparent of a `ViewModel` cannot be changed on the fly.\n\nIf this is a root-level `ViewModel`, the data model connection is made to this\ncomponent's associated <a href='#!/api/Ext.data.Session'>Ext.data.Session</a>. This is\ndetermined by calling `getInheritedSession`.\n",
+                "type": "String/Object/Ext.app.ViewModel",
+                "src": {
+                  "name": "2,258,51",
+                  "text": "2,259,12,690",
+                  "type": "2,258,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "xAxis",
+                "text": "xAxis The chart axis the series is bound to in the 'X' direction.\nNormally, this would be set automatically by the series.\nFor charts with multiple x-axes, this defines which x-axis is used by the series.\nIt refers to either axis' ID or the (zero-based) index of the axis\nin the chart's <a href='#!/api/Ext.chart.AbstractChart-cfg-axes'>Ext.chart.AbstractChart#axes</a> config.\n",
+                "type": "Ext.chart.axis.Axis/Number/String",
+                "src": {
+                  "name": "4,33,0",
+                  "text": "4,27,12,337",
+                  "type": "4,26,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "xField",
+                "text": "The field used to access the x axis value from the items from the data source.\n",
+                "type": "String",
+                "src": {
+                  "name": "4,14,26",
+                  "text": "4,15,12,79",
+                  "type": "4,14,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "yAxis",
+                "text": "yAxis The chart axis the series is bound to in the 'Y' direction.\nNormally, this would be set automatically by the series.\nFor charts with multiple y-axes, this defines which y-axis is used by the series.\nIt refers to either axis' ID or the (zero-based) index of the axis\nin the chart's <a href='#!/api/Ext.chart.AbstractChart-cfg-axes'>Ext.chart.AbstractChart#axes</a> config.\n",
+                "type": "Ext.chart.axis.Axis/Number/String",
+                "src": {
+                  "name": "4,43,0",
+                  "text": "4,37,12,337",
+                  "type": "4,36,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "yField",
+                "text": "The field(s) used to access the y-axis value(s) of the items from the data source.\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "4,20,35",
+                  "text": "4,21,12,83",
+                  "type": "4,20,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "chartattached",
+                "text": "Fires when the <a href='#!/api/Ext.chart.AbstractChart'>Ext.chart.AbstractChart</a> has been attached to this series.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "chart",
+                    "type": "Ext.chart.AbstractChart",
+                    "src": {
+                      "name": "1,169,41",
+                      "type": "1,169,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,170,41",
+                      "type": "1,170,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,167,15",
+                  "text": "1,168,8,81"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "chartdetached",
+                "text": "Fires when the <a href='#!/api/Ext.chart.AbstractChart'>Ext.chart.AbstractChart</a> has been detached from this series.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "chart",
+                    "type": "Ext.chart.AbstractChart",
+                    "src": {
+                      "name": "1,175,41",
+                      "type": "1,175,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,176,41",
+                      "type": "1,176,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,173,15",
+                  "text": "1,174,8,83"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "itemclick",
+                "text": "Fires when a click event occurs on a series item.\n*Note*: This event requires the <a href='#!/api/Ext.chart.plugin.ItemEvents'>Ext.chart.plugin.ItemEvents</a>\nplugin be added to the chart.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,141,41",
+                      "type": "1,141,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,142,24",
+                      "type": "1,142,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,143,23",
+                      "type": "1,143,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,137,15",
+                  "text": "1,138,8,164"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "itemdblclick",
+                "text": "Fires when a double click event occurs on a series item.\n*Note*: This event requires the <a href='#!/api/Ext.chart.plugin.ItemEvents'>Ext.chart.plugin.ItemEvents</a>\nplugin be added to the chart.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,151,41",
+                      "type": "1,151,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,152,24",
+                      "type": "1,152,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,153,23",
+                      "type": "1,153,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,147,15",
+                  "text": "1,148,8,171"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "itemmousedown",
+                "text": "Fires when a mousedown event occurs on a series item.\n*Note*: This event requires the <a href='#!/api/Ext.chart.plugin.ItemEvents'>Ext.chart.plugin.ItemEvents</a>\nplugin be added to the chart.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,111,41",
+                      "type": "1,111,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,112,24",
+                      "type": "1,112,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,113,23",
+                      "type": "1,113,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,107,15",
+                  "text": "1,108,8,168"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "itemmousemove",
+                "text": "Fires when the mouse is moved on a series item.\n*Note*: This event requires the <a href='#!/api/Ext.chart.plugin.ItemEvents'>Ext.chart.plugin.ItemEvents</a>\nplugin be added to the chart.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,91,41",
+                      "type": "1,91,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,92,24",
+                      "type": "1,92,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,93,23",
+                      "type": "1,93,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,87,15",
+                  "text": "1,88,8,162"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "itemmouseout",
+                "text": "Fires when the mouse exits a series item.\n*Note*: This event requires the <a href='#!/api/Ext.chart.plugin.ItemEvents'>Ext.chart.plugin.ItemEvents</a>\nplugin be added to the chart.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,131,41",
+                      "type": "1,131,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,132,24",
+                      "type": "1,132,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,133,23",
+                      "type": "1,133,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,127,15",
+                  "text": "1,128,8,156"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "itemmouseover",
+                "text": "Fires when the mouse enters a series item.\n*Note*: This event requires the <a href='#!/api/Ext.chart.plugin.ItemEvents'>Ext.chart.plugin.ItemEvents</a>\nplugin be added to the chart.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,121,41",
+                      "type": "1,121,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,122,24",
+                      "type": "1,122,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,123,23",
+                      "type": "1,123,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,117,15",
+                  "text": "1,118,8,157"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "itemmouseup",
+                "text": "Fires when a mouseup event occurs on a series item.\n*Note*: This event requires the <a href='#!/api/Ext.chart.plugin.ItemEvents'>Ext.chart.plugin.ItemEvents</a>\nplugin be added to the chart.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,101,41",
+                      "type": "1,101,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,102,24",
+                      "type": "1,102,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,103,23",
+                      "type": "1,103,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,97,15",
+                  "text": "1,98,8,166"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "itemtap",
+                "text": "Fires when a tap event occurs on a series item.\n*Note*: This event requires the <a href='#!/api/Ext.chart.plugin.ItemEvents'>Ext.chart.plugin.ItemEvents</a>\nplugin be added to the chart.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,161,41",
+                      "type": "1,161,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,162,24",
+                      "type": "1,162,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,163,23",
+                      "type": "1,163,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,157,15",
+                  "text": "1,158,8,162"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "storechange",
+                "text": "Fires when the store of the series changes.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "series",
+                    "type": "Ext.chart.series.Series",
+                    "src": {
+                      "name": "1,182,41",
+                      "type": "1,182,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newStore",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "name": "1,183,32",
+                      "type": "1,183,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldStore",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "name": "1,184,32",
+                      "type": "1,184,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,180,15",
+                  "text": "1,181,8,44"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_addDeclaredListeners",
+                "text": "Adds declarative listeners as nested arrays of listener objects.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,413,27",
+                      "type": "3,413,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if any listeners were added\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,414,30,35",
+                      "type": "3,414,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,412,12",
+                  "name": "3,416,0",
+                  "text": "3,411,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.chart.series.CandleStick-method-onAfter'>onAfter</a>.\n",
+                "src": {
+                  "name": "3,1236,0",
+                  "text": "3,1234,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.chart.series.CandleStick-method-onBefore'>onBefore</a>.\n",
+                "src": {
+                  "name": "3,1230,0",
+                  "text": "3,1228,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addBindableUpdater",
+                "since": "5.0.0",
+                "text": "Ensures that the given property (if it is a Config System config) has a proper\n\"updater\" method on this instance to sync changes to the config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "property",
+                    "text": "The name of the config property.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,504,28",
+                      "text": "2,504,37,33",
+                      "type": "2,504,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,505,12",
+                  "name": "2,508,0",
+                  "since": "2,506,19",
+                  "text": "2,502,12,144"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addListener",
+                "text": "The <a href='#!/api/Ext.chart.series.CandleStick-method-on'>on</a> method is shorthand for\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.\n\nAppends an event handler to this object.  For example:\n\n    myGridPanel.on(\"itemclick\", this.onItemClick, this);\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple events. For example:\n\n    myGridPanel.on({\n        cellclick: this.onCellClick,\n        select: this.onSelect,\n        viewready: this.onViewReady,\n        scope: this // Important. Ensure \"this\" is correct during handler execution\n    });\n\nOne can also specify options for each event handler separately:\n\n    myGridPanel.on({\n        cellclick: {fn: this.onCellClick, scope: this, single: true},\n        viewready: {fn: panel.onViewReady, scope: panel}\n    });\n\n*Names* of methods in a specified scope may also be used:\n\n    myGridPanel.on({\n        cellclick: {fn: 'onCellClick', scope: this, single: true},\n        viewready: {fn: 'onViewReady', scope: panel}\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\nMay also be an object who's property names are event names.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "3,835,35",
+                      "text": "3,835,45,37:3,836,12,61",
+                      "type": "3,835,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "optional": true,
+                    "text": "The method the event invokes or the *name* of\nthe method within the specified `scope`.  Will be called with arguments\ngiven to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> plus the `options` parameter described\nbelow.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,838,38",
+                      "text": "3,838,42,46:3,839,12,166",
+                      "type": "3,838,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,843,29",
+                      "text": "3,843,36,62:3,844,12,73",
+                      "type": "3,843,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n\n**Note:** The options object will also be passed as the last argument to every\nevent handler.\n\nThis object may contain any of the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "  The scope (`this` reference) in which the handler function is executed. **If omitted,\n  defaults to the object which fired the event.**\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "3,853,36",
+                          "text": "3,854,12,139",
+                          "type": "3,853,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delay",
+                        "text": "  The number of milliseconds to delay the invocation of the handler after the event\n  fires.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,857,36",
+                          "text": "3,858,12,94",
+                          "type": "3,857,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "single",
+                        "text": "  True to add a handler to handle just the next firing of the event, and then remove\n  itself.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "3,861,37",
+                          "text": "3,862,12,96",
+                          "type": "3,861,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "buffer",
+                        "text": "  Causes the handler to be scheduled to run in an <a href='#!/api/Ext.util.DelayedTask'>Ext.util.DelayedTask</a> delayed\n  by the specified number of milliseconds. If the event fires again within that time,\n  the original handler is _not_ invoked, but the new handler is scheduled in its place.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,865,36",
+                          "text": "3,866,12,262",
+                          "type": "3,865,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onFrame",
+                        "text": "  Causes the handler to be scheduled to run at the next\n  <a href='#!/api/Ext.Function-method-requestAnimationFrame'>Ext.Function#requestAnimationFrame</a>. If the\n  event fires again before that time, the handler is not rescheduled - the handler\n  will only be called once when the next animation frame is fired, with the last set\n  of arguments passed.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,870,36",
+                          "text": "3,871,12,323",
+                          "type": "3,870,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "target",
+                        "text": "  Only call the handler if the event was fired on the target Observable, _not_ if the\n  event was bubbled up from a child Observable.\n",
+                        "type": "Ext.util.Observable",
+                        "src": {
+                          "name": "3,877,49",
+                          "text": "3,878,12,135",
+                          "type": "3,877,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "element",
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.Component'>Ext.Component</a>.**\n  The name of a Component property which references an <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>\n  to add a listener to.\n\n  This option is useful during Component construction to add DOM event listeners to\n  elements of <a href='#!/api/Ext.Component'>Ext.Component</a> which will exist only after the\n  Component is rendered.\n\n  For example, to add a click listener to a Panel's body:\n\n      var panel = new Ext.panel.Panel({\n          title: 'The title',\n          listeners: {\n              click: this.handlePanelClick,\n              element: 'body'\n          }\n      });\n\nIn order to remove listeners attached using the element, you'll need to reference\nthe element itself as seen below.\n\n     panel.body.un(...)\n",
+                        "type": "String",
+                        "src": {
+                          "name": "3,881,36",
+                          "text": "3,882,12,781",
+                          "type": "3,881,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delegate",
+                        "optional": true,
+                        "text": "  A simple selector to filter the event target or look for a descendant of the target.\n\n  The \"delegate\" option is only available on Ext.dom.Element instances (or\n  when attaching a listener to a Ext.dom.Element via a Component using the\n  element option).\n\n  See the *delegate* example below.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "3,905,37",
+                          "text": "3,906,12,295",
+                          "type": "3,905,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopPropagation",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopPropagation'>Ext.event.Event#stopPropagation</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "3,914,38",
+                          "text": "3,915,12,212",
+                          "type": "3,914,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "preventDefault",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-preventDefault'>Ext.event.Event#preventDefault</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "3,919,38",
+                          "text": "3,920,12,210",
+                          "type": "3,919,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopEvent",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopEvent'>Ext.event.Event#stopEvent</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "3,924,38",
+                          "text": "3,925,12,200",
+                          "type": "3,924,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "args",
+                        "optional": true,
+                        "text": "  Optional arguments to pass to the handler function. Any additional arguments\n  passed to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> will be appended\n  to these arguments.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "3,929,36",
+                          "text": "3,930,12,179",
+                          "type": "3,929,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "destroyable",
+                        "optional": true,
+                        "text": "  When specified as `true`, the function returns a `destroyable` object. An object\n  which implements the `destroy` method which removes all listeners added in this call.\n  This syntax can be a helpful shortcut to using <a href='#!/api/Ext.chart.series.CandleStick-method-un'>un</a>; particularly when\n  removing multiple listeners.  *NOTE* - not compatible when using the _element_\n  option.  See <a href='#!/api/Ext.chart.series.CandleStick-method-un'>un</a> for the proper syntax for removing listeners added using the\n  _element_ config.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "3,934,38",
+                          "text": "3,935,12,441",
+                          "type": "3,934,20",
+                          "value": "3,934,50"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "priority",
+                        "optional": true,
+                        "text": "  An optional numeric priority that determines the order in which event handlers\n  are run. Event handlers with no priority will be run as if they had a priority\n  of 0. Handlers with a higher priority will be prioritized to run sooner than\n  those with a lower priority.  Negative numbers can be used to set a priority\n  lower than the default. Internally, the framework uses a range of 1000 or\n  greater, and -1000 or lesser for handlers that are intended to run before or\n  after all others, so it is recommended to stay within the range of -999 to 999\n  when setting the priority of event handlers in application-level code.\n  A priority must be an integer to be valid.  Fractional values are reserved for\n  internal framework use.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,942,37",
+                          "text": "3,943,12,737",
+                          "type": "3,942,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "order",
+                        "optional": true,
+                        "text": "  A legacy option that is provided for backward compatibility.\n  It is recommended to use the `priority` option instead.  Available options are:\n\n  - `'before'`: equal to a priority of `100`\n  - `'current'`: equal to a priority of `0` or default priority\n  - `'after'`: equal to a priority of `-100`\n",
+                        "type": "String",
+                        "value": "'current'",
+                        "src": {
+                          "name": "3,954,37",
+                          "text": "3,955,12,301",
+                          "type": "3,954,20",
+                          "value": "3,954,43"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "3,846,29",
+                      "text": "3,846,38,44:3,847,12,154",
+                      "type": "3,846,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "  A shortcut for the `order` event option.  Provided for backward compatibility.\n  Please use the `priority` event option instead.\n\n**Combining Options**\n\nUsing the options argument, it is possible to combine different types of listeners:\n\nA delayed, one-time listener.\n\n    myPanel.on('hide', this.handleClick, this, {\n        single: true,\n        delay: 100\n    });\n\n**Attaching multiple handlers in 1 call**\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple handlers and handler configs.\n\n    grid.on({\n        itemclick: 'onItemClick',\n        itemcontextmenu: grid.onItemContextmenu,\n        destroy: {\n            fn: function () {\n                // function called within the 'altCmp' scope instead of grid\n            },\n            scope: altCmp // unique scope for the destroy handler\n        },\n        scope: grid       // default scope - provided for example clarity\n    });\n\n**Delegate**\n\nThis is a configuration option that you can pass along when registering a handler for\nan event to assist with event delegation. By setting this configuration option\nto a simple selector, the target element will be filtered to look for a\ndescendant of the target. For example:\n\n    var panel = Ext.create({\n        xtype: 'panel',\n        renderTo: document.body,\n        title: 'Delegate Handler Example',\n        frame: true,\n        height: 220,\n        width: 220,\n        html: '<h1 class=\"myTitle\">BODY TITLE</h1>Body content'\n    });\n\n    // The click handler will only be called when the click occurs on the\n    // delegate: h1.myTitle (\"h1\" tag with class \"myTitle\")\n    panel.on({\n        click: function (e) {\n            console.log(e.getTarget().innerHTML);\n        },\n        element: 'body',\n        delegate: 'h1.myTitle'\n     });\n",
+                    "type": "String",
+                    "value": "'current'",
+                    "src": {
+                      "name": "3,962,29",
+                      "text": "3,963,12,1831",
+                      "type": "3,962,20",
+                      "value": "3,962,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes\n all listeners added in this call. For example:\n\n    this.btnListeners =  = myButton.on({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,1021,29,54:3,1022,12,516",
+                      "type": "3,1021,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1041,0",
+                  "text": "3,804,12,1008"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addManagedListener",
+                "text": "The addManagedListener method is used when some object (call it \"A\") is listening\nto an event on another observable object (\"B\") and you want to remove that listener\nfrom \"B\" when \"A\" is destroyed. This is not an issue when \"B\" is destroyed because\nall of its listeners will be removed at that time.\n\nExample:\n\n    Ext.define('Foo', {\n        extend: 'Ext.Component',\n\n        initComponent: function () {\n            this.addManagedListener(MyApp.SomeGlobalSharedMenu, 'show', this.doSomething);\n            this.callParent();\n        }\n    });\n\nAs you can see, when an instance of Foo is destroyed, it ensures that the 'show'\nlistener on the menu (`MyApp.SomeGlobalSharedMenu`) is also removed.\n\nAs of version 5.1 it is no longer necessary to use this method in most cases because\nlisteners are automatically managed if the scope object provided to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> is an Observable instance.\nHowever, if the observable instance and scope are not the same object you\nstill need to use <a href='#!/api/Ext.chart.series.CandleStick-method-mon'>mon</a> or <a href='#!/api/Ext.chart.series.CandleStick-method-addManagedListener'>addManagedListener</a> if you want the listener to be\nmanaged.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item to which to add a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "3,456,56",
+                      "text": "3,456,61,47",
+                      "type": "3,456,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "3,457,34",
+                      "text": "3,457,40,63",
+                      "type": "3,457,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event\nname, this is the handler function or the name of a method on the specified\n`scope`.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,458,36",
+                      "text": "3,458,39,49:3,459,11,85",
+                      "type": "3,458,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,461,27",
+                      "text": "3,461,33,92:3,462,11,43",
+                      "type": "3,461,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> options.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,463,27",
+                      "text": "3,463,35,67:3,464,11,61",
+                      "type": "3,463,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes all listeners added in this call. For example:\n\n    this.btnListeners = myButton.mon({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,465,28,54:3,466,11,513",
+                      "type": "3,465,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,484,0",
+                  "text": "3,430,11,1093"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyBind",
+                "since": "5.0.0",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "binds",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "2,523,35",
+                      "type": "2,523,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "currentBindings",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,524,28",
+                      "type": "2,524,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "2,525,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,526,12",
+                  "name": "2,529,0",
+                  "since": "2,527,19"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applySession",
+                "since": "5.0.0",
+                "text": "Transforms a Session config to a proper instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,626,28",
+                      "type": "2,626,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "type": "2,627,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,628,12",
+                  "name": "2,631,0",
+                  "since": "2,629,19",
+                  "text": "2,625,12,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyViewModel",
+                "since": "5.0.0",
+                "text": "Transforms a ViewModel config to a proper instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "viewModel",
+                    "type": "String/Object/Ext.app.ViewModel",
+                    "src": {
+                      "name": "2,654,53",
+                      "type": "2,654,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "type": "2,655,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,656,12",
+                  "name": "2,659,0",
+                  "since": "2,657,19",
+                  "text": "2,653,12,52"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearListeners",
+                "text": "Removes all listeners for this object including the managed listeners\n",
+                "src": {
+                  "name": "3,1255,0",
+                  "text": "3,1253,11,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearManagedListeners",
+                "text": "Removes all managed listeners for this object.\n",
+                "src": {
+                  "name": "3,1291,0",
+                  "text": "3,1289,11,47"
+                }
+              },
+              {
+                "$type": "method",
+                "constructor": true,
+                "name": "constructor",
+                "src": {
+                  "constructor": "4,8,4"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "coordinateData",
+                "text": "This method will return an array containing data coordinated by a specific axis.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "text": "Store records.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "1,925,23",
+                      "text": "1,925,29,15",
+                      "type": "1,925,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "text": "The field to fetch from each record.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,926,24",
+                      "text": "1,926,30,37",
+                      "type": "1,926,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "axis",
+                    "text": "The axis used to lay out the data.\n",
+                    "type": "Ext.chart.axis.Axis",
+                    "src": {
+                      "name": "1,927,37",
+                      "text": "1,927,42,35",
+                      "type": "1,927,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Array",
+                    "src": {
+                      "type": "1,928,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,923,8",
+                  "name": "1,930,0",
+                  "text": "1,924,8,81"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createRelayer",
+                "text": "Creates an event handling function which re-fires the event from this object as the passed event name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newName",
+                    "text": "The name under which to re-fire the passed parameters.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1522,27",
+                      "text": "3,1522,35,55",
+                      "type": "3,1522,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "beginEnd",
+                    "text": "(optional) The caller can specify on which indices to slice.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,1523,26",
+                      "text": "3,1523,35,61",
+                      "type": "3,1523,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "3,1524,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1520,11",
+                  "name": "3,1526,0",
+                  "text": "3,1521,11,103"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doFireEvent",
+                "text": "Continue to fire event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "type": "String",
+                    "src": {
+                      "name": "3,761,27",
+                      "type": "3,761,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,762,26",
+                      "type": "3,762,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bubbles",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,763,28",
+                      "type": "3,763,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,759,11",
+                  "name": "3,765,0",
+                  "text": "3,758,11,24"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enableBubble",
+                "text": "Enables events fired by this Observable to bubble up an owner hierarchy by calling `this.getBubbleTarget()` if\npresent. There is no implementation in the Observable base class.\n\nThis is commonly used by Ext.Components to bubble events to owner Containers.\nSee <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>. The default implementation in Ext.Component returns the\nComponent's immediate owner. But if a known target is required, this can be overridden to access the\nrequired target more quickly.\n\nExample:\n\n    Ext.define('Ext.overrides.form.field.Base', {\n        override: 'Ext.form.field.Base',\n\n        //  Add functionality to Field's initComponent to enable the change event to bubble\n        initComponent: function () {\n            this.callParent();\n            this.enableBubble('change');\n        }\n    });\n\n    var myForm = Ext.create('Ext.form.Panel', {\n        title: 'User Details',\n        items: [{\n            ...\n        }],\n        listeners: {\n            change: function() {\n                // Title goes red if form has been modified.\n                myForm.header.setStyle('color', 'red');\n            }\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventNames",
+                    "text": "The event name to bubble, or an Array of event names.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "3,1567,36",
+                      "text": "3,1567,47,54",
+                      "type": "3,1567,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1569,0",
+                  "text": "3,1534,11,1138"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "findMatchingAxis",
+                "text": "Given the list of axes in a certain direction and a list of series fields in that direction\nreturns the first matching axis for the series in that direction,\nor undefined if a match wasn't found.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "directionAxes",
+                    "src": {
+                      "name": "1,1117,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "directionFields",
+                    "src": {
+                      "name": "1,1117,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1112,8",
+                  "name": "1,1117,0",
+                  "text": "1,1113,8,196"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use <a href='#!/api/Ext.chart.series.CandleStick-fireEventAction'>fireEventAction</a> instead.\n",
+                "deprecatedVersion": "5.5",
+                "name": "fireAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nBy default, the action function will be executed after any \"before\" event handlers\n(as specified using the `order` option of\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>), but before any other\nhandlers are fired.  This gives the \"before\" handlers an opportunity to\ncancel the event by returning `false`, and prevent the action function from\nbeing called.\n\nThe action can also be configured to run after normal handlers, but before any \"after\"\nhandlers (as specified using the `order` event option) by passing `'after'`\nas the `order` parameter.  This configuration gives any event handlers except\nfor \"after\" handlers the opportunity to cancel the event and prevent the action\nfunction from being called.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,640,28",
+                      "text": "3,640,38,31",
+                      "type": "3,640,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,641,27",
+                      "text": "3,641,32,58",
+                      "type": "3,641,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "3,642,30",
+                      "text": "3,642,33,21",
+                      "type": "3,642,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,643,29",
+                      "text": "3,643,36,62:3,644,12,72",
+                      "type": "3,643,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Event options for the action function.  Accepts any\nof the options of <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,645,29",
+                      "text": "3,645,38,52:3,646,12,72",
+                      "type": "3,645,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "The order to call the action function relative\ntoo the event handlers (`'before'` or `'after'`).  Note that this option is\nsimply used to sort the action function relative to the event handlers by \"priority\".\nAn order of `'before'` is equivalent to a priority of `99.5`, while an order of\n`'after'` is equivalent to a priority of `-99.5`.  See the `priority` option\nof <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> for more details.\n",
+                    "type": "String",
+                    "value": "'before'",
+                    "src": {
+                      "name": "3,647,29",
+                      "text": "3,647,45,47:3,648,12,394",
+                      "type": "3,647,20",
+                      "value": "3,647,35"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "3,653,12",
+                  "deprecatedVersion": "3,653,12",
+                  "name": "3,655,0",
+                  "text": "3,626,12,802"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEvent",
+                "text": "Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed\nto <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>).\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.chart.series.CandleStick-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,568,27",
+                      "text": "3,568,37,31",
+                      "type": "3,568,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Variable number of parameters are passed to handlers.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "3,569,30",
+                      "text": "3,569,35,54",
+                      "type": "3,569,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,570,29,77",
+                      "type": "3,570,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,572,0",
+                  "text": "3,562,11,310"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventArgs",
+                "text": "Fires the specified event with the passed parameter list.\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.chart.series.CandleStick-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,605,27",
+                      "text": "3,605,37,31",
+                      "type": "3,605,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "An array of parameters which are passed to handlers.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "3,606,29",
+                      "text": "3,606,34,53",
+                      "type": "3,606,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,607,29,77",
+                      "type": "3,607,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,609,0",
+                  "text": "3,600,11,202"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventedAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nEvented Actions will automatically dispatch a 'before' event passing. This event will\nbe given a special controller that allows for pausing/resuming of the event flow.\n\nBy pausing the controller the updater and events will not run until resumed. Pausing,\nhowever, will not stop the processing of any other before events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,721,28",
+                      "text": "3,721,38,31",
+                      "type": "3,721,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "3,722,27",
+                      "text": "3,722,32,58",
+                      "type": "3,722,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,723,37",
+                      "text": "3,723,40,21",
+                      "type": "3,723,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,724,29",
+                      "text": "3,724,36,62:3,725,12,72",
+                      "type": "3,724,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fnArgs",
+                    "optional": true,
+                    "text": "Optional arguments for the action `fn`. If not\ngiven, the normal `args` will be used to call `fn`. If `false` is passed, the\n`args` are used but if the first argument is this instance it will be removed\nfrom the args passed to the action function.\n",
+                    "type": "Array/Boolean",
+                    "src": {
+                      "name": "3,726,36",
+                      "text": "3,726,44,47:3,727,12,201",
+                      "type": "3,726,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,731,0",
+                  "text": "3,714,12,409"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getBubbleParent",
+                "text": "Gets the bubbling parent for an Observable\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The bubble parent. null is returned if no bubble target exists\n",
+                    "type": "Ext.util.Observable",
+                    "src": {
+                      "text": "3,793,41,63",
+                      "type": "3,793,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,792,11",
+                  "name": "3,795,0",
+                  "text": "3,791,11,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getController",
+                "text": "Returns the <a href='#!/api/Ext.app.ViewController'>Ext.app.ViewController</a> instance associated with this\ncomponent via the <a href='#!/api/Ext.chart.series.CandleStick-cfg-controller'>controller</a> config or <a href='#!/api/Ext.chart.series.CandleStick-setController'>setController</a> method.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns this component's ViewController or\nnull if one was not configured\n",
+                    "type": "Ext.app.ViewController",
+                    "src": {
+                      "text": "2,79,45,43:2,80,12,31",
+                      "type": "2,79,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,76,20",
+                  "text": "2,77,12,152"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "5,75,25,3",
+                      "type": "5,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "5,77,0",
+                  "text": "5,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getItemByIndex",
+                "text": "Returns a series item by index and (optional) category.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The index of the item (matches store record index).\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "1,1672,24",
+                      "text": "1,1672,30,52",
+                      "type": "1,1672,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "category",
+                    "optional": true,
+                    "text": "The category of item, e.g.: 'items', 'markers', 'sprites'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,1673,25",
+                      "text": "1,1673,35,59",
+                      "type": "1,1673,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "item\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,1674,25,5",
+                      "type": "1,1674,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1676,0",
+                  "text": "1,1671,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getItemForPoint",
+                "text": "For a given x/y point relative to the main rect, find a corresponding item from this\nseries, if any.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "x",
+                    "type": "Number",
+                    "src": {
+                      "name": "1,1656,24",
+                      "type": "1,1656,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "y",
+                    "type": "Number",
+                    "src": {
+                      "name": "1,1657,24",
+                      "type": "1,1657,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "optional": true,
+                    "text": "optional target to receive the result\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,1658,25",
+                      "text": "1,1658,33,38",
+                      "type": "1,1658,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object describing the item, or null if there is no matching item. The exact contents of\nthis object will vary by series type, but should always contain at least the following:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "record",
+                        "text": "the record of the item.\n",
+                        "type": "Ext.data.Model",
+                        "src": {
+                          "name": "1,1662,40",
+                          "text": "1,1662,47,24",
+                          "type": "1,1662,17"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "point",
+                        "text": "the x/y coordinates relative to the chart box of a single point\nfor this data item, which can be used as e.g. a tooltip anchor point.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "1,1663,31",
+                          "text": "1,1663,37,64:1,1664,8,70",
+                          "type": "1,1663,17"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "sprite",
+                        "text": "the item's rendering Sprite.\n",
+                        "type": "Ext.draw.sprite.Sprite",
+                        "src": {
+                          "name": "1,1665,48",
+                          "text": "1,1665,55,29",
+                          "type": "1,1665,17"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "subSprite",
+                        "text": "the index if sprite is an instancing sprite.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "1,1666,32",
+                          "text": "1,1666,42,45",
+                          "type": "1,1666,17"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "text": "1,1659,25,91:1,1660,8,89",
+                      "type": "1,1659,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1668,0",
+                  "text": "1,1654,8,101"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasListener",
+                "text": "Checks to see if this object has any listeners for a specified event, or whether the event bubbles. The answer\nindicates whether the event needs firing or not.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to check for\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1334,27",
+                      "text": "3,1334,37,35",
+                      "type": "3,1334,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the event is being listened for or bubbles, else `false`\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,1335,29,67",
+                      "type": "3,1335,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1337,0",
+                  "text": "3,1331,11,161"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initBindable",
+                "since": "5.0.0",
+                "text": "This method triggers the lazy configs and must be called when it is time to\nfully boot up. The configs that must be initialized are: <a href='#!/api/Ext.chart.series.CandleStick-cfg-bind'>bind</a>, <a href='#!/api/Ext.chart.series.CandleStick-cfg-publishes'>publishes</a>,\n<a href='#!/api/Ext.chart.series.CandleStick-cfg-session'>session</a>, <a href='#!/api/Ext.chart.series.CandleStick-cfg-twoWayBindable'>twoWayBindable</a> and <a href='#!/api/Ext.chart.series.CandleStick-cfg-viewModel'>viewModel</a>.\n",
+                "src": {
+                  "access": "2,723,12",
+                  "name": "2,726,0",
+                  "since": "2,724,19",
+                  "text": "2,720,12,199"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initInheritedState",
+                "text": "Called by `getInherited` to initialize the inheritedState the first time it is\nrequested.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "inheritedState",
+                    "src": {
+                      "name": "2,311,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,309,8",
+                  "name": "2,311,0",
+                  "text": "2,307,8,90"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSuspended",
+                "text": "Checks if all events, or a specific event, is suspended.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "optional": true,
+                    "text": "The name of the specific event to check\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1344,29",
+                      "text": "3,1344,36,40",
+                      "type": "3,1344,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if events are suspended\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,1345,30,31",
+                      "type": "3,1345,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1347,0",
+                  "text": "3,1343,12,57"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "isSyncing",
+                "text": "Checks if a particular binding is synchronizing the value.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the property being bound to.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,770,28",
+                      "text": "2,770,33,41",
+                      "type": "2,770,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the binding is syncing.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,771,30,34",
+                      "type": "2,771,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,499,-1",
+                  "name": "2,775,0",
+                  "text": "2,769,12,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupController",
+                "since": "5.0.1",
+                "text": "Gets the controller that controls this view. May be a controller that belongs\nto a view higher in the hierarchy.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "`true` to not consider the controller directly attached\nto this view (if it exists).\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "2,360,26",
+                      "text": "2,360,42,56:2,361,8,29",
+                      "type": "2,360,16",
+                      "value": "2,360,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The controller. <a href='#!/api/null'>null</a> if no controller is found.\n",
+                    "type": "Ext.app.ViewController",
+                    "src": {
+                      "text": "2,362,41,50",
+                      "type": "2,362,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,366,0",
+                  "since": "2,364,15",
+                  "text": "2,357,8,114"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupSession",
+                "since": "5.0.0",
+                "text": "Returns the <a href='#!/api/Ext.data.Session'>Ext.data.Session</a> for this instance. This property may come\nfrom this instance's <a href='#!/api/Ext.chart.series.CandleStick-cfg-session'>session</a> or be inherited from this object's parent.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "Pass `true` to ignore a <a href='#!/api/Ext.chart.series.CandleStick-cfg-session'>session</a> configured on\nthis instance and only consider an inherited session.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "2,373,26",
+                      "text": "2,373,42,48:2,374,8,54",
+                      "type": "2,373,16",
+                      "value": "2,373,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "type": "2,375,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,378,0",
+                  "since": "2,376,15",
+                  "text": "2,371,8,156"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupViewModel",
+                "since": "5.0.0",
+                "text": "Returns the <a href='#!/api/Ext.app.ViewModel'>Ext.app.ViewModel</a> for this instance. This property may come from this\nthis instance's <a href='#!/api/Ext.chart.series.CandleStick-cfg-viewModel'>viewModel</a> or be inherited from this object's parent.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "Pass `true` to ignore a <a href='#!/api/Ext.chart.series.CandleStick-cfg-viewModel'>viewModel</a> configured on\nthis instance and only consider an inherited view model.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "2,394,26",
+                      "text": "2,394,42,50:2,395,8,57",
+                      "type": "2,394,16",
+                      "value": "2,394,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "type": "2,396,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,399,0",
+                  "since": "2,397,15",
+                  "text": "2,392,8,164"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "makeBindableUpdater",
+                "since": "5.0.0",
+                "text": "Returns an `update` method for the given Config that will call <a href='#!/api/Ext.chart.series.CandleStick-method-publishState'>publishState</a>\nto ensure two-way bindings (via <a href='#!/api/Ext.chart.series.CandleStick-cfg-bind'>bind</a>) as well as any <a href='#!/api/Ext.chart.series.CandleStick-cfg-publishes'>publishes</a> are updated.\nThis method is cached on the `cfg` instance for re-use.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cfg",
+                    "type": "Ext.Config",
+                    "src": {
+                      "name": "2,749,32",
+                      "type": "2,749,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The updater function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "2,750,31,22",
+                      "type": "2,750,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,751,12",
+                  "name": "2,754,0",
+                  "since": "2,752,19",
+                  "text": "2,746,12,223"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addManagedListener",
+                "name": "mon",
+                "text": "Shorthand for <a href='#!/api/Ext.chart.series.CandleStick-method-addManagedListener'>addManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "3,1787,12",
+                  "name": "3,1789,0",
+                  "text": "3,1786,12,43"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeManagedListener",
+                "name": "mun",
+                "text": "Shorthand for <a href='#!/api/Ext.chart.series.CandleStick-method-removeManagedListener'>removeManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "3,1793,12",
+                  "name": "3,1795,0",
+                  "text": "3,1792,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addListener",
+                "name": "on",
+                "src": {
+                  "inheritdoc": "3,1775,12",
+                  "name": "3,1777,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onAfter",
+                "text": "Appends an after-event handler.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "3,1190,44",
+                      "text": "3,1190,54,37",
+                      "type": "3,1190,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,1191,37",
+                      "text": "3,1191,40,30",
+                      "type": "3,1191,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1192,29",
+                      "text": "3,1192,36,20",
+                      "type": "3,1192,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1193,29",
+                      "text": "3,1193,38,44",
+                      "type": "3,1193,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1195,0",
+                  "text": "3,1185,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onBefore",
+                "text": "Appends a before-event handler.  Returning `false` from the handler will stop the event.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "3,1175,44",
+                      "text": "3,1175,54,37",
+                      "type": "3,1175,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,1176,37",
+                      "text": "3,1176,40,30",
+                      "type": "3,1176,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1177,29",
+                      "text": "3,1177,36,20",
+                      "type": "3,1177,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1178,29",
+                      "text": "3,1178,38,44",
+                      "type": "3,1178,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1180,0",
+                  "text": "3,1170,12,183"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "provideLegendInfo",
+                "text": "Provide legend information to target array.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "\nThe information consists:\n",
+                    "type": "Array",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "name",
+                        "type": "String",
+                        "src": {
+                          "name": "1,1745,31",
+                          "type": "1,1745,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "markColor",
+                        "type": "String",
+                        "src": {
+                          "name": "1,1746,31",
+                          "type": "1,1746,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "disabled",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "1,1747,32",
+                          "type": "1,1747,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "series",
+                        "type": "String",
+                        "src": {
+                          "name": "1,1748,31",
+                          "type": "1,1748,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "index",
+                        "type": "Number",
+                        "src": {
+                          "name": "1,1749,31",
+                          "type": "1,1749,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "1,1742,23",
+                      "text": "1,1743,8,27",
+                      "type": "1,1742,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1751,0",
+                  "text": "1,1740,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "publishState",
+                "since": "5.0.0",
+                "text": "Publish this components state to the `ViewModel`. If no arguments are given (or if\nthis is the first call), the entire state is published. This state is determined by\nthe <a href='#!/api/Ext.chart.series.CandleStick-cfg-publishes'>publishes</a> property.\n\nThis method is called only by component authors.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "property",
+                    "optional": true,
+                    "text": "The name of the property to update.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "2,422,25",
+                      "text": "2,422,35,36",
+                      "type": "2,422,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value of `property`. Only needed if `property` is given.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,423,25",
+                      "text": "2,423,32,61",
+                      "type": "2,423,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,424,8",
+                  "name": "2,427,0",
+                  "since": "2,425,15",
+                  "text": "2,416,8,244"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "relayEvents",
+                "text": "Relays selected events from the specified Observable as if the events were fired by `this`.\n\nFor example if you are extending Grid, you might decide to forward some events from store.\nSo you can do this inside your initComponent:\n\n    this.relayEvents(this.getStore(), ['load']);\n\nThe grid instance will then have an observable 'load' event which will be passed\nthe parameters of the store's load event and any function fired with the grid's\nload event would have access to the grid using the this keyword (unless the event\nis handled by a controller's control/listen event listener in which case 'this'\nwill be the controller rather than the grid).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The Observable whose events this object is to relay.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1466,27",
+                      "text": "3,1466,34,53",
+                      "type": "3,1466,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "events",
+                    "text": "Array of event names to relay or an Object with key/value\npairs translating to ActualEventName/NewEventName respectively. For example:\n    this.relayEvents(this, {add:'push', remove:'pop'});\n\nWould now redispatch the add event of this as a push event and the remove event as a pop event.\n",
+                    "type": "String[]/Object",
+                    "src": {
+                      "name": "3,1467,36",
+                      "text": "3,1467,43,58:3,1468,11,231",
+                      "type": "3,1467,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prefix",
+                    "optional": true,
+                    "text": "A common prefix to prepend to the event names. For example:\n\n    this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nNow the grid will forward 'load' and 'clear' events of store as 'storeload' and 'storeclear'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1473,28",
+                      "text": "3,1473,36,60:3,1474,11,164",
+                      "type": "3,1473,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A `Destroyable` object. An object which implements the `destroy` method which, when destroyed, removes all relayers. For example:\n\n    this.storeRelayers = this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nCan be undone by calling\n\n    Ext.destroy(this.storeRelayers);\n\nor\n    this.store.relayers.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,1479,28,130:3,1480,11,192",
+                      "type": "3,1479,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1490,0",
+                  "text": "3,1453,11,651"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.chart.series.CandleStick-method-unAfter'>unAfter</a>.\n",
+                "src": {
+                  "name": "3,1248,0",
+                  "text": "3,1246,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.chart.series.CandleStick-method-unBefore'>unBefore</a>.\n",
+                "src": {
+                  "name": "3,1242,0",
+                  "text": "3,1240,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeListener",
+                "text": "Removes an event handler.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The type of event the handler was associated with.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,1102,28",
+                      "text": "3,1102,38,51",
+                      "type": "3,1102,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove. **This must be a reference to the function\npassed into the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> call.**\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "3,1103,30",
+                      "text": "3,1103,33,66:3,1104,12,76",
+                      "type": "3,1103,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope originally specified for the handler. It\nmust be the same as the scope argument specified in the original call to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> or the listener will not be removed.\n\n**Convenience Syntax**\n\nYou can use the <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n`destroyable: true` config option in place of calling un().  For example:\n\n    var listeners = cmp.on({\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide,\n        destroyable: true\n    });\n\n    // Remove listeners\n    listeners.destroy();\n    // or\n    cmp.un(\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide\n    );\n\n**Exception - DOM event handlers using the element config option**\n\nYou must go directly through the element to detach an event handler attached using\nthe <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> _element_ option.\n\n    panel.on({\n        element: 'body',\n        click: 'onBodyCLick'\n    });\n\n    panel.body.un({\n        click: 'onBodyCLick'\n    });\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1106,28",
+                      "text": "3,1106,34,62:3,1107,12,1017",
+                      "type": "3,1106,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1145,0",
+                  "text": "3,1100,12,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeManagedListener",
+                "text": "Removes listeners that were added by the <a href='#!/api/Ext.chart.series.CandleStick-method-mon'>mon</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item from which to remove a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "3,526,56",
+                      "text": "3,526,61,52",
+                      "type": "3,526,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "3,527,34",
+                      "text": "3,527,40,63",
+                      "type": "3,527,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the handler function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "3,528,29",
+                      "text": "3,528,32,85",
+                      "type": "3,528,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,529,27",
+                      "text": "3,529,33,92:3,530,11,43",
+                      "type": "3,529,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,532,0",
+                  "text": "3,524,11,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "removeManagedListenerItem",
+                "text": "Remove a single managed listener item\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "isClear",
+                    "text": "True if this is being called during a clear\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,1307,28",
+                      "text": "3,1307,36,44",
+                      "type": "3,1307,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "managedListener",
+                    "text": "The managed listener item\nSee removeManagedListener for other args\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1308,27",
+                      "text": "3,1308,43,26:3,1309,11,41",
+                      "type": "3,1308,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,1306,11",
+                  "name": "3,1311,0",
+                  "text": "3,1305,11,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "resolveListenerScope",
+                "text": "Gets the default scope for firing late bound events (string names with\nno scope attached) at runtime.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "defaultScope",
+                    "optional": true,
+                    "text": "The default scope to return if none is found.\n",
+                    "type": "Object",
+                    "value": "this",
+                    "src": {
+                      "name": "3,579,29",
+                      "text": "3,579,48,46",
+                      "type": "3,579,20",
+                      "value": "3,579,42"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The default event scope\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,580,29,24",
+                      "type": "3,580,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,581,12",
+                  "name": "3,583,0",
+                  "text": "3,577,12,102"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvent",
+                "text": "Resumes firing of the named event(s).\n\nAfter calling this method to resume events, the events will fire when requested to fire.\n\n**Note that if the <a href='#!/api/Ext.chart.series.CandleStick-method-suspendEvent'>suspendEvent</a> method is called multiple times for a certain event,\nthis converse method will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to resume.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "3,1409,32",
+                      "text": "3,1409,42,32",
+                      "type": "3,1409,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1411,0",
+                  "text": "3,1402,12,320"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvents",
+                "text": "Resumes firing events (see <a href='#!/api/Ext.chart.series.CandleStick-method-suspendEvents'>suspendEvents</a>).\n\nIf events were suspended using the `queueSuspended` parameter, then all events fired\nduring event suspension will be sent to any listeners now.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "discardQueue",
+                    "optional": true,
+                    "text": "`true` to prevent any previously queued events from firing\nwhile we were suspended. See <a href='#!/api/Ext.chart.series.CandleStick-method-suspendEvents'>suspendEvents</a>.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,1431,29",
+                      "text": "3,1431,43,59:3,1432,11,53",
+                      "type": "3,1431,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1434,0",
+                  "text": "3,1426,11,198"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setHiddenByIndex",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "type": "Number",
+                    "src": {
+                      "name": "1,1406,24",
+                      "type": "1,1406,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,1407,25",
+                      "type": "1,1407,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,1409,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setListeners",
+                "text": "An alias for <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.  In\nversions prior to 5.1, <a href='#!/api/Ext.chart.series.CandleStick-cfg-listeners'>listeners</a> had a generated setter which could\nbe called to add listeners.  In 5.1 the listeners config is not processed\nusing the config system and has no generated setter, so this method is\nprovided for backward compatibility.  The preferred way of adding listeners\nis to use the <a href='#!/api/Ext.chart.series.CandleStick-method-on'>on</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "text": "The listeners\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1804,28",
+                      "text": "3,1804,38,14",
+                      "type": "3,1804,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1806,0",
+                  "text": "3,1798,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvent",
+                "text": "Suspends firing of the named event(s).\n\nAfter calling this method to suspend events, the events will no longer fire when requested to fire.\n\n**Note that if this is called multiple times for a certain event, the converse method\n<a href='#!/api/Ext.chart.series.CandleStick-method-resumeEvent'>resumeEvent</a> will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to suspend.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "3,1381,32",
+                      "text": "3,1381,42,33",
+                      "type": "3,1381,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1383,0",
+                  "text": "3,1374,12,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvents",
+                "text": "Suspends the firing of all events. (see <a href='#!/api/Ext.chart.series.CandleStick-method-resumeEvents'>resumeEvents</a>)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "queueSuspended",
+                    "text": "`true` to queue up suspended events to be fired\nafter the <a href='#!/api/Ext.chart.series.CandleStick-method-resumeEvents'>resumeEvents</a> call instead of discarding all suspended events.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,1363,28",
+                      "text": "3,1363,43,48:3,1364,11,81",
+                      "type": "3,1363,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1366,0",
+                  "text": "3,1361,11,64"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "themeColorCount",
+                "text": "Returns the number of colors this series needs.\nA Pie chart needs one color per slice while a Stacked Bar chart needs one per segment.\nAn OHLC chart needs 2 colors (one for drops, one for rises), and most other charts need just 1 color.\n",
+                "src": {
+                  "access": "1,525,8",
+                  "name": "1,530,0",
+                  "text": "1,526,8,237"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "themeMarkerCount",
+                "text": "Returns the number of markers this series needs.\nCurrently, only the Line, Scatter and Radar series use markers - and they need just one each.\n",
+                "src": {
+                  "access": "1,543,8",
+                  "name": "1,547,0",
+                  "text": "1,544,8,143"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeListener",
+                "name": "un",
+                "text": "Shorthand for <a href='#!/api/Ext.chart.series.CandleStick-method-removeListener'>removeListener</a>.\n",
+                "src": {
+                  "inheritdoc": "3,1781,12",
+                  "name": "3,1783,0",
+                  "text": "3,1780,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unAfter",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.chart.series.CandleStick-method-removeListener'>removeListener</a> with `order` set to `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "3,1218,44",
+                      "text": "3,1218,54,55",
+                      "type": "3,1218,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,1219,37",
+                      "text": "3,1219,40,23",
+                      "type": "3,1219,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1220,29",
+                      "text": "3,1220,36,41",
+                      "type": "3,1220,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1221,29",
+                      "text": "3,1221,38,22",
+                      "type": "3,1221,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1223,0",
+                  "text": "3,1214,12,97"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unBefore",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.chart.series.CandleStick-method-removeListener'>removeListener</a> with `order` set to `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "3,1204,44",
+                      "text": "3,1204,54,55",
+                      "type": "3,1204,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "3,1205,37",
+                      "text": "3,1205,40,23",
+                      "type": "3,1205,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1206,29",
+                      "text": "3,1206,36,41",
+                      "type": "3,1206,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "3,1207,29",
+                      "text": "3,1207,38,22",
+                      "type": "3,1207,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,1209,0",
+                  "text": "3,1200,12,98"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateChartColors",
+                "text": "When the chart's \"colors\" config changes, these colors are passed onto the series\nwhere they are used with the same priority as theme colors, i.e. they do not override\nthe series' \"colors\" config, nor the series' \"style\" config, but they do override\nthe colors from the theme's \"seriesThemes\" config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "colors",
+                    "src": {
+                      "name": "1,1495,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1489,8",
+                  "name": "1,1495,0",
+                  "text": "1,1490,8,301"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateLegendStore",
+                "text": "Updates chart's legend store when the value of the series' <a href='#!/api/Ext.chart.series.CandleStick-cfg-hidden'>hidden</a> config\nchanges or when the <a href='#!/api/Ext.chart.series.CandleStick-method-setHiddenByIndex'>setHiddenByIndex</a> method is called.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "hidden",
+                    "text": "Whether series (or its component) should be hidden or not.\n",
+                    "src": {
+                      "name": "1,1375,15",
+                      "text": "1,1375,22,59"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "Used for stacked series.\n             If present, only the component with the specified index will change visibility.\n",
+                    "src": {
+                      "name": "1,1376,15",
+                      "text": "1,1376,21,25:1,1377,8,93"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,1372,8",
+                  "name": "1,1379,0",
+                  "text": "1,1373,8,146"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateSession",
+                "text": "Updates the session config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "name": "2,814,38",
+                      "type": "2,814,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,815,12",
+                  "name": "2,817,0",
+                  "text": "2,813,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateViewModel",
+                "text": "Updates the viewModel config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "viewModel",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "name": "2,829,39",
+                      "type": "2,829,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldViewModel",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "name": "2,830,39",
+                      "type": "2,830,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,831,12",
+                  "name": "2,833,0",
+                  "text": "2,828,12,30"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$eventOptions",
+                "text": "Matches options property names within a listeners specification object  - property names which are never used as event names.\n",
+                "src": {
+                  "access": "3,389,12",
+                  "name": "3,392,0",
+                  "text": "3,390,12,126"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "defaultBindProperty",
+                "optional": true,
+                "text": "This property is used to determine the property of a <a href='#!/api/Ext.chart.series.CandleStick-cfg-bind'>bind</a> config that is just\nthe value. For example, if `defaultBindProperty=\"value\"`, then this shorthand\n<a href='#!/api/Ext.chart.series.CandleStick-cfg-bind'>bind</a> config:\n\n     bind: '{name}'\n\nIs equivalent to this object form:\n\n     bind: {\n         value: '{name}'\n     }\n\nThe <a href='#!/api/Ext.chart.series.CandleStick-property-defaultBindProperty'>defaultBindProperty</a> is set to \"value\" for form fields and to \"store\" for\ngrids and trees.\n",
+                "type": "String",
+                "src": {
+                  "access": "2,295,8",
+                  "name": "2,280,28",
+                  "text": "2,281,8,373",
+                  "type": "2,280,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "eventsSuspended",
+                "text": "Initial suspended call count. Incremented when <a href='#!/api/Ext.chart.series.CandleStick-method-suspendEvents'>suspendEvents</a> is called, decremented when <a href='#!/api/Ext.chart.series.CandleStick-method-resumeEvents'>resumeEvents</a> is called.\n",
+                "src": {
+                  "access": "3,284,11",
+                  "name": "3,287,0",
+                  "text": "3,285,11,131"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "fieldCategoryX",
+                "text": "Tells which store record fields should be used for a specific axis direction. E.g. for\n\n    fieldCategory<direction>: ['<fieldConfig1>', '<fieldConfig2>', ...]\n\nthe field names from the following configs will be used:\n\n    series.<fieldConfig1>Field, series.<fieldConfig2>Field, ...\n",
+                "src": {
+                  "access": "4,49,8",
+                  "name": "4,60,0",
+                  "text": "4,51,8,284"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "getSprites",
+                "text": "Returns sprites the are used to draw this series.\n",
+                "src": {
+                  "name": "1,1282,0",
+                  "text": "1,1280,8,50"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hasListeners",
+                "readonly": true,
+                "text": "This object holds a key for any event that has a listener. The listener may be set\ndirectly on the instance, or on its class or a super class (via <a href='#!/api/Ext.chart.series.CandleStick-observe'>observe</a>) or\non the <a href='#!/api/Ext.app.EventBus'>Ext.app.EventBus</a>. The values of this object are truthy\n(a non-zero number) and falsy (0 or undefined). They do not represent an exact count\nof listeners. The value for an event is truthy if the event must be fired and is\nfalsy if there is no need to fire the event.\n\nThe intended use of this property is to avoid the expense of fireEvent calls when\nthere are no listeners. This can be particularly helpful when one would otherwise\nhave to call fireEvent hundreds or thousands of times. It is used like this:\n\n     if (this.hasListeners.foo) {\n         this.fireEvent('foo', this, arg1);\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "3,290,30",
+                  "readonly": "3,291,11",
+                  "text": "3,292,11,790",
+                  "type": "3,290,22"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isObservable",
+                "text": "`true` in this class to identify an object as an instantiated Observable, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "3,278,31",
+                  "text": "3,279,11,95",
+                  "type": "3,278,22"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "isStoreDependantColorCount",
+                "text": "Series, where the number of sprites (an so unique colors they require)\ndepends on the number of records in the store should set this to 'true'.\n",
+                "src": {
+                  "access": "1,535,8",
+                  "name": "1,540,0",
+                  "text": "1,537,8,144"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "seriesType",
+                "text": "Default series sprite type.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,75,27",
+                  "text": "1,76,8,28",
+                  "type": "1,75,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "type",
+                "text": "The type of series. Set in subclasses.\n",
+                "type": "String",
+                "src": {
+                  "access": "1,70,8",
+                  "name": "1,68,27",
+                  "text": "1,69,8,39",
+                  "type": "1,68,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "validRefRe",
+                "text": "Regular expression used for validating <a href='#!/api/Ext.chart.series.CandleStick-cfg-reference'>reference</a> values.\n",
+                "type": "RegExp",
+                "src": {
+                  "access": "2,302,8",
+                  "name": "2,304,0",
+                  "text": "2,301,8,59",
+                  "type": "2,300,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods"
+          }
+        ],
+        "src": {
+          "alias": "0,98,0",
+          "extends": "0,3,13",
+          "name": "0,2,11",
+          "requires": "0,97,0",
+          "text": "0,4,4,2464"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

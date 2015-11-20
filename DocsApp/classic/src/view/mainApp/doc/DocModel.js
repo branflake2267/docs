@@ -5,12 +5,14 @@ Ext.define('DocsApp.view.mainApp.doc.DocModel', {
     requires: ['DocsApp.model.ClassMember'],
 
     data: {
-        memberCfg      : true,
-        memberProperty : true,
-        memberMethod   : true,
-        memberEvent    : true,
-        memberCss_var  : true,
-        memberCss_mixin: true
+        memberCfg         : true,
+        memberProperty    : true,
+        memberMethod      : true,
+        memberEvent       : true,
+        memberCss_var     : true,
+        memberCss_mixin   : true,
+        memberFilter      : '',
+        memberFilterDocked: true
     },
 
     stores: {

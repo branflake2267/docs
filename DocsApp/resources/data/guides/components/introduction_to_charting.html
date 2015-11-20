@@ -11,7 +11,7 @@ functionality. These include series, axes, interactions, and mechanisms for impl
 markers and legends. This guide provides an overview on how these classes are tied 
 together and what functionality is included in each class. The following sections cover 
 the specific axes, series, and interactions.</p>
-<p>##Installing Sencha Charts</p>
+<h2 id="components-_-introduction_to_charting_-_installing_sencha_charts">Installing Sencha Charts</h2>
 <p>Sencha Charts are not included in the Ext JS library by default.  In order to include
 the charts package, simply add <strong>&quot;charts&quot;</strong> (<strong>&quot;sencha-charts&quot;</strong> if working with Ext JS 
 5.x) to the requires block in your Sencha Cmd generated application&#39;s 
@@ -25,8 +25,8 @@ may be rebuilt by manually issuing the following command:</p>
 </code></pre><p>Sencha app watch monitors your application&#39;s assets and rebuilds when it detects change.</p>
 <p><strong>Note:</strong> For more information on generating and building apps with Sencha Cmd see the 
 <a href="../../../cmd/5.x/intro_to_cmd.html">Intro to Cmd guide</a>.</p>
-<p>##Using Sencha Charts without Sencha Cmd
-If you want to use charts, but do not want to use Sencha Cmd, you may simply add the 
+<h2 id="components-_-introduction_to_charting_-_using_sencha_charts_without_sencha_cmd">Using Sencha Charts without Sencha Cmd</h2>
+<p>If you want to use charts, but do not want to use Sencha Cmd, you may simply add the 
 following inclusions to your app&#39;s index.html page.</p>
 <pre><code>// in Ext JS 5.x
 
@@ -38,7 +38,7 @@ following inclusions to your app&#39;s index.html page.</p>
 
 &lt;script type=&quot;text/javascript&quot; src=&quot;{SDKLocation}/build/packages/charts/{toolkitName}/charts.js&quot;&gt;&lt;/script&gt;
 &lt;link type=&quot;text/css&quot; href=&quot;{SDKLocation}/build/packages/charts/{toolkitName}/{themeName}/resources/charts-all.css&quot;&gt;
-</code></pre><p>##The Chart Component Class</p>
+</code></pre><h2 id="components-_-introduction_to_charting_-_the_chart_component_class">The Chart Component Class</h2>
 <p>All types of Chart components are extended from the AbstractChart class, which extends 
 [[ext:Ext.draw.Container]]. A Chart component is the container for managing series and
 axes. It is responsible for laying out the series and axes every time the size is 
@@ -63,7 +63,7 @@ commonly used and are mapped to the xtype of <strong>&#39;chart&#39;</strong>.  
 <strong>&#39;chart&#39;</strong> makes the assumption that you want a <strong>Bar</strong>, <strong>Line</strong>, <strong>Scatter</strong>, or 
 <strong>Area</strong> Chart.  Other types of Charts will require an <code>xtype</code> designation of 
 <strong>&#39;polar&#39;</strong> or <strong>&#39;spacefilling&#39;</strong>.</p>
-<p>###Chart Component Management</p>
+<h3 id="components-_-introduction_to_charting_-_chart_component_management">Chart Component Management</h3>
 <p>A Chart component manages the following items:</p>
 <ul>
 <li><strong>Axes</strong> - These are accessed through [[ext:Ext.chart.axis.Axis]] and represent all 
@@ -77,8 +77,8 @@ commonly used and are mapped to the xtype of <strong>&#39;chart&#39;</strong>.  
   Normally you can attach a data list to this store and get automatically updated on 
   the legend information changes.</li>
 </ul>
-<p>###Axes
-We provide [[ext:Ext.chart.axis.Axis]] to represent all kinds of axes. The axis object 
+<h3 id="components-_-introduction_to_charting_-_axes">Axes</h3>
+<p>We provide [[ext:Ext.chart.axis.Axis]] to represent all kinds of axes. The axis object 
 works differently according to the its docking position. </p>
 <ul>
 <li><strong>left/right</strong> - The axis is vertical.</li>
@@ -96,16 +96,16 @@ that needs to be represented. </p>
 <p>The behavior of an axis can be easily changed by setting different types of axis 
 [[ext:Ext.chart.axis.Axis#cfg-layout layout]] and axis 
 [[ext:Ext.chart.axis.Axis#cfg-segmenter segmenter]] to the axis.</p>
-<p>###Series
-[[ext:Ext.chart.series.Series Series]] is an abstract class extended by concrete 
+<h3 id="components-_-introduction_to_charting_-_series">Series</h3>
+<p>[[ext:Ext.chart.series.Series Series]] is an abstract class extended by concrete 
 visualizations, such as Line Series, Bar Series, or Scatter Series.</p>
 <p>The Series class itself contains code that is common to all of these series, such as 
 event handling, highlighting, markers, labels, and so on.</p>
 <p>The following sections describe available series types. It also shows a complete series 
 configuration example, including the Chart, Axis, and Series options. For more specific 
 information, see the Series documentation.</p>
-<p>####Area
-The [[ext:Ext.chart.series.Area Area]] series creates a stacked area Chart, which is 
+<h4 id="components-_-introduction_to_charting_-_area">Area</h4>
+<p>The [[ext:Ext.chart.series.Area Area]] series creates a stacked area Chart, which is 
 typically used to display multiple aggregated layers of information. Similar to other 
 series, the Area series must be added into the 
 [[ext:Ext.chart.AbstractChart#cfg-series series]] config of the Chart.</p>
@@ -166,7 +166,7 @@ code sample:</p>
         }
     }]
 });
-</code></pre><p>####Bar</p>
+</code></pre><h4 id="components-_-introduction_to_charting_-_bar">Bar</h4>
 <p>The [[ext:Ext.chart.series.Bar Bar]] series creates a stackable or group-able bar Chart, 
 which is typically used to display categorized numeric data that shows progression or 
 regression. Note that opposed to the old chart package, a Bar series refers to a 
@@ -231,8 +231,8 @@ order to switch the series to the grouped mode.</p>
         }
     }]
 });
-</code></pre><p>####Line
-The [[ext:Ext.chart.series.Line Line]] series creates a line Chart, an alternative to a 
+</code></pre><h4 id="components-_-introduction_to_charting_-_line">Line</h4>
+<p>The [[ext:Ext.chart.series.Line Line]] series creates a line Chart, an alternative to a 
 bar Chart, for showing categorized numeric data that shows progression or regression. 
 The following example shows a typical configuration object for the Line series:</p>
 <pre><code>Ext.create(&#39;Ext.chart.CartesianChart&#39;, {
@@ -304,7 +304,7 @@ The following example shows a typical configuration object for the Line series:<
         }
     }]
 });
-</code></pre><p>####Pie</p>
+</code></pre><h4 id="components-_-introduction_to_charting_-_pie">Pie</h4>
 <p>The [[ext:Ext.chart.series.Pie Pie]] series creates a pie Chart, a great way to display 
 quantitative information for a number of categories that also have a meaning as a whole, 
 for example, all 12 months of a given year.</p>
@@ -348,7 +348,7 @@ for example, all 12 months of a given year.</p>
         }
     }]
 }); 
-</code></pre><p>####Radar</p>
+</code></pre><h4 id="components-_-introduction_to_charting_-_radar">Radar</h4>
 <p>The [[ext:Ext.chart.series.Radar Radar]] series creates a radar Chart, a great way to 
 display a comparison of different quantitative values for a constrained number of 
 categories. A Radar series example is illustrated by the following code:</p>
@@ -406,7 +406,7 @@ categories. A Radar series example is illustrated by the following code:</p>
         yField: &#39;g1&#39;
     }]
 });
-</code></pre><p>####Scatter</p>
+</code></pre><h4 id="components-_-introduction_to_charting_-_scatter">Scatter</h4>
 <p>The [[ext:Ext.chart.series.Scatter Scatter]] series creates a scatter Chart, which 
 enables an application to display more than two variables in the same visualization. 
 These variables can be mapped onto <strong>x</strong>, <strong>y</strong> coordinates and also to an element&#39;s 
@@ -457,7 +457,7 @@ properties, such as radius, size, color, and so on.</p>
         },
     }]
 });
-</code></pre><p>####Gauge</p>
+</code></pre><h4 id="components-_-introduction_to_charting_-_gauge">Gauge</h4>
 <p>The [[ext:Ext.chart.series.Gauge Gauge]] series creates a gauge Chart, typically used to 
 show progress in a certain variable. In addition to using [[ext:Ext.data.Store stores]], 
 you can also set a [[ext:Ext.chart.series.Gauge#cfg-value value]] of the gauge series to 
@@ -476,12 +476,12 @@ show the value.</p>
         colors: [&quot;#115fa6&quot;, &quot;lightgrey&quot;]
     }]
 });           
-</code></pre><p>###Interactions</p>
+</code></pre><h3 id="components-_-introduction_to_charting_-_interactions">Interactions</h3>
 <p>This section introduces the interaction features in the Sencha Charts package. By taking 
 advantage of these features, you can create highly interactive Charts that enable users 
 to visualize and navigate complex data sets.</p>
-<p>####Adding Interactions
-To add interactions to a Chart, set the 
+<h4 id="components-_-introduction_to_charting_-_adding_interactions">Adding Interactions</h4>
+<p>To add interactions to a Chart, set the 
 [[ext:Ext.chart.AbstractChart#cfg-interactions interactions]] config of the Chart to an 
 array of interaction config objects. Each object must be a string or must contain a type 
 property matching one of the interaction types described in the subsequent sections. 
@@ -493,20 +493,20 @@ with the <strong>&quot;interaction&quot;</strong> prefix. For example, if you wa
 called <strong>&quot;remove&quot;</strong>, create an alias of the class named <strong>&quot;interaction.remove&quot;</strong>, then 
 set the <code>type: &#39;remove&#39;</code> in the interaction config.</p>
 <p>Here are a couple of examples of basic interactions.</p>
-<p>####Item Highlighting</p>
+<h4 id="components-_-introduction_to_charting_-_item_highlighting">Item Highlighting</h4>
 <p>The <strong>&quot;itemhighlight&quot;</strong> interaction enables you to highlight individual data point items 
 on the chart.</p>
 <p>This interaction is implemented by the [[ext:Ext.chart.interactions.ItemHighlight]] 
 class.  See the class documentation for detailed configuration options.</p>
-<p>####Rotate
-The <strong>&quot;rotate&quot;</strong> interaction enables users to rotate a pie or a radar Chart, by default 
+<h4 id="components-_-introduction_to_charting_-_rotate">Rotate</h4>
+<p>The <strong>&quot;rotate&quot;</strong> interaction enables users to rotate a pie or a radar Chart, by default 
 the rotation being performed using a drag gesture. The following code snippet is an 
 example of how simple it is to add the <strong>rotate</strong> interaction to your pie or radar 
 Charts:</p>
 <pre><code>interactions: [&#39;rotate&#39;]
 </code></pre><p>This interaction is implemented by the [[ext:Ext.chart.interactions.Rotate]] class. See 
 the class documentation for detailed configuration options.</p>
-<p>###Legend Store</p>
+<h3 id="components-_-introduction_to_charting_-_legend_store">Legend Store</h3>
 <p>The Chart exposes a store to represent legend information collected from series. 
 Technically, you can do anything with this store. Again, this architecture can help you 
 decouple the legend information from the legend component, so you can use any technology 
@@ -518,5 +518,25 @@ component and dock it in the Chart. The default Legend component contains a
 [[ext:Ext.chart.Legend#cfg-dock dock]] config and it is docked on that side.</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_installing_sencha_charts">Installing Sencha Charts</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_using_sencha_charts_without_sencha_cmd">Using Sencha Charts without Sencha Cmd</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_the_chart_component_class">The Chart Component Class</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_chart_component_management">Chart Component Management</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_axes">Axes</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_series">Series</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_area">Area</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_bar">Bar</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_line">Line</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_pie">Pie</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_radar">Radar</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_scatter">Scatter</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_gauge">Gauge</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_interactions">Interactions</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_adding_interactions">Adding Interactions</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_item_highlighting">Item Highlighting</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_rotate">Rotate</a></div>
+        <div class="toc-item"><a href="#components-_-introduction_to_charting_-_legend_store">Legend Store</a></div>
+    </div>
 </body>
 </html>

@@ -78,60 +78,70 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
                 }
             },
             items   : [{
-                text    : 'Configs',
+                text   : 'Configs',
                 //relStore: 'configs',
                 viewRef: 'memberCfg',
-                target  : 'configsHeader',
-                bind    : {
+                target : 'configsHeader',
+                bind   : {
                     hidden: '{memberCfg}',
                     badge : '{memberCfgCount}'
                 }
             }, {
-                text    : 'Properties',
+                text   : 'Properties',
                 //relStore: 'properties',
                 viewRef: 'memberProperty',
-                target  : 'propertiesHeader',
-                bind    : {
+                target : 'propertiesHeader',
+                bind   : {
                     hidden: '{memberProperty}',
                     badge : '{memberPropertyCount}'
                 }
             }, {
-                text    : 'Methods',
+                text   : 'Methods',
                 //relStore: 'methods',
                 viewRef: 'memberMethod',
-                target  : 'methodsHeader',
-                bind    : {
+                target : 'methodsHeader',
+                bind   : {
                     hidden: '{memberMethod}',
                     badge : '{memberMethodCount}'
                 }
             }, {
-                text    : 'Events',
+                text   : 'Events',
                 //relStore: 'events',
                 viewRef: 'memberEvent',
-                target  : 'eventsHeader',
-                bind    : {
+                target : 'eventsHeader',
+                bind   : {
                     hidden: '{memberEvent}',
                     badge : '{memberEventCount}'
                 }
             }, {
-                text    : 'CSS Vars',
+                text   : 'CSS Vars',
                 //relStore: 'themevars',
                 viewRef: 'memberCss_var',
-                target  : 'cssVarHeader',
-                bind    : {
+                target : 'cssVarHeader',
+                bind   : {
                     hidden: '{memberCss_var}',
                     badge : '{memberCss_varCount}'
                 }
             }, {
-                text    : 'CSS Mixins',
+                text   : 'CSS Mixins',
                 //relStore: 'thememixins',
                 viewRef: 'memberCss_mixin',
-                target  : 'cssMixinHeader',
-                bind    : {
+                target : 'cssMixinHeader',
+                bind   : {
                     hidden: '{memberCss_mixin}',
                     badge : '{memberCss_mixinCount}'
                 }
             }]
+        }, {
+            xtype    : 'mainapp-member-filter-picker',
+            bind: {
+                value: '{memberFilter}',
+                hidden: '{!memberFilterDocked}'
+            },
+            listeners: {
+                change: 'onFilterChange',
+                buffer: 100
+            }
         }, {
             enableToggle : true,
             text         : 'Expand All',
@@ -143,14 +153,16 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         xtype   : 'toolbar',
         dock    : 'right',
         cls: 'da-class-categories-ct',
-        //layout: 'vbox',
+        bind: {
+            hidden: '{memberFilterDocked}'
+        },
         defaults: {
             anchor: '100%',
             xtype : 'checkboxfield'
         },
         items   : [{
             xtype    : 'textfield',
-            reference: 'memberFilter',
+            bind: '{memberFilter}',
             emptyText: 'filter members...',
             triggers : {
                 clear: {
@@ -185,7 +197,9 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
             listeners : {
                 change: 'onAccessFilterChange'
             }
-        }, '-', {
+        }, {
+            xtype: 'tbseparator'
+        }, {
             fieldLabel: 'Inherited',
             bind      : '{catFilters.inherited}',
             margin: '0 0 0 5',
@@ -209,10 +223,18 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         }, {
             fieldLabel: 'Removed',
             bind      : '{catFilters.removed}',
-            margin: '0 0 0 5',
+            margin    : '0 0 0 5',
             listeners : {
                 change: 'onAccessFilterChange'
             }
+        }, {
+            xtype: 'tbseparator'
+        }, {
+            xtype: 'button',
+            text : 'Hide Filter Menu',
+            ui: 'default',
+            iconCls: 'x-fa fa-arrow-circle-o-up',
+            handler: 'toggleFilterMenuDocked'
         }]
     }],
 
@@ -225,74 +247,138 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         }
     }, {
         // the class description and hierarchy view (class metadata)
-        xtype    : 'container',
-        reference: 'classDescription',
-        layout   : {
-            type : 'hbox',
-            align: 'stretchmax'
+        xtype      : 'panel',
+        reference  : 'classDescription',
+        bodyPadding: '0 20 20 20',
+        bind       : {
+            data: '{classFile}'
         },
-        items    : [{
-            xtype  : 'container',
-            flex   : 1,
-            padding: '0 20 20 20',
-            bind   : {
-                data: '{classFile}'
-            },
-            tpl    : '{[marked(values.text, { addHeaderId: false })]}'
-        }, {
-            xtype: 'component',
-            width: 400,
-            cls: 'da-class-meta-ct',
-            split: true,
-            bind : '{classFile}',
-            tpl  : new Ext.XTemplate(
+        //tpl        : '{[marked(values.text, { addHeaderId: false })]}',
+        tpl        : new Ext.XTemplate(
+            '<div class="da-class-meta-ct">',
                 '<tpl if="alternateClassNames">',
-                '<div class="ad-class-meta-header ad-class-meta-header-top">Alternate Class Names</div><div class="da-class-meta-list-body">{[this.splitItems(values, "alternateClassNames")]}</div>',
+                    '<div class="ad-class-meta-header ad-class-meta-header-top">Alternate Class Names</div>',
+                    '<div class="da-class-meta-list-body">',
+                        '{[this.splitItems(values, "alternateClassNames")]}',
+                    '</div>',
                 '</tpl>',
                 '<tpl if="mixins">',
-                '<div class="ad-class-meta-header">Mixins</div><div class="da-class-meta-list-body">{[this.splitItems(values, "mixins")]}</div>',
+                    '<div class="ad-class-meta-header">Mixins</div>',
+                    '<div class="da-class-meta-list-body">',
+                        '{[this.splitItems(values, "mixins")]}',
+                    '</div>',
                 '</tpl>',
                 '<tpl if="requires">',
-                '<div class="ad-class-meta-header">Requires</div><div class="da-class-meta-list-body">{[this.splitItems(values, "requires")]}</div>',
+                    '<div class="ad-class-meta-header">Requires</div>',
+                    '<div class="da-class-meta-list-body">',
+                        '{[this.splitItems(values, "requires")]}',
+                    '</div>',
                 '</tpl>',
-                {
-                    splitItems: function (values, node) {
-                        var arr = values[node].split(','),
-                            len = arr.length,
-                            i = 0;
+            '</div>',
+            '{[marked(values.text, { addHeaderId: false })]}',
+            {
+                splitItems: function (values, node) {
+                    var arr = values[node].split(','),
+                        len = arr.length,
+                        i = 0;
 
-                        for (;i < len; i++) {
-                            arr[i] = this.makeLinks(arr[i]);
-                        }
-
-                        return arr.join('<br>');
-                    },
-                    makeLinks: function (link) {
-                        link      = link.replace(/\|/g, '/');
-                        var links = link.split('/'),
-                            len   = links.length,
-                            out   = [],
-                            i     = 0,
-                            root, rec;
-
-                        //this.classStore = this.classStore || me.up('mainapp-container').down('mainapp-nav-docs-container').lookupReference('packageDocTree').getStore();
-                        this.classStore = this.classStore || Ext.ComponentQuery.query('mainapp-container')[0].down('mainapp-nav-docs-container').lookupReference('packageDocTree').getStore();
-                        root            = this.classStore.getRoot();
-
-                        for (; i < len; i++) {
-                            rec = root.findChild('className', links[i].replace(/\[\]/g, ''), true);
-                            if (rec) {
-                                out.push(('<a href="#!/api/' + links[i] + '">' + links[i] + '</a>').replace('[]', ''));
-                            } else {
-                                out.push(links[i]);
-                            }
-                        }
-
-                        return out.join('/');
+                    for (;i < len; i++) {
+                        arr[i] = this.makeLinks(arr[i]);
                     }
+
+                    return arr.join('<br>');
+                },
+                makeLinks: function (link) {
+                    link      = link.replace(/\|/g, '/');
+                    var links = link.split('/'),
+                        len   = links.length,
+                        out   = [],
+                        i     = 0,
+                        root, rec;
+
+                    //this.classStore = this.classStore || me.up('mainapp-container').down('mainapp-nav-docs-container').lookupReference('packageDocTree').getStore();
+                    this.classStore = this.classStore || Ext.ComponentQuery.query('mainapp-container')[0].down('mainapp-nav-docs-container').lookupReference('packageDocTree').getStore();
+                    root            = this.classStore.getRoot();
+
+                    for (; i < len; i++) {
+                        rec = root.findChild('className', links[i].replace(/\[\]/g, ''), true);
+                        if (rec) {
+                            out.push(('<a href="#!/api/' + links[i] + '">' + links[i] + '</a>').replace('[]', ''));
+                        } else {
+                            out.push(links[i]);
+                        }
+                    }
+
+                    return out.join('/');
                 }
-            )
-        }]
+            }
+        ),
+        /*dockedItems: [{
+            xtype: 'toolbar',
+            scrollable: true,
+            dock: 'right',
+            //width: 400,
+            cls: 'da-class-meta-ct',
+            resizable: {
+                handles: 'w'
+            },
+            //bind : '{classFile}',
+            //tpl  :
+            items: [{
+                xtype: 'component',
+                bind : '{classFile}',
+                tpl: new Ext.XTemplate(
+                    '<tpl if="alternateClassNames">',
+                    '<div class="ad-class-meta-header ad-class-meta-header-top">Alternate Class Names</div><div class="da-class-meta-list-body">{[this.splitItems(values, "alternateClassNames")]}</div>',
+                    '</tpl>',
+                    '<tpl if="mixins">',
+                    '<div class="ad-class-meta-header">Mixins</div><div class="da-class-meta-list-body">{[this.splitItems(values, "mixins")]}</div>',
+                    '</tpl>',
+                    '<tpl if="requires">',
+                    '<div class="ad-class-meta-header">Requires</div><div class="da-class-meta-list-body">{[this.splitItems(values, "requires")]}</div>',
+                    '</tpl>',
+                    {
+                        splitItems: function (values, node) {
+                            var arr = values[node].split(','),
+                                len = arr.length,
+                                i = 0;
+
+                            for (;i < len; i++) {
+                                arr[i] = this.makeLinks(arr[i]);
+                            }
+
+                            return arr.join('<br>');
+                        },
+                        makeLinks: function (link) {
+                            link      = link.replace(/\|/g, '/');
+                            var links = link.split('/'),
+                                len   = links.length,
+                                out   = [],
+                                i     = 0,
+                                root, rec;
+
+                            //this.classStore = this.classStore || me.up('mainapp-container').down('mainapp-nav-docs-container').lookupReference('packageDocTree').getStore();
+                            this.classStore = this.classStore || Ext.ComponentQuery.query('mainapp-container')[0].down('mainapp-nav-docs-container').lookupReference('packageDocTree').getStore();
+                            root            = this.classStore.getRoot();
+
+                            for (; i < len; i++) {
+                                rec = root.findChild('className', links[i].replace(/\[\]/g, ''), true);
+                                if (rec) {
+                                    out.push(('<a href="#!/api/' + links[i] + '">' + links[i] + '</a>').replace('[]', ''));
+                                } else {
+                                    out.push(links[i]);
+                                }
+                            }
+
+                            return out.join('/');
+                        }
+                    }
+                )
+            }]
+        }]*/
+    }, {
+        xtype: 'component',
+        reference: 'classEmptyText'
 
         // CONFIGS
     }, {

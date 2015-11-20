@@ -1,0 +1,210 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Factory",
+        "since": "5.0.0",
+        "text": "Manages factories for families of classes (classes with a common `alias` prefix). The\nfactory for a class family is a function stored as a `static` on <a href='#!/api/Ext.Factory'>Ext.Factory</a>. These\nare created either by directly calling `Ext.Factory.define` or by using the\n<a href='#!/api/Ext.mixin.Factoryable'>Ext.mixin.Factoryable</a> interface.\n\nTo illustrate, consider the layout system's use of aliases. The `hbox` layout maps to\nthe `\"layout.hbox\"` alias that one typically provides via the `layout` config on a\nContainer.\n\nUnder the covers this maps to a call like this:\n\n     Ext.Factory.layout('hbox');\n\nOr possibly:\n\n     Ext.Factory.layout({\n         type: 'hbox'\n     });\n\nThe value of the `layout` config is passed to the `Ext.Factory.layout` function. The\nexact signature of a factory method matches <a href='#!/api/Ext.Factory-method-create'>Ext.Factory#create</a>.\n\nTo define this factory directly, one could call `Ext.Factory.define` like so:\n\n     Ext.Factory.define('layout', 'auto');  // \"layout.auto\" is the default type\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "aliasPrefix",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The prefix to apply to `type` values to form a complete alias. This defaults to the\nproper value in most all cases and should not need to be specified.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,43,23",
+                  "since": "0,47,15",
+                  "text": "0,44,8,153",
+                  "type": "0,43,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultProperty",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The config property to set when the factory is given a config that is a string.\n",
+                "type": "String",
+                "value": "\"type\"",
+                "src": {
+                  "name": "0,51,23",
+                  "since": "0,54,15",
+                  "text": "0,52,8,81",
+                  "type": "0,51,14",
+                  "value": "0,51,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultType",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "An optional type to use if none is given to the factory at invocation. This is a\nsuffix added to the <a href='#!/api/Ext.Factory-cfg-aliasPrefix'>aliasPrefix</a>. For example, if `aliasPrefix=\"layout.\"` and\n`defaultType=\"hbox\"` the default alias is `\"layout.hbox\"`. This is an alternative\nto <a href='#!/api/Ext.Factory-cfg-xclass'>xclass</a> so only one should be provided.\n",
+                "type": "String",
+                "value": "null",
+                "src": {
+                  "name": "0,59,23",
+                  "since": "0,65,15",
+                  "text": "0,60,8,287",
+                  "type": "0,59,14",
+                  "value": "0,59,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "instanceProp",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The property that identifies an object as instance vs a config.\n",
+                "type": "String",
+                "value": "\"isInstance\"",
+                "src": {
+                  "name": "0,69,23",
+                  "since": "0,72,15",
+                  "text": "0,70,8,65",
+                  "type": "0,69,14",
+                  "value": "0,69,36"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "xclass",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "The full classname of the type of instance to create when none is provided to the\nfactory. This is an alternative to <a href='#!/api/Ext.Factory-cfg-defaultType'>defaultType</a> so only one should be specified.\n",
+                "type": "String",
+                "value": "null",
+                "src": {
+                  "name": "0,77,23",
+                  "since": "0,81,15",
+                  "text": "0,78,8,165",
+                  "type": "0,77,14",
+                  "value": "0,77,30"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "create",
+                "since": "5.0.0",
+                "text": "Creates an instance of this class family given configuration options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "The configuration or instance (if an Object) or\njust the type (if a String) describing the instance to create.\n",
+                    "type": "Object/String",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "xclass",
+                        "optional": true,
+                        "text": "The full class name of the class to create.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,99,32",
+                          "text": "0,99,40,44",
+                          "type": "0,99,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "type",
+                        "optional": true,
+                        "text": "The type string to add to the alias prefix for this\nfactory.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,100,32",
+                          "text": "0,100,38,52:0,101,8,9",
+                          "type": "0,100,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,97,32",
+                      "text": "0,97,40,48:0,98,8,63",
+                      "type": "0,97,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "defaultType",
+                    "optional": true,
+                    "text": "The type to create if no type is contained in the\n`config`.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,102,25",
+                      "text": "0,102,38,50:0,103,8,10",
+                      "type": "0,102,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The newly created instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,104,25,28",
+                      "type": "0,104,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,108,0",
+                  "since": "0,106,15",
+                  "text": "0,95,8,71"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "defaultClass",
+                "optional": true,
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "The Class reference of the type of instance to create when none is provided to the\nfactory. This property is set from <a href='#!/api/Ext.Factory-cfg-xclass'>xclass</a> when the factory instance is created.\n",
+                "type": "Ext.Class",
+                "value": "null",
+                "src": {
+                  "access": "0,88,8",
+                  "name": "0,85,31",
+                  "readonly": "0,89,8",
+                  "since": "0,91,15",
+                  "text": "0,86,8,165",
+                  "type": "0,85,19",
+                  "value": "0,85,44"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,3,11",
+          "since": "0,30,11",
+          "text": "0,4,4,941"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

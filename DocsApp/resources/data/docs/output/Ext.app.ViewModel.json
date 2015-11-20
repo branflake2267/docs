@@ -1,0 +1,557 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/ViewModel.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "viewmodel.default",
+        "mixins": "Ext.mixin.Factoryable,Ext.mixin.Identifiable",
+        "name": "Ext.app.ViewModel",
+        "requires": "Ext.util.Scheduler,Ext.data.Session,Ext.app.bind.RootStub,Ext.app.bind.LinkStub,Ext.app.bind.Multi,Ext.app.bind.Formula,Ext.app.bind.TemplateBinding,Ext.data.ChainedStore",
+        "text": "This class manages arbitrary data and its relationship to data models. Instances of\n`ViewModel` are associated with some `Component` and then used by their child items\nfor the purposes of Data Binding.\n\n# Binding\n\nThe most commonly used aspect of a `ViewModel` is the <a href='#!/api/Ext.app.ViewModel-method-bind'>bind</a> method. This method takes\na \"bind descriptor\" (see below) and a callback to call when the data indicated by the\nbind descriptor either becomes available or changes.\n\nThe <a href='#!/api/Ext.app.ViewModel-method-bind'>bind</a> method, based on the bind descriptor given, will return different types of\n\"binding\" objects. These objects maintain the connection between the requested data and\nthe callback. Bindings ultimately derive from <a href='#!/api/Ext.app.bind.BaseBinding'>Ext.app.bind.BaseBinding</a>\nwhich provides several methods to help manage the binding.\n\nPerhaps the most important method is `destroy`. When the binding is no longer needed\nit is important to remember to `destroy` it. Leaking bindings can cause performance\nproblems or worse when callbacks are called at unexpected times.\n\nThe types of bindings produced by <a href='#!/api/Ext.app.ViewModel-method-bind'>bind</a> are:\n\n  * <a href='#!/api/Ext.app.bind.Binding'>Ext.app.bind.Binding</a>\n  * <a href='#!/api/Ext.app.bind.Multi'>Ext.app.bind.Multi</a>\n  * <a href='#!/api/Ext.app.bind.TemplateBinding'>Ext.app.bind.TemplateBinding</a>\n\n## Bind Descriptors\n\nA \"bind descriptor\" is a value (a String, an Object or an array of these) that describe\nthe desired data. Any piece of data in the `ViewModel` can be described by a bind\ndescriptor.\n\n### Textual Bind Descriptors\n\nThe simplest and most common form of bind descriptors are strings that look like an\n<a href='#!/api/Ext.Template'>Ext.Template</a> containing text and tokens surrounded by \"{}\" with dot notation inside\nto traverse objects and their properties.\n\nFor example:\n\n  * `'Hello {user.name}!'`\n  * `'You have selected \"{selectedItem.text}\".'`\n  * `'{user.groups}'`\n\nThe first two bindings are <a href='#!/api/Ext.app.bind.TemplateBinding'>Ext.app.bind.TemplateBinding</a>\nwhich use the familiar <a href='#!/api/Ext.Template'>Ext.Template</a> syntax with some slight differences. For more on\ntemplates see <a href='#!/api/Ext.app.bind.Template'>Ext.app.bind.Template</a>.\n\nThe third bind descriptor is called a \"direct bind descriptor\". This special form of\nbind maps one-to-one to some piece of data in the `ViewModel` and is managed by the\n<a href='#!/api/Ext.app.bind.Binding'>Ext.app.bind.Binding</a> class.\n\n#### Two-Way Descriptors\n\nA direct bind descriptor may be able to write back a value to the `ViewModel` as well\nas retrieve one. When this is the case, they are said to be \"two-way\". For example:\n\n     var binding = viewModel.bind('{s}', function(x) { console.log('s=' + s); });\n\n     binding.setValue('abc');\n\nDirect use of `ViewModel` in this way is not commonly needed because <a href='#!/api/Ext.Component'>Ext.Component</a>\nautomates this process. For example, a `textfield` component understands when it is\ngiven a \"two-way\" binding and automatically synchronizes its value bidirectionally using\nthe above technique. For example:\n\n     Ext.widget({\n         items: [{\n             xtype: 'textfield',\n             bind: '{s}'  // a two-way / direct bind descriptor\n         }]\n     });\n\n### Object and Array Descriptors / Multi-Bind\n\nWith two exceptions (see below) an Object is interpreted as a \"shape\" to produce by\ntreating each of its properties as individual bind descriptors. An object of the same\nshape is passed as the value of the bind except that each property is populated with\nthe appropriate value. Of course, this definition is recursive, so these properties\nmay also be objects.\n\nFor example:\n\n     viewModel.bind({\n             x: '{x}',\n             foo: {\n                 bar: 'Hello {foo.bar}'\n             }\n         },\n         function (obj) {\n             //  obj = {\n             //      x: 42,\n             //      foo: {\n             //          bar: 'Hello foobar'\n             //      }\n             //  }\n         });\n\nArrays are handled in the same way. Each element of the array is considered a bind\ndescriptor (recursively) and the value produced for the binding is an array with each\nelement set to the bound property.\n\n### Bind Options\n\nOne exception to the \"object is a multi-bind\" rule is when that object contains a\n`bindTo` property. When an object contains a `bindTo` property the object is understood\nto contain bind options and the value of `bindTo` is considered the actual bind\ndescriptor.\n\nFor example:\n\n     viewModel.bind({\n             bindTo: '{x}',\n             single: true\n         },\n         function (x) {\n             console.log('x: ' + x); // only called once\n         });\n\nThe available bind options depend on the type of binding, but since all bindings\nderive from <a href='#!/api/Ext.app.bind.BaseBinding'>Ext.app.bind.BaseBinding</a> its options are always applicable.\nFor a list of the other types of bindings, see above.\n\n#### Deep Binding\n\nWhen a direct bind is made and the bound property is an object, by default the binding\ncallback is only called when that reference changes. This is the most efficient way to\nunderstand a bind of this type, but sometimes you may need to be notified if any of the\nproperties of that object change.\n\nTo do this, we create a \"deep bind\":\n\n     viewModel.bind({\n             bindTo: '{someObject}',\n             deep: true\n         },\n         function (someObject) {\n             // called when reference changes or *any* property changes\n         });\n\n#### Binding Timings\n\nThe `ViewModel` has a <a href='#!/api/Ext.app.ViewModel-cfg-scheduler'>scheduler</a> attached that is used to coordinate the firing of bindings.\nIt serves 2 main purposes:\n- To coordinate dependencies between bindings. This means bindings will be fired in an order such that\nthe any dependencies for a binding are fired before the binding itself.\n- To batch binding firings. The scheduler runs on a short timer, so the following code will only trigger\na single binding (the last), the changes in between will never be triggered.\n\n    viewModel.bind('{val}', function(v) {\n        console.log(v);\n    });\n    viewModel.set('val', 1);\n    viewModel.set('val', 2);\n    viewModel.set('val', 3);\n    viewModel.set('val', 4);\n\nThe `ViewModel` can be forced to process by calling <a href='#!/api/Ext.app.ViewModel-method-notify'>notify</a>, which will force the\nscheduler to run immediately in the current state.\n\n    viewModel.bind('{val}', function(v) {\n        console.log(v);\n    });\n    viewModel.set('val', 1);\n    viewModel.notify();\n    viewModel.set('val', 2);\n    viewModel.notify();\n    viewModel.set('val', 3);\n    viewModel.notify();\n    viewModel.set('val', 4);\n    viewModel.notify();\n\n\n#### Models, Stores and Associations\n\nA <a href='#!/api/Ext.data.Session'>Ext.data.Session</a> manages model instances and their associations.\nThe `ViewModel` may be used with or without a `Session`. When a `Session` is attached, the\n`ViewModel` will always consult the `Session` to ask about records and stores. The `Session`\nensures that only a single instance of each model Type/Id combination is created. This is\nimportant when tracking changes in models so that we always have the same reference.\n\nA `ViewModel` provides functionality to easily consume the built in data package types\n<a href='#!/api/Ext.data.Model'>Ext.data.Model</a> and <a href='#!/api/Ext.data.Store'>Ext.data.Store</a>, as well as their associations.\n\n### Model Links\n\nA model can be described declaratively using a <a href='#!/api/Ext.app.ViewModel-cfg-links'>links</a>. In the example code below,\nWe ask the `ViewModel` to construct a record of type `User` with `id: 17`. The model will be loaded\nfrom the server and the bindings will trigger once the load has completed. Similarly, we could also\nattach a model instance to the `ViewModel` data directly.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: ['name']\n    });\n\n    var rec = new MyApp.model.User({\n        id: 12,\n        name: 'Foo'\n    });\n\n    var viewModel = new Ext.app.ViewModel({\n        links: {\n            theUser: {\n                type: 'User',\n                id: 17\n            }\n        },\n        data: {\n            otherUser: rec\n        }\n    });\n    viewModel.bind('{theUser.name}', function(v) {\n        console.log(v);\n    });\n    viewModel.bind('{otherUser.name}', function(v) {\n        console.log(v);\n    });\n\n### Model Fields\n\nBindings have the functionality to inspect the parent values and resolve the underlying\nvalue dynamically. This behavior allows model fields to be interrogated as part of a binding.\n\n    Ext.define('MyApp.model.User', {\n        extend: 'Ext.data.Model',\n        fields: ['name', 'age']\n    });\n\n    var viewModel = new Ext.app.ViewModel({\n        links: {\n            theUser: {\n                type: 'User',\n                id: 22\n            }\n        }\n    });\n\n    // Server responds with:\n    {\n        \"id\": 22,\n        \"name\": \"Foo\",\n        \"age\": 100\n    }\n\n    viewModel.bind('Hello {name}, you are {age} years old', function(v) {\n        console.log(v);\n    });\n\n### Associations\n\nIn the same way as fields, the bindings can also traverse associations in a bind statement.\nThe `ViewModel` will handle the asynchronous loading of data and only present the value once\nthe full path has been loaded. For more information on associations see <a href='#!/api/Ext.data.schema.OneToOne'>Ext.data.schema.OneToOne</a> and\n<a href='#!/api/Ext.data.schema.ManyToOne'>Ext.data.schema.ManyToOne</a> associations.\n\n    Ext.define('User', {\n        extend: 'Ext.data.Model',\n        fields: ['name']\n    });\n\n    Ext.define('Order', {\n        extend: 'Ext.data.Model',\n        fields: ['date', {\n            name: 'userId',\n            reference: 'User'\n        }]\n    });\n\n    Ext.define('OrderItem', {\n        extend: 'Ext.data.Model',\n        fields: ['price', 'qty', {\n            name: 'orderId',\n            reference: 'Order'\n        }]\n    });\n\n    var viewModel = new Ext.app.ViewModel({\n        links: {\n            orderItem: {\n                type: 'OrderItem',\n                id: 13\n            }\n        }\n    });\n    // The viewmodel will handle both ways of loading the data:\n    // a) If the data is loaded inline in a nested fashion it will\n    //    not make requests for extra data\n    // b) Only loading a single model at a time. So the Order will be loaded once\n    //    the OrderItem returns. The User will be loaded once the Order loads.\n    viewModel.bind('{orderItem.order.user.name}', function(name) {\n        console.log(name);\n    });\n\n### Stores\n\nStores can be created as part of the `ViewModel` definition. The definitions are processed\nlike bindings which allows for very powerful dynamic functionality.\n\nIt is important to ensure that you name viewModel's data keys uniquely. If data is not named\nuniquely, binds and formulas may receive information from an unintended data source.\nThis applies to keys in the viewModel's data block, stores, and links configs.\n\n    var viewModel = new Ext.app.ViewModel({\n        stores: {\n            users: {\n                model: 'User',\n                autoLoad: true,\n                filters: [{\n                    property: 'createdDate',\n                    value: '{createdFilter}',\n                    operator: '>'\n                }]\n            }\n        }\n    });\n    // Later on in our code, we set the date so that the store is created.\n    viewModel.set('createdFilter', Ext.Date.subtract(new Date(), Ext.Date.DAY, 7));\n\nSee <a href='#!/api/Ext.app.ViewModel-cfg-stores'>stores</a> for more detail.\n\n#### Formulas\n\nFormulas allow for calculated `ViewModel` data values. The dependencies for these formulas\nare automatically determined so that the formula will not be processed until the required\ndata is present.\n\n    var viewModel = new Ext.app.ViewModel({\n        formulas: {\n            fullName: function(get) {\n                return get('firstName') + ' ' + get('lastName');\n            }\n        },\n        data: {firstName: 'John', lastName: 'Smith'}\n    });\n\n    viewModel.bind('{fullName}', function(v) {\n        console.log(v);\n    });\n\nSee <a href='#!/api/Ext.app.ViewModel-cfg-formulas'>formulas</a> for more detail.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "data",
+                "since": "5.0.0",
+                "text": "This object holds the arbitrary data that populates the `ViewModel` and is\nthen available for binding.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,377,26",
+                  "since": "0,380,19",
+                  "text": "0,378,12,103",
+                  "type": "0,377,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "formulas",
+                "since": "5.0.0",
+                "text": "An object that defines named values whose value is managed by function calls.\nThe names of the properties of this object are assigned as values in the\nViewModel.\n\nFor example:\n\n     formulas: {\n         xy: function (get) { return get('x') * get('y'); }\n     }\n\nFor more details about defining a formula, see <a href='#!/api/Ext.app.bind.Formula'>Ext.app.bind.Formula</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,385,26",
+                  "since": "0,397,19",
+                  "text": "0,386,12,341",
+                  "type": "0,385,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "links",
+                "since": "5.0.0",
+                "text": "Links provide a way to assign a simple name to a more complex bind. The primary\nuse for this is to assign names to records in the data model.\n\n     links: {\n         theUser: {\n             type: 'User',\n             id: 12\n         }\n     }\n\nIt is also possible to force a new phantom record to be created by not specifying an\nid but passing `create: true` as part of the descriptor. This is often useful when\ncreating a new record for a child session.\n\n    links: {\n        newUser: {\n            type: 'User',\n            create: true\n        }\n    }\n\n`create` can also be an object containing initial data for the record.\n\n    links: {\n        newUser: {\n            type: 'User',\n            create: {\n                firstName: 'John',\n                lastName: 'Smith'\n            }\n        }\n    }\n\nWhile that is the typical use, the value of each property in <a href='#!/api/Ext.app.ViewModel-cfg-links'>links</a> may also be\na bind descriptor (see <a href='#!/api/Ext.app.ViewModel-method-bind'>method-bind</a> for the various forms of bind\ndescriptors).\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,407,26",
+                  "since": "0,444,19",
+                  "text": "0,408,12,978",
+                  "type": "0,407,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "parent",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "The parent `ViewModel` of this `ViewModel`. Once set, this cannot be changed.\n",
+                "type": "Ext.app.ViewModel",
+                "src": {
+                  "name": "0,449,37",
+                  "readonly": "0,451,12",
+                  "since": "0,452,19",
+                  "text": "0,450,12,78",
+                  "type": "0,449,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "root",
+                "since": "5.0.0",
+                "text": "A reference to the root \"stub\" (an object that manages bindings).\n",
+                "type": "Ext.app.bind.RootStub",
+                "src": {
+                  "access": "0,459,12",
+                  "name": "0,457,41",
+                  "since": "0,460,19",
+                  "text": "0,458,12,66",
+                  "type": "0,457,18"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "scheduler",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "The scheduler used to schedule and manage the delivery of notifications for\nall connections to this `ViewModel` and any other attached to it. The normal\nprocess to initialize the <a href='#!/api/Ext.app.ViewModel-cfg-scheduler'>scheduler</a> is to get the scheduler used by the\n<a href='#!/api/Ext.app.ViewModel-cfg-parent'>parent</a> or <a href='#!/api/Ext.app.ViewModel-cfg-session'>session</a> and failing either of those, create one.\n",
+                "type": "Ext.util.Scheduler",
+                "src": {
+                  "access": "0,471,12",
+                  "name": "0,465,38",
+                  "readonly": "0,470,12",
+                  "since": "0,472,19",
+                  "text": "0,466,12,290",
+                  "type": "0,465,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "schema",
+                "text": "The schema to use for getting information about entities.\n",
+                "type": "String/Ext.data.schema.Schema",
+                "src": {
+                  "name": "0,477,49",
+                  "text": "0,478,12,58",
+                  "type": "0,477,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "session",
+                "since": "5.0.0",
+                "text": "The session used to manage the data model (records and stores).\n",
+                "type": "Ext.data.Session",
+                "src": {
+                  "name": "0,483,36",
+                  "since": "0,485,19",
+                  "text": "0,484,12,64",
+                  "type": "0,483,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stores",
+                "since": "5.0.0",
+                "text": "A declaration of <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> configurations that are first processed as\nbinds to produce an effective store configuration.\n\nA simple store definition. We can reference this in our bind statements using the\n`{users}` as we would with other data values.\n\n    new Ext.app.ViewModel({\n        stores: {\n            users: {\n                model: 'User',\n                autoLoad: true\n            }\n        }\n    });\n\nThis store definition contains a dynamic binding. The store will not be created until\nthe initial value for groupId is set. Once that occurs, the store is created with the appropriate\nfilter configuration. Subsequently, once we change the group value, the old filter will be\noverwritten with the new value.\n\n    var viewModel = new Ext.app.ViewModel({\n        stores: {\n            users: {\n                model: 'User',\n                filters: [{\n                    property: 'groupId',\n                    value: '{groupId}'\n                }]\n            }\n        }\n    });\n    viewModel.set('groupId', 1); // This will trigger the store creation with the filter.\n    viewModel.set('groupId', 2); // The filter value will be changed.\n\nThis store uses <a href='#!/api/Ext.data.ChainedStore'>Ext.data.ChainedStore</a> to create a store backed by the\ndata in another store. By specifying a string as the store, it will bind our creation and backing\nto the other store. This functionality is especially useful when wanting to display a different \"view\"\nof a store, for example a different sort order or different filters.\n\n    var viewModel = new Ext.app.ViewModel({\n        stores: {\n            allUsers: {\n                model: 'User',\n                autoLoad: true\n            },\n            children: {\n                source: '{allUsers}',\n                filters: [{\n                    property: 'age',\n                    value: 18,\n                    operator: '<'\n                }]\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,491,26",
+                  "since": "0,548,19",
+                  "text": "0,492,12,1933",
+                  "type": "0,491,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "view",
+                "since": "5.0.0",
+                "text": "The Container that owns this `ViewModel` instance.\n",
+                "type": "Ext.container.Container",
+                "src": {
+                  "name": "0,553,43",
+                  "since": "0,555,19",
+                  "text": "0,554,12,51",
+                  "type": "0,553,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "bind",
+                "text": "This method requests that data in this `ViewModel` be delivered to the specified\n`callback`. The data desired is given in a \"bind descriptor\" which is the first\nargument.\n\nA simple call might look like this:\n\n    var binding = vm.bind('{foo}', this.onFoo, this);\n\n    binding.destroy();  // when done with the binding\n\nOptions for the binding can be provided in the last argument:\n\n    var binding = vm.bind('{foo}', this.onFoo, this, {\n        deep: true\n    });\n\nAlternatively, bind options can be combined with the bind descriptor using only\nthe first argument:\n\n    var binding = vm.bind({\n        bindTo: '{foo}',  // the presence of bindTo identifies this form\n        deep: true\n    }, this.onFoo, this);\n\nSee the class documentation for more details on Bind Descriptors and options.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "descriptor",
+                    "text": "The bind descriptor. See class description\nfor details.\n",
+                    "type": "String/Object/Array",
+                    "src": {
+                      "name": "0,677,37",
+                      "text": "0,677,48,43:0,678,8,13",
+                      "type": "0,677,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "The function to call with the value of the bound property.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,679,26",
+                      "text": "0,679,35,59",
+                      "type": "0,679,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` pointer) for the `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,680,25",
+                      "text": "0,680,32,47",
+                      "type": "0,680,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Additional options to configure the <a href='#!/api/Ext.app.bind.Binding'>Ext.app.bind.Binding</a>.\nIf this parameter is provided, the `bindTo` form of combining options and bind descriptor is not\nrecognized.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,681,25",
+                      "text": "0,681,34,74:0,682,8,109",
+                      "type": "0,681,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The binding.\n",
+                    "type": "Ext.app.bind.BaseBinding/Ext.app.bind.Binding",
+                    "src": {
+                      "text": "0,684,64,13",
+                      "type": "0,684,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,686,0",
+                  "text": "0,651,8,792"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "get",
+                "text": "Get a value from the data for this viewmodel.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "path",
+                    "text": "The path of the data to retrieve.\n\n   var value = vm.get('theUser.address.city');\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,819,24",
+                      "text": "0,819,29,34:0,820,8,49",
+                      "type": "0,819,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The data stored at the passed path.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,823,25,36",
+                      "type": "0,823,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,825,0",
+                  "text": "0,818,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,75,25,3",
+                      "type": "1,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,77,0",
+                  "text": "1,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getRecord",
+                "text": "Get a record instance given a reference descriptor. Will ask\nthe session if one exists.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "type",
+                    "text": "The model type.\n",
+                    "type": "String/Ext.Class",
+                    "src": {
+                      "name": "0,893,38",
+                      "text": "0,893,43,16",
+                      "type": "0,893,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The model id.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,894,28",
+                      "text": "0,894,31,14",
+                      "type": "0,894,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The model instance.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "text": "0,895,37,20",
+                      "type": "0,895,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,896,12",
+                  "name": "0,898,0",
+                  "text": "0,891,12,88"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSession",
+                "text": "Gets the session attached to this (or a parent) ViewModel. See the <a href='#!/api/Ext.app.ViewModel-cfg-session'>session</a> configuration.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The session. <a href='#!/api/null'>null</a> if no session exists.\n",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "text": "0,718,35,42",
+                      "type": "0,718,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,720,0",
+                  "text": "0,717,8,99"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getStore",
+                "text": "Gets a store configured via the <a href='#!/api/Ext.app.ViewModel-cfg-stores'>stores</a> configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The name of the store.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,734,24",
+                      "text": "0,734,28,23",
+                      "type": "0,734,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The store. <a href='#!/api/null'>null</a> if no store exists.\n",
+                    "type": "Ext.data.Store",
+                    "src": {
+                      "text": "0,735,33,38",
+                      "type": "0,735,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,737,0",
+                  "text": "0,733,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "hide": true,
+                "name": "getStores",
+                "src": {
+                  "hide": "0,749,8",
+                  "name": "0,748,16"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getStub",
+                "text": "This method looks up the `Stub` for a single bind descriptor.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "bindDescr",
+                    "text": "The bind descriptor.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,980,35",
+                      "text": "0,980,45,21",
+                      "type": "0,980,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `Stub` associated to the bind descriptor.\n",
+                    "type": "Ext.app.bind.AbstractStub",
+                    "src": {
+                      "text": "0,981,48,46",
+                      "type": "0,981,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,982,12",
+                  "name": "0,984,0",
+                  "text": "0,979,12,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "linkTo",
+                "text": "Create a link to a reference. See the <a href='#!/api/Ext.app.ViewModel-cfg-links'>links</a> configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The name for the link.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,754,24",
+                      "text": "0,754,28,23",
+                      "type": "0,754,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "reference",
+                    "text": "The reference descriptor.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,755,24",
+                      "text": "0,755,34,26",
+                      "type": "0,755,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,757,0",
+                  "text": "0,753,8,68"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "notify",
+                "text": "Forces all bindings in this ViewModel hierarchy to evaluate immediately. Use this to do a synchronous flush\nof all bindings.\n",
+                "src": {
+                  "name": "0,813,0",
+                  "text": "0,810,8,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "set",
+                "text": "Set  a value in the data for this viewmodel.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "path",
+                    "text": "The path of the value to set, or an object literal to set\nat the root of the viewmodel.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "0,831,31",
+                      "text": "0,831,36,58:0,832,8,30",
+                      "type": "0,831,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The data to set at the value. If the value is an object literal,\nany required paths will be created.\n\n    // Set a single property at the root level\n    viewModel.set('expiry', Ext.Date.add(new Date(), Ext.Date.DAY, 7));\n    console.log(viewModel.get('expiry'));\n    // Sets a single property in user.address, does not overwrite any hierarchy.\n    viewModel.set('user.address.city', 'London');\n    console.log(viewModel.get('user.address.city'));\n    // Sets 2 properties of \"user\". Overwrites any existing hierarchy.\n    viewModel.set('user', {firstName: 'Foo', lastName: 'Bar'});\n    console.log(viewModel.get('user.firstName'));\n    // Sets a single property at the root level. Overwrites any existing hierarchy.\n    viewModel.set({rootKey: 1});\n    console.log(viewModel.get('rootKey'));\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,833,24",
+                      "text": "0,833,30,65:0,834,8,727",
+                      "type": "0,833,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,849,0",
+                  "text": "0,830,8,45"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "data",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This object holds all of the properties of this `ViewModel`. It is\nprototype chained to the <a href='#!/api/Ext.app.ViewModel-property-linkData'>linkData</a> which is, in turn, prototype chained\nto (if present) the `data` object of the parent `ViewModel`.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,1074,20",
+                  "name": "0,1070,39",
+                  "readonly": "0,1075,20",
+                  "since": "0,1076,27",
+                  "text": "0,1071,20,201",
+                  "type": "0,1070,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,295,28",
+                  "text": "2,296,8,128",
+                  "type": "2,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "linkData",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This object is used to hold the result of a linked value. This is done\nso that the data object hasOwnProperty equates to whether or not this\nproperty is owned by this instance or inherited.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,1063,20",
+                  "name": "0,1059,39",
+                  "readonly": "0,1064,20",
+                  "since": "0,1065,27",
+                  "text": "0,1060,20,190",
+                  "type": "0,1059,31"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,362,0",
+          "mixins": "0,345,0,0:0,346,0,0",
+          "name": "0,343,0",
+          "requires": "0,350,0,0:0,351,0,0:0,352,0,0:0,353,0,0:0,354,0,0:0,355,0,0:0,356,0,0:0,359,0,0",
+          "text": "0,2,4,11550"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

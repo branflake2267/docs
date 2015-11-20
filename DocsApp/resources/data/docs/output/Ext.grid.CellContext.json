@@ -1,0 +1,330 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/CellContext.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.grid.CellContext",
+        "text": "Instances of this class encapsulate a position in a grid's row/column coordinate system.\n\nCells are addressed using the owning <a href='#!/api/Ext.grid.CellContext-property-record'>record</a> and <a href='#!/api/Ext.grid.CellContext-property-column'>column</a> for robustness.\nthe column may be moved, the store may be sorted, and the CellContext will still reference\nthe same *logical* cell. Be aware that due to buffered rendering the *physical* cell may not exist.\n\nThe <a href='#!/api/Ext.grid.CellContext-method-setPosition'>setPosition</a> method however allows a numeric row and column to be passed in. These\nare immediately converted.\n\nBe careful not to make `CellContext` objects *too* persistent. If the owning record is removed, or the owning column\nis removed, the reference will be stale.\n\nFreshly created context objects, such as those exposed by events from the {Ext.grid.selection.SpreadsheetModel spreadsheet selection model}\nare safe to use until your application mutates the store, or changes the column set.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates a new CellContext which references a <a href='#!/api/Ext.view.Table'>Ext.view.Table</a>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "view",
+                    "text": "The <a href='#!/api/Ext.view.Table'>Ext.view.Table</a> for which the cell context is needed.\n\nTo complete creation of a valid context, use the <a href='#!/api/Ext.grid.CellContext-method-setPosition'>setPosition</a> method.\n",
+                    "type": "Ext.view.Table",
+                    "src": {
+                      "name": "0,56,33",
+                      "text": "0,56,38,74:0,57,9,79",
+                      "type": "0,56,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,60,0",
+                  "text": "0,55,9,77"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setPosition",
+                "text": "Binds this cell context to a logical cell defined by the <a href='#!/api/Ext.grid.CellContext-property-record'>record</a> and <a href='#!/api/Ext.grid.CellContext-property-column'>column</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "row",
+                    "text": "The row index or record which owns the required cell.\n",
+                    "type": "Number/Ext.data.Model",
+                    "src": {
+                      "name": "0,67,39",
+                      "text": "0,67,43,54",
+                      "type": "0,67,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "col",
+                    "text": "The column index (In the owning View's leaf column set), or the owning <a href='#!/api/Ext.grid.column.Column'>Ext.grid.column.Column</a>.\n\nA one argument form may be used in the form of an array:\n\n    [column, row]\n\nOr another CellContext may be passed.\n",
+                    "type": "Number/Ext.grid.column.Column",
+                    "src": {
+                      "name": "0,68,47",
+                      "text": "0,68,51,110:0,69,8,117",
+                      "type": "0,68,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this CellContext object.\n",
+                    "type": "Ext.grid.CellContext",
+                    "src": {
+                      "text": "0,76,39,25",
+                      "type": "0,76,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,78,0",
+                  "text": "0,65,8,95"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCell",
+                "text": "Returns the cell object referenced *at the time of calling*. Note that grid DOM is transient, and\nthe cell referenced may be removed from the DOM due to paging or buffered rendering or column or record removal.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "returnDom",
+                    "text": "Pass `true` to return a DOM object instead of an {@link Ext.dom.Element Element).\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,167,25",
+                      "text": "0,167,35,82",
+                      "type": "0,167,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The cell referenced by this context.\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,168,46,37",
+                      "type": "0,168,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,170,0",
+                  "text": "0,164,8,212"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRow",
+                "text": "Returns the row object referenced *at the time of calling*. Note that grid DOM is transient, and\nthe row referenced may be removed from the DOM due to paging or buffered rendering or column or record removal.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "returnDom",
+                    "text": "Pass `true` to return a DOM object instead of an {@link Ext.dom.Element Element).\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,178,25",
+                      "text": "0,178,35,82",
+                      "type": "0,178,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The grid row referenced by this context.\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,179,46,41",
+                      "type": "0,179,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,181,0",
+                  "text": "0,175,8,210"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getNode",
+                "text": "Returns the view node object (the encapsulating element of a data row) referenced *at the time of\ncalling*. Note that grid DOM is transient, and the node referenced may be removed from the DOM due\nto paging or buffered rendering or column or record removal.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "returnDom",
+                    "text": "Pass `true` to return a DOM object instead of an {@link Ext.dom.Element Element).\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,191,25",
+                      "text": "0,191,35,82",
+                      "type": "0,191,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The grid item referenced by this context.\n",
+                    "type": "HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "text": "0,192,46,42",
+                      "type": "0,192,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,194,0",
+                  "text": "0,187,8,259"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isEqual",
+                "text": "Compares this CellContext object to another CellContext to see if they refer to the same cell.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "other",
+                    "text": "The CellContext to compare.\n",
+                    "type": "Ext.grid.CellContext",
+                    "src": {
+                      "name": "0,201,38",
+                      "text": "0,201,44,28",
+                      "type": "0,201,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the other cell context references the same cell as this.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,202,26,67",
+                      "type": "0,202,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,204,0",
+                  "text": "0,200,8,95"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clone",
+                "text": "Creates a clone of this CellContext.\n\nThe clone may be retargeted without affecting the reference of this context.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "A copy of this context, referencing the same cell.\n",
+                    "type": "Ext.grid.CellContext",
+                    "src": {
+                      "text": "0,212,39,51",
+                      "type": "0,212,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,214,0",
+                  "text": "0,209,8,115"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "navigate",
+                "text": "Navigates left or right within the current row.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "direction",
+                    "text": "`-1` to go towards the row start or `1` to go towards row end\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,254,28",
+                      "text": "0,254,38,62",
+                      "type": "0,254,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,252,12",
+                  "name": "0,256,0",
+                  "text": "0,253,12,48"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "isCellContext",
+                "readonly": true,
+                "text": "`true` in this class to identify an object as an instantiated CellContext, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,20,28",
+                  "readonly": "0,21,8",
+                  "text": "0,22,8,96",
+                  "type": "0,20,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "column",
+                "readonly": true,
+                "text": "The grid column which owns the referenced cell.\n",
+                "type": "Ext.grid.column.Column",
+                "src": {
+                  "name": "0,28,43",
+                  "readonly": "0,27,8",
+                  "text": "0,29,8,48",
+                  "type": "0,28,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "record",
+                "readonly": true,
+                "text": "The store record which maps to the referenced cell.\n",
+                "type": "Ext.data.Model",
+                "src": {
+                  "name": "0,34,35",
+                  "readonly": "0,33,8",
+                  "text": "0,35,8,52",
+                  "type": "0,34,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "rowIdx",
+                "readonly": true,
+                "text": "The row number in the store which owns the referenced cell.\n\n*Be aware that after the initial call to <a href='#!/api/Ext.grid.CellContext-method-setPosition'>setPosition</a>, this value may become stale due to subsequent store mutation.*\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,40,27",
+                  "readonly": "0,39,8",
+                  "text": "0,41,8,187",
+                  "type": "0,40,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "colIdx",
+                "readonly": true,
+                "text": "The column index in the owning View's leaf column set of the referenced cell.\n\n*Be aware that after the initial call to <a href='#!/api/Ext.grid.CellContext-method-setPosition'>setPosition</a>, this value may become stale due to subsequent column mutation.*\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,48,27",
+                  "readonly": "0,47,8",
+                  "text": "0,49,8,206",
+                  "type": "0,48,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,17,0",
+          "text": "0,2,4,878"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

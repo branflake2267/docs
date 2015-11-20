@@ -1,0 +1,238 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/domain/Global.js",
+    "../../../ext/packages/core/src/app/EventDomain.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "extends": "Ext.app.EventDomain",
+        "name": "Ext.app.domain.Global",
+        "requires": "Ext.GlobalEvents",
+        "singleton": true,
+        "text": "This class implements the global event domain. This domain represents event fired from\n<a href='#!/api/Ext.GlobalEvents'>Ext.GlobalEvents</a> Observable instance. No selectors are supported for this domain.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "idProperty",
+                "text": "Name of the identifier property for this event domain.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,50,22",
+                  "text": "1,50,33,55",
+                  "type": "1,50,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "dispatch",
+                "text": "This method dispatches an event fired by an object monitored by this domain. This\nis not called directly but is called by interceptors injected by the <a href='#!/api/Ext.app.domain.Global-method-monitor'>monitor</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The firer of the event.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,71,24",
+                      "text": "1,71,31,24",
+                      "type": "1,71,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ev",
+                    "text": "The event being fired.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,72,24",
+                      "text": "1,72,27,23",
+                      "type": "1,72,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "The arguments for the event. This array **does not** include the event name.\nThat has already been sliced off because this class intercepts the <a href='#!/api/Ext.util.Observable-method-fireEventArgs'>Ext.util.Observable#fireEventArgs</a>\nmethod which takes an array as the event's argument list.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "1,73,23",
+                      "text": "1,73,28,77:1,74,8,182",
+                      "type": "1,73,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`false` if any listener returned `false`, otherwise `true`.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,77,26,60",
+                      "type": "1,77,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,79,8",
+                  "name": "1,81,0",
+                  "text": "1,68,8,170"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "listen",
+                "text": "This method adds listeners on behalf of a controller. Since Global domain does not\nsupport selectors, we skip this layer and just accept an object keyed by events.\nFor example:\n\n     domain.listen({\n         idle: function() { ... },\n         afterlayout: {\n             fn: function() { ... },\n             delay: 10\n         }\n     });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "text": "Config object containing listeners.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,34,24",
+                      "text": "0,34,34,36",
+                      "type": "0,34,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "controller",
+                    "text": "A controller to force execution scope on\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,35,24",
+                      "text": "0,35,35,41",
+                      "type": "0,35,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,37,8",
+                  "name": "0,39,0",
+                  "text": "0,22,8,339"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "match",
+                "text": "This method matches the firer of the event (the `target`) to the given `selector`.\nDefault matching is very simple: a match is true when selector equals target's\n<a href='#!/api/Ext.app.domain.Global-cfg-idProperty'>cfg-idProperty</a>, or when selector is '*' wildcard to match any\ntarget.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The firer of the event.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,255,24",
+                      "text": "1,255,31,24",
+                      "type": "1,255,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector to which to match the `target`.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,256,24",
+                      "text": "1,256,33,45",
+                      "type": "1,256,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the `target` matches the `selector`.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,258,26,47",
+                      "type": "1,258,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,260,8",
+                  "name": "1,262,0",
+                  "text": "1,250,8,253"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "monitor",
+                "text": "This method is called by the derived class to monitor `fireEvent` calls. Any call\nto `fireEvent` on the target Observable will be intercepted and dispatched to any\nlistening Controllers. Assuming the original `fireEvent` method does not return\n`false`, the event is passed to the <a href='#!/api/Ext.app.domain.Global-method-dispatch'>dispatch</a> method of this object.\n\nThis is typically called in the `constructor` of derived classes.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "observable",
+                    "text": "The Observable to monitor for events.\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "1,280,27",
+                      "text": "1,280,38,38",
+                      "type": "1,280,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,282,8",
+                  "name": "1,284,0",
+                  "text": "1,273,8,382"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unlisten",
+                "text": "Removes all of a controller's attached listeners.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "controllerId",
+                    "text": "The id of the controller.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,305,24",
+                      "text": "1,305,37,26",
+                      "type": "1,305,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,307,8",
+                  "name": "1,309,0",
+                  "text": "1,303,8,51"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties"
+          }
+        ],
+        "src": {
+          "access": "0,5,4",
+          "extends": "0,8,0",
+          "name": "0,7,0",
+          "requires": "0,9,0",
+          "singleton": "0,10,0",
+          "text": "0,2,4,178"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

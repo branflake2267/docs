@@ -1,0 +1,346 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/bind/Binding.js",
+    "../../../ext/packages/core/src/app/bind/BaseBinding.js",
+    "../../../ext/packages/core/src/util/Schedulable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.app.bind.BaseBinding",
+        "name": "Ext.app.bind.Binding",
+        "text": "This class is created to manage a direct bind.  <a href='#!/api/Ext.app.ViewModel'>Ext.app.ViewModel</a> returns this from\nits <a href='#!/api/Ext.app.ViewModel-method-bind'>Ext.app.ViewModel#method-bind</a> method.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "deep",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "Normally a binding is only notified of changes to its bound property, but if that\nproperty is an object it is sometimes helpful to be notified of changes to its\nproperties. To receive notifications of changes to all properties of a bound object,\nset this to `true`.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,9,24",
+                  "since": "0,14,15",
+                  "text": "0,10,8,266",
+                  "type": "0,9,14",
+                  "value": "0,9,29"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "single",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "This option instructs the binding to call its <a href='#!/api/Ext.app.bind.Binding-method-destroy'>destroy</a> method immediately after\ndelivering the initial value.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "1,17,24",
+                  "since": "1,20,15",
+                  "text": "1,18,8,111",
+                  "type": "1,17,14",
+                  "value": "1,17,31"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "bindValidation",
+                "since": "5.0.0",
+                "text": "Binds to the `validation` association for the bound property. For example, when a\nbinding is bound to something like this:\n\n     var binding = viewModel.bind('{theUser.name}', ...);\n\nThe validation status for the \"name\" property can be requested like so:\n\n     var validationBinding = binding.bindValidation(fn, scope);\n\nCalling this method in the above example would be equivalent to the following bind:\n\n     var validationBinding = viewModel.bind('{theUser.validation.name}', fn, scope);\n\nThe primary reason to use this method is in cases where the original bind expression\nis not known.\n\nFor example, this method is used by <a href='#!/api/Ext.form.field.Base'>Ext.form.field.Base</a> when given the\n<a href='#!/api/Ext.Component-cfg-modelValidation'>Ext.Component#modelValidation</a> config is set. As such it\nnot common for users to need to call this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "The function to call when the validation changes.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,71,26",
+                      "text": "0,71,35,50",
+                      "type": "0,71,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope on which to call the `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,72,25",
+                      "text": "0,72,32,43",
+                      "type": "0,72,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A binding to the validation of the bound property.\n",
+                    "type": "Ext.app.bind.Binding",
+                    "src": {
+                      "text": "0,73,39,51",
+                      "type": "0,73,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,76,0",
+                  "since": "0,74,15",
+                  "text": "0,51,8,798"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "bindValidationField",
+                "text": "Bind to a model field for validation\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "The function to call or the name of the function on the scope\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "0,83,33",
+                      "text": "0,83,42,62",
+                      "type": "0,83,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The scope for the callback\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,84,24",
+                      "text": "0,84,30,27",
+                      "type": "0,84,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The binding, if available\n",
+                    "type": "Ext.app.bind.Binding",
+                    "src": {
+                      "text": "0,85,39,26",
+                      "type": "0,85,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,87,8",
+                  "name": "0,89,0",
+                  "text": "0,82,8,37"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "since": "5.0.0",
+                "text": "Destroys this binding. No further calls will be made to the callback method. No\nmethods should be called on this binding after calling this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fromParent",
+                    "src": {
+                      "name": "0,38,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,38,0",
+                  "since": "0,36,15",
+                  "text": "0,34,8,148"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getFullName",
+                "since": "5.0.0",
+                "text": "Returns the diagnostic name for this binding.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,96,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,99,0",
+                  "since": "0,97,15",
+                  "text": "0,95,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getScheduler",
+                "text": "This method returns the `Scheduler` for this item.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.util.Scheduler",
+                    "src": {
+                      "type": "2,37,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,33,-1",
+                  "name": "2,39,0",
+                  "text": "2,36,12,51"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getValue",
+                "since": "5.0.0",
+                "text": "Returns the current value of the bound property. If this binding <a href='#!/api/Ext.app.bind.Binding-method-isLoading'>isLoading</a> this\nvalue will be <a href='#!/api/undefined'>undefined</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The value of the bound property.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "text": "0,106,24,33",
+                      "type": "0,106,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,109,0",
+                  "since": "0,107,15",
+                  "text": "0,104,8,109"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isLoading",
+                "since": "5.0.0",
+                "text": "Returns `true` if the bound property is loading. In the general case this means\nthat the value is just not available yet. In specific cases, when the bound property\nis an <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> it means that a request to the server is in progress to get\nthe record. For an <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> it means that\n<a href='#!/api/Ext.data.Store-method-load'>Ext.data.Store#method-load</a> has been called on the store but it is\nstill in progress.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,128,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,131,0",
+                  "since": "0,129,15",
+                  "text": "0,122,8,398"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isReadOnly",
+                "since": "5.0.0",
+                "text": "This method returns `true` if this binding can only be read. If this method returns\n`false` then the binding can be set using <a href='#!/api/Ext.app.bind.Binding-method-setValue'>setValue</a> (meaning this binding can be\na two-way binding).\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,140,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,143,0",
+                  "since": "0,141,15",
+                  "text": "0,137,8,186"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "refresh",
+                "since": "5.0.0",
+                "text": "Tells the bound property to refresh itself. This has meaning when the bound property\nis something like an <a href='#!/api/Ext.data.Model'>Ext.data.Model</a> and an <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> but does nothing in\nmost cases.\n",
+                "src": {
+                  "name": "0,162,0",
+                  "since": "0,160,15",
+                  "text": "0,157,8,179"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "schedule",
+                "text": "Schedules this item with the associated <a href='#!/api/Ext.util.Scheduler'>Ext.util.Scheduler</a>.\n",
+                "src": {
+                  "access": "2,33,-1",
+                  "name": "2,46,0",
+                  "text": "2,44,12,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setValue",
+                "since": "5.0.0",
+                "text": "Sets the value of the bound property. This will throw an error in debug mode if\nthis binding <a href='#!/api/Ext.app.bind.Binding-method-isReadOnly'>isReadOnly</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The new value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,169,23",
+                      "text": "0,169,29,15",
+                      "type": "0,169,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,172,0",
+                  "since": "0,170,15",
+                  "text": "0,167,8,107"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "sort",
+                "text": "This method should be overridden by items that have dependencies to insert. The\nstandard form would be:\n\n     sort: function () {\n         this.getScheduler().sortItems(this.dependencies);\n     }\n\nThis example assumes the item has a \"dependencies\" array to pass to the scheduler.\n",
+                "src": {
+                  "name": "2,83,20",
+                  "text": "2,84,12,280"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unschedule",
+                "text": "Unschedules this item with the associated <a href='#!/api/Ext.util.Scheduler'>Ext.util.Scheduler</a>.\n",
+                "src": {
+                  "access": "2,33,-1",
+                  "name": "2,68,0",
+                  "text": "2,66,12,64"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,6,0",
+          "name": "0,5,0",
+          "text": "0,2,4,141"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

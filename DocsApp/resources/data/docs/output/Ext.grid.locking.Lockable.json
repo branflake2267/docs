@@ -1,0 +1,493 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/locking/Lockable.js",
+    "../../../ext/classic/theme-neutral/sass/var/grid/locking/Lockable.scss"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "alternateClassNames": "Ext.grid.Lockable",
+        "name": "Ext.grid.locking.Lockable",
+        "requires": "Ext.grid.locking.View,Ext.grid.header.Container,Ext.grid.locking.HeaderContainer,Ext.view.Table",
+        "text": "Lockable is a private mixin which injects lockable behavior into any\nTablePanel subclass such as GridPanel or TreePanel. TablePanel will\nautomatically inject the Ext.grid.locking.Lockable mixin in when one of the\nthese conditions are met:\n\n - The TablePanel has the lockable configuration set to true\n - One of the columns in the TablePanel has locked set to true/false\n\nEach TablePanel subclass must register an alias. It should have an array\nof configurations to copy to the 2 separate tablepanels that will be generated\nto note what configurations should be copied. These are named normalCfgCopy and\nlockedCfgCopy respectively.\n\nConfigurations which are specified in this class will be available on any grid or\ntree which is using the lockable functionality.\n\nBy default the two grids, \"locked\" and \"normal\" will be arranged using an <a href='#!/api/Ext.layout.container.HBox'>Ext.layout.container.HBox</a>\nlayout. If the lockable grid is configured with <a href='#!/api/Ext.grid.locking.Lockable-cfg-split'>split</a>, a vertical splitter\nwill be placed between the two grids to resize them.\n\nIt is possible to override the layout of the lockable grid, or example, you may wish to\nuse a border layout and have one of the grids collapsible.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "syncRowHeight",
+                "text": "Synchronize rowHeight between the normal and\nlocked grid view. This is turned on by default. If your grid is guaranteed\nto have rows of all the same height, you should set this to false to\noptimize performance.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,38,23",
+                  "text": "0,38,37,45:0,39,8,166",
+                  "type": "0,38,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "subGridXType",
+                "text": "The xtype of the subgrid to specify. If this is\nnot specified lockable will determine the subgrid xtype to create by the\nfollowing rule. Use the superclasses xtype if the superclass is NOT\ntablepanel, otherwise use the xtype itself.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,46,22",
+                  "text": "0,46,35,48:0,47,8,185",
+                  "type": "0,46,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "lockedViewConfig",
+                "text": "A view configuration to be applied to the\nlocked side of the grid. Any conflicting configurations between lockedViewConfig\nand viewConfig will be overwritten by the lockedViewConfig.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,53,22",
+                  "text": "0,53,39,42:0,54,8,141",
+                  "type": "0,53,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "normalViewConfig",
+                "text": "A view configuration to be applied to the\nnormal/unlocked side of the grid. Any conflicting configurations between normalViewConfig\nand viewConfig will be overwritten by the normalViewConfig.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,59,22",
+                  "text": "0,59,39,42:0,60,8,150",
+                  "type": "0,59,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scrollDelta",
+                "text": "Number of pixels to scroll when scrolling the locked section with mousewheel.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,67,22",
+                  "text": "0,68,8,78",
+                  "type": "0,67,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "lockedGridConfig",
+                "text": "Any special configuration options for the locked part of the grid\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,73,22",
+                  "text": "0,74,8,66",
+                  "type": "0,73,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "normalGridConfig",
+                "text": "Any special configuration options for the normal part of the grid\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,78,22",
+                  "text": "0,79,8,66",
+                  "type": "0,78,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "split",
+                "optional": true,
+                "text": "Configure as true to place a resizing <a href='#!/api/Ext.resizer.Splitter'>Ext.resizer.Splitter</a> between the locked\nand unlocked columns.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,83,24",
+                  "text": "0,84,8,117",
+                  "type": "0,83,14",
+                  "value": "0,83,30"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "layout",
+                "optional": true,
+                "text": "By default, a lockable grid uses an <a href='#!/api/Ext.layout.container.HBox'>Ext.layout.container.HBox</a> layout to arrange\nthe two grids (possibly separated by a splitter).\n\nUsing this config it is possible to specify a different layout to arrange the two grids.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,89,23",
+                  "text": "0,90,8,233",
+                  "type": "0,89,14"
+                }
+              },
+              {
+                "$type": "property",
+                "inheritdoc": "Ext.state.Stateful#cfg-stateEvents",
+                "localDoc": "Adds the following stateEvents:\n\n - <a href='#!/api/Ext.grid.locking.Lockable-event-lockcolumn'>event-lockcolumn</a>\n - <a href='#!/api/Ext.grid.locking.Lockable-event-unlockcolumn'>event-unlockcolumn</a>\n",
+                "name": "stateEvents",
+                "src": {
+                  "inheritdoc": "0,98,8",
+                  "localDoc": "0,99,18",
+                  "name": "0,97,13"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "processcolumns",
+                "text": "Fires when the configured (or **reconfigured**) column set is split into two depending on the <a href='#!/api/Ext.grid.column.Column-cfg-locked'>Ext.grid.column.Column#locked</a> flag.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "lockedColumns",
+                    "text": "The locked columns.\n",
+                    "type": "Ext.grid.column.Column[]",
+                    "src": {
+                      "name": "0,143,42",
+                      "text": "0,143,56,20",
+                      "type": "0,143,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "normalColumns",
+                    "text": "The normal columns.\n",
+                    "type": "Ext.grid.column.Column[]",
+                    "src": {
+                      "name": "0,144,42",
+                      "text": "0,144,56,20",
+                      "type": "0,144,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,141,15",
+                  "text": "0,142,8,145"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "lockcolumn",
+                "text": "Fires when a column is locked.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "The gridpanel.\n",
+                    "type": "Ext.grid.Panel",
+                    "src": {
+                      "name": "0,150,32",
+                      "text": "0,150,37,15",
+                      "type": "0,150,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "column",
+                    "text": "The column being locked.\n",
+                    "type": "Ext.grid.column.Column",
+                    "src": {
+                      "name": "0,151,40",
+                      "text": "0,151,47,25",
+                      "type": "0,151,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,148,15",
+                  "text": "0,149,8,31"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "unlockcolumn",
+                "text": "Fires when a column is unlocked.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "The gridpanel.\n",
+                    "type": "Ext.grid.Panel",
+                    "src": {
+                      "name": "0,157,32",
+                      "text": "0,157,37,15",
+                      "type": "0,157,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "column",
+                    "text": "The column being unlocked.\n",
+                    "type": "Ext.grid.column.Column",
+                    "src": {
+                      "name": "0,158,40",
+                      "text": "0,158,47,27",
+                      "type": "0,158,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,155,15",
+                  "text": "0,156,8,33"
+                }
+              },
+              {
+                "$type": "event",
+                "inheritdoc": "Ext.data.Store#filterchange",
+                "name": "filterchange",
+                "src": {
+                  "inheritdoc": "0,475,16",
+                  "name": "0,474,23"
+                }
+              },
+              {
+                "$type": "event",
+                "inheritdoc": "Ext.data.Store#groupchange",
+                "name": "groupchange",
+                "src": {
+                  "inheritdoc": "0,480,16",
+                  "name": "0,479,23"
+                }
+              },
+              {
+                "$type": "event",
+                "inheritdoc": "Ext.data.Store#beforeload",
+                "name": "beforeload",
+                "src": {
+                  "inheritdoc": "0,485,16",
+                  "name": "0,484,23"
+                }
+              },
+              {
+                "$type": "event",
+                "inheritdoc": "Ext.data.Store#load",
+                "name": "load",
+                "src": {
+                  "inheritdoc": "0,490,16",
+                  "name": "0,489,23"
+                }
+              },
+              {
+                "$type": "event",
+                "inheritdoc": "Ext.panel.Table#viewready",
+                "name": "viewready",
+                "src": {
+                  "inheritdoc": "0,500,16",
+                  "name": "0,499,23"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "syncRowHeights",
+                "text": "Synchronizes the row heights between the locked and non locked portion of the grid for each\nrow. If one row is smaller than the other, the height will be increased to match the larger one.\n",
+                "src": {
+                  "name": "0,671,0",
+                  "text": "0,668,8,189"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "syncLockedWidth",
+                "text": "Updates the overall view after columns have been resized, or moved from\nthe locked to unlocked side or vice-versa.\n\nIf all columns are removed from either side, that side must be hidden, and the\nsole remaining column owning grid then becomes *the* grid. It must flex to occupy the\nwhole of the locking view. And it must also allow scrolling.\n\nIf columns are shared between the two sides, the *locked* grid shrinkwraps the\nwidth of the visible locked columns while the normal grid flexes in what space remains.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "`true` if there are visible locked columns which need refreshing.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,798,26,66",
+                      "type": "0,798,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,787,8",
+                  "name": "0,801,0",
+                  "text": "0,788,8,511"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "lock",
+                "text": "Locks the activeHeader as determined by which menu is open OR a header\nas specified.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "header",
+                    "optional": true,
+                    "text": "Header to unlock from the locked section.\nDefaults to the header which has the menu open currently.\n",
+                    "type": "Ext.grid.column.Column",
+                    "src": {
+                      "name": "0,909,41",
+                      "text": "0,909,49,42:0,910,8,58",
+                      "type": "0,909,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "toIdx",
+                    "optional": true,
+                    "text": "The index to move the unlocked header to.\nDefaults to appending as the last item.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,911,25",
+                      "text": "0,911,32,42:0,912,8,40",
+                      "type": "0,911,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,913,8",
+                  "name": "0,915,0",
+                  "text": "0,907,8,85"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "unlock",
+                "text": "Unlocks the activeHeader as determined by which menu is open OR a header\nas specified.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "header",
+                    "optional": true,
+                    "text": "Header to unlock from the locked section.\nDefaults to the header which has the menu open currently.\n",
+                    "type": "Ext.grid.column.Column",
+                    "src": {
+                      "name": "0,1022,41",
+                      "text": "0,1022,49,42:0,1023,8,58",
+                      "type": "0,1022,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "toIdx",
+                    "optional": true,
+                    "text": "The index to move the unlocked header to.\n",
+                    "type": "Number",
+                    "value": "0",
+                    "src": {
+                      "name": "0,1024,25",
+                      "text": "0,1024,34,42",
+                      "type": "0,1024,16",
+                      "value": "0,1024,31"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1025,8",
+                  "name": "0,1027,0",
+                  "text": "0,1020,8,87"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "vars",
+            "items": [
+              {
+                "$type": "property",
+                "name": "$grid-lockable-separator-border-width",
+                "text": "The width of the border between the locked views\n",
+                "type": "Number",
+                "value": "1px",
+                "src": {
+                  "name": "1,9,1",
+                  "text": "1,7,4,49",
+                  "type": "1,6,10",
+                  "value": "1,9,48"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-lockable-separator-border-style",
+                "text": "The border-style of the border between the locked views\n",
+                "type": "String",
+                "value": "solid",
+                "src": {
+                  "name": "1,15,1",
+                  "text": "1,13,4,56",
+                  "type": "1,12,10",
+                  "value": "1,15,48"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-lockable-separator-border-color",
+                "text": "The border-color of the border between the locked views. Defaults to the\npanel border color. May be overridden in a theme.\n",
+                "type": "String",
+                "value": "$panel-border-color",
+                "src": {
+                  "name": "1,22,1",
+                  "text": "1,19,4,123",
+                  "type": "1,18,10",
+                  "value": "1,22,48"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-lockable-header-menu-lock-glyph",
+                "text": "Glyph for the grid header menu \"lock\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-lock $grid-header-menu-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,28,1",
+                  "text": "1,26,4,97",
+                  "type": "1,25,10",
+                  "value": "1,28,48"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-lockable-header-menu-unlock-glyph",
+                "text": "Glyph for the grid header menu \"unlock\" icon when <a href='#!/api/Global_CSS-var-$enable-font-icons'>Global_CSS#$enable-font-icons</a> is `true`.\n",
+                "type": "String/list",
+                "value": "$fa-var-unlock $grid-header-menu-glyph-font-size $font-icon-font-family",
+                "src": {
+                  "name": "1,34,1",
+                  "text": "1,32,4,99",
+                  "type": "1,31,10",
+                  "value": "1,34,50"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "$grid-lockable-body-border-width",
+                "text": "The border-width of the lockable grid body border\n",
+                "type": "Number",
+                "value": "$grid-body-border-width",
+                "src": {
+                  "name": "1,40,1",
+                  "text": "1,38,4,50",
+                  "type": "1,37,10",
+                  "value": "1,40,43"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,2,4",
+          "alternateClassNames": "0,28,0",
+          "name": "1,2,11",
+          "requires": "0,31,0,0:0,32,0,0:0,33,0,0:0,34,0,0",
+          "text": "0,4,4,1174"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

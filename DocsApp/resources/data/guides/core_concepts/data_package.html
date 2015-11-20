@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#Data Package</p>
+<div class="contents"><h1 id="core_concepts-_-data_package_-_data_package">Data Package</h1>
 <p>The data package is what loads and saves all of the data in your application.  It consists 
 of a multitude of classes, but there are three that are more important than all the others.  </p>
 <p>These classes are: </p>
@@ -17,8 +17,8 @@ of a multitude of classes, but there are three that are more important than all 
 <p>The above classes are used by almost every application.  They are supported by a number of 
 satellite classes.</p>
 <p><img src="images/data-model.png"/></p>
-<p>##Models
-The centerpiece of the data package is Ext.data.Model. A Model represents an entity in an 
+<h2 id="core_concepts-_-data_package_-_models">Models</h2>
+<p>The centerpiece of the data package is Ext.data.Model. A Model represents an entity in an 
 application.  For example, an e-commerce app might have models for Users, Products and 
 Orders. At the simplest level, a Model defines a set of fields and related business logic.  </p>
 <p>Let&#39;s look at a few of the principal parts of Model:</p>
@@ -29,8 +29,8 @@ Orders. At the simplest level, a Model defines a set of fields and related busin
 <li>Associations</li>
 </ul>
 <p><img src="images/model-breakdown.png"/></p>
-<p>###Creating a Model
-It is usually best to define your models starting with a common base class. This base class 
+<h3 id="core_concepts-_-data_package_-_creating_a_model">Creating a Model</h3>
+<p>It is usually best to define your models starting with a common base class. This base class 
 allows you to easily configure certain aspects for all of your models in one place. It is 
 also a good place to configure the [[ext:Ext.data.schema.Schema schema]]. The schema is a 
 manager for all of the models in your application. For now we&#39;ll focus on two of its most 
@@ -58,21 +58,21 @@ helpful configuration options:</p>
 });
 </code></pre><p>The appropriate content for your model base class, especially its &quot;fields&quot;, will likely 
 differ between applications.</p>
-<p>###Proxies
-[[ext:Ext.data.proxy.Proxy Proxies]] are used by [[ext:Ext.data.Model Models]] and
+<h3 id="core_concepts-_-data_package_-_proxies">Proxies</h3>
+<p>[[ext:Ext.data.proxy.Proxy Proxies]] are used by [[ext:Ext.data.Model Models]] and
 [[ext:Ext.data.Store Stores]] to handle the loading and saving of Model data. There are 
 two types of proxies: Client and Server. </p>
 <p>Proxies can be defined directly on the schema of the Model&#39;s base class (as seen above).</p>
-<p>####Client Proxy
-Examples of client proxies include [[ext:Ext.data.proxy.Memory Memory]] and 
+<h4 id="core_concepts-_-data_package_-_client_proxy">Client Proxy</h4>
+<p>Examples of client proxies include [[ext:Ext.data.proxy.Memory Memory]] and 
 [[ext:Ext.data.proxy.LocalStorage Local Storage]], which uses the HTML5 localstorage 
 feature. Although older browsers don&#39;t support these new HTML5 APIs, they&#39;re so useful 
 that a lot of applications will benefit enormously from their presence.</p>
-<p>####Server Proxy
-Server proxies handle the marshaling of data to a remote server.  Examples of this type 
+<h4 id="core_concepts-_-data_package_-_server_proxy">Server Proxy</h4>
+<p>Server proxies handle the marshaling of data to a remote server.  Examples of this type 
 of proxy include [[ext:Ext.data.proxy.Ajax AJAX]], [[ext:Ext.data.proxy.JsonP JSONP]] 
 and [[ext:Ext.data.proxy.Rest REST]].</p>
-<p>###Schema</p>
+<h3 id="core_concepts-_-data_package_-_schema">Schema</h3>
 <p>A [[ext:Ext.data.schema.Schema schema]] is a collection of entities that have associations 
 with one another. When a model specifies a &quot;schema&quot; config, that schema will be inherited 
 by all derived models. In the above example, the schema has been configured with two values 
@@ -111,8 +111,8 @@ JSON string.  </p>
     }
   ]
 }
-</code></pre><p>##Stores
-Models are typically used with a Store, which is basically a collection of records 
+</code></pre><h2 id="core_concepts-_-data_package_-_stores">Stores</h2>
+<p>Models are typically used with a Store, which is basically a collection of records 
 (instances of a Model-derived class). Creating a Store and loading its data is simple:</p>
 <pre><code>var store = new Ext.data.Store ({
     model: &#39;MyApp.model.User&#39;
@@ -126,8 +126,8 @@ store.load({
 });
 </code></pre><p>We are manually loading the store to receive a set of <code>MyApp.model.User</code> records.  The 
 records are then logged when the store load&#39;s callback function is fired (upon completion). </p>
-<p>###Inline data
-Stores can also load data in-line. Internally, Store converts each of the objects we pass 
+<h3 id="core_concepts-_-data_package_-_inline_data">Inline data</h3>
+<p>Stores can also load data in-line. Internally, Store converts each of the objects we pass 
 in as [[ext:Ext.data.Store#cfg-data data]] into records of the appropriate 
 [[ext:Ext.data.Model Model]] type:</p>
 <pre><code>new Ext.data.Store({
@@ -146,7 +146,7 @@ in as [[ext:Ext.data.Store#cfg-data data]] into records of the appropriate
         name: &quot;Amy Wong&quot;
     }]
 });
-</code></pre><p>###Sorting and Grouping</p>
+</code></pre><h3 id="core_concepts-_-data_package_-_sorting_and_grouping">Sorting and Grouping</h3>
 <p>Stores are able to perform sorting, filtering and grouping locally and remotely.</p>
 <pre><code>new Ext.data.Store({
     model: &#39;MyApp.model.User&#39;,
@@ -160,8 +160,8 @@ in as [[ext:Ext.data.Store#cfg-data data]] into records of the appropriate
 </code></pre><p>In this store, the data will be sorted first by name and then id.  The data will be 
 filtered to only include users with the name &#39;Philip J. Fry&#39;. It&#39;s easy to change the 
 attributes for these items at any time via the Store&#39;s API. </p>
-<p>##Associations
-Models can be linked together with the Associations API. Most applications deal with many 
+<h2 id="core_concepts-_-data_package_-_associations">Associations</h2>
+<p>Models can be linked together with the Associations API. Most applications deal with many 
 different Models and the Models are almost always related. A blog authoring application 
 might have models for User and Post. Each User creates Posts.  So in this case, a user can 
 have multiple posts, but a post will only have one User creating it.  This is known as a 
@@ -239,8 +239,8 @@ MyApp.model.Post.load(2, {
 at the user instance. The <code>setUser()</code> method simply updates the <code>userId</code> (sometimes called 
 the &quot;foreign key&quot;) to 100 and saves the Post model. As usual, callbacks can be passed in 
 that will be triggered when the save operation has completed - whether successful or not.</p>
-<p>###Loading Nested Data
-When associations are defined, the act of loading a record can also load associated records 
+<h3 id="core_concepts-_-data_package_-_loading_nested_data">Loading Nested Data</h3>
+<p>When associations are defined, the act of loading a record can also load associated records 
 in a single request. For example, consider a server response like this:</p>
 <pre><code>{
     &quot;success&quot;: true,
@@ -259,8 +259,8 @@ in a single request. For example, consider a server response like this:</p>
 </code></pre><p>The framework can automatically parse out nested data in a single response such as the 
 above. Instead of making a request for the User data and another for the Posts data, we 
 can return all of the data in a single server response.</p>
-<p>##Validations
-Models also provide a bevy of support for validating data. To demonstrate, we&#39;re going to 
+<h2 id="core_concepts-_-data_package_-_validations">Validations</h2>
+<p>Models also provide a bevy of support for validating data. To demonstrate, we&#39;re going to 
 build upon the example we used above. First let&#39;s add some validations to the User model:</p>
 <pre><code>Ext.define(&#39;MyApp.model.User&#39;, {
     extend: &#39;Ext.data.Model&#39;,
@@ -327,5 +327,19 @@ record will be updated and will no longer be dirty, and all of its fields will b
 to true.</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_models">Models</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_creating_a_model">Creating a Model</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_proxies">Proxies</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_client_proxy">Client Proxy</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_server_proxy">Server Proxy</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_schema">Schema</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_stores">Stores</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_inline_data">Inline data</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_sorting_and_grouping">Sorting and Grouping</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_associations">Associations</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_loading_nested_data">Loading Nested Data</a></div>
+        <div class="toc-item"><a href="#core_concepts-_-data_package_-_validations">Validations</a></div>
+    </div>
 </body>
 </html>

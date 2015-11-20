@@ -1,0 +1,471 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/Action.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Action",
+        "text": "An Action is a piece of reusable functionality that can be abstracted out of any particular component so that it\ncan be usefully shared among multiple components.  Actions let you share handlers, configuration options and UI\nupdates across any components that support the Action interface (primarily <a href='#!/api/Ext.toolbar.Toolbar'>Ext.toolbar.Toolbar</a>,\n<a href='#!/api/Ext.button.Button'>Ext.button.Button</a> and <a href='#!/api/Ext.menu.Menu'>Ext.menu.Menu</a> components).\n\nUse a single Action instance as the config object for any number of UI Components which share the same configuration. The\nAction not only supplies the configuration, but allows all Components based upon it to have a common set of methods\ncalled at once through a single call to the Action.\n\nAny Component that is to be configured with an Action must also support\nthe following methods:\n\n- setText(string)\n- setIconCls(string)\n- setDisabled(boolean)\n- setVisible(boolean)\n- setHandler(function)\n\nThis allows the Action to control its associated Components.\n\nExample usage:\n\n    // Define the shared Action.  Each Component below will have the same\n    // display text and icon, and will display the same message on click.\n    var action = new Ext.Action({\n        text: 'Do something',\n        handler: function(){\n            Ext.Msg.alert('Click', 'You did something.');\n        },\n        iconCls: 'do-something',\n        itemId: 'myAction'\n    });\n\n    var panel = new Ext.panel.Panel({\n        title: 'Actions',\n        width: 500,\n        height: 300,\n        tbar: [\n            // Add the Action directly to a toolbar as a menu button\n            action,\n            {\n                text: 'Action Menu',\n                // Add the Action to a menu as a text item\n                menu: [action]\n            }\n        ],\n        items: [\n            // Add the Action to the panel body as a standard button\n            new Ext.button.Button(action)\n        ],\n        renderTo: Ext.getBody()\n    });\n\n    // Change the text for all components using the Action\n    action.setText('Something else');\n\n    // Reference an Action through a container using the itemId\n    var btn = panel.getComponent('myAction');\n    var aRef = btn.baseAction;\n    aRef.setText('New text');\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "text",
+                "optional": true,
+                "text": "The text to set for all components configured by this Action.\n",
+                "type": "String",
+                "value": "''",
+                "src": {
+                  "name": "0,70,23",
+                  "text": "0,71,8,62",
+                  "type": "0,70,14",
+                  "value": "0,70,28"
+                }
+              },
+              {
+                "$type": "property",
+                "inheritdoc": "Ext.panel.Header#cfg-iconCls",
+                "localDoc": "**Note:** The CSS class(es) specifying the background image will apply\nto all components configured by this Action.\n",
+                "name": "iconCls",
+                "optional": true,
+                "type": "String",
+                "value": "''",
+                "src": {
+                  "inheritdoc": "0,77,8",
+                  "localDoc": "0,75,18",
+                  "name": "0,74,23",
+                  "type": "0,74,14",
+                  "value": "0,74,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disabled",
+                "optional": true,
+                "text": "True to disable all components configured by this Action, false to enable them.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,80,24",
+                  "text": "0,81,8,80",
+                  "type": "0,80,14",
+                  "value": "0,80,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hidden",
+                "optional": true,
+                "text": "True to hide all components configured by this Action, false to show them.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,84,24",
+                  "text": "0,85,8,75",
+                  "type": "0,84,14",
+                  "value": "0,84,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "handler",
+                "text": "The function that will be invoked by each component tied to this Action\nwhen the component's primary event is triggered.\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,88,24",
+                  "text": "0,89,8,121",
+                  "type": "0,88,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "itemId",
+                "text": "See <a href='#!/api/Ext.Component'>Ext.Component</a>.<a href='#!/api/Ext.Component-cfg-itemId'>Ext.Component#itemId</a>.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,93,22",
+                  "text": "0,94,8,63",
+                  "type": "0,93,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scope",
+                "text": "The scope (this reference) in which the <a href='#!/api/Ext.Action-cfg-handler'>handler</a> is executed.\nDefaults to the browser window.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,97,22",
+                  "text": "0,98,8,102",
+                  "type": "0,97,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Action.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "Config object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,104,24",
+                      "text": "0,104,31,15",
+                      "type": "0,104,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,106,0",
+                  "text": "0,103,8,20"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setText",
+                "text": "Sets the text to be displayed by all components configured by this Action.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "text",
+                    "text": "The text to display\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,120,24",
+                      "text": "0,120,29,20",
+                      "type": "0,120,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,122,0",
+                  "text": "0,119,8,75"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getText",
+                "text": "Gets the text currently displayed by all components configured by this Action.\n",
+                "src": {
+                  "name": "0,130,0",
+                  "text": "0,128,8,79"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setIconCls",
+                "text": "Sets the <a href='#!/api/Ext.Action-cfg-iconCls'>iconCls</a> for all components configured by this\nAction.  The class should supply a background image that will be used as the icon\nimage.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cls",
+                    "text": "The CSS class supplying the icon image\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,138,24",
+                      "text": "0,138,28,39",
+                      "type": "0,138,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,140,0",
+                  "text": "0,135,8,168"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getIconCls",
+                "text": "Gets the icon CSS class currently used by all components configured by this Action.\n",
+                "src": {
+                  "name": "0,148,0",
+                  "text": "0,146,8,84"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setDisabled",
+                "text": "Sets the disabled state of all components configured by this Action.  Shortcut method\nfor <a href='#!/api/Ext.Action-method-enable'>enable</a> and <a href='#!/api/Ext.Action-method-disable'>disable</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "disabled",
+                    "text": "True to disable the component, false to enable it\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,155,25",
+                      "text": "0,155,34,50",
+                      "type": "0,155,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,157,0",
+                  "text": "0,153,8,128"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "Enables all components configured by this Action.\n",
+                "src": {
+                  "name": "0,165,0",
+                  "text": "0,163,8,50"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "Disables all components configured by this Action.\n",
+                "src": {
+                  "name": "0,172,0",
+                  "text": "0,170,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isDisabled",
+                "text": "Returns true if the components using this Action are currently disabled, else returns false.\n",
+                "src": {
+                  "name": "0,179,0",
+                  "text": "0,177,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setHidden",
+                "text": "Sets the hidden state of all components configured by this Action.  Shortcut method\nfor <a href='#!/api/Ext.Action-method-hide'>hide</a> and <a href='#!/api/Ext.Action-method-show'>show</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "hidden",
+                    "text": "True to hide the component, false to show it.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,186,25",
+                      "text": "0,186,32,46",
+                      "type": "0,186,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,188,0",
+                  "text": "0,184,8,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "show",
+                "text": "Shows all components configured by this Action.\n",
+                "src": {
+                  "name": "0,196,0",
+                  "text": "0,194,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hide",
+                "text": "Hides all components configured by this Action.\n",
+                "src": {
+                  "name": "0,203,0",
+                  "text": "0,201,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isHidden",
+                "text": "Returns true if the components configured by this Action are currently hidden, else returns false.\n",
+                "src": {
+                  "name": "0,210,0",
+                  "text": "0,208,8,99"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setHandler",
+                "text": "Sets the function that will be called by each Component using this action when its primary event is triggered.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function that will be invoked by the action's components.  The function\nwill be called with no arguments.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,216,26",
+                      "text": "0,216,29,76:0,217,8,34",
+                      "type": "0,216,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The scope (this reference) in which the function is executed. Defaults to the Component\nfiring the event.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,218,24",
+                      "text": "0,218,30,88:0,219,8,18",
+                      "type": "0,218,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,221,0",
+                  "text": "0,215,8,111"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "each",
+                "text": "Executes the specified function once for each Component currently tied to this Action.  The function passed\nin should accept a single argument that will be an object that supports the basic Action config/method interface.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to execute for each component\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,230,26",
+                      "text": "0,230,29,43",
+                      "type": "0,230,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The scope (this reference) in which the function is executed.\nDefaults to the Component.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,231,24",
+                      "text": "0,231,30,62:0,232,8,27",
+                      "type": "0,231,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,234,0",
+                  "text": "0,228,8,222"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "callEach",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fnName",
+                    "src": {
+                      "name": "0,241,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "0,241,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,239,8",
+                  "name": "0,241,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addComponent",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "src": {
+                      "name": "0,258,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,256,8",
+                  "name": "0,258,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "removeComponent",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "comp",
+                    "src": {
+                      "name": "0,266,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,264,8",
+                  "name": "0,266,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "execute",
+                "text": "Executes this Action manually using the handler function specified in the original config object\nor the handler function set with <a href='#!/api/Ext.Action-method-setHandler'>setHandler</a>.  Any arguments passed to this\nfunction will be passed on to the handler function.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Variable number of arguments passed to the handler function\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,274,27",
+                      "text": "0,274,32,60",
+                      "type": "0,274,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,276,0",
+                  "text": "0,271,8,233"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "isAction",
+                "text": "`true` in this class to identify an object as an instantiated Action, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,113,28",
+                  "text": "0,114,8,91",
+                  "type": "0,113,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,63,0",
+          "text": "0,2,4,2172"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

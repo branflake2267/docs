@@ -1,0 +1,126 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/data/schema/ManyToOne.js",
+    "../../../ext/packages/core/src/data/schema/Association.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.data.schema.Association",
+        "name": "Ext.data.schema.ManyToOne",
+        "text": "This type of association describes the case where one entity is referenced by zero or\nmore other entities typically using a \"foreign key\" field.\n\nThe way this is defined is for one entity to have a field that holds the unique id (also\nknown as \"Primary Key\" or, more specifically, as the <a href='#!/api/Ext.data.Model-cfg-idProperty'>Ext.data.Model#idProperty</a>\nfield) of the related entity. These fields have a <a href='#!/api/Ext.data.field.Field-cfg-reference'>Ext.data.field.Field#reference</a>\nin their definition. The value in the `reference` field of an entity instance holds the\nvalue of the id of the related entity instance. Since many entities can hold the same\nvalue in a `reference` field, this allows many entities to reference one entity.\nOrderItem has a foreign key to Order.\n\n     OrderItem -> Order\n\nOrderItem is on the \"left\" and Order is on the \"right\". This is because the owner of\nthe foreign key is always on the \"left\". Many OrderItems refer to one Order. The\ndefault name of this association would be \"Order_OrderItems\".\n\n     var Order_OrderItems = {\n         name: 'Order_OrderItems',\n         owner: Order_OrderItems.right,\n         left: {\n             cls: OrderItem,\n             type: 'OrderItem',\n             association: Order_OrderItems,\n             left: true,\n             owner: false,\n             autoLoad: true,\n             isMany: true,\n             inverse: Order_OrderItems.right,\n             role: 'orderItems'\n         },\n         right: {\n             cls: Order,\n             type: 'Order',\n             association: Order_OrderItems,\n             left: false,\n             owner: true,\n             autoLoad: true,\n             isMany: false,\n             inverse: Order_OrderItems.left,\n             role: 'order'\n         }\n     };\n\n     OrderItem.associations.order = Order_OrderItems.left;\n     Order.associations.orderItems = Order_OrderItems.right;\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "name",
+                "text": "The name of this association.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,74,22",
+                  "text": "1,75,8,30",
+                  "type": "1,74,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "definedBy",
+                "readonly": true,
+                "type": "Ext.Class",
+                "src": {
+                  "name": "1,87,30",
+                  "readonly": "1,88,8",
+                  "type": "1,87,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "field",
+                "readonly": true,
+                "type": "Ext.data.field.Field",
+                "src": {
+                  "name": "1,92,41",
+                  "readonly": "1,93,8",
+                  "type": "1,92,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "left",
+                "readonly": true,
+                "type": "Ext.data.schema.Role",
+                "src": {
+                  "name": "1,108,41",
+                  "readonly": "1,109,8",
+                  "type": "1,108,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "nullable",
+                "readonly": true,
+                "type": "Boolean",
+                "src": {
+                  "name": "1,103,28",
+                  "readonly": "1,104,8",
+                  "type": "1,103,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "owner",
+                "readonly": true,
+                "text": "Points at either <a href='#!/api/Ext.data.schema.ManyToOne-property-left'>left</a> or <a href='#!/api/Ext.data.schema.ManyToOne-property-right'>right</a> objects if one is the owning party in this\nassociation or is <a href='#!/api/null'>null</a> if there is no owner.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,79,27",
+                  "readonly": "1,82,8",
+                  "text": "1,80,8,125",
+                  "type": "1,79,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "right",
+                "readonly": true,
+                "type": "Ext.data.schema.Role",
+                "src": {
+                  "name": "1,113,41",
+                  "readonly": "1,114,8",
+                  "type": "1,113,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "schema",
+                "readonly": true,
+                "type": "Ext.data.schema.Schema",
+                "src": {
+                  "name": "1,98,43",
+                  "readonly": "1,99,8",
+                  "type": "1,98,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,50,0",
+          "name": "0,49,0",
+          "text": "0,2,4,1820"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

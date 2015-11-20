@@ -1,0 +1,434 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/promise/Promise.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.promise.Promise",
+        "requires": "Ext.promise.Deferred",
+        "since": "6.0.0",
+        "text": "Promises represent a future value; i.e., a value that may not yet be available.\n\nUsers should **not** create instances of this class directly. Instead user code should\nuse `new <a href='#!/api/Ext.Promise'>Ext.Promise</a>()` or `new <a href='#!/api/Ext.Deferred'>Ext.Deferred</a>()` to create and manage\npromises. If the browser supports the standard `Promise` constructor, this class will\nnot be used by <a href='#!/api/Ext.Promise'>Ext.Promise</a>. This class will always be used by <a href='#!/api/Ext.Deferred'>Ext.Deferred</a> in order\nto provide enhanced capabilities beyond standard promises.\n\nA Promise's <a href='#!/api/Ext.promise.Promise-method-then'>then</a> method is used to specify onFulfilled and onRejected\ncallbacks that will be notified when the future value becomes available. Those callbacks\ncan subsequently transform the value that was resolved or the reason that was rejected.\nEach call to <a href='#!/api/Ext.promise.Promise-method-then'>then</a> returns a new Promise of that transformed value; i.e., a Promise\nthat is resolved with the callback return value or rejected with any error thrown by\nthe callback.\n\n## Basic Usage\n\n     this.companyService.loadCompanies().then(\n         function (records) {\n             // Do something with result.\n         },\n         function (error) {\n             // Do something on failure.\n         }).\n     always(function () {\n         // Do something whether call succeeded or failed\n     });\n\nThe above code uses the `Promise` returned from the `companyService.loadCompanies()`\nmethod and uses `then()` to attach success and failure handlers. Finally, an `always()`\nmethod call is chained onto the returned promise. This specifies a callback function\nthat will run whether the underlying call succeeded or failed.\n\nSee <a href='#!/api/Ext.Deferred'>Ext.Deferred</a> for an example of using the returned Promise.\n\n[1]: http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts#april_14_2015_rev_38_final_draft\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "constructor",
+                "text": "NOTE: <a href='#!/api/Ext.promise.Deferred'>Ext.promise.Deferred</a> are the mechanism used to create new\nPromises.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "text": "The owning `Deferred` instance.\n",
+                    "type": "Ext.promise.Deferred",
+                    "src": {
+                      "name": "0,199,38",
+                      "text": "0,199,44,32",
+                      "type": "0,199,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,201,8",
+                  "name": "0,203,0",
+                  "text": "0,197,8,92"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "then",
+                "text": "Attaches onFulfilled and onRejected callbacks that will be notified when the future\nvalue becomes available.\n\nThose callbacks can subsequently transform the value that was fulfilled or the error\nthat was rejected. Each call to <a href='#!/api/Ext.promise.Promise-method-then'>then</a> returns a new Promise of that transformed\nvalue; i.e., a Promise that is fulfilled with the callback return value or rejected\nwith any error thrown by the callback.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "onFulfilled",
+                    "text": "Optional callback to execute to transform a\nfulfillment value.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,216,26",
+                      "text": "0,216,38,44:0,217,8,19",
+                      "type": "0,216,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "onRejected",
+                    "text": "Optional callback to execute to transform a rejection\nreason.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,218,26",
+                      "text": "0,218,37,54:0,219,8,8",
+                      "type": "0,218,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "onProgress",
+                    "text": "Optional callback function to be called with progress\nupdates.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,220,26",
+                      "text": "0,220,37,54:0,221,8,9",
+                      "type": "0,220,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "Optional scope for the callback(s).\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,222,24",
+                      "text": "0,222,30,36",
+                      "type": "0,222,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Promise that is fulfilled with the callback return\nvalue or rejected with any error thrown by the callback.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,223,38,51:0,224,8,57",
+                      "type": "0,223,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,226,0",
+                  "text": "0,208,8,400"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "otherwise",
+                "text": "Attaches an onRejected callback that will be notified if this Promise is rejected.\n\nThe callback can subsequently transform the reason that was rejected. Each call to\n<a href='#!/api/Ext.promise.Promise-method-otherwise'>otherwise</a> returns a new Promise of that transformed value; i.e., a Promise that\nis resolved with the original resolved value, or resolved with the callback return\nvalue or rejected with any error thrown by the callback.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "onRejected",
+                    "text": "Callback to execute to transform a rejection reason.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,262,26",
+                      "text": "0,262,37,53",
+                      "type": "0,262,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "Optional scope for the callback.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,263,24",
+                      "text": "0,263,30,33",
+                      "type": "0,263,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Promise of the transformed future value.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,264,38,41",
+                      "type": "0,264,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,266,0",
+                  "text": "0,255,8,390"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "always",
+                "text": "Attaches an onCompleted callback that will be notified when this Promise is completed.\n\nSimilar to `finally` in `try... catch... finally`.\n\nNOTE: The specified callback does not affect the resulting Promise's outcome; any\nreturn value is ignored and any Error is rethrown.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "onCompleted",
+                    "text": "Callback to execute when the Promise is resolved or\nrejected.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,290,26",
+                      "text": "0,290,38,52:0,291,8,10",
+                      "type": "0,290,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "Optional scope for the callback.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,292,24",
+                      "text": "0,292,30,33",
+                      "type": "0,292,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A new \"pass-through\" Promise that is resolved with\nthe original value or rejected with the original reason.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,293,38,51:0,294,8,57",
+                      "type": "0,293,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,296,0",
+                  "text": "0,283,8,274"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "done",
+                "text": "Terminates a Promise chain, ensuring that unhandled rejections will be rethrown as\nErrors.\n\nOne of the pitfalls of interacting with Promise-based APIs is the tendency for\nimportant errors to be silently swallowed unless an explicit rejection handler is\nspecified.\n\nFor example:\n\n     promise.then(function () {\n         // logic in your callback throws an error and it is interpreted as a\n         // rejection. throw new Error(\"Boom!\");\n     });\n\n     // The Error was not handled by the Promise chain and is silently swallowed.\n\nThis problem can be addressed by terminating the Promise chain with the done()\nmethod:\n\n     promise.then(function () {\n         // logic in your callback throws an error and it is interpreted as a\n         // rejection. throw new Error(\"Boom!\");\n     }).done();\n\n    // The Error was not handled by the Promise chain and is rethrown by done() on\n    // the next tick.\n\nThe `done()` method ensures that any unhandled rejections are rethrown as Errors.\n",
+                "src": {
+                  "name": "0,360,0",
+                  "text": "0,331,8,983"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "cancel",
+                "text": "Cancels this Promise if it is still pending, triggering a rejection with a\n<a href='#!/api/Ext.promise.Promise-static-property-CancellationError'>CancellationError</a> that will propagate to any Promises originating from\nthis Promise.\n\nNOTE: Cancellation only propagates to Promises that branch from the target Promise.\nIt does not traverse back up to parent branches, as this would reject nodes from\nwhich other Promises may have branched, causing unintended side-effects.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "reason",
+                    "text": "Cancellation reason.\n",
+                    "type": "Error",
+                    "src": {
+                      "name": "0,373,23",
+                      "text": "0,373,30,21",
+                      "type": "0,373,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,375,0",
+                  "text": "0,365,8,411"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "log",
+                "text": "Logs the resolution or rejection of this Promise with the specified category and\noptional identifier. Messages are logged via all registered custom logger functions.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "identifier",
+                    "text": "An optional identifier to incorporate into the\nresulting log entry.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,387,24",
+                      "text": "0,387,35,47:0,388,8,22",
+                      "type": "0,387,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A new \"pass-through\" Promise that is resolved with\nthe original value or rejected with the original reason.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,390,38,51:0,391,8,57",
+                      "type": "0,390,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,393,0",
+                  "text": "0,384,8,167"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "Reference",
+                "readonly": true,
+                "text": "to this promise's\n<a href='#!/api/Ext.promise.Deferred'>Ext.promise.Deferred</a> instance.\n",
+                "type": "Ext.promise.Deferred",
+                "src": {
+                  "access": "0,192,8",
+                  "name": "0,188,41",
+                  "readonly": "0,191,8",
+                  "text": "0,188,51,18:0,189,8,51",
+                  "type": "0,188,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "all",
+                "static": true,
+                "text": "Returns a new Promise that will only resolve once all the specified\n`promisesOrValues` have resolved.\n\nThe resolution value will be an Array containing the resolution value of each\nof the `promisesOrValues`.\n\nThe public API's to use instead of this method are <a href='#!/api/Ext.Promise-static-method-all'>Ext.Promise#all</a>\nand <a href='#!/api/Ext.Deferred-static-method-all'>Ext.Deferred#all</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promisesOrValues",
+                    "text": "An\nArray of values or Promises, or a Promise of an Array of values or Promises.\n",
+                    "type": "Mixed[]/Ext.promise.Promise[]/Ext.promise.Promise",
+                    "src": {
+                      "name": "0,81,71",
+                      "text": "0,81,88,3:0,82,12,77",
+                      "type": "0,81,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of an Array of the resolved values.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,83,42,46",
+                      "type": "0,83,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,86,12",
+                  "name": "0,88,0",
+                  "static": "0,85,12",
+                  "text": "0,72,12,319"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "is",
+                "static": true,
+                "text": "Determines whether the specified value is a Promise (including third-party\nuntrusted Promises or then()-ables), based on the Promises/A specification\nfeature test.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "A potential Promise.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,140,27",
+                      "text": "0,140,33,21",
+                      "type": "0,140,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the given value is a Promise, otherwise `false`.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,141,30,59",
+                      "type": "0,141,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,143,12",
+                  "name": "0,145,0",
+                  "static": "0,142,12",
+                  "text": "0,136,12,165"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "rethrowError",
+                "static": true,
+                "text": "Rethrows the specified Error on the next turn of the event loop.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "error",
+                    "src": {
+                      "name": "0,155,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,153,12",
+                  "name": "0,155,0",
+                  "static": "0,152,12",
+                  "text": "0,151,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "when",
+                "static": true,
+                "text": "Returns a new Promise that either\n\n * Resolves immediately for the specified value, or\n * Resolves or rejects when the specified promise (or third-party Promise or\n   then()-able) is resolved or rejected.\n\nThe public API's to use instead of this method are <a href='#!/api/Ext.Promise-static-method-resolve'>Ext.Promise#resolve</a>\nand <a href='#!/api/Ext.Deferred-static-method-resolved'>Ext.Deferred#resolved</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promiseOrValue",
+                    "text": "A Promise (or third-party Promise or then()-able)\nor value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,171,27",
+                      "text": "0,171,42,50:0,172,12,10",
+                      "type": "0,171,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of the specified Promise or value.\n",
+                    "type": "Ext.Promise",
+                    "src": {
+                      "text": "0,173,34,45",
+                      "type": "0,173,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,176,12",
+                  "name": "0,178,0",
+                  "static": "0,175,12",
+                  "text": "0,162,12,325"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "CancellationError",
+                "static": true,
+                "text": "The type of <a href='#!/api/Error'>Error</a> propagated by the <a href='#!/api/Ext.promise.Promise-method-cancel'>method-cancel</a> method. If\nthe browser provides a native <a href='#!/api/Ext.promise.Promise-static-property-CancellationError'>CancellationError</a> then that type is used. If\nnot, a basic <a href='#!/api/Error'>Error</a> type is used.\n",
+                "src": {
+                  "name": "0,58,22",
+                  "static": "0,59,12",
+                  "text": "0,60,12,186"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,48,0",
+          "requires": "0,53,0",
+          "since": "0,46,11",
+          "text": "0,9,4,1763"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

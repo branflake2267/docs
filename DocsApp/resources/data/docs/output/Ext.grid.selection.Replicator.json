@@ -1,0 +1,412 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/selection/Replicator.js",
+    "../../../ext/packages/core/src/plugin/Abstract.js",
+    "../../../ext/classic/classic/overrides/plugin/Abstract.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "plugin.selectionreplicator",
+        "extends": "Ext.plugin.Abstract",
+        "name": "Ext.grid.selection.Replicator",
+        "text": "A plugin for use in grids which use the <a href='#!/api/Ext.grid.selection.SpreadsheetModel'>Ext.grid.selection.SpreadsheetModel</a> selection model,\nwith <a href='#!/api/Ext.grid.selection.SpreadsheetModel-cfg-extensible'>Ext.grid.selection.SpreadsheetModel#extensible</a> configured as `true` or `\"y\"`, meaning that\nthe selection may be extended up or down using a draggable extension handle.\n\nThis plugin propagates values from the selection into the extension area.\n\nIf just *one* row is selected, the values in that row are replicated unchanged into the extension area.\n\nIf more than one row is selected, the two rows closest to the selected block are taken to provide a numeric\ndifference, and that difference is used to calculate the sequence of values all the way into the extension area.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "pluginId",
+                "text": "A name for the plugin that can be set at creation time to then retrieve the plugin\nthrough <a href='#!/api/Ext.Component-method-getPlugin'>Ext.Component#getPlugin</a> method.  For example:\n\n    var grid = Ext.create('Ext.grid.Panel', {\n        plugins: [{\n            ptype: 'cellediting',\n            clicksToEdit: 2,\n            pluginId: 'cellplugin'\n        }]\n    });\n\n    // later on:\n    var plugin = grid.getPlugin('cellplugin');\n",
+                "type": "String",
+                "src": {
+                  "name": "1,61,22",
+                  "text": "1,62,8,404",
+                  "type": "1,61,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "stateEvents",
+                "text": "The configured list of stateEvents used to (optionally) participate in Owner Component's state management.\n",
+                "type": "String/Array",
+                "src": {
+                  "name": "2,13,28",
+                  "text": "2,14,8,107",
+                  "type": "2,13,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "applyState",
+                "text": "The applyState method is invoked by the client Component's State mixin after initComponent method has been run for the client.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method to utilize it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "text": "The current plugin state object to be applied.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,35,24",
+                      "text": "2,35,30,47",
+                      "type": "2,35,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "allState",
+                    "text": "The current aggregate state of the Component and all plugins.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "2,36,24",
+                      "text": "2,36,33,62",
+                      "type": "2,36,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,39,0",
+                  "text": "2,31,8,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clonePlugin",
+                "text": "Creates clone of the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "overrideCfg",
+                    "optional": true,
+                    "text": "Additional config for the derived plugin.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,38,25",
+                      "text": "1,38,38,42",
+                      "type": "1,38,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,40,0",
+                  "text": "1,37,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Instantiates the plugin.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "Configuration object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,27,25",
+                      "text": "1,27,33,22",
+                      "type": "1,27,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,29,0",
+                  "text": "1,26,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "The destroy method is invoked by the owning Component at the time the Component is\nbeing destroyed.\n",
+                "src": {
+                  "name": "1,91,16",
+                  "text": "1,88,8,101"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `true`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "2,57,0",
+                  "text": "2,52,8,171"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "The base implementation just sets the plugin's `disabled` flag to `false`\n\nPlugin subclasses which need more complex processing may implement an overriding implementation.\n",
+                "src": {
+                  "name": "2,47,0",
+                  "text": "2,42,8,172"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCmp",
+                "text": "Returns the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "text": "1,54,32,17",
+                      "type": "1,54,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,56,0",
+                  "text": "1,53,8,56"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getColumnValues",
+                "text": "A utility method, which, when passed a record, uses the <a href='#!/api/Ext.grid.selection.Replicator-property-columns'>columns</a> property to extract the values\nof that record which are encompassed by the selection.\n\nNote that columns with no <a href='#!/api/Ext.grid.column.Column-cfg-dataIndex'>Ext.grid.column.Column#dataIndex</a> cannot yield a value.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "record",
+                    "text": "The record from which to read values.\n",
+                    "type": "Ext.data.Model",
+                    "src": {
+                      "name": "0,171,32",
+                      "text": "0,171,39,38",
+                      "type": "0,171,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The values of the fields used by the selected column range for the passed record.\n",
+                    "type": "Mixed[]",
+                    "src": {
+                      "text": "0,172,26,82",
+                      "type": "0,172,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,174,0",
+                  "text": "0,167,8,259"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getState",
+                "text": "The getState method is invoked by the client Component's State mixin when one or more of the the specified <a href='#!/api/Ext.grid.selection.Replicator-cfg-stateEvents'>stateEvents</a> are raised.\n\nThe supplied implementation is empty. If plugin Subclasses are to (optionally) participate in the client Component's\nstate management, implementers should provide a suitable method which returns a state object.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "state\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "2,24,25,6",
+                      "type": "2,24,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,27,0",
+                  "text": "2,20,8,352"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "init",
+                "text": "The init method is invoked after initComponent method has been run for the client Component.\n\nThe supplied implementation is empty. Subclasses should perform plugin initialization, and set up bidirectional\nlinks between the plugin and its client Component in their own implementation of this method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "client",
+                    "text": "The client Component which owns this plugin.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,83,31",
+                      "text": "1,83,38,45",
+                      "type": "1,83,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,85,0",
+                  "text": "1,79,8,300"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "replicateSelection",
+                "text": "This is the method which is called when the <a href='#!/api/Ext.grid.selection.SpreadsheetModel'>Ext.grid.selection.SpreadsheetModel</a> selection model's\nextender handle is dragged and released.\n\nIt is passed contextual information about the selection and the extension area.\n\nSubclass authors may override it to gain access to the event and perform their own data replication.\n\nBy default, the selection is extended to encompass the selection area. Returning `false` from this method\nvetoes that.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerGrid",
+                    "text": "The owning grid.\n",
+                    "type": "Ext.panel.Table",
+                    "src": {
+                      "name": "0,53,33",
+                      "text": "0,53,43,17",
+                      "type": "0,53,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "sel",
+                    "text": "An object describing the contiguous selected area.\n",
+                    "type": "Ext.grid.selection.Selection",
+                    "src": {
+                      "name": "0,54,46",
+                      "text": "0,54,50,51",
+                      "type": "0,54,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "extension",
+                    "text": "An object describing the type and size of extension.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "type",
+                        "text": "`\"rows\"` or `\"columns\"`\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,56,34",
+                          "text": "0,56,39,24",
+                          "type": "0,56,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "start",
+                        "text": "The start (top left) cell of the extension area.\n",
+                        "type": "Ext.grid.CellContext",
+                        "src": {
+                          "name": "0,57,48",
+                          "text": "0,57,54,49",
+                          "type": "0,57,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "end",
+                        "text": "The end (bottom right) cell of the extension area.\n",
+                        "type": "Ext.grid.CellContext",
+                        "src": {
+                          "name": "0,58,48",
+                          "text": "0,58,52,51",
+                          "type": "0,58,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "columns",
+                        "optional": true,
+                        "text": "The number of columns extended (-ve means on the left side).\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "0,59,35",
+                          "text": "0,59,44,61",
+                          "type": "0,59,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "rows",
+                        "optional": true,
+                        "text": "The number of rows extended (-ve means on the top side).\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "0,60,35",
+                          "text": "0,60,41,57",
+                          "type": "0,60,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,55,24",
+                      "text": "0,55,34,53",
+                      "type": "0,55,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,62,0",
+                  "text": "0,43,8,463"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setCmp",
+                "text": "Sets the component to which this plugin is attached.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cmp",
+                    "text": "Owner component.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "1,46,31",
+                      "text": "1,46,35,17",
+                      "type": "1,46,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,48,0",
+                  "text": "1,45,8,53"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "columns",
+                "text": "An array of the columns encompassed by the selection block. This is gathered before <a href='#!/api/Ext.grid.selection.Replicator-method-replicateSelection'>replicateSelection</a>\nis called, so is available to subclasses which implement their own <a href='#!/api/Ext.grid.selection.Replicator-method-replicateSelection'>replicateSelection</a> method.\n",
+                "type": "Ext.grid.column.Column[]",
+                "src": {
+                  "name": "0,20,45",
+                  "text": "0,21,8,215",
+                  "type": "0,20,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isPlugin",
+                "text": "`true` in this class to identify an object as an instantiated Plugin, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,20,28",
+                  "text": "1,21,8,91",
+                  "type": "1,20,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,16,0",
+          "extends": "0,15,0",
+          "name": "0,14,0",
+          "text": "0,2,4,708"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,277 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/util/CollectionKey.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "mixins": "Ext.mixin.Identifiable",
+        "name": "Ext.util.CollectionKey",
+        "since": "5.0.0",
+        "text": "Maintains an additional key map for an <a href='#!/api/Ext.util.Collection'>Ext.util.Collection</a>. Instances of this class\nare seldom created manually. Rather they are created by the `Ext.util.Collection' when\ngiven an `extraKeys` config.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "keyFn",
+                "optional": true,
+                "since": "5.0.0",
+                "text": "A function to retrieve the key of an item in the collection. This can be normal\nfunction that takes an item and returns the key or it can be the name of the\nmethod to call on an item to get the key.\n\nFor example:\n\n     new Ext.util.Collection({\n         keys: {\n             byName: {\n                 keyFn: 'getName' // each item has a \"getName\" method\n             }\n         }\n     });\n\nOr equivalently:\n\n     new Ext.util.Collection({\n         keys: {\n             byName: {\n                 keyFn: function (item) {\n                     return item.getName();\n                 }\n             }\n         }\n     });\n",
+                "type": "Function/String",
+                "src": {
+                  "name": "0,20,36",
+                  "since": "0,47,19",
+                  "text": "0,21,12,621",
+                  "type": "0,20,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "property",
+                "text": "The name of the property on each item that is its key.\n\n     new Ext.util.Collection({\n         keys: {\n             byName: 'name'\n         }\n     });\n\nOr equivalently:\n\n     new Ext.util.Collection({\n         keys: {\n             byName: {\n                 property: 'name'\n             }\n         }\n     });\n\n     var item = collection.byName.get('fooname');\n",
+                "type": "String",
+                "src": {
+                  "name": "0,52,26",
+                  "text": "0,53,12,362",
+                  "type": "0,52,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "rootProperty",
+                "text": "The name of the sub-object property on each item that is its key. This value\noverrides <a href='#!/api/Ext.util.Collection-cfg-rootProperty'>Ext.util.Collection#rootProperty</a>.\n\n     new Ext.util.Collection({\n         keys: {\n             byName: {\n                 property: 'name',\n                 rootProperty: 'data'\n             }\n         }\n     });\n\n     var item = collection.byName.get('fooname');\n",
+                "type": "String",
+                "src": {
+                  "name": "0,76,26",
+                  "text": "0,77,12,362",
+                  "type": "0,76,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clear",
+                "text": "Clears this index;\n\nCalled by <a href='#!/api/Ext.util.Collection-method-clear'>Ext.util.Collection#clear</a> when the collection is cleared.\n",
+                "src": {
+                  "access": "0,150,8",
+                  "name": "0,155,0",
+                  "text": "0,151,8,96"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "get",
+                "text": "Returns the item or, if not `unique` possibly array of items that have the given\nkey.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The key that will match the <a href='#!/api/Ext.util.CollectionKey-cfg-keyFn'>keyFn</a> return value or value of\nthe specified <a href='#!/api/Ext.util.CollectionKey-cfg-property'>property</a>.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,140,23",
+                      "text": "0,140,27,61:0,141,8,26",
+                      "type": "0,140,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,142,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,144,0",
+                  "text": "0,138,8,86"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "1,75,25,3",
+                      "type": "1,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,77,0",
+                  "text": "1,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "indexOf",
+                "text": "Returns the index of the item with the given key in the collection. If this is not\na `unique` result, the index of the first item in the collection with the matching\nkey.\n\nTo iterate the indices of all items with a matching (not `unique`) key:\n\n     for (index = collection.byName.indexOf('foo');\n             index >= 0;\n             index = collection.byName.indexOf('foo', index)) {\n         // process item at \"index\"\n     }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The key that will match the <a href='#!/api/Ext.util.CollectionKey-cfg-keyFn'>keyFn</a> return value or value of\nthe specified <a href='#!/api/Ext.util.CollectionKey-cfg-property'>property</a>.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,179,23",
+                      "text": "0,179,27,61:0,180,8,26",
+                      "type": "0,179,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "startAt",
+                    "optional": true,
+                    "text": "The index at which to start. Only occurrences beyond\nthis index are returned.\n",
+                    "type": "Number",
+                    "value": "-1",
+                    "src": {
+                      "name": "0,181,25",
+                      "text": "0,181,37,53:0,182,8,25",
+                      "type": "0,181,16",
+                      "value": "0,181,33"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The index of the first item with the given `key` beyond the given\n`startAt` index or -1 if there are no such items.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,183,25,66:0,184,8,50",
+                      "type": "0,183,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,186,0",
+                  "text": "0,167,8,430"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "updateKey",
+                "since": "5.0.0",
+                "text": "Change the key for an existing item in the collection. If the old key does not\nexist this call does nothing.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item whose key has changed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,224,24",
+                      "text": "0,224,29,32",
+                      "type": "0,224,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldKey",
+                    "text": "The old key for the `item`.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,225,24",
+                      "text": "0,225,31,28",
+                      "type": "0,225,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,228,0",
+                  "since": "0,226,15",
+                  "text": "0,222,8,109"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "generation",
+                "readonly": true,
+                "since": "5.0.0",
+                "text": "This property is used to know when this `Index` is in sync with the `Collection`.\nWhen the two are synchronized, their <a href='#!/api/Ext.util.CollectionKey-property-generation'>generation</a> values match.\n",
+                "src": {
+                  "access": "0,99,8",
+                  "name": "0,103,0",
+                  "readonly": "0,100,8",
+                  "since": "0,101,15",
+                  "text": "0,97,8,146"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "map",
+                "since": "5.0.0",
+                "text": "An object used as map to get an object based on its key.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,109,8",
+                  "name": "0,106,27",
+                  "since": "0,108,15",
+                  "text": "0,107,8,57",
+                  "type": "0,106,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "mapRebuilds",
+                "readonly": true,
+                "text": "The number of times the <a href='#!/api/Ext.util.CollectionKey-property-map'>map</a> has been rebuilt. This is for diagnostic use.\n",
+                "type": "Number",
+                "src": {
+                  "access": "0,116,8",
+                  "name": "0,114,27",
+                  "readonly": "0,117,8",
+                  "text": "0,115,8,76",
+                  "type": "0,114,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "name",
+                "readonly": true,
+                "text": "This property is set by <a href='#!/api/Ext.util.Collection'>Ext.util.Collection</a> when added via `extraKeys`.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,122,27",
+                  "readonly": "0,124,8",
+                  "text": "0,123,8,74",
+                  "type": "0,122,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "mixins": "0,10,0",
+          "name": "0,8,0",
+          "since": "0,6,11",
+          "text": "0,2,4,203"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

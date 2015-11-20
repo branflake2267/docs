@@ -1,0 +1,489 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/amf/src/data/amf/Packet.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.data.amf.Packet",
+        "text": "This class represents an Action Message Format (AMF) Packet.  It contains all\nthe logic required to decode an AMF Packet from a byte array.\nTo decode a Packet, first construct a Packet:\n\n    var packet = Ext.create('Ext.data.amf.Packet');\n\nThen use the decode method to decode an AMF byte array:\n\n    packet.decode(bytes);\n\nwhere \"bytes\" is a Uint8Array or an array of numbers representing the binary\nAMF data.\n\nTo access the decoded data use the #version, #headers, and #messages properties:\n\n    console.log(packet.version, packet.headers, packet.messages);\n\nFor more information on working with AMF data please refer to the\n[AMF Guide](#/guide/amf).\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "decode",
+                "text": "Decodes an AMF btye array and sets the decoded data as the\nPacket's #version, #headers, and #messages properties\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "byteArray",
+                    "text": "A byte array containing the encoded AMF data.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,115,27",
+                      "text": "0,115,37,46",
+                      "type": "0,115,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this AMF Packet\n",
+                    "type": "Ext.data.amf.Packet",
+                    "src": {
+                      "text": "0,116,42,16",
+                      "type": "0,116,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,118,0",
+                  "text": "0,113,12,113"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "decodeValue",
+                "text": "Decodes an AMF3 byte array and that has one value and returns it.\nNote: Destroys previously stored data in this Packet.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "byteArray",
+                    "text": "A byte array containing the encoded AMF data.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,194,27",
+                      "text": "0,194,37,46",
+                      "type": "0,194,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "the decoded object\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,195,29,19",
+                      "type": "0,195,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,197,0",
+                  "text": "0,192,12,120"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "parseXml",
+                "text": "Parses an xml string and returns an xml document\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xml",
+                    "type": "String",
+                    "src": {
+                      "name": "0,239,28",
+                      "type": "0,239,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,238,12",
+                  "name": "0,241,0",
+                  "text": "0,237,12,49"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readAmf0Date",
+                "text": "Reads an AMF0 date from the byte array\n",
+                "src": {
+                  "access": "0,256,12",
+                  "name": "0,258,0",
+                  "text": "0,255,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readAmf0Object",
+                "text": "Reads an AMF0 Object from the byte array\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "src": {
+                      "name": "0,271,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,269,12",
+                  "name": "0,271,0",
+                  "text": "0,268,12,41"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readAmf0String",
+                "text": "Reads an AMF0 string from the byte array\n",
+                "src": {
+                  "access": "0,296,12",
+                  "name": "0,298,0",
+                  "text": "0,295,12,41"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readAmf3Date",
+                "text": "Reads an AMF3 date from the byte array\n",
+                "src": {
+                  "access": "0,361,12",
+                  "name": "0,363,0",
+                  "text": "0,360,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readAmf3Object",
+                "text": "Reads an AMF3 object from the byte array\n",
+                "src": {
+                  "access": "0,383,12",
+                  "name": "0,385,0",
+                  "text": "0,382,12,41"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readAmf3String",
+                "text": "Reads an AMF3 string from the byte array\n",
+                "src": {
+                  "access": "0,484,12",
+                  "name": "0,486,0",
+                  "text": "0,483,12,41"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readAmf3Xml",
+                "text": "Reads an AMF3 XMLDocument type or XML type from the byte array\n",
+                "src": {
+                  "access": "0,512,12",
+                  "name": "0,514,0",
+                  "text": "0,511,12,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readBoolean",
+                "text": "Reads an AMF0 boolean from the byte array\n",
+                "src": {
+                  "access": "0,535,12",
+                  "name": "0,537,0",
+                  "text": "0,534,12,42"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readByteArray",
+                "text": "Reads an AMF3 ByteArray type from the byte array\n",
+                "src": {
+                  "access": "0,543,12",
+                  "name": "0,545,0",
+                  "text": "0,542,12,49"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readDouble",
+                "text": "Reads a IEEE 754 double-precision binary floating-point number\n",
+                "src": {
+                  "access": "0,572,12",
+                  "name": "0,574,0",
+                  "text": "0,571,12,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readEcmaArray",
+                "text": "Reads an AMF0 ECMA Array from the byte array\n",
+                "src": {
+                  "access": "0,643,12",
+                  "name": "0,645,0",
+                  "text": "0,642,12,45"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readFalse",
+                "text": "Returns false.  Used for reading the false type\n",
+                "src": {
+                  "access": "0,656,12",
+                  "name": "0,658,0",
+                  "text": "0,655,12,48"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readLongString",
+                "text": "Reads a long string (longer than 65535 bytes) from the byte array\n",
+                "src": {
+                  "access": "0,664,12",
+                  "name": "0,666,0",
+                  "text": "0,663,12,66"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readNull",
+                "text": "Returns null.  Used for reading the null type\n",
+                "src": {
+                  "access": "0,673,12",
+                  "name": "0,675,0",
+                  "text": "0,672,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readReference",
+                "text": "Reads a reference from the byte array.  Reference types are used to\navoid duplicating data if the same instance of a complex object (which\nis defined in AMF0 as an anonymous object, typed object, array, or\necma-array) is included in the data more than once.\n",
+                "src": {
+                  "access": "0,684,12",
+                  "name": "0,686,0",
+                  "text": "0,680,12,258"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readStrictArray",
+                "text": "Reads an AMF0 strict array (an array with ordinal indices)\n",
+                "src": {
+                  "access": "0,694,12",
+                  "name": "0,696,0",
+                  "text": "0,693,12,59"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readTypedObject",
+                "text": "Reads an AMF0 typed object from the byte array\n",
+                "src": {
+                  "access": "0,718,12",
+                  "name": "0,720,0",
+                  "text": "0,717,12,47"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readUInt",
+                "text": "Reads an unsigned integer from the byte array\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "byteCount",
+                    "text": "the number of bytes to read, e.g. 2 to read\na 16 bit integer, 4 to read a 32 bit integer, etc.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,740,28",
+                      "text": "0,740,38,44:0,741,12,51",
+                      "type": "0,740,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,742,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,739,12",
+                  "name": "0,744,0",
+                  "text": "0,738,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readUInt29",
+                "text": "Reads an unsigned 29-bit integer from the byte array.\nAMF 3 makes use of a special compact format for writing integers to\nreduce the number of bytes required for encoding. As with a normal\n32-bit integer, up to 4 bytes are required to hold the value however\nthe high bit of the first 3 bytes are used as flags to determine\nwhether the next byte is part of the integer. With up to 3 bits of\nthe 32 bits being used as flags, only 29 significant bits remain for\nencoding an integer. This means the largest unsigned integer value\nthat can be represented is 2^29-1.\n\n          (hex)         :                (binary)\n0x00000000 - 0x0000007F :  0xxxxxxx\n0x00000080 - 0x00003FFF :  1xxxxxxx 0xxxxxxx\n0x00004000 - 0x001FFFFF :  1xxxxxxx 1xxxxxxx 0xxxxxxx\n0x00200000 - 0x3FFFFFFF :  1xxxxxxx 1xxxxxxx 1xxxxxxx xxxxxxxx\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,776,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,775,12",
+                  "name": "0,778,0",
+                  "text": "0,760,12,810"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readUtf8",
+                "text": "Reads a UTF-8 string from the byte array\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "byteLength",
+                    "text": "The number of bytes to read\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,823,28",
+                      "text": "0,823,39,28",
+                      "type": "0,823,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,824,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,822,12",
+                  "name": "0,826,0",
+                  "text": "0,821,12,41"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "readValue",
+                "text": "Reads an AMF \"value-type\" from the byte array.  Automatically detects\nthe data type by reading the \"type marker\" from the first byte after\nthe pointer.\n",
+                "src": {
+                  "access": "0,947,12",
+                  "name": "0,949,0",
+                  "text": "0,944,12,152"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "headers",
+                "readonly": true,
+                "text": "The decoded headers. Each header has the following properties:\n\n- `name`: String\nThe header name. Typically identifies a remote operation or method to\nbe invoked by this context header.\n- `mustUnderstand`: Boolean\nIf `true` this flag instructs the endpoint to abort and generate an\nerror if the header is not understood.\n- `byteLength`: Number\nIf the byte-length of a header is known it can be specified to optimize\nmemory allocation at the remote endpoint.\n- `value`: Mixed\nThe header value\n",
+                "type": "Array",
+                "src": {
+                  "name": "0,32,30",
+                  "readonly": "0,33,12",
+                  "text": "0,34,12,492",
+                  "type": "0,32,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "messages",
+                "readonly": true,
+                "text": "The decoded messages. Each message has the following properties:\n\n- `targetURI`: String\nDescribes which operation, function, or method is to be remotely\ninvoked.\n- `responseURI`: String\nA unique operation name\n- `byteLength`: Number\nOptional byte-length of the message body\n- `body`: Mixed\nThe message body\n",
+                "type": "Array",
+                "src": {
+                  "name": "0,50,30",
+                  "readonly": "0,51,12",
+                  "text": "0,52,12,307",
+                  "type": "0,50,23"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "version",
+                "readonly": true,
+                "text": "The AMF version number (0 or 3)\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,66,31",
+                  "readonly": "0,67,12",
+                  "text": "0,68,12,32",
+                  "type": "0,66,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "3",
+                "text": "Mapping of AMF data types to the names of the methods responsible for\nreading them.\n",
+                "src": {
+                  "access": "0,74,12",
+                  "name": "0,76,0",
+                  "text": "0,72,12,84"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "readTrue",
+                "text": "Returns true.  Used for reading the true type\n",
+                "src": {
+                  "access": "0,712,12",
+                  "name": "0,714,0",
+                  "text": "0,711,12,46"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "readUndefined",
+                "text": "Returns undefined.  Used for reading the undefined type\n",
+                "src": {
+                  "access": "0,810,12",
+                  "name": "0,812,0",
+                  "text": "0,809,12,56"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "readUnsupported",
+                "text": "Returns undefined.  Used for reading the unsupported type\n",
+                "src": {
+                  "access": "0,816,12",
+                  "name": "0,818,0",
+                  "text": "0,815,12,58"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,3,11",
+          "text": "0,4,4,653"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

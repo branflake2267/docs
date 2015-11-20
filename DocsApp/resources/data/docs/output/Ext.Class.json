@@ -1,0 +1,592 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/class/Class.js",
+    "../../../ext/packages/core/src/class/ClassManager.js",
+    "../../../ext/packages/core/src/class/Loader.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.Class",
+        "text": "\nThis is a low level factory that is used by <a href='#!/api/Ext-method-define'>Ext#define</a> and should not be used\ndirectly in application code.\n\nThe configs of this class are intended to be used in `Ext.define` calls to describe the class you\nare declaring. For example:\n\n    Ext.define('App.util.Thing', {\n        extend: 'App.util.Other',\n\n        alias: 'util.thing',\n\n        config: {\n            foo: 42\n        }\n    });\n\nExt.Class is the factory and **not** the superclass of everything. For the base class that **all**\nclasses inherit from, see <a href='#!/api/Ext.Base'>Ext.Base</a>.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "extend",
+                "text": "The parent class that this class extends. For example:\n\n    Ext.define('Person', {\n        say: function(text) { alert(text); }\n    });\n\n    Ext.define('Developer', {\n        extend: 'Person',\n        say: function(text) { this.callParent([\"print \"+text]); }\n    });\n",
+                "type": "String",
+                "src": {
+                  "name": "0,335,22",
+                  "text": "0,336,8,267",
+                  "type": "0,335,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "privates",
+                "text": "The <a href='#!/api/Ext.Class-cfg-privates'>privates</a> config is a list of methods intended to be used internally by the\nframework.  Methods are placed in a <a href='#!/api/Ext.Class-cfg-privates'>privates</a> block to prevent developers from\naccidentally overriding framework methods in custom classes.\n\n    Ext.define('Computer', {\n        privates: {\n            runFactory: function(brand) {\n                // internal only processing of brand passed to factory\n                this.factory(brand);\n            }\n        },\n\n        factory: function (brand) {}\n    });\n\nIn order to override a method from a <a href='#!/api/Ext.Class-cfg-privates'>privates</a> block, the overridden method must\nalso be placed in a <a href='#!/api/Ext.Class-cfg-privates'>privates</a> block within the override class.\n\n    Ext.define('Override.Computer', {\n        override: 'Computer',\n        privates: {\n            runFactory: function() {\n                // overriding logic\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,388,22",
+                  "text": "0,389,8,834",
+                  "type": "0,388,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "statics",
+                "text": "List of static methods for this class. For example:\n\n    Ext.define('Computer', {\n         statics: {\n             factory: function(brand) {\n                 // 'this' in static methods refer to the class itself\n                 return new this(brand);\n             }\n         },\n\n         constructor: function() { ... }\n    });\n\n    var dellComputer = Computer.factory('Dell');\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,439,22",
+                  "text": "0,440,8,381",
+                  "type": "0,439,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "inheritableStatics",
+                "text": "List of inheritable static methods for this class.\nOtherwise just like <a href='#!/api/Ext.Class-cfg-statics'>statics</a> but subclasses inherit these methods.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,468,22",
+                  "text": "0,469,8,126",
+                  "type": "0,468,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "platformConfig",
+                "text": "Allows setting config values for a class based on specific platforms. The value\nof this config is an object whose properties are \"rules\" and whose values are\nobjects containing config values.\n\nFor example:\n\n     Ext.define('App.view.Foo', {\n         extend: 'Ext.panel.Panel',\n\n         platformConfig: {\n             desktop: {\n                 title: 'Some Rather Descriptive Title'\n             },\n\n             '!desktop': {\n                 title: 'Short Title'\n             }\n         }\n     });\n\nIn the above, \"desktop\" and \"!desktop\" are (mutually exclusive) rules. Whichever\nevaluates to `true` will have its configs applied to the class. In this case, only\nthe \"title\" property, but the object can contain any number of config properties.\nIn this case, the <a href='#!/api/Ext.Class-cfg-platformConfig'>platformConfig</a> is evaluated as part of the class and there is\nnot cost for each instance created.\n\nThe rules are evaluated expressions in the context of the platform tags contained\nin <a href='#!/api/Ext-property-platformTags'>Ext#platformTags</a>. Any properties of that object are\nimplicitly usable (as shown above).\n\nIf a <a href='#!/api/Ext.Class-cfg-platformConfig'>platformConfig</a> specifies a config value, it will replace any values declared\non the class itself.\n\nUse of <a href='#!/api/Ext.Class-cfg-platformConfig'>platformConfig</a> on instances is handled by the config system when classes\ncall <a href='#!/api/Ext.Base-method-initConfig'>Ext.Base#initConfig</a>. For example:\n\n     Ext.create({\n         xtype: 'panel',\n\n         platformConfig: {\n             desktop: {\n                 title: 'Some Rather Descriptive Title'\n             },\n\n             '!desktop': {\n                 title: 'Short Title'\n             }\n         }\n     });\n\nThe following is equivalent to the above:\n\n     if (Ext.platformTags.desktop) {\n         Ext.create({\n             xtype: 'panel',\n             title: 'Some Rather Descriptive Title'\n         });\n     } else {\n         Ext.create({\n             xtype: 'panel',\n             title: 'Short Title'\n         });\n     }\n\nTo adjust configs based on dynamic conditions, see <a href='#!/api/Ext.mixin.Responsive'>Ext.mixin.Responsive</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,508,22",
+                  "text": "0,509,8,1986",
+                  "type": "0,508,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "config",
+                "text": "\nList of configuration options with their default values.\n\n__Note:__ You need to make sure <a href='#!/api/Ext.Base-method-initConfig'>Ext.Base#initConfig</a> is called from your constructor if you are defining\nyour own class or singleton, unless you are extending a Component. Otherwise the generated getter and setter\nmethods will not be initialized.\n\nEach config item will have its own setter and getter method automatically generated inside the class prototype\nduring class creation time, if the class does not have those methods explicitly defined.\n\nAs an example, let's convert the name property of a Person class to be a config item, then add extra age and\ngender items.\n\n    Ext.define('My.sample.Person', {\n        config: {\n            name: 'Mr. Unknown',\n            age: 0,\n            gender: 'Male'\n        },\n\n        constructor: function(config) {\n            this.initConfig(config);\n\n            return this;\n        }\n\n        // ...\n    });\n\nWithin the class, this.name still has the default value of \"Mr. Unknown\". However, it's now publicly accessible\nwithout sacrificing encapsulation, via setter and getter methods.\n\n    var jacky = new Person({\n        name: \"Jacky\",\n        age: 35\n    });\n\n    alert(jacky.getAge());      // alerts 35\n    alert(jacky.getGender());   // alerts \"Male\"\n\n    jacky.walk(10);             // alerts \"Jacky is walking 10 steps\"\n\n    jacky.setName(\"Mr. Nguyen\");\n    alert(jacky.getName());     // alerts \"Mr. Nguyen\"\n\n    jacky.walk(10);             // alerts \"Mr. Nguyen is walking 10 steps\"\n\nNotice that we changed the class constructor to invoke this.initConfig() and pass in the provided config object.\nTwo key things happened:\n\n - The provided config object when the class is instantiated is recursively merged with the default config object.\n - All corresponding setter methods are called with the merged values.\n\nBeside storing the given values, throughout the frameworks, setters generally have two key responsibilities:\n\n - Filtering / validation / transformation of the given value before it's actually stored within the instance.\n - Notification (such as firing events) / post-processing after the value has been set, or changed from a\n   previous value.\n\nBy standardize this common pattern, the default generated setters provide two extra template methods that you\ncan put your own custom logics into, i.e: an \"applyFoo\" and \"updateFoo\" method for a \"foo\" config item, which are\nexecuted before and after the value is actually set, respectively. Back to the example class, let's validate that\nage must be a valid positive number, and fire an 'agechange' if the value is modified.\n\n    Ext.define('My.sample.Person', {\n        config: {\n            // ...\n        },\n\n        constructor: {\n            // ...\n        },\n\n        applyAge: function(age) {\n            if (typeof age !== 'number' || age < 0) {\n                console.warn(\"Invalid age, must be a positive number\");\n                return;\n            }\n\n            return age;\n        },\n\n        updateAge: function(newAge, oldAge) {\n            // age has changed from \"oldAge\" to \"newAge\"\n            this.fireEvent('agechange', this, newAge, oldAge);\n        }\n\n        // ...\n    });\n\n    var jacky = new Person({\n        name: \"Jacky\",\n        age: 'invalid'\n    });\n\n    alert(jacky.getAge());      // alerts 0\n\n    alert(jacky.setAge(-100));  // alerts 0\n    alert(jacky.getAge());      // alerts 0\n\n    alert(jacky.setAge(35));    // alerts 0\n    alert(jacky.getAge());      // alerts 35\n\nIn other words, when leveraging the config feature, you mostly never need to define setter and getter methods\nexplicitly. Instead, \"apply*\" and \"update*\" methods should be implemented where necessary. Your code will be\nconsistent throughout and only contain the minimal logic that you actually care about.\n\nWhen it comes to inheritance, the default config of the parent class is automatically, recursively merged with\nthe child's default config. The same applies for mixins.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,644,22",
+                  "text": "0,645,8,3969",
+                  "type": "0,644,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "cachedConfig",
+                "text": "\nThis configuration works in a very similar manner to the <a href='#!/api/Ext.Class-cfg-config'>config</a> option.\nThe difference is that the configurations are only ever processed when the first instance\nof that class is created. The processed value is then stored on the class prototype and\nwill not be processed on subsequent instances of the class. Getters/setters will be generated\nin exactly the same way as <a href='#!/api/Ext.Class-cfg-config'>config</a>.\n\nThis option is useful for expensive objects that can be shared across class instances.\nThe class itself ensures that the creation only occurs once.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,771,22",
+                  "text": "0,772,8,547",
+                  "type": "0,771,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "mixins",
+                "text": "List of classes to mix into this class. For example:\n\n    Ext.define('CanSing', {\n         sing: function() {\n             alert(\"For he's a jolly good fellow...\")\n         }\n    });\n\n    Ext.define('Musician', {\n         mixins: ['CanSing']\n    })\n\nIn this case the Musician class will get a `sing` method from CanSing mixin.\n\nBut what if the Musician already has a `sing` method? Or you want to mix\nin two classes, both of which define `sing`?  In such a cases it's good\nto define mixins as an object, where you assign a name to each mixin:\n\n    Ext.define('Musician', {\n         mixins: {\n             canSing: 'CanSing'\n         },\n\n         sing: function() {\n             // delegate singing operation to mixin\n             this.mixins.canSing.sing.call(this);\n         }\n    })\n\nIn this case the `sing` method of Musician will overwrite the\nmixed in `sing` method. But you can access the original mixed in method\nthrough special <a href='#!/api/Ext.Class-cfg-mixins'>mixins</a> property.\n",
+                "type": "String[]/Object",
+                "src": {
+                  "name": "0,796,31",
+                  "text": "0,797,8,955",
+                  "type": "0,796,14"
+                }
+              },
+              {
+                "$type": "property",
+                "inheritdoc": "Ext.Component#cfg-xtype",
+                "name": "xtype",
+                "src": {
+                  "inheritdoc": "1,1062,8",
+                  "name": "1,1060,13"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "override",
+                "text": "Overrides members of the specified `target` class.\n\n**NOTE:** the overridden class must have been defined using\n<a href='#!/api/Ext-method-define'>Ext#define</a> in order to use the <a href='#!/api/Ext.Class-cfg-override'>override</a> config.\n\nMethods defined on the overriding class will not automatically call the methods of\nthe same name in the ancestor class chain.  To call the parent's method of the\nsame name you must call <a href='#!/api/Ext.Base-callParent'>callParent</a>.  To skip the\nmethod of the overridden class and call its parent you will instead call\n<a href='#!/api/Ext.Base-callSuper'>callSuper</a>.\n\nSee <a href='#!/api/Ext-method-define'>Ext#define</a> for additional usage examples.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,1066,22",
+                  "text": "1,1068,8,598",
+                  "type": "1,1066,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "alias",
+                "text": "List of short aliases for class names. An alias consists of a namespace and a name\nconcatenated by a period as &#60;namespace&#62;.&#60;name&#62;\n\n - **namespace** - The namespace describes what kind of alias this is and must be\n all lowercase.\n - **name** - The name of the alias which allows the lazy-instantiation via the\n alias. The name shouldn't contain any periods.\n\nA list of namespaces and the usages are:\n\n - **feature** - <a href='#!/api/Ext.grid.Panel'>Ext.grid.Panel</a> features\n - **plugin** - Plugins\n - **store** - <a href='#!/api/Ext.data.Store'>Ext.data.Store</a>\n - **widget** - Components\n\nMost useful for defining xtypes for widgets:\n\n    Ext.define('MyApp.CoolPanel', {\n        extend: 'Ext.panel.Panel',\n        alias: ['widget.coolpanel'],\n        title: 'Yeah!'\n    });\n\n    // Using Ext.create\n    Ext.create('widget.coolpanel');\n\n    // Using the shorthand for defining widgets by xtype\n    Ext.widget('panel', {\n        items: [\n            {xtype: 'coolpanel', html: 'Foo'},\n            {xtype: 'coolpanel', html: 'Bar'}\n        ]\n    });\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "1,1084,31",
+                  "text": "1,1086,8,1018",
+                  "type": "1,1084,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "singleton",
+                "text": "When set to true, the class will be instantiated as singleton.  For example:\n\n    Ext.define('Logger', {\n        singleton: true,\n        log: function(msg) {\n            console.log(msg);\n        }\n    });\n\n    Logger.log('Hello');\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,1139,23",
+                  "text": "1,1141,8,233",
+                  "type": "1,1139,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "alternateClassName",
+                "text": "Defines alternate names for this class.  For example:\n\n    Ext.define('Developer', {\n        alternateClassName: ['Coder', 'Hacker'],\n        code: function(msg) {\n            alert('Typing... ' + msg);\n        }\n    });\n\n    var joe = Ext.create('Developer');\n    joe.code('stackoverflow');\n\n    var rms = Ext.create('Hacker');\n    rms.code('hack hack');\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "1,1169,31",
+                  "text": "1,1171,8,356",
+                  "type": "1,1169,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "requires",
+                "text": "List of classes that have to be loaded before instantiating this class.\nFor example:\n\n    Ext.define('Mother', {\n        requires: ['Child'],\n        giveBirth: function() {\n            // we can be sure that child class is available.\n            return new Child();\n        }\n    });\n",
+                "type": "String[]",
+                "src": {
+                  "name": "2,944,24",
+                  "text": "2,946,8,285",
+                  "type": "2,944,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "uses",
+                "text": "List of optional classes to load together with this class. These aren't neccessarily loaded before\nthis class is created, but are guaranteed to be available before Ext.onReady listeners are\ninvoked. For example:\n\n    Ext.define('Mother', {\n        uses: ['Child'],\n        giveBirth: function() {\n            // This code might, or might not work:\n            // return new Child();\n\n            // Instead use Ext.create() to load the class at the spot if not loaded already:\n            return Ext.create('Child');\n        }\n    });\n",
+                "type": "String[]",
+                "src": {
+                  "name": "2,1112,24",
+                  "text": "2,1114,8,535",
+                  "type": "2,1112,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Create a new anonymous class.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "text": "An object represent the properties of this class\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,56,24",
+                      "text": "0,56,29,49",
+                      "type": "0,56,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "onCreated",
+                    "text": "Optional, the callback function to be executed when this class is fully created.\nNote that the creation process can be asynchronous depending on the pre-processors used.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,57,26",
+                      "text": "0,57,36,81:0,58,8,90",
+                      "type": "0,57,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The newly created class\n",
+                    "type": "Ext.Base",
+                    "src": {
+                      "text": "0,60,27,24",
+                      "type": "0,60,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,53,16",
+                  "text": "0,54,8,31"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onBeforeCreated",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "Class",
+                    "src": {
+                      "name": "0,87,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "0,87,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "hooks",
+                    "src": {
+                      "name": "0,87,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,85,12",
+                  "name": "0,87,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "create",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "Class",
+                    "src": {
+                      "name": "0,104,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "0,104,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,102,12",
+                  "name": "0,104,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "process",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "Class",
+                    "src": {
+                      "name": "0,127,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "data",
+                    "src": {
+                      "name": "0,127,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "onCreated",
+                    "src": {
+                      "name": "0,127,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,125,12",
+                  "name": "0,127,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getPreprocessors",
+                "src": {
+                  "access": "0,249,12",
+                  "name": "0,251,0"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "preprocessors",
+                "src": {
+                  "access": "0,188,12",
+                  "name": "0,190,0"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "defaultPreprocessors",
+                "src": {
+                  "access": "0,256,12",
+                  "name": "0,258,0"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "registerPreprocessor",
+                "static": true,
+                "text": "Register a new pre-processor to be used during the class creation process\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The pre-processor's name\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,195,28",
+                      "text": "0,195,33,25",
+                      "type": "0,195,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The callback function to be executed. Typical format:\n\n    function(cls, data, fn) {\n        // Your code here\n\n        // Execute this when the processing is finished.\n        // Asynchronous processing is perfectly ok\n        if (fn) {\n            fn.call(this, cls, data);\n        }\n    });\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "cls",
+                        "text": "The created class\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,208,33",
+                          "text": "0,208,37,18",
+                          "type": "0,208,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "data",
+                        "text": "The set of properties passed in <a href='#!/api/Ext.Class'>Ext.Class</a> constructor\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,209,31",
+                          "text": "0,209,36,62",
+                          "type": "0,209,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "fn",
+                        "text": "The callback function that **must** to be executed when this\npre-processor finishes, regardless of whether the processing is synchronous or asynchronous.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,210,33",
+                          "text": "0,210,36,61:0,211,12,93",
+                          "type": "0,210,20"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,196,30",
+                      "text": "0,196,33,54:0,197,12,241",
+                      "type": "0,196,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,212,32,5",
+                      "type": "0,212,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,213,12",
+                  "name": "0,216,0",
+                  "static": "0,214,12",
+                  "text": "0,193,12,75"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getPreprocessor",
+                "static": true,
+                "text": "Retrieve a pre-processor callback function by its name, which has been registered before\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "type": "String",
+                    "src": {
+                      "name": "0,239,28",
+                      "type": "0,239,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "preprocessor\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,240,31,13",
+                      "type": "0,240,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,241,12",
+                  "name": "0,244,0",
+                  "static": "0,242,12",
+                  "text": "0,237,12,90"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getDefaultPreprocessors",
+                "static": true,
+                "text": "Retrieve the array stack of default pre-processors\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "defaultPreprocessors\n",
+                    "type": "Function[]",
+                    "src": {
+                      "text": "0,262,33,21",
+                      "type": "0,262,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,263,12",
+                  "name": "0,266,0",
+                  "static": "0,264,12",
+                  "text": "0,261,12,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setDefaultPreprocessors",
+                "static": true,
+                "text": "Set the default array stack of default pre-processors\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "preprocessors",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,274,27",
+                      "type": "0,274,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,275,32,5",
+                      "type": "0,275,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,273,12",
+                  "name": "0,278,0",
+                  "static": "0,276,12",
+                  "text": "0,271,12,55"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setDefaultPreprocessorPosition",
+                "static": true,
+                "text": "Insert this pre-processor at a specific position in the stack, optionally relative to\nany existing pre-processor. For example:\n\n    Ext.Class.registerPreprocessor('debug', function(cls, data, fn) {\n        // Your code here\n\n        if (fn) {\n            fn.call(this, cls, data);\n        }\n    }).setDefaultPreprocessorPosition('debug', 'last');\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The pre-processor name. Note that it needs to be registered with\n<a href='#!/api/Ext.Class-static-method-registerPreprocessor'>Ext.Class#registerPreprocessor</a> before this\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,297,28",
+                      "text": "0,297,33,65:0,298,12,72",
+                      "type": "0,297,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "offset",
+                    "text": "The insertion position. Four possible values are:\n'first', 'last', or: 'before', 'after' (relative to the name provided in the third argument)\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,299,28",
+                      "text": "0,299,35,50:0,300,12,93",
+                      "type": "0,299,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "relativeName",
+                    "type": "String",
+                    "src": {
+                      "name": "0,301,28",
+                      "type": "0,301,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.Class",
+                    "src": {
+                      "text": "0,302,32,5",
+                      "type": "0,302,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,296,12",
+                  "name": "0,305,0",
+                  "static": "0,303,12",
+                  "text": "0,285,12,348"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "text": "0,3,4,556"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

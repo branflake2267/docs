@@ -1,0 +1,1687 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/event/Event.js",
+    "../../../ext/classic/classic/overrides/event/Event.js",
+    "../../../ext/packages/core/src/event/gesture/Pinch.js",
+    "../../../ext/packages/core/src/event/gesture/Rotate.js",
+    "../../../ext/packages/core/src/event/gesture/Swipe.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.EventObjectImpl",
+        "name": "Ext.event.Event",
+        "requires": "Ext.util.Point",
+        "text": "Just as <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a> wraps around a native DOM node, <a href='#!/api/Ext.event.Event'>Ext.event.Event</a> wraps the browser's native\nevent-object normalizing cross-browser differences such as mechanisms to stop event-propagation along with a method\nto prevent default actions from taking place.\n\nHere is a simple example of how you use it:\n\n    @example preview\n    var container = Ext.create('Ext.Container', {\n        layout: 'fit',\n        renderTo: Ext.getBody(),\n        items: [{\n            id: 'logger',\n            styleHtmlContent: true,\n            html: 'Click somewhere!',\n            padding: 5\n        }]\n    });\n\n    container.getEl().on({\n        click: function(e, node) {\n            var string = '';\n\n            string += 'You clicked at: <strong>{ x: ' + e.pageX + ', y: ' + e.pageY + ' }</strong> <i>(e.pageX & e.pageY)</i>';\n            string += '<hr />';\n            string += 'The HTMLElement you clicked has the className of: <strong>' + e.target.className + '</strong> <i>(e.target)</i>';\n            string += '<hr />';\n            string += 'The HTMLElement which has the listener has a className of: <strong>' + e.currentTarget.className + '</strong> <i>(e.currentTarget)</i>';\n\n            Ext.getCmp('logger').setHtml(string);\n        }\n    });\n\n## Recognizers\n\nExt JS includes many default event recognizers to know when a user interacts with the application.\n\nFor a full list of default recognizers, and more information, please view the <a href='#!/api/Ext.event.gesture.Recognizer'>Ext.event.gesture.Recognizer</a> documentation.\n\nThis class also provides a set of constants for use with key events.  These are useful\nfor determining if a specific key was pressed, and are available both on instances,\nand as static properties of the class.  The following two statements are equivalent:\n\n    if (e.getKey() === Ext.event.Event.TAB) {\n        // tab key was pressed\n    }\n\n    if (e.getKey() === e.TAB) {\n        // tab key was pressed\n    }\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "chain",
+                "text": "Creates a new Event object that is prototype-chained to this event.  Useful for\ncreating identical events so that certain properties can be changed without\naffecting the original event.  For example, translated events have their \"type\"\ncorrected in this manner.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "props",
+                    "text": "properties to set on the chained event\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,297,24",
+                      "text": "0,297,30,39",
+                      "type": "0,297,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,298,8",
+                  "name": "0,300,0",
+                  "text": "0,293,8,262"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "correctWheelDelta",
+                "text": "Correctly scales a given wheel delta.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "delta",
+                    "text": "The delta value.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,308,24",
+                      "text": "0,308,30,17",
+                      "type": "0,308,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,309,8",
+                  "name": "0,311,0",
+                  "text": "0,307,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getCharCode",
+                "text": "Gets the character code for the event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,324,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,326,0",
+                  "text": "0,323,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getKey",
+                "text": "Returns a normalized keyCode for the event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The key code\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,332,25,13",
+                      "type": "0,332,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,334,0",
+                  "text": "0,331,8,44"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getKeyName",
+                "text": "Returns the name of the keyCode for the event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The key name\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,340,25,13",
+                      "type": "0,340,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,342,0",
+                  "text": "0,339,8,47"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getPoint",
+                "text": "Returns a point object that consists of the object coordinates.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "point\n",
+                    "type": "Ext.util.Point",
+                    "src": {
+                      "text": "0,348,33,6",
+                      "type": "0,348,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,350,0",
+                  "text": "0,347,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRelatedTarget",
+                "text": "Gets the related target.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "optional": true,
+                    "text": "A simple selector to filter the target or look for an\nancestor of the target. See <a href='#!/api/Ext.dom.Query'>Ext.dom.Query</a> for information about simple\nselectors.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,357,25",
+                      "text": "0,357,35,54:0,358,8,90",
+                      "type": "0,357,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "maxDepth",
+                    "optional": true,
+                    "text": "The max depth to search as a number or\nelement (defaults to 10 || document.body).\n",
+                    "type": "Number/HTMLElement",
+                    "src": {
+                      "name": "0,360,37",
+                      "text": "0,360,47,39:0,361,8,43",
+                      "type": "0,360,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnEl",
+                    "optional": true,
+                    "text": "`true` to return a Ext.Element object instead of DOM\nnode.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,362,26",
+                      "text": "0,362,36,53:0,363,8,6",
+                      "type": "0,362,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "HTMLElement",
+                    "src": {
+                      "type": "0,364,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,366,0",
+                  "text": "0,356,8,25"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTarget",
+                "text": "Gets the target for the event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "(optional) A simple selector to filter the target or look\nfor an ancestor of the target\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,385,24",
+                      "text": "0,385,33,58:0,386,8,30",
+                      "type": "0,385,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "maxDepth",
+                    "optional": true,
+                    "text": "(optional) The max depth to\nsearch as a number or element (defaults to 10 || document.body)\n",
+                    "type": "Number/Mixed",
+                    "value": "10||document.body",
+                    "src": {
+                      "name": "0,387,31",
+                      "text": "0,387,59,28:0,388,8,64",
+                      "type": "0,387,16",
+                      "value": "0,387,40"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "returnEl",
+                    "text": "(optional) `true` to return a Ext.Element object instead\nof DOM node.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,389,25",
+                      "text": "0,389,34,57:0,390,8,13",
+                      "type": "0,389,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "HTMLElement",
+                    "src": {
+                      "type": "0,391,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,393,0",
+                  "text": "0,384,8,31"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTime",
+                "text": "Returns the time of the event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Date",
+                    "src": {
+                      "type": "0,400,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,402,0",
+                  "text": "0,399,8,31"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getWheelDelta",
+                "text": "Normalizes mouse wheel y-delta across browsers. To get x-delta information, use\n<a href='#!/api/Ext.event.Event-method-getWheelDeltas'>getWheelDeltas</a> instead.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The mouse wheel y-delta\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,409,25,24",
+                      "type": "0,409,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,411,0",
+                  "text": "0,407,8,113"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getWheelDeltas",
+                "text": "Returns the mouse wheel deltas for this event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "An object with \"x\" and \"y\" properties holding the mouse wheel deltas.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,419,25,70",
+                      "type": "0,419,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,421,0",
+                  "text": "0,418,8,47"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getX",
+                "text": "Gets the x coordinate of the event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,458,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,460,0",
+                  "text": "0,457,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getXY",
+                "text": "Gets the X and Y coordinates of the event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The xy values like [x, y]\n",
+                    "type": "Number[]",
+                    "src": {
+                      "text": "0,466,27,26",
+                      "type": "0,466,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,468,0",
+                  "text": "0,465,8,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getY",
+                "text": "Gets the y coordinate of the event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,499,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,501,0",
+                  "text": "0,498,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasModifier",
+                "text": "Returns true if the control, meta, shift or alt key was pressed during this event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,507,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,509,0",
+                  "text": "0,506,7,83"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isNavKeyPress",
+                "text": "Checks if the key pressed was a \"navigation\" key. A navigation key is defined by\nthese keys:\n\n - Page Up\n - Page Down\n - End\n - Home\n - Left\n - Up\n - Right\n - Down\n - Return\n - Tab\n - Esc\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "scrollableOnly",
+                    "optional": true,
+                    "text": "Only check navigation keys that can cause\nelement scrolling by their default action.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,530,26",
+                      "text": "0,530,42,42:0,531,8,44",
+                      "type": "0,530,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the press is a navigation keypress\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,533,26,45",
+                      "type": "0,533,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,535,0",
+                  "text": "0,515,8,189"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSpecialKey",
+                "text": "Checks if the key pressed was a \"special\" key. A special key is defined as one of\nthese keys:\n\n - Page Up\n - Page Down\n - End\n - Home\n - Left arrow\n - Up arrow\n - Right arrow\n - Down arrow\n - Return\n - Tab\n - Esc\n - Backspace\n - Delete\n - Shift\n - Ctrl\n - Alt\n - Pause\n - Caps Lock\n - Print Screen\n - Insert\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "`true` if the key for this event is special\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,573,26,44",
+                      "type": "0,573,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,575,0",
+                  "text": "0,549,8,309"
+                }
+              },
+              {
+                "$type": "method",
+                "chainable": true,
+                "name": "preventDefault",
+                "text": "Prevents the browsers default handling of the event.\n",
+                "src": {
+                  "chainable": "0,596,8",
+                  "name": "0,598,0",
+                  "text": "0,595,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "chainable": true,
+                "name": "stopEvent",
+                "text": "Stop the event (<a href='#!/api/Ext.event.Event-method-preventDefault'>preventDefault</a> and <a href='#!/api/Ext.event.Event-method-stopPropagation'>stopPropagation</a>).\n",
+                "src": {
+                  "chainable": "0,621,8",
+                  "name": "0,623,0",
+                  "text": "0,620,8,75"
+                }
+              },
+              {
+                "$type": "method",
+                "chainable": true,
+                "name": "stopPropagation",
+                "text": "Cancels bubbling of the event.\n",
+                "src": {
+                  "chainable": "0,629,8",
+                  "name": "0,631,0",
+                  "text": "0,628,8,31"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "within",
+                "text": "Returns true if the target of this event is a child of `el`.  Unless the allowEl\nparameter is set, it will return false if if the target is `el`.\nExample usage:\n\n    // Handle click on any child of an element\n    Ext.getBody().on('click', function(e){\n        if(e.within('some-el')){\n            alert('Clicked on a child of some-el!');\n        }\n    });\n\n    // Handle click directly on an element, ignoring clicks on child nodes\n    Ext.getBody().on('click', function(e,t){\n        if((t.id == 'some-el') && !e.within(t, true)){\n            alert('Clicked directly on some-el!');\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The id, DOM element or Ext.Element to check\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,688,52",
+                      "text": "0,688,55,44",
+                      "type": "0,688,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "related",
+                    "optional": true,
+                    "text": "`true` to test if the related target is within el instead\nof the target\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,689,26",
+                      "text": "0,689,35,58:0,690,8,14",
+                      "type": "0,689,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "allowEl",
+                    "optional": true,
+                    "text": "`true` to also check if the passed element is the target\nor related target\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,691,26",
+                      "text": "0,691,35,57:0,692,8,18",
+                      "type": "0,691,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,693,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,695,0",
+                  "text": "0,670,8,602"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "injectEvent",
+                "text": "Injects a DOM event using the data in this object and (optionally) a new target.\nThis is a low-level technique and not likely to be used by application code. The\ncurrently supported event types are:\n<p><b>HTMLEvents</b></p>\n<ul>\n<li>load</li>\n<li>unload</li>\n<li>select</li>\n<li>change</li>\n<li>submit</li>\n<li>reset</li>\n<li>resize</li>\n<li>scroll</li>\n</ul>\n<p><b>MouseEvents</b></p>\n<ul>\n<li>click</li>\n<li>dblclick</li>\n<li>mousedown</li>\n<li>mouseup</li>\n<li>mouseover</li>\n<li>mousemove</li>\n<li>mouseout</li>\n</ul>\n<p><b>UIEvents</b></p>\n<ul>\n<li>focusin</li>\n<li>focusout</li>\n<li>activate</li>\n<li>focus</li>\n<li>blur</li>\n</ul>\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "(optional) If specified, the target for the event. This\nis likely to be used when relaying a DOM event. If not specified, <a href='#!/api/Ext.event.Event-method-getTarget'>getTarget</a>\nis used to determine the target.\n",
+                    "type": "Ext.dom.Element/HTMLElement",
+                    "src": {
+                      "name": "1,49,41",
+                      "text": "1,49,48,56:1,50,8,118",
+                      "type": "1,49,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,15,16",
+                  "text": "1,17,8,638"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedVersion": "5.0.0",
+                "name": "clone",
+                "text": "Clones this event.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The cloned copy\n",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "text": "1,319,46,16",
+                      "type": "1,319,29"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedVersion": "1,320,20",
+                  "name": "1,316,28",
+                  "text": "1,318,20,19"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritdoc": "Ext.event.Event#static-enableIEAsync",
+                "name": "enableIEAsync",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "browserEvent",
+                    "src": {
+                      "name": "1,399,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,397,16",
+                  "inheritdoc": "1,396,16",
+                  "name": "1,399,0"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "distance",
+                "text": "The distance of the event.\n\n**This is only available when the event type is `swipe` and `pinch`.**\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,60,27",
+                  "text": "0,61,8,99",
+                  "type": "0,60,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "target",
+                "text": "The element that fired this event.  For the element whose handlers are currently\nbeing processed, i.e. the element that the event handler was attached to, use\n<a href='#!/api/Ext.event.Event-property-currentTarget'>currentTarget</a>\n",
+                "type": "HTMLElement",
+                "src": {
+                  "name": "0,67,32",
+                  "text": "0,68,8,175",
+                  "type": "0,67,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "currentTarget",
+                "text": "Refers to the element the event handler was attached to, vs the <a href='#!/api/Ext.event.Event-property-target'>target</a>, which is\nthe actual element that fired the event.  For example, if the event bubbles, the\n<a href='#!/api/Ext.event.Event-property-target'>target</a> element may be a descendant of the <a href='#!/api/Ext.event.Event-property-currentTarget'>currentTarget</a>, as the event may\nhave been triggered on the <a href='#!/api/Ext.event.Event-property-target'>target</a> and then bubbled up to the <a href='#!/api/Ext.event.Event-property-currentTarget'>currentTarget</a>\nwhere it was handled.\n",
+                "type": "HTMLElement",
+                "src": {
+                  "name": "0,74,32",
+                  "text": "0,75,8,343",
+                  "type": "0,74,19"
+                }
+              },
+              {
+                "$type": "property",
+                "deprecatedMessage": "use <a href='#!/api/Ext.event.Event-currentTarget'>currentTarget</a> instead.\n",
+                "deprecatedVersion": "5.0.0",
+                "name": "delegatedTarget",
+                "text": "Same as <a href='#!/api/Ext.event.Event-property-currentTarget'>currentTarget</a>\n",
+                "type": "HTMLElement",
+                "src": {
+                  "deprecatedMessage": "0,85,8",
+                  "deprecatedVersion": "0,85,8",
+                  "name": "0,83,32",
+                  "text": "0,84,8,24",
+                  "type": "0,83,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "button",
+                "text": "Indicates which mouse button caused the event for mouse events, for example\n`mousedown`, `click`, `mouseup`:\n- `0` for left button.\n- `1` for middle button.\n- `2` for right button.\n\n*Note*: In IE8 & IE9, the `click` event does not provide the button.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,89,27",
+                  "text": "0,90,8,251",
+                  "type": "0,89,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pageX",
+                "text": "The browsers x coordinate of the event.\nNote: this only works in browsers that support pageX on the native browser event\nobject (pageX is not natively supported in IE9 and earlier).  In Ext JS, for a\ncross browser normalized x-coordinate use <a href='#!/api/Ext.event.Event-method-getX'>getX</a>\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,100,27",
+                  "text": "0,100,33,40:0,101,8,216",
+                  "type": "0,100,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "pageY",
+                "text": "The browsers y coordinate of the event.\nNote: this only works in browsers that support pageY on the native browser event\nobject (pageY is not natively supported in IE9 and earlier).  In Ext JS, for a\ncross browser normalized y-coordinate use <a href='#!/api/Ext.event.Event-method-getY'>getY</a>\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,107,27",
+                  "text": "0,107,33,40:0,108,8,216",
+                  "type": "0,107,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ctrlKey",
+                "text": "True if the control key was down during the event.\nIn Mac this will also be true when meta key was down.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,114,28",
+                  "text": "0,115,8,105",
+                  "type": "0,114,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "altKey",
+                "text": "True if the alt key was down during the event.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,119,28",
+                  "text": "0,120,8,47",
+                  "type": "0,119,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "shiftKey",
+                "text": "True if the shift key was down during the event.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,123,28",
+                  "text": "0,124,8,49",
+                  "type": "0,123,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "browserEvent",
+                "text": "The raw browser event which this object wraps.\n",
+                "type": "Event",
+                "src": {
+                  "name": "0,128,26",
+                  "text": "0,129,8,47",
+                  "type": "0,128,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultPrevented",
+                "text": "Indicates whether or not <a href='#!/api/Ext.event.Event-method-preventDefault'>preventDefault</a> was called on the event.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,138,0",
+                  "text": "0,136,8,91",
+                  "type": "0,135,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "BACKSPACE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,728,0",
+                  "text": "0,727,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "TAB",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,730,0",
+                  "text": "0,729,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_CENTER",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,732,0",
+                  "text": "0,731,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ENTER",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,734,0",
+                  "text": "0,733,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "RETURN",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,736,0",
+                  "text": "0,735,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "SHIFT",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,738,0",
+                  "text": "0,737,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "CTRL",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,740,0",
+                  "text": "0,739,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ALT",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,742,0",
+                  "text": "0,741,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "PAUSE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,744,0",
+                  "text": "0,743,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "CAPS_LOCK",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,746,0",
+                  "text": "0,745,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ESC",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,748,0",
+                  "text": "0,747,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "SPACE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,750,0",
+                  "text": "0,749,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "PAGE_UP",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,752,0",
+                  "text": "0,751,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "PAGE_DOWN",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,754,0",
+                  "text": "0,753,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "END",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,756,0",
+                  "text": "0,755,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "HOME",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,758,0",
+                  "text": "0,757,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "LEFT",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,760,0",
+                  "text": "0,759,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "UP",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,762,0",
+                  "text": "0,761,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "RIGHT",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,764,0",
+                  "text": "0,763,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "DOWN",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,766,0",
+                  "text": "0,765,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "PRINT_SCREEN",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,768,0",
+                  "text": "0,767,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "INSERT",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,770,0",
+                  "text": "0,769,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "DELETE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,772,0",
+                  "text": "0,771,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ZERO",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,774,0",
+                  "text": "0,773,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ONE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,776,0",
+                  "text": "0,775,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "TWO",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,778,0",
+                  "text": "0,777,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "THREE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,780,0",
+                  "text": "0,779,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "FOUR",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,782,0",
+                  "text": "0,781,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "FIVE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,784,0",
+                  "text": "0,783,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "SIX",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,786,0",
+                  "text": "0,785,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "SEVEN",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,788,0",
+                  "text": "0,787,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "EIGHT",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,790,0",
+                  "text": "0,789,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NINE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,792,0",
+                  "text": "0,791,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "A",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,794,0",
+                  "text": "0,793,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "B",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,796,0",
+                  "text": "0,795,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "C",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,798,0",
+                  "text": "0,797,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "D",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,800,0",
+                  "text": "0,799,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "E",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,802,0",
+                  "text": "0,801,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,804,0",
+                  "text": "0,803,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "G",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,806,0",
+                  "text": "0,805,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "H",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,808,0",
+                  "text": "0,807,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "I",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,810,0",
+                  "text": "0,809,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "J",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,812,0",
+                  "text": "0,811,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "K",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,814,0",
+                  "text": "0,813,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "L",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,816,0",
+                  "text": "0,815,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "M",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,818,0",
+                  "text": "0,817,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "N",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,820,0",
+                  "text": "0,819,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "O",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,822,0",
+                  "text": "0,821,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "P",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,824,0",
+                  "text": "0,823,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "Q",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,826,0",
+                  "text": "0,825,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "R",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,828,0",
+                  "text": "0,827,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "S",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,830,0",
+                  "text": "0,829,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "T",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,832,0",
+                  "text": "0,831,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "U",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,834,0",
+                  "text": "0,833,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "V",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,836,0",
+                  "text": "0,835,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "W",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,838,0",
+                  "text": "0,837,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "X",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,840,0",
+                  "text": "0,839,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "Y",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,842,0",
+                  "text": "0,841,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "Z",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,844,0",
+                  "text": "0,843,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "CONTEXT_MENU",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,846,0",
+                  "text": "0,845,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_ZERO",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,848,0",
+                  "text": "0,847,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_ONE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,850,0",
+                  "text": "0,849,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_TWO",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,852,0",
+                  "text": "0,851,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_THREE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,854,0",
+                  "text": "0,853,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_FOUR",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,856,0",
+                  "text": "0,855,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_FIVE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,858,0",
+                  "text": "0,857,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_SIX",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,860,0",
+                  "text": "0,859,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_SEVEN",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,862,0",
+                  "text": "0,861,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_EIGHT",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,864,0",
+                  "text": "0,863,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_NINE",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,866,0",
+                  "text": "0,865,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_MULTIPLY",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,868,0",
+                  "text": "0,867,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_PLUS",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,870,0",
+                  "text": "0,869,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_MINUS",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,872,0",
+                  "text": "0,871,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_PERIOD",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,874,0",
+                  "text": "0,873,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "NUM_DIVISION",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,876,0",
+                  "text": "0,875,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F1",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,878,0",
+                  "text": "0,877,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F2",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,880,0",
+                  "text": "0,879,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F3",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,882,0",
+                  "text": "0,881,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F4",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,884,0",
+                  "text": "0,883,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F5",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,886,0",
+                  "text": "0,885,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F6",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,888,0",
+                  "text": "0,887,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F7",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,890,0",
+                  "text": "0,889,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F8",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,892,0",
+                  "text": "0,891,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F9",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,894,0",
+                  "text": "0,893,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F10",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,896,0",
+                  "text": "0,895,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F11",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,898,0",
+                  "text": "0,897,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "F12",
+                "text": "Key constant @type Number\n",
+                "src": {
+                  "name": "0,900,0",
+                  "text": "0,899,13,26"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "WHEEL_SCALE",
+                "text": "The mouse wheel delta scaling factor. This value depends on browser version and OS and\nattempts to produce a similar scrolling experience across all platforms and browsers.\n\nTo change this value:\n\n     Ext.event.Event.prototype.WHEEL_SCALE = 72;\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,913,0",
+                  "text": "0,903,12,247",
+                  "type": "0,910,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "scale",
+                "text": "The scape of a pinch event.\n\n**This is only available when the event type is `pinch`**\n",
+                "type": "Number",
+                "src": {
+                  "name": "2,39,27",
+                  "text": "2,40,8,87",
+                  "type": "2,39,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "angle",
+                "text": "The angle of the rotation.\n\n**This is only available when the event type is `rotate`**\n",
+                "type": "Number",
+                "src": {
+                  "name": "3,41,27",
+                  "text": "3,42,8,87",
+                  "type": "3,41,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "rotation",
+                "text": "A amount of rotation, since the start of the event.\n\n**This is only available when the event type is `rotate`**\n",
+                "type": "Number",
+                "src": {
+                  "name": "3,49,27",
+                  "text": "3,50,8,112",
+                  "type": "3,49,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "direction",
+                "text": "The direction of the swipe. Available options are:\n\n- up\n- down\n- left\n- right\n\n**This is only available when the event type is `swipe`**\n",
+                "type": "Number",
+                "src": {
+                  "name": "4,22,27",
+                  "text": "4,23,8,138",
+                  "type": "4,22,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "duration",
+                "text": "The duration of the swipe.\n\n**This is only available when the event type is `swipe`**\n",
+                "type": "Number",
+                "src": {
+                  "name": "4,35,27",
+                  "text": "4,36,8,86",
+                  "type": "4,35,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "enableIEAsync",
+                "static": true,
+                "text": "When events are attached using IE's attachEvent API instead of\naddEventListener accessing any members of an event object asynchronously\nresults in \"Member not found\" error.  To work around this we fabricate\nour own event object by copying all of its members to a new object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "browserEvent",
+                    "text": "The native browser event object\n",
+                    "type": "Event",
+                    "src": {
+                      "name": "1,359,35",
+                      "text": "1,359,48,32",
+                      "type": "1,359,28"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,360,20",
+                  "name": "1,363,0",
+                  "static": "1,361,20",
+                  "text": "1,355,20,275"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "pointerEvents",
+                "static": true,
+                "src": {
+                  "access": "0,148,12",
+                  "name": "0,150,0",
+                  "static": "0,141,-1"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "mouseEvents",
+                "static": true,
+                "src": {
+                  "access": "0,170,12",
+                  "name": "0,172,0",
+                  "static": "0,141,-1"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "clickEvents",
+                "static": true,
+                "text": "These are tracked separately from mouseEvents because the mouseEvents map\nis used by Dom publisher to eliminate duplicate events on devices that fire\nmultiple kinds of events (mouse, touch, pointer).  Adding click events to the\nmouse events map can cause click events to be blocked from firing in some cases.\n",
+                "src": {
+                  "access": "0,183,12",
+                  "name": "0,189,0",
+                  "static": "0,141,-1",
+                  "text": "0,184,12,309"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "touchEvents",
+                "static": true,
+                "src": {
+                  "access": "0,195,12",
+                  "name": "0,197,0",
+                  "static": "0,141,-1"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "focusEvents",
+                "static": true,
+                "src": {
+                  "access": "0,205,12",
+                  "name": "0,207,0",
+                  "static": "0,141,-1"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,53,0",
+          "name": "0,52,0",
+          "requires": "0,56,0",
+          "text": "0,2,4,1919"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

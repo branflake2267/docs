@@ -1,0 +1,176 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/tip/QuickTipManager.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.QuickTips",
+        "name": "Ext.tip.QuickTipManager",
+        "requires": "Ext.tip.QuickTip",
+        "singleton": true,
+        "text": "Provides attractive and customizable tooltips for any element. The QuickTips\nsingleton is used to configure and manage tooltips globally for multiple elements\nin a generic manner.  To create individual tooltips with maximum customizability,\nyou should consider either <a href='#!/api/Ext.tip.Tip'>Ext.tip.Tip</a> or <a href='#!/api/Ext.tip.ToolTip'>Ext.tip.ToolTip</a>.\n\nQuicktips can be configured via tag attributes directly in markup, or by\nregistering quick tips programmatically via the <a href='#!/api/Ext.tip.QuickTipManager-method-register'>register</a> method.\n\nThe singleton's instance of <a href='#!/api/Ext.tip.QuickTip'>Ext.tip.QuickTip</a> is available via\n<a href='#!/api/Ext.tip.QuickTipManager-method-getQuickTip'>getQuickTip</a>, and supports all the methods, and all the all the\nconfiguration properties of Ext.tip.QuickTip. These settings will apply to all\ntooltips shown by the singleton.\n\nBelow is the summary of the configuration properties which can be used.\nFor detailed descriptions see the config options for the\n<a href='#!/api/Ext.tip.QuickTip'>Ext.tip.QuickTip</a> class\n\n## QuickTips singleton configs (all are optional)\n\n - `dismissDelay`\n - `hideDelay`\n - `maxWidth`\n - `minWidth`\n - `showDelay`\n - `trackMouse`\n\n## Target element configs (optional unless otherwise noted)\n\n - `autoHide`\n - `cls`\n - `dismissDelay` (overrides singleton value)\n - `target` (required)\n - `text` (required)\n - `title`\n - `width`\n\nHere is an example showing how some of these config options could be used:\n\n    @example\n    // Init the singleton.  Any tag-based quick tips will start working.\n    Ext.tip.QuickTipManager.init();\n\n    // Apply a set of config properties to the singleton\n    Ext.apply(Ext.tip.QuickTipManager.getQuickTip(), {\n        maxWidth: 200,\n        minWidth: 100,\n        showDelay: 50      // Show 50ms after entering target\n    });\n\n    // Create a small panel to add a quick tip to\n    Ext.create('Ext.container.Container', {\n        id: 'quickTipContainer',\n        width: 200,\n        height: 150,\n        style: {\n            backgroundColor:'#000000'\n        },\n        renderTo: Ext.getBody()\n    });\n\n\n    // Manually register a quick tip for a specific element\n    Ext.tip.QuickTipManager.register({\n        target: 'quickTipContainer',\n        title: 'My Tooltip',\n        text: 'This tooltip was added in code',\n        width: 100,\n        dismissDelay: 10000 // Hide after 10 seconds hover\n    });\n\nTo register a quick tip in markup, you simply add one or more of the valid QuickTip\nattributes prefixed with the **data-** namespace.  The HTML element itself is\nautomatically set as the quick tip target. Here is the summary of supported attributes\n(optional unless otherwise noted):\n\n - `hide`: Specifying \"user\" is equivalent to setting autoHide = false.\n    Any other value will be the same as autoHide = true.\n - `qclass`: A CSS class to be applied to the quick tip\n    (equivalent to the 'cls' target element config).\n - `qtip (required)`: The quick tip text (equivalent to the 'text' target element config).\n - `qtitle`: The quick tip title (equivalent to the 'title' target element config).\n - `qwidth`: The quick tip width (equivalent to the 'width' target element config).\n\nHere is an example of configuring an HTML element to display a tooltip from markup:\n\n    // Add a quick tip to an HTML button\n    <input type=\"button\" value=\"OK\" data-qtitle=\"OK Button\" data-qwidth=\"100\"\n         data-qtip=\"This is a quick tip from markup!\"></input>\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "init",
+                "text": "Initializes the global QuickTips instance and prepare any quick tips.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "autoRender",
+                    "optional": true,
+                    "text": "True to render the QuickTips container\nimmediately to preload images.\n",
+                    "type": "Boolean",
+                    "value": "true",
+                    "src": {
+                      "name": "0,101,26",
+                      "text": "0,101,43,39:0,102,8,31",
+                      "type": "0,101,16",
+                      "value": "0,101,37"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "optional": true,
+                    "text": "config object for the created QuickTip. By\ndefault, the <a href='#!/api/Ext.tip.QuickTip'>Ext.tip.QuickTip</a> class is instantiated, but this can\nbe changed by supplying an xtype property or a className property in this object.\nAll other properties on this object are configuration for the created component.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,103,25",
+                      "text": "0,103,33,43:0,104,8,246",
+                      "type": "0,103,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,108,0",
+                  "text": "0,100,8,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroys the QuickTips instance.\n",
+                "src": {
+                  "name": "0,163,0",
+                  "text": "0,161,8,33"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "Enables quick tips globally.\n",
+                "src": {
+                  "name": "0,194,0",
+                  "text": "0,192,8,29"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "Disables quick tips globally.\n",
+                "src": {
+                  "name": "0,207,0",
+                  "text": "0,205,8,30"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isEnabled",
+                "text": "Returns true if quick tips are enabled, else false.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,219,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,221,0",
+                  "text": "0,218,8,52"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getQuickTip",
+                "text": "Gets the single <a href='#!/api/Ext.tip.QuickTip'>Ext.tip.QuickTip</a> instance used to show tips\nfrom all registered elements.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.tip.QuickTip",
+                    "src": {
+                      "type": "0,230,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,232,0",
+                  "text": "0,228,8,107"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.tip.QuickTip#register",
+                "name": "register",
+                "src": {
+                  "inheritdoc": "0,237,8",
+                  "name": "0,239,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unregister",
+                "text": "Removes any registered quick tip from the target element and destroys it.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The element from which the quick tip\nis to be removed or ID of the element.\n",
+                    "type": "String/HTMLElement/Ext.dom.Element",
+                    "src": {
+                      "name": "0,247,52",
+                      "text": "0,247,55,37:0,248,8,39",
+                      "type": "0,247,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,250,0",
+                  "text": "0,246,8,74"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.tip.QuickTipManager#register",
+                "name": "tips",
+                "text": "Alias of <a href='#!/api/Ext.tip.QuickTipManager-method-register'>register</a>.\n",
+                "src": {
+                  "inheritdoc": "0,258,8",
+                  "name": "0,260,0",
+                  "text": "0,257,8,28"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,96,0",
+          "name": "0,93,0",
+          "requires": "0,94,0",
+          "singleton": "0,91,4",
+          "text": "0,2,4,3287"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,339 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/app/bind/Template.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.app.bind.Template",
+        "requires": "Ext.util.Format",
+        "since": "5.0.0",
+        "text": "This class holds the parsed text for a bind template. The syntax is that of a normal\n<a href='#!/api/Ext.Template'>Ext.Template</a> except that substitution tokens can contain dots to reference property\nnames.\n\nThe template is parsed and stored in a representation like this:\n\n     me.text = 'Hey {foo.bar}! Test {bar} and {foo.bar} with {abc} over {bar:number}'\n\n     me.tokens = [ 'foo.bar', 'bar', 'abc' ]\n\n     me.buffer = [           me.slots = [\n         'Hey ',                 undefined,\n         undefined,              { token: 'foo.bar', pos: 0 },\n         '! Test ',              undefined,\n         undefined,              { token: 'bar', pos: 1 },\n         ' and ',                undefined,\n         undefined,              { token: 'foo.bar', pos: 0 },\n         ' with ',               undefined,\n         undefined,              { token: 'abc', pos: 2 },\n         ' over ',               undefined,\n         undefined               { token: 'bar', fmt: 'number', pos: 1 }\n     ]                       ]\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "text",
+                    "text": "The text of the template.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,122,24",
+                      "text": "0,122,29,26",
+                      "type": "0,122,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,124,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "apply",
+                "since": "5.0.0",
+                "text": "Applies this template to the given `values`. The `values` must correspond to the\n<a href='#!/api/Ext.app.bind.Template-property-tokens'>tokens</a> returned by <a href='#!/api/Ext.app.bind.Template-method-getTokens'>getTokens</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "The values of the <a href='#!/api/Ext.app.bind.Template-property-tokens'>tokens</a>.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,156,23",
+                      "text": "0,156,30,28",
+                      "type": "0,156,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "The object instance to use for \"this.\" formatter calls in the\ntemplate.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,157,24",
+                      "text": "0,157,30,62:0,158,8,10",
+                      "type": "0,157,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "String",
+                    "src": {
+                      "type": "0,159,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,162,0",
+                  "since": "0,160,15",
+                  "text": "0,153,8,116"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTokens",
+                "text": "Returns the distinct set of binding tokens for this template.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The <a href='#!/api/Ext.app.bind.Template-property-tokens'>tokens</a> for this template.\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "0,191,27,32",
+                      "type": "0,191,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,193,0",
+                  "text": "0,190,8,62"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "parse",
+                "text": "Parses the template text into <a href='#!/api/Ext.app.bind.Template-property-buffer'>buffer</a>, <a href='#!/api/Ext.app.bind.Template-property-slots'>slots</a> and <a href='#!/api/Ext.app.bind.Template-property-tokens'>tokens</a>. This method is called\nautomatically when the template is first used.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "this\n",
+                    "type": "Ext.app.bind.Template",
+                    "src": {
+                      "text": "0,200,40,5",
+                      "type": "0,200,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,201,8",
+                  "name": "0,203,0",
+                  "text": "0,198,8,131"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "parseFormat",
+                "since": "5.0.0",
+                "text": "This method parses token formats and returns an object with a `format` method that\ncan format values accordingly.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fmt",
+                    "text": "The format suffix of a template token. For example, in the\ntoken \"{foo:round(2)}\" the format is \"round(2)\".\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,330,24",
+                      "text": "0,330,28,59:0,331,8,49",
+                      "type": "0,330,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object with a `format` method to format values.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,332,25,51",
+                      "type": "0,332,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,333,8",
+                  "name": "0,336,0",
+                  "since": "0,334,15",
+                  "text": "0,328,8,114"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_formatArgs",
+                "since": "5.0.0",
+                "text": "This method is placed on an entry in <a href='#!/api/Ext.app.bind.Template-property-slots'>slots</a> as the `format` method when that entry\nhas `args` that could be parsed from the template.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value of the token.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,366,24",
+                      "text": "0,366,30,24",
+                      "type": "0,366,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The object instance to use for \"this.\" formatter calls in the\ntemplate.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,367,25",
+                      "text": "0,367,32,62:0,368,8,10",
+                      "type": "0,367,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The formatted result to place in <a href='#!/api/Ext.app.bind.Template-property-buffer'>buffer</a>.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,369,25,43",
+                      "type": "0,369,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,370,8",
+                  "name": "0,373,0",
+                  "since": "0,371,15",
+                  "text": "0,364,8,135"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_formatEval",
+                "since": "5.0.0",
+                "text": "This method is placed on an entry in <a href='#!/api/Ext.app.bind.Template-property-slots'>slots</a> as the `format` method when that entry\ndoes not have a parsed `args` array.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The value of the token.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,383,24",
+                      "text": "0,383,30,24",
+                      "type": "0,383,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The object instance to use for \"this.\" formatter calls in the\ntemplate.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,384,25",
+                      "text": "0,384,32,62:0,385,8,10",
+                      "type": "0,384,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The formatted result to place in <a href='#!/api/Ext.app.bind.Template-property-buffer'>buffer</a>.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,386,25,43",
+                      "type": "0,386,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,387,8",
+                  "name": "0,390,0",
+                  "since": "0,388,15",
+                  "text": "0,381,8,121"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "tokenRe",
+                "text": "Regular expression used to extract tokens.\n\nFinds the following expressions within a format string\n\n                    {AND?}\n                    /    \\\n                  /        \\\n                /            \\\n              /                \\\n           OR                   AND?\n          /  \\                  / \\\n         /    \\                /   \\\n        /      \\              /     \\\n   (\\d+)  ([a-z_][\\w\\-\\.]*)  /       \\\n    index       name       /         \\\n                          /           \\\n                         /             \\\n                  :([a-z_\\.]*)    (?:\\(([^\\)]*?)?\\))?\n                     formatFn           args\n\nNumeric index or (name followed by optional formatting function and args)\n",
+                "type": "RegExp",
+                "src": {
+                  "access": "0,60,8",
+                  "name": "0,38,27",
+                  "text": "0,39,8,728",
+                  "type": "0,38,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "buffer",
+                "text": "Initially this is just the array of string fragments with <a href='#!/api/null'>null</a> between each\nto hold the place of a substitution token. On first use these slots are filled\nwith the token's value and this array is joined to form the output.\n",
+                "type": "String[]",
+                "src": {
+                  "access": "0,71,8",
+                  "name": "0,67,29",
+                  "text": "0,68,8,225",
+                  "type": "0,67,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "slots",
+                "text": "The elements of this array line up with those of <a href='#!/api/Ext.app.bind.Template-property-buffer'>buffer</a>. This array holds\nthe parsed information for the substitution token that fills a given slot in\nthe generated string. Indices that correspond to literal text are <a href='#!/api/null'>null</a>.\n\nConsider the following substitution token:\n\n     {foo:this.fmt(2,4)}\n\nThe object in this array has the following properties to describe this token:\n\n  * `fmt` The name of the formatting function (\"fmt\") or <a href='#!/api/null'>null</a> if none.\n  * `index` The numeric index if this is not a named substitution or <a href='#!/api/null'>null</a>.\n  * `not` True if the token has a logical not (\"!\") at the front.\n  * `token` The name of the token (\"foo\") if not an `index`.\n  * `pos` The position of this token in the <a href='#!/api/Ext.app.bind.Template-property-tokens'>tokens</a> array.\n  * `scope` A reference to the object on which the `fmt` method exists. This\n   will be <a href='#!/api/Ext.util.Format'>Ext.util.Format</a> if no \"this.\" is present or <a href='#!/api/null'>null</a> if it is (or\n   if there is no `fmt`). In the above example, this is <a href='#!/api/null'>null</a> to indicate the\n   scope is unknown.\n  * `args` An array of arguments to `fmt` if the arguments are simple enough\n   to parse directly. Otherwise this is <a href='#!/api/null'>null</a> and `fn` is used.\n  * `fn` A generated function to use to evaluate the arguments to the `fmt`. In\n   rare cases these arguments can reference global variables so the expression\n   must be evaluated on each call.\n  * `format` The method to call to perform the format. This method accepts the\n   scope (in case `scope` is unknown) and the value. This function is <a href='#!/api/null'>null</a> if\n   there is no `fmt`.\n",
+                "type": "Object[]",
+                "src": {
+                  "access": "0,105,8",
+                  "name": "0,76,29",
+                  "text": "0,77,8,1486",
+                  "type": "0,76,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "tokens",
+                "text": "The distinct set of tokens used in the template excluding formatting. This is\nused to ensure that only one bind is performed per unique token. This array is\npassed to <a href='#!/api/Ext.app.ViewModel-method-bind'>Ext.app.ViewModel#bind</a> to perform a \"multi-bind\". The result\nis an array of values corresponding these tokens. Each entry in <a href='#!/api/Ext.app.bind.Template-property-slots'>slots</a> then\nknows its `pos` in this array from which to pick up its value, apply formats\nand place in <a href='#!/api/Ext.app.bind.Template-property-buffer'>buffer</a>.\n",
+                "type": "String[]",
+                "src": {
+                  "access": "0,117,8",
+                  "name": "0,110,29",
+                  "text": "0,111,8,413",
+                  "type": "0,110,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "_initters",
+                "since": "5.0.0",
+                "text": "Each of the methods contained on this object are placed in new instances to lazily\nparse the template text.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,140,8",
+                  "name": "0,137,27",
+                  "since": "0,141,15",
+                  "text": "0,138,8,108",
+                  "type": "0,137,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,25,4",
+          "name": "0,28,0",
+          "requires": "0,30,0",
+          "since": "0,26,11",
+          "text": "0,2,4,989"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

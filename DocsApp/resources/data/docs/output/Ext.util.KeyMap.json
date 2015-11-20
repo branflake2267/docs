@@ -1,0 +1,671 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/util/KeyMap.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alternateClassNames": "Ext.KeyMap",
+        "name": "Ext.util.KeyMap",
+        "text": "Handles mapping key events to handling functions for an element or a Component. One KeyMap can be used for multiple\nactions.\n\nA KeyMap must be configured with a <a href='#!/api/Ext.util.KeyMap-cfg-target'>target</a> as an event source which may be an Element or a Component.\n\nIf the target is an element, then the `keydown` event will trigger the invocation of <a href='#!/api/Ext.util.KeyMap-cfg-binding'>binding</a>s.\n\nIt is possible to configure the KeyMap with a custom <a href='#!/api/Ext.util.KeyMap-cfg-eventName'>eventName</a> to listen for. This may be useful when the\n<a href='#!/api/Ext.util.KeyMap-cfg-target'>target</a> is a Component.\n\nThe KeyMap's event handling requires that the first parameter passed is a key event. So if the Component's event\nsignature is different, specify a <a href='#!/api/Ext.util.KeyMap-cfg-processEvent'>processEvent</a> configuration which accepts the event's parameters and\nreturns a key event.\n\nFunctions specified in <a href='#!/api/Ext.util.KeyMap-cfg-binding'>binding</a>s are called with this signature : `(String key, Ext.event.Event e)` (if the\nmatch is a multi-key combination the callback will still be called only once). A KeyMap can also handle a string\nrepresentation of keys. By default KeyMap starts enabled.\n\nUsage:\n\n    // map one key by key code\n    var map = new Ext.util.KeyMap({\n        target: \"my-element\",\n        key: 13, // or Ext.event.Event.ENTER\n        fn: myHandler,\n        scope: myObject\n    });\n\n    // map multiple keys to one action by string\n    var map = new Ext.util.KeyMap({\n        target: \"my-element\",\n        key: \"a\\r\\n\\t\",\n        fn: myHandler,\n        scope: myObject\n    });\n\n    // map multiple keys to multiple actions by strings and array of codes\n    var map = new Ext.util.KeyMap({\n        target: \"my-element\",\n        binding: [{\n            key: [10,13],\n            fn: function(){ alert(\"Return was pressed\"); }\n        }, {\n            key: \"abc\",\n            fn: function(){ alert('a, b or c was pressed'); }\n        }, {\n            key: \"\\t\",\n            ctrl:true,\n            shift:true,\n            fn: function(){ alert('Control + shift + tab was pressed.'); }\n        }]\n    });\n\nSince 4.1.0, KeyMaps can bind to Components and process key-based events fired by Components.\n\nTo bind to a Component, use the single parameter form of constructor and include the Component event name\nto listen for, and a <a href='#!/api/Ext.util.KeyMap-cfg-processEvent'>processEvent</a> implementation which returns the key event for further processing by\nthe KeyMap:\n\n    var map = new Ext.util.KeyMap({\n        target: myGridView,\n        eventName: 'itemkeydown',\n        processEvent: function(view, record, node, index, event) {\n\n            // Load the event with the extra information needed by the mappings\n            event.view = view;\n            event.store = view.getStore();\n            event.record = record;\n            event.index = index;\n            return event;\n        },\n        binding: {\n            key: Ext.event.Event.DELETE,\n            fn: function(keyCode, e) {\n                e.store.remove(e.record);\n\n                // Attempt to select the record that's now in its place\n                e.view.getSelectionModel().select(e.index);\n                e.view.el.focus();\n            }\n        }\n    });\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "target",
+                "text": "The object on which to listen for the event specified by the <a href='#!/api/Ext.util.KeyMap-cfg-eventName'>eventName</a> config option.\n",
+                "type": "Ext.Component/Ext.dom.Element/HTMLElement/String",
+                "src": {
+                  "name": "0,94,64",
+                  "text": "0,95,8,95",
+                  "type": "0,94,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "binding",
+                "text": "Either a single object describing a handling function for s specified key (or set of keys), or\nan array of such objects.\n",
+                "type": "Object/Object[][]",
+                "items": [
+                  {
+                    "$type": "property",
+                    "name": "key",
+                    "text": "A single keycode or an array of keycodes to handle, or a RegExp\nwhich specifies characters to handle, eg `/[a-z]/`.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "0,102,39",
+                      "text": "0,102,43,64:0,103,8,52",
+                      "type": "0,102,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "shift",
+                    "text": "True to handle key only when shift is pressed, False to handle the\n key only when shift is not pressed (defaults to undefined)\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,104,32",
+                      "text": "0,104,38,67:0,105,8,60",
+                      "type": "0,104,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "ctrl",
+                    "text": "True to handle key only when ctrl is pressed, False to handle the\n key only when ctrl is not pressed (defaults to undefined)\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,106,32",
+                      "text": "0,106,37,66:0,107,8,59",
+                      "type": "0,106,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "alt",
+                    "text": "True to handle key only when alt is pressed, False to handle the key\n only when alt is not pressed (defaults to undefined)\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,108,32",
+                      "text": "0,108,36,69:0,109,8,54",
+                      "type": "0,108,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "handler",
+                    "text": "The function to call when KeyMap finds the expected key combination\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,110,32",
+                      "text": "0,110,40,68",
+                      "type": "0,110,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "fn",
+                    "text": "Alias of handler (for backwards-compatibility)\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,111,32",
+                      "text": "0,111,35,47",
+                      "type": "0,111,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "scope",
+                    "text": "The scope (`this` context) in which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,112,32",
+                      "text": "0,112,38,70",
+                      "type": "0,112,14"
+                    }
+                  },
+                  {
+                    "$type": "property",
+                    "name": "defaultEventAction",
+                    "text": "A default action to apply to the event *when the handler returns `true`*. Possible values\n are: stopEvent, stopPropagation, preventDefault. If no value is set no action is performed.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,113,32",
+                      "text": "0,113,51,90:0,114,8,93",
+                      "type": "0,113,14"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,99,33",
+                  "text": "0,100,8,121",
+                  "type": "0,99,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "processEventScope",
+                "optional": true,
+                "text": "The scope (`this` context) in which the <a href='#!/api/Ext.util.KeyMap-cfg-processEvent'>processEvent</a> method is executed.\n",
+                "type": "Object",
+                "value": "this",
+                "src": {
+                  "name": "0,118,23",
+                  "text": "0,119,8,82",
+                  "type": "0,118,14",
+                  "value": "0,118,41"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "ignoreInputFields",
+                "optional": true,
+                "text": "Configure this as `true` if there are any input fields within the <a href='#!/api/Ext.util.KeyMap-cfg-target'>target</a>, and this KeyNav\nshould not process events from input fields, (`&lt;input>, &lt;textarea> and elements with `contentEditable=\"true\"`)\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,123,24",
+                  "text": "0,124,8,216",
+                  "type": "0,123,14",
+                  "value": "0,123,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "priority",
+                "optional": true,
+                "text": "The priority to set on this KeyMap's listener. Listeners with a higher priority are fired before those with\nlower priority.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,129,23",
+                  "text": "0,130,8,124",
+                  "type": "0,129,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "eventName",
+                "text": "The event to listen for to pick up key events.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,135,22",
+                  "text": "0,136,8,47",
+                  "type": "0,135,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "processEvent",
+                "text": "An optional event processor function which accepts the argument list provided by the\n<a href='#!/api/Ext.util.KeyMap-cfg-eventName'>eventName</a> of the <a href='#!/api/Ext.util.KeyMap-cfg-target'>target</a>, and returns a keyEvent for processing by the KeyMap.\n\nThis may be useful when the <a href='#!/api/Ext.util.KeyMap-cfg-target'>target</a> is a Component with a complex event signature, where the event is not\nthe first parameter. Extra information from the event arguments may be injected into the event for use by the handler\nfunctions before returning it.\n\nIf <a href='#!/api/null'>null</a> is returned the KeyMap stops processing the event.\n",
+                "type": "Function",
+                "src": {
+                  "name": "0,361,24",
+                  "text": "0,362,8,524",
+                  "type": "0,361,14"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "legacyConstructor",
+                "text": "Old constructor signature\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "text": "The element or its ID, or Component to bind to\n",
+                    "type": "String/HTMLElement/Ext.dom.Element/Ext.Component",
+                    "src": {
+                      "name": "0,168,66",
+                      "text": "0,168,69,47",
+                      "type": "0,168,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "binding",
+                    "text": "The binding (see <a href='#!/api/Ext.util.KeyMap-method-addBinding'>addBinding</a>)\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,169,24",
+                      "text": "0,169,32,38",
+                      "type": "0,169,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "optional": true,
+                    "text": "The event to bind to\n",
+                    "type": "String",
+                    "value": "\"keydown\"",
+                    "src": {
+                      "name": "0,170,25",
+                      "text": "0,170,46,21",
+                      "type": "0,170,16",
+                      "value": "0,170,35"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,166,8",
+                  "name": "0,172,0",
+                  "text": "0,167,8,26"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addBinding",
+                "text": "Add a new binding to this KeyMap.\n\nUsage:\n\n    // Create a KeyMap\n    var map = new Ext.util.KeyMap(document, {\n        key: Ext.event.Event.ENTER,\n        fn: handleKey,\n        scope: this\n    });\n\n    //Add a new binding to the existing KeyMap later\n    map.addBinding({\n        key: 'abc',\n        shift: true,\n        fn: handleKey,\n        scope: this\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "binding",
+                    "text": "A single KeyMap config or an array of configs.\nThe following config object properties are supported:\n",
+                    "type": "Object/Object[]",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "key",
+                        "text": "A single keycode or an array of keycodes to handle, or a RegExp\nwhich specifies characters to handle, eg `/[a-z]/`.\n",
+                        "type": "String/Array",
+                        "src": {
+                          "name": "0,208,38",
+                          "text": "0,208,42,64:0,209,8,52",
+                          "type": "0,208,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "shift",
+                        "text": "True to handle key only when shift is pressed,\nFalse to handle the keyonly when shift is not pressed (defaults to undefined).\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,210,33",
+                          "text": "0,210,39,47:0,211,8,79",
+                          "type": "0,210,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "ctrl",
+                        "text": "True to handle key only when ctrl is pressed,\nFalse to handle the key only when ctrl is not pressed (defaults to undefined).\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,212,33",
+                          "text": "0,212,38,46:0,213,8,79",
+                          "type": "0,212,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "alt",
+                        "text": "True to handle key only when alt is pressed,\nFalse to handle the key only when alt is not pressed (defaults to undefined).\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,214,33",
+                          "text": "0,214,37,45:0,215,8,78",
+                          "type": "0,214,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "handler",
+                        "text": "The function to call when KeyMap finds the\nexpected key combination.\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,216,34",
+                          "text": "0,216,42,43:0,217,8,26",
+                          "type": "0,216,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "fn",
+                        "text": "Alias of handler (for backwards-compatibility).\n",
+                        "type": "Function",
+                        "src": {
+                          "name": "0,218,34",
+                          "text": "0,218,37,48",
+                          "type": "0,218,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "The scope (`this` context) in which the handler function is executed.\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "0,219,32",
+                          "text": "0,219,38,70",
+                          "type": "0,219,16"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "defaultEventAction",
+                        "text": "A default action to apply to the event *when the handler returns `true`*.\nPossible values are: stopEvent, stopPropagation, preventDefault. If no value is\nset no action is performed..\n",
+                        "type": "String",
+                        "src": {
+                          "name": "0,220,32",
+                          "text": "0,220,51,74:0,221,8,109",
+                          "type": "0,220,16"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,206,33",
+                      "text": "0,206,41,47:0,207,8,54",
+                      "type": "0,206,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,224,0",
+                  "text": "0,187,8,367"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeBinding",
+                "text": "Remove a binding from this KeyMap.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "binding",
+                    "text": "See <a href='#!/api/Ext.util.KeyMap-method-addBinding'>addBinding</a>\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,248,24",
+                      "text": "0,248,32,36",
+                      "type": "0,248,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,250,0",
+                  "text": "0,247,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "handleTargetEvent",
+                "text": "Process the <a href='#!/api/Ext.util.KeyMap-cfg-eventName'>eventName</a> from the <a href='#!/api/Ext.util.KeyMap-cfg-target'>target</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "0,314,33",
+                      "type": "0,314,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,313,8",
+                  "name": "0,316,0",
+                  "text": "0,312,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "processBinding",
+                "text": "Process a particular binding and fire the handler if necessary.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "binding",
+                    "text": "The binding information\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,376,24",
+                      "text": "0,376,32,24",
+                      "type": "0,376,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "0,377,33",
+                      "type": "0,377,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,375,8",
+                  "name": "0,379,0",
+                  "text": "0,374,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "checkModifiers",
+                "text": "Check if the modifiers on the event match those on the binding\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "binding",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,426,24",
+                      "type": "0,426,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "type": "Ext.event.Event",
+                    "src": {
+                      "name": "0,427,33",
+                      "type": "0,427,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the event matches the binding\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,428,26,38",
+                      "type": "0,428,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,425,8",
+                  "name": "0,430,0",
+                  "text": "0,424,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "on",
+                "text": "Shorthand for adding a single key listener.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "Either the numeric key code, array of key codes or an object with the\nfollowing options: `{key: (number or array), shift: (true/false), ctrl: (true/false), alt: (true/false)}`\n",
+                    "type": "Number/Number[]/Object",
+                    "src": {
+                      "name": "0,449,40",
+                      "text": "0,449,44,70:0,450,8,106",
+                      "type": "0,449,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,451,26",
+                      "text": "0,451,29,21",
+                      "type": "0,451,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the function is executed.\nDefaults to the browser window.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,452,25",
+                      "text": "0,452,32,64:0,453,8,32",
+                      "type": "0,452,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,455,0",
+                  "text": "0,447,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "un",
+                "text": "Shorthand for removing a single key listener.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "Either the numeric key code, array of key codes or an object with the\nfollowing options: `{key: (number or array), shift: (true/false), ctrl: (true/false), alt: (true/false)}`\n",
+                    "type": "Number/Number[]/Object",
+                    "src": {
+                      "name": "0,478,40",
+                      "text": "0,478,44,70:0,479,8,106",
+                      "type": "0,478,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The function to call\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,480,26",
+                      "text": "0,480,29,21",
+                      "type": "0,480,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the function is executed.\nDefaults to the browser window.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,481,25",
+                      "text": "0,481,32,64:0,482,8,32",
+                      "type": "0,481,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,484,0",
+                  "text": "0,476,8,47"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isEnabled",
+                "text": "Returns true if this KeyMap is enabled\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Boolean",
+                    "src": {
+                      "type": "0,506,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,508,0",
+                  "text": "0,505,8,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enable",
+                "text": "Enables this KeyMap\n",
+                "src": {
+                  "name": "0,515,0",
+                  "text": "0,513,8,20"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "disable",
+                "text": "Disable this KeyMap\n",
+                "src": {
+                  "name": "0,527,0",
+                  "text": "0,525,8,20"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setDisabled",
+                "text": "Convenience function for setting disabled/enabled by boolean.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "disabled",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,538,25",
+                      "type": "0,538,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,540,0",
+                  "text": "0,537,8,62"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroys the KeyMap instance and removes all handlers.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "removeTarget",
+                    "text": "True to also remove the <a href='#!/api/Ext.util.KeyMap-cfg-target'>target</a>\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,550,25",
+                      "text": "0,550,38,40",
+                      "type": "0,550,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,552,0",
+                  "text": "0,549,8,55"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "lastKeyEvent",
+                "text": "The last key event that this KeyMap handled.\n",
+                "type": "Ext.event.Event",
+                "src": {
+                  "name": "0,89,36",
+                  "text": "0,90,8,45",
+                  "type": "0,89,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alternateClassNames": "0,86,0",
+          "name": "0,85,0",
+          "text": "0,2,4,3033"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

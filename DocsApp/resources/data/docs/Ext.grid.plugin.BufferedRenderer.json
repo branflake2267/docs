@@ -10,6 +10,7 @@
         "$type": "class",
         "access": "private",
         "alias": "plugin.bufferedrenderer",
+        "extended": "Ext.AbstractPlugin",
         "extends": "Ext.AbstractPlugin",
         "name": "Ext.grid.plugin.BufferedRenderer",
         "text": "Implements buffered rendering of a grid, allowing users to scroll\nthrough thousands of records without the performance penalties of\nrendering all the records into the DOM at once.\n\nThe number of rows rendered outside the visible area can be controlled by configuring the plugin.\n\nUsers should not instantiate this class. It is instantiated automatically\nand applied to all grids.\n\n## Implementation notes\n\nThis class monitors scrolling of the <a href='#!/api/Ext.view.Table'>Ext.view.Table</a> within a <a href='#!/api/Ext.grid.Panel'>Ext.grid.Panel</a> to render a small section of\nthe dataset.\n",
@@ -17,6 +18,17 @@
           {
             "$type": "configs",
             "items": [
+              {
+                "$type": "property",
+                "name": "leadingBufferZone",
+                "text": "The number of extra rows to render on the leading side of scrolling\n**outside the <a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a>** buffer as scrolling proceeds.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,50,0",
+                  "text": "0,47,8,135",
+                  "type": "0,46,14"
+                }
+              },
               {
                 "$type": "property",
                 "name": "numFromEdge",
@@ -30,24 +42,13 @@
               },
               {
                 "$type": "property",
-                "name": "trailingBufferZone",
-                "text": "The number of extra rows to render on the trailing side of scrolling\n**outside the <a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a>** buffer as scrolling proceeds.\n",
+                "name": "scrollToLoadBuffer",
+                "text": "This is the time in milliseconds to buffer load requests when the store is a <a href='#!/api/Ext.data.BufferedStore'>Ext.data.BufferedStore</a>\nand a page required for rendering is not present in the store's cache and needs loading.\n",
                 "type": "Number",
                 "src": {
-                  "name": "0,43,0",
-                  "text": "0,40,8,136",
-                  "type": "0,39,14"
-                }
-              },
-              {
-                "$type": "property",
-                "name": "leadingBufferZone",
-                "text": "The number of extra rows to render on the leading side of scrolling\n**outside the <a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a>** buffer as scrolling proceeds.\n",
-                "type": "Number",
-                "src": {
-                  "name": "0,50,0",
-                  "text": "0,47,8,135",
-                  "type": "0,46,14"
+                  "name": "0,70,0",
+                  "text": "0,67,8,212",
+                  "type": "0,66,14"
                 }
               },
               {
@@ -66,13 +67,13 @@
               },
               {
                 "$type": "property",
-                "name": "scrollToLoadBuffer",
-                "text": "This is the time in milliseconds to buffer load requests when the store is a <a href='#!/api/Ext.data.BufferedStore'>Ext.data.BufferedStore</a>\nand a page required for rendering is not present in the store's cache and needs loading.\n",
+                "name": "trailingBufferZone",
+                "text": "The number of extra rows to render on the trailing side of scrolling\n**outside the <a href='#!/api/Ext.grid.plugin.BufferedRenderer-cfg-numFromEdge'>numFromEdge</a>** buffer as scrolling proceeds.\n",
                 "type": "Number",
                 "src": {
-                  "name": "0,70,0",
-                  "text": "0,67,8,212",
-                  "type": "0,66,14"
+                  "name": "0,43,0",
+                  "text": "0,40,8,136",
+                  "type": "0,39,14"
                 }
               }
             ]
@@ -80,28 +81,6 @@
           {
             "$type": "methods",
             "items": [
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "beforeTableLayout",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "ownerContext",
-                    "text": "The view's layout context\nCalled before the start of a view's layout run\n",
-                    "type": "Ext.layout.ContextItem",
-                    "src": {
-                      "name": "0,326,40",
-                      "text": "0,326,53,26:0,327,8,47",
-                      "type": "0,326,16"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,325,8",
-                  "name": "0,329,0"
-                }
-              },
               {
                 "$type": "method",
                 "access": "private",
@@ -113,15 +92,137 @@
                     "text": "The view's layout context\nCalled when a view's layout run is complete.\n",
                     "type": "Ext.layout.ContextItem",
                     "src": {
-                      "name": "0,339,40",
-                      "text": "0,339,53,26:0,340,8,45",
-                      "type": "0,339,16"
+                      "name": "0,336,40",
+                      "text": "0,336,53,26:0,337,8,45",
+                      "type": "0,336,16"
                     }
                   }
                 ],
                 "src": {
-                  "access": "0,338,8",
-                  "name": "0,342,0"
+                  "access": "0,335,8",
+                  "name": "0,339,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "beforeTableLayout",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The view's layout context\nCalled before the start of a view's layout run\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "0,323,40",
+                      "text": "0,323,53,26:0,324,8,47",
+                      "type": "0,323,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,322,8",
+                  "name": "0,326,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getLastVisibleRowIndex",
+                "text": "Returns the index of the last row in your table view deemed to be visible.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Number",
+                    "src": {
+                      "type": "0,1565,17"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "startRow",
+                    "src": {
+                      "name": "0,1568,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "endRow",
+                    "src": {
+                      "name": "0,1568,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "viewportTop",
+                    "src": {
+                      "name": "0,1568,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "viewportBottom",
+                    "src": {
+                      "name": "0,1568,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,1566,8",
+                  "name": "0,1568,0",
+                  "text": "0,1564,8,75"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getViewRange",
+                "text": "TableView's getViewRange delegates the operation to this method if buffered rendering is present.\n",
+                "src": {
+                  "access": "0,565,8",
+                  "name": "0,568,0",
+                  "text": "0,566,8,98"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onReplace",
+                "text": "Handles the Store replace event, producing a correct buffered view after the replace operation.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "src": {
+                      "name": "0,613,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "startIndex",
+                    "src": {
+                      "name": "0,613,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldRecords",
+                    "src": {
+                      "name": "0,613,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "newRecords",
+                    "src": {
+                      "name": "0,613,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,610,8",
+                  "name": "0,613,0",
+                  "text": "0,611,8,96"
                 }
               },
               {
@@ -136,9 +237,9 @@
                     "text": "The Table view.\n",
                     "type": "Ext.view.Table",
                     "src": {
-                      "name": "0,408,32",
-                      "text": "0,408,37,16",
-                      "type": "0,408,16"
+                      "name": "0,405,32",
+                      "text": "0,405,37,16",
+                      "type": "0,405,16"
                     }
                   },
                   {
@@ -147,9 +248,9 @@
                     "text": "The new Width.\n",
                     "type": "Number",
                     "src": {
-                      "name": "0,409,24",
-                      "text": "0,409,30,15",
-                      "type": "0,409,16"
+                      "name": "0,406,24",
+                      "text": "0,406,30,15",
+                      "type": "0,406,16"
                     }
                   },
                   {
@@ -158,9 +259,9 @@
                     "text": "The new height.\n",
                     "type": "Number",
                     "src": {
-                      "name": "0,410,24",
-                      "text": "0,410,31,16",
-                      "type": "0,410,16"
+                      "name": "0,407,24",
+                      "text": "0,407,31,16",
+                      "type": "0,407,16"
                     }
                   },
                   {
@@ -169,9 +270,9 @@
                     "text": "The old width.\n",
                     "type": "Number",
                     "src": {
-                      "name": "0,411,24",
-                      "text": "0,411,33,15",
-                      "type": "0,411,16"
+                      "name": "0,408,24",
+                      "text": "0,408,33,15",
+                      "type": "0,408,16"
                     }
                   },
                   {
@@ -180,68 +281,36 @@
                     "text": "The old height.\n",
                     "type": "Number",
                     "src": {
-                      "name": "0,412,24",
-                      "text": "0,412,34,16",
-                      "type": "0,412,16"
+                      "name": "0,409,24",
+                      "text": "0,409,34,16",
+                      "type": "0,409,16"
                     }
                   }
                 ],
                 "src": {
-                  "access": "0,413,8",
-                  "name": "0,415,0",
-                  "text": "0,406,8,174"
+                  "access": "0,410,8",
+                  "name": "0,412,0",
+                  "text": "0,403,8,174"
                 }
               },
               {
                 "$type": "method",
                 "access": "private",
-                "name": "getViewRange",
-                "text": "TableView's getViewRange delegates the operation to this method if buffered rendering is present.\n",
-                "src": {
-                  "access": "0,568,8",
-                  "name": "0,571,0",
-                  "text": "0,569,8,98"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "onReplace",
-                "text": "Handles the Store replace event, producing a correct buffered view after the replace operation.\n",
+                "name": "refreshView",
+                "text": "Refreshes the current rendered range if possible.\nOptionally refreshes starting at the specified index.\n",
                 "items": [
-                  {
-                    "$type": "param",
-                    "name": "store",
-                    "src": {
-                      "name": "0,616,0"
-                    }
-                  },
                   {
                     "$type": "param",
                     "name": "startIndex",
                     "src": {
-                      "name": "0,616,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "oldRecords",
-                    "src": {
-                      "name": "0,616,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "newRecords",
-                    "src": {
-                      "name": "0,616,0"
+                      "name": "0,1012,0"
                     }
                   }
                 ],
                 "src": {
-                  "access": "0,613,8",
-                  "name": "0,616,0",
-                  "text": "0,614,8,96"
+                  "access": "0,1008,8",
+                  "name": "0,1012,0",
+                  "text": "0,1009,8,104"
                 }
               },
               {
@@ -256,9 +325,9 @@
                     "text": "The record, or the zero-based position in the dataset to scroll to.\n",
                     "type": "Number/Ext.data.Model",
                     "src": {
-                      "name": "0,718,39",
-                      "text": "0,718,46,68",
-                      "type": "0,718,16"
+                      "name": "0,715,39",
+                      "text": "0,715,46,68",
+                      "type": "0,715,16"
                     }
                   },
                   {
@@ -275,9 +344,9 @@
                         "text": "Pass `true` to animate the row into view.\n",
                         "type": "Boolean",
                         "src": {
-                          "name": "0,720,42",
-                          "text": "0,720,51,42",
-                          "type": "0,720,16"
+                          "name": "0,717,42",
+                          "text": "0,717,51,42",
+                          "type": "0,717,16"
                         }
                       },
                       {
@@ -287,9 +356,9 @@
                         "text": "Pass `true` to highlight the row with a glow animation when it is in view.\n",
                         "type": "Boolean",
                         "src": {
-                          "name": "0,721,42",
-                          "text": "0,721,53,75",
-                          "type": "0,721,16"
+                          "name": "0,718,42",
+                          "text": "0,718,53,75",
+                          "type": "0,718,16"
                         }
                       },
                       {
@@ -299,9 +368,9 @@
                         "text": "Pass as `true` to select the specified row.\n",
                         "type": "Boolean",
                         "src": {
-                          "name": "0,722,42",
-                          "text": "0,722,50,44",
-                          "type": "0,722,16"
+                          "name": "0,719,42",
+                          "text": "0,719,50,44",
+                          "type": "0,719,16"
                         }
                       },
                       {
@@ -311,9 +380,9 @@
                         "text": "Pass as `true` to focus the specified row.\n",
                         "type": "Boolean",
                         "src": {
-                          "name": "0,723,42",
-                          "text": "0,723,49,43",
-                          "type": "0,723,16"
+                          "name": "0,720,42",
+                          "text": "0,720,49,43",
+                          "type": "0,720,16"
                         }
                       },
                       {
@@ -329,9 +398,9 @@
                             "text": "The resulting record index (may have changed if the passed index was outside the valid range).\n",
                             "type": "Number",
                             "src": {
-                              "name": "0,725,50",
-                              "text": "0,725,60,95",
-                              "type": "0,725,16"
+                              "name": "0,722,50",
+                              "text": "0,722,60,95",
+                              "type": "0,722,16"
                             }
                           },
                           {
@@ -340,9 +409,9 @@
                             "text": "The resulting record from the store.\n",
                             "type": "Ext.data.Model",
                             "src": {
-                              "name": "0,726,50",
-                              "text": "0,726,57,37",
-                              "type": "0,726,16"
+                              "name": "0,723,50",
+                              "text": "0,723,57,37",
+                              "type": "0,723,16"
                             }
                           },
                           {
@@ -351,16 +420,16 @@
                             "text": "The resulting view row element.\n",
                             "type": "HTMLElement",
                             "src": {
-                              "name": "0,727,50",
-                              "text": "0,727,55,32",
-                              "type": "0,727,16"
+                              "name": "0,724,50",
+                              "text": "0,724,55,32",
+                              "type": "0,724,16"
                             }
                           }
                         ],
                         "src": {
-                          "name": "0,724,42",
-                          "text": "0,724,52,54",
-                          "type": "0,724,16"
+                          "name": "0,721,42",
+                          "text": "0,721,52,54",
+                          "type": "0,721,16"
                         }
                       },
                       {
@@ -370,9 +439,9 @@
                         "text": "The scope (`this` reference) in which to execute the callback. Defaults to this BufferedRenderer.\n",
                         "type": "Object",
                         "src": {
-                          "name": "0,728,42",
-                          "text": "0,728,49,98",
-                          "type": "0,728,16"
+                          "name": "0,725,42",
+                          "text": "0,725,49,98",
+                          "type": "0,725,16"
                         }
                       },
                       {
@@ -382,91 +451,23 @@
                         "text": "The column, or column index to scroll into view.\n",
                         "type": "Ext.grid.column.Column/Number",
                         "src": {
-                          "name": "0,729,56",
-                          "text": "0,729,64,49",
-                          "type": "0,729,16"
+                          "name": "0,726,56",
+                          "text": "0,726,64,49",
+                          "type": "0,726,16"
                         }
                       }
                     ],
                     "src": {
-                      "name": "0,719,34",
-                      "text": "0,719,43,54",
-                      "type": "0,719,16"
+                      "name": "0,716,34",
+                      "text": "0,716,43,54",
+                      "type": "0,716,16"
                     }
                   }
                 ],
                 "src": {
-                  "access": "0,710,8",
-                  "name": "0,732,0",
-                  "text": "0,711,8,280"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "refreshView",
-                "text": "Refreshes the current rendered range if possible.\nOptionally refreshes starting at the specified index.\n",
-                "items": [
-                  {
-                    "$type": "param",
-                    "name": "startIndex",
-                    "src": {
-                      "name": "0,1005,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,1001,8",
-                  "name": "0,1005,0",
-                  "text": "0,1002,8,104"
-                }
-              },
-              {
-                "$type": "method",
-                "access": "private",
-                "name": "getLastVisibleRowIndex",
-                "text": "Returns the index of the last row in your table view deemed to be visible.\n",
-                "items": [
-                  {
-                    "$type": "return",
-                    "type": "Number",
-                    "src": {
-                      "type": "0,1561,17"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "startRow",
-                    "src": {
-                      "name": "0,1564,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "endRow",
-                    "src": {
-                      "name": "0,1564,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "viewportTop",
-                    "src": {
-                      "name": "0,1564,0"
-                    }
-                  },
-                  {
-                    "$type": "param",
-                    "name": "viewportBottom",
-                    "src": {
-                      "name": "0,1564,0"
-                    }
-                  }
-                ],
-                "src": {
-                  "access": "0,1562,8",
-                  "name": "0,1564,0",
-                  "text": "0,1560,8,75"
+                  "access": "0,707,8",
+                  "name": "0,729,0",
+                  "text": "0,708,8,280"
                 }
               }
             ]
@@ -487,11 +488,13 @@
               },
               {
                 "$type": "property",
-                "access": "private",
-                "name": "viewSize",
+                "name": "position",
+                "text": "Current pixel scroll position of the associated <a href='#!/api/Ext.view.Table'>Ext.view.Table</a>.\n",
+                "type": "Number",
                 "src": {
-                  "access": "0,73,8",
-                  "name": "0,75,0"
+                  "name": "0,82,27",
+                  "text": "0,83,8,77",
+                  "type": "0,82,19"
                 }
               },
               {
@@ -505,13 +508,11 @@
               },
               {
                 "$type": "property",
-                "name": "position",
-                "text": "Current pixel scroll position of the associated <a href='#!/api/Ext.view.Table'>Ext.view.Table</a>.\n",
-                "type": "Number",
+                "access": "private",
+                "name": "viewSize",
                 "src": {
-                  "name": "0,82,27",
-                  "text": "0,83,8,77",
-                  "type": "0,82,19"
+                  "access": "0,73,8",
+                  "name": "0,75,0"
                 }
               }
             ]

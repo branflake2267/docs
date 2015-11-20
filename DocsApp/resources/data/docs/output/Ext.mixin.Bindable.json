@@ -1,0 +1,604 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/mixin/Bindable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "access": "private",
+        "name": "Ext.mixin.Bindable",
+        "since": "5.0.0",
+        "text": "This class is intended as a mixin for classes that want to provide a \"bind\" config that\nconnects to a `ViewModel`.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "bind",
+                "optional": true,
+                "text": "Setting this config option adds or removes data bindings for other configs.\nFor example, to bind the `title` config:\n\n     var panel = Ext.create({\n         xtype: 'panel',\n         bind: {\n             title: 'Hello {user.name}'\n         }\n     });\n\nTo dynamically add bindings:\n\n     panel.setBind({\n         title: 'Greetings {user.name}!'\n     });\n\nTo remove bindings:\n\n     panel.setBind({\n         title: null\n     });\n\nThe bind expressions are presented to <a href='#!/api/Ext.app.ViewModel-method-bind'>Ext.app.ViewModel#bind</a>. The\n`ViewModel` instance is determined by <a href='#!/api/Ext.mixin.Bindable-method-lookupViewModel'>lookupViewModel</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,12,27",
+                  "text": "0,13,12,559",
+                  "type": "0,12,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "controller",
+                "text": "A string alias, a configuration object or an instance of a `ViewController` for\nthis container. Sample usage:\n\n    Ext.define('MyApp.UserController', {\n        alias: 'controller.user'\n    });\n\n    Ext.define('UserContainer', {\n        extend: 'Ext.container.container',\n        controller: 'user'\n    });\n    // Or\n    Ext.define('UserContainer', {\n        extend: 'Ext.container.container',\n        controller: {\n            type: 'user',\n            someConfig: true\n        }\n    });\n\n    // Can also instance at runtime\n    var ctrl = new MyApp.UserController();\n    var view = new UserContainer({\n        controller: ctrl\n    });\n",
+                "type": "String/Object/Ext.app.ViewController",
+                "src": {
+                  "name": "0,45,56",
+                  "text": "0,46,12,637",
+                  "type": "0,45,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultListenerScope",
+                "text": "If `true`, this component will be the default scope (this pointer) for events\nspecified with string names so that the scope can be dynamically resolved. The\ncomponent will automatically become the defaultListenerScope if a\n<a href='#!/api/Ext.mixin.Bindable-cfg-controller'>controller</a> is specified.\n\nSee the introductory docs for <a href='#!/api/Ext.container.Container'>Ext.container.Container</a> for some sample\nusages.\n\n**NOTE**: This value can only be reliably set at construction time. Setting it\nafter that time may not correctly rewire all of the potentially effected\nlisteners.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,84,27",
+                  "text": "0,85,12,508",
+                  "type": "0,84,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "publishes",
+                "since": "5.0.0",
+                "text": "One or more names of config properties that this component should publish\nto its ViewModel. Generally speaking, only properties defined in a class config\nblock (including ancestor config blocks and mixins) are eligible for publishing\nto the viewModel. Some components override this and publish their most useful\nconfigs by default.\n\n**Note:** We'll discuss publishing properties **not** found in the config block below.\n\nValues determined to be invalid by component (often form fields and model validations)\nwill not be published to the ViewModel.\n\nThis config uses the <a href='#!/api/Ext.mixin.Bindable-cfg-reference'>cfg-reference</a> to determine the name of the data\nobject to place in the `ViewModel`. If <a href='#!/api/Ext.mixin.Bindable-cfg-reference'>reference</a> is not set then this config\nis ignored.\n\nBy using this config and <a href='#!/api/Ext.mixin.Bindable-cfg-reference'>cfg-reference</a> you can bind configs between\ncomponents. For example:\n\n     ...\n         items: [{\n             xtype: 'textfield',\n             reference: 'somefield',  // component's name in the ViewModel\n             publishes: 'value' // value is not published by default\n         },{\n             ...\n         },{\n             xtype: 'displayfield',\n             bind: 'You have entered \"{somefield.value}\"'\n         }]\n     ...\n\nClasses must provide this config as an Object:\n\n     Ext.define('App.foo.Bar', {\n         publishes: {\n             foo: true,\n             bar: true\n         }\n     });\n\nThis is required for the config system to properly merge values from derived\nclasses.\n\nFor instances this value can be specified as a value as show above or an array\nor object as follows:\n\n     {\n         xtype: 'textfield',\n         reference: 'somefield',\n         publishes: [\n             'value',\n             'rawValue',\n             'dirty'\n         ]\n     }\n\n     // This achieves the same result as the above array form.\n     {\n         xtype: 'textfield',\n         reference: 'somefield',\n         publishes: {\n             value: true,\n             rawValue: true,\n             dirty: true\n         }\n     }\n\nIn some cases, users may want to publish a property to the viewModel that is not found in a class\nconfig block. In these situations, you may utilize <a href='#!/api/Ext.mixin.Bindable-method-publishState'>publishState</a> if the property has a\nsetter method.  Let's use <a href='#!/api/Ext.form.Labelable-method-setFieldLabel'>Ext.form.Labelable#setFieldLabel</a> as an example:\n\n      setFieldLabel: function(fieldLabel) {\n          this.callParent(arguments);\n          this.publishState('fieldLabel', fieldLabel);\n      }\n\nWith the above chunk of code, fieldLabel may now be published to the viewModel.\n",
+                "type": "String/String[]/Object",
+                "src": {
+                  "name": "0,100,42",
+                  "since": "0,179,19",
+                  "text": "0,101,12,2498",
+                  "type": "0,100,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "reference",
+                "text": "Specifies a name for this component inside its component hierarchy. This name\nmust be unique within its <a href='#!/api/Ext.container.Container-cfg-referenceHolder'>Ext.container.Container#referenceHolder</a>\nor its <a href='#!/api/Ext.app.ViewController'>Ext.app.ViewController</a>. See the documentation in\n<a href='#!/api/Ext.container.Container'>Ext.container.Container</a> for more information about references.\n\n**Note**: Valid identifiers start with a letter or underscore and are followed\nby zero or more additional letters, underscores or digits. References are case\nsensitive.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,190,26",
+                  "text": "0,191,12,477",
+                  "type": "0,190,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "session",
+                "optional": true,
+                "text": "If provided this creates a new `Session` instance for this component. If this\nis a `Container`, this will then be inherited by all child components.\n\nTo create a new session you can specify `true`:\n\n     Ext.create({\n         xtype: 'viewport',\n         session: true,\n\n         items: [{\n             ...\n         }]\n     });\n\nAlternatively, a config object can be provided:\n\n     Ext.create({\n         xtype: 'viewport',\n         session: {\n             ...\n         },\n\n         items: [{\n             ...\n         }]\n     });\n",
+                "type": "Boolean/Object/Ext.data.Session",
+                "value": "null",
+                "src": {
+                  "name": "0,204,52",
+                  "text": "0,205,12,531",
+                  "type": "0,204,18",
+                  "value": "0,204,60"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "twoWayBindable",
+                "text": "This object holds a map of `config` properties that will update their binding\nas they are modified. For example, `value` is a key added by form fields. The\nform of this config is the same as <a href='#!/api/Ext.mixin.Bindable-cfg-publishes'>publishes</a>.\n\nThis config is defined so that updaters are not created and added for all\nbound properties since most cannot be modified by the end-user and hence are\nnot appropriate for two-way binding.\n",
+                "type": "String/String[]/Object",
+                "src": {
+                  "name": "0,239,42",
+                  "text": "0,240,12,402",
+                  "type": "0,239,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "viewModel",
+                "text": "The `ViewModel` is a data provider for this component and its children. The\ndata contained in the `ViewModel` is typically used by adding <a href='#!/api/Ext.mixin.Bindable-cfg-bind'>bind</a> configs\nto the components that want present or edit this data.\n\nWhen set, the `ViewModel` is created and links to any inherited <a href='#!/api/Ext.mixin.Bindable-cfg-viewModel'>viewModel</a>\ninstance from an ancestor container as the \"parent\". The `ViewModel` hierarchy,\nonce established, only supports creation or destruction of children. The\nparent of a `ViewModel` cannot be changed on the fly.\n\nIf this is a root-level `ViewModel`, the data model connection is made to this\ncomponent's associated <a href='#!/api/Ext.data.Session'>Ext.data.Session</a>. This is\ndetermined by calling `getInheritedSession`.\n",
+                "type": "String/Object/Ext.app.ViewModel",
+                "src": {
+                  "name": "0,258,51",
+                  "text": "0,259,12,690",
+                  "type": "0,258,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "getController",
+                "text": "Returns the <a href='#!/api/Ext.app.ViewController'>Ext.app.ViewController</a> instance associated with this\ncomponent via the <a href='#!/api/Ext.mixin.Bindable-cfg-controller'>controller</a> config or <a href='#!/api/Ext.mixin.Bindable-setController'>setController</a> method.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns this component's ViewController or\nnull if one was not configured\n",
+                    "type": "Ext.app.ViewController",
+                    "src": {
+                      "text": "0,79,45,43:0,80,12,31",
+                      "type": "0,79,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,76,20",
+                  "text": "0,77,12,152"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initInheritedState",
+                "text": "Called by `getInherited` to initialize the inheritedState the first time it is\nrequested.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "inheritedState",
+                    "src": {
+                      "name": "0,311,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,309,8",
+                  "name": "0,311,0",
+                  "text": "0,307,8,90"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupController",
+                "since": "5.0.1",
+                "text": "Gets the controller that controls this view. May be a controller that belongs\nto a view higher in the hierarchy.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "`true` to not consider the controller directly attached\nto this view (if it exists).\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,360,26",
+                      "text": "0,360,42,56:0,361,8,29",
+                      "type": "0,360,16",
+                      "value": "0,360,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The controller. <a href='#!/api/null'>null</a> if no controller is found.\n",
+                    "type": "Ext.app.ViewController",
+                    "src": {
+                      "text": "0,362,41,50",
+                      "type": "0,362,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,366,0",
+                  "since": "0,364,15",
+                  "text": "0,357,8,114"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupSession",
+                "since": "5.0.0",
+                "text": "Returns the <a href='#!/api/Ext.data.Session'>Ext.data.Session</a> for this instance. This property may come\nfrom this instance's <a href='#!/api/Ext.mixin.Bindable-cfg-session'>session</a> or be inherited from this object's parent.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "Pass `true` to ignore a <a href='#!/api/Ext.mixin.Bindable-cfg-session'>session</a> configured on\nthis instance and only consider an inherited session.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,373,26",
+                      "text": "0,373,42,48:0,374,8,54",
+                      "type": "0,373,16",
+                      "value": "0,373,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "type": "0,375,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,378,0",
+                  "since": "0,376,15",
+                  "text": "0,371,8,156"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupViewModel",
+                "since": "5.0.0",
+                "text": "Returns the <a href='#!/api/Ext.app.ViewModel'>Ext.app.ViewModel</a> for this instance. This property may come from this\nthis instance's <a href='#!/api/Ext.mixin.Bindable-cfg-viewModel'>viewModel</a> or be inherited from this object's parent.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "Pass `true` to ignore a <a href='#!/api/Ext.mixin.Bindable-cfg-viewModel'>viewModel</a> configured on\nthis instance and only consider an inherited view model.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "0,394,26",
+                      "text": "0,394,42,50:0,395,8,57",
+                      "type": "0,394,16",
+                      "value": "0,394,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "type": "0,396,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,399,0",
+                  "since": "0,397,15",
+                  "text": "0,392,8,164"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "publishState",
+                "since": "5.0.0",
+                "text": "Publish this components state to the `ViewModel`. If no arguments are given (or if\nthis is the first call), the entire state is published. This state is determined by\nthe <a href='#!/api/Ext.mixin.Bindable-cfg-publishes'>publishes</a> property.\n\nThis method is called only by component authors.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "property",
+                    "optional": true,
+                    "text": "The name of the property to update.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,422,25",
+                      "text": "0,422,35,36",
+                      "type": "0,422,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value of `property`. Only needed if `property` is given.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,423,25",
+                      "text": "0,423,32,61",
+                      "type": "0,423,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,424,8",
+                  "name": "0,427,0",
+                  "since": "0,425,15",
+                  "text": "0,416,8,244"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addBindableUpdater",
+                "since": "5.0.0",
+                "text": "Ensures that the given property (if it is a Config System config) has a proper\n\"updater\" method on this instance to sync changes to the config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "property",
+                    "text": "The name of the config property.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,504,28",
+                      "text": "0,504,37,33",
+                      "type": "0,504,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,505,12",
+                  "name": "0,508,0",
+                  "since": "0,506,19",
+                  "text": "0,502,12,144"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyBind",
+                "since": "5.0.0",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "binds",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,523,35",
+                      "type": "0,523,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "currentBindings",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,524,28",
+                      "type": "0,524,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "0,525,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,526,12",
+                  "name": "0,529,0",
+                  "since": "0,527,19"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applySession",
+                "since": "5.0.0",
+                "text": "Transforms a Session config to a proper instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,626,28",
+                      "type": "0,626,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "type": "0,627,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,628,12",
+                  "name": "0,631,0",
+                  "since": "0,629,19",
+                  "text": "0,625,12,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyViewModel",
+                "since": "5.0.0",
+                "text": "Transforms a ViewModel config to a proper instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "viewModel",
+                    "type": "String/Object/Ext.app.ViewModel",
+                    "src": {
+                      "name": "0,654,53",
+                      "type": "0,654,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "type": "0,655,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,656,12",
+                  "name": "0,659,0",
+                  "since": "0,657,19",
+                  "text": "0,653,12,52"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initBindable",
+                "since": "5.0.0",
+                "text": "This method triggers the lazy configs and must be called when it is time to\nfully boot up. The configs that must be initialized are: <a href='#!/api/Ext.mixin.Bindable-cfg-bind'>bind</a>, <a href='#!/api/Ext.mixin.Bindable-cfg-publishes'>publishes</a>,\n<a href='#!/api/Ext.mixin.Bindable-cfg-session'>session</a>, <a href='#!/api/Ext.mixin.Bindable-cfg-twoWayBindable'>twoWayBindable</a> and <a href='#!/api/Ext.mixin.Bindable-cfg-viewModel'>viewModel</a>.\n",
+                "src": {
+                  "access": "0,723,12",
+                  "name": "0,726,0",
+                  "since": "0,724,19",
+                  "text": "0,720,12,199"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "makeBindableUpdater",
+                "since": "5.0.0",
+                "text": "Returns an `update` method for the given Config that will call <a href='#!/api/Ext.mixin.Bindable-method-publishState'>publishState</a>\nto ensure two-way bindings (via <a href='#!/api/Ext.mixin.Bindable-cfg-bind'>bind</a>) as well as any <a href='#!/api/Ext.mixin.Bindable-cfg-publishes'>publishes</a> are updated.\nThis method is cached on the `cfg` instance for re-use.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cfg",
+                    "type": "Ext.Config",
+                    "src": {
+                      "name": "0,749,32",
+                      "type": "0,749,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The updater function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,750,31,22",
+                      "type": "0,750,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,751,12",
+                  "name": "0,754,0",
+                  "since": "0,752,19",
+                  "text": "0,746,12,223"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "isSyncing",
+                "text": "Checks if a particular binding is synchronizing the value.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the property being bound to.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,770,28",
+                      "text": "0,770,33,41",
+                      "type": "0,770,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the binding is syncing.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,771,30,34",
+                      "type": "0,771,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,499,-1",
+                  "name": "0,775,0",
+                  "text": "0,769,12,59"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateSession",
+                "text": "Updates the session config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "name": "0,814,38",
+                      "type": "0,814,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,815,12",
+                  "name": "0,817,0",
+                  "text": "0,813,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateViewModel",
+                "text": "Updates the viewModel config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "viewModel",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "name": "0,829,39",
+                      "type": "0,829,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldViewModel",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "name": "0,830,39",
+                      "type": "0,830,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,831,12",
+                  "name": "0,833,0",
+                  "text": "0,828,12,30"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "defaultBindProperty",
+                "optional": true,
+                "text": "This property is used to determine the property of a <a href='#!/api/Ext.mixin.Bindable-cfg-bind'>bind</a> config that is just\nthe value. For example, if `defaultBindProperty=\"value\"`, then this shorthand\n<a href='#!/api/Ext.mixin.Bindable-cfg-bind'>bind</a> config:\n\n     bind: '{name}'\n\nIs equivalent to this object form:\n\n     bind: {\n         value: '{name}'\n     }\n\nThe <a href='#!/api/Ext.mixin.Bindable-property-defaultBindProperty'>defaultBindProperty</a> is set to \"value\" for form fields and to \"store\" for\ngrids and trees.\n",
+                "type": "String",
+                "src": {
+                  "access": "0,295,8",
+                  "name": "0,280,28",
+                  "text": "0,281,8,373",
+                  "type": "0,280,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "validRefRe",
+                "text": "Regular expression used for validating <a href='#!/api/Ext.mixin.Bindable-cfg-reference'>reference</a> values.\n",
+                "type": "RegExp",
+                "src": {
+                  "access": "0,302,8",
+                  "name": "0,304,0",
+                  "text": "0,301,8,59",
+                  "type": "0,300,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "access": "0,4,4",
+          "name": "0,7,0",
+          "since": "0,5,11",
+          "text": "0,2,4,115"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="../css/app.css">
 </head>
 <body>
-<div class="contents"><p>#Building a Login System</p>
+<div class="contents"><h1 id="getting_started-_-login_app_-_building_a_login_system">Building a Login System</h1>
 <p>One of the most frequently requested tutorials is how to make a login system. We&#39;re 
 going to start off this ongoing tutorial by building just that. Please note that this is 
 only <strong>one</strong> way of creating a login system. There are many other viable options. This 
@@ -16,7 +16,7 @@ toolkit in Ext JS 6.</p>
 application to contain a &quot;logged in&quot; and &quot;logged out&quot; view. This tutorial does not
 attempt to achieve secure data connections, session management, true authentication, 
 etc. It is for educational purposes only.</p>
-<p>##Step 1 - Generate your Application</p>
+<h2 id="getting_started-_-login_app_-_step_1_generate_your_application">Step 1 - Generate your Application</h2>
 <p>The first thing we want to do is generate an application using
 <a href="http://www.sencha.com/products/sencha-cmd/">Sencha Cmd</a>. You can do so by issuing the
 following command from your command line interface, or CLI:</p>
@@ -32,7 +32,7 @@ navigating to the application&#39;s location on your webserver. For instance:</p
 This will spin up a Jetty server, which removes the need for a traditional web server. 
 If you use &quot;sencha app watch&quot;, you can find the application here:</p>
 <pre><code>http://localhost:1841/
-</code></pre><p>##Step 2  - Create the Login View Components</p>
+</code></pre><h2 id="getting_started-_-login_app_-_step_2_create_the_login_view_components">Step 2  - Create the Login View Components</h2>
 <p>Next, we&#39;re going to navigate to our newly generated TutorialApp. Drill down into your
 generated application&#39;s &quot;app/view/&quot; folder. You should see the default generated &quot;main&quot;
 folder. This folder contains the <strong>Main.js</strong>, <strong>MainController.js</strong>, and 
@@ -44,7 +44,7 @@ following files to said folder:</p>
 - LoginController.js
 </code></pre><p>The resulting file structure should look like this:</p>
 <p><img src="images/filestructure.jpeg"/></p>
-<p>##Step 3 - Disable mainView</p>
+<h2 id="getting_started-_-login_app_-_step_3_disable_mainview">Step 3 - Disable mainView</h2>
 <p>The [[ext:Ext.app.Application-cfg-mainView mainView]] config of
 [[ext:Ext#application application]] is a very handy way to automatically load and instantiate
 &quot;TutorialApp.view.main.Main&quot; by utilizing the 
@@ -56,7 +56,7 @@ if the user is not yet logged in.</p>
 [[ext:Ext#application application]] config in &quot;{appRoot}/app.js&quot;.</p>
 <p><strong>Note:</strong> Since we have removed <code>mainView</code>, refreshing your application will result in a 
 blank page as no classes are being instantiated.</p>
-<p>##Step 4 - Create the Login Window</p>
+<h2 id="getting_started-_-login_app_-_step_4_create_the_login_window">Step 4 - Create the Login Window</h2>
 <p>Next, let&#39;s create a login view. To do this, we&#39;ll open our blank 
 &quot;{appRoot}/app/view/login/Login.js&quot; file and begin defining the Login Window.</p>
 <p>First, let&#39;s define our Class and extend the base [[ext:Ext.window.Window Window]] 
@@ -85,30 +85,30 @@ properties. We&#39;ll start by adding some additional configurations to the wind
     autoShow: true
 });
 </code></pre><p>Let&#39;s walk through what these configurations mean.</p>
-<p>###requires</p>
+<h3 id="getting_started-_-login_app_-_requires">requires</h3>
 <p>The [[ext:Ext.Class-cfg-requires requires]] block makes sure that we&#39;re including any
 classes that may be relied upon before instantiating our Login window. We need to 
 include <code>LoginController.js</code> because we&#39;re about to designate it as our controller on 
 the next line. We also need to include [[ext:Ext.form.Panel]] since our view contains a 
 Form panel.</p>
-<p>###controller</p>
+<h3 id="getting_started-_-login_app_-_controller">controller</h3>
 <p>The [[ext:Ext.window.Window-cfg-controller controller]] config designates a
 [[ext:Ext.app.ViewController ViewController]], which will then be attached to instances 
 of the Login window. This controller provides a place to include all logic relating to
 the Login window or its child components. Here, we designate controller to be <code>login</code>,
 which will be our controller&#39;s alias.</p>
-<p>###bodyPadding</p>
+<h3 id="getting_started-_-login_app_-_bodypadding">bodyPadding</h3>
 <p>The [[ext:Ext.window.Window-cfg-bodyPadding bodyPadding]] config is purely aesthetic. 
 This config applies &quot;10px&quot; of padding around the exterior of the window&#39;s body content.</p>
-<p>###title</p>
+<h3 id="getting_started-_-login_app_-_title">title</h3>
 <p>The string passed to the [[ext:Ext.window.Window-cfg-title title]] config results in the 
 creation of a [[ext:Ext.panel.Header header]] and adds the string value as its title.</p>
-<p>###closable</p>
+<h3 id="getting_started-_-login_app_-_closable">closable</h3>
 <p>[[ext:Ext.window.Window-cfg-closable closable]] determines whether or not the window can
 be closed. Windows have a closable button by default. However, since this is a login 
 window, we don&#39;t want the user closing it. If they DID close it, they would be left with 
 a blank page.</p>
-<p>###autoShow</p>
+<h3 id="getting_started-_-login_app_-_autoshow">autoShow</h3>
 <p>Windows are hidden by default. Setting [[ext:Ext.window.Window-cfg-autoShow autoShow]]
 to <code>true</code> will show the Window once it&#39;s created.  The alternative would be call the 
 Window&#39;s [[ext:Ext.window.Window-method-show show]] method programmatically when we want 
@@ -163,7 +163,7 @@ the Window. Then we&#39;ll add two [[ext:Ext.form.field.Text textfields]], a
     }
 });
 </code></pre><p>Let&#39;s discuss these additions.</p>
-<p>###Window items</p>
+<h3 id="getting_started-_-login_app_-_window_items">Window items</h3>
 <p>The first configuration we&#39;ve added to the Login window is the 
 [[ext:Ext.window.Window-cfg-items items]] config. In 
 [[ext:Ext.container.Container containers]], like the Form panel and the Login window 
@@ -171,14 +171,14 @@ itself, the <code>items</code> config may hold a [[ext:Ext.Component Component]]
 configuration object. The <code>items</code> config may also be an array of Components or Component 
 config objects.  These Components will be displayed in the Container&#39;s body using the
 Container&#39;s [[ext:Ext.container.Container-cfg-layout layout]].</p>
-<p>###xtype</p>
+<h3 id="getting_started-_-login_app_-_xtype">xtype</h3>
 <p>Every Component class has it&#39;s own [[ext:Ext.Component-cfg-xtype xtype]]. You can think 
 of an <code>xtype</code> as a shortcut to easily create an instance of a Component. In this case, 
 we have configured the Login window with a child item with an <code>xtype</code> of &quot;form&quot; (&quot;form&quot; 
 being the <code>xtype</code> of the [[ext:Ext.form.Panel]] class). Form panels are special
-types of Panels that include convenienient configuration options for working with 
+types of Panels that include convenient configuration options for working with 
 input fields.</p>
-<p>###Form Items</p>
+<h3 id="getting_started-_-login_app_-_form_items">Form Items</h3>
 <p>Next, you&#39;ll see the familiar face of another <code>items</code> array. Here we&#39;re nesting 
 additional items by using the items array a level deeper. We&#39;re placing more Components 
 inside of the parent component, which is the Form panel. In this case, our nested 
@@ -196,17 +196,17 @@ turns your input into <code>*</code> for security&#39;s sake.</p>
 A Display field is a text field that is not submitted with your form. It&#39;s useful for 
 conveying data without the user interacting with said data. In this case, we&#39;re 
 notifying the user that any non-blank password will allow the form to be submitted.</p>
-<p>###buttons</p>
+<h3 id="getting_started-_-login_app_-_buttons">buttons</h3>
 <p>The last bit that we&#39;ve added here is a [[ext:Ext.form.Panel-cfg-buttons buttons]] 
 array.  This is a convenience config used for adding Buttons to a footer 
 [[ext:Ext.toolbar.Toolbar Toolbar]] in your panel. This particular button will contain 
 the text &#39;Login&#39; and will be what users will click to submit the login form.</p>
-<p>###formBind</p>
+<h3 id="getting_started-_-login_app_-_formbind">formBind</h3>
 <p>Our Button contains a config called [[ext:Ext.Component-cfg-formBind formBind]], which 
 is set to &quot;true&quot;. When a Component has <code>formBind</code> set to &quot;true&quot;, it will be disabled/enabled
 depending on the validity state of the Form. This means that the Button will not be
 clickable until the two input fields contain values.</p>
-<p>###listeners</p>
+<h3 id="getting_started-_-login_app_-_listeners">listeners</h3>
 <p>The [[ext:Ext.button.Button-cfg-listeners listeners]] object is configured with events 
 and the methods / functions that will respond to the firing of those events. In this 
 case, we&#39;re waiting for someone to click the Button. Upon a click, we &quot;forward&quot; the 
@@ -214,7 +214,7 @@ event to a method called <code>onLoginClick</code>. The <code>onLoginClick</code
 in our Login controller.</p>
 <p><strong>Note:</strong> We have not yet instantiated the Login view in any way, so refreshing the 
 application will not show any changes.</p>
-<p>##Step 5 - Add Login Logic</p>
+<h2 id="getting_started-_-login_app_-_step_5_add_login_logic">Step 5 - Add Login Logic</h2>
 <p>Next, let&#39;s create the Login controller, which is a class that contains any logic used
 to handle user interactions with the Login view. To do this, we&#39;ll open our blank
 <code>{appRoot}/app/view/login/LoginController.js</code> file and begin defining our Login window&#39;s 
@@ -247,7 +247,7 @@ discuss the <code>launch</code> method in the next section. This class contains 
 method that is called by clicking on the login button.</p>
 <p>These bits of code have annotations to describe each statement&#39;s purpose, but let&#39;s look
 at them piece by piece for further explanation.</p>
-<p>###onLoginClick()</p>
+<h3 id="getting_started-_-login_app_-_onloginclick_">onLoginClick()</h3>
 <p>First of all, we&#39;re creating a method called <code>onLoginClick</code>. This is the method to
 which we directed our login button&#39;s click event in the Login view.</p>
 <p>As mentioned in the comments, this is where you&#39;d call your server to verify that the
@@ -256,7 +256,7 @@ request. However, for this tutorial, we will accept any non-blank input. Upon su
 you&#39;d follow through with the rest of the code. On failure, you would allow the user
 to re-enter their credentials. Of course, there&#39;s no failure possibility in this case,
 so let&#39;s move forward!</p>
-<p>###localStorage</p>
+<h3 id="getting_started-_-login_app_-_localstorage">localStorage</h3>
 <p>We are utilizing 
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">localStorage</a> in 
 this tutorial to maintain user login state. After a successful credentials check, we can 
@@ -265,7 +265,7 @@ then set a key/value pair in localStorage to let the application know that the u
 valid.  Next, we will check that the <code>TutorialLoggedIn</code> localStorage key is set to 
 &quot;true&quot; in our initial <code>launch</code> method <em>(covered in more detail in the &quot;launch&quot; section 
 below).</em></p>
-<p>###getView()</p>
+<h3 id="getting_started-_-login_app_-_getview_">getView()</h3>
 <p>ViewControllers introduce a very helpful method called
 [[ext:Ext.app.Controller-method-getView getView()]]. The <code>getView()</code> method returns the
 current view associated with the ViewController from which it is called.  In this case,
@@ -273,13 +273,13 @@ the view is the Login window. Since we&#39;re treating the login click as a succ
 login, we no longer want to present the Login window.  So, we are using 
 <code>this.getView().destroy()</code> to get a reference to the Login window and then 
 [[ext:Ext.window.Window-method-destroy destroy]] it.</p>
-<p>###Ext.create({ xtype: &#39;app-main&#39; })</p>
+<h3 id="getting_started-_-login_app_-_ext_create_xtype_app_main_">Ext.create({ xtype: &#39;app-main&#39; })</h3>
 <p>Now that we&#39;ve destroyed the Login window, we want to change the view to display the 
 Main view. In this case, we use <code>Ext.create({ xtype: &#39;app-main&#39; })</code> to instantiate the 
 &quot;{appRoot}/app/view/main/Main.js&quot; view.</p>
 <p><strong>Note:</strong> <code>&#39;app-main&#39;</code> refers to the xtype that is defined on our Sencha Cmd generated 
 &quot;TutorialApp.view.main.Main&quot; class located in &quot;{appRoot}/app/view/main.Main.js&quot;.</p>
-<p>##Step 6 - Add Launch Logic to Application.js</p>
+<h2 id="getting_started-_-login_app_-_step_6_add_launch_logic_to_application_js">Step 6 - Add Launch Logic to Application.js</h2>
 <p>Next, let&#39;s discuss &quot;{appRoot}/app/Application.js&quot; and the <code>launch</code> function.</p>
 <p>&quot;Application.js&quot; is the heart of your application. You can find &quot;Application.js&quot; at the 
 same level as your &quot;view&quot;, &quot;store&quot;, and &quot;model&quot; folders. It provides a handy method 
@@ -327,29 +327,29 @@ classes. Here is the full code for this tutorial&#39;s &quot;Application.js&quot
     }
 });
 </code></pre><p>Let&#39;s examine what these pieces are doing.</p>
-<p>###requires</p>
+<h3 id="getting_started-_-login_app_-_requires">requires</h3>
 <p>We&#39;ve already described what requires does, but let&#39;s touch on this particular array. 
 For the purposes of &quot;Application.js&quot;, we need to prepare the application to load either 
 the Login or Main view, depending on the results of the logged in evaluation to come. To
 that end, we must require both &quot;TutorialApp.view.main.Main&quot; and 
 &quot;TutorialApp.view.login.Login&quot; so that either result is available.</p>
-<p>###launch</p>
+<h3 id="getting_started-_-login_app_-_launch">launch</h3>
 <p>As previously mentioned, the <code>launch</code> method is a function that executes when your 
 application has loaded everything it needs to run.  This is an ideal place to perform 
 logic regarding user state for a login/logout application.</p>
-<p>###localStorage.getItem()</p>
+<h3 id="getting_started-_-login_app_-_localstorage_getitem_">localStorage.getItem()</h3>
 <p>Tthe next step is to check for a previously set localStorage key called 
 <code>TutorialLoggedIn</code>. We are simply setting the <strong>loggedIn</strong> variable to the result of 
 that key&#39;s value. If it doesn&#39;t exist, <strong>loggedIn</strong> will be null.  If it does exist, 
 we&#39;ve previously set <code>TutorialLoggedIn</code> to be <strong>true</strong> in our LoginController&#39;s logic.</p>
-<p>###Create Ternary</p>
+<h3 id="getting_started-_-login_app_-_create_ternary">Create Ternary</h3>
 <p>Most programming languages contain a form of conditional shorthand called ternary 
 operators.  Ternary operators allow you to minimize the amount of code required for a 
 traditional if/else statement. In this case, we&#39;re using a ternary to say, &quot;if 
 <strong>loggedIn</strong> exists <em>(isn&#39;t null),</em> let&#39;s load the Main view, otherwise, load the Login 
 view&quot;. We are then using the <code>Ext.create</code> method to instantiate the result of the 
 ternary operator.</p>
-<p>##Step 7 - Add Viewport Plugin / Logout Button</p>
+<h2 id="getting_started-_-login_app_-_step_7_add_viewport_plugin_logout_button">Step 7 - Add Viewport Plugin / Logout Button</h2>
 <p>As you may remember, we removed the <code>mainView</code> config from &quot;{appRoot}/app.js&quot; early on 
 in this tutorial. Since we don&#39;t have a [[ext:Ext.container.Viewport Viewport]] defined, 
 your Main view will not know where to render. We are going to change that by mixing in 
@@ -467,7 +467,7 @@ method we&#39;ll configure in the next section.</p>
         }
     }]
 });
-</code></pre><p>##Step 8 - Add Main Logic</p>
+</code></pre><h2 id="getting_started-_-login_app_-_step_8_add_main_logic">Step 8 - Add Main Logic</h2>
 <p>We&#39;re almost finished!  All that&#39;s left now is to give the user some way to logout of 
 the application, which will destroy the <code>TutorialLoggedIn</code> key from localStorage. This 
 logic should take place in the &quot;{appRoot}/app/view/main/MainController.js&quot; file. We will 
@@ -515,7 +515,7 @@ event is detected, the following steps are taken:</p>
 </ul>
 <p>You should now be able to load your application in your browser and see a fully
 functioning login/logout application.</p>
-<p>##Wrap Up</p>
+<h2 id="getting_started-_-login_app_-_wrap_up">Wrap Up</h2>
 <p>We hope that you have enjoyed this tutorial. This is simply the foundation for an
 application, but hopefully we have introduced a few concepts that make your future
 projects simpler. Please feel free to suggest ideas for future tutorials via our
@@ -523,5 +523,36 @@ projects simpler. Please feel free to suggest ideas for future tutorials via our
 the <a href="https://support.sencha.com/">support portal</a> or <a href="http://www.sencha.com/forum/">forums</a>.</p>
 </div>
 
+    <div class="toc">
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_step_1_generate_your_application">Step 1 - Generate your Application</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_step_2_create_the_login_view_components">Step 2  - Create the Login View Components</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_step_3_disable_mainview">Step 3 - Disable mainView</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_step_4_create_the_login_window">Step 4 - Create the Login Window</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_requires">requires</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_controller">controller</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_bodypadding">bodyPadding</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_title">title</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_closable">closable</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_autoshow">autoShow</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_window_items">Window items</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_xtype">xtype</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_form_items">Form Items</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_buttons">buttons</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_formbind">formBind</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_listeners">listeners</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_step_5_add_login_logic">Step 5 - Add Login Logic</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_onloginclick_">onLoginClick()</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_localstorage">localStorage</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_getview_">getView()</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_ext_create_xtype_app_main_">Ext.create({ xtype: &#x27;app-main&#x27; })</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_step_6_add_launch_logic_to_application_js">Step 6 - Add Launch Logic to Application.js</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_requires">requires</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_launch">launch</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_localstorage_getitem_">localStorage.getItem()</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_create_ternary">Create Ternary</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_step_7_add_viewport_plugin_logout_button">Step 7 - Add Viewport Plugin / Logout Button</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_step_8_add_main_logic">Step 8 - Add Main Logic</a></div>
+        <div class="toc-item"><a href="#getting_started-_-login_app_-_wrap_up">Wrap Up</a></div>
+    </div>
 </body>
 </html>

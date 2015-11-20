@@ -1,0 +1,683 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../../docs/docs/js/primitives/Object.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Object",
+        "text": "\nCreates an object wrapper.\n\nThe Object constructor creates an object wrapper for the given value. If the value is null or\nundefined, it will create and return an empty object, otherwise, it will return an object of a type\nthat corresponds to the given value.\n\nWhen called in a non-constructor context, Object behaves identically.\n\n# Using Object given undefined and null types\n\nThe following examples store an empty Object object in o:\n    var o = new Object();\n\n    var o = new Object(undefined);\n\n    var o = new Object(null);\n\n# Using Object to create Boolean objects\n\nThe following examples store Boolean objects in o:\n\n    // equivalent to o = new Boolean(true);\n    var o = new Object(true);\n\n    // equivalent to o = new Boolean(false);\n    var o = new Object(Boolean());\n\n<div class=\"notice\">\nDocumentation for this class comes from <a href=\"https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object\">MDN</a>\nand is available under <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">Creative Commons: Attribution-Sharealike license</a>.\n</div>\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value to wrap.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,40,21",
+                      "text": "0,40,28,19",
+                      "type": "0,40,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,38,12",
+                  "text": "0,39,4,20"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasOwnProperty",
+                "text": "Returns a boolean indicating whether an object contains the specified property as a direct property\nof that object and not inherited through the prototype chain.\n\nEvery object descended from <a href='#!/api/Object'>Object</a> inherits the <a href='#!/api/Object-method-hasOwnProperty'>hasOwnProperty</a> method. This method can be used\nto determine whether an object has the specified property as a direct property of that object;\nunlike the `in` operator, this method does not check down the object's prototype chain.\n\nThe following example determines whether the o object contains a property named prop:\n\n    o = new Object();\n    o.prop = 'exists';\n\n    function changeO() {\n        o.newprop = o.prop;\n        delete o.prop;\n    }\n\n    o.hasOwnProperty('prop');   //returns true\n    changeO();\n    o.hasOwnProperty('prop');   //returns false\n\nThe following example differentiates between direct properties and properties inherited through the\nprototype chain:\n\n    o = new Object();\n    o.prop = 'exists';\n    o.hasOwnProperty('prop');             // returns true\n    o.hasOwnProperty('toString');         // returns false\n    o.hasOwnProperty('hasOwnProperty');   // returns false\n\nThe following example shows how to iterate over the properties of an object without executing on\ninherit properties.\n\n    var buz = {\n        fog: 'stack'\n    };\n\n    for (var name in buz) {\n        if (buz.hasOwnProperty(name)) {\n            alert(\"this is fog (\" + name + \") for sure. Value: \" + buz[name]);\n        }\n        else {\n            alert(name); // toString or something else\n        }\n    }\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,100,20",
+                      "text": "0,100,25,34",
+                      "type": "0,100,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object contains specified property; else\nreturns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,101,22,57:0,102,4,15",
+                      "type": "0,101,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,53,12",
+                  "text": "0,54,4,1520"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isPrototypeOf",
+                "text": "Returns a boolean indication whether the specified object is in the prototype chain of the object\nthis method is called upon.\n\n<a href='#!/api/Object-method-isPrototypeOf'>isPrototypeOf</a> allows you to check whether or not an object exists within another object's\nprototype chain.\n\nFor example, consider the following prototype chain:\n\n    function Fee() {\n        // . . .\n    }\n\n    function Fi() {\n        // . . .\n    }\n    Fi.prototype = new Fee();\n\n    function Fo() {\n        // . . .\n    }\n    Fo.prototype = new Fi();\n\n    function Fum() {\n        // . . .\n    }\n    Fum.prototype = new Fo();\n\nLater on down the road, if you instantiate `Fum` and need to check if `Fi`'s prototype exists\nwithin the `Fum` prototype chain, you could do this:\n\n    var fum = new Fum();\n    . . .\n\n    if (Fi.prototype.isPrototypeOf(fum)) {\n    // do something safe\n    }\n\nThis, along with the `instanceof` operator particularly comes in handy if you have code that can\nonly function when dealing with objects descended from a specific prototype chain, e.g., to\nguarantee that certain methods or properties will be present on that object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prototype",
+                    "text": "an object to be tested against each link in the prototype chain of the\n*object* argument\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,148,20",
+                      "text": "0,148,30,71:0,149,4,18",
+                      "type": "0,148,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "the object whose prototype chain will be searched\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,150,20",
+                      "text": "0,150,27,50",
+                      "type": "0,150,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Returns true if object is a prototype and false if not.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,151,22,56",
+                      "type": "0,151,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,106,12",
+                  "text": "0,107,4,1084"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "propertyIsEnumerable",
+                "text": "Returns a boolean indicating if the internal ECMAScript DontEnum attribute is set.\n\nEvery object has a <a href='#!/api/Object-method-propertyIsEnumerable'>propertyIsEnumerable</a> method. This method can determine whether the specified\nproperty in an object can be enumerated by a `for...in` loop, with the exception of properties\ninherited through the prototype chain. If the object does not have the specified property, this\nmethod returns false.\n\nThe following example shows the use of <a href='#!/api/Object-method-propertyIsEnumerable'>propertyIsEnumerable</a> on objects and arrays:\n\n    var o = {};\n    var a = [];\n    o.prop = 'is enumerable';\n    a[0] = 'is enumerable';\n\n    o.propertyIsEnumerable('prop');   // returns true\n    a.propertyIsEnumerable(0);        // returns true\n\nThe following example demonstrates the enumerability of user-defined versus built-in properties:\n\n    var a = ['is enumerable'];\n\n    a.propertyIsEnumerable(0);          // returns true\n    a.propertyIsEnumerable('length');   // returns false\n\n    Math.propertyIsEnumerable('random');   // returns false\n    this.propertyIsEnumerable('Math');     // returns false\n\nDirect versus inherited properties\n\n    var a = [];\n    a.propertyIsEnumerable('constructor');         // returns false\n\n    function firstConstructor()\n    {\n        this.property = 'is not enumerable';\n    }\n    firstConstructor.prototype.firstMethod = function () {};\n\n    function secondConstructor()\n    {\n        this.method = function method() { return 'is enumerable'; };\n    }\n\n    secondConstructor.prototype = new firstConstructor;\n    secondConstructor.prototype.constructor = secondConstructor;\n\n    var o = new secondConstructor();\n    o.arbitraryProperty = 'is enumerable';\n\n    o.propertyIsEnumerable('arbitraryProperty');   // returns true\n    o.propertyIsEnumerable('method');              // returns true\n    o.propertyIsEnumerable('property');            // returns false\n\n    o.property = 'is enumerable';\n\n    o.propertyIsEnumerable('property');            // returns true\n\n    // These return false as they are on the prototype which\n    // propertyIsEnumerable does not consider (even though the last two\n    // are iteratable with for-in)\n    o.propertyIsEnumerable('prototype'); // returns false (as of JS 1.8.1/FF3.6)\n    o.propertyIsEnumerable('constructor'); // returns false\n    o.propertyIsEnumerable('firstMethod'); // returns false\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to test.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,220,20",
+                      "text": "0,220,25,34",
+                      "type": "0,220,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "If the object does not have the specified property, this\nmethod returns false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,221,22,57:0,222,4,22",
+                      "type": "0,221,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,155,12",
+                  "text": "0,156,4,2313"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toLocaleString",
+                "text": "Returns a string representing the object. This method is meant to be overridden by derived objects\nfor locale-specific purposes.\n\n<a href='#!/api/Object'>Object</a>s <a href='#!/api/Object-method-toLocaleString'>toLocaleString</a> returns the result of calling <a href='#!/api/Object-method-toString'>toString</a>.\n\nThis function is provided to give objects a generic <a href='#!/api/Object-method-toLocaleString'>toLocaleString</a> method, even though not all\nmay use it. Currently, only <a href='#!/api/Array'>Array</a>, <a href='#!/api/Number'>Number</a>, and <a href='#!/api/Date'>Date</a> override <a href='#!/api/Object-method-toLocaleString'>toLocaleString</a>.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,235,21,32",
+                      "type": "0,235,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,226,12",
+                  "text": "0,227,4,384"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representation of the object.\n\nEvery object has a `toString()` method that is automatically called when the object is to be\nrepresented as a text value or when an object is referred to in a manner in which a string is\nexpected. By default, the `toString()` method is inherited by every object descended from <a href='#!/api/Object'>Object</a>.\nIf this method is not overridden in a custom object, `toString()` returns \"[object type]\", where\n`type` is the object type. The following code illustrates this:\n\n    var o = new Object();\n    o.toString();           // returns [object Object]\n\nYou can create a function to be called in place of the default `toString()` method. The\n`toString()` method takes no arguments and should return a string. The `toString()` method you\ncreate can be any value you want, but it will be most useful if it carries information about the\nobject.\n\nThe following code defines the `Dog` object type and creates `theDog`, an object of type `Dog`:\n\n    function Dog(name,breed,color,sex) {\n        this.name=name;\n        this.breed=breed;\n        this.color=color;\n        this.sex=sex;\n    }\n\n    theDog = new Dog(\"Gabby\",\"Lab\",\"chocolate\",\"female\");\n\nIf you call the `toString()` method on this custom object, it returns the default value inherited\nfrom <a href='#!/api/Object'>Object</a>:\n\n    theDog.toString(); //returns [object Object]\n\nThe following code creates and assigns `dogToString()` to override the default `toString()` method.\nThis function generates a string containing the name, breed, color, and sex of the object, in the\nform `\"property = value;\"`.\n\n    Dog.prototype.toString = function dogToString() {\n        var ret = \"Dog \" + this.name + \" is a \" + this.sex + \" \" + this.color + \" \" + this.breed;\n        return ret;\n    }\n\nWith the preceding code in place, any time theDog is used in a string context, JavaScript\nautomatically calls the `dogToString()` function, which returns the following string:\n\n    Dog Gabby is a female chocolate Lab\n\n`toString()` can be used with every object and allows you to get its class. To use the\n`Object.prototype.toString()` with every object, you need to call `Function.prototype.call()` or\n`Function.prototype.apply()` on it, passing the object you want to inspect as the first parameter\ncalled `thisArg`.\n\n    var toString = Object.prototype.toString;\n\n    toString.call(new Date); // [object Date]\n    toString.call(new String); // [object String]\n    toString.call(Math); // [object Math]\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Object represented as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,297,21,32",
+                      "type": "0,297,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,239,12",
+                  "text": "0,240,4,2445"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "valueOf",
+                "text": "Returns the primitive value of the specified object.\n\nJavaScript calls the <a href='#!/api/Object-method-valueOf'>valueOf</a> method to convert an object to a primitive value. You rarely need to\ninvoke the <a href='#!/api/Object-method-valueOf'>valueOf</a> method yourself; JavaScript automatically invokes it when encountering an\nobject where a primitive value is expected.\n\nBy default, the <a href='#!/api/Object-method-valueOf'>valueOf</a> method is inherited by every object descended from <a href='#!/api/Object'>Object</a>. Every built-\nin core object overrides this method to return an appropriate value. If an object has no primitive\nvalue, <a href='#!/api/Object-method-valueOf'>valueOf</a> returns the object itself, which is displayed as:\n\n    [object Object]\n\nYou can use <a href='#!/api/Object-method-valueOf'>valueOf</a> within your own code to convert a built-in object into a primitive value.\nWhen you create a custom object, you can override `Object.valueOf` to call a custom method instead\nof the default <a href='#!/api/Object'>Object</a> method.\n\nYou can create a function to be called in place of the default <a href='#!/api/Object-method-valueOf'>valueOf</a> method. Your function must\ntake no arguments.\n\nSuppose you have an object type `myNumberType` and you want to create a <a href='#!/api/Object-method-valueOf'>valueOf</a> method for it.\nThe following code assigns a user-defined function to the object's valueOf method:\n\n    myNumberType.prototype.valueOf = new Function(functionText)\n\nWith the preceding code in place, any time an object of type `myNumberType` is used in a context\nwhere it is to be represented as a primitive value, JavaScript automatically calls the function\ndefined in the preceding code.\n\nAn object's <a href='#!/api/Object-method-valueOf'>valueOf</a> method is usually invoked by JavaScript, but you can invoke it yourself as\nfollows:\n\n    myNumber.valueOf()\n\nNote: Objects in string contexts convert via the <a href='#!/api/Object-method-toString'>toString</a> method, which is different from\n<a href='#!/api/String'>String</a> objects converting to string primitives using <a href='#!/api/Object-method-valueOf'>valueOf</a>. All objects have a string\nconversion, if only `\"[object type]\"`. But many objects do not convert to number, boolean, or\nfunction.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns value of the object or the object itself.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,340,21,50",
+                      "type": "0,340,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,301,12",
+                  "text": "0,302,4,1821"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "prototype",
+                "text": "Allows the addition of properties to all objects of type Object.\n",
+                "src": {
+                  "name": "0,46,14",
+                  "text": "0,47,4,65"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "constructor",
+                "text": " Specifies the function that creates an object's prototype.\n\n Returns a reference to the Object function that created the instance's prototype. Note that the\n value of this property is a reference to the function itself, not a string containing the\n function's name, but it isn't read only (except for primitive Boolean, Number or String values: 1,\n true, \"read-only\").\n\n All objects inherit a `constructor` property from their <a href='#!/api/Object-property-prototype'>prototype</a>:\n\n     o = new Object // or o = {} in JavaScript 1.2\n     o.constructor == Object\n     a = new Array // or a = [] in JavaScript 1.2\n     a.constructor == Array\n     n = new Number(3)\n     n.constructor == Number\n\n Even though you cannot construct most HTML objects, you can do comparisons. For example,\n\n     document.constructor == Document\n     document.form3.constructor == Form\n\n The following example creates a prototype, `Tree`, and an object of that type, theTree. The example then displays the `constructor` property for the object `theTree`.\n\n     function Tree(name) {\n         this.name = name;\n     }\n     theTree = new Tree(\"Redwood\");\n     console.log(\"theTree.constructor is \" + theTree.constructor);\n\n This example displays the following output:\n\n     theTree.constructor is function Tree(name) {\n         this.name = name;\n     }\n\n The following example shows how to modify constructor value of generic objects. Only true, 1 and\n \"test\" variable constructors will not be changed. This example explains that is not always so safe\n to believe in constructor function.\n\n     function Type(){};\n     var\ttypes = [\n \t    new Array,\t[],\n\t    new Boolean,\ttrue,\n\t    new Date,\n\t    new Error,\n\t    new Function,\tfunction(){},\n\t    Math,\n\t    new Number,\t1,\n\t    new Object,\t{},\n\t    new RegExp,\t/(?:)/,\n\t    new String,\t\"test\"\n     ];\n     for(var i = 0; i < types.length; i++){\n         types[i].constructor = Type;\n         types[i] = [types[i].constructor, types[i] instanceof Type, types[i].toString()];\n     };\n     alert(types.join(\"\\n\"));\n",
+                "src": {
+                  "name": "0,346,14",
+                  "text": "0,347,3,1996"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "create",
+                "static": true,
+                "text": "Creates a new object with the specified prototype object and properties.\n\n## Classical inheritance with Object.create\n\nBelow is an example of how to use `Object.create` to achieve\nclassical inheritance, this is for single inheritance, which is all\nthat Javascript supports.\n\n    //Shape - superclass\n    function Shape() {\n      this.x = 0;\n      this.y = 0;\n    }\n\n    Shape.prototype.move = function(x, y) {\n        this.x += x;\n        this.y += y;\n        console.info(\"Shape moved.\");\n    };\n\n    // Rectangle - subclass\n    function Rectangle() {\n      Shape.call(this); //call super constructor.\n    }\n\n    Rectangle.prototype = Object.create(Shape.prototype);\n\n    var rect = new Rectangle();\n\n    rect instanceof Rectangle //true.\n    rect instanceof Shape //true.\n\n    rect.move(); //Outputs, \"Shape moved.\"\n\nIf you wish to inherit from multiple objects, then mixins are a possibility.\n\n    function MyClass() {\n         SuperClass.call(this);\n         OtherSuperClass.call(this);\n    }\n\n    MyClass.prototype = Object.create(SuperClass.prototype); //inherit\n    mixin(MyClass.prototype, OtherSuperClass.prototype); //mixin\n\n    MyClass.prototype.myMethod = function() {\n         // do a thing\n    };\n\nThe mixin function would copy the functions from the superclass\nprototype to the subclass prototype, the mixin function needs to be\nsupplied by the user.\n\n## Using `propertiesObject` argument with Object.create\n\n    var o;\n\n    // create an object with null as prototype\n    o = Object.create(null);\n\n\n    o = {};\n    // is equivalent to:\n    o = Object.create(Object.prototype);\n\n\n    // Example where we create an object with a couple of sample properties.\n    // (Note that the second parameter maps keys to *property descriptors*.)\n    o = Object.create(Object.prototype, {\n      // foo is a regular \"value property\"\n      foo: { writable:true, configurable:true, value: \"hello\" },\n      // bar is a getter-and-setter (accessor) property\n      bar: {\n        configurable: false,\n        get: function() { return 10 },\n        set: function(value) { console.log(\"Setting `o.bar` to\", value) }\n    }})\n\n\n    function Constructor(){}\n    o = new Constructor();\n    // is equivalent to:\n    o = Object.create(Constructor.prototype);\n    // Of course, if there is actual initialization code in the Constructor function, the Object.create cannot reflect it\n\n\n    // create a new object whose prototype is a new, empty object\n    // and a adding single property 'p', with value 42\n    o = Object.create({}, { p: { value: 42 } })\n\n    // by default properties ARE NOT writable, enumerable or configurable:\n    o.p = 24\n    o.p\n    //42\n\n    o.q = 12\n    for (var prop in o) {\n       console.log(prop)\n    }\n    //\"q\"\n\n    delete o.p\n    //false\n\n    //to specify an ES3 property\n    o2 = Object.create({}, { p: { value: 42, writable: true, enumerable: true, configurable: true } });\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "proto",
+                    "text": "The object which should be the prototype of\nthe newly-created object.\n\nThrows a `TypeError` exception if the `proto` parameter isn't null or\nan object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,519,20",
+                      "text": "0,519,26,44:0,520,4,109",
+                      "type": "0,519,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "propertiesObject",
+                    "optional": true,
+                    "text": "If specified and not undefined,\nan object whose enumerable own properties (that is, those\nproperties defined upon itself and not enumerable properties along\nits prototype chain) specify property descriptors to be added to\nthe newly-created object, with the corresponding property names.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,525,21",
+                      "text": "0,525,39,32:0,526,4,256",
+                      "type": "0,525,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "the newly created object.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,531,21,26",
+                      "type": "0,531,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,409,12",
+                  "static": "0,410,4",
+                  "text": "0,411,4,2954"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "defineProperty",
+                "static": true,
+                "text": "\nDefines a new property directly on an object, or modifies an\nexisting property on an object, and returns the object.\n\nThis method allows precise addition to or modification of a\nproperty on an object. Normal property addition through assignment\ncreates properties which show up during property enumeration\n(for...in loop or <a href='#!/api/Object-static-method-keys'>Object#keys</a> method), whose values may be\nchanged, and which may be deleted. This method allows these extra\ndetails to be changed from their defaults.\n\nProperty descriptors present in objects come in two main flavors:\ndata descriptors and accessor descriptors. A data descriptor is a\nproperty that has a value, which may or may not be writable. An\naccessor descriptor is a property described by a getter-setter pair\nof functions. A descriptor must be one of these two flavors; it\ncannot be both.\n\nBoth data and accessor descriptor is an object with the following\noptional keys:\n\n- **configurable** True if and only if the type of this property\n  descriptor may be changed and if the property may be deleted from\n  the corresponding object. Defaults to false.\n\n- **enumerable** True if and only if this property shows up during\n  enumeration of the properties on the corresponding\n  object. Defaults to false.\n\nA data descriptor is an object with the following optional keys:\n\n- **value** The value associated with the property. Can be any\n  valid JavaScript value (number, object, function, etc) Defaults\n  to undefined.\n\n- **writable** True if and only if the value associated with the\n  property may be changed with an assignment operator. Defaults to\n  false.\n\nAn accessor descriptor is an object with the following optional\nkeys:\n\n- **get** A function which serves as a getter for the property, or\n  undefined if there is no getter. The function return will be used\n  as the value of property. Defaults to undefined.\n\n- **set** A function which serves as a setter for the property, or\n  undefined if there is no setter. The function will receive as\n  only argument the new value being assigned to the\n  property. Defaults to undefined.\n\nBear in mind that these options are not necessarily own properties\nso, if inherited, will be considered too. In order to ensure these\ndefaults are preserved you might freeze the Object.prototype\nupfront, specify all options explicitly, or point to null as\n__proto__ property.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object on which to define the property.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,596,20",
+                      "text": "0,596,24,44",
+                      "type": "0,596,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property to be defined or modified.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,597,20",
+                      "text": "0,597,25,52",
+                      "type": "0,597,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "descriptor",
+                    "text": "The descriptor for the property being\ndefined or modified.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,598,20",
+                      "text": "0,598,31,38:0,599,4,21",
+                      "type": "0,598,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,535,12",
+                  "static": "0,536,4",
+                  "text": "0,537,4,2411"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "defineProperties",
+                "static": true,
+                "text": "\nDefines new or modifies existing properties directly on an object,\nreturning the object.\n\nIn essence, it defines all properties corresponding to the\nenumerable own properties of props on the object.\n\n    Object.defineProperties(obj, {\n      \"property1\": {\n        value: true,\n        writable: true\n      },\n      \"property2\": {\n        value: \"Hello\",\n        writable: false\n      }\n      // etc. etc.\n    });\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object on which to define or modify properties.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,626,20",
+                      "text": "0,626,24,52",
+                      "type": "0,626,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "props",
+                    "text": "An object whose own enumerable properties\nconstitute descriptors for the properties to be defined or\nmodified.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,627,20",
+                      "text": "0,627,26,42:0,628,4,69",
+                      "type": "0,627,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,603,12",
+                  "static": "0,604,4",
+                  "text": "0,605,4,476"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getOwnPropertyDescriptor",
+                "static": true,
+                "text": "\nReturns a property descriptor for an own property (that is, one\ndirectly present on an object, not present by dint of being along\nan object's prototype chain) of a given object.\n\nThis method permits examination of the precise description of a\nproperty. A property in JavaScript consists of a string-valued name\nand a property descriptor. Further information about property\ndescriptor types and their attributes can be found in\n<a href='#!/api/Object-static-method-defineProperty'>Object#defineProperty</a>.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object in which to look for the property.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,648,20",
+                      "text": "0,648,24,46",
+                      "type": "0,648,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prop",
+                    "text": "The name of the property whose description is\nto be retrieved.\n\nA property descriptor is a record with some of the following\nattributes:\n\n- **value** The value associated with the property (data\n  descriptors only).\n\n- **writable** True if and only if the value associated with\n  the property may be changed (data descriptors only).\n\n- **get** A function which serves as a getter for the property,\n   or undefined if there is no getter (accessor descriptors only).\n\n- **set** A function which serves as a setter for the property,\n  or undefined if there is no setter (accessor descriptors only).\n\n- **configurable** true if and only if the type of this property\n  descriptor may be changed and if the property may be deleted\n  from the corresponding object.\n\n- **enumerable** true if and only if this property shows up\n  during enumeration of the properties on the corresponding object.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,649,20",
+                      "text": "0,649,25,46:0,650,4,842",
+                      "type": "0,649,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Value of the property descriptor.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "text": "0,674,20,34",
+                      "type": "0,674,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,633,12",
+                  "static": "0,634,4",
+                  "text": "0,635,4,521"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "keys",
+                "static": true,
+                "text": "\nReturns an array of a given object's own enumerable properties, in\nthe same order as that provided by a for-in loop (the difference\nbeing that a for-in loop enumerates properties in the prototype\nchain as well).\n\nReturns an array whose elements are strings corresponding to the\nenumerable properties found directly upon object. The ordering of\nthe properties is the same as that given by looping over the\nproperties of the object manually.\n\n    var arr = [\"a\", \"b\", \"c\"];\n    alert(Object.keys(arr)); // will alert \"0,1,2\"\n\n    // array like object\n    var obj = { 0 : \"a\", 1 : \"b\", 2 : \"c\"};\n    alert(Object.keys(obj)); // will alert \"0,1,2\"\n\n    // getFoo is property which isn't enumerable\n    var my_obj = Object.create({}, { getFoo : { value : function () { return this.foo } } });\n    my_obj.foo = 1;\n\n    alert(Object.keys(my_obj)); // will alert only foo\n\nIf you want all properties, even the not enumerable, see\n<a href='#!/api/Object-static-method-getOwnPropertyNames'>Object#getOwnPropertyNames</a>.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object whose enumerable own properties are\nto be returned.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,709,20",
+                      "text": "0,709,24,47:0,710,4,16",
+                      "type": "0,709,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Array of property names.\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "0,711,23,25",
+                      "type": "0,711,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,678,12",
+                  "static": "0,679,4",
+                  "text": "0,680,4,1021"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getOwnPropertyNames",
+                "static": true,
+                "text": "\nReturns an array of all properties (enumerable or not) found\ndirectly upon a given object.\n\nRreturns an array whose elements are strings corresponding to the\nenumerable and non-enumerable properties found directly upon\nobj. The ordering of the enumerable properties in the array is\nconsistent with the ordering exposed by a for...in loop (or by\n<a href='#!/api/Object-static-method-keys'>Object#keys</a>) over the properties of the object. The\nordering of the non-enumerable properties in the array, and among\nthe enumerable properties, is not defined.\n\n    var arr = [\"a\", \"b\", \"c\"];\n    print(Object.getOwnPropertyNames(arr).sort()); // prints \"0,1,2,length\"\n\n    // Array-like object\n    var obj = { 0: \"a\", 1: \"b\", 2: \"c\"};\n    print(Object.getOwnPropertyNames(obj).sort()); // prints \"0,1,2\"\n\n    // Printing property names and values using Array.forEach\n    Object.getOwnPropertyNames(obj).forEach(function(val, idx, array) {\n      print(val + \" -> \" + obj[val]);\n    });\n    // prints\n    // 0 -> a\n    // 1 -> b\n    // 2 -> c\n\n    // non-enumerable property\n    var my_obj = Object.create({}, { getFoo: { value: function() { return this.foo; }, enumerable: false } });\n    my_obj.foo = 1;\n\n    print(Object.getOwnPropertyNames(my_obj).sort()); // prints \"foo, getFoo\"\n\nIf you want only the enumerable properties, see <a href='#!/api/Object-static-method-keys'>Object#keys</a>\nor use a for...in loop (although note that this will return\nenumerable properties not found directly upon that object but also\nalong the prototype chain for the object unless the latter is\nfiltered with <a href='#!/api/Object-method-hasOwnProperty'>hasOwnProperty</a>).\n\nItems on the prototype chain are not listed:\n\n    function ParentClass () {\n    }\n    ParentClass.prototype.inheritedMethod = function () {\n    };\n\n    function ChildClass () {\n      this.prop = 5;\n      this.method = function () {};\n    }\n    ChildClass.prototype = new ParentClass;\n    ChildClass.prototype.prototypeMethod = function () {\n    };\n\n    alert(\n      Object.getOwnPropertyNames(\n        new ChildClass() // [\"prop\", \"method\"]\n      )\n    )\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object whose enumerable and non-enumerable\nown properties are to be returned.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,780,20",
+                      "text": "0,780,24,47:0,781,4,35",
+                      "type": "0,780,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Array of property names.\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "0,782,23,25",
+                      "type": "0,782,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,715,12",
+                  "static": "0,716,4",
+                  "text": "0,717,4,2054"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getPrototypeOf",
+                "static": true,
+                "text": "\nReturns the prototype (i.e. the internal `[[Prototype]]`) of the\nspecified object.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "object",
+                    "text": "The object whose prototype is to be returned.\nThrows a TypeError exception if this parameter isn't an Object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,794,20",
+                      "text": "0,794,27,46:0,795,4,65",
+                      "type": "0,794,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "the prototype\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,797,21,14",
+                      "type": "0,797,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,786,12",
+                  "static": "0,787,4",
+                  "text": "0,788,4,146"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "preventExtensions",
+                "static": true,
+                "text": "\nPrevents new properties from ever being added to an object\n(i.e. prevents future extensions to the object).\n\nAn object is extensible if new properties can be added to it.\n<a href='#!/api/Object-static-method-preventExtensions'>preventExtensions</a> marks an object as no longer extensible, so that\nit will never have properties beyond the ones it had at the time it\nwas marked as non-extensible.  Note that the properties of a\nnon-extensible object, in general, may still be deleted. Attempting\nto add new properties to a non-extensible object will fail, either\nsilently or by throwing a TypeError (most commonly, but not\nexclusively, when in strict mode).\n\nIt only prevents addition of own properties. Properties can still\nbe added to the object prototype.\n\nIf there is a way to turn an extensible object to a non-extensible\none, there is no way to do the opposite in ECMAScript 5\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object which should be made non-extensible.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,824,20",
+                      "text": "0,824,24,48",
+                      "type": "0,824,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,801,12",
+                  "static": "0,802,4",
+                  "text": "0,803,4,887"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isExtensible",
+                "static": true,
+                "text": "\nDetermines if an object is extensible (whether it can have new\nproperties added to it).\n\nObjects are extensible by default: they can have new properties\nadded to them, and can be modified. An object can be marked as\nnon-extensible using <a href='#!/api/Object-static-method-preventExtensions'>Object#preventExtensions</a>,\n<a href='#!/api/Object-static-method-seal'>Object#seal</a>, or <a href='#!/api/Object-static-method-freeze'>Object#freeze</a>.\n\n    // New objects are extensible.\n    var empty = {};\n    assert(Object.isExtensible(empty) === true);\n\n    // ...but that can be changed.\n    Object.preventExtensions(empty);\n    assert(Object.isExtensible(empty) === false);\n\n    // Sealed objects are by definition non-extensible.\n    var sealed = Object.seal({});\n    assert(Object.isExtensible(sealed) === false);\n\n    // Frozen objects are also by definition non-extensible.\n    var frozen = Object.freeze({});\n    assert(Object.isExtensible(frozen) === false);\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object which should be checked.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,857,20",
+                      "text": "0,857,24,36",
+                      "type": "0,857,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True when object is extensible.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,858,22,32",
+                      "type": "0,858,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,828,12",
+                  "static": "0,829,4",
+                  "text": "0,830,4,900"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "seal",
+                "static": true,
+                "text": "\nSeals an object, preventing new properties from being added to it\nand marking all existing properties as non-configurable. Values of\npresent properties can still be changed as long as they are\nwritable.\n\nBy default, objects are extensible (new properties can be added to\nthem). Sealing an object prevents new properties from being added\nand marks all existing properties as non-configurable. This has the\neffect of making the set of properties on the object fixed and\nimmutable. Making all properties non-configurable also prevents\nthem from being converted from data properties to accessor\nproperties and vice versa, but it does not prevent the values of\ndata properties from being changed. Attempting to delete or add\nproperties to a sealed object, or to convert a data property to\naccessor or vice versa, will fail, either silently or by throwing a\nTypeError (most commonly, although not exclusively, when in strict\nmode code).\n\nThe prototype chain remains untouched.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object which should be sealed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,887,20",
+                      "text": "0,887,24,35",
+                      "type": "0,887,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,862,12",
+                  "static": "0,863,4",
+                  "text": "0,864,4,1034"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSealed",
+                "static": true,
+                "text": "\nDetermines if an object is sealed.\n\nAn object is sealed if it is non-extensible and if all its\nproperties are non-configurable and therefore not removable (but\nnot necessarily non-writable).\n\n    // Objects aren't sealed by default.\n    var empty = {};\n    assert(Object.isSealed(empty) === false);\n\n    // If you make an empty object non-extensible, it is vacuously sealed.\n    Object.preventExtensions(empty);\n    assert(Object.isSealed(empty) === true);\n\n    // The same is not true of a non-empty object, unless its properties are all non-configurable.\n    var hasProp = { fee: \"fie foe fum\" };\n    Object.preventExtensions(hasProp);\n    assert(Object.isSealed(hasProp) === false);\n\n    // But make them all non-configurable and the object becomes sealed.\n    Object.defineProperty(hasProp, \"fee\", { configurable: false });\n    assert(Object.isSealed(hasProp) === true);\n\n    // The easiest way to seal an object, of course, is Object.seal.\n    var sealed = {};\n    Object.seal(sealed);\n    assert(Object.isSealed(sealed) === true);\n\n    // A sealed object is, by definition, non-extensible.\n    assert(Object.isExtensible(sealed) === false);\n\n    // A sealed object might be frozen, but it doesn't have to be.\n    assert(Object.isFrozen(sealed) === true); // all properties also non-writable\n\n    var s2 = Object.seal({ p: 3 });\n    assert(Object.isFrozen(s2) === false); // \"p\" is still writable\n\n    var s3 = Object.seal({ get p() { return 0; } });\n    assert(Object.isFrozen(s3) === true); // only configurability matters for accessor properties\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object which should be checked.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,936,20",
+                      "text": "0,936,24,36",
+                      "type": "0,936,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the object is sealed, otherwise false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,937,22,47",
+                      "type": "0,937,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,891,12",
+                  "static": "0,892,4",
+                  "text": "0,893,4,1617"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "freeze",
+                "static": true,
+                "text": "\nFreezes an object: that is, prevents new properties from being\nadded to it; prevents existing properties from being removed; and\nprevents existing properties, or their enumerability,\nconfigurability, or writability, from being changed. In essence the\nobject is made effectively immutable. The method returns the object\nbeing frozen.\n\nNothing can be added to or removed from the properties set of a\nfrozen object. Any attempt to do so will fail, either silently or\nby throwing a TypeError exception (most commonly, but not\nexclusively, when in strict mode).\n\nValues cannot be changed for data properties. Accessor properties\n(getters and setters) work the same (and still give the illusion\nthat you are changing the value). Note that values that are objects\ncan still be modified, unless they are also frozen.\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object to freeze.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,963,20",
+                      "text": "0,963,24,22",
+                      "type": "0,963,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,941,12",
+                  "static": "0,942,4",
+                  "text": "0,943,4,872"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isFrozen",
+                "static": true,
+                "text": "\nDetermines if an object is frozen.\n\nAn object is frozen if and only if it is not extensible, all its\nproperties are non-configurable, and all its data properties (that\nis, properties which are not accessor properties with getter or\nsetter components) are non-writable.\n\n    // A new object is extensible, so it is not frozen.\n    assert(Object.isFrozen({}) === false);\n\n    // An empty object which is not extensible is vacuously frozen.\n    var vacuouslyFrozen = Object.preventExtensions({});\n    assert(Object.isFrozen(vacuouslyFrozen) === true);\n\n    // A new object with one property is also extensible, ergo not frozen.\n    var oneProp = { p: 42 };\n    assert(Object.isFrozen(oneProp) === false);\n\n    // Preventing extensions to the object still doesn't make it frozen,\n    // because the property is still configurable (and writable).\n    Object.preventExtensions(oneProp);\n    assert(Object.isFrozen(oneProp) === false);\n\n    // ...but then deleting that property makes the object vacuously frozen.\n    delete oneProp.p;\n    assert(Object.isFrozen(oneProp) === true);\n\n    // A non-extensible object with a non-writable but still configurable property is not frozen.\n    var nonWritable = { e: \"plep\" };\n    Object.preventExtensions(nonWritable);\n    Object.defineProperty(nonWritable, \"e\", { writable: false }); // make non-writable\n    assert(Object.isFrozen(nonWritable) === false);\n\n    // Changing that property to non-configurable then makes the object frozen.\n    Object.defineProperty(nonWritable, \"e\", { configurable: false }); // make non-configurable\n    assert(Object.isFrozen(nonWritable) === true);\n\n    // A non-extensible object with a non-configurable but still writable property also isn't frozen.\n    var nonConfigurable = { release: \"the kraken!\" };\n    Object.preventExtensions(nonConfigurable);\n    Object.defineProperty(nonConfigurable, \"release\", { configurable: false });\n    assert(Object.isFrozen(nonConfigurable) === false);\n\n    // Changing that property to non-writable then makes the object frozen.\n    Object.defineProperty(nonConfigurable, \"release\", { writable: false });\n    assert(Object.isFrozen(nonConfigurable) === true);\n\n    // A non-extensible object with a configurable accessor property isn't frozen.\n    var accessor = { get food() { return \"yum\"; } };\n    Object.preventExtensions(accessor);\n    assert(Object.isFrozen(accessor) === false);\n\n    // ...but make that property non-configurable and it becomes frozen.\n    Object.defineProperty(accessor, \"food\", { configurable: false });\n    assert(Object.isFrozen(accessor) === true);\n\n    // But the easiest way for an object to be frozen is if Object.freeze has been called on it.\n    var frozen = { 1: 81 };\n    assert(Object.isFrozen(frozen) === false);\n    Object.freeze(frozen);\n    assert(Object.isFrozen(frozen) === true);\n\n    // By definition, a frozen object is non-extensible.\n    assert(Object.isExtensible(frozen) === false);\n\n    // Also by definition, a frozen object is sealed.\n    assert(Object.isSealed(frozen) === true);\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object which should be checked.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,1040,20",
+                      "text": "0,1040,24,36",
+                      "type": "0,1040,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if the object is frozen, otherwise false.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,1041,22,47",
+                      "type": "0,1041,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,967,12",
+                  "static": "0,968,4",
+                  "text": "0,969,4,3106"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "text": "0,3,4,1077"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

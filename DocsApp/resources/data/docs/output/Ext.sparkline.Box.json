@@ -1,0 +1,3467 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/sparkline/Box.js",
+    "../../../ext/packages/core/src/mixin/Bindable.js",
+    "../../../ext/classic/classic/src/sparkline/Base.js",
+    "../../../ext/packages/core/src/Widget.js",
+    "../../../ext/packages/core/src/mixin/Observable.js",
+    "../../../ext/packages/core/src/mixin/ComponentDelegation.js",
+    "../../../ext/packages/core/src/mixin/Inheritable.js",
+    "../../../ext/packages/core/src/mixin/Identifiable.js",
+    "../../../ext/classic/classic/overrides/Widget.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "widget.sparklinebox",
+        "extends": "Ext.sparkline.Base",
+        "name": "Ext.sparkline.Box",
+        "text": "Generates a box plot graph from the provided <a href='#!/api/Ext.sparkline.Box-cfg-values'>values</a> array.\n\nSee <a href=\"http://en.wikipedia.org/wiki/Box_plot\">Wikipedia Box Plots</a>\n\nSee <a href='#!/api/Ext.sparkline.Base'>Ext.sparkline.Base</a> for a simple example.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "bind",
+                "optional": true,
+                "text": "Setting this config option adds or removes data bindings for other configs.\nFor example, to bind the `title` config:\n\n     var panel = Ext.create({\n         xtype: 'panel',\n         bind: {\n             title: 'Hello {user.name}'\n         }\n     });\n\nTo dynamically add bindings:\n\n     panel.setBind({\n         title: 'Greetings {user.name}!'\n     });\n\nTo remove bindings:\n\n     panel.setBind({\n         title: null\n     });\n\nThe bind expressions are presented to <a href='#!/api/Ext.app.ViewModel-method-bind'>Ext.app.ViewModel#bind</a>. The\n`ViewModel` instance is determined by <a href='#!/api/Ext.sparkline.Box-method-lookupViewModel'>lookupViewModel</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "1,12,27",
+                  "text": "1,13,12,559",
+                  "type": "1,12,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "boxFillColor",
+                "optional": true,
+                "text": "The color of the box fill.\n",
+                "type": "String",
+                "value": "#cdf",
+                "src": {
+                  "name": "0,27,27",
+                  "text": "0,27,46,27",
+                  "type": "0,27,18",
+                  "value": "0,27,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "boxLineColor",
+                "optional": true,
+                "text": "The color of the box outline.\n",
+                "type": "String",
+                "value": "#000",
+                "src": {
+                  "name": "0,22,27",
+                  "text": "0,22,46,30",
+                  "type": "0,22,18",
+                  "value": "0,22,40"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "chartRangeMax",
+                "optional": true,
+                "text": "The maximum value to use for the range of Y values of the chart - Defaults to the minimum value supplied.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,82,27",
+                  "text": "0,82,42,106",
+                  "type": "0,82,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "chartRangeMin",
+                "optional": true,
+                "text": "The minimum value to use for the range of Y values of the chart - Defaults to the minimum value supplied.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,77,27",
+                  "text": "0,77,42,106",
+                  "type": "0,77,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "controller",
+                "text": "A string alias, a configuration object or an instance of a `ViewController` for\nthis container. Sample usage:\n\n    Ext.define('MyApp.UserController', {\n        alias: 'controller.user'\n    });\n\n    Ext.define('UserContainer', {\n        extend: 'Ext.container.container',\n        controller: 'user'\n    });\n    // Or\n    Ext.define('UserContainer', {\n        extend: 'Ext.container.container',\n        controller: {\n            type: 'user',\n            someConfig: true\n        }\n    });\n\n    // Can also instance at runtime\n    var ctrl = new MyApp.UserController();\n    var view = new UserContainer({\n        controller: ctrl\n    });\n",
+                "type": "String/Object/Ext.app.ViewController",
+                "src": {
+                  "name": "1,45,56",
+                  "text": "1,46,12,637",
+                  "type": "1,45,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "defaultListenerScope",
+                "text": "If `true`, this component will be the default scope (this pointer) for events\nspecified with string names so that the scope can be dynamically resolved. The\ncomponent will automatically become the defaultListenerScope if a\n<a href='#!/api/Ext.sparkline.Box-cfg-controller'>controller</a> is specified.\n\nSee the introductory docs for <a href='#!/api/Ext.container.Container'>Ext.container.Container</a> for some sample\nusages.\n\n**NOTE**: This value can only be reliably set at construction time. Setting it\nafter that time may not correctly rewire all of the potentially effected\nlisteners.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,84,27",
+                  "text": "1,85,12,508",
+                  "type": "1,84,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "disableTooltips",
+                "optional": true,
+                "text": "Set to `true` to disable mouseover tooltips.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "2,153,28",
+                  "text": "2,153,51,45",
+                  "type": "2,153,18",
+                  "value": "2,153,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "fillColor",
+                "optional": true,
+                "text": "The hex value for fill color in graphs which fill areas (<a href='#!/api/Ext.sparkline.Line'>Ext.sparkline.Line</a>).\n",
+                "type": "String",
+                "value": "#def",
+                "src": {
+                  "name": "2,115,27",
+                  "text": "2,115,43,91",
+                  "type": "2,115,18",
+                  "value": "2,115,37"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "height",
+                "text": "The height of this Component; must be a valid CSS length value, e.g: `300`, `100px`, `30%`, etc.\nBy default, if this is not explicitly set, this Component's element will simply have its own natural size.\nIf set to `auto`, it will set the width to <a href='#!/api/null'>null</a> meaning it will have its own natural size.\n",
+                "type": "Number/String",
+                "src": {
+                  "accessor": "3,187,12",
+                  "name": "3,183,33",
+                  "text": "3,184,12,297",
+                  "type": "3,183,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "highlightColor",
+                "optional": true,
+                "text": "The hex value for the highlight color to use when mouseing over a graph segment.\n",
+                "type": "String",
+                "value": "null",
+                "src": {
+                  "name": "2,128,27",
+                  "text": "2,128,48,81",
+                  "type": "2,128,18",
+                  "value": "2,128,42"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "highlightLighten",
+                "optional": true,
+                "text": "How much to lighten the highlight color by when mouseing over a graph segment.\n",
+                "type": "Number",
+                "value": "1.4",
+                "src": {
+                  "name": "2,133,27",
+                  "text": "2,133,49,79",
+                  "type": "2,133,18",
+                  "value": "2,133,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "lineColor",
+                "optional": true,
+                "text": "The hex value for line colors in graphs which display lines (<a href='#!/api/Ext.sparkline.Box'>Ext.sparkline.Box</a>, <a href='#!/api/Ext.sparkline.Discrete'>Ext.sparkline.Discrete</a>).\n",
+                "type": "String",
+                "value": "#157fcc",
+                "src": {
+                  "name": "2,110,27",
+                  "text": "2,110,46,169",
+                  "type": "2,110,18",
+                  "value": "2,110,37"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "listeners",
+                "text": "\nA config object containing one or more event handlers to be added to this object during initialization. This\nshould be a valid listeners config object as specified in the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> example for attaching\nmultiple handlers at once.\n\n**DOM events from Ext JS <a href='#!/api/Ext.Component'>Ext.Component</a>**\n\nWhile _some_ Ext JS Component classes export selected DOM events (e.g. \"click\", \"mouseover\" etc), this is usually\nonly done when extra value can be added. For example the <a href='#!/api/Ext.view.View'>Ext.view.View</a>s **<a href='#!/api/Ext.view.View-event-itemclick'>Ext.view.View#itemclick</a>** event passing the node clicked on. To access DOM events directly from a\nchild element of a Component, we need to specify the <a href='#!/api/Ext.sparkline.Box-property-element'>element</a> option to identify the Component property to add a\nDOM listener to:\n\n    new Ext.panel.Panel({\n        width: 400,\n        height: 200,\n        dockedItems: [{\n            xtype: 'toolbar'\n        }],\n        listeners: {\n            click: {\n                element: 'el', //bind to the underlying el property on the panel\n                fn: function(){ console.log('click el'); }\n            },\n            dblclick: {\n                element: 'body', //bind to the underlying body property on the panel\n                fn: function(){ console.log('dblclick body'); }\n            }\n        }\n    });\n",
+                "type": "Object",
+                "src": {
+                  "name": "4,243,25",
+                  "text": "4,244,11,1325",
+                  "type": "4,243,17"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "medianColor",
+                "optional": true,
+                "text": "The color of the median line.\n",
+                "type": "String",
+                "value": "#f00",
+                "src": {
+                  "name": "0,47,27",
+                  "text": "0,47,45,30",
+                  "type": "0,47,18",
+                  "value": "0,47,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "outlierFillColor",
+                "optional": true,
+                "text": "The fill color of the outlier circles.\n",
+                "type": "String",
+                "value": "#fff",
+                "src": {
+                  "name": "0,42,27",
+                  "text": "0,42,50,39",
+                  "type": "0,42,18",
+                  "value": "0,42,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "outlierIQR",
+                "optional": true,
+                "text": "The inter-quartile range multipler used to calculate values that qualify as an outlier.\n",
+                "type": "Number",
+                "value": "1.5",
+                "src": {
+                  "name": "0,57,27",
+                  "text": "0,57,43,88",
+                  "type": "0,57,18",
+                  "value": "0,57,38"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "outlierLineColor",
+                "optional": true,
+                "text": "The color of the outlier circles' outline.\n",
+                "type": "String",
+                "value": "#333",
+                "src": {
+                  "name": "0,37,27",
+                  "text": "0,37,50,43",
+                  "type": "0,37,18",
+                  "value": "0,37,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "publishes",
+                "since": "5.0.0",
+                "text": "One or more names of config properties that this component should publish\nto its ViewModel. Generally speaking, only properties defined in a class config\nblock (including ancestor config blocks and mixins) are eligible for publishing\nto the viewModel. Some components override this and publish their most useful\nconfigs by default.\n\n**Note:** We'll discuss publishing properties **not** found in the config block below.\n\nValues determined to be invalid by component (often form fields and model validations)\nwill not be published to the ViewModel.\n\nThis config uses the <a href='#!/api/Ext.sparkline.Box-cfg-reference'>cfg-reference</a> to determine the name of the data\nobject to place in the `ViewModel`. If <a href='#!/api/Ext.sparkline.Box-cfg-reference'>reference</a> is not set then this config\nis ignored.\n\nBy using this config and <a href='#!/api/Ext.sparkline.Box-cfg-reference'>cfg-reference</a> you can bind configs between\ncomponents. For example:\n\n     ...\n         items: [{\n             xtype: 'textfield',\n             reference: 'somefield',  // component's name in the ViewModel\n             publishes: 'value' // value is not published by default\n         },{\n             ...\n         },{\n             xtype: 'displayfield',\n             bind: 'You have entered \"{somefield.value}\"'\n         }]\n     ...\n\nClasses must provide this config as an Object:\n\n     Ext.define('App.foo.Bar', {\n         publishes: {\n             foo: true,\n             bar: true\n         }\n     });\n\nThis is required for the config system to properly merge values from derived\nclasses.\n\nFor instances this value can be specified as a value as show above or an array\nor object as follows:\n\n     {\n         xtype: 'textfield',\n         reference: 'somefield',\n         publishes: [\n             'value',\n             'rawValue',\n             'dirty'\n         ]\n     }\n\n     // This achieves the same result as the above array form.\n     {\n         xtype: 'textfield',\n         reference: 'somefield',\n         publishes: {\n             value: true,\n             rawValue: true,\n             dirty: true\n         }\n     }\n\nIn some cases, users may want to publish a property to the viewModel that is not found in a class\nconfig block. In these situations, you may utilize <a href='#!/api/Ext.sparkline.Box-method-publishState'>publishState</a> if the property has a\nsetter method.  Let's use <a href='#!/api/Ext.form.Labelable-method-setFieldLabel'>Ext.form.Labelable#setFieldLabel</a> as an example:\n\n      setFieldLabel: function(fieldLabel) {\n          this.callParent(arguments);\n          this.publishState('fieldLabel', fieldLabel);\n      }\n\nWith the above chunk of code, fieldLabel may now be published to the viewModel.\n",
+                "type": "String/String[]/Object",
+                "src": {
+                  "name": "1,100,42",
+                  "since": "1,179,19",
+                  "text": "1,101,12,2498",
+                  "type": "1,100,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "raw",
+                "optional": true,
+                "text": "By default the points are calciulated from the input values array. Set this to true to passthe pre-calculated points in the values config.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,17,28",
+                  "text": "0,17,39,139",
+                  "type": "0,17,18",
+                  "value": "0,17,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "reference",
+                "text": "Specifies a name for this component inside its component hierarchy. This name\nmust be unique within its <a href='#!/api/Ext.container.Container-cfg-referenceHolder'>Ext.container.Container#referenceHolder</a>\nor its <a href='#!/api/Ext.app.ViewController'>Ext.app.ViewController</a>. See the documentation in\n<a href='#!/api/Ext.container.Container'>Ext.container.Container</a> for more information about references.\n\n**Note**: Valid identifiers start with a letter or underscore and are followed\nby zero or more additional letters, underscores or digits. References are case\nsensitive.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,190,26",
+                  "text": "1,191,12,477",
+                  "type": "1,190,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "session",
+                "optional": true,
+                "text": "If provided this creates a new `Session` instance for this component. If this\nis a `Container`, this will then be inherited by all child components.\n\nTo create a new session you can specify `true`:\n\n     Ext.create({\n         xtype: 'viewport',\n         session: true,\n\n         items: [{\n             ...\n         }]\n     });\n\nAlternatively, a config object can be provided:\n\n     Ext.create({\n         xtype: 'viewport',\n         session: {\n             ...\n         },\n\n         items: [{\n             ...\n         }]\n     });\n",
+                "type": "Boolean/Object/Ext.data.Session",
+                "value": "null",
+                "src": {
+                  "name": "1,204,52",
+                  "text": "1,205,12,531",
+                  "type": "1,204,18",
+                  "value": "1,204,60"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "showOutliers",
+                "optional": true,
+                "text": "Configure as `false` to not show outlier circles.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,52,28",
+                  "text": "0,52,47,50",
+                  "type": "0,52,18",
+                  "value": "0,52,41"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "spotRadius",
+                "optional": true,
+                "text": "The radius of the outlier circles.\n",
+                "type": "Number",
+                "value": "1.5",
+                "src": {
+                  "name": "0,62,27",
+                  "text": "0,62,43,35",
+                  "type": "0,62,18",
+                  "value": "0,62,38"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "style",
+                "text": "Additional CSS styles that will be rendered into an inline style attribute when\nthe widget is rendered.\n\nYou can pass either a string syntax:\n\n    style: 'background:red'\n\nOr by using an object:\n\n    style: {\n        background: 'red'\n    }\n\nWhen using the object syntax, you can define CSS Properties by using a string:\n\n    style: {\n        'border-left': '1px solid red'\n    }\n\nAlthough the object syntax is much easier to read, we suggest you to use the\nstring syntax for better performance.\n",
+                "type": "String/Object",
+                "src": {
+                  "accessor": "3,148,12",
+                  "name": "3,126,33",
+                  "text": "3,127,12,496",
+                  "type": "3,126,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "target",
+                "optional": true,
+                "text": "If set, a crosshair will be drawn at the specified value point.\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,67,27",
+                  "text": "0,67,35,64",
+                  "type": "0,67,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "targetColor",
+                "optional": true,
+                "text": "The color of the crosshair drawn at the pointe specified by <a href='#!/api/Ext.sparkline.Box-cfg-target'>target</a>.\n",
+                "type": "Number",
+                "value": "#4a2",
+                "src": {
+                  "name": "0,72,27",
+                  "text": "0,72,45,77",
+                  "type": "0,72,18",
+                  "value": "0,72,39"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "tipTpl",
+                "optional": true,
+                "text": "An XTemplate used to display the value or values in a tooltip when hovering over a Sparkline.\n\nThe implemented subclases all define their own <a href='#!/api/Ext.sparkline.Box-cfg-tipTpl'>tipTpl</a>, but it can be overridden.\n",
+                "type": "String/Ext.XTemplate",
+                "src": {
+                  "name": "2,160,41",
+                  "text": "2,160,49,94:2,161,12,84",
+                  "type": "2,160,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "tooltipPrefix",
+                "optional": true,
+                "text": "A string to prepend to each field displayed in a tooltip.\n",
+                "type": "String",
+                "src": {
+                  "name": "2,143,27",
+                  "text": "2,143,42,58",
+                  "type": "2,143,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "tooltipSkipNull",
+                "optional": true,
+                "text": "Null values will not have a tooltip displayed.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "2,138,28",
+                  "text": "2,138,50,47",
+                  "type": "2,138,18",
+                  "value": "2,138,44"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "tooltipSuffix",
+                "optional": true,
+                "text": "A string to append to each field displayed in a tooltip.\n",
+                "type": "String",
+                "src": {
+                  "name": "2,148,27",
+                  "text": "2,148,42,57",
+                  "type": "2,148,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "twoWayBindable",
+                "text": "This object holds a map of `config` properties that will update their binding\nas they are modified. For example, `value` is a key added by form fields. The\nform of this config is the same as <a href='#!/api/Ext.sparkline.Box-cfg-publishes'>publishes</a>.\n\nThis config is defined so that updaters are not created and added for all\nbound properties since most cannot be modified by the end-user and hence are\nnot appropriate for two-way binding.\n",
+                "type": "String/String[]/Object",
+                "src": {
+                  "name": "1,239,42",
+                  "text": "1,240,12,402",
+                  "type": "1,239,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "userCls",
+                "text": "One or more CSS classes to add to the component's primary element. This config\nis intended solely for use by the component instantiator (the \"user\"), not by\nderived classes.\n\nFor example:\n\n     items: [{\n         xtype: 'button',\n         userCls: 'my-button'\n     ...\n     }]\n",
+                "type": "String/String[]",
+                "src": {
+                  "name": "3,155,35",
+                  "text": "3,156,12,277",
+                  "type": "3,155,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "values",
+                "text": "An array of numbers which define the chart.\n",
+                "type": "Number[]",
+                "src": {
+                  "name": "2,169,28",
+                  "text": "2,169,35,44",
+                  "type": "2,169,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "viewModel",
+                "text": "The `ViewModel` is a data provider for this component and its children. The\ndata contained in the `ViewModel` is typically used by adding <a href='#!/api/Ext.sparkline.Box-cfg-bind'>bind</a> configs\nto the components that want present or edit this data.\n\nWhen set, the `ViewModel` is created and links to any inherited <a href='#!/api/Ext.sparkline.Box-cfg-viewModel'>viewModel</a>\ninstance from an ancestor container as the \"parent\". The `ViewModel` hierarchy,\nonce established, only supports creation or destruction of children. The\nparent of a `ViewModel` cannot be changed on the fly.\n\nIf this is a root-level `ViewModel`, the data model connection is made to this\ncomponent's associated <a href='#!/api/Ext.data.Session'>Ext.data.Session</a>. This is\ndetermined by calling `getInheritedSession`.\n",
+                "type": "String/Object/Ext.app.ViewModel",
+                "src": {
+                  "name": "1,258,51",
+                  "text": "1,259,12,690",
+                  "type": "1,258,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "whiskerColor",
+                "optional": true,
+                "text": "The color of the whiskers.\n",
+                "type": "String",
+                "value": "#000",
+                "src": {
+                  "name": "0,32,27",
+                  "text": "0,32,46,27",
+                  "type": "0,32,18",
+                  "value": "0,32,40"
+                }
+              },
+              {
+                "$type": "property",
+                "accessor": true,
+                "name": "width",
+                "text": "The width of this Component; must be a valid CSS length value, e.g: `300`, `100px`, `30%`, etc.\nBy default, if this is not explicitly set, this Component's element will simply have its own natural size.\nIf set to `auto`, it will set the width to <a href='#!/api/null'>null</a> meaning it will have its own natural size.\n",
+                "type": "Number/String",
+                "src": {
+                  "accessor": "3,177,12",
+                  "name": "3,173,33",
+                  "text": "3,174,12,296",
+                  "type": "3,173,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "_addDeclaredListeners",
+                "text": "Adds declarative listeners as nested arrays of listener objects.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,413,27",
+                      "type": "4,413,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if any listeners were added\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,414,30,35",
+                      "type": "4,414,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,412,12",
+                  "name": "4,416,0",
+                  "text": "4,411,12,65"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.sparkline.Box-method-onAfter'>onAfter</a>.\n",
+                "src": {
+                  "name": "4,1236,0",
+                  "text": "4,1234,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.sparkline.Box-method-onBefore'>onBefore</a>.\n",
+                "src": {
+                  "name": "4,1230,0",
+                  "text": "4,1228,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addBindableUpdater",
+                "since": "5.0.0",
+                "text": "Ensures that the given property (if it is a Config System config) has a proper\n\"updater\" method on this instance to sync changes to the config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "property",
+                    "text": "The name of the config property.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,504,28",
+                      "text": "1,504,37,33",
+                      "type": "1,504,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,505,12",
+                  "name": "1,508,0",
+                  "since": "1,506,19",
+                  "text": "1,502,12,144"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addDelegatedListener",
+                "text": "Adds a listeners with the \"delegate\" event option.  Users should not invoke this\nmethod directly.  Use the \"delegate\" event option of\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> instead.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "src": {
+                      "name": "5,19,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "5,19,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "5,19,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "src": {
+                      "name": "5,19,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "src": {
+                      "name": "5,19,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "caller",
+                    "src": {
+                      "name": "5,19,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "manager",
+                    "src": {
+                      "name": "5,19,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "5,14,12",
+                  "name": "5,19,0",
+                  "text": "5,15,12,195"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addElementReference",
+                "text": "Adds an element reference to this Widget instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the reference\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,589,28",
+                      "text": "3,589,33,26",
+                      "type": "3,589,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "domNode",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "3,590,33",
+                      "type": "3,590,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "type": "3,591,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,592,12",
+                  "name": "3,594,0",
+                  "text": "3,588,12,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addElementReferenceOnDemand",
+                "text": "Reduces instantiation time for a Widget by lazily instantiating Ext.Element\nreferences the first time they are used.  This optimization only works for elements\nwith no listeners specified.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the reference\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,561,28",
+                      "text": "3,561,33,26",
+                      "type": "3,561,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "domNode",
+                    "type": "HTMLElement",
+                    "src": {
+                      "name": "3,562,33",
+                      "type": "3,562,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,563,12",
+                  "name": "3,565,0",
+                  "text": "3,557,12,190"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addListener",
+                "text": "The <a href='#!/api/Ext.sparkline.Box-method-on'>on</a> method is shorthand for\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.\n\nAppends an event handler to this object.  For example:\n\n    myGridPanel.on(\"itemclick\", this.onItemClick, this);\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple events. For example:\n\n    myGridPanel.on({\n        cellclick: this.onCellClick,\n        select: this.onSelect,\n        viewready: this.onViewReady,\n        scope: this // Important. Ensure \"this\" is correct during handler execution\n    });\n\nOne can also specify options for each event handler separately:\n\n    myGridPanel.on({\n        cellclick: {fn: this.onCellClick, scope: this, single: true},\n        viewready: {fn: panel.onViewReady, scope: panel}\n    });\n\n*Names* of methods in a specified scope may also be used:\n\n    myGridPanel.on({\n        cellclick: {fn: 'onCellClick', scope: this, single: true},\n        viewready: {fn: 'onViewReady', scope: panel}\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\nMay also be an object who's property names are event names.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "4,835,35",
+                      "text": "4,835,45,37:4,836,12,61",
+                      "type": "4,835,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "optional": true,
+                    "text": "The method the event invokes or the *name* of\nthe method within the specified `scope`.  Will be called with arguments\ngiven to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> plus the `options` parameter described\nbelow.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,838,38",
+                      "text": "4,838,42,46:4,839,12,166",
+                      "type": "4,838,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,843,29",
+                      "text": "4,843,36,62:4,844,12,73",
+                      "type": "4,843,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n\n**Note:** The options object will also be passed as the last argument to every\nevent handler.\n\nThis object may contain any of the following properties:\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "scope",
+                        "text": "  The scope (`this` reference) in which the handler function is executed. **If omitted,\n  defaults to the object which fired the event.**\n",
+                        "type": "Object",
+                        "src": {
+                          "name": "4,853,36",
+                          "text": "4,854,12,139",
+                          "type": "4,853,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delay",
+                        "text": "  The number of milliseconds to delay the invocation of the handler after the event\n  fires.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,857,36",
+                          "text": "4,858,12,94",
+                          "type": "4,857,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "single",
+                        "text": "  True to add a handler to handle just the next firing of the event, and then remove\n  itself.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,861,37",
+                          "text": "4,862,12,96",
+                          "type": "4,861,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "buffer",
+                        "text": "  Causes the handler to be scheduled to run in an <a href='#!/api/Ext.util.DelayedTask'>Ext.util.DelayedTask</a> delayed\n  by the specified number of milliseconds. If the event fires again within that time,\n  the original handler is _not_ invoked, but the new handler is scheduled in its place.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,865,36",
+                          "text": "4,866,12,262",
+                          "type": "4,865,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "onFrame",
+                        "text": "  Causes the handler to be scheduled to run at the next\n  <a href='#!/api/Ext.Function-method-requestAnimationFrame'>Ext.Function#requestAnimationFrame</a>. If the\n  event fires again before that time, the handler is not rescheduled - the handler\n  will only be called once when the next animation frame is fired, with the last set\n  of arguments passed.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,870,36",
+                          "text": "4,871,12,323",
+                          "type": "4,870,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "target",
+                        "text": "  Only call the handler if the event was fired on the target Observable, _not_ if the\n  event was bubbled up from a child Observable.\n",
+                        "type": "Ext.util.Observable",
+                        "src": {
+                          "name": "4,877,49",
+                          "text": "4,878,12,135",
+                          "type": "4,877,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "element",
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.Component'>Ext.Component</a>.**\n  The name of a Component property which references an <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>\n  to add a listener to.\n\n  This option is useful during Component construction to add DOM event listeners to\n  elements of <a href='#!/api/Ext.Component'>Ext.Component</a> which will exist only after the\n  Component is rendered.\n\n  For example, to add a click listener to a Panel's body:\n\n      var panel = new Ext.panel.Panel({\n          title: 'The title',\n          listeners: {\n              click: this.handlePanelClick,\n              element: 'body'\n          }\n      });\n\nIn order to remove listeners attached using the element, you'll need to reference\nthe element itself as seen below.\n\n     panel.body.un(...)\n",
+                        "type": "String",
+                        "src": {
+                          "name": "4,881,36",
+                          "text": "4,882,12,781",
+                          "type": "4,881,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "delegate",
+                        "optional": true,
+                        "text": "  A simple selector to filter the event target or look for a descendant of the target.\n\n  The \"delegate\" option is only available on Ext.dom.Element instances (or\n  when attaching a listener to a Ext.dom.Element via a Component using the\n  element option).\n\n  See the *delegate* example below.\n",
+                        "type": "String",
+                        "src": {
+                          "name": "4,905,37",
+                          "text": "4,906,12,295",
+                          "type": "4,905,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopPropagation",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopPropagation'>Ext.event.Event#stopPropagation</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,914,38",
+                          "text": "4,915,12,212",
+                          "type": "4,914,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "preventDefault",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-preventDefault'>Ext.event.Event#preventDefault</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,919,38",
+                          "text": "4,920,12,210",
+                          "type": "4,919,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "stopEvent",
+                        "optional": true,
+                        "text": "  **This option is only valid for listeners bound to <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a>.**\n  `true` to call <a href='#!/api/Ext.event.Event-method-stopEvent'>Ext.event.Event#stopEvent</a> on the event object\n  before firing the handler.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "4,924,38",
+                          "text": "4,925,12,200",
+                          "type": "4,924,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "args",
+                        "optional": true,
+                        "text": "  Optional arguments to pass to the handler function. Any additional arguments\n  passed to <a href='#!/api/Ext.util.Observable-method-fireEvent'>Ext.util.Observable#fireEvent</a> will be appended\n  to these arguments.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "4,929,36",
+                          "text": "4,930,12,179",
+                          "type": "4,929,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "destroyable",
+                        "optional": true,
+                        "text": "  When specified as `true`, the function returns a `destroyable` object. An object\n  which implements the `destroy` method which removes all listeners added in this call.\n  This syntax can be a helpful shortcut to using <a href='#!/api/Ext.sparkline.Box-method-un'>un</a>; particularly when\n  removing multiple listeners.  *NOTE* - not compatible when using the _element_\n  option.  See <a href='#!/api/Ext.sparkline.Box-method-un'>un</a> for the proper syntax for removing listeners added using the\n  _element_ config.\n",
+                        "type": "Boolean",
+                        "value": "false",
+                        "src": {
+                          "name": "4,934,38",
+                          "text": "4,935,12,441",
+                          "type": "4,934,20",
+                          "value": "4,934,50"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "priority",
+                        "optional": true,
+                        "text": "  An optional numeric priority that determines the order in which event handlers\n  are run. Event handlers with no priority will be run as if they had a priority\n  of 0. Handlers with a higher priority will be prioritized to run sooner than\n  those with a lower priority.  Negative numbers can be used to set a priority\n  lower than the default. Internally, the framework uses a range of 1000 or\n  greater, and -1000 or lesser for handlers that are intended to run before or\n  after all others, so it is recommended to stay within the range of -999 to 999\n  when setting the priority of event handlers in application-level code.\n  A priority must be an integer to be valid.  Fractional values are reserved for\n  internal framework use.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,942,37",
+                          "text": "4,943,12,737",
+                          "type": "4,942,20"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "order",
+                        "optional": true,
+                        "text": "  A legacy option that is provided for backward compatibility.\n  It is recommended to use the `priority` option instead.  Available options are:\n\n  - `'before'`: equal to a priority of `100`\n  - `'current'`: equal to a priority of `0` or default priority\n  - `'after'`: equal to a priority of `-100`\n",
+                        "type": "String",
+                        "value": "'current'",
+                        "src": {
+                          "name": "4,954,37",
+                          "text": "4,955,12,301",
+                          "type": "4,954,20",
+                          "value": "4,954,43"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "4,846,29",
+                      "text": "4,846,38,44:4,847,12,154",
+                      "type": "4,846,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "  A shortcut for the `order` event option.  Provided for backward compatibility.\n  Please use the `priority` event option instead.\n\n**Combining Options**\n\nUsing the options argument, it is possible to combine different types of listeners:\n\nA delayed, one-time listener.\n\n    myPanel.on('hide', this.handleClick, this, {\n        single: true,\n        delay: 100\n    });\n\n**Attaching multiple handlers in 1 call**\n\nThe method also allows for a single argument to be passed which is a config object\ncontaining properties which specify multiple handlers and handler configs.\n\n    grid.on({\n        itemclick: 'onItemClick',\n        itemcontextmenu: grid.onItemContextmenu,\n        destroy: {\n            fn: function () {\n                // function called within the 'altCmp' scope instead of grid\n            },\n            scope: altCmp // unique scope for the destroy handler\n        },\n        scope: grid       // default scope - provided for example clarity\n    });\n\n**Delegate**\n\nThis is a configuration option that you can pass along when registering a handler for\nan event to assist with event delegation. By setting this configuration option\nto a simple selector, the target element will be filtered to look for a\ndescendant of the target. For example:\n\n    var panel = Ext.create({\n        xtype: 'panel',\n        renderTo: document.body,\n        title: 'Delegate Handler Example',\n        frame: true,\n        height: 220,\n        width: 220,\n        html: '<h1 class=\"myTitle\">BODY TITLE</h1>Body content'\n    });\n\n    // The click handler will only be called when the click occurs on the\n    // delegate: h1.myTitle (\"h1\" tag with class \"myTitle\")\n    panel.on({\n        click: function (e) {\n            console.log(e.getTarget().innerHTML);\n        },\n        element: 'body',\n        delegate: 'h1.myTitle'\n     });\n",
+                    "type": "String",
+                    "value": "'current'",
+                    "src": {
+                      "name": "4,962,29",
+                      "text": "4,963,12,1831",
+                      "type": "4,962,20",
+                      "value": "4,962,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes\n all listeners added in this call. For example:\n\n    this.btnListeners =  = myButton.on({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1021,29,54:4,1022,12,516",
+                      "type": "4,1021,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1041,0",
+                  "text": "4,804,12,1008"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "addManagedListener",
+                "text": "The addManagedListener method is used when some object (call it \"A\") is listening\nto an event on another observable object (\"B\") and you want to remove that listener\nfrom \"B\" when \"A\" is destroyed. This is not an issue when \"B\" is destroyed because\nall of its listeners will be removed at that time.\n\nExample:\n\n    Ext.define('Foo', {\n        extend: 'Ext.Component',\n\n        initComponent: function () {\n            this.addManagedListener(MyApp.SomeGlobalSharedMenu, 'show', this.doSomething);\n            this.callParent();\n        }\n    });\n\nAs you can see, when an instance of Foo is destroyed, it ensures that the 'show'\nlistener on the menu (`MyApp.SomeGlobalSharedMenu`) is also removed.\n\nAs of version 5.1 it is no longer necessary to use this method in most cases because\nlisteners are automatically managed if the scope object provided to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> is an Observable instance.\nHowever, if the observable instance and scope are not the same object you\nstill need to use <a href='#!/api/Ext.sparkline.Box-method-mon'>mon</a> or <a href='#!/api/Ext.sparkline.Box-method-addManagedListener'>addManagedListener</a> if you want the listener to be\nmanaged.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item to which to add a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "4,456,56",
+                      "text": "4,456,61,47",
+                      "type": "4,456,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "4,457,34",
+                      "text": "4,457,40,63",
+                      "type": "4,457,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event\nname, this is the handler function or the name of a method on the specified\n`scope`.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,458,36",
+                      "text": "4,458,39,49:4,459,11,85",
+                      "type": "4,458,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,461,27",
+                      "text": "4,461,33,92:4,462,11,43",
+                      "type": "4,461,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> options.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,463,27",
+                      "text": "4,463,35,67:4,464,11,61",
+                      "type": "4,463,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "**Only when the `destroyable` option is specified. **\n\n A `Destroyable` object. An object which implements the `destroy` method which removes all listeners added in this call. For example:\n\n    this.btnListeners = myButton.mon({\n        destroyable: true\n        mouseover:   function() { console.log('mouseover'); },\n        mouseout:    function() { console.log('mouseout'); },\n        click:       function() { console.log('click'); }\n    });\n\nAnd when those listeners need to be removed:\n\n    Ext.destroy(this.btnListeners);\n\nor\n\n    this.btnListeners.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,465,28,54:4,466,11,513",
+                      "type": "4,465,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,484,0",
+                  "text": "4,430,11,1093"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyBind",
+                "since": "5.0.0",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "binds",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "1,523,35",
+                      "type": "1,523,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "currentBindings",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,524,28",
+                      "type": "1,524,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "1,525,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,526,12",
+                  "name": "1,529,0",
+                  "since": "1,527,19"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applySession",
+                "since": "5.0.0",
+                "text": "Transforms a Session config to a proper instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,626,28",
+                      "type": "1,626,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "type": "1,627,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,628,12",
+                  "name": "1,631,0",
+                  "since": "1,629,19",
+                  "text": "1,625,12,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "applyStyle",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "style",
+                    "src": {
+                      "name": "3,511,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldStyle",
+                    "src": {
+                      "name": "3,511,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,509,8",
+                  "name": "3,511,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "applyViewModel",
+                "since": "5.0.0",
+                "text": "Transforms a ViewModel config to a proper instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "viewModel",
+                    "type": "String/Object/Ext.app.ViewModel",
+                    "src": {
+                      "name": "1,654,53",
+                      "type": "1,654,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "type": "1,655,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,656,12",
+                  "name": "1,659,0",
+                  "since": "1,657,19",
+                  "text": "1,653,12,52"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "clearDelegatedListeners",
+                "text": "Clears all listeners that were attached using the \"delegate\" event option.\nUsers should not invoke this method directly.  It is called automatically as\npart of normal <a href='#!/api/Ext.util.Observable-method-clearListeners'>Ext.util.Observable#clearListeners</a>\nprocessing.\n",
+                "src": {
+                  "access": "5,59,12",
+                  "name": "5,65,0",
+                  "text": "5,60,12,237"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearListeners",
+                "text": "Removes all listeners for this object including the managed listeners\n",
+                "src": {
+                  "name": "4,1255,0",
+                  "text": "4,1253,11,70"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clearManagedListeners",
+                "text": "Removes all managed listeners for this object.\n",
+                "src": {
+                  "name": "4,1291,0",
+                  "text": "4,1289,11,47"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createRelayer",
+                "text": "Creates an event handling function which re-fires the event from this object as the passed event name.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "newName",
+                    "text": "The name under which to re-fire the passed parameters.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1522,27",
+                      "text": "4,1522,35,55",
+                      "type": "4,1522,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "beginEnd",
+                    "text": "(optional) The caller can specify on which indices to slice.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,1523,26",
+                      "text": "4,1523,35,61",
+                      "type": "4,1523,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Function",
+                    "src": {
+                      "type": "4,1524,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1520,11",
+                  "name": "4,1526,0",
+                  "text": "4,1521,11,103"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doAddListener",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "3,662,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "3,662,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "3,662,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "src": {
+                      "name": "3,662,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "src": {
+                      "name": "3,662,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "caller",
+                    "src": {
+                      "name": "3,662,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "manager",
+                    "src": {
+                      "name": "3,662,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,660,12",
+                  "name": "3,662,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doFireDelegatedEvent",
+                "text": "Fires a delegated event.  Users should not invoke this method directly.  It\nis called automatically by the framework as needed (see the \"delegate\" event\noption of <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> for more\ndetails.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "src": {
+                      "name": "5,88,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "src": {
+                      "name": "5,88,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "5,82,12",
+                  "name": "5,88,0",
+                  "text": "5,83,12,233"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "doFireEvent",
+                "text": "Continue to fire event.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "type": "String",
+                    "src": {
+                      "name": "4,761,27",
+                      "type": "4,761,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,762,26",
+                      "type": "4,762,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "bubbles",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,763,28",
+                      "type": "4,763,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,759,11",
+                  "name": "4,765,0",
+                  "text": "4,758,11,24"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "enableBubble",
+                "text": "Enables events fired by this Observable to bubble up an owner hierarchy by calling `this.getBubbleTarget()` if\npresent. There is no implementation in the Observable base class.\n\nThis is commonly used by Ext.Components to bubble events to owner Containers.\nSee <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>. The default implementation in Ext.Component returns the\nComponent's immediate owner. But if a known target is required, this can be overridden to access the\nrequired target more quickly.\n\nExample:\n\n    Ext.define('Ext.overrides.form.field.Base', {\n        override: 'Ext.form.field.Base',\n\n        //  Add functionality to Field's initComponent to enable the change event to bubble\n        initComponent: function () {\n            this.callParent();\n            this.enableBubble('change');\n        }\n    });\n\n    var myForm = Ext.create('Ext.form.Panel', {\n        title: 'User Details',\n        items: [{\n            ...\n        }],\n        listeners: {\n            change: function() {\n                // Title goes red if form has been modified.\n                myForm.header.setStyle('color', 'red');\n            }\n        }\n    });\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventNames",
+                    "text": "The event name to bubble, or an Array of event names.\n",
+                    "type": "String/String[]",
+                    "src": {
+                      "name": "4,1567,36",
+                      "text": "4,1567,47,54",
+                      "type": "4,1567,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1569,0",
+                  "text": "4,1534,11,1138"
+                }
+              },
+              {
+                "$type": "method",
+                "deprecatedMessage": "Use <a href='#!/api/Ext.sparkline.Box-fireEventAction'>fireEventAction</a> instead.\n",
+                "deprecatedVersion": "5.5",
+                "name": "fireAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nBy default, the action function will be executed after any \"before\" event handlers\n(as specified using the `order` option of\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>), but before any other\nhandlers are fired.  This gives the \"before\" handlers an opportunity to\ncancel the event by returning `false`, and prevent the action function from\nbeing called.\n\nThe action can also be configured to run after normal handlers, but before any \"after\"\nhandlers (as specified using the `order` event option) by passing `'after'`\nas the `order` parameter.  This configuration gives any event handlers except\nfor \"after\" handlers the opportunity to cancel the event and prevent the action\nfunction from being called.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,640,28",
+                      "text": "4,640,38,31",
+                      "type": "4,640,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,641,27",
+                      "text": "4,641,32,58",
+                      "type": "4,641,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "4,642,30",
+                      "text": "4,642,33,21",
+                      "type": "4,642,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,643,29",
+                      "text": "4,643,36,62:4,644,12,72",
+                      "type": "4,643,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Event options for the action function.  Accepts any\nof the options of <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,645,29",
+                      "text": "4,645,38,52:4,646,12,72",
+                      "type": "4,645,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "order",
+                    "optional": true,
+                    "text": "The order to call the action function relative\ntoo the event handlers (`'before'` or `'after'`).  Note that this option is\nsimply used to sort the action function relative to the event handlers by \"priority\".\nAn order of `'before'` is equivalent to a priority of `99.5`, while an order of\n`'after'` is equivalent to a priority of `-99.5`.  See the `priority` option\nof <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> for more details.\n",
+                    "type": "String",
+                    "value": "'before'",
+                    "src": {
+                      "name": "4,647,29",
+                      "text": "4,647,45,47:4,648,12,394",
+                      "type": "4,647,20",
+                      "value": "4,647,35"
+                    }
+                  }
+                ],
+                "src": {
+                  "deprecatedMessage": "4,653,12",
+                  "deprecatedVersion": "4,653,12",
+                  "name": "4,655,0",
+                  "text": "4,626,12,802"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEvent",
+                "text": "Fires the specified event with the passed parameters (minus the event name, plus the `options` object passed\nto <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>).\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.sparkline.Box-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,568,27",
+                      "text": "4,568,37,31",
+                      "type": "4,568,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Variable number of parameters are passed to handlers.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "4,569,30",
+                      "text": "4,569,35,54",
+                      "type": "4,569,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,570,29,77",
+                      "type": "4,570,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,572,0",
+                  "text": "4,562,11,310"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventArgs",
+                "text": "Fires the specified event with the passed parameter list.\n\nAn event may be set to bubble up an Observable parent hierarchy (See <a href='#!/api/Ext.Component-method-getBubbleTarget'>Ext.Component#getBubbleTarget</a>) by\ncalling <a href='#!/api/Ext.sparkline.Box-method-enableBubble'>enableBubble</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,605,27",
+                      "text": "4,605,37,31",
+                      "type": "4,605,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "An array of parameters which are passed to handlers.\n",
+                    "type": "Object[]",
+                    "src": {
+                      "name": "4,606,29",
+                      "text": "4,606,34,53",
+                      "type": "4,606,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "returns false if any of the handlers return false otherwise it returns true.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,607,29,77",
+                      "type": "4,607,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,609,0",
+                  "text": "4,600,11,202"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "fireEventedAction",
+                "text": "Fires the specified event with the passed parameters and executes a function (action).\nEvented Actions will automatically dispatch a 'before' event passing. This event will\nbe given a special controller that allows for pausing/resuming of the event flow.\n\nBy pausing the controller the updater and events will not run until resumed. Pausing,\nhowever, will not stop the processing of any other before events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to fire.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,721,28",
+                      "text": "4,721,38,31",
+                      "type": "4,721,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "args",
+                    "text": "Arguments to pass to handlers and to the action function.\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "4,722,27",
+                      "text": "4,722,32,58",
+                      "type": "4,722,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The action function.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,723,37",
+                      "text": "4,723,40,21",
+                      "type": "4,723,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope (`this` reference) in which the handler function is\nexecuted. **If omitted, defaults to the object which fired the event.**\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,724,29",
+                      "text": "4,724,36,62:4,725,12,72",
+                      "type": "4,724,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fnArgs",
+                    "optional": true,
+                    "text": "Optional arguments for the action `fn`. If not\ngiven, the normal `args` will be used to call `fn`. If `false` is passed, the\n`args` are used but if the first argument is this instance it will be removed\nfrom the args passed to the action function.\n",
+                    "type": "Array/Boolean",
+                    "src": {
+                      "name": "4,726,36",
+                      "text": "4,726,44,47:4,727,12,201",
+                      "type": "4,726,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,731,0",
+                  "text": "4,714,12,409"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "fixReference",
+                "text": "Sets up a reference on our current reference holder.\n",
+                "src": {
+                  "access": "6,335,12",
+                  "name": "6,337,0",
+                  "text": "6,333,12,54"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getBubbleParent",
+                "text": "Gets the bubbling parent for an Observable\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The bubble parent. null is returned if no bubble target exists\n",
+                    "type": "Ext.util.Observable",
+                    "src": {
+                      "text": "4,793,41,63",
+                      "type": "4,793,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,792,11",
+                  "name": "4,795,0",
+                  "text": "4,791,11,43"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getController",
+                "text": "Returns the <a href='#!/api/Ext.app.ViewController'>Ext.app.ViewController</a> instance associated with this\ncomponent via the <a href='#!/api/Ext.sparkline.Box-cfg-controller'>controller</a> config or <a href='#!/api/Ext.sparkline.Box-setController'>setController</a> method.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "Returns this component's ViewController or\nnull if one was not configured\n",
+                    "type": "Ext.app.ViewController",
+                    "src": {
+                      "text": "1,79,45,43:1,80,12,31",
+                      "type": "1,79,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,76,20",
+                  "text": "1,77,12,152"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getElementConfig",
+                "text": "A template method for modifying the <a href='#!/api/Ext.sparkline.Box-property-element'>element</a> config before it is processed.\nBy default adds the result of `this.getTemplate()` as the `children` array of\n<a href='#!/api/Ext.sparkline.Box-property-element'>element</a> if `children` were not specified in the original\n<a href='#!/api/Ext.sparkline.Box-property-element'>element</a> config.  Typically this method should not need to be implemented\nin subclasses.  Instead the <a href='#!/api/Ext.sparkline.Box-property-element'>element</a> property should be use to configure\nthe element template for a given Widget subclass.\n\nThis method is called once when the first instance of each Widget subclass is\ncreated.  The element config object that is returned is cached and used as the template\nfor all successive instances.  The scope object for this method is the class prototype,\nnot the instance.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "the element config object\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "3,316,25,26",
+                      "type": "3,316,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,317,8",
+                  "name": "3,319,0",
+                  "text": "3,304,8,715"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getId",
+                "text": "Retrieves the id of this component. Will autogenerate an id if one has not already been set.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "id\n",
+                    "type": "String",
+                    "src": {
+                      "text": "7,75,25,3",
+                      "type": "7,75,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "7,77,0",
+                  "text": "7,74,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInherited",
+                "since": "5.0.0",
+                "text": "This method returns an object containing the inherited properties for this instance.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "inner",
+                    "optional": true,
+                    "text": "Pass `true` to return `inheritedStateInner` instead\nof the normal `inheritedState` object. This is only needed internally and should\nnot be passed by user code.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "6,88,26",
+                      "text": "6,88,39,52:6,89,8,110",
+                      "type": "6,88,16",
+                      "value": "6,88,32"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The `inheritedState` object containing inherited properties.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "6,92,25,61",
+                      "type": "6,92,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "6,95,0",
+                  "since": "6,93,15",
+                  "text": "6,86,8,86"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getInheritedConfig",
+                "since": "5.0.0",
+                "text": "This method returns the value of a config property that may be inherited from some\nancestor.\n\nIn some cases, a config may be explicitly set on a component with the intent of\n*only* being presented to its children while that component should act upon the\ninherited value (see `referenceHolder` for example). In these cases the `skipThis`\nparameter should be specified as `true`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "property",
+                    "text": "The name of the config property to return.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "6,152,24",
+                      "text": "6,152,33,43",
+                      "type": "6,152,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "Pass `true` if the property should be ignored if\nfound on this instance. In other words, `true` means the property must be inherited\nand not explicitly set on this instance.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "6,153,26",
+                      "text": "6,153,42,49:6,154,8,125",
+                      "type": "6,153,16",
+                      "value": "6,153,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value of the requested `property`.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "text": "6,156,24,39",
+                      "type": "6,156,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "6,159,0",
+                  "since": "6,157,15",
+                  "text": "6,144,8,379"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getRefOwner",
+                "text": "Used by <a href='#!/api/Ext.ComponentQuery'>Ext.ComponentQuery</a>, and the <a href='#!/api/Ext.Component-method-up'>Ext.Component#up</a>\nmethod to find the owning Component in the linkage hierarchy.\n\nBy default this returns the Container which contains this Component.\n\nThis may be overridden by Component authors who implement ownership hierarchies\nwhich are not based upon ownerCt, such as BoundLists being owned by Fields or Menus\nbeing owned by Buttons.\n",
+                "src": {
+                  "access": "6,285,8",
+                  "name": "6,287,0",
+                  "text": "6,277,8,408"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getSize",
+                "text": "Returns the height and width of the Component.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The current <a href='#!/api/Ext.sparkline.Box-cfg-height'>height</a> and <a href='#!/api/Ext.sparkline.Box-cfg-width'>width</a> of the Component.\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "width",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,335,32",
+                          "type": "3,335,17"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "height",
+                        "type": "Number",
+                        "src": {
+                          "name": "3,336,32",
+                          "type": "3,336,17"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "text": "3,334,25,51",
+                      "type": "3,334,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,338,0",
+                  "text": "3,333,8,47"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getTdCls",
+                "text": "Needed for when widget is rendered into a grid cell. The class to add to the cell element.\n",
+                "src": {
+                  "access": "8,95,8",
+                  "name": "8,99,0",
+                  "text": "8,96,8,91"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getTdType",
+                "text": "Partner method to <a href='#!/api/Ext.sparkline.Box-method-getTdCls'>getTdCls</a>.\n\nReturns the base type for the component. Defaults to return `this.xtype`, but\nAll derived classes of <a href='#!/api/Ext.form.field.Text'>Ext.form.field.Text</a> can return the type 'textfield',\nand all derived classes of <a href='#!/api/Ext.button.Button'>Ext.button.Button</a> can return the type 'button'\n",
+                "src": {
+                  "access": "8,104,8",
+                  "name": "8,112,0",
+                  "text": "8,105,8,299"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "hasListener",
+                "text": "Checks to see if this object has any listeners for a specified event, or whether the event bubbles. The answer\nindicates whether the event needs firing or not.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to check for\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1334,27",
+                      "text": "4,1334,37,35",
+                      "type": "4,1334,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the event is being listened for or bubbles, else `false`\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,1335,29,67",
+                      "type": "4,1335,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1337,0",
+                  "text": "4,1331,11,161"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initBindable",
+                "since": "5.0.0",
+                "text": "This method triggers the lazy configs and must be called when it is time to\nfully boot up. The configs that must be initialized are: <a href='#!/api/Ext.sparkline.Box-cfg-bind'>bind</a>, <a href='#!/api/Ext.sparkline.Box-cfg-publishes'>publishes</a>,\n<a href='#!/api/Ext.sparkline.Box-cfg-session'>session</a>, <a href='#!/api/Ext.sparkline.Box-cfg-twoWayBindable'>twoWayBindable</a> and <a href='#!/api/Ext.sparkline.Box-cfg-viewModel'>viewModel</a>.\n",
+                "src": {
+                  "access": "1,723,12",
+                  "name": "1,726,0",
+                  "since": "1,724,19",
+                  "text": "1,720,12,199"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initElement",
+                "text": "Initializes the Element for this Widget instance.  If this is the first time a\nWidget of this type has been instantiated the <a href='#!/api/Ext.sparkline.Box-property-element'>element</a> config will be\nprocessed to create an Element.  This Element is then cached on the prototype (see\nafterCachedConfig) so that future instances can obtain their element by simply\ncloning the Element that was cached by the first instance.\n",
+                "src": {
+                  "access": "3,355,8",
+                  "name": "3,357,0",
+                  "text": "3,350,8,378"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "initElementListeners",
+                "text": "Called for the first instance of this Widget to create an object that contains the\nlistener configs for all of the element references keyed by reference name. The\nobject is cached on the prototype and has the following shape:\n\n    _elementListeners: {\n        element: {\n            click: 'onClick',\n            scope: this\n        },\n        fooReference: {\n            tap: {\n                fn: someFunction,\n                delay: 100\n            }\n        }\n    }\n\nThe returned object is prototype chained to the _elementListeners object of its\nsuperclass, and each key in the object is prototype chained to object with the\ncorresponding key in the superclass _elementListeners.  This allows element\nlisteners to be inherited and overridden when subclassing widgets.\n\nThis method is invoked with the prototype object as the scope\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "elementConfig",
+                    "src": {
+                      "name": "3,734,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,732,12",
+                  "name": "3,734,0",
+                  "text": "3,708,12,837"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initInheritedState",
+                "since": "5.0.0",
+                "text": "This method is called to initialize the `inheritedState` objects for this instance.\nThis amounts to typically copying certain properties from the instance to the given\nobject.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "inheritedState",
+                    "text": "The state object for this instance.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "6,300,24",
+                      "text": "6,300,39,36",
+                      "type": "6,300,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "inheritedStateInner",
+                    "optional": true,
+                    "text": "This object is only provided for containers.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "6,301,25",
+                      "text": "6,301,46,45",
+                      "type": "6,301,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "6,303,8",
+                  "name": "6,302,16",
+                  "since": "6,304,15",
+                  "text": "6,296,8,177"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "invalidateInheritedState",
+                "since": "5.0.0",
+                "text": "This method marks the current inherited state as invalid. The next time a call is\nmade to <a href='#!/api/Ext.sparkline.Box-method-getInherited'>getInherited</a> the objects will be recreated and initialized.\n",
+                "src": {
+                  "access": "6,310,8",
+                  "name": "6,313,0",
+                  "since": "6,311,15",
+                  "text": "6,308,8,152"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "is",
+                "text": "Tests whether this Widget matches a <a href='#!/api/Ext.ComponentQuery'>Ext.ComponentQuery</a>\nselector string.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "selector",
+                    "text": "The selector string to test against.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,442,24",
+                      "text": "3,442,33,37",
+                      "type": "3,442,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this Widget matches the selector.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,443,26,44",
+                      "type": "3,443,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,445,0",
+                  "text": "3,440,8,95"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isSuspended",
+                "text": "Checks if all events, or a specific event, is suspended.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "event",
+                    "optional": true,
+                    "text": "The name of the specific event to check\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1344,29",
+                      "text": "4,1344,36,40",
+                      "type": "4,1344,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if events are suspended\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "4,1345,30,31",
+                      "type": "4,1345,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1347,0",
+                  "text": "4,1343,12,57"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "isSyncing",
+                "text": "Checks if a particular binding is synchronizing the value.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "text": "The name of the property being bound to.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,770,28",
+                      "text": "1,770,33,41",
+                      "type": "1,770,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if the binding is syncing.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "1,771,30,34",
+                      "type": "1,771,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,499,-1",
+                  "name": "1,775,0",
+                  "text": "1,769,12,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isXType",
+                "text": "Tests whether or not this Component is of a specific xtype. This can test whether this Component is descended\nfrom the xtype (default) or whether it is directly of the xtype specified (`shallow = true`).\n**If using your own subclasses, be aware that a Component must register its own xtype\nto participate in determination of inherited xtypes.__\n\nFor a list of all available xtypes, see the <a href='#!/api/Ext.Component'>Ext.Component</a> header.\n\nExample usage:\n\n    var t = new Ext.field.Text();\n    var isText = t.isXType('textfield'); // true\n    var isBoxSubclass = t.isXType('field'); // true, descended from Ext.field.Field\n    var isBoxInstance = t.isXType('field', true); // false, not a direct Ext.field.Field instance\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xtype",
+                    "text": "The xtype to check for this Component.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,464,24",
+                      "text": "3,464,30,39",
+                      "type": "3,464,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "shallow",
+                    "text": "(optional) `false` to check whether this Component is descended from the xtype (this is\nthe default), or `true` to check whether this Component is directly of the specified xtype.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,465,25",
+                      "text": "3,465,33,88:3,466,8,92",
+                      "type": "3,465,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "`true` if this component descends from the specified xtype, `false` otherwise.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "3,467,26,79",
+                      "type": "3,467,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,469,0",
+                  "text": "3,450,8,703"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupController",
+                "since": "5.0.1",
+                "text": "Gets the controller that controls this view. May be a controller that belongs\nto a view higher in the hierarchy.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "`true` to not consider the controller directly attached\nto this view (if it exists).\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,360,26",
+                      "text": "1,360,42,56:1,361,8,29",
+                      "type": "1,360,16",
+                      "value": "1,360,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The controller. <a href='#!/api/null'>null</a> if no controller is found.\n",
+                    "type": "Ext.app.ViewController",
+                    "src": {
+                      "text": "1,362,41,50",
+                      "type": "1,362,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,366,0",
+                  "since": "1,364,15",
+                  "text": "1,357,8,114"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "lookupReferenceHolder",
+                "since": "5.0.0",
+                "text": "Gets the Controller or Component that is used as the reference holder for this view.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "`false` to return this as the reference holder if\nthis instance has set `referenceHolder`. Unlike <a href='#!/api/Ext.sparkline.Box-method-getInheritedConfig'>getInheritedConfig</a> this method\ndefaults to `true` because it is possible that a <a href='#!/api/Ext.sparkline.Box-cfg-reference'>reference</a> property set by the\nowner of a component that is also a `referenceHolder` itself. In this case, the\n<a href='#!/api/Ext.sparkline.Box-cfg-reference'>reference</a> connects not to this component but to the parent referenceHolder.\n",
+                    "type": "Boolean",
+                    "value": "true",
+                    "src": {
+                      "name": "6,261,26",
+                      "text": "6,261,41,50:6,262,8,321",
+                      "type": "6,261,16",
+                      "value": "6,261,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The reference holder.\n",
+                    "type": "Ext.app.ViewController/Ext.container.Container",
+                    "src": {
+                      "text": "6,267,65,22",
+                      "type": "6,267,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "6,269,8",
+                  "name": "6,272,0",
+                  "since": "6,270,15",
+                  "text": "6,259,8,86"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupSession",
+                "since": "5.0.0",
+                "text": "Returns the <a href='#!/api/Ext.data.Session'>Ext.data.Session</a> for this instance. This property may come\nfrom this instance's <a href='#!/api/Ext.sparkline.Box-cfg-session'>session</a> or be inherited from this object's parent.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "Pass `true` to ignore a <a href='#!/api/Ext.sparkline.Box-cfg-session'>session</a> configured on\nthis instance and only consider an inherited session.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,373,26",
+                      "text": "1,373,42,48:1,374,8,54",
+                      "type": "1,373,16",
+                      "value": "1,373,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "type": "1,375,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,378,0",
+                  "since": "1,376,15",
+                  "text": "1,371,8,156"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lookupViewModel",
+                "since": "5.0.0",
+                "text": "Returns the <a href='#!/api/Ext.app.ViewModel'>Ext.app.ViewModel</a> for this instance. This property may come from this\nthis instance's <a href='#!/api/Ext.sparkline.Box-cfg-viewModel'>viewModel</a> or be inherited from this object's parent.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "skipThis",
+                    "optional": true,
+                    "text": "Pass `true` to ignore a <a href='#!/api/Ext.sparkline.Box-cfg-viewModel'>viewModel</a> configured on\nthis instance and only consider an inherited view model.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "1,394,26",
+                      "text": "1,394,42,50:1,395,8,57",
+                      "type": "1,394,16",
+                      "value": "1,394,35"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "type": "1,396,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,399,0",
+                  "since": "1,397,15",
+                  "text": "1,392,8,164"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "makeBindableUpdater",
+                "since": "5.0.0",
+                "text": "Returns an `update` method for the given Config that will call <a href='#!/api/Ext.sparkline.Box-method-publishState'>publishState</a>\nto ensure two-way bindings (via <a href='#!/api/Ext.sparkline.Box-cfg-bind'>bind</a>) as well as any <a href='#!/api/Ext.sparkline.Box-cfg-publishes'>publishes</a> are updated.\nThis method is cached on the `cfg` instance for re-use.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cfg",
+                    "type": "Ext.Config",
+                    "src": {
+                      "name": "1,749,32",
+                      "type": "1,749,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The updater function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "1,750,31,22",
+                      "type": "1,750,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,751,12",
+                  "name": "1,754,0",
+                  "since": "1,752,19",
+                  "text": "1,746,12,223"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addManagedListener",
+                "name": "mon",
+                "text": "Shorthand for <a href='#!/api/Ext.sparkline.Box-method-addManagedListener'>addManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "4,1787,12",
+                  "name": "4,1789,0",
+                  "text": "4,1786,12,43"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeManagedListener",
+                "name": "mun",
+                "text": "Shorthand for <a href='#!/api/Ext.sparkline.Box-method-removeManagedListener'>removeManagedListener</a>.\n",
+                "src": {
+                  "inheritdoc": "4,1793,12",
+                  "name": "4,1795,0",
+                  "text": "4,1792,12,46"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#addListener",
+                "name": "on",
+                "src": {
+                  "inheritdoc": "4,1775,12",
+                  "name": "4,1777,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onAfter",
+                "text": "Appends an after-event handler.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1190,44",
+                      "text": "4,1190,54,37",
+                      "type": "4,1190,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1191,37",
+                      "text": "4,1191,40,30",
+                      "type": "4,1191,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1192,29",
+                      "text": "4,1192,36,20",
+                      "type": "4,1192,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1193,29",
+                      "text": "4,1193,38,44",
+                      "type": "4,1193,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1195,0",
+                  "text": "4,1185,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onBefore",
+                "text": "Appends a before-event handler.  Returning `false` from the handler will stop the event.\n\nSame as <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> with `order` set\nto `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event to listen for.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1175,44",
+                      "text": "4,1175,54,37",
+                      "type": "4,1175,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The method the event invokes.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1176,37",
+                      "text": "4,1176,40,30",
+                      "type": "4,1176,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1177,29",
+                      "text": "4,1177,36,20",
+                      "type": "4,1177,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "An object containing handler configuration.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1178,29",
+                      "text": "4,1178,38,44",
+                      "type": "4,1178,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1180,0",
+                  "text": "4,1170,12,183"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onInheritedAdd",
+                "text": "Called when this Inheritable is added to a parent\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "instanced",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "6,351,29",
+                      "type": "6,351,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "6,330,-1",
+                  "name": "6,353,0",
+                  "text": "6,350,12,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onInheritedRemove",
+                "text": "Called when this inheritable is removed from a parent\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "destroying",
+                    "text": "`true` if this item will be destroyed by it's container\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "6,369,29",
+                      "text": "6,369,40,56",
+                      "type": "6,369,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "6,330,-1",
+                  "name": "6,371,0",
+                  "text": "6,368,12,54"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "processElementConfig",
+                "text": "Recursively processes the element templates for this class and its superclasses,\nascending the hierarchy until it reaches a superclass whose element template\nhas already been processed.  This method is invoked using the prototype as the scope.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Object",
+                    "src": {
+                      "type": "3,797,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,796,12",
+                  "name": "3,799,0",
+                  "text": "3,792,12,245"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "publishState",
+                "since": "5.0.0",
+                "text": "Publish this components state to the `ViewModel`. If no arguments are given (or if\nthis is the first call), the entire state is published. This state is determined by\nthe <a href='#!/api/Ext.sparkline.Box-cfg-publishes'>publishes</a> property.\n\nThis method is called only by component authors.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "property",
+                    "optional": true,
+                    "text": "The name of the property to update.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,422,25",
+                      "text": "1,422,35,36",
+                      "type": "1,422,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "optional": true,
+                    "text": "The value of `property`. Only needed if `property` is given.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,423,25",
+                      "text": "1,423,32,61",
+                      "type": "1,423,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,424,8",
+                  "name": "1,427,0",
+                  "since": "1,425,15",
+                  "text": "1,416,8,244"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "relayEvents",
+                "text": "Relays selected events from the specified Observable as if the events were fired by `this`.\n\nFor example if you are extending Grid, you might decide to forward some events from store.\nSo you can do this inside your initComponent:\n\n    this.relayEvents(this.getStore(), ['load']);\n\nThe grid instance will then have an observable 'load' event which will be passed\nthe parameters of the store's load event and any function fired with the grid's\nload event would have access to the grid using the this keyword (unless the event\nis handled by a controller's control/listen event listener in which case 'this'\nwill be the controller rather than the grid).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "origin",
+                    "text": "The Observable whose events this object is to relay.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1466,27",
+                      "text": "4,1466,34,53",
+                      "type": "4,1466,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "events",
+                    "text": "Array of event names to relay or an Object with key/value\npairs translating to ActualEventName/NewEventName respectively. For example:\n    this.relayEvents(this, {add:'push', remove:'pop'});\n\nWould now redispatch the add event of this as a push event and the remove event as a pop event.\n",
+                    "type": "String[]/Object",
+                    "src": {
+                      "name": "4,1467,36",
+                      "text": "4,1467,43,58:4,1468,11,231",
+                      "type": "4,1467,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "prefix",
+                    "optional": true,
+                    "text": "A common prefix to prepend to the event names. For example:\n\n    this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nNow the grid will forward 'load' and 'clear' events of store as 'storeload' and 'storeclear'.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1473,28",
+                      "text": "4,1473,36,60:4,1474,11,164",
+                      "type": "4,1473,19"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A `Destroyable` object. An object which implements the `destroy` method which, when destroyed, removes all relayers. For example:\n\n    this.storeRelayers = this.relayEvents(this.getStore(), ['load', 'clear'], 'store');\n\nCan be undone by calling\n\n    Ext.destroy(this.storeRelayers);\n\nor\n    this.store.relayers.destroy();\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,1479,28,130:4,1480,11,192",
+                      "type": "4,1479,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1490,0",
+                  "text": "4,1453,11,651"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeAfterListener",
+                "text": "Alias for <a href='#!/api/Ext.sparkline.Box-method-unAfter'>unAfter</a>.\n",
+                "src": {
+                  "name": "4,1248,0",
+                  "text": "4,1246,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeBeforeListener",
+                "text": "Alias for <a href='#!/api/Ext.sparkline.Box-method-unBefore'>unBefore</a>.\n",
+                "src": {
+                  "name": "4,1242,0",
+                  "text": "4,1240,12,29"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "removeDelegatedListener",
+                "text": "Removes delegated listeners for a given eventName, function, and scope.\nUsers should not invoke this method directly.  It is called automatically by\nthe framework as part of <a href='#!/api/Ext.sparkline.Box-method-removeListener'>removeListener</a> processing.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "src": {
+                      "name": "5,129,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "src": {
+                      "name": "5,129,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "src": {
+                      "name": "5,129,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "5,124,12",
+                  "name": "5,129,0",
+                  "text": "5,125,12,210"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeListener",
+                "text": "Removes an event handler.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The type of event the handler was associated with.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "4,1102,28",
+                      "text": "4,1102,38,51",
+                      "type": "4,1102,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove. **This must be a reference to the function\npassed into the\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> call.**\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "4,1103,30",
+                      "text": "4,1103,33,66:4,1104,12,76",
+                      "type": "4,1103,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) The scope originally specified for the handler. It\nmust be the same as the scope argument specified in the original call to\n<a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> or the listener will not be removed.\n\n**Convenience Syntax**\n\nYou can use the <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>\n`destroyable: true` config option in place of calling un().  For example:\n\n    var listeners = cmp.on({\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide,\n        destroyable: true\n    });\n\n    // Remove listeners\n    listeners.destroy();\n    // or\n    cmp.un(\n        scope: cmp,\n        afterrender: cmp.onAfterrender,\n        beforehide: cmp.onBeforeHide\n    );\n\n**Exception - DOM event handlers using the element config option**\n\nYou must go directly through the element to detach an event handler attached using\nthe <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a> _element_ option.\n\n    panel.on({\n        element: 'body',\n        click: 'onBodyCLick'\n    });\n\n    panel.body.un({\n        click: 'onBodyCLick'\n    });\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1106,28",
+                      "text": "4,1106,34,62:4,1107,12,1017",
+                      "type": "4,1106,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1145,0",
+                  "text": "4,1100,12,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeManagedListener",
+                "text": "Removes listeners that were added by the <a href='#!/api/Ext.sparkline.Box-method-mon'>mon</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The item from which to remove a listener/listeners.\n",
+                    "type": "Ext.util.Observable/Ext.dom.Element",
+                    "src": {
+                      "name": "4,526,56",
+                      "text": "4,526,61,52",
+                      "type": "4,526,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "ename",
+                    "text": "The event name, or an object containing event name properties.\n",
+                    "type": "Object/String",
+                    "src": {
+                      "name": "4,527,34",
+                      "text": "4,527,40,63",
+                      "type": "4,527,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the handler function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "4,528,29",
+                      "text": "4,528,32,85",
+                      "type": "4,528,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "(optional) If the `ename` parameter was an event name, this is the scope (`this` reference)\nin which the handler function is executed.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,529,27",
+                      "text": "4,529,33,92:4,530,11,43",
+                      "type": "4,529,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,532,0",
+                  "text": "4,524,11,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "removeManagedListenerItem",
+                "text": "Remove a single managed listener item\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "isClear",
+                    "text": "True if this is being called during a clear\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,1307,28",
+                      "text": "4,1307,36,44",
+                      "type": "4,1307,19"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "managedListener",
+                    "text": "The managed listener item\nSee removeManagedListener for other args\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1308,27",
+                      "text": "4,1308,43,26:4,1309,11,41",
+                      "type": "4,1308,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,1306,11",
+                  "name": "4,1311,0",
+                  "text": "4,1305,11,38"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "resolveListenerScope",
+                "text": "Gets the default scope for firing late bound events (string names with\nno scope attached) at runtime.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "defaultScope",
+                    "optional": true,
+                    "text": "The default scope to return if none is found.\n",
+                    "type": "Object",
+                    "value": "this",
+                    "src": {
+                      "name": "4,579,29",
+                      "text": "4,579,48,46",
+                      "type": "4,579,20",
+                      "value": "4,579,42"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The default event scope\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "4,580,29,24",
+                      "type": "4,580,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,581,12",
+                  "name": "4,583,0",
+                  "text": "4,577,12,102"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "resolveSatelliteListenerScope",
+                "since": "5.1.1",
+                "text": "Returns the default listener scope for a \"satellite\" of this component.\nUsed for resolving scope for observable objects that are not part of the normal\nContainer/Component hierarchy (for example, plugins)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "satellite",
+                    "type": "Ext.mixin.Observable",
+                    "src": {
+                      "name": "6,227,38",
+                      "type": "6,227,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "defaultScope",
+                    "optional": true,
+                    "type": "Object",
+                    "src": {
+                      "name": "6,228,25",
+                      "type": "6,228,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The listener scope\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "6,229,25,19",
+                      "type": "6,229,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "6,230,8",
+                  "name": "6,233,0",
+                  "since": "6,231,15",
+                  "text": "6,223,8,206"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvent",
+                "text": "Resumes firing of the named event(s).\n\nAfter calling this method to resume events, the events will fire when requested to fire.\n\n**Note that if the <a href='#!/api/Ext.sparkline.Box-method-suspendEvent'>suspendEvent</a> method is called multiple times for a certain event,\nthis converse method will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to resume.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "4,1409,32",
+                      "text": "4,1409,42,32",
+                      "type": "4,1409,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1411,0",
+                  "text": "4,1402,12,320"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resumeEvents",
+                "text": "Resumes firing events (see <a href='#!/api/Ext.sparkline.Box-method-suspendEvents'>suspendEvents</a>).\n\nIf events were suspended using the `queueSuspended` parameter, then all events fired\nduring event suspension will be sent to any listeners now.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "discardQueue",
+                    "optional": true,
+                    "text": "`true` to prevent any previously queued events from firing\nwhile we were suspended. See <a href='#!/api/Ext.sparkline.Box-method-suspendEvents'>suspendEvents</a>.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,1431,29",
+                      "text": "4,1431,43,59:4,1432,11,53",
+                      "type": "4,1431,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1434,0",
+                  "text": "4,1426,11,198"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setListeners",
+                "text": "An alias for <a href='#!/api/Ext.util.Observable-method-addListener'>Ext.util.Observable#addListener</a>.  In\nversions prior to 5.1, <a href='#!/api/Ext.sparkline.Box-cfg-listeners'>listeners</a> had a generated setter which could\nbe called to add listeners.  In 5.1 the listeners config is not processed\nusing the config system and has no generated setter, so this method is\nprovided for backward compatibility.  The preferred way of adding listeners\nis to use the <a href='#!/api/Ext.sparkline.Box-method-on'>on</a> method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "listeners",
+                    "text": "The listeners\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1804,28",
+                      "text": "4,1804,38,14",
+                      "type": "4,1804,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1806,0",
+                  "text": "4,1798,12,402"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setSize",
+                "text": "Sets the size of the Component.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "width",
+                    "text": "The new width for the Component.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,496,24",
+                      "text": "3,496,30,33",
+                      "type": "3,496,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "height",
+                    "text": "The new height for the Component.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "3,497,24",
+                      "text": "3,497,31,34",
+                      "type": "3,497,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,499,0",
+                  "text": "3,495,8,32"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvent",
+                "text": "Suspends firing of the named event(s).\n\nAfter calling this method to suspend events, the events will no longer fire when requested to fire.\n\n**Note that if this is called multiple times for a certain event, the converse method\n<a href='#!/api/Ext.sparkline.Box-method-resumeEvent'>resumeEvent</a> will have to be called the same number of times for it to resume firing.**\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "Multiple event names to suspend.\n",
+                    "type": "String...",
+                    "src": {
+                      "name": "4,1381,32",
+                      "text": "4,1381,42,33",
+                      "type": "4,1381,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1383,0",
+                  "text": "4,1374,12,324"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "suspendEvents",
+                "text": "Suspends the firing of all events. (see <a href='#!/api/Ext.sparkline.Box-method-resumeEvents'>resumeEvents</a>)\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "queueSuspended",
+                    "text": "`true` to queue up suspended events to be fired\nafter the <a href='#!/api/Ext.sparkline.Box-method-resumeEvents'>resumeEvents</a> call instead of discarding all suspended events.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "4,1363,28",
+                      "text": "4,1363,43,48:4,1364,11,81",
+                      "type": "4,1363,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1366,0",
+                  "text": "4,1361,11,64"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toggleCls",
+                "text": "Toggles the specified CSS class on this element (removes it if it already exists,\notherwise adds it).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "className",
+                    "text": "The CSS class to toggle.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "3,481,24",
+                      "text": "3,481,34,25",
+                      "type": "3,481,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "state",
+                    "optional": true,
+                    "text": "If specified as `true`, causes the class to be added. If\nspecified as `false`, causes the class to be removed.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "3,482,26",
+                      "text": "3,482,33,57:3,483,8,54",
+                      "type": "3,482,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "3,485,0",
+                  "text": "3,479,8,102"
+                }
+              },
+              {
+                "$type": "method",
+                "inheritdoc": "Ext.util.Observable#removeListener",
+                "name": "un",
+                "text": "Shorthand for <a href='#!/api/Ext.sparkline.Box-method-removeListener'>removeListener</a>.\n",
+                "src": {
+                  "inheritdoc": "4,1781,12",
+                  "name": "4,1783,0",
+                  "text": "4,1780,12,39"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unAfter",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.sparkline.Box-method-removeListener'>removeListener</a> with `order` set to `'after'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1218,44",
+                      "text": "4,1218,54,55",
+                      "type": "4,1218,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1219,37",
+                      "text": "4,1219,40,23",
+                      "type": "4,1219,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1220,29",
+                      "text": "4,1220,36,41",
+                      "type": "4,1220,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1221,29",
+                      "text": "4,1221,38,22",
+                      "type": "4,1221,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1223,0",
+                  "text": "4,1214,12,97"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unBefore",
+                "text": "Removes a before-event handler.\n\nSame as <a href='#!/api/Ext.sparkline.Box-method-removeListener'>removeListener</a> with `order` set to `'before'`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "eventName",
+                    "text": "The name of the event the handler was associated with.\n",
+                    "type": "String/String[]/Object",
+                    "src": {
+                      "name": "4,1204,44",
+                      "text": "4,1204,54,55",
+                      "type": "4,1204,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "The handler to remove.\n",
+                    "type": "Function/String",
+                    "src": {
+                      "name": "4,1205,37",
+                      "text": "4,1205,40,23",
+                      "type": "4,1205,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "optional": true,
+                    "text": "The scope originally specified for `fn`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1206,29",
+                      "text": "4,1206,36,41",
+                      "type": "4,1206,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "options",
+                    "optional": true,
+                    "text": "Extra options object.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "4,1207,29",
+                      "text": "4,1207,38,22",
+                      "type": "4,1207,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,1209,0",
+                  "text": "4,1200,12,98"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "updateHeight",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "height",
+                    "src": {
+                      "name": "3,540,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,541,8",
+                  "name": "3,543,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateSession",
+                "text": "Updates the session config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "session",
+                    "type": "Ext.data.Session",
+                    "src": {
+                      "name": "1,814,38",
+                      "type": "1,814,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,815,12",
+                  "name": "1,817,0",
+                  "text": "1,813,12,28"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "updateStyle",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "style",
+                    "src": {
+                      "name": "3,527,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,525,8",
+                  "name": "3,527,0"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "updateViewModel",
+                "text": "Updates the viewModel config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "viewModel",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "name": "1,829,39",
+                      "type": "1,829,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "oldViewModel",
+                    "type": "Ext.app.ViewModel",
+                    "src": {
+                      "name": "1,830,39",
+                      "type": "1,830,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,831,12",
+                  "name": "1,833,0",
+                  "text": "1,828,12,30"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "updateWidth",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "width",
+                    "src": {
+                      "name": "3,532,15"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,533,8",
+                  "name": "3,535,0"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "$eventOptions",
+                "text": "Matches options property names within a listeners specification object  - property names which are never used as event names.\n",
+                "src": {
+                  "access": "4,389,12",
+                  "name": "4,392,0",
+                  "text": "4,390,12,126"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "defaultBindProperty",
+                "optional": true,
+                "text": "This property is used to determine the property of a <a href='#!/api/Ext.sparkline.Box-cfg-bind'>bind</a> config that is just\nthe value. For example, if `defaultBindProperty=\"value\"`, then this shorthand\n<a href='#!/api/Ext.sparkline.Box-cfg-bind'>bind</a> config:\n\n     bind: '{name}'\n\nIs equivalent to this object form:\n\n     bind: {\n         value: '{name}'\n     }\n\nThe <a href='#!/api/Ext.sparkline.Box-property-defaultBindProperty'>defaultBindProperty</a> is set to \"value\" for form fields and to \"store\" for\ngrids and trees.\n",
+                "type": "String",
+                "src": {
+                  "access": "1,295,8",
+                  "name": "1,280,28",
+                  "text": "1,281,8,373",
+                  "type": "1,280,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "element",
+                "text": "A configuration object for Ext.Element.create() that is used to create the Element\ntemplate.  Supports all the standard options of a Ext.Element.create() config and\nadds 2 additional options:\n\n1. <a href='#!/api/Ext.sparkline.Box-cfg-reference'>reference</a> - this option specifies a name for Element references.  These\nreferences names become properties of the Widget instance and refer to Ext.Element\ninstances that were created using the template:\n\n    element: {\n        reference: 'element',\n        children: [{\n            reference: 'innerElement'\n        }]\n    }\n\nAfter construction of a widget the reference elements are accessible as follows:\n\n    var foo = new FooWidget(),\n        innerEl = foo.innerEl; // an Ext.Element that wraps the innerElement\n\nThe reference attribute is optional, but all Widgets must have a `'element'`\nreference on some element within the template (usually the outermost one).\n\n2. <a href='#!/api/Ext.sparkline.Box-cfg-listeners'>listeners</a> - a standard listeners object as specified by <a href='#!/api/Ext.mixin.Observable'>Ext.mixin.Observable</a>.\n\n    element: {\n        reference: 'element',\n        listeners: {\n            click: 'onClick'\n        },\n        children: [{\n            reference: 'innerElement',\n            listeners: {\n                click: 'onInnerClick'\n            }\n        }]\n    }\n\nSince listeners cannot be attached without an Ext.Element reference the <a href='#!/api/Ext.sparkline.Box-cfg-reference'>reference</a>\nproperty MUST be specified in order to use <a href='#!/api/Ext.sparkline.Box-cfg-listeners'>listeners</a>.\n\nThe Widget instance is used as the scope for all listeners specified in this way,\nso it is invalid to use the `scope` option in the <a href='#!/api/Ext.sparkline.Box-cfg-listeners'>listeners</a> config since it will\nalways be overwritten using `this`.\n",
+                "type": "Object",
+                "src": {
+                  "access": "3,116,8",
+                  "name": "3,70,27",
+                  "text": "3,71,8,1563",
+                  "type": "3,70,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "eventsSuspended",
+                "text": "Initial suspended call count. Incremented when <a href='#!/api/Ext.sparkline.Box-method-suspendEvents'>suspendEvents</a> is called, decremented when <a href='#!/api/Ext.sparkline.Box-method-resumeEvents'>resumeEvents</a> is called.\n",
+                "src": {
+                  "access": "4,284,11",
+                  "name": "4,287,0",
+                  "text": "4,285,11,131"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "hasListeners",
+                "readonly": true,
+                "text": "This object holds a key for any event that has a listener. The listener may be set\ndirectly on the instance, or on its class or a super class (via <a href='#!/api/Ext.sparkline.Box-observe'>observe</a>) or\non the <a href='#!/api/Ext.app.EventBus'>Ext.app.EventBus</a>. The values of this object are truthy\n(a non-zero number) and falsy (0 or undefined). They do not represent an exact count\nof listeners. The value for an event is truthy if the event must be fired and is\nfalsy if there is no need to fire the event.\n\nThe intended use of this property is to avoid the expense of fireEvent calls when\nthere are no listeners. This can be particularly helpful when one would otherwise\nhave to call fireEvent hundreds or thousands of times. It is used like this:\n\n     if (this.hasListeners.foo) {\n         this.fireEvent('foo', this, arg1);\n     }\n",
+                "type": "Object",
+                "src": {
+                  "name": "4,290,30",
+                  "readonly": "4,291,11",
+                  "text": "4,292,11,790",
+                  "type": "4,290,22"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isObservable",
+                "text": "`true` in this class to identify an object as an instantiated Observable, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "4,278,31",
+                  "text": "4,279,11,95",
+                  "type": "4,278,22"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "template",
+                "text": "An array of child elements to use as the children of the main element in the <a href='#!/api/Ext.sparkline.Box-property-element'>element</a> template.  Only used if \"children\" are not specified explicitly in the\n<a href='#!/api/Ext.sparkline.Box-property-element'>element</a> template.\n",
+                "type": "Array",
+                "src": {
+                  "access": "3,198,8",
+                  "name": "3,194,26",
+                  "text": "3,195,8,192",
+                  "type": "3,194,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "validRefRe",
+                "text": "Regular expression used for validating <a href='#!/api/Ext.sparkline.Box-cfg-reference'>reference</a> values.\n",
+                "type": "RegExp",
+                "src": {
+                  "access": "1,302,8",
+                  "name": "1,304,0",
+                  "text": "1,301,8,59",
+                  "type": "1,300,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "inheritable": true,
+                "name": "onClassCreated",
+                "static": true,
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "cls",
+                    "src": {
+                      "name": "2,211,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,207,12",
+                  "inheritable": "2,209,12",
+                  "name": "2,211,0",
+                  "static": "2,208,12"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "inheritable": true,
+                "name": "sparkLineTipClass",
+                "static": true,
+                "src": {
+                  "access": "2,200,12",
+                  "inheritable": "2,202,12",
+                  "name": "2,204,0",
+                  "static": "2,201,12"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,12,0",
+          "extends": "0,10,0",
+          "name": "0,2,11",
+          "text": "0,3,4,214"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

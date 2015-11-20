@@ -1,0 +1,1123 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../../docs/docs/js/primitives/Array.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Array",
+        "text": "\nIn JavaScript, the <a href='#!/api/Array'>Array</a> property of the global object is a constructor for\narray instances.\n\nAn array is a JavaScript object. Note that you shouldn't use it as an\nassociative array, use <a href='#!/api/Object'>Object</a> instead.\n\n# Creating an Array\n\nThe following example creates an array, msgArray, with a length of 0, then assigns values to\nmsgArray[0] and msgArray[99], changing the length of the array to 100.\n\n    var msgArray = new Array();\n    msgArray[0] = \"Hello\";\n    msgArray[99] = \"world\";\n\n    if (msgArray.length == 100)\n    print(\"The length is 100.\");\n\n# Creating a Two-dimensional Array\n\nThe following creates chess board as a two dimensional array of strings. The first move is made by\ncopying the 'P' in 6,4 to 4,4. The position 4,4 is left blank.\n\n    var board =\n    [ ['R','N','B','Q','K','B','N','R'],\n    ['P','P','P','P','P','P','P','P'],\n    [' ',' ',' ',' ',' ',' ',' ',' '],\n    [' ',' ',' ',' ',' ',' ',' ',' '],\n    [' ',' ',' ',' ',' ',' ',' ',' '],\n    [' ',' ',' ',' ',' ',' ',' ',' '],\n    ['p','p','p','p','p','p','p','p'],\n    ['r','n','b','q','k','b','n','r']];\n    print(board.join('\\n') + '\\n\\n');\n\n    // Move King's Pawn forward 2\n    board[4][4] = board[6][4];\n    board[6][4] = ' ';\n    print(board.join('\\n'));\n\nHere is the output:\n\n    R,N,B,Q,K,B,N,R\n    P,P,P,P,P,P,P,P\n     , , , , , , ,\n     , , , , , , ,\n     , , , , , , ,\n     , , , , , , ,\n    p,p,p,p,p,p,p,p\n    r,n,b,q,k,b,n,r\n\n    R,N,B,Q,K,B,N,R\n    P,P,P,P,P,P,P,P\n     , , , , , , ,\n     , , , , , , ,\n     , , , ,p, , ,\n     , , , , , , ,\n    p,p,p,p, ,p,p,p\n    r,n,b,q,k,b,n,r\n\n# Accessing array elements\n\nArray elements are nothing less than object properties, so they are accessed as such.\n\n    var myArray = new Array(\"Wind\", \"Rain\", \"Fire\");\n    myArray[0]; // \"Wind\"\n    myArray[1]; // \"Rain\"\n    // etc.\n    myArray.length; // 3\n\n    // Even if indices are properties, the following notation throws a syntax error\n    myArray.2;\n\n    // It should be noted that in JavaScript, object property names are strings. Consequently,\n    myArray[0] === myArray[\"0\"];\n    myArray[1] === myArray[\"1\"];\n    // etc.\n\n    // However, this should be considered carefully\n    myArray[02]; // \"Fire\". The number 02 is converted as the \"2\" string\n    myArray[\"02\"]; // undefined. There is no property named \"02\"\n\n# Relationship between length and numerical properties\n\nAn array's length property and numerical properties are connected. Here is some\ncode explaining how this relationship works.\n\n    var a = [];\n\n    a[0] = 'a';\n    console.log(a[0]); // 'a'\n    console.log(a.length); // 1\n\n    a[1] = 32;\n    console.log(a[1]); // 32\n    console.log(a.length); // 2\n\n    a[13] = 12345;\n    console.log(a[13]); // 12345\n    console.log(a.length); // 14\n\n    a.length = 10;\n    console.log(a[13]); // undefined, when reducing the length elements after length+1 are removed\n    console.log(a.length); // 10\n\n# Creating an array using the result of a match\n\nThe result of a match between a regular expression and a string can create an array.\nThis array has properties and elements that provide information about the match. An\narray is the return value of RegExp.exec, String.match, and String.replace. To help\nexplain these properties and elements, look at the following example and then refer\nto the table below:\n\n    // Match one d followed by one or more b's followed by one d\n    // Remember matched b's and the following d\n    // Ignore case\n\n    var myRe = /d(b+)(d)/i;\n    var myArray = myRe.exec(\"cdbBdbsbz\");\n\nThe properties and elements returned from this match are as follows:\n\n\n| Property/Element | Description                                                                           | Example\n|:-----------------|:--------------------------------------------------------------------------------------|:-------------------\n| `input`          | A read-only property that reflects the original string against which the              | cdbBdbsbz\n|                  | regular expression was matched.                                                       |\n| `index`          | A read-only property that is the zero-based index of the match in the string.         | 1\n| `[0]`            | A read-only element that specifies the last matched characters.                       | dbBd\n| `[1], ...[n]`    | Read-only elements that specify the parenthesized substring matches, if included in   | [1]: bB [2]: d\n|                  | the regular expression. The number of possible parenthesized substrings is unlimited. |\n\n<div class=\"notice\">\nDocumentation for this class comes from <a href=\"https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array\">MDN</a>\nand is available under <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">Creative Commons: Attribution-Sharealike license</a>.\n</div>\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new Array object.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "text": "Either a number that specifies the length of array or any number of items\nfor the array.\n",
+                    "type": "Number/Object...",
+                    "src": {
+                      "name": "0,146,30",
+                      "text": "0,146,36,74:0,147,4,15",
+                      "type": "0,146,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,143,12",
+                  "text": "0,144,4,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "pop",
+                "text": "The pop method removes the last element from an array and returns that value to the caller.\n\n<a href='#!/api/Array-method-pop'>pop</a> is intentionally generic; this method can be called or applied to objects resembling\narrays. Objects which do not contain a length property reflecting the last in a series of\nconsecutive, zero-based numerical properties may not behave in any meaningful manner.\n\n    var myFish = [\"angel\", \"clown\", \"mandarin\", \"surgeon\"];\n    var popped = myFish.pop();\n    alert(popped); // Alerts 'surgeon'\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The last element in the array\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,194,21,30",
+                      "type": "0,194,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,183,12",
+                  "text": "0,184,4,492"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "push",
+                "text": "Adds one or more elements to the end of an array and returns the new length of the array.\n\n<a href='#!/api/Array-method-push'>push</a> is intentionally generic. This method can be called or applied to objects resembling\narrays. The push method relies on a length property to determine where to start inserting\nthe given values. If the length property cannot be converted into a number, the index used\nis 0. This includes the possibility of length being nonexistent, in which case length will\nalso be created.\n\nThe only native, array-like objects are strings, although they are not suitable in\napplications of this method, as strings are immutable.\n\n### Adding elements to an array\n\nThe following code creates the sports array containing two elements, then appends two elements\nto it. After the code executes, sports contains 4 elements: \"soccer\", \"baseball\", \"football\"\nand \"swimming\".\n\n    var sports = [\"soccer\", \"baseball\"];\n    sports.push(\"football\", \"swimming\");\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "elements",
+                    "text": "The elements to add to the end of the array.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,219,23",
+                      "text": "0,219,32,45",
+                      "type": "0,219,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new length property of the object upon which the method was called.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,220,21,72",
+                      "type": "0,220,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,198,12",
+                  "text": "0,199,4,933"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reverse",
+                "text": "Reverses the order of the elements of an array -- the first becomes the last, and the\nlast becomes the first.\n\nThe reverse method transposes the elements of the calling array object in place, mutating the\narray, and returning a reference to the array.\n\nThe following example creates an array myArray, containing three elements, then reverses the array.\n\n    var myArray = [\"one\", \"two\", \"three\"];\n    myArray.reverse();\n\nThis code changes myArray so that:\n\n - myArray[0] is \"three\"\n - myArray[1] is \"two\"\n - myArray[2] is \"one\"\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "A reference to the array\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,242,20,25",
+                      "type": "0,242,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,224,12",
+                  "text": "0,225,4,529"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "shift",
+                "text": "Removes the first element from an array and returns that element.\n\nThe <a href='#!/api/Array-method-shift'>shift</a> method removes the element at the zeroeth index and shifts the values at consecutive\nindexes down, then returns the removed value.\n\n<a href='#!/api/Array-method-shift'>shift</a> is intentionally generic; this method can be called or applied to objects resembling\narrays. Objects which do not contain a <a href='#!/api/Array-property-length'>length</a> property reflecting the last in a series of\nconsecutive, zero-based numerical properties may not behave in any meaningful manner.\n\nThe following code displays the `myFish` array before and after removing its first element. It also\ndisplays the removed element:\n\n    // assumes a println function is defined\n    var myFish = [\"angel\", \"clown\", \"mandarin\", \"surgeon\"];\n    println(\"myFish before: \" + myFish);\n    var shifted = myFish.shift();\n    println(\"myFish after: \" + myFish);\n    println(\"Removed this element: \" + shifted);\n\nThis example displays the following:\n\n    myFish before: angel,clown,mandarin,surgeon\n    myFish after: clown,mandarin,surgeon\n    Removed this element: angel\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The first element of the array prior to shifting.\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "0,272,21,50",
+                      "type": "0,272,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,246,12",
+                  "text": "0,247,4,1044"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "sort",
+                "text": "Sorts the elements of an array.\n\nIf `compareFunction` is not supplied, elements are sorted by converting them to strings and\ncomparing strings in lexicographic (\"dictionary\" or \"telephone book,\" not numerical) order. For\nexample, \"80\" comes before \"9\" in lexicographic order, but in a numeric sort 9 comes before 80.\n\nIf `compareFunction` is supplied, the array elements are sorted according to the return value of\nthe compare function. If a and b are two elements being compared, then:\nIf `compareFunction(a, b)` is less than 0, sort `a` to a lower index than `b`.\nIf `compareFunction(a, b)` returns 0, leave `a` and `b` unchanged with respect to each other, but\nsorted with respect to all different elements. Note: the ECMAscript standard does not guarantee\nthis behaviour, and thus not all browsers respect this.\nIf `compareFunction(a, b)` is greater than 0, sort `b` to a lower index than `a`.\n`compareFunction(a, b)` must always returns the same value when given a specific pair of elements a\nand b as its two arguments. If inconsistent results are returned then the sort order is undefined\n\nSo, the compare function has the following form:\n\n    function compare(a, b)\n    {\n        if (a is less than b by some ordering criterion)\n            return -1;\n        if (a is greater than b by the ordering criterion)\n           return 1;\n        // a must be equal to b\n        return 0;\n    }\n\nTo compare numbers instead of strings, the compare function can simply subtract `b` from `a`:\n\n    function compareNumbers(a, b)\n    {\n    return a - b;\n    }\n\nThe sort() method can be conveniently used with closures:\n\n    var numbers = [4, 2, 5, 1, 3];\n    numbers.sort(function(a, b) {\n        return a - b;\n    });\n    print(numbers);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "compareFunction",
+                    "text": "Specifies a function that defines the sort order. If omitted, the\narray is sorted lexicographically (in dictionary order) according to the string conversion of each\nelement.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,320,22",
+                      "text": "0,320,38,66:0,321,4,108",
+                      "type": "0,320,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A reference to the array\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,323,20,25",
+                      "type": "0,323,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,276,12",
+                  "text": "0,277,4,1736"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "splice",
+                "text": "Adds and/or removes elements from an array.\n\nIf you specify a different number of elements to insert than the number you're removing, the array\nwill have a different length at the end of the call.\n\n    // assumes a print function is defined\n    var myFish = [\"angel\", \"clown\", \"mandarin\", \"surgeon\"];\n    print(\"myFish: \" + myFish);\n\n    var removed = myFish.splice(2, 0, \"drum\");\n    print(\"After adding 1: \" + myFish);\n    print(\"removed is: \" + removed);\n\n    removed = myFish.splice(3, 1);\n    print(\"After removing 1: \" + myFish);\n    print(\"removed is: \" + removed);\n\n    removed = myFish.splice(2, 1, \"trumpet\");\n    print(\"After replacing 1: \" + myFish);\n    print(\"removed is: \" + removed);\n\n    removed = myFish.splice(0, 2, \"parrot\", \"anemone\", \"blue\");\n    print(\"After replacing 2: \" + myFish);\n    print(\"removed is: \" + removed);\n\nThis script displays:\n\n    myFish: angel,clown,mandarin,surgeon\n    After adding 1: angel,clown,drum,mandarin,surgeon\n    removed is:\n    After removing 1: angel,clown,drum,surgeon\n    removed is: mandarin\n    After replacing 1: angel,clown,trumpet,surgeon\n    removed is: drum\n    After replacing 2: parrot,anemone,blue,trumpet,surgeon\n    removed is: angel,clown\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "Index at which to start changing the array. If negative, will begin that\nmany elements from the end.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,365,20",
+                      "text": "0,365,26,73:0,366,4,28",
+                      "type": "0,365,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "howMany",
+                    "text": "An integer indicating the number of old array elements to remove. If\n`howMany` is 0, no elements are removed. In this case, you should specify at least one new element.\nIf no `howMany` parameter is specified all elements after index are removed.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,367,20",
+                      "text": "0,367,28,69:0,368,4,177",
+                      "type": "0,367,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "elements",
+                    "text": "The elements to add to the array. If you don't specify any\nelements, <a href='#!/api/Array-method-splice'>splice</a> simply removes elements from the array.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,370,23",
+                      "text": "0,370,32,59:0,371,4,59",
+                      "type": "0,370,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An array containing the removed elements. If only one element is removed, an array\nof one element is returned..\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,372,20,83:0,373,4,29",
+                      "type": "0,372,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,327,12",
+                  "text": "0,328,4,1212"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "unshift",
+                "text": "Adds one or more elements to the front of an array and returns the new length of the array.\n\nThe <a href='#!/api/Array-method-unshift'>unshift</a> method inserts the given values to the beginning of an array-like object.\n\n<a href='#!/api/Array-method-unshift'>unshift</a> is intentionally generic; this method can be called or applied to objects resembling\narrays. Objects which do not contain a <a href='#!/api/Array-property-length'>length</a> property reflecting the last in a series of\nconsecutive, zero-based numerical properties may not behave in any meaningful manner.\n\nThe following code displays the myFish array before and after adding elements to it.\n\n    // assumes a println function exists\n    myFish = [\"angel\", \"clown\"];\n    println(\"myFish before: \" + myFish);\n    unshifted = myFish.unshift(\"drum\", \"lion\");\n    println(\"myFish after: \" + myFish);\n    println(\"New length: \" + unshifted);\n\nThis example displays the following:\n\n    myFish before: [\"angel\", \"clown\"]\n    myFish after: [\"drum\", \"lion\", \"angel\", \"clown\"]\n    New length: 4\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "elements",
+                    "text": "The elements to add to the front of the array.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,401,23",
+                      "text": "0,401,32,47",
+                      "type": "0,401,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The array's new length.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,402,21,24",
+                      "type": "0,402,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,377,12",
+                  "text": "0,378,4,935"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "concat",
+                "text": "Returns a new array comprised of this array joined with other array(s) and/or value(s).\n\n<a href='#!/api/Array-method-concat'>concat</a> creates a new array consisting of the elements in the `this` object on which it is called,\nfollowed in order by, for each argument, the elements of that argument (if the argument is an\narray) or the argument itself (if the argument is not an array).\n\n<a href='#!/api/Array-method-concat'>concat</a> does not alter `this` or any of the arrays provided as arguments but instead returns a\n\"one level deep\" copy that contains copies of the same elements combined from the original arrays.\nElements of the original arrays are copied into the new array as follows:\nObject references (and not the actual object): <a href='#!/api/Array-method-concat'>concat</a> copies object references into the new\narray. Both the original and new array refer to the same object. That is, if a referenced object is\nmodified, the changes are visible to both the new and original arrays.\nStrings and numbers (not <a href='#!/api/String'>String</a> and <a href='#!/api/Number'>Number</a> objects): <a href='#!/api/Array-method-concat'>concat</a> copies the values of\nstrings and numbers into the new array.\n\nAny operation on the new array will have no effect on the original arrays, and vice versa.\n\n### Concatenating two arrays\n\nThe following code concatenates two arrays:\n\n    var alpha = [\"a\", \"b\", \"c\"];\n    var numeric = [1, 2, 3];\n\n    // creates array [\"a\", \"b\", \"c\", 1, 2, 3]; alpha and numeric are unchanged\n    var alphaNumeric = alpha.concat(numeric);\n\n### Concatenating three arrays\n\nThe following code concatenates three arrays:\n\n    var num1 = [1, 2, 3];\n    var num2 = [4, 5, 6];\n    var num3 = [7, 8, 9];\n\n    // creates array [1, 2, 3, 4, 5, 6, 7, 8, 9]; num1, num2, num3 are unchanged\n    var nums = num1.concat(num2, num3);\n\n### Concatenating values to an array\n\nThe following code concatenates three values to an array:\n\n    var alpha = ['a', 'b', 'c'];\n\n    // creates array [\"a\", \"b\", \"c\", 1, 2, 3], leaving alpha unchanged\n    var alphaNumeric = alpha.concat(1, [2, 3]);\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "Arrays and/or values to concatenate to the resulting array.\n",
+                    "type": "Object...",
+                    "src": {
+                      "name": "0,456,23",
+                      "text": "0,456,30,60",
+                      "type": "0,456,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "New array.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,457,20,11",
+                      "type": "0,457,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,408,12",
+                  "text": "0,409,4,1910"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "join",
+                "text": "Joins all elements of an array into a string.\n\nThe string conversions of all array elements are joined into one string.\n\nThe following example creates an array, `a`, with three elements, then joins the array three times:\nusing the default separator, then a comma and a space, and then a plus.\n\n    var a = new Array(\"Wind\",\"Rain\",\"Fire\");\n    var myVar1 = a.join();      // assigns \"Wind,Rain,Fire\" to myVar1\n    var myVar2 = a.join(\", \");  // assigns \"Wind, Rain, Fire\" to myVar2\n    var myVar3 = a.join(\" + \"); // assigns \"Wind + Rain + Fire\" to myVar3\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "separator",
+                    "text": "Specifies a string to separate each element of the array. The separator\nis converted to a string if necessary. If omitted, the array elements are separated with a comma.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,474,20",
+                      "text": "0,474,30,72:0,475,4,98",
+                      "type": "0,474,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A string of the array elements.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,476,21,32",
+                      "type": "0,476,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,461,12",
+                  "text": "0,462,4,556"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "slice",
+                "text": "Extracts a section of an array and returns a new array.\n\n<a href='#!/api/Array-method-slice'>slice</a> does not alter the original array, but returns a new \"one level deep\" copy that contains\ncopies of the elements sliced from the original array. Elements of the original array are copied\ninto the new array as follows:\n*   For object references (and not the actual object), <a href='#!/api/Array-method-slice'>slice</a> copies object references into the\nnew array. Both the original and new array refer to the same object. If a referenced object\nchanges, the changes are visible to both the new and original arrays.\n*   For strings and numbers (not <a href='#!/api/String'>String</a> and <a href='#!/api/Number'>Number</a> objects), <a href='#!/api/Array-method-slice'>slice</a> copies strings\nand numbers into the new array. Changes to the string or number in one array does not affect the\nother array.\n\nIf a new element is added to either array, the other array is not affected.\n\n### Using slice\n\nIn the following example, <a href='#!/api/Array-method-slice'>slice</a> creates a new array, `newCar`, from `myCar`. Both include a\nreference to the object `myHonda`. When the color of `myHonda` is changed to purple, both arrays\nreflect the change.\n\n    // Using slice, create newCar from myCar.\n    var myHonda = { color: \"red\", wheels: 4, engine: { cylinders: 4, size: 2.2 } };\n    var myCar = [myHonda, 2, \"cherry condition\", \"purchased 1997\"];\n    var newCar = myCar.slice(0, 2);\n\n    // Print the values of myCar, newCar, and the color of myHonda\n    //  referenced from both arrays.\n    print(\"myCar = \" + myCar.toSource());\n    print(\"newCar = \" + newCar.toSource());\n    print(\"myCar[0].color = \" + myCar[0].color);\n    print(\"newCar[0].color = \" + newCar[0].color);\n\n    // Change the color of myHonda.\n    myHonda.color = \"purple\";\n    print(\"The new color of my Honda is \" + myHonda.color);\n\n    // Print the color of myHonda referenced from both arrays.\n    print(\"myCar[0].color = \" + myCar[0].color);\n    print(\"newCar[0].color = \" + newCar[0].color);\n\nThis script writes:\n\n    myCar = [{color:\"red\", wheels:4, engine:{cylinders:4, size:2.2}}, 2, \"cherry condition\",\n    \"purchased 1997\"]\n    newCar = [{color:\"red\", wheels:4, engine:{cylinders:4, size:2.2}}, 2]\n    myCar[0].color = red\n    newCar[0].color = red\n    The new color of my Honda is purple\n    myCar[0].color = purple\n    newCar[0].color = purple\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "begin",
+                    "text": "Zero-based index at which to begin extraction.\nAs a negative index, `start` indicates an offset from the end of the sequence. `slice(-2)` extracts\nthe second-to-last element and the last element in the sequence\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,532,20",
+                      "text": "0,532,26,47:0,533,4,164",
+                      "type": "0,532,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "end",
+                    "text": "Zero-based index at which to end extraction. <a href='#!/api/Array-method-slice'>slice</a> extracts up to but not\nincluding `end`.\n`slice(1,4)` extracts the second element through the fourth element (elements indexed 1, 2, and 3).\nAs a negative index, end indicates an offset from the end of the sequence. `slice(2,-1)` extracts\nthe third element through the second-to-last element in the sequence.\nIf `end` is omitted, <a href='#!/api/Array-method-slice'>slice</a> extracts to the end of the sequence.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,535,20",
+                      "text": "0,535,24,76:0,536,4,351",
+                      "type": "0,535,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Array from the new start position up to (but not including) the specified end position.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,541,20,88",
+                      "type": "0,541,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,480,12",
+                  "text": "0,481,4,2234"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "toString",
+                "text": "Returns a string representing the array and its elements. Overrides the `Object.prototype.toString`\nmethod.\n\nThe <a href='#!/api/Array'>Array</a> object overrides the <a href='#!/api/Array-method-toString'>toString</a> method of <a href='#!/api/Object'>Object</a>. For Array objects, the\n<a href='#!/api/Array-method-toString'>toString</a> method joins the array and returns one string containing each array element separated by\ncommas. For example, the following code creates an array and uses <a href='#!/api/Array-method-toString'>toString</a> to convert the array\nto a string.\n\n    var monthNames = new Array(\"Jan\",\"Feb\",\"Mar\",\"Apr\");\n    myVar = monthNames.toString(); // assigns \"Jan,Feb,Mar,Apr\" to myVar\n\nJavaScript calls the <a href='#!/api/Array-method-toString'>toString</a> method automatically when an array is to be represented as a text\nvalue or when an array is referred to in a string concatenation.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The array as a string.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,560,21,23",
+                      "type": "0,560,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,545,12",
+                  "text": "0,546,4,715"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "indexOf",
+                "text": "Returns the first index at which a given element can be found in the array, or -1 if it is not present.\n\n<a href='#!/api/Array-method-indexOf'>indexOf</a> compares `searchElement` to elements of the Array using strict equality (the same method used\nby the `===`, or triple-equals, operator).\n\n    var array = [2, 5, 9];\n    var index = array.indexOf(2);\n    // index is 0\n    index = array.indexOf(7);\n    // index is -1\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "searchElement",
+                    "text": "Element to locate in the array.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,608,19",
+                      "text": "0,608,33,32",
+                      "type": "0,608,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fromIndex",
+                    "optional": true,
+                    "text": "The index at which to begin the search. Defaults to 0, i.e. the whole array\nwill be searched. If the index is greater than or equal to the length of the array, -1 is returned, i.e.\nthe array will not be searched. If negative, it is taken as the offset from the end of the array. Note\nthat even when the index is negative, the array is still searched from front to back. If the calculated\nindex is less than 0, the whole array will be searched.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,609,21",
+                      "text": "0,609,32,76:0,610,4,368",
+                      "type": "0,609,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The index of element found or -1.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,614,21,34",
+                      "type": "0,614,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,594,12",
+                  "text": "0,595,4,443"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "lastIndexOf",
+                "text": "Returns the last index at which a given element can be found in the array, or -1 if it is not present.\nThe array is searched backwards, starting at `fromIndex`.\n\n<a href='#!/api/Array-method-lastIndexOf'>lastIndexOf</a> compares `searchElement` to elements of the Array using strict equality (the same method\nused by the `===`, or triple-equals, operator).\n\n    var array = [2, 5, 9, 2];\n    var index = array.lastIndexOf(2);\n    // index is 3\n    index = array.lastIndexOf(7);\n    // index is -1\n    index = array.lastIndexOf(2, 3);\n    // index is 3\n    index = array.lastIndexOf(2, 2);\n    // index is 0\n    index = array.lastIndexOf(2, -2);\n    // index is 0\n    index = array.lastIndexOf(2, -1);\n    // index is 3\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "searchElement",
+                    "text": "Element to locate in the array.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,641,19",
+                      "text": "0,641,33,32",
+                      "type": "0,641,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "fromIndex",
+                    "optional": true,
+                    "text": "The index at which to start searching backwards. Defaults to the array's\nlength, i.e. the whole array will be searched. If the index is greater than or equal to the length of\nthe array, the whole array will be searched. If negative, it is taken as the offset from the end of the\narray. Note that even when the index is negative, the array is still searched from back to front. If\nthe calculated index is less than 0, -1 is returned, i.e. the array will not be searched.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,642,21",
+                      "text": "0,642,32,73:0,643,4,397",
+                      "type": "0,642,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The index of element found or -1.\n",
+                    "type": "Number",
+                    "src": {
+                      "text": "0,647,21,34",
+                      "type": "0,647,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,618,12",
+                  "text": "0,619,4,737"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "forEach",
+                "text": "Executes a provided function once per array element.\n\n<a href='#!/api/Array-method-forEach'>forEach</a> executes the provided function (`callback`) once for each element present in the array. `callback`\nis invoked only for indexes of the array which have assigned values; it is not invoked for indexes which\nhave been deleted or which have never been assigned values.\n\nIf a `thisArg` parameter is provided to <a href='#!/api/Array-method-forEach'>forEach</a>, it will be used as the `this` value for each `callback`\ninvocation as if `callback.call(thisArg, element, index, array)` was called. If `thisArg` is <a href='#!/api/undefined'>undefined</a> or\n<a href='#!/api/null'>null</a>, the `this` value within the function depends on whether the function is in strict mode or not\n(passed value if in strict mode, global object if in non-strict mode).\n\nThe `range` of elements processed by <a href='#!/api/Array-method-forEach'>forEach</a> is set before the first invocation of `callback`. Elements\nwhich are appended to the array after the call to <a href='#!/api/Array-method-forEach'>forEach</a> begins will not be visited by `callback`. If\nexisting elements of the array are changed, or deleted, their value as passed to callback will be the\nvalue at the time <a href='#!/api/Array-method-forEach'>forEach</a> visits them; elements that are deleted are not visited.\n\nThe following code logs a line for each element in an array:\n\n    function logArrayElements(element, index, array) {\n        console.log(\"a[\" + index + \"] = \" + element);\n    }\n    [2, 5, 9].forEach(logArrayElements);\n    // logs:\n    // a[0] = 2\n    // a[1] = 5\n    // a[2] = 9\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "Function to execute for each element.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "The element value.\n",
+                        "type": "Mixed",
+                        "src": {
+                          "name": "0,682,28",
+                          "text": "0,682,34,19",
+                          "type": "0,682,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "index",
+                        "text": "The element index.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "0,683,29",
+                          "text": "0,683,35,19",
+                          "type": "0,683,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "array",
+                        "text": "The array being traversed.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "0,684,28",
+                          "text": "0,684,34,27",
+                          "type": "0,684,12"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,681,22",
+                      "text": "0,681,31,38",
+                      "type": "0,681,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "thisArg",
+                    "optional": true,
+                    "text": "Object to use as `this` when executing `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,685,21",
+                      "text": "0,685,30,51",
+                      "type": "0,685,12"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,651,12",
+                  "text": "0,652,4,1457"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "every",
+                "text": "Tests whether all elements in the array pass the test implemented\nby the provided function.\n\n<a href='#!/api/Array-method-every'>every</a> executes the provided `callback` function once for each element\npresent in the array until it finds one where `callback` returns a\nfalse value. If such an element is found, the <a href='#!/api/Array-method-every'>every</a> method\nimmediately returns false. Otherwise, if `callback` returned a true\nvalue for all elements, <a href='#!/api/Array-method-every'>every</a> will return true. `callback` is invoked\nonly for indexes of the array which have assigned values; it is not\ninvoked for indexes which have been deleted or which have never\nbeen assigned values.\n\nIf a `thisObject` parameter is provided to <a href='#!/api/Array-method-every'>every</a>, it will be used as\nthe `this` for each invocation of the callback. If it is not\nprovided, or is <a href='#!/api/null'>null</a>, the global object associated with callback is\nused instead.\n\n<a href='#!/api/Array-method-every'>every</a> does not mutate the array on which it is called.\n\nThe range of elements processed by <a href='#!/api/Array-method-every'>every</a> is set before the first\ninvocation of callback. Elements which are appended to the array\nafter the call to every begins will not be visited by `callback`. If\nexisting elements of the array are changed, their value as passed\nto `callback` will be the value at the time <a href='#!/api/Array-method-every'>every</a> visits them;\nelements that are deleted are not visited.\n\n<a href='#!/api/Array-method-every'>every</a> acts like the \"for all\" quantifier in mathematics. In\nparticular, for an empty array, it returns true. (It is vacuously\ntrue that all elements of the empty set satisfy any given\ncondition.)\n\nThe following example tests whether all elements in the array are\nbigger than 10.\n\n    function isBigEnough(element, index, array) {\n      return (element >= 10);\n    }\n    var passed = [12, 5, 8, 130, 44].every(isBigEnough);\n    // passed is false\n    passed = [12, 54, 18, 130, 44].every(isBigEnough);\n    // passed is true\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "Function to test for each element.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "The element value.\n",
+                        "type": "Mixed",
+                        "src": {
+                          "name": "0,735,28",
+                          "text": "0,735,34,19",
+                          "type": "0,735,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "index",
+                        "text": "The element index.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "0,736,29",
+                          "text": "0,736,35,19",
+                          "type": "0,736,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "array",
+                        "text": "The array being traversed.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "0,737,28",
+                          "text": "0,737,34,27",
+                          "type": "0,737,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "return",
+                        "text": "Should return true when element passes the test.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,738,30",
+                          "text": "0,738,37,49",
+                          "type": "0,738,12"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,734,22",
+                      "text": "0,734,31,35",
+                      "type": "0,734,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "thisObject",
+                    "optional": true,
+                    "text": "Object to use as `this` when executing `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,739,21",
+                      "text": "0,739,33,51",
+                      "type": "0,739,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True when all elements pass the test.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,740,22,38",
+                      "type": "0,740,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,689,12",
+                  "text": "0,690,4,1826"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "some",
+                "text": "Tests whether some element in the array passes the test implemented\nby the provided function.\n\n<a href='#!/api/Array-method-some'>some</a> executes the `callback` function once for each element\npresent in the array until it finds one where `callback` returns a\ntrue value. If such an element is found, some immediately returns\ntrue. Otherwise, some returns false. `callback` is invoked only for\nindexes of the array which have assigned values; it is not invoked\nfor indexes which have been deleted or which have never been\nassigned values.\n\nIf a `thisObject` parameter is provided to some, it will be used as\nthe `this` for each invocation of the `callback`. If it is not\nprovided, or is <a href='#!/api/null'>null</a>, the global object associated with callback is\nused instead.\n\n<a href='#!/api/Array-method-some'>some</a> does not mutate the array on which it is called.\n\nThe range of elements processed by <a href='#!/api/Array-method-some'>some</a> is set before the first\ninvocation of callback. Elements that are appended to the array\nafter the call to some begins will not be visited by `callback`. If\nan existing, unvisited element of the array is changed by `callback`,\nits value passed to the visiting callback will be the value at the\ntime that <a href='#!/api/Array-method-some'>some</a> visits that element's index; elements that are\ndeleted are not visited.\n\nThe following example tests whether some element in the array is\nbigger than 10.\n\n    function isBigEnough(element, index, array) {\n      return (element >= 10);\n    }\n    var passed = [2, 5, 8, 1, 4].some(isBigEnough);\n    // passed is false\n    passed = [12, 5, 8, 1, 4].some(isBigEnough);\n    // passed is true\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "Function to test for each element.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "The element value.\n",
+                        "type": "Mixed",
+                        "src": {
+                          "name": "0,785,28",
+                          "text": "0,785,34,19",
+                          "type": "0,785,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "index",
+                        "text": "The element index.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "0,786,29",
+                          "text": "0,786,35,19",
+                          "type": "0,786,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "array",
+                        "text": "The array being traversed.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "0,787,28",
+                          "text": "0,787,34,27",
+                          "type": "0,787,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "return",
+                        "text": "Should return true when element passes the test.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,788,30",
+                          "text": "0,788,37,49",
+                          "type": "0,788,12"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,784,22",
+                      "text": "0,784,31,35",
+                      "type": "0,784,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "thisObject",
+                    "optional": true,
+                    "text": "Object to use as `this` when executing `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,789,21",
+                      "text": "0,789,33,51",
+                      "type": "0,789,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True when at least one element passes the test.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,790,22,48",
+                      "type": "0,790,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,744,12",
+                  "text": "0,745,4,1578"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "filter",
+                "text": "Creates a new array with all elements that pass the test\nimplemented by the provided function.\n\n<a href='#!/api/Array-method-filter'>filter</a> calls a provided `callback` function once for each element in\nan array, and constructs a new array of all the values for which\n`callback` returns a true value. `callback` is invoked only for indexes\nof the array which have assigned values; it is not invoked for\nindexes which have been deleted or which have never been assigned\nvalues. Array elements which do not pass the `callback` test are\nsimply skipped, and are not included in the new array.\n\nIf a `thisObject` parameter is provided to <a href='#!/api/Array-method-filter'>filter</a>, it will be\nused as the `this` for each invocation of the `callback`. If it is not\nprovided, or is <a href='#!/api/null'>null</a>, the global object associated with callback is\nused instead.\n\n<a href='#!/api/Array-method-filter'>filter</a> does not mutate the array on which it is called.\n\nThe range of elements processed by <a href='#!/api/Array-method-filter'>filter</a> is set before the first\ninvocation of `callback`. Elements which are appended to the array\nafter the call to <a href='#!/api/Array-method-filter'>filter</a> begins will not be visited by `callback`. If\nexisting elements of the array are changed, or deleted, their value\nas passed to `callback` will be the value at the time <a href='#!/api/Array-method-filter'>filter</a> visits\nthem; elements that are deleted are not visited.\n\nThe following example uses filter to create a filtered array that\nhas all elements with values less than 10 removed.\n\n    function isBigEnough(element, index, array) {\n      return (element >= 10);\n    }\n    var filtered = [12, 5, 8, 130, 44].filter(isBigEnough);\n    // filtered is [12, 130, 44]\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "Function to test for each element.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "The element value.\n",
+                        "type": "Mixed",
+                        "src": {
+                          "name": "0,832,28",
+                          "text": "0,832,34,19",
+                          "type": "0,832,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "index",
+                        "text": "The element index.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "0,833,29",
+                          "text": "0,833,35,19",
+                          "type": "0,833,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "array",
+                        "text": "The array being traversed.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "0,834,28",
+                          "text": "0,834,34,27",
+                          "type": "0,834,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "return",
+                        "text": "Should return true when element passes the test.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,835,30",
+                          "text": "0,835,37,49",
+                          "type": "0,835,12"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,831,22",
+                      "text": "0,831,31,35",
+                      "type": "0,831,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "thisObject",
+                    "optional": true,
+                    "text": "Object to use as `this` when executing `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,836,21",
+                      "text": "0,836,33,51",
+                      "type": "0,836,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Array of elements that passed the test.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,837,20,40",
+                      "type": "0,837,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,794,12",
+                  "text": "0,795,4,1587"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "map",
+                "text": "Creates a new array with the results of calling a provided function\non every element in this array.\n\n<a href='#!/api/Array-method-map'>map</a> calls a provided `callback` function once for each element in\nan array, in order, and constructs a new array from the\nresults. `callback` is invoked only for indexes of the array which\nhave assigned values; it is not invoked for indexes which have been\ndeleted or which have never been assigned values.\n\nIf a `thisArg` parameter is provided to map, it will be used as the\n`this` for each invocation of the `callback`. If it is not provided, or\nis <a href='#!/api/null'>null</a>, the global object associated with callback is used\ninstead.\n\n<a href='#!/api/Array-method-map'>map</a> does not mutate the array on which it is called.\n\nThe range of elements processed by <a href='#!/api/Array-method-map'>map</a> is set before the first\ninvocation of `callback`. Elements which are appended to the array\nafter the call to <a href='#!/api/Array-method-map'>map</a> begins will not be visited by `callback`. If\nexisting elements of the array are changed, or deleted, their value\nas passed to `callback` will be the value at the time <a href='#!/api/Array-method-map'>map</a> visits\nthem; elements that are deleted are not visited.\n\nThe following code creates an array of \"plural\" forms of nouns from\nan array of their singular forms.\n\n    function fuzzyPlural(single) {\n      var result = single.replace(/o/g, 'e');\n      if( single === 'kangaroo'){\n        result += 'se';\n      }\n      return result;\n    }\n\n    var words = [\"foot\", \"goose\", \"moose\", \"kangaroo\"];\n    console.log(words.map(fuzzyPlural));\n\n    // [\"feet\", \"geese\", \"meese\", \"kangareese\"]\n\nThe following code takes an array of numbers and creates a new\narray containing the square roots of the numbers in the first\narray.\n\n    var numbers = [1, 4, 9];\n    var roots = numbers.map(Math.sqrt);\n    // roots is now [1, 2, 3], numbers is still [1, 4, 9]\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "Function that produces an element of the new Array\nfrom an element of the current one.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "value",
+                        "text": "The element value.\n",
+                        "type": "Mixed",
+                        "src": {
+                          "name": "0,893,28",
+                          "text": "0,893,34,19",
+                          "type": "0,893,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "index",
+                        "text": "The element index.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "0,894,29",
+                          "text": "0,894,35,19",
+                          "type": "0,894,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "array",
+                        "text": "The array being traversed.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "0,895,28",
+                          "text": "0,895,34,27",
+                          "type": "0,895,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "return",
+                        "text": "Should return true when element passes the test.\n",
+                        "type": "Boolean",
+                        "src": {
+                          "name": "0,896,30",
+                          "text": "0,896,37,49",
+                          "type": "0,896,12"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,891,22",
+                      "text": "0,891,31,51:0,892,4,36",
+                      "type": "0,891,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "thisObject",
+                    "optional": true,
+                    "text": "Object to use as `this` when executing `callback`.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,897,21",
+                      "text": "0,897,33,51",
+                      "type": "0,897,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Array of the return values of `callback` function.\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "0,898,20,51",
+                      "type": "0,898,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,841,12",
+                  "text": "0,842,4,1812"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reduce",
+                "text": "Applies a function against an accumulator and each value of the\narray (from left-to-right) as to reduce it to a single value.\n\n<a href='#!/api/Array-method-reduce'>reduce</a> executes the `callback` function once for each element\npresent in the array, excluding holes in the array.\n\nThe first time the `callback` is called, `previousValue` and\n`currentValue` can be one of two values. If `initialValue` is\nprovided in the call to <a href='#!/api/Array-method-reduce'>reduce</a>, then `previousValue` will be equal to\n`initialValue` and `currentValue` will be equal to the first value in\nthe array. If no `initialValue` was provided, then `previousValue` will\nbe equal to the first value in the array and `currentValue` will be\nequal to the second.\n\nSuppose the following use of reduce occurred:\n\n    [0,1,2,3,4].reduce(function(previousValue, currentValue, index, array){\n      return previousValue + currentValue;\n    });\n\nThe callback would be invoked four times, with the arguments and\nreturn values in each call being as follows:\n\n|             | previousValue | currentValue | index | array       | return value\n|:------------|:--------------|:-------------|:------|:------------|:------------\n| first call  | 0             | 1            | 1     | [0,1,2,3,4] | 1\n| second call | 1             | 2            | 2     | [0,1,2,3,4] | 3\n| third call  | 3             | 3            | 3     | [0,1,2,3,4] | 6\n| fourth call | 6             | 4            | 4     | [0,1,2,3,4] | 10\n\nThe value returned by <a href='#!/api/Array-method-reduce'>reduce</a> would be that of the last callback\ninvocation (10).\n\nIf you were to provide an initial value as the second argument to\nreduce, the result would look like this:\n\n    [0,1,2,3,4].reduce(function(previousValue, currentValue, index, array){\n      return previousValue + currentValue;\n    }, 10);\n\n|             | previousValue | currentValue | index | array       | return value\n|:------------|:--------------|:-------------|:------|:------------|:------------\n| first call  | 10            | 0            | 0     | [0,1,2,3,4] | 10\n| second call | 10            | 1            | 1     | [0,1,2,3,4] | 11\n| third call  | 11            | 2            | 2     | [0,1,2,3,4] | 13\n| fourth call | 13            | 3            | 3     | [0,1,2,3,4] | 16\n| fifth call  | 16            | 4            | 4     | [0,1,2,3,4] | 20\n\nThe value returned by <a href='#!/api/Array-method-reduce'>reduce</a> this time would be, of course, 20.\n\nExample: Sum up all values within an array:\n\n    var total = [0, 1, 2, 3].reduce(function(a, b) {\n        return a + b;\n    });\n    // total == 6\n\nExample: Flatten an array of arrays:\n\n    var flattened = [[0, 1], [2, 3], [4, 5]].reduce(function(a, b) {\n        return a.concat(b);\n    });\n    // flattened is [0, 1, 2, 3, 4, 5]\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "Function to execute on each value in the array.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "previousValue",
+                        "text": "The value previously returned in the last\ninvocation of the `callback`, or `initialValue`, if supplied.\n",
+                        "type": "Mixed",
+                        "src": {
+                          "name": "0,970,28",
+                          "text": "0,970,42,42:0,971,4,62",
+                          "type": "0,970,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "currentValue",
+                        "text": "The current element being processed in the array.\n",
+                        "type": "Mixed",
+                        "src": {
+                          "name": "0,972,28",
+                          "text": "0,972,41,50",
+                          "type": "0,972,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "index",
+                        "text": "The index of the current element being processed in the array.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "0,973,29",
+                          "text": "0,973,35,63",
+                          "type": "0,973,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "array",
+                        "text": "The array <a href='#!/api/Array-method-reduce'>reduce</a> was called upon.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "0,974,28",
+                          "text": "0,974,34,36",
+                          "type": "0,974,12"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,969,22",
+                      "text": "0,969,31,48",
+                      "type": "0,969,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "initialValue",
+                    "optional": true,
+                    "text": "Object to use as the first argument to the first call\nof the `callback`.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,975,20",
+                      "text": "0,975,34,54:0,976,4,19",
+                      "type": "0,975,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value returned by final invocation of the `callback`.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "text": "0,977,20,58",
+                      "type": "0,977,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,902,12",
+                  "text": "0,903,4,2714"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reduceRight",
+                "text": "Applies a function simultaneously against two values of the array\n(from right-to-left) as to reduce it to a single value.\n\n<a href='#!/api/Array-method-reduceRight'>reduceRight</a> executes the `callback` function once for each\nelement present in the array, excluding holes in the array.\n\nThe first time the `callback` is called, `previousValue` and\n`currentValue` can be one of two values. If `initialValue` is\nprovided in the call to <a href='#!/api/Array-method-reduceRight'>reduceRight</a>, then `previousValue` will be equal to\n`initialValue` and `currentValue` will be equal to the last value in\nthe array. If no `initialValue` was provided, then `previousValue` will\nbe equal to the last value in the array and `currentValue` will be\nequal to the second-to-last value.\n\nSome example run-throughs of the function would look like this:\n\n    [0, 1, 2, 3, 4].reduceRight(function(previousValue, currentValue, index, array) {\n        return previousValue + currentValue;\n    });\n\n    // First call\n    previousValue = 4, currentValue = 3, index = 3\n\n    // Second call\n    previousValue = 7, currentValue = 2, index = 2\n\n    // Third call\n    previousValue = 9, currentValue = 1, index = 1\n\n    // Fourth call\n    previousValue = 10, currentValue = 0, index = 0\n\n    // array is always the object [0,1,2,3,4] upon which reduceRight was called\n\n    // Return Value: 10\n\nAnd if you were to provide an initialValue, the result would look like this:\n\n    [0, 1, 2, 3, 4].reduceRight(function(previousValue, currentValue, index, array) {\n        return previousValue + currentValue;\n    }, 10);\n\n    // First call\n    previousValue = 10, currentValue = 4, index = 4\n\n    // Second call\n    previousValue = 14, currentValue = 3, index = 3\n\n    // Third call\n    previousValue = 17, currentValue = 2, index = 2\n\n    // Fourth call\n    previousValue = 19, currentValue = 1, index = 1\n\n    // Fifth call\n    previousValue = 20, currentValue = 0, index = 0\n\n    // array is always the object [0,1,2,3,4] upon which reduceRight was called\n\n    // Return Value: 20\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "callback",
+                    "text": "Function to execute on each value in the array.\n",
+                    "type": "Function",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "previousValue",
+                        "text": "The value previously returned in the last\ninvocation of the `callback`, or `initialValue`, if supplied.\n",
+                        "type": "Mixed",
+                        "src": {
+                          "name": "0,1046,28",
+                          "text": "0,1046,42,42:0,1047,4,62",
+                          "type": "0,1046,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "currentValue",
+                        "text": "The current element being processed in the array.\n",
+                        "type": "Mixed",
+                        "src": {
+                          "name": "0,1048,28",
+                          "text": "0,1048,41,50",
+                          "type": "0,1048,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "index",
+                        "text": "The index of the current element being processed in the array.\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "0,1049,29",
+                          "text": "0,1049,35,63",
+                          "type": "0,1049,12"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "array",
+                        "text": "The array <a href='#!/api/Array-method-reduceRight'>reduceRight</a> was called upon.\n",
+                        "type": "Array",
+                        "src": {
+                          "name": "0,1050,28",
+                          "text": "0,1050,34,41",
+                          "type": "0,1050,12"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "name": "0,1045,22",
+                      "text": "0,1045,31,48",
+                      "type": "0,1045,12"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "initialValue",
+                    "optional": true,
+                    "text": "Object to use as the first argument to the first call\nof the `callback`.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,1051,20",
+                      "text": "0,1051,34,54:0,1052,4,19",
+                      "type": "0,1051,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value returned by final invocation of the `callback`.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "text": "0,1053,20,58",
+                      "type": "0,1053,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,981,12",
+                  "text": "0,982,4,2029"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "length",
+                "text": "Reflects the number of elements in an array.\n\nThe value of the <a href='#!/api/Array-property-length'>length</a> property is an integer with a positive sign and a value less than 2 to the 32\npower (232).\n\nYou can set the <a href='#!/api/Array-property-length'>length</a> property to truncate an array at any time. When you extend an array by changing\nits <a href='#!/api/Array-property-length'>length</a> property, the number of actual elements does not increase; for example, if you set <a href='#!/api/Array-property-length'>length</a>\nto 3 when it is currently 2, the array still contains only 2 elements.\n\nIn the following example the array numbers is iterated through by looking at the <a href='#!/api/Array-property-length'>length</a> property to see\nhow many elements it has. Each value is then doubled.\n\n    var numbers = [1,2,3,4,5];\n    for (var i = 0; i < numbers.length; i++) {\n        numbers[i] *= 2;\n    }\n    // numbers is now [2,4,6,8,10];\n\nThe following example shortens the array `statesUS` to a length of 50 if the current <a href='#!/api/Array-property-length'>length</a> is greater\nthan 50.\n\n    if (statesUS.length > 50) {\n        statesUS.length=50\n    }\n",
+                "type": "Number",
+                "src": {
+                  "name": "0,153,23",
+                  "text": "0,154,4,933",
+                  "type": "0,153,15"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "isArray",
+                "static": true,
+                "text": "Returns true if an object is an array, false if it is not.\n\n    // all following calls return true\n    Array.isArray([]);\n    Array.isArray([1]);\n    Array.isArray( new Array() );\n    Array.isArray( Array.prototype ); // Little known fact: Array.prototype itself is an array.\n\n    // all following calls return false\n    Array.isArray();\n    Array.isArray({});\n    Array.isArray(null);\n    Array.isArray(undefined);\n    Array.isArray(17);\n    Array.isArray(\"Array\");\n    Array.isArray(true);\n    Array.isArray(false);\n    Array.isArray({ __proto__ : Array.prototype });\n\n**NOTE:** This method is part of the ECMAScript 5 standard.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "The object to be checked.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,589,19",
+                      "text": "0,589,23,26",
+                      "type": "0,589,12"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True when Array.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,590,22,17",
+                      "type": "0,590,13"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,566,12",
+                  "static": "0,567,4",
+                  "text": "0,568,4,632"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,2,11",
+          "text": "0,3,4,4804"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

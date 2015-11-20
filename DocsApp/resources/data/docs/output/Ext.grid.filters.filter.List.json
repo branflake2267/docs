@@ -1,0 +1,500 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/grid/filters/filter/List.js",
+    "../../../ext/classic/classic/src/grid/filters/filter/Base.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "grid.filter.list",
+        "extends": "Ext.grid.filters.filter.SingleFilter",
+        "name": "Ext.grid.filters.filter.List",
+        "text": "The list grid filter allows you to create a filter selection that limits results\nto values matching an element in a list.  The filter can be set programmatically or via\nuser input with a configurable <a href='#!/api/Ext.form.field.Checkbox'>Ext.form.field.Checkbox</a> in the filter section\nof the column header.\n\nList filters are able to be preloaded/backed by an Ext.data.Store to load\ntheir options the first time they are shown.  They are also able to create their own\nlist of values from  all unique values of the specified <a href='#!/api/Ext.grid.filters.filter.List-cfg-dataIndex'>dataIndex</a> field in\nthe store at first time of filter invocation.\n\nExample List Filter Usage:\n\n    @example\n    var shows = Ext.create('Ext.data.Store', {\n        fields: ['id','show','rating'],\n        data: [\n            {id: 0, show: 'Battlestar Galactica', rating: 2},\n            {id: 1, show: 'Doctor Who', rating: 4},\n            {id: 2, show: 'Farscape', rating: 3},\n            {id: 3, show: 'Firefly', rating: 4},\n            {id: 4, show: 'Star Trek', rating: 1},\n            {id: 5, show: 'Star Wars: Christmas Special', rating: 5}\n        ]\n    });\n\n    Ext.create('Ext.grid.Panel', {\n        renderTo: Ext.getBody(),\n        title: 'Sci-Fi Television',\n        height: 250,\n        width: 350,\n        store: shows,\n        plugins: 'gridfilters',\n        columns: [{\n            dataIndex: 'id',\n            text: 'ID',\n            width: 50\n        },{\n            dataIndex: 'show',\n            text: 'Show',\n            flex: 1\n        },{\n            dataIndex: 'rating',\n            text: 'Rating',\n            width: 75,\n            filter: {\n                type: 'list',\n                value: 5\n            }\n        }]\n    });\n\n## Options\n\nThere are three means to determine the list of options to present to the user:\n\n  * The <a href='#!/api/Ext.grid.filters.filter.List-cfg-options'>cfg-options</a> config.\n  * The <a href='#!/api/Ext.grid.filters.filter.List-cfg-store'>cfg-store</a> config. In this mode, the <a href='#!/api/Ext.grid.filters.filter.List-cfg-idField'>cfg-idField</a>\n    and <a href='#!/api/Ext.grid.filters.filter.List-cfg-labelField'>cfg-labelField</a> configs are used to extract the presentation and\n    filtering values from the <a href='#!/api/Ext.grid.filters.filter.List-cfg-store'>store</a> and apply to the menu items and grid store\n    filter, respectively.\n  * If none of the above is specified, the associated grid's store is used. In this\n    case, the <a href='#!/api/Ext.grid.filters.filter.List-cfg-dataIndex'>cfg-dataIndex</a> is used to determine the filter values and\n    the <a href='#!/api/Ext.grid.filters.filter.List-cfg-labelIndex'>cfg-labelIndex</a> is used to populate the menu items. These fields\n    are extracted from the records in the associated grid's store. Both of these\n    configs default to the column's <a href='#!/api/Ext.grid.filters.filter.List-cfg-dataIndex'>dataIndex</a> property.\n\nIn all of these modes, a store is created that is synchronized with the menu items.\nThe records in this store have <a href='#!/api/Ext.grid.filters.filter.List-cfg-idField'>cfg-idField</a> and <a href='#!/api/Ext.grid.filters.filter.List-cfg-labelField'>cfg-labelField</a>\nfields that get populated from which ever source was provided.\n\n    var filters = Ext.create('Ext.grid.Panel', {\n        ...\n        columns: [{\n            text: 'Size',\n            dataIndex: 'size',\n\n            filter: {\n                type: 'list',\n                // options will be used as data to implicitly creates an ArrayStore\n                options: ['extra small', 'small', 'medium', 'large', 'extra large']\n            }\n        }],\n        ...\n    });\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "active",
+                "text": "Indicates the initial status of the filter (defaults to false).\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,47,23",
+                  "text": "1,48,8,64",
+                  "type": "1,47,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "dataIndex",
+                "text": "The <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> dataIndex of the field this filter represents.\nThe dataIndex does not actually have to exist in the store.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,59,22",
+                  "text": "1,60,8,134",
+                  "type": "1,59,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "idField",
+                "optional": true,
+                "text": "The field name for the `id` of records in this list's <a href='#!/api/Ext.grid.filters.filter.List-cfg-store'>cfg-store</a>. These values are\nused to populate the filter for the grid's store.\n",
+                "type": "String",
+                "value": "\"id\"",
+                "src": {
+                  "name": "0,148,23",
+                  "text": "0,149,8,143",
+                  "type": "0,148,14",
+                  "value": "0,148,31"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "itemDefaults",
+                "optional": true,
+                "text": "See the <a href='#!/api/Ext.grid.filters.filter.Base-cfg-itemDefaults'>Ext.grid.filters.filter.Base#cfg-itemDefaults</a> for\nthe base class for details.\n\nIn the case of this class, however, note that the `checked` config should **not** be\nspecified.\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,96,23",
+                  "text": "0,97,8,205",
+                  "type": "0,96,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "labelField",
+                "optional": true,
+                "text": "The field name for the menu item text in the records in this list's <a href='#!/api/Ext.grid.filters.filter.List-cfg-store'>cfg-store</a>.\n",
+                "type": "String",
+                "value": "\"text\"",
+                "src": {
+                  "name": "0,155,23",
+                  "text": "0,156,8,90",
+                  "type": "0,155,14",
+                  "value": "0,155,34"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "labelIndex",
+                "optional": true,
+                "since": "5.1.0",
+                "text": "The field in the records of the grid's store from which the menu item text should be retrieved.\nThis field is only used when no <a href='#!/api/Ext.grid.filters.filter.List-cfg-options'>cfg-options</a> and no <a href='#!/api/Ext.grid.filters.filter.List-cfg-store'>cfg-store</a> is provided\nand the distinct value of the grid's store need to be generated dynamically.\n\nIf not provided, this field defaults to the column's <a href='#!/api/Ext.grid.filters.filter.List-cfg-dataIndex'>dataIndex</a> property.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,161,23",
+                  "since": "0,167,15",
+                  "text": "0,162,8,344",
+                  "type": "0,161,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "loadOnShow",
+                "text": "Defaults to true.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,180,23",
+                  "text": "0,181,8,18",
+                  "type": "0,180,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "loadingText",
+                "optional": true,
+                "text": "The text that is displayed while the configured store is loading.\n",
+                "type": "String",
+                "value": "\"Loading...\"",
+                "src": {
+                  "name": "0,173,23",
+                  "text": "0,174,8,66",
+                  "type": "0,173,14",
+                  "value": "0,173,35"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "options",
+                "optional": true,
+                "text": "The data to be used to implicitly create a data store to back this list. This is used only when\nthe data source is **local**. If the data for the list is remote, use the <a href='#!/api/Ext.grid.filters.filter.List-cfg-store'>store</a>\nconfig instead.\n\nIf neither store nor <a href='#!/api/Ext.grid.filters.filter.List-cfg-options'>options</a> is specified, then the choices list is automatically\npopulated from all unique values of the specified <a href='#!/api/Ext.grid.filters.filter.List-cfg-dataIndex'>dataIndex</a> field in the store at first\ntime of filter invocation.\n\nEach item within the provided array may be in one of the following formats:\n\n  - **Array** :\n\n        options: [\n            [11, 'extra small'],\n            [18, 'small'],\n            [22, 'medium'],\n            [35, 'large'],\n            [44, 'extra large']\n        ]\n\n  - **Object** :\n\n        labelField: 'name', // override default of 'text'\n        options: [\n            {id: 11, name:'extra small'},\n            {id: 18, name:'small'},\n            {id: 22, name:'medium'},\n            {id: 35, name:'large'},\n            {id: 44, name:'extra large'}\n        ]\n\n  - **String** :\n\n        options: ['extra small', 'small', 'medium', 'large', 'extra large']\n",
+                "type": "Array",
+                "src": {
+                  "name": "0,109,22",
+                  "text": "0,110,8,1082",
+                  "type": "0,109,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "single",
+                "text": "Specify true to group all items in this list into a single-select\nradio button group. Defaults to false.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,186,23",
+                  "text": "0,187,8,105",
+                  "type": "0,186,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "store",
+                "optional": true,
+                "text": "The <a href='#!/api/Ext.data.Store'>Ext.data.Store</a> this list should use as its data source.\n\nIf neither store nor <a href='#!/api/Ext.grid.filters.filter.List-cfg-options'>options</a> is specified, then the choices list is automatically\npopulated from all unique values of the specified <a href='#!/api/Ext.grid.filters.filter.List-cfg-dataIndex'>dataIndex</a> field in the store at first\ntime of filter invocation.\n",
+                "type": "Ext.data.Store",
+                "src": {
+                  "name": "0,195,31",
+                  "text": "0,196,8,284",
+                  "type": "0,195,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "updateBuffer",
+                "text": "Number of milliseconds to wait after user interaction to fire an update. Only supported\nby filters: 'list', 'numeric', and 'string'.\n",
+                "type": "Number",
+                "src": {
+                  "name": "1,34,26",
+                  "text": "1,35,12,133",
+                  "type": "1,34,18"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "events",
+            "items": [
+              {
+                "$type": "event",
+                "name": "activate",
+                "text": "Fires when an inactive filter becomes active\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.grid.filters.Filters",
+                    "src": {
+                      "name": "1,84,42",
+                      "type": "1,84,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,82,15",
+                  "text": "1,83,8,45"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "deactivate",
+                "text": "Fires when an active filter becomes inactive\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "type": "Ext.grid.filters.Filters",
+                    "src": {
+                      "name": "1,90,42",
+                      "type": "1,90,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,88,15",
+                  "text": "1,89,8,45"
+                }
+              },
+              {
+                "$type": "event",
+                "name": "update",
+                "text": "Fires when a filter configuration has changed\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "this",
+                    "text": "The filter object.\n",
+                    "type": "Ext.grid.filters.Filters",
+                    "src": {
+                      "name": "1,96,42",
+                      "text": "1,96,47,19",
+                      "type": "1,96,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,94,15",
+                  "text": "1,95,8,46"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Initializes the filter given its configuration.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "type": "Object",
+                    "src": {
+                      "name": "1,101,24",
+                      "type": "1,101,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,103,0",
+                  "text": "1,100,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createMenu",
+                "text": "Creates the Menu for this filter.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "Filter configuration\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,381,24",
+                      "text": "0,381,31,21",
+                      "type": "0,381,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "Ext.menu.Menu",
+                    "src": {
+                      "type": "0,382,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,379,8",
+                  "name": "0,384,0",
+                  "text": "0,380,8,34"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "createMenuItems",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "store",
+                    "src": {
+                      "name": "0,432,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,431,9",
+                  "name": "0,432,0"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroys this filter by purging any event listeners, and removing any menus.\n",
+                "src": {
+                  "name": "1,119,0",
+                  "text": "1,117,8,77"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getValue",
+                "template": true,
+                "text": "Template method to be implemented by all subclasses that is to\nget and return the value of the filter.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The 'serialized' form of this filter\n",
+                    "type": "Object",
+                    "src": {
+                      "text": "1,242,25,37",
+                      "type": "1,242,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,238,8",
+                  "name": "1,239,16",
+                  "template": "1,243,8",
+                  "text": "1,240,8,103"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onValueChange",
+                "text": "Handler method called when there is a significant event on an input item.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "field",
+                    "src": {
+                      "name": "1,194,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "e",
+                    "src": {
+                      "name": "1,194,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,191,8",
+                  "name": "1,194,0",
+                  "text": "1,192,8,74"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "preprocess",
+                "template": true,
+                "text": "Template method to be implemented by all subclasses that need to perform\nany operations before the column filter has finished construction.\n",
+                "src": {
+                  "access": "1,225,8",
+                  "name": "1,226,16",
+                  "template": "1,229,8",
+                  "text": "1,227,8,140"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setActive",
+                "text": "Sets the status of the filter and fires the appropriate events.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "active",
+                    "text": "The new filter state.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "1,258,25",
+                      "text": "1,258,32,22",
+                      "type": "1,258,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The filter key for columns that support multiple filters.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,259,24",
+                      "text": "1,259,28,58",
+                      "type": "1,259,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,261,0",
+                  "text": "1,257,8,64"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setValue",
+                "text": "Template method that is to set the value of the filter.\n",
+                "src": {
+                  "access": "0,594,8",
+                  "name": "0,597,0",
+                  "text": "0,595,8,56"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "active",
+                "text": "True if this filter is active. Use setActive() to alter after configuration. If\nyou set a value, the filter will be actived automatically.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "1,42,28",
+                  "text": "1,43,8,139",
+                  "type": "1,42,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "2,295,28",
+                  "text": "2,296,8,128",
+                  "type": "2,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "filterIdPrefix",
+                "text": "The prefix for id's used to track stateful Store filters.\n",
+                "src": {
+                  "access": "1,77,8",
+                  "name": "1,79,0",
+                  "text": "1,76,8,58"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "menu",
+                "text": "The filter configuration menu that will be installed into the filter submenu of a column menu.\n",
+                "type": "Ext.menu.Menu",
+                "src": {
+                  "name": "1,66,34",
+                  "text": "1,67,8,95",
+                  "type": "1,66,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "type",
+                "text": "The filter type. Used by the filters.Feature class when adding filters and applying state.\n",
+                "type": "String",
+                "src": {
+                  "name": "1,53,27",
+                  "text": "1,54,8,91",
+                  "type": "1,53,19"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,89,0",
+          "extends": "0,88,0",
+          "name": "0,87,0",
+          "text": "0,2,4,3108"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,827 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/amf/src/data/amf/XmlEncoder.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.data.amf.XmlEncoder",
+        "text": "This class serializes data in the Action Message Format XML (AMFX) format.\nIt can write simple and complex objects, to be used in conjunction with an\nAMFX-compliant server.\nTo create an encoded XMl, first construct an Encoder:\n\n    var encoder = Ext.create('Ext.data.amf.XmlEncoder');\n\nThen use the writer methods to out data to the :\n\n    encoder.writeObject(1);\n    encoder.writeObject({a: \"b\"});\n\nAnd access the data through the #bytes property:\n    encoder.body;\n\nYou can also reset the class to start a new body:\n\n    encoder.clear();\n\nCurrent limitations:\nAMF3 format (format:3)\n- Each object is written out explicitly, not using the reference tables\n  supported by the AMFX format. This means the function does NOT support\n  circular reference objects.\n- Objects that aren't Arrays, Dates, Strings, Document (XML) or primitive\n  values will be written out as anonymous objects with dynamic data.\n- If the object has a $flexType field, that field will be used in signifying\n  the object-type as an attribute, instead of being passed as data.\n- There's no JavaScript equivalent to the ByteArray type in ActionScript,\n  hence data will never be searialized as ByteArrays by the writeObject\n  function. A writeByteArray method is provided for writing out ByteArray objects.\n\nFor more information on working with AMF data please refer to the\n[AMF Guide](#/guide/amf).\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "constructor",
+                "text": "Creates new encoder.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "config",
+                    "text": "Configuration options\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,95,24",
+                      "text": "0,95,31,22",
+                      "type": "0,95,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,97,0",
+                  "text": "0,94,8,21"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clear",
+                "text": "Clears the accumulated data, starting with an empty string\n",
+                "src": {
+                  "name": "0,105,0",
+                  "text": "0,103,8,59"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeUndefined",
+                "text": "Returns the encoding for undefined (which is the same as the encoding for null)\n",
+                "src": {
+                  "name": "0,112,0",
+                  "text": "0,110,8,80"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeUndefined",
+                "text": "Writes the undefined value to the string\n",
+                "src": {
+                  "name": "0,119,0",
+                  "text": "0,117,8,41"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeNull",
+                "text": "Returns the encoding for null\n",
+                "src": {
+                  "name": "0,126,0",
+                  "text": "0,124,8,30"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeNull",
+                "text": "Writes the null value to the string\n",
+                "src": {
+                  "name": "0,133,0",
+                  "text": "0,131,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeBoolean",
+                "text": "Returns an encoded boolean\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "val",
+                    "text": "a boolean value\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,139,25",
+                      "text": "0,139,29,16",
+                      "type": "0,139,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,141,0",
+                  "text": "0,138,8,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeBoolean",
+                "text": "Writes a boolean value to the string\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "val",
+                    "text": "a boolean value\n",
+                    "type": "Boolean",
+                    "src": {
+                      "name": "0,153,25",
+                      "text": "0,153,29,16",
+                      "type": "0,153,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,155,0",
+                  "text": "0,152,8,37"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeString",
+                "text": "Returns an encoded string\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "str",
+                    "text": "the string to encode\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,162,24",
+                      "text": "0,162,28,21",
+                      "type": "0,162,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,164,0",
+                  "text": "0,161,8,26"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeString",
+                "text": "Writes a string tag with the string content.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "str",
+                    "text": "the string to encode\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,176,24",
+                      "text": "0,176,28,21",
+                      "type": "0,176,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,178,0",
+                  "text": "0,175,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeInt",
+                "text": "Returns an encoded int\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "num",
+                    "text": "the integer to encode\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,184,24",
+                      "text": "0,184,28,22",
+                      "type": "0,184,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,186,0",
+                  "text": "0,183,8,23"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeInt",
+                "text": "Writes a int tag with the content.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "num",
+                    "text": "the integer to encode\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,192,24",
+                      "text": "0,192,28,22",
+                      "type": "0,192,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,194,0",
+                  "text": "0,191,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeDouble",
+                "text": "Returns an encoded double\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "num",
+                    "text": "the double to encode\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,200,24",
+                      "text": "0,200,28,21",
+                      "type": "0,200,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,202,0",
+                  "text": "0,199,8,26"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeDouble",
+                "text": "Writes a double tag with the content.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "num",
+                    "text": "the double to encode\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,208,24",
+                      "text": "0,208,28,21",
+                      "type": "0,208,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,210,0",
+                  "text": "0,207,8,38"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeNumber",
+                "text": "Returns an encoded number. Decides wheter to use int or double encoding.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "num",
+                    "text": "the number to encode\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,216,24",
+                      "text": "0,216,28,21",
+                      "type": "0,216,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,218,0",
+                  "text": "0,215,8,73"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeNumber",
+                "text": "Writes a number, deciding if to use int or double as the tag\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "num",
+                    "text": "the number to encode\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,242,24",
+                      "text": "0,242,28,21",
+                      "type": "0,242,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,244,0",
+                  "text": "0,241,8,61"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeDate",
+                "text": "Encode a date\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "the date to encode\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,250,22",
+                      "text": "0,250,27,19",
+                      "type": "0,250,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,252,0",
+                  "text": "0,249,8,14"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeDate",
+                "text": "Write a date to the string\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "date",
+                    "text": "the date to encode\n",
+                    "type": "Date",
+                    "src": {
+                      "name": "0,258,22",
+                      "text": "0,258,27,19",
+                      "type": "0,258,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,260,0",
+                  "text": "0,257,8,27"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "encodeEcmaElement",
+                "text": "Encodes one ECMA array element\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "the name of the element\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,267,24",
+                      "text": "0,267,28,24",
+                      "type": "0,267,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "the value of the element\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,268,24",
+                      "text": "0,268,30,25",
+                      "type": "0,268,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "the encoded key-value pair\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,269,25,27",
+                      "type": "0,269,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,265,8",
+                  "name": "0,271,0",
+                  "text": "0,266,8,31"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeArray",
+                "text": "Encodes an array, marking it as an ECMA array if it has associative (non-ordinal) indices\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "array",
+                    "text": "the array to encode\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,278,23",
+                      "text": "0,278,29,20",
+                      "type": "0,278,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,280,0",
+                  "text": "0,277,8,90"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeArray",
+                "text": "Writes an array to the string, marking it as an ECMA array if it has associative (non-ordinal) indices\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "array",
+                    "text": "the array to encode\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,335,23",
+                      "text": "0,335,29,20",
+                      "type": "0,335,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,337,0",
+                  "text": "0,334,8,103"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeXml",
+                "text": "Encodes an xml document into a CDATA section\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xml",
+                    "text": "an XML document or element (Document type in some browsers)\n",
+                    "type": "XMLElement/HTMLElement",
+                    "src": {
+                      "name": "0,343,40",
+                      "text": "0,343,44,60",
+                      "type": "0,343,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,345,0",
+                  "text": "0,342,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeXml",
+                "text": "Write an XML document to the string\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xml",
+                    "text": "an XML document or element (Document type in some browsers)\n",
+                    "type": "XMLElement/HTMLElement",
+                    "src": {
+                      "name": "0,352,40",
+                      "text": "0,352,44,60",
+                      "type": "0,352,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,354,0",
+                  "text": "0,351,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeGenericObject",
+                "text": "Encodes a generic object into AMFX format. If a <tt>$flexType</tt> member is defined, list that as the object type.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "the object to encode\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,360,24",
+                      "text": "0,360,28,21",
+                      "type": "0,360,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "the encoded text\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,361,25,17",
+                      "type": "0,361,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,363,0",
+                  "text": "0,359,8,116"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeGenericObject",
+                "text": "Writes a generic object to the string. If a <tt>$flexType</tt> member is defined, list that as the object type.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "obj",
+                    "text": "the object to encode\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,395,24",
+                      "text": "0,395,28,21",
+                      "type": "0,395,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,397,0",
+                  "text": "0,394,8,112"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeByteArray",
+                "text": "Encodes a byte arrat in AMFX format\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "array",
+                    "text": "the byte array to encode\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,403,23",
+                      "text": "0,403,29,25",
+                      "type": "0,403,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,405,0",
+                  "text": "0,402,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeByteArray",
+                "text": "Writes an AMFX byte array to the string. This is for convenience only and is not called automatically by writeObject.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "array",
+                    "text": "the byte array to encode\n",
+                    "type": "Array",
+                    "src": {
+                      "name": "0,433,23",
+                      "text": "0,433,29,25",
+                      "type": "0,433,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,435,0",
+                  "text": "0,432,8,118"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeObject",
+                "text": "encode the appropriate data item. Supported types:\n- undefined\n- null\n- boolean\n- integer\n- double\n- UTF-8 string\n- XML Document (identified by being instaneof Document. Can be generated with: new DOMParser()).parseFromString(xml, \"text/xml\");\n- Date\n- Array\n- Generic object\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "A primitive or object to write to the stream\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,451,24",
+                      "text": "0,451,29,45",
+                      "type": "0,451,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "the encoded object in AMFX format\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,452,25,34",
+                      "type": "0,452,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,454,0",
+                  "text": "0,440,8,276"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeObject",
+                "text": "Writes the appropriate data item to the string. Supported types:\n- undefined\n- null\n- boolean\n- integer\n- double\n- UTF-8 string\n- XML Document (identified by being instaneof Document. Can be generated with: new DOMParser()).parseFromString(xml, \"text/xml\");\n- Date\n- Array\n- Generic object\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "A primitive or object to write to the stream\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,499,24",
+                      "text": "0,499,29,45",
+                      "type": "0,499,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,501,0",
+                  "text": "0,488,8,290"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "encodeAmfxRemotingPacket",
+                "text": "Encodes an AMFX remoting message with the AMFX envelope.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "message",
+                    "text": "the message to pass on to serialize.\n",
+                    "type": "Ext.data.amf.RemotingMessage",
+                    "src": {
+                      "name": "0,507,46",
+                      "text": "0,507,54,37",
+                      "type": "0,507,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,509,0",
+                  "text": "0,506,8,57"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "writeAmfxRemotingPacket",
+                "text": "Writes an AMFX remoting message with the AMFX envelope to the string.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "message",
+                    "text": "the message to pass on to serialize.\n",
+                    "type": "Ext.data.amf.RemotingMessage",
+                    "src": {
+                      "name": "0,519,46",
+                      "text": "0,519,54,37",
+                      "type": "0,519,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,521,0",
+                  "text": "0,518,8,70"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "convertXmlToString",
+                "text": "Converts an XML Document object to a string.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "xml",
+                    "text": "XML document to convert (typically Document object)\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,527,24",
+                      "text": "0,527,28,52",
+                      "type": "0,527,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A string representing the document\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,528,25,35",
+                      "type": "0,528,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,529,8",
+                  "name": "0,531,0",
+                  "text": "0,526,8,45"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "isXmlDocument",
+                "text": "Tries to determine if an object is an XML document\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "to identify\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,545,24",
+                      "text": "0,545,29,12",
+                      "type": "0,545,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "true if it's an XML document, false otherwise\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "0,546,26,46",
+                      "type": "0,546,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,548,0",
+                  "text": "0,544,8,51"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "write",
+                "text": "Appends a string to the body of the message\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "str",
+                    "text": "the string to append\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,565,24",
+                      "text": "0,565,28,21",
+                      "type": "0,565,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,566,8",
+                  "name": "0,568,0",
+                  "text": "0,564,8,44"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "body",
+                "text": "The output string\n",
+                "type": "String",
+                "src": {
+                  "name": "0,45,27",
+                  "text": "0,45,32,18",
+                  "type": "0,45,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "generateFlexUID",
+                "static": true,
+                "text": "Utility function to generate a flex-friendly UID\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "used in the first 8 chars of the id. If not provided, a random number will be used.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,52,28",
+                      "text": "0,52,31,84",
+                      "type": "0,52,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "a string-encoded opaque UID\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,53,29,28",
+                      "type": "0,53,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,55,0",
+                  "static": "0,48,-1",
+                  "text": "0,51,12,49"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,3,11",
+          "text": "0,4,4,1370"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

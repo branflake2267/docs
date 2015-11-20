@@ -1,0 +1,1253 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/classic/classic/src/layout/container/Border.js",
+    "../../../ext/classic/theme-neutral/sass/var/layout/container/Border.scss",
+    "../../../ext/classic/classic/src/layout/Layout.js",
+    "../../../ext/classic/classic/src/util/ElementContainer.js",
+    "../../../ext/classic/classic/src/layout/container/Container.js",
+    "../../../ext/packages/core/src/mixin/Factoryable.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "alias": "layout.border",
+        "alternateClassNames": "Ext.layout.BorderLayout",
+        "extends": "Ext.layout.container.Container",
+        "name": "Ext.layout.container.Border",
+        "requires": "Ext.resizer.BorderSplitter,Ext.fx.Anim,Ext.layout.container.border.Region",
+        "text": "This is a multi-pane, application-oriented UI layout style that supports multiple nested panels, automatic bars\nbetween regions and built-in <a href='#!/api/Ext.panel.Panel-cfg-collapsible'>Ext.panel.Panel#collapsible</a> of regions.\n\nThis class is intended to be extended or created via the `layout:'border'` <a href='#!/api/Ext.container.Container-cfg-layout'>Ext.container.Container#layout</a>\nconfig, and should generally not need to be created directly via the new keyword.\n\n    @example\n    Ext.create('Ext.panel.Panel', {\n        width: 500,\n        height: 300,\n        title: 'Border Layout',\n        layout: 'border',\n        items: [{\n            title: 'South Region is resizable',\n            region: 'south',     // position for region\n            xtype: 'panel',\n            height: 100,\n            split: true,         // enable resizing\n            margin: '0 5 5 5'\n        },{\n            // xtype: 'panel' implied by default\n            title: 'West Region is collapsible',\n            region:'west',\n            xtype: 'panel',\n            margin: '5 0 0 5',\n            width: 200,\n            collapsible: true,   // make collapsible\n            id: 'west-region-container',\n            layout: 'fit'\n        },{\n            title: 'Center Region',\n            region: 'center',     // center region is required, no width/height specified\n            xtype: 'panel',\n            layout: 'fit',\n            margin: '5 5 0 0'\n        }],\n        renderTo: Ext.getBody()\n    });\n\n# Notes\n\n  - When using the split option, the layout will automatically insert a <a href='#!/api/Ext.resizer.Splitter'>Ext.resizer.Splitter</a>\n    into the appropriate place. This will modify the underlying\n    <a href='#!/api/Ext.container.Container-property-items'>Ext.container.Container#property-items</a> collection in the container.\n\n  - Any Container using the Border layout **must** have a child item with `region:'center'`.\n    The child item in the center region will always be resized to fill the remaining space\n    not used by the other regions in the layout.\n\n  - Any child items with a region of `west` or `east` may be configured with either an initial\n    `width`, or a <a href='#!/api/Ext.layout.container.Box-flex'>Ext.layout.container.Box#flex</a> value, or an initial percentage width\n    **string** (Which is simply divided by 100 and used as a flex value).\n    The 'center' region has a flex value of `1`.\n\n  - Any child items with a region of `north` or `south` may be configured with either an initial\n    `height`, or a <a href='#!/api/Ext.layout.container.Box-flex'>Ext.layout.container.Box#flex</a> value, or an initial percentage height\n    **string** (Which is simply divided by 100 and used as a flex value).\n    The 'center' region has a flex value of `1`.\n\n  - **There is no BorderLayout.Region class in ExtJS 4.0+**\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "access": "protected",
+                "name": "animatePolicy",
+                "since": "4.1.0",
+                "text": "An object that contains as keys the names of the properties that can be animated\nby child items as a consequence of a layout. This config is used internally by the\n<a href='#!/api/Ext.layout.container.Accordion'>Ext.layout.container.Accordion</a> layout to cause the child panels\nto animate to their proper size and position after a collapse/expand event.\n",
+                "type": "Object",
+                "src": {
+                  "access": "2,233,8",
+                  "name": "2,228,22",
+                  "since": "2,234,15",
+                  "text": "2,229,8,322",
+                  "type": "2,228,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "childEls",
+                "text": "The canonical form of <a href='#!/api/Ext.layout.container.Border-cfg-childEls'>childEls</a> is an object keyed by child's property name\nwith values that are objects with the following properties.\n\n- `itemId` - The id to combine with the Component's id that is the id of the\n  child element.\n- `id` - The id of the child element.\n- `leaf` - Set to `true` to ignore content when scanning for childEls. This\n should be set on things like the generated content for an <a href='#!/api/Ext.view.View'>Ext.view.View</a>.\n- `select`: A selector that will be passed to <a href='#!/api/Ext.dom.Element-method-select'>Ext.dom.Element#method-select</a>.\n- `selectNode`: A selector that will be passed to <a href='#!/api/Ext.dom.Element-method-selectNode'>Ext.dom.Element#method-selectNode</a>.\n\nFor example:\n\n     childEls: {\n         button: true,\n         buttonText: 'text',\n         buttonImage: {\n             itemId: 'image'\n         }\n     }\n\nThe above is translated into the following complete form:\n\n     childEls: {\n         button: {\n             name: 'button',\n             itemId: 'button'\n         },\n         buttonText: {\n             name: 'buttonText',\n             itemId: 'text'\n         },\n         buttonImage: {\n             name: 'buttonImage',\n             itemId: 'image'\n         }\n     }\n\nThe above can be provided as an array like so:\n\n     childEls: [\n         'button',\n         { name: 'buttonText', itemId: 'text' },\n         { name: 'buttonImage', itemId: 'image' }\n     }\n\nFor example, a Component which renders a title and body text:\n\n    @example\n    Ext.create('Ext.Component', {\n        renderTo: Ext.getBody(),\n        renderTpl: [\n            '<h1 id=\"{id}-title\" data-ref=\"title\">{title}</h1>',\n            '<p>{msg}</p>',\n        ],\n        renderData: {\n            title: \"Error\",\n            msg: \"Something went wrong\"\n        },\n        childEls: [\"title\"],\n        listeners: {\n            afterrender: function(cmp){\n                // After rendering the component will have a title property\n                cmp.title.setStyle({color: \"red\"});\n            }\n        }\n    });\n\n**Note:** `childEl`s in the <a href='#!/api/Ext.Component-cfg-renderTpl'>Ext.Component#cfg-renderTpl</a>\nmust be referenced in a **data-ref** attribute.  Notice in the above example\nthat the \"title\" `childEl` is set in the `renderTpl` using\n**data-ref=\"title\"**.\n\nWhen using `select`, the property will be an instance of <a href='#!/api/Ext.dom.CompositeElement'>Ext.CompositeElement</a>.\nIn all other cases, the property will be an <a href='#!/api/Ext.dom.Element'>Ext.dom.Element</a> or <a href='#!/api/null'>null</a>\nif not found.\n\nCare should be taken when using `select` or `selectNode` to find child elements.\nThe following issues should be considered:\n\n- Performance: using selectors can be 10x slower than id lookup.\n- Over-selecting: selectors are applied after the DOM elements for all children\n  have been rendered, so selectors can match elements from child components\n  (including nested versions of the same component) accidentally.\n\nThis above issues are most important when using `select` since it returns multiple\nelements.\n",
+                "type": "Object/String[]/Object[]",
+                "src": {
+                  "name": "3,70,44",
+                  "text": "3,71,12,2854",
+                  "type": "3,70,18"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "itemCls",
+                "text": "An optional extra CSS class that will be added to the container. This can be useful for\nadding customized styles to the container or any of its children using standard CSS\nrules. See <a href='#!/api/Ext.Component'>Ext.Component</a>.<a href='#!/api/Ext.Component-cfg-componentCls'>Ext.Component#componentCls</a> also.\n",
+                "type": "String",
+                "src": {
+                  "name": "4,25,22",
+                  "text": "4,26,8,259",
+                  "type": "4,25,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "padding",
+                "text": "Sets the padding to be applied to all child items managed by this layout.\n\nThis property can be specified as a string containing space-separated, numeric\npadding values. The order of the sides associated with each value matches the way\nCSS processes padding values:\n\n - If there is only one value, it applies to all sides.\n - If there are two values, the top and bottom borders are set to the first value\n   and the right and left are set to the second.\n - If there are three values, the top is set to the first value, the left and right\n   are set to the second, and the bottom is set to the third.\n - If there are four values, they apply to the top, right, bottom, and left,\n   respectively.\n",
+                "type": "Number/String/Object",
+                "src": {
+                  "name": "0,114,36",
+                  "text": "0,115,8,695",
+                  "type": "0,114,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "regionWeights",
+                "text": "The default weights to assign to regions in the border layout. These values are\nused when a region does not contain a `weight` property. This object must have\nproperties for all regions (\"north\", \"south\", \"east\" and \"west\").\n\n**IMPORTANT:** Since this is an object, changing its properties will impact ALL\ninstances of Border layout. If this is not desired, provide a replacement object as\na config option instead:\n\n     layout: {\n         type: 'border',\n         regionWeights: {\n             west: 20,\n             north: 10,\n             south: -10,\n             east: -20\n         }\n     }\n\nThe region with the highest weight is assigned space from the border before other\nregions. Regions of equal weight are assigned space based on their position in the\nowner's items list (first come, first served).\n",
+                "type": "Object",
+                "src": {
+                  "name": "0,173,22",
+                  "text": "0,174,8,808",
+                  "type": "0,173,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "split",
+                "text": "This configuration option is to be applied to the **child `items`** managed by this layout.\nEach region with `split:true` will get a <a href='#!/api/Ext.resizer.BorderSplitter'>Ext.resizer.BorderSplitter</a> that\nallows for manual resizing of the container. Except for the `center` region.\n\nThis option can also accept an object of configurations from the <a href='#!/api/Ext.resizer.BorderSplitter'>Ext.resizer.BorderSplitter</a>.\nAn example of this would be:\n\n    {\n        title: 'North',\n        region: 'north',\n        height: 100,\n        collapsible: true,\n        split: {\n            size: 20\n        }\n    }\n",
+                "type": "Boolean/Ext.resizer.BorderSplitter",
+                "src": {
+                  "name": "0,87,50",
+                  "text": "0,88,8,548",
+                  "type": "0,87,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "splitterResize",
+                "optional": true,
+                "text": "This configuration option is to be applied to the **child `items`** managed by this layout and\nis used in conjunction with <a href='#!/api/Ext.layout.container.Border-cfg-split'>split</a>. By default, when specifying <a href='#!/api/Ext.layout.container.Border-cfg-split'>split</a>, the region\ncan be dragged to be resized. Set this option to false to show the split bar but prevent resizing.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,107,24",
+                  "text": "0,108,8,293",
+                  "type": "0,107,14",
+                  "value": "0,107,39"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "addChildEl",
+                "since": "6.0.0",
+                "text": "Add a childEl specific to this instance. This must be called before render.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "childEl",
+                    "src": {
+                      "name": "3,231,19"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,232,12",
+                  "name": "3,235,0",
+                  "since": "3,233,19",
+                  "text": "3,230,12,76"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterClassMixedIn",
+                "text": "Called after the mixin is applied. We need to see if <a href='#!/api/Ext.layout.container.Border-cfg-childEls'>childEls</a> were used by\nthe `targetClass` and apply them to the config.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "targetClass",
+                    "type": "Ext.Class",
+                    "src": {
+                      "name": "3,253,31",
+                      "type": "3,253,20"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,254,12",
+                  "name": "3,256,0",
+                  "text": "3,251,12,125"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterCollapse",
+                "text": "Called by an owning Panel after the Panel finishes its collapse process.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "src": {
+                      "name": "2,563,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "animated",
+                    "src": {
+                      "name": "2,563,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,560,8",
+                  "name": "2,563,0",
+                  "text": "2,561,8,73"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "afterExpand",
+                "text": "Called by an owning Panel after the Panel finishes its expand process.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "src": {
+                      "name": "2,573,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "animated",
+                    "src": {
+                      "name": "2,573,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,570,8",
+                  "name": "2,573,0",
+                  "text": "2,571,8,71"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "afterRemove",
+                "text": "Removes layout's itemCls and owning Container's itemCls.\nClears the managed dimensions flags\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "2,540,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,538,8",
+                  "name": "2,540,0",
+                  "text": "2,536,8,93"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "attachChildEls",
+                "text": "Sets references to elements inside the component.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "el",
+                    "src": {
+                      "name": "3,274,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "src": {
+                      "name": "3,274,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "3,272,12",
+                  "name": "3,274,0",
+                  "text": "3,271,12,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "beginAxis",
+                "text": "Creates the axis objects for the layout. These are only missing size information\nwhich is added during <a href='#!/api/Ext.layout.container.Border-method-calculate'>calculate</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "src": {
+                      "name": "0,212,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "regions",
+                    "src": {
+                      "name": "0,212,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "name",
+                    "src": {
+                      "name": "0,212,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,210,8",
+                  "name": "0,212,0",
+                  "text": "0,208,8,123"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beginLayout",
+                "text": "In addition to work done by our base classes, containers benefit from some extra\ncached data. The following properties are added to the ownerContext:\n\n - visibleItems: the result of <a href='#!/api/Ext.layout.container.Border-method-getVisibleItems'>getVisibleItems</a>\n - childItems: the ContextItem[] for each visible item\n - targetContext: the ContextItem for the <a href='#!/api/Ext.layout.container.Border-method-getTarget'>getTarget</a> element\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "src": {
+                      "name": "4,92,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,92,0",
+                  "text": "4,85,8,331"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "beginLayoutCycle",
+                "text": "Called before any calculation cycles to reset DOM values and prepare for calculation.\n\nThis is a write phase and DOM reads should be strictly avoided when overridding\nthis method.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "2,98,40",
+                      "text": "2,98,53,40:2,99,8,11",
+                      "type": "2,98,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,100,16",
+                  "text": "2,93,8,181"
+                }
+              },
+              {
+                "$type": "method",
+                "abstract": true,
+                "name": "calculate",
+                "text": "Called to perform the calculations for this layout. This method will be called at\nleast once and may be called repeatedly if the <a href='#!/api/Ext.layout.container.Border-property-done'>done</a> property is cleared\nbefore return to indicate that this layout is not yet done. The <a href='#!/api/Ext.layout.container.Border-property-done'>done</a> property\nis always set to `true` before entering this method.\n\nThis is a read phase and DOM writes should be strictly avoided in derived classes.\nInstead, DOM writes need to be written to <a href='#!/api/Ext.layout.ContextItem'>Ext.layout.ContextItem</a> objects to\n be flushed at the next opportunity.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "2,138,40",
+                      "text": "2,138,53,40:2,139,8,11",
+                      "type": "2,138,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "abstract": "2,141,8",
+                  "name": "2,140,16",
+                  "text": "2,129,8,509"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "calculateChildAxis",
+                "text": "Performs the calculations for a region on a specified axis.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "childContext",
+                    "src": {
+                      "name": "0,508,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "axis",
+                    "src": {
+                      "name": "0,508,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,506,8",
+                  "name": "0,508,0",
+                  "text": "0,505,8,60"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "completeLayout",
+                "text": "This method (if implemented) is called at the end of the cycle in which this layout\ncompletes (by not setting <a href='#!/api/Ext.layout.container.Border-property-done'>done</a> to `false` in <a href='#!/api/Ext.layout.container.Border-method-calculate'>calculate</a>). It is\npossible for the layout to complete and yet become invalid before the end of the cycle,\nin which case, this method will not be called. It is also possible for this method to\nbe called and then later the layout becomes invalidated. This will result in\n<a href='#!/api/Ext.layout.container.Border-method-calculate'>calculate</a> being called again, followed by another call to this method.\n\nThis is a read phase and DOM writes should be strictly avoided in derived classes.\nInstead, DOM writes need to be written to <a href='#!/api/Ext.layout.ContextItem'>Ext.layout.ContextItem</a> objects to\nbe flushed at the next opportunity.\n\nThis method need not be implemented by derived classes and, in fact, should only be\nimplemented when needed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "2,159,40",
+                      "text": "2,159,53,40:2,160,8,11",
+                      "type": "2,159,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,161,16",
+                  "text": "2,145,8,811"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "configureItem",
+                "text": "Adds layout's itemCls and owning Container's itemCls\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "4,156,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,154,8",
+                  "name": "4,156,0",
+                  "text": "4,153,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "destroy",
+                "text": "Destroys this layout. This method removes a `targetCls` from the `target`\nelement and calls `onDestroy`.\n\nA derived class can override either this method or `onDestroy` but in all\ncases must call the base class versions of these methods to allow the base class to\nperform its cleanup.\n\nThis method (or `onDestroy`) are overridden by subclasses most often to purge\nevent handlers or remove unmanged DOM nodes.\n",
+                "src": {
+                  "access": "2,590,8",
+                  "name": "2,592,0",
+                  "text": "2,580,8,410"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "finalizeLayout",
+                "text": "This method (if implemented) is called after all layouts have completed. In most\nways this is similar to <a href='#!/api/Ext.layout.container.Border-method-completeLayout'>completeLayout</a>. This call can cause this (or any\nlayout) to be become invalid (see <a href='#!/api/Ext.layout.Context-method-invalidate'>Ext.layout.Context#invalidate</a>), but this\nis best avoided. This method is intended to be where final reads are made and so it\nis best to avoid invalidating layouts at this point whenever possible. Even so, this\nmethod can be used to perform final checks that may require all other layouts to be\ncomplete and then invalidate some results.\n\nThis is a read phase and DOM writes should be strictly avoided in derived classes.\nInstead, DOM writes need to be written to <a href='#!/api/Ext.layout.ContextItem'>Ext.layout.ContextItem</a> objects to\nbe flushed at the next opportunity.\n\nThis method need not be implemented by derived classes and, in fact, should only be\nimplemented when needed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "2,180,40",
+                      "text": "2,180,53,40:2,181,8,11",
+                      "type": "2,180,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,182,16",
+                  "text": "2,165,8,857"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "finishAxis",
+                "text": "Finishes the calculations on an axis. This basically just assigns the remaining\nspace to the center region.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "src": {
+                      "name": "0,580,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "axis",
+                    "src": {
+                      "name": "0,580,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,578,8",
+                  "name": "0,580,0",
+                  "text": "0,576,8,108"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "finishPositions",
+                "text": "Finishes by setting the positions on the child items.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "childItems",
+                    "src": {
+                      "name": "0,596,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,594,8",
+                  "name": "0,596,0",
+                  "text": "0,593,8,54"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "finishedLayout",
+                "text": "This method is called after all layouts are complete and their calculations flushed\nto the DOM. No further layouts will be run and this method is only called once per\nlayout run. The base component layout caches `lastComponentSize`.\n\nThis is a write phase and DOM reads should be avoided if possible when overridding\nthis method.\n\nThis method need not be implemented by derived classes and, in fact, should only be\nimplemented when needed.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The context item for the layout's owner\ncomponent.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "2,196,40",
+                      "text": "2,196,53,40:2,197,8,11",
+                      "type": "2,196,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,199,0",
+                  "text": "2,186,8,441"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getContainerSize",
+                "text": "Returns the container size (that of the target). Only the fixed-sized dimensions can\nbe returned because the shrinkWrap dimensions are based on the contentWidth/Height\nas determined by the container layout.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "ownerContext",
+                    "text": "The owner's context item.\n",
+                    "type": "Ext.layout.ContextItem",
+                    "src": {
+                      "name": "4,251,40",
+                      "text": "4,251,53,26",
+                      "type": "4,251,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "inDom",
+                    "optional": true,
+                    "text": "True if the container size must be in the DOM.\n",
+                    "type": "Boolean",
+                    "value": "false",
+                    "src": {
+                      "name": "4,252,26",
+                      "text": "4,252,39,47",
+                      "type": "4,252,16",
+                      "value": "4,252,32"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The size\n",
+                    "type": "Object",
+                    "items": [
+                      {
+                        "$type": "property",
+                        "name": "width",
+                        "text": "The width\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,254,32",
+                          "text": "4,254,38,10",
+                          "type": "4,254,17"
+                        }
+                      },
+                      {
+                        "$type": "property",
+                        "name": "height",
+                        "text": "The height\n",
+                        "type": "Number",
+                        "src": {
+                          "name": "4,255,32",
+                          "text": "4,255,39,11",
+                          "type": "4,255,17"
+                        }
+                      }
+                    ],
+                    "src": {
+                      "text": "4,253,25,9",
+                      "type": "4,253,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,256,8",
+                  "name": "4,258,0",
+                  "text": "4,247,8,208"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getElementTarget",
+                "text": "Returns the element into which extra functional DOM elements can be inserted. Defaults to the owner Component's encapsulating element.\n\nMay be overridden in Component layout managers which implement a <a href='#!/api/Ext.layout.container.Border-method-getRenderTarget'>getRenderTarget</a> which must only\ncontain child components.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "type": "4,397,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,399,0",
+                  "text": "4,393,8,292"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "getItemLayoutEl",
+                "text": "For a given item, returns the element that participates in the childNodes array\nof the layout's target element.  This is usually the component's \"el\", but can\nalso be a wrapper\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "2,430,31",
+                      "type": "2,430,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "type": "HTMLElement",
+                    "src": {
+                      "type": "2,431,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,429,8",
+                  "name": "2,433,0",
+                  "text": "2,426,8,177"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getItemSizePolicy",
+                "text": "Returns an object describing how this layout manages the size of the given component.\nThis method must be implemented by any layout that manages components.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "2,245,31",
+                      "type": "2,245,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "An object describing the sizing done by the layout\nfor this item.\n",
+                    "type": "Ext.layout.SizePolicy",
+                    "src": {
+                      "text": "2,246,40,51:2,247,8,15",
+                      "type": "2,246,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,248,8",
+                  "name": "2,250,0",
+                  "text": "2,242,8,158"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getLayoutItems",
+                "text": "Returns an array of child components either for a render phase (Performed in the beforeLayout\nmethod of the layout's base class), or the layout phase (onLayout).\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "of child components\n",
+                    "type": "Ext.Component[]",
+                    "src": {
+                      "text": "4,338,34,20",
+                      "type": "4,338,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,340,0",
+                  "text": "4,336,8,162"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getRenderTarget",
+                "text": "Returns the element into which rendering must take place. Defaults to the owner Container's\ntarget element.\n\nMay be overridden in layout managers which implement an inner element.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "type": "4,386,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,388,0",
+                  "text": "4,381,8,181"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getRenderedItems",
+                "text": "Returns all items that are rendered\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "All matching items\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "4,360,24,19",
+                      "type": "4,360,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,358,8",
+                  "name": "4,362,0",
+                  "text": "4,359,8,36"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getTarget",
+                "text": "Returns the owner component's resize element.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "type": "4,476,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "4,478,0",
+                  "text": "4,475,8,46"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "getVisibleItems",
+                "text": "Returns all items that are both rendered and visible\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "All matching items\n",
+                    "type": "Array",
+                    "src": {
+                      "text": "4,485,24,19",
+                      "type": "4,485,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "4,483,8",
+                  "name": "4,487,0",
+                  "text": "4,484,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "initLayout",
+                "text": "A one-time initialization method called just before rendering.\n",
+                "src": {
+                  "access": "2,506,8",
+                  "name": "2,508,0",
+                  "text": "2,505,8,63"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "insertSplitter",
+                "text": "Inserts the splitter for a given region. A reference to the splitter is also stored\non the component as \"splitter\".\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "0,709,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "src": {
+                      "name": "0,709,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "hidden",
+                    "src": {
+                      "name": "0,709,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "splitterCfg",
+                    "src": {
+                      "name": "0,709,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,707,8",
+                  "name": "0,709,0",
+                  "text": "0,705,8,116"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "isValidParent",
+                "text": "Validates item is in the proper place in the dom.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "2,409,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "src": {
+                      "name": "2,409,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "position",
+                    "src": {
+                      "name": "2,409,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,407,8",
+                  "name": "2,409,0",
+                  "text": "2,406,8,50"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "moveItem",
+                "text": "Moves Component to the provided target instead.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "2,482,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "src": {
+                      "name": "2,482,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "position",
+                    "src": {
+                      "name": "2,482,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,480,8",
+                  "name": "2,482,0",
+                  "text": "2,479,8,48"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "notifyOwner",
+                "text": "Called for every layout in the layout context after all the layouts have been finally flushed\n",
+                "src": {
+                  "access": "4,233,8",
+                  "name": "4,236,0",
+                  "text": "4,234,8,94"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "onAdd",
+                "text": "Called when a region (actually when any component) is added to the container. The\nregion is decorated with some helpful properties (isCenter, isHorz, isVert) and its\nsplitter is added if its \"split\" property is true.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "src": {
+                      "name": "0,759,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "src": {
+                      "name": "0,759,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "0,757,8",
+                  "name": "0,759,0",
+                  "text": "0,754,8,217"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "onContentChange",
+                "text": "This method is called when a child item changes in some way. By default this calls\n<a href='#!/api/Ext.Component-updateLayout'>Ext.Component#updateLayout</a> on this layout's owner.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "child",
+                    "text": "The child item that has changed.\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "2,496,31",
+                      "text": "2,496,37,33",
+                      "type": "2,496,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "True if this layout has handled the content change.\n",
+                    "type": "Boolean",
+                    "src": {
+                      "text": "2,497,26,52",
+                      "type": "2,497,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "2,499,0",
+                  "text": "2,493,8,143"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "renderItem",
+                "text": "Renders the given Component into the target Element.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "item",
+                    "text": "The Component to render\n",
+                    "type": "Ext.Component",
+                    "src": {
+                      "name": "2,463,31",
+                      "text": "2,463,36,24",
+                      "type": "2,463,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "text": "The target Element\n",
+                    "type": "Ext.dom.Element",
+                    "src": {
+                      "name": "2,464,33",
+                      "text": "2,464,40,19",
+                      "type": "2,464,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "position",
+                    "text": "The position within the target to render the item to\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "2,465,24",
+                      "text": "2,465,33,53",
+                      "type": "2,465,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,466,8",
+                  "name": "2,468,0",
+                  "text": "2,462,8,53"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "protected",
+                "name": "renderItems",
+                "text": "Iterates over all passed items, ensuring they are rendered.  If the items are already rendered,\nalso determines if the items are in the proper place in the dom.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "items",
+                    "src": {
+                      "name": "2,382,0"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "target",
+                    "src": {
+                      "name": "2,382,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,380,8",
+                  "name": "2,382,0",
+                  "text": "2,378,8,161"
+                }
+              },
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "setOwner",
+                "text": "Sets the layout owner\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "owner",
+                    "src": {
+                      "name": "2,516,0"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "2,513,8",
+                  "name": "2,516,0",
+                  "text": "2,514,8,22"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "activeItemCount",
+                "text": "tracks the number of child items that do not use \"liquid\" CSS layout\n",
+                "src": {
+                  "access": "4,60,8",
+                  "name": "4,63,0",
+                  "text": "4,61,8,69"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "animatePolicy",
+                "text": "An object which contains boolean properties specifying which properties are to be\nanimated upon flush of child Component ContextItems. For example, Accordion would\nhave:\n\n     {\n         y: true,\n         height: true\n     }\n",
+                "src": {
+                  "access": "4,55,8",
+                  "name": "4,57,0",
+                  "text": "4,46,8,226"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "axisProps",
+                "text": "Reused meta-data objects that describe axis properties.\n",
+                "src": {
+                  "access": "0,140,8",
+                  "name": "0,142,0",
+                  "text": "0,139,8,56"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "beginCollapse",
+                "text": "Called by an owning Panel before the Panel begins its collapse process.\nMost layouts will not need to override the default Ext.emptyFn implementation.\n",
+                "src": {
+                  "access": "4,32,8",
+                  "name": "4,36,0",
+                  "text": "4,33,8,151"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "beginExpand",
+                "text": "Called by an owning Panel before the Panel begins its expand process.\nMost layouts will not need to override the default Ext.emptyFn implementation.\n",
+                "src": {
+                  "access": "4,39,8",
+                  "name": "4,43,0",
+                  "text": "4,40,8,149"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "centerRegion",
+                "src": {
+                  "access": "0,162,8",
+                  "name": "0,164,0"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "done",
+                "text": "Used only during a layout run, this value indicates that a\nlayout has finished its calculations. This flag is set to true prior to the call to\n<a href='#!/api/Ext.layout.container.Border-method-calculate'>calculate</a> and should be set to false if this layout has more work to do.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,75,28",
+                  "text": "2,75,33,59:2,76,8,166",
+                  "type": "2,75,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "factoryConfig",
+                "optional": true,
+                "text": "If this property is specified by the target class of this mixin its properties are\nused to configure the created <a href='#!/api/Ext.Factory'>Ext.Factory</a>.\n",
+                "type": "Object",
+                "src": {
+                  "name": "5,295,28",
+                  "text": "5,296,8,128",
+                  "type": "5,295,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "getScrollerEl",
+                "text": "Returns the element that wraps the contents for the purposes of touch scrolling.\nOnly applicable when the layout adds the scroller element as part of its renderTpl\n(e.g. autocontainer and box)\n",
+                "src": {
+                  "access": "2,258,8",
+                  "name": "2,260,0",
+                  "text": "2,255,8,193"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "isLayout",
+                "readonly": true,
+                "text": "`true` in this class to identify an object as an instantiated Layout, or subclass thereof.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "2,22,28",
+                  "readonly": "2,24,8",
+                  "text": "2,23,8,91",
+                  "type": "2,22,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "needsItemSize",
+                "text": "`true` if this layout may need to incorporate the dimensions of individual child\nitems into its layout calculations.  Layouts that handle the size of their children\nas a group (autocontainer, form) can set this to false for an additional performance\noptimization.  When `false` the layout system will not recurse into the child\nitems if <a href='#!/api/Ext.layout.container.Container-property-activeItemCount'>Ext.layout.container.Container#activeItemCount</a> is `0`, which will be the case if all child items\nuse \"liquid\" CSS layout, e.g. form fields.  (See Ext.Component#liquidLayout)\n",
+                "src": {
+                  "access": "2,31,8",
+                  "name": "2,39,0",
+                  "text": "2,32,8,519"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "regionFlags",
+                "text": "Flags and configs that get set of regions based on their `region` property.\n",
+                "src": {
+                  "access": "0,881,8",
+                  "name": "0,883,0",
+                  "text": "0,880,8,76"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "setsItemSize",
+                "text": "`true` if this layout may set the size of its child items.  Layouts that do not\nset the size of their child items (autocontainer, form) can set this to false\nfor an additional performance optimization.  When `true` the layout system will\nnot create a context item for children that use liquid layout, because there is\nno need for a context item if item size is neither read nor set by the owning layout.\n",
+                "src": {
+                  "access": "2,42,8",
+                  "name": "2,49,0",
+                  "text": "2,43,8,404"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "touchedRegions",
+                "text": "Lists the regions that would consider an interior region a neighbor. For example,\na north region would consider an east or west region its neighbords (as well as\nan inner north region).\n",
+                "src": {
+                  "access": "0,960,8",
+                  "name": "0,962,0",
+                  "text": "0,957,8,186"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "vars",
+            "items": [
+              {
+                "$type": "property",
+                "name": "$border-layout-ct-background-color",
+                "text": "The background-color of the Border layout element\n",
+                "type": "color",
+                "value": "$neutral-color",
+                "src": {
+                  "name": "1,9,1",
+                  "text": "1,7,4,50",
+                  "type": "1,6,10",
+                  "value": "1,9,45"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "alias": "0,66,0",
+          "alternateClassNames": "0,67,0",
+          "extends": "0,65,0",
+          "name": "1,2,11",
+          "requires": "0,70,0,0:0,71,0,0:0,74,0,0",
+          "text": "0,2,4,2618"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

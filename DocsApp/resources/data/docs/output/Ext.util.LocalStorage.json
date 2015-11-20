@@ -1,0 +1,458 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/util/LocalStorage.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "name": "Ext.util.LocalStorage",
+        "since": "4.2.2",
+        "text": "This class provides a common API to LocalStorage with backwards compatibility for IE.\n\nThe primary aspects of this API match the HTML5 standard API except that this class\nprovides a scoping mechanism to isolate property values by instance. This scope is\ndetermined from the <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a> property. Further, this class does not expose the number of\nkeys in the store as a `length` property as this cannot be maintained reliably without\nundue cost. Instead there is a <a href='#!/api/Ext.util.LocalStorage-method-getKeys'>getKeys</a> method that returns the cached array of keys\nwhich is lazily populated on first call.\n\nFor example:\n\n     var store = new Ext.util.LocalStorage({\n             id: 'foo'\n         });\n\n     store.setItem('bar', 'stuff');\n\n     // Equivalent to:\n     window.localStorage.setItem('foo-bar', 'stuff');\n\nIn all cases, the <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a> property is only used by the underlying storage and should not\nbe needed in item access calls or appear when enumerating keys.\n\nTo continue with the previous example:\n\n     var keys = store.getKeys();\n     console.log(keys.length);   // logs 1\n     console.log(store.key(0));  // logs \"bar\"\n\n## Sharing Instances\n\nThe management of the underlying storage can be broken if multiple instances of this\nclass are created with the same <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a> simultaneously. To avoid creating multiple instances\nwith the same <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a>, use the <a href='#!/api/Ext.util.LocalStorage-static-method-get'>get</a> method and it will lazily create and share a single\ninstance. When you are done with the shared instance, call <a href='#!/api/Ext.util.LocalStorage-method-release'>release</a>.\n\n     var storage = Ext.util.LocalStorage.get('id');\n\n     ...\n\n     storage.release(); // do not call <a href='#!/api/Ext.util.LocalStorage-method-destroy'>destroy</a> as others may be using this object\n\n**IMPORTANT:** Do not mix direction instantiation and <a href='#!/api/Ext.util.LocalStorage-static-method-get'>get</a> with the same <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a>.\n\n## Legacy IE\n\nOlder IE browsers (specifically IE7 and below) do not support `localStorage` so this\nclass provides equivalent support using the IE proprietary persistence mechanism: the\n[`userData` behavior](http://msdn.microsoft.com/en-us/library/ms531424(VS.85).aspx). In\nthis mode, the <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a> serves as name passed to the `load` and `save` methods and as the\nsuffix on the DOM element added to the `head`.\n\nIn this mode, writes to the underlying storage are buffered and delayed for performance\nreasons. This can be managed using the <a href='#!/api/Ext.util.LocalStorage-cfg-flushDelay'>flushDelay</a> config or by directly calling the\n`save` method.\n",
+        "items": [
+          {
+            "$type": "configs",
+            "items": [
+              {
+                "$type": "property",
+                "name": "id",
+                "text": "The unique identifier for this store. This config is required to scope this storage\ndistinctly from others. Ultimately, this is used to set a prefix on all keys.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,64,22",
+                  "text": "0,62,8,162",
+                  "type": "0,64,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "lazyKeys",
+                "optional": true,
+                "text": "Determines if the keys collection is continuously maintained by this object. By\ndefault the keys array is lazily fetched from the underlying store and when keys\nare removed, the array is discarded. This heuristic tends to be safer than doing\nthe linear removal and array rippling to remove keys from the array on each call\nto <a href='#!/api/Ext.util.LocalStorage-method-removeItem'>removeItem</a>. If the cost of scanning `localStorage` for keys is high enough\nand if the keys are frequently needed, then this flag can be set to `false` to\ninstruct this class to maintain the keys array once it has been determined.\n",
+                "type": "Boolean",
+                "value": "true",
+                "src": {
+                  "name": "0,83,24",
+                  "text": "0,76,8,558",
+                  "type": "0,83,14",
+                  "value": "0,83,33"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "prefix",
+                "optional": true,
+                "text": "The prefix to apply to all `localStorage` keys manages by this instance. This does\nnot apply to the legacy IE mechanism but only to the HTML5 `localStorage` keys. If\nnot provided, the <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a> property initializes this value with `\"id-\"`.\n",
+                "type": "String",
+                "src": {
+                  "name": "0,91,23",
+                  "text": "0,88,8,235",
+                  "type": "0,91,14"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "session",
+                "optional": true,
+                "text": "Specify this as `true` to use `sessionStorage` instead of the default `localStoreage`.\nThis option is not supported in legacy IE browsers (IE 6 and 7) and is ignored.\n",
+                "type": "Boolean",
+                "value": "false",
+                "src": {
+                  "name": "0,98,24",
+                  "text": "0,96,8,167",
+                  "type": "0,98,14",
+                  "value": "0,98,32"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "flushDelay",
+                "optional": true,
+                "text": "The number of milliseconds to delay writing changes to the underlying store.\nThis applies only to legacy IE mode and helps batch multiple writes into one\nflush to storage.\n",
+                "type": "Number",
+                "value": "1",
+                "src": {
+                  "name": "0,433,27",
+                  "text": "0,430,12,172",
+                  "type": "0,433,18",
+                  "value": "0,433,38"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "init",
+                "text": "Initializes this instance.\n",
+                "src": {
+                  "access": "0,222,8",
+                  "name": "0,224,0",
+                  "text": "0,221,8,27"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "destroy",
+                "text": "Destroys this instance and for legacy IE, ensures data is flushed to persistent\nstorage. This method should not be called directly on instances returned by the\n<a href='#!/api/Ext.util.LocalStorage-static-method-get'>get</a> method. Call <a href='#!/api/Ext.util.LocalStorage-method-release'>release</a> instead for such instances.\n\n*NOTE:* For non-legacy IE browsers, there is no harm in failing to call this\nmethod. In legacy IE, however, failing to call this method can result in memory\nleaks.\n",
+                "src": {
+                  "name": "0,243,0",
+                  "text": "0,235,8,382"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getKeys",
+                "text": "Returns the keys for this storage.\n",
+                "items": [
+                  {
+                    "$type": "return",
+                    "text": "The keys for this storage. This array should be considered as\nreadonly.\n",
+                    "type": "String[]",
+                    "src": {
+                      "text": "0,259,27,62:0,260,8,10",
+                      "type": "0,259,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,262,0",
+                  "text": "0,258,8,35"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "release",
+                "text": "Call this method when finished with an instance returned by <a href='#!/api/Ext.util.LocalStorage-static-method-get'>get</a> instead of calling\n<a href='#!/api/Ext.util.LocalStorage-method-destroy'>destroy</a>. When the last shared use of this instance calls <a href='#!/api/Ext.util.LocalStorage-method-release'>release</a>, the <a href='#!/api/Ext.util.LocalStorage-method-destroy'>destroy</a>\nmethod is called automatically.\n\n*NOTE:* Failing to call this method will result in memory leaks.\n",
+                "src": {
+                  "name": "0,293,0",
+                  "text": "0,287,8,267"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "clear",
+                "text": "Removes all of the keys of this storage.\n**NOTE:** This method conforms to the standard HTML5 Storage interface.\n",
+                "src": {
+                  "name": "0,309,0",
+                  "text": "0,306,8,113"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "key",
+                "text": "Returns the specified key given its `index`. These keys have the scoping prefix\nremoved so they match what was passed to <a href='#!/api/Ext.util.LocalStorage-method-setItem'>setItem</a>.\n**NOTE:** This method conforms to the standard HTML5 Storage interface.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "index",
+                    "text": "The index of the desired key.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,327,24",
+                      "text": "0,327,30,30",
+                      "type": "0,327,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The key.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,328,25,9",
+                      "type": "0,328,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,330,0",
+                  "text": "0,324,8,204"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "getItem",
+                "text": "Returns the value associated with the given <a href='#!/api/Ext.util.LocalStorage-method-key'>key</a>.\n**NOTE:** This method conforms to the standard HTML5 Storage interface.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The key.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,339,24",
+                      "text": "0,339,28,9",
+                      "type": "0,339,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The value associated with the given <a href='#!/api/Ext.util.LocalStorage-method-key'>key</a>.\n",
+                    "type": "String",
+                    "src": {
+                      "text": "0,340,25,43",
+                      "type": "0,340,17"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,342,0",
+                  "text": "0,337,8,123"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "removeItem",
+                "text": "Removes the value associated with the given <a href='#!/api/Ext.util.LocalStorage-method-key'>key</a>.\n**NOTE:** This method conforms to the standard HTML5 Storage interface.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The key.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,351,24",
+                      "text": "0,351,28,9",
+                      "type": "0,351,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,353,0",
+                  "text": "0,349,8,123"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "setItem",
+                "text": "Sets the value associated with the given <a href='#!/api/Ext.util.LocalStorage-method-key'>key</a>.\n**NOTE:** This method conforms to the standard HTML5 Storage interface.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "key",
+                    "text": "The key.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,374,24",
+                      "text": "0,374,28,9",
+                      "type": "0,374,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "The new associated value for <a href='#!/api/Ext.util.LocalStorage-method-key'>key</a>.\n",
+                    "type": "String",
+                    "src": {
+                      "name": "0,375,24",
+                      "text": "0,375,30,36",
+                      "type": "0,375,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,377,0",
+                  "text": "0,372,8,120"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "save",
+                "text": "This method ensures the content of the store is saved to the underlying storage.\nThis applies only to legacy IE. This is not normally called by user code but can\nbe called to ensure storage is saved.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "delay",
+                    "optional": true,
+                    "type": "Number",
+                    "value": "0",
+                    "src": {
+                      "name": "0,493,29",
+                      "type": "0,493,20",
+                      "value": "0,493,35"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,495,0",
+                  "text": "0,490,12,200"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "destroyed",
+                "readonly": true,
+                "text": "This property is set to `true` when the instance's <a href='#!/api/Ext.util.LocalStorage-method-destroy'>destroy</a> method is called.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,70,28",
+                  "readonly": "0,71,8",
+                  "text": "0,69,8,79",
+                  "type": "0,70,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "_keys",
+                "readonly": true,
+                "text": "The array of all key names. This will be <a href='#!/api/null'>null</a> if the keys need to be redetermined\nby the <a href='#!/api/Ext.util.LocalStorage-method-getKeys'>getKeys</a> method.\n",
+                "type": "String[]",
+                "src": {
+                  "access": "0,106,8",
+                  "name": "0,105,29",
+                  "readonly": "0,107,8",
+                  "text": "0,103,8,109",
+                  "type": "0,105,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "_store",
+                "readonly": true,
+                "text": "The Storage instance used to store items. This is based on the <a href='#!/api/Ext.util.LocalStorage-cfg-session'>session</a> config.\n",
+                "src": {
+                  "access": "0,114,8",
+                  "name": "0,113,18",
+                  "readonly": "0,115,8",
+                  "text": "0,112,8,81"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "_users",
+                "readonly": true,
+                "text": "The number of users that have requested this instance using the <a href='#!/api/Ext.util.LocalStorage-static-method-get'>get</a> method and\nhave not yet called <a href='#!/api/Ext.util.LocalStorage-method-release'>release</a>.\n",
+                "type": "Number",
+                "src": {
+                  "access": "0,123,8",
+                  "name": "0,122,27",
+                  "readonly": "0,124,8",
+                  "text": "0,120,8,112",
+                  "type": "0,122,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "data",
+                "readonly": true,
+                "text": "The parsed data object. This is JSON encoded and saved in storage as the `xdata`\nattribute.\n",
+                "type": "Object",
+                "src": {
+                  "access": "0,416,12",
+                  "name": "0,415,31",
+                  "readonly": "0,417,12",
+                  "text": "0,413,12,92",
+                  "type": "0,415,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "el",
+                "readonly": true,
+                "text": "The IE `userData` enabled element. This property is used to support legacy IE\nmode.\n",
+                "type": "HTMLElement",
+                "src": {
+                  "access": "0,425,12",
+                  "name": "0,424,36",
+                  "readonly": "0,426,12",
+                  "text": "0,422,12,84",
+                  "type": "0,424,23"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "get",
+                "static": true,
+                "text": "Returns a shared instance of the desired local store given its <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a>. When you\nare finished with the returned object call the <a href='#!/api/Ext.util.LocalStorage-method-release'>release</a> method:\n\n     var store = Ext.util.LocalStorage.get('foo');\n\n     // .. use store\n\n     store.release();\n\n**NOTE:** Do not mix this call with direct instantiation of the same <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "id",
+                    "text": "The <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a> of the desired instance or a config object\nwith an <a href='#!/api/Ext.util.LocalStorage-cfg-id'>id</a> property at a minimum.\n",
+                    "type": "String/Object",
+                    "src": {
+                      "name": "0,142,35",
+                      "text": "0,142,38,52:0,143,12,36",
+                      "type": "0,142,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The desired instance, created if needed.\n",
+                    "type": "Ext.util.LocalStorage",
+                    "src": {
+                      "text": "0,144,44,41",
+                      "type": "0,144,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,146,0",
+                  "static": "0,127,-1",
+                  "text": "0,132,12,316"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-properties",
+            "items": [
+              {
+                "$type": "property",
+                "name": "supported",
+                "readonly": true,
+                "static": true,
+                "text": "This will be `true` if some form of local storage is supported or `false` if not.\n",
+                "type": "Boolean",
+                "src": {
+                  "name": "0,178,32",
+                  "readonly": "0,179,12",
+                  "static": "0,127,-1",
+                  "text": "0,177,12,82",
+                  "type": "0,178,23"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "save",
+                "static": true,
+                "src": {
+                  "access": "0,301,8",
+                  "name": "0,303,0",
+                  "static": "0,300,8"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "name": "0,60,0",
+          "since": "0,58,11",
+          "text": "0,2,4,2260"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

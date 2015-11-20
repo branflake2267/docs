@@ -1,0 +1,824 @@
+{
+  "$type": "doxi",
+  "files": [
+    "../../../ext/packages/core/src/Deferred.js",
+    "../../../ext/packages/core/src/promise/Deferred.js"
+  ],
+  "global": {
+    "$type": "namespace",
+    "items": [
+      {
+        "$type": "class",
+        "extends": "Ext.promise.Deferred",
+        "name": "Ext.Deferred",
+        "requires": "Ext.Promise",
+        "since": "6.0.0",
+        "text": "Deferreds are the mechanism used to create new Promises. A Deferred has a single\nassociated Promise that can be safely returned to external consumers to ensure they do\nnot interfere with the resolution or rejection of the deferred operation.\n\nThis implementation of Promises is an extension of the ECMAScript 6 Promises API as\ndetailed [here][1]. For a compatible, though less full featured, API see <a href='#!/api/Ext.Promise'>Ext.Promise</a>.\n\nA Deferred is typically used within the body of a function that performs an asynchronous\noperation. When that operation succeeds, the Deferred should be resolved; if that\noperation fails, the Deferred should be rejected.\n\nEach Deferred has an associated Promise. A Promise delegates <a href='#!/api/Ext.Deferred-method-then'>then</a> calls to its\nDeferred's <a href='#!/api/Ext.Deferred-method-then'>then</a> method. In this way, access to Deferred operations are divided between\nproducer (Deferred) and consumer (Promise) roles.\n\n## Basic Usage\n\nIn it's most common form, a method will create and return a Promise like this:\n\n     // A method in a service class which uses a Store and returns a Promise\n     //\n     loadCompanies: function () {\n         var deferred = new Ext.Deferred(); // create the Ext.Deferred object\n\n         this.companyStore.load({\n             callback: function (records, operation, success) {\n                 if (success) {\n                     // Use \"deferred\" to drive the promise:\n                     deferred.resolve(records);\n                 }\n                 else {\n                     // Use \"deferred\" to drive the promise:\n                     deferred.reject(\"Error loading Companies.\");\n                 }\n             }\n         });\n\n         return deferred.promise;  // return the Promise to the caller\n     }\n\nYou can see this method first creates a <a href='#!/api/Ext.Deferred'>Ext.Deferred</a> object. It then\nreturns its `Promise` object for use by the caller. Finally, in the asynchronous\ncallback, it resolves the `deferred` object if the call was successful, and rejects the\n`deferred` if the call failed.\n\nWhen a Deferred's <a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> method is called, it fulfills with the optionally specified\nvalue. If <a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> is called with a then-able (i.e.a Function or Object with a <a href='#!/api/Ext.Deferred-method-then'>then</a>\nfunction, such as another Promise) it assimilates the then-able's result; the Deferred\nprovides its own <a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> and <a href='#!/api/Ext.Deferred-method-reject'>reject</a> methods as the onFulfilled or onRejected\narguments in a call to that then-able's <a href='#!/api/Ext.Deferred-method-then'>then</a> function. If an error is thrown while\ncalling the then-able's <a href='#!/api/Ext.Deferred-method-then'>then</a> function (prior to any call back to the specified\n<a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> or <a href='#!/api/Ext.Deferred-method-reject'>reject</a> methods), the Deferred rejects with that error. If a Deferred's\n<a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> method is called with its own Promise, it rejects with a TypeError.\n\nWhen a Deferred's <a href='#!/api/Ext.Deferred-method-reject'>reject</a> method is called, it rejects with the optionally specified\nreason.\n\nEach time a Deferred's <a href='#!/api/Ext.Deferred-method-then'>then</a> method is called, it captures a pair of optional\nonFulfilled and onRejected callbacks and returns a Promise of the Deferred's future\nvalue as transformed by those callbacks.\n\nSee <a href='#!/api/Ext.promise.Promise'>Ext.promise.Promise</a> for an example of using the returned Promise.\n",
+        "items": [
+          {
+            "$type": "methods",
+            "items": [
+              {
+                "$type": "method",
+                "access": "private",
+                "name": "complete",
+                "text": "Complete this Deferred with the specified action and value.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "action",
+                    "text": "Completion action (i.e. 'fufill' or 'reject').\n",
+                    "type": "String",
+                    "src": {
+                      "name": "1,223,24",
+                      "text": "1,223,31,47",
+                      "type": "1,223,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "Fulfillment value or rejection reason.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "1,224,23",
+                      "text": "1,224,29,39",
+                      "type": "1,224,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "access": "1,226,8",
+                  "name": "1,228,0",
+                  "text": "1,221,8,61"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reject",
+                "text": "Reject this Deferred with the specified reason.\n\nOnce a Deferred has been rejected, it is considered to be complete\nand subsequent calls to <a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> or <a href='#!/api/Ext.Deferred-method-reject'>reject</a> are ignored.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "reason",
+                    "text": "Rejection reason.\n",
+                    "type": "Error",
+                    "src": {
+                      "name": "1,189,23",
+                      "text": "1,189,30,18",
+                      "type": "1,189,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,191,0",
+                  "text": "1,184,8,176"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resolve",
+                "text": "Resolve this Deferred with the (optional) specified value.\n\nIf called with a then-able (i.e.a Function or Object with a <a href='#!/api/Ext.Deferred-method-then'>then</a>\nfunction, such as another Promise) it assimilates the then-able's\nresult; the Deferred provides its own <a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> and <a href='#!/api/Ext.Deferred-method-reject'>reject</a> methods\nas the onFulfilled or onRejected arguments in a call to that\nthen-able's <a href='#!/api/Ext.Deferred-method-then'>then</a> function.  If an error is thrown while calling\nthe then-able's <a href='#!/api/Ext.Deferred-method-then'>then</a> function (prior to any call back to the\nspecified <a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> or <a href='#!/api/Ext.Deferred-method-reject'>reject</a> methods), the Deferred rejects with\nthat error. If a Deferred's <a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> method is called with its own\nPromise, it rejects with a TypeError.\n\nOnce a Deferred has been fulfilled or rejected, it is considered to be complete\nand subsequent calls to <a href='#!/api/Ext.Deferred-method-resolve'>resolve</a> or <a href='#!/api/Ext.Deferred-method-reject'>reject</a> are ignored.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "value",
+                    "text": "Value to resolve as either a fulfillment value or rejection\nreason.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "1,135,23",
+                      "text": "1,135,29,60:1,136,8,8",
+                      "type": "1,135,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,138,0",
+                  "text": "1,120,8,767"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "then",
+                "text": "Used to specify onFulfilled and onRejected callbacks that will be\nnotified when the future value becomes available.\n\nThose callbacks can subsequently transform the value that was\nfulfilled or the error that was rejected. Each call to <a href='#!/api/Ext.Deferred-method-then'>then</a>\nreturns a new Promise of that transformed value; i.e., a Promise\nthat is fulfilled with the callback return value or rejected with\nany error thrown by the callback.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "onFulfilled",
+                    "optional": true,
+                    "text": "Callback to execute to transform a fulfillment value.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "1,98,27",
+                      "text": "1,98,40,54",
+                      "type": "1,98,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "onRejected",
+                    "optional": true,
+                    "text": "Callback to execute to transform a rejection reason.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "1,99,27",
+                      "text": "1,99,39,53",
+                      "type": "1,99,16"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "onProgress",
+                    "optional": true,
+                    "text": "Callback to execute to transform a progress value.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "1,100,27",
+                      "text": "1,100,39,51",
+                      "type": "1,100,16"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Promise that is fulfilled with the callback return value or rejected with\nany error thrown by the callback.\n",
+                    "src": {
+                      "text": "1,102,16,74:1,103,8,34"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,105,0",
+                  "text": "1,89,8,407"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "update",
+                "text": "Updates progress for this Deferred, if it is still pending, triggering it to\nexecute the `onProgress` callback and propagate the resulting transformed progress\nvalue to Deferreds that originate from this Deferred.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "progress",
+                    "text": "The progress value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "1,204,23",
+                      "text": "1,204,32,20",
+                      "type": "1,204,16"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "1,206,0",
+                  "text": "1,200,8,215"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "properties",
+            "items": [
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "completeAction",
+                "text": "The completion action (i.e. 'fulfill' or 'reject').\n",
+                "type": "String",
+                "src": {
+                  "access": "1,67,8",
+                  "name": "1,65,27",
+                  "text": "1,65,42,52",
+                  "type": "1,65,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "completed",
+                "text": "Indicates whether this Deferred has been completed.\n",
+                "type": "Boolean",
+                "src": {
+                  "access": "1,60,8",
+                  "name": "1,58,28",
+                  "text": "1,58,38,52",
+                  "type": "1,58,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "completionValue",
+                "text": "The completion value (i.e. resolution value or rejection error).\n",
+                "type": "Mixed",
+                "src": {
+                  "access": "1,74,8",
+                  "name": "1,72,26",
+                  "text": "1,72,42,65",
+                  "type": "1,72,19"
+                }
+              },
+              {
+                "$type": "property",
+                "access": "private",
+                "name": "consequences",
+                "text": "Pending Consequences chained to this Deferred.\n",
+                "type": "Ext.promise.Consequence[]",
+                "src": {
+                  "access": "1,53,8",
+                  "name": "1,51,46",
+                  "text": "1,51,59,47",
+                  "type": "1,51,19"
+                }
+              },
+              {
+                "$type": "property",
+                "name": "promise",
+                "text": "Promise of the future value of this Deferred.\n",
+                "type": "Ext.promise.Promise",
+                "src": {
+                  "name": "1,46,40",
+                  "text": "1,46,48,46",
+                  "type": "1,46,19"
+                }
+              }
+            ]
+          },
+          {
+            "$type": "static-methods",
+            "items": [
+              {
+                "$type": "method",
+                "name": "all",
+                "static": true,
+                "text": "Returns a new Promise that will only resolve once all the specified\n`promisesOrValues` have resolved.\n\nThe resolution value will be an Array containing the resolution value of each\nof the `promisesOrValues`.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promisesOrValues",
+                    "text": "An\nArray of values or Promises, or a Promise of an Array of values or Promises.\n",
+                    "type": "Mixed[]/Ext.promise.Promise[]/Ext.promise.Promise",
+                    "src": {
+                      "name": "0,105,71",
+                      "text": "0,105,88,3:0,106,12,77",
+                      "type": "0,105,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of an Array of the resolved values.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,107,42,46",
+                      "type": "0,107,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,110,0",
+                  "static": "0,108,12",
+                  "text": "0,99,12,209"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "any",
+                "static": true,
+                "text": "Initiates a competitive race, returning a new Promise that will resolve when\nany one of the specified `promisesOrValues` have resolved, or will reject when\nall `promisesOrValues` have rejected or cancelled.\n\nThe resolution value will the first value of `promisesOrValues` to resolve.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promisesOrValues",
+                    "text": "An\nArray of values or Promises, or a Promise of an Array of values or Promises.\n",
+                    "type": "Mixed[]/Ext.promise.Promise[]/Ext.promise.Promise",
+                    "src": {
+                      "name": "0,121,71",
+                      "text": "0,121,88,3:0,122,12,77",
+                      "type": "0,121,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of the first resolved value.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,123,42,39",
+                      "type": "0,123,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,126,0",
+                  "static": "0,124,12",
+                  "text": "0,115,12,285"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "delay",
+                "static": true,
+                "text": "Returns a new Promise that will automatically resolve with the specified\nPromise or value after the specified delay (in milliseconds).\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promiseOrValue",
+                    "text": "A Promise or value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,150,27",
+                      "text": "0,150,42,20",
+                      "type": "0,150,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "milliseconds",
+                    "text": "A delay duration (in milliseconds).\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,151,28",
+                      "text": "0,151,41,36",
+                      "type": "0,151,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of the specified Promise or value that\nwill resolve after the specified delay.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,152,42,49:0,153,12,40",
+                      "type": "0,152,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,156,0",
+                  "static": "0,154,12",
+                  "text": "0,147,12,136"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "map",
+                "static": true,
+                "text": "Traditional map function, similar to `Array.prototype.map()`, that allows\ninput to contain promises and/or values.\n\nThe specified map function may return either a value or a promise.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promisesOrValues",
+                    "text": "An\nArray of values or Promises, or a Promise of an Array of values or Promises.\n",
+                    "type": "Mixed[]/Ext.promise.Promise[]/Ext.promise.Promise",
+                    "src": {
+                      "name": "0,181,71",
+                      "text": "0,181,88,3:0,182,12,77",
+                      "type": "0,181,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "mapFn",
+                    "text": "A Function to call to transform each resolved value in\nthe Array.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,183,30",
+                      "text": "0,183,36,55:0,184,12,11",
+                      "type": "0,183,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of an Array of the mapped resolved\nvalues.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,185,42,45:0,186,12,8",
+                      "type": "0,185,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,189,0",
+                  "static": "0,187,12",
+                  "text": "0,176,12,184"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "memoize",
+                "static": true,
+                "text": "Returns a new function that wraps the specified function and caches the\nresults for previously processed inputs.\n\nSimilar to <a href='#!/api/Ext.Function-method-memoize'>Ext.Function#memoize</a>, except it\nallows for parameters that are Promises and/or values.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fn",
+                    "text": "A Function to wrap.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,247,30",
+                      "text": "0,247,33,20",
+                      "type": "0,247,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "An optional scope in which to execute the wrapped function.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,248,28",
+                      "text": "0,248,34,60",
+                      "type": "0,248,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "hashFn",
+                    "text": "An optional function used to compute a hash key for\nstoring the result, based on the arguments to the original function.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,249,30",
+                      "text": "0,249,37,52:0,250,12,69",
+                      "type": "0,249,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The new wrapper function.\n",
+                    "type": "Function",
+                    "src": {
+                      "text": "0,251,31,26",
+                      "type": "0,251,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,254,0",
+                  "static": "0,252,12",
+                  "text": "0,241,12,244"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "parallel",
+                "static": true,
+                "text": "Execute an Array (or <a href='#!/api/Ext.promise.Promise'>Ext.promise.Promise</a> of an Array) of\nfunctions in parallel.\n\nThe specified functions may optionally return their results as\n<a href='#!/api/Ext.promise.Promise'>Ext.promise.Promise</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fns",
+                    "text": "The Array (or Promise of an Array)\nof functions to execute.\n",
+                    "type": "Function[]/Ext.promise.Promise",
+                    "src": {
+                      "name": "0,271,52",
+                      "text": "0,271,56,35:0,272,12,25",
+                      "type": "0,271,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "Optional scope in which to execute the specified functions.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,273,28",
+                      "text": "0,273,34,60",
+                      "type": "0,273,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Promise of an Array of results for each function\ncall (in the same order).\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,274,42,49:0,275,12,26",
+                      "type": "0,274,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,278,0",
+                  "static": "0,276,12",
+                  "text": "0,265,12,199"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "pipeline",
+                "static": true,
+                "text": "Execute an Array (or <a href='#!/api/Ext.promise.Promise'>Ext.promise.Promise</a> of an Array) of\nfunctions as a pipeline, where each function's result is passed to the\nsubsequent function as input.\n\nThe specified functions may optionally return their results as\n<a href='#!/api/Ext.promise.Promise'>Ext.promise.Promise</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fns",
+                    "text": "The Array (or Promise of an Array)\nof functions to execute.\n",
+                    "type": "Function[]/Ext.promise.Promise",
+                    "src": {
+                      "name": "0,302,52",
+                      "text": "0,302,56,35:0,303,12,25",
+                      "type": "0,302,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "initialValue",
+                    "text": "Initial value to be passed to the first function\nin the pipeline.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,304,28",
+                      "text": "0,304,41,49:0,305,12,17",
+                      "type": "0,304,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "Optional scope in which to execute the specified functions.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,306,28",
+                      "text": "0,306,34,60",
+                      "type": "0,306,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Promise of the result value for the final\nfunction in the pipeline.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,307,42,42:0,308,12,26",
+                      "type": "0,307,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,311,0",
+                  "static": "0,309,12",
+                  "text": "0,295,12,277"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "reduce",
+                "static": true,
+                "text": "Traditional reduce function, similar to `Array.reduce()`, that allows input to\ncontain promises and/or values.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "values",
+                    "text": "An\nArray of values or Promises, or a Promise of an Array of values or Promises.\n",
+                    "type": "Mixed[]/Ext.promise.Promise[]/Ext.promise.Promise",
+                    "src": {
+                      "name": "0,329,71",
+                      "text": "0,329,78,3:0,330,12,77",
+                      "type": "0,329,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "reduceFn",
+                    "text": "A Function to call to transform each successive\nitem in the Array into the final reduced value.\n",
+                    "type": "Function",
+                    "src": {
+                      "name": "0,331,30",
+                      "text": "0,331,39,48:0,332,12,48",
+                      "type": "0,331,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "initialValue",
+                    "text": "An initial Promise or value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,333,27",
+                      "text": "0,333,40,29",
+                      "type": "0,333,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of the reduced value.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,334,42,32",
+                      "type": "0,334,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,337,0",
+                  "static": "0,335,12",
+                  "text": "0,326,12,112"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "rejected",
+                "static": true,
+                "text": "Convenience method that returns a new Promise rejected with the specified\nreason.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "reason",
+                    "text": "Rejection reason.\n",
+                    "type": "Error",
+                    "src": {
+                      "name": "0,374,27",
+                      "text": "0,374,34,18",
+                      "type": "0,374,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "The rejected Promise.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,375,42,22",
+                      "type": "0,375,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,378,0",
+                  "static": "0,376,12",
+                  "text": "0,371,12,83"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "resolved",
+                "static": true,
+                "text": "Returns a new Promise that either\n\n * Resolves immediately for the specified value, or\n * Resolves or rejects when the specified promise (or third-party Promise or\n   then()-able) is resolved or rejected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promiseOrValue",
+                    "text": "A Promise (or third-party Promise or then()-able)\nor value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,393,27",
+                      "text": "0,393,42,50:0,394,12,10",
+                      "type": "0,393,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of the specified Promise or value.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,395,42,45",
+                      "type": "0,395,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,398,0",
+                  "static": "0,396,12",
+                  "text": "0,387,12,206"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "sequence",
+                "static": true,
+                "text": "Execute an Array (or <a href='#!/api/Ext.promise.Promise'>Ext.promise.Promise</a> of an Array) of\nfunctions sequentially.\n\nThe specified functions may optionally return their results as <a href='#!/api/Ext.promise.Promise'>Ext.promise.Promise</a>.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "fns",
+                    "text": "The Array (or Promise of an Array)\nof functions to execute.\n",
+                    "type": "Function[]/Ext.promise.Promise",
+                    "src": {
+                      "name": "0,413,52",
+                      "text": "0,413,56,35:0,414,12,25",
+                      "type": "0,413,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "scope",
+                    "text": "Optional scope in which to execute the specified functions.\n",
+                    "type": "Object",
+                    "src": {
+                      "name": "0,415,28",
+                      "text": "0,415,34,60",
+                      "type": "0,415,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "Promise of an Array of results for each function\ncall (in the same order).\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,416,42,49:0,417,12,26",
+                      "type": "0,416,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,420,0",
+                  "static": "0,418,12",
+                  "text": "0,407,12,200"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "some",
+                "static": true,
+                "text": "Initiates a competitive race, returning a new Promise that will resolve when\n`howMany` of the specified `promisesOrValues` have resolved, or will reject\nwhen it becomes impossible for `howMany` to resolve.\n\nThe resolution value will be an Array of the first `howMany` values of\n`promisesOrValues` to resolve.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promisesOrValues",
+                    "text": "An\nArray of values or Promises, or a Promise of an Array of values or Promises.\n",
+                    "type": "Mixed[]/Ext.promise.Promise[]/Ext.promise.Promise",
+                    "src": {
+                      "name": "0,448,71",
+                      "text": "0,448,88,3:0,449,12,77",
+                      "type": "0,448,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "howMany",
+                    "text": "The expected number of resolved values.\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,450,28",
+                      "text": "0,450,36,40",
+                      "type": "0,450,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of the expected number of resolved\nvalues.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,451,42,45:0,452,12,8",
+                      "type": "0,451,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,455,0",
+                  "static": "0,453,12",
+                  "text": "0,441,12,310"
+                }
+              },
+              {
+                "$type": "method",
+                "name": "timeout",
+                "static": true,
+                "text": "Returns a new Promise that will automatically reject after the specified\ntimeout (in milliseconds) if the specified promise has not resolved or\nrejected.\n",
+                "items": [
+                  {
+                    "$type": "param",
+                    "name": "promiseOrValue",
+                    "text": "A Promise or value.\n",
+                    "type": "Mixed",
+                    "src": {
+                      "name": "0,521,27",
+                      "text": "0,521,42,20",
+                      "type": "0,521,20"
+                    }
+                  },
+                  {
+                    "$type": "param",
+                    "name": "milliseconds",
+                    "text": "A timeout duration (in milliseconds).\n",
+                    "type": "Number",
+                    "src": {
+                      "name": "0,522,28",
+                      "text": "0,522,41,38",
+                      "type": "0,522,20"
+                    }
+                  },
+                  {
+                    "$type": "return",
+                    "text": "A Promise of the specified Promise or value that\nenforces the specified timeout.\n",
+                    "type": "Ext.promise.Promise",
+                    "src": {
+                      "text": "0,523,42,49:0,524,12,32",
+                      "type": "0,523,21"
+                    }
+                  }
+                ],
+                "src": {
+                  "name": "0,527,0",
+                  "static": "0,525,12",
+                  "text": "0,517,12,155"
+                }
+              }
+            ]
+          }
+        ],
+        "src": {
+          "extends": "0,85,0",
+          "name": "0,80,0",
+          "requires": "0,88,0",
+          "since": "0,78,11",
+          "text": "0,15,4,3041"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -7,7 +7,7 @@ Ext.define('DocsApp.view.mainApp.nav.ContainerController', {
             action     : 'goToView',
             conditions : {
                 ':type' : '(?:(?:\/){1}([a-z-_]+))?',
-                ':sub'  : '(?:(?:\/){1}([a-z-_]+))?'
+                ':sub'  : '(?:(?:\/){1}([a-z-_\/]+))?'
             }
         }
     },
@@ -50,7 +50,7 @@ Ext.define('DocsApp.view.mainApp.nav.ContainerController', {
                 hash = 'api';
         }
 
-        this.redirectTo('!/' + hash);
+        //this.redirectTo('!/' + hash);
     },
 
     onTabResize: function (nav, width) {

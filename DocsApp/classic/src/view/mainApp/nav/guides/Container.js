@@ -19,6 +19,7 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
         rootVisible: false,
         hideHeaders: true,
         store: 'guide.Topical',
+        emptyText: '<div class="da-guide-empty-text">No guides found using the current filter.</div>',
         columns: [
             {
                 xtype: 'treecolumn',
@@ -34,10 +35,22 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
         tbar: [{
             xtype: 'textfield',
             emptyText: 'filter guides...',
-            flex: 1
+            flex: 1,
+            triggers : {
+                clear: {
+                    cls    : 'x-form-clear-trigger',
+                    handler: function () {
+                        this.reset();
+                    }
+                }
+            },
+            listeners: {
+                change: 'onGuideFilterChange'
+            }
         }, {
             text: 'Expand All',
-            handler: 'expandAll'
+            handler: 'toggleExpandAll',
+            width: 100
         }],
         listeners: {
             itemclick: 'onGuideClick'

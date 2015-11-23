@@ -8,7 +8,8 @@ Ext.define('DocsApp.view.main.Main', {
         'DocsApp.view.main.MainController',
         'DocsApp.view.mainApp.Container',
         'DocsApp.view.products.ProductPage',
-        'DocsApp.view.main.SearchField'
+        'DocsApp.view.main.SearchField',
+        'Ext.plugin.Viewport'
     ],
 
     controller : 'docsapp-main-main',

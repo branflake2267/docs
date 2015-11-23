@@ -4,10 +4,11 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
 
     routes: {
         '!/guide:guide:heading': {
+        //'!/guide:guide': {
             action    : 'onGuide',
             conditions: {
-                ':guide'  : '(?:(?:\/){1}([a-z_]+))?',
-                ':heading': '(?:(?:-){1}([a-z_]+))?'
+                ':guide'  : '(?:(?:\/){1}([a-zA-Z0-0\/_]+))?',
+                ':heading': '(?:(?:-){1}([a-zA-Z0-9_]+))?'
             }
         },
         '!/api:cls:type:member': {
@@ -24,29 +25,30 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
     },
 
     onGuide: function (guide, heading) {
+        //http://localhost:1841/#!/guide/core_concepts/memory_management
         var me = this,
             store = Ext.getStore('guide.Topical'),
             node, id, tabpanel, tab;
 
         if (store.isLoaded()) {
             node = store.getRoot().findChildBy(function (node) {
-                return node.isLeaf() && node.get('slug') === guide;
+                return node.isLeaf() && node.get('path') === guide;
             }, me, true);
 
             if (!node) {
                 return;
             }
 
-            id = node.get('id');
+            id       = node.get('path');
             tabpanel = this.lookupReference('mainapp-tabpanel');
-            tab      = tabpanel.child('[guideId=' + id + ']');
+            tab      = tabpanel.child('[guidePath=' + id + ']');
 
             tabpanel.suspendLayouts();
 
             if (!tab) {
                 tab = tabpanel.add({
                     xtype       : 'mainapp-guide-view',
-                    guideId     : id,
+                    guidePath   : id,
                     focusHeading: heading
                 });
             }
@@ -62,34 +64,31 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
         }
     },
 
-    focusHeader: function (tab, id, heading) {
-        //console.log(tab, id, heading);
+    focusHeader: function (tab, path, heading) {
         var el, header, scroller;
 
         if (tab.rendered) {
             if (tab.html) {
                 el = tab.getEl();
-                console.log('#' + id.replace(/_-_/g, '-_-') + '_-_' + heading);
-                header = el.down('#' + id.replace(/_-_/g, '-_-') + '_-_' + heading);
-                // core_concepts-_-memory_management_-_framework_level_leaks   HEADER ID
-                // core_concepts_-_memory_management_-_framework_level_leaks   TREE ID + HEADER
+                header = el.down('#' + path.replace(/\//g, '-_-') + '_-_' + heading);
+
                 if (header) {
                     scroller = tab.getScrollable();
                     scroller.scrollTo(0, -1);
                     header.scrollIntoView(scroller.getElement(), false, false, true);
+                    scroller.getElement().scrollBy(0, -15, false);
                 }
             } else {
                 tab.on({
                     loaded: this.focusHeader,
                     single: true,
-                    args: [tab, id, heading]
+                    args: [tab, path, heading]
                 });
             }
-            //console.log(tab.getEl());
         } else {
             tab.on('afterrender', this.focusHeader, this, {
                 single: true,
-                args: [tab, id, heading]
+                args: [tab, path, heading]
             });
         }
     },

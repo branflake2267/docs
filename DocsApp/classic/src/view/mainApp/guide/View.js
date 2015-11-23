@@ -5,7 +5,7 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
     controller: 'main-guide-controller',
 
     config: {
-        guideId     : null,
+        guidePath   : null,
         route       : null,
         focusHeading: null
     },
@@ -26,22 +26,22 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
         this.callParent();
     },
 
-    updateGuideId: function (id) {
-        if (id) {
+    updateGuidePath: function (path) {
+        if (path) {
             var store = Ext.getStore('guide.Topical');
 
             if (store.isLoaded()) {
-                this.handleNode(id);
+                this.handleNode(path);
             } else {
-                store.on('load', Ext.Function.bind(this.handleNode, this, [id], false), this, {single: true});
+                store.on('load', Ext.Function.bind(this.handleNode, this, [path], false), this, {single: true});
             }
         }
     },
 
-    handleNode: function (id) {
+    handleNode: function (path) {
         var me      = this,
             store   = Ext.getStore('guide.Topical'),
-            node    = store.getNodeById(id),
+            node    = store.findNode('path', path),
             headers = node.get('headers');
 
         me.setTitle(node.get('name'));
@@ -61,7 +61,6 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
                 contents   = el.child('.contents');
 
                 me.update(contents.getHtml());
-                //console.log(headers[1].id.split('_-_'));
                 me.tocDock = me.addDocked({
                     xtype: 'component',
                     cls  : 'da-guide-toc',
@@ -77,9 +76,15 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
                                 return xindex === 1 ? ' da-highlightTocNode' : '';
                             },
                             getHref: function (values) {
-                                var id = values.id,
+                                /*var id = values.id,
                                     parse = id.split('_-_'),
                                     guide = parse[0].split('-_-').pop(),
+                                    header = parse.pop().replace(/-/g, '_');
+
+                                return '#!/guide/' + guide + '-' + header;*/
+                                var id = values.id,
+                                    parse = id.split('_-_'),
+                                    guide = parse[0].split('-_-').join('/'),
                                     header = parse.pop().replace(/-/g, '_');
 
                                 return '#!/guide/' + guide + '-' + header;
@@ -119,7 +124,7 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
     },
 
     getRoute: function () {
-        var str = '#!/guide/' + this.getGuideId(),
+        var str = '#!/guide/' + this.getGuidePath(),
             focusHeading = this.getFocusHeading();
 
         if (focusHeading) {

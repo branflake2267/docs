@@ -7,6 +7,8 @@ The purpose of this module is to generate markdown of class and class member cha
 
     node index guide-parser [options] [targets]
 
+    **Note:** The command should be run from the 'lib' directory.
+
 ### Options
 
  - **--input** or **-i** The root location of the product guides where the individual versions are children of.
@@ -51,6 +53,10 @@ It is expected to have a `config.json` file to describe what guides should be pa
 option path next to the version directories:
 
     node index guide-parser -i /path/to/sencha-documentation/markdown/src/main/markdown/extjs
+
+Example command to output a tree TOC using the 6.0 version of Ext JS (run from the 'lib' directory):
+
+    node index guide-parser tree -v 6.0 -i path/to/sencha-documentation/markdown/src/main/markdown/extjs -d ./guideOutput
 
 A sample `config.json` file is:
 

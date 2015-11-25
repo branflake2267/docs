@@ -62,14 +62,18 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
 
                 me.update(contents.getHtml());
                 me.tocDock = me.addDocked({
-                    xtype: 'component',
-                    cls  : 'da-guide-toc',
-                    dock : 'right',
-                    width: 340,
-                    data : headers,
-                    tpl  : new Ext.XTemplate(
+                    xtype     : 'container',
+                    scrollable: true,
+                    cls       : 'da-guide-toc',
+                    dock      : 'right',
+                    width     : 340,
+                    resizable : {
+                        handles: 'w'
+                    },
+                    data      : headers,
+                    tpl       : new Ext.XTemplate(
                         '<tpl for=".">',
-                            '<a class="da-guide-toc-{tag}{[this.isFirst(xindex)]}" da-data="{name}" href="{[this.getHref(values)]}">{name}</a>',
+                        '<a class="da-guide-toc-{tag}{[this.isFirst(xindex)]}" da-data="{name}" href="{[this.getHref(values)]}">{name}</a>',
                         '</tpl>',
                         {
                             isFirst: function (xindex) {
@@ -77,14 +81,14 @@ Ext.define('DocsApp.view.mainApp.guide.View', {
                             },
                             getHref: function (values) {
                                 /*var id = values.id,
-                                    parse = id.split('_-_'),
-                                    guide = parse[0].split('-_-').pop(),
-                                    header = parse.pop().replace(/-/g, '_');
+                                 parse = id.split('_-_'),
+                                 guide = parse[0].split('-_-').pop(),
+                                 header = parse.pop().replace(/-/g, '_');
 
-                                return '#!/guide/' + guide + '-' + header;*/
-                                var id = values.id,
-                                    parse = id.split('_-_'),
-                                    guide = parse[0].split('-_-').join('/'),
+                                 return '#!/guide/' + guide + '-' + header;*/
+                                var id     = values.id,
+                                    parse  = id.split('_-_'),
+                                    guide  = parse[0].split('-_-').join('/'),
                                     header = parse.pop().replace(/-/g, '_');
 
                                 return '#!/guide/' + guide + '-' + header;

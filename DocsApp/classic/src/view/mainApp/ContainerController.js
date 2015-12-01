@@ -28,7 +28,9 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
         //http://localhost:1841/#!/guide/core_concepts/memory_management
         var me = this,
             store = Ext.getStore('guide.Topical'),
-            node, id, tabpanel, tab;
+            view = me.getView(),
+            createTab = view.createTab,
+            reuseDoc, node, id, tabpanel, tab, insert;
 
         if (store.isLoaded()) {
             node = store.getRoot().findChildBy(function (node) {
@@ -45,11 +47,28 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
 
             tabpanel.suspendLayouts();
 
+            // if we're to recycle the tab
+            if (!createTab) {
+                tab = tab || tabpanel.child('mainapp-guide-view[recycle=true]');
+                reuseDoc = tabpanel.child('mainapp-doc-view[recycle=true]');
+                if (reuseDoc) {
+                    reuseDoc.tab.hide();
+                }
+            }
+
+            if (tab && createTab) {
+                tab.recycle = false;
+                tab.tab.setClosable(true);
+            }
+
             if (!tab) {
-                tab = tabpanel.add({
+                insert = createTab ? tabpanel.items.getCount() : 1;
+                tab = tabpanel.insert(insert, {
                     xtype       : 'mainapp-guide-view',
+                    recycle     : !createTab,
                     guidePath   : id,
-                    focusHeading: heading
+                    focusHeading: heading,
+                    closable    : createTab
                 });
             }
 
@@ -57,8 +76,10 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
                 me.focusHeader(tab, id, heading);
             }
 
-            tabpanel.setActiveItem(tab);
+            tabpanel.setActiveItem(tab).tab.show();
             tabpanel.resumeLayouts(true);
+
+            view.createTab = false;
         } else {
             store.on('load', Ext.Function.bind(this.onGuide, this, [guide, heading], false), this, {single: true});
         }
@@ -100,10 +121,11 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
             var node = store.findNode('className', cls),
                 view = this.getView(),
                 createTab = view.createTab,
-                tabpanel, tab, insert;
+                reuseDoc, tabpanel, tab, insert;
 
             if (!node) {
                 Ext.Msg.alert(cls + ' class not found.');
+                view.createTab = false;
                 return;
             }
 
@@ -115,6 +137,10 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
             // if we're to recycle the tab
             if (!createTab) {
                 tab = tab || tabpanel.child('mainapp-doc-view[recycle=true]');
+                reuseDoc = tabpanel.child('mainapp-guide-view[recycle=true]');
+                if (reuseDoc) {
+                    reuseDoc.tab.hide();
+                }
             }
 
             if (tab && createTab) {
@@ -152,7 +178,7 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
                 this.focusMember(tab, type, member);
             }
 
-            tabpanel.setActiveItem(tab);
+            tabpanel.setActiveItem(tab).tab.show();
             tabpanel.resumeLayouts(true);
 
             view.createTab = false;

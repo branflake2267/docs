@@ -86,7 +86,8 @@ Ext.define('DocsApp.view.mainApp.nav.docs.Container', {
             //bind: '{package}',
             store: 'doc.Package',
             listeners: {
-                itemclick: 'onApiClick'
+                itemclick   : 'onApiClick',
+                itemdblclick: 'onApiDblClick'
             }
         }, {
             xtype: 'treepanel',

@@ -345,14 +345,54 @@ Ext.define('DocsApp.view.mainApp.doc.View', {
         }
     }],
 
-    updateClassName: function (name) {
-        if (name) {
-            this.setTitle(name);
+    updateTitle: function () {
+        var desc = this.down('descpanel');
 
-            this.getViewModel().linkTo('classFile', {
-                type: 'Class',
-                id  : name
-            });
+        desc.editors = [];
+        desc.editorResizeIds = [];
+        desc.editorMap = {};
+    },
+
+    updateClassName: function (name) {
+        var me = this,
+            vm = me.getViewModel(),
+            msg = 'Loading ' + name + '...';
+
+        if (name) {
+            me.setTitle(name);
+
+            if (me.rendered) {
+                me.ownerCt.getEl().mask(msg);
+            } else {
+                me.on({
+                    afterrender: function () {
+                        me.ownerCt.getEl().mask(msg);
+                    },
+                    single: true
+                });
+            }
+
+            Ext.defer(function () {
+                vm.linkTo('classFile', {
+                    type: 'Class',
+                    id  : name
+                });
+
+                vm.bind('{classFile}', function () {
+                    if (me.rendered) {
+                        me.ownerCt.getEl().unmask();
+                    } else {
+                        me.on({
+                            afterrender: function () {
+                                me.ownerCt.getEl().unmask();
+                            },
+                            single: true
+                        });
+                    }
+                }, me, {
+                    single: true
+                });
+            }, 1);
         }
     },
 

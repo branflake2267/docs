@@ -16,9 +16,24 @@ Ext.define('DocsApp.view.mainApp.nav.docs.ContainerController', {
 
     onApiClick: function(treeView, node) {
         if (node.isLeaf()) {
-            this.redirectTo('!/api/' + node.get('className'));
+            //this.redirectTo('!/api/' + node.get('className'));
+            this.processClick(treeView, node);
         }
     },
+
+    onApiDblClick: function(treeView, node) {
+        var owner = this.getView().up('mainapp-container');
+
+        if (node.isLeaf()) {
+            owner.createTab = true;
+            //this.redirectTo('!/api/' + node.get('className'));
+            this.processClick(treeView, node);
+        }
+    },
+
+    processClick: Ext.Function.createBuffered(function (treeView, node) {
+        this.redirectTo('!/api/' + node.get('className'), true);
+    }, 260),
 
     onApi: function(id) {
         var me = this,

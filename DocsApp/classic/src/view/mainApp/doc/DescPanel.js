@@ -14,6 +14,9 @@ Ext.define('DocsApp.view.mainApp.doc.DescPanel', {
         data: '{classFile}'
     },
     resizers: [],
+    editors: [],
+    editorResizeIds: [],
+    editorMap: {},
     applyData: function (data) {
         var me = this;
 
@@ -47,9 +50,9 @@ Ext.define('DocsApp.view.mainApp.doc.DescPanel', {
     initComponent: function () {
         var me = this;
 
-        me.editors = [];
-        me.editorResizeIds = [];
-        me.editorMap = {};
+        //me.editors = [];
+        //me.editorResizeIds = [];
+        //me.editorMap = {};
 
         me.tpl = new Ext.XTemplate(
             '<div class="da-class-meta-ct">',
@@ -76,6 +79,10 @@ Ext.define('DocsApp.view.mainApp.doc.DescPanel', {
             '{[this.processDesc(values.text)]}',
             {
                 processDesc: function (text) {
+                    me.editors = [];
+                    me.editorResizeIds = [];
+                    me.editorMap = {};
+
                     var out = marked(text, { addHeaderId: false }),
                         codeWrap = '<div class="da-inline-code-wrap" id="{0}">{1}</div>',
                         fiddleWrap = '<div class="da-inline-code-wrap da-inline-code-wrap-fiddle" id="{2}">' +

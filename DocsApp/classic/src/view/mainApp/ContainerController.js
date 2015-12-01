@@ -98,7 +98,9 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
 
         if (cls && store.isLoaded()) {
             var node = store.findNode('className', cls),
-                tabpanel, tab, memberStore;
+                view = this.getView(),
+                createTab = view.createTab,
+                tabpanel, tab, insert;
 
             if (!node) {
                 Ext.Msg.alert(cls + ' class not found.');
@@ -110,13 +112,30 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
 
             tabpanel.suspendLayouts();
 
+            // if we're to recycle the tab
+            if (!createTab) {
+                tab = tab || tabpanel.child('mainapp-doc-view[recycle=true]');
+            }
+
+            if (tab && createTab) {
+                tab.recycle = false;
+                tab.tab.setClosable(true);
+            }
+
             if (!tab) {
-                tab = tabpanel.add({
+                insert = createTab ? tabpanel.items.getCount() : 1;
+                tab = tabpanel.insert(insert, {
                     xtype      : 'mainapp-doc-view',
+                    recycle    : !createTab,
                     className  : cls,
                     memberType : type,
-                    focusMember: member
+                    focusMember: member,
+                    closable   : createTab
                 });
+            }
+
+            if (tab.className !== cls) {
+                tab.setClassName(cls);
             }
 
             if (type) {
@@ -135,6 +154,8 @@ Ext.define('DocsApp.view.mainApp.ContainerController', {
 
             tabpanel.setActiveItem(tab);
             tabpanel.resumeLayouts(true);
+
+            view.createTab = false;
         } else {
             store.on('load', Ext.Function.bind(this.onApi, this, [cls, type, member], false), this, {single: true});
         }

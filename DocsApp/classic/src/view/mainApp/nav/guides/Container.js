@@ -53,7 +53,8 @@ Ext.define('DocsApp.view.mainApp.nav.guides.Container', {
             width: 100
         }],
         listeners: {
-            itemclick: 'onGuideClick'
+            itemclick: 'onGuideClick',
+            itemdblclick: 'onGuideDblClick'
         }
     }, {
         xtype: 'gridpanel',

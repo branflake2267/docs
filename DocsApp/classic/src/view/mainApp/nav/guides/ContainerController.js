@@ -82,47 +82,43 @@ Ext.define('DocsApp.view.mainApp.nav.guides.ContainerController', {
         var tabpanel, activeTab;
 
         if (node.isLeaf()) {
-            //this.redirectTo('!/guide/' + node.getId());
-            //this.redirectTo('!/guide/' + node.get('slug'));
             tabpanel = this.getView().up('mainapp-container').lookupController().lookupReference('mainapp-tabpanel');
             activeTab = tabpanel.getActiveTab();
             if (activeTab.getGuidePath && activeTab.getGuidePath() === node.get('path')) {
                 return;
             } else {
-                this.redirectTo('!/guide/' + node.get('path'));
+                //this.redirectTo('!/guide/' + node.get('path'));
+                this.processClick(treeView, node);
             }
         }
     },
 
+    onGuideDblClick: function (treeView, node) {
+        var owner = this.getView().up('mainapp-container'),
+            tabpanel, activeTab;
+
+        if (node.isLeaf()) {
+            tabpanel = this.getView().up('mainapp-container').lookupController().lookupReference('mainapp-tabpanel');
+            activeTab = tabpanel.getActiveTab();
+            if (activeTab.getGuidePath && activeTab.getGuidePath() === node.get('path')) {
+                return;
+            } else {
+                owner.createTab = true;
+                //this.redirectTo('!/guide/' + node.get('path'));
+                this.processClick(treeView, node);
+            }
+        }
+    },
+
+    processClick: Ext.Function.createBuffered(function (treeView, node) {
+        this.redirectTo('!/guide/' + node.get('path'), true);
+    }, 260),
+
     onGuide: function (guide) {
         //http://localhost:1841/#!/guide/core_concepts/memory_management
-        /*var store = Ext.getStore('guide.Topical'),
-            node, tree, heading;
-
-        if (store.isLoaded()) {
-            node = store.getRoot().findChildBy(function (node) {
-                return node.isLeaf() && node.get('slug') === guide;
-            }, this, true);
-
-            if (!node) {
-                return;
-            }
-
-            tree = this.lookupReference('topicalGuideTree');
-
-            //expand the path and select the node
-            tree.expandPath(node.getPath(), {
-                select: true,
-                focus : true
-            });
-        } else {
-            store.on('load', Ext.Function.bind(this.onGuide, this, [guide, heading], false), this, {single: true});
-        }*/
-
         var store = Ext.getStore('guide.Topical'),
             path, node, tree;
 
-        //path = guide.replace(/_-_/g, '/');
         if (store.isLoaded()) {
             node = store.getRoot().findChildBy(function (node) {
                 return node.isLeaf() && node.get('path') === guide;

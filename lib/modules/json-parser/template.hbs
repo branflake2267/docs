@@ -36,7 +36,13 @@
         </div>
     </div>
     <div id="centerContent">
-        <div id="tree"></div>
+        <div id="tree-collapse"><a href="#">Toggle Tree</a></div>
+        <div id="member-display">
+            <div class="member-access-display"><input type="checkbox" value="member" checked/>Public</div>
+            <div class="member-access-display"><input type="checkbox" value="member-protected" onchange="toggleDisplay(this)"/>Protected</div>
+            <div class="member-access-display"><input type="checkbox" value="member-private" onchange="toggleDisplay(this)"/>Private</div>
+        </div>
+        <div id="tree" class="tree-shown"></div>
         <div id="rightMembers">
             <div id="toolbar">
                 {{#members}}
@@ -92,7 +98,7 @@
                     <h2 id="{{{$type}}}" class="type">{{{$type}}}</h2>
                     <a name="{{{$type}}}"></a>
                     {{#items}}
-                        <div class="classmembers" data-member-name="{{{name}}}"{{#access}} data-access-level="{{{.}}}"{{/access}}{{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
+                        <div class="classmembers member{{#access}}-{{{.}}}{{/access}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
                             <a name="{{{name}}}"></a>
                             <h2>
                                 <a href="#{{{$type}}}-{{{name}}}" class="member-name">{{{name}}}</a>

@@ -121,6 +121,9 @@
                                 {{#static}}
                                     <span class='static'>static</span>
                                 {{/static}}
+                                {{#template}}
+                                    <span class='template'>template</span>
+                                {{/template}}
                                 {{#access}}
                                     <span class='{{{.}}}'>{{{.}}}</span>
                                 {{/access}}
@@ -134,9 +137,17 @@
                             {{#deprecatedMessage}}
                                 <p class="deprecated-dec">Deprecated: {{{.}}}</p>
                             {{/deprecatedMessage}}
+                            {{#preventable}}
+                                <p class='preventable-dec'>This action following this event is preventable. When any
+                                    of the listeners returns false, the action is cancelled.</p>
+                            {{/preventable}}
                             {{#removedVersion}}
                                 <p class='removed-dec'>This method has been REMOVED since {{{.}}}</p>
                             {{/removedVersion}}
+                            {{#template}}
+                                <p class='template-dec'>This is a template method. a hook into the functionality of this
+                                    class. Feel free to override it in child classes.</p>
+                            {{/template}}
                         </div>
                     {{/items}}
                 {{/members}}

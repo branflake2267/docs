@@ -134,6 +134,25 @@
                             {{#value}}
                                 <p class="defaults-to-dec">Defaults to: {{{.}}}</p>
                             {{/value}}
+                            {{#value}}
+                                <p class="defaults-to-dec">Defaults to: {{{.}}}</p>
+                            {{/value}}
+                            {{#items}}
+                                {{#is $type "param"}}
+                                    {{#unless @index}}
+                                        <h3>Parameters</h3>
+                                    {{/unless}}
+
+                                    <p>{{{name}}} : {{{type}}}</p>
+                                    <p>{{{text}}}</p>
+                                {{/is}}
+
+                                {{#is $type "return"}}
+                                    <h3>Returns</h3>
+                                    <p>{{{type}}}</p>
+                                    <p>{{{text}}}</p>
+                                {{/is}}
+                            {{/items}}
                             {{#deprecatedMessage}}
                                 <p class="deprecated-dec">Deprecated: {{{.}}}</p>
                             {{/deprecatedMessage}}

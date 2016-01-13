@@ -95,6 +95,7 @@
                     </div>
                 </div>
             </div>
+            <div id="member-toolbars-placeholder"></div>
             <div class="classText"><h2>Summary</h2>{{{classText}}}</div>
             <a href="#" id="back-to-top" style="display: none;">Back to Top </a>
             <div class="members">
@@ -105,7 +106,16 @@
                         <div class="classmembers member{{#access}}-{{{.}}}{{/access}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
                             <a name="{{{name}}}"></a>
                             <h2>
-                                <a href="#{{{$type}}}-{{{name}}}" class="member-name">{{{name}}}</a>
+                                <a href="#{{{$type}}}-{{{name}}}" class="member-name">
+                                    {{{name}}}
+                                    (
+                                    {{#items}}
+                                        {{#is $type "param"}}
+                                            {{{name}}}
+                                        {{/is}}
+                                    {{/items}}
+                                    )
+                                </a>
                                 {{#type}}
                                     <span class='memberType'>{{{.}}}</span>
                                 {{/type}}
@@ -121,6 +131,9 @@
                                 {{#static}}
                                     <span class='static'>static</span>
                                 {{/static}}
+                                {{#required}}
+                                    <span class='required'>required</span>
+                                {{/required}}
                                 {{#template}}
                                     <span class='template'>template</span>
                                 {{/template}}
@@ -131,9 +144,6 @@
                             {{#text}}
                                 <p>{{{.}}}</p>
                             {{/text}}
-                            {{#value}}
-                                <p class="defaults-to-dec">Defaults to: {{{.}}}</p>
-                            {{/value}}
                             {{#value}}
                                 <p class="defaults-to-dec">Defaults to: {{{.}}}</p>
                             {{/value}}

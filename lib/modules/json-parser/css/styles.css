@@ -9,6 +9,7 @@ body {
     margin: 0px;
     padding-top: 56px;
     -webkit-font-smoothing: antialiased;
+    font-size: 15px;
 }
 
 /*h1 {
@@ -59,13 +60,12 @@ pre {
 
 .members{
     clear:both;
-    padding: 20px 60px 0px 60px;
-    border-top: 3px solid #DCDCDC;
+    border-top: 2px solid #DCDCDC;
 }
 
 .member a.member-name, a.member-name {
     color: #5a5a5a !important;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: bold;
 }
 
@@ -81,16 +81,19 @@ pre {
     margin: 0px;
     /*border-bottom: 1px solid #ECECEC;*/
     font-size: 1.1em;
-    padding: 4px 0px;
+    padding: 4px 0px 0px 0px;
 }
 
-.classmembers.member {
-    border-top: 1px solid #9a9a9a;
-    padding: 2px 0px 4px 0px;
+.classmembers.member,
+.classmembers.member-protected-active,
+.classmembers.member-private-active {
+    border-top: 1px solid #E4E4E4;
+    padding: 4px 60px 6px 30px;
+    font-size: 14px;
 }
 
 .classmembers.member h2 {
-    padding-bottom: 6px;
+    padding-bottom: 0px;
 }
 
 .members .classmembers h2 strong {
@@ -112,7 +115,7 @@ pre {
 }
 
 .members p {
-    margin: 6px 12px;
+    margin: 12px;
     font-size: 14px;
 }
 
@@ -149,7 +152,6 @@ pre {
 
 .protected, .private, .deprecated, .preventable, .static, .readonly, .template{
     color: white;
-    font-size: .6em;
     padding: 4px 8px;
     margin-left: 12px;
     line-height:25px;
@@ -217,7 +219,7 @@ pre {
     background-color: #F9F9F9;
     border: 2px solid #E4E4E4;
     border-width: 2px 0px;
-    padding: 10px 60px;
+    padding: 8px 60px 5px 60px;
     color: #666;
     font-size: .85em;
     overflow: hidden;
@@ -305,21 +307,6 @@ pre {
     left: 0;
 }
 
-#tree {
-    width: 275px;
-    margin-left: 25px;
-    overflow: scroll;
-}
-
-#tree-header {
-    background: #B7B7B7;
-    color: #FFFFFF;
-    padding: 3px 25px;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-    font-weight: bold;
-}
-
 #rightMembers{
     /*width:80%;*/
     margin-left: 300px;
@@ -373,7 +360,7 @@ pre {
     left: -2px;
     right: -2px;
     top: 100%;
-    height: 10px;
+    height: 12px;
     background-color: white;
     border-left: 2px solid #E4E4E4;
     border-right: 2px solid #e4e4e4;
@@ -436,13 +423,18 @@ pre {
 #back-to-top {
     position: fixed;
     bottom: 2em;
-    right: 0px;
+    right: -90px;
     text-decoration: none;
     color: #ffffff;
     background-color: #1E97CC;
     font-size: 12px;
     padding: 1em;
-    display: none;
+    /*display: none;*/
+    transition: right 250ms;
+}
+
+#back-to-top.sticky {
+    right: 0;
 }
 
 #back-to-top:hover {
@@ -508,23 +500,39 @@ pre {
     #rightMembers{
     }*/
 }
+
+
+
+/*  CLASS TREE  */
+#tree {
+    width: 275px;
+    margin-left: 25px;
+    overflow: auto;
+}
+
+#tree-header {
+    background: #B7B7B7;
+    color: #FFFFFF;
+    padding: 3px 25px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
 .tree-leaf { position: relative; }
 .tree-leaf .tree-child-leaves { display: block; margin-left: 15px; }
 .tree-leaf .tree-child-leaves.hidden { display: none; }
 .tree-leaf .tree-expando {
-    background: #939393;
-    border-radius: 3px;
+    background: #7D7D7D;
+    border-radius: 2px;
     cursor: pointer;
-    height: 13px;
-    line-height: 13px;
+    height: 10px;
+    line-height: 10px;
     position: relative;
     text-align: center;
-    width: 13px;
+    width: 10px;
     font-size: 16px;
     padding: 3px;
     display: inline-block;
-    vertical-align: top;
-    margin-bottom: 8px;
     color: white;
     font-weight: bold;
 }
@@ -542,6 +550,10 @@ pre {
     cursor: pointer;
     margin-left: 8px;
     font-size: 14px;
+    vertical-align: middle;
+    display: inline-block;
+    padding-bottom: 5px;
+    line-height: 16px;
 }
 /*.tree-leaf .tree-leaf-content:before, .tree-leaf .tree-leaf-content:after { content: " "; display: table; }*/
 .tree-leaf .tree-expando.hidden + .tree-leaf-text {

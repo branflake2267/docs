@@ -131,7 +131,8 @@
                 <h2 id="{{{$type}}}" class="type">{{{$type}}}</h2>
                 <a name="{{{$type}}}"></a>
                 {{#items}}
-                    <div id="{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
+                    <div id="{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is ../$type "configs"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
+                        <div class="source-class">{{srcClass}}</div>
                         <h2>
                             <a href="#{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="member-name">
                                 {{{name}}}

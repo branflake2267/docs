@@ -67,13 +67,13 @@
                             <div class="nav-btn-mask"></div>
                         </div>
                     {{/is}}
-                    {{#is $type "static-properties"}}
+                    {{!-- {{#is $type "static-properties"}}
                         <div id="static-properties-nav-btn" class="toolbarButton">
                             <a href="#static-properties">static-properties</a>
                             <div id="static-properties-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
                         </div>
-                    {{/is}}
+                    {{/is}} --}}
                     {{#is $type "methods"}}
                         <div id="methods-nav-btn" class="toolbarButton">
                             <a href="#methods">methods</a>
@@ -81,13 +81,13 @@
                             <div class="nav-btn-mask"></div>
                         </div>
                     {{/is}}
-                    {{#is $type "static-methods"}}
+                    {{!-- {{#is $type "static-methods"}}
                         <div id="static-methods-nav-btn" class="toolbarButton">
                             <a href="#static-methods">static methods</a>
                             <div id="static-methods-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
                         </div>
-                    {{/is}}
+                    {{/is}} --}}
                     {{#is $type "events"}}
                         <div id="events-nav-btn" class="toolbarButton">
                             <a href="#events">events</a>
@@ -95,10 +95,17 @@
                             <div class="nav-btn-mask"></div>
                         </div>
                     {{/is}}
-                    {{#is $type "mixins"}}
+                    {{!-- {{#is $type "mixins"}}
                         <div id="mixins-nav-btn" class="toolbarButton">
                             <a href="#mixins">mixins</a>
                             <div id="mixins-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div>
+                    {{/is}} --}}
+                    {{#is $type "vars"}}
+                        <div id="vars-nav-btn" class="toolbarButton">
+                            <a href="#vars">css variables</a>
+                            <div id="vars-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
                         </div>
                     {{/is}}
@@ -106,13 +113,6 @@
                         <div id="sass-mixins-nav-btn" class="toolbarButton">
                             <a href="#sass-mixins">sass-mixins</a>
                             <div id="sass-mixins-count" class="nav-btn-count"></div>
-                            <div class="nav-btn-mask"></div>
-                        </div>
-                    {{/is}}
-                    {{#is $type "vars"}}
-                        <div id="vars-nav-btn" class="toolbarButton">
-                            <a href="#vars">css variables</a>
-                            <div id="vars-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
                         </div>
                     {{/is}}
@@ -131,7 +131,7 @@
                 <h2 id="{{{$type}}}" class="type">{{{$type}}}</h2>
                 <a name="{{{$type}}}"></a>
                 {{#items}}
-                    <div id="{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="classmembers member{{#access}}-{{{.}}}{{/access}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
+                    <div id="{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
                         <h2>
                             <a href="#{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="member-name">
                                 {{{name}}}

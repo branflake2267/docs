@@ -33,6 +33,12 @@
                 <p class="list">{{{requires}}}</p>
             </div>
         {{/if}}
+        {{#if extends}}
+            <div class="classMetaColumn">
+                <h3>Hierarchy</h3>
+                <p class="list">{{{extends}}}</p>
+            </div>
+        {{/if}}
     </div>
 </div>
 <div id="centerContent">
@@ -132,7 +138,7 @@
                 <h2 id="{{{$type}}}" class="type">{{{$type}}}</h2>
                 <a name="{{{$type}}}"></a>
                 {{#items}}
-                    <div id="{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is ../$type "configs"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
+                    <div id="{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is ../$type "configs"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}} {{#fromObject}}fromObject{{/fromObject}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
                         <div class="source-class">{{srcClass}}</div>
                         <h2>
                             <a href="#{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="member-name">
@@ -157,7 +163,7 @@
                             </a>
                             {{#items}}
                                 {{#is $type "return"}}
-                                    <span class="return-type">{{{type}}}</span>
+                                    <span class="memberType">{{{type}}}</span>
                                 {{/is}}
                             {{/items}}
                             {{#type}}
@@ -197,14 +203,14 @@
                         {{#items}}
                             {{#is $type "param"}}
                                 {{#if @first}}
-                                    <h3>Parameters</h3>
+                                    <h3 class="detail-header">Parameters</h3>
                                 {{/if}}
 
-                                <p>{{{name}}} :
+                                <p><span class="params-list">{{{name}}}</span> :
                                 {{#if type}}
-                                    {{{type}}}
+                                    <span class="memberType">{{{type}}}</span>
                                 {{else}}
-                                    Object
+                                    <span class="memberType">Object</span>
                                 {{/if}}
 
                                 </p>
@@ -213,22 +219,22 @@
 
                             {{#is $type "property"}}
                                 {{#unless @index}}
-                                    <h3>Properties</h3>
+                                    <h3 class="detail-header">Properties</h3>
                                 {{/unless}}
 
-                                <p>{{{name}}} : {{{type}}}</p>
+                                <p><span class="params-list">{{{name}}}</span> : <span class="memberType">{{{type}}}</span></p>
                                 <p>{{{text}}}</p>
                             {{/is}}
 
                             {{#is $type "return"}}
-                                <h3>Returns</h3>
-                                <p>{{{type}}}</p>
+                                <h3 class="detail-header">Returns</h3>
+                                <p><span class="memberType">{{{type}}}</span></p>
                                 <p>{{{text}}}</p>
                             {{/is}}
 
                             {{#if @last}}
                                 {{#is ../$type "event"}}
-                                    <p>eOpts : <a href="Object.html">Object</a></p>
+                                    <p>eOpts : <span class="memberType"><a href="Object.html">Object</a></span></p>
                                     <p>The options object passed to <a href="Ext.util.Observable.html">Ext.util.Observable.addListener</a>.</p>
                                 {{/is}}
                             {{/if}}

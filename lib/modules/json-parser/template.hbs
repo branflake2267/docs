@@ -138,122 +138,124 @@
                 <h2 id="{{{$type}}}" class="type">{{{$type}}}</h2>
                 <a name="{{{$type}}}"></a>
                 {{#items}}
-                    <div id="{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is ../$type "configs"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}} {{#fromObject}}fromObject{{/fromObject}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
-                        <div class="source-class">{{srcClass}}</div>
-                        <h2>
-                            <a href="#{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="member-name">
-                                {{{name}}}
+                    {{#unless hide}}
+                        <div id="{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is ../$type "configs"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}} {{#fromObject}}fromObject{{/fromObject}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
+                            <div class="source-class">{{srcClass}}</div>
+                            <h2>
+                                <a href="#{{#is ../$type "configs"}}cfg{{else}}{{{$type}}}{{/is}}-{{{name}}}" class="member-name">
+                                    {{{name}}}
 
-                                {{#if hasParams}}<span class="params-list">({{/if}}
+                                    {{#if hasParams}}<span class="params-list">({{/if}}
 
+                                    {{#items}}
+                                        {{#is $type "param"}}
+                                            {{#unless @first}}, {{/unless}}
+                                            {{{name}}}
+                                            {{#if @last}}
+                                                {{#is ../$type "event"}}, eOpts{{/is}}
+                                            {{/if}}
+                                        {{/is}}
+
+                                    {{/items}}
+
+                                    {{#if hasParams}}
+                                        )</span>
+                                    {{/if}}
+                                </a>
                                 {{#items}}
-                                    {{#is $type "param"}}
-                                        {{#unless @first}}, {{/unless}}
-                                        {{{name}}}
-                                        {{#if @last}}
-                                            {{#is ../$type "event"}}, eOpts{{/is}}
-                                        {{/if}}
+                                    {{#is $type "return"}}
+                                        <span class="memberType">{{{type}}}</span>
                                     {{/is}}
-
                                 {{/items}}
-
-                                {{#if hasParams}}
-                                    )</span>
-                                {{/if}}
-                            </a>
+                                {{#type}}
+                                    <span class='memberType'>{{{.}}}</span>
+                                {{/type}}
+                                {{#chainable}}
+                                    <span class='chainable'>chainable</span>
+                                {{/chainable}}
+                                {{#preventable}}
+                                    <span class='preventable'>preventable</span>
+                                {{/preventable}}
+                                {{#readonly}}
+                                    <span class='readonly'>readonly</span>
+                                {{/readonly}}
+                                {{#static}}
+                                    <span class='static'>static</span>
+                                {{/static}}
+                                {{#required}}
+                                    <span class='required'>required</span>
+                                {{/required}}
+                                {{#template}}
+                                    <span class='template'>template</span>
+                                {{/template}}
+                                {{#access}}
+                                    <span class='{{{.}}}'>{{{.}}}</span>
+                                {{/access}}
+                            </h2>
+                            {{#text}}
+                                <p>{{{.}}}</p>
+                            {{/text}}
+                            {{#exists value}}
+                                <p class="defaults-to-dec">Defaults to: {{{value}}}</p>
+                            {{/exists}}
+                            {{#since}}
+                                <p class="since-dec">Available since: {{{.}}}</p>
+                            {{/since}}
                             {{#items}}
+                                {{#is $type "param"}}
+                                    {{#if @first}}
+                                        <h3 class="detail-header">Parameters</h3>
+                                    {{/if}}
+
+                                    <p><span class="params-list">{{{name}}}</span> :
+                                        {{#if type}}
+                                            <span class="memberType">{{{type}}}</span>
+                                        {{else}}
+                                            <span class="memberType">Object</span>
+                                        {{/if}}
+
+                                    </p>
+                                    <p>{{{text}}}</p>
+                                {{/is}}
+
+                                {{#is $type "property"}}
+                                    {{#unless @index}}
+                                        <h3 class="detail-header">Properties</h3>
+                                    {{/unless}}
+
+                                    <p><span class="params-list">{{{name}}}</span> : <span class="memberType">{{{type}}}</span></p>
+                                    <p>{{{text}}}</p>
+                                {{/is}}
+
                                 {{#is $type "return"}}
-                                    <span class="memberType">{{{type}}}</span>
+                                    <h3 class="detail-header">Returns</h3>
+                                    <p><span class="memberType">{{{type}}}</span></p>
+                                    <p>{{{text}}}</p>
                                 {{/is}}
+
+                                {{#if @last}}
+                                    {{#is ../$type "event"}}
+                                        <p>eOpts : <span class="memberType"><a href="Object.html">Object</a></span></p>
+                                        <p>The options object passed to <a href="Ext.util.Observable.html">Ext.util.Observable.addListener</a>.</p>
+                                    {{/is}}
+                                {{/if}}
                             {{/items}}
-                            {{#type}}
-                                <span class='memberType'>{{{.}}}</span>
-                            {{/type}}
-                            {{#chainable}}
-                                <span class='chainable'>chainable</span>
-                            {{/chainable}}
+                            {{#deprecatedMessage}}
+                                <p class="deprecated-dec">Deprecated: {{{.}}}</p>
+                            {{/deprecatedMessage}}
                             {{#preventable}}
-                                <span class='preventable'>preventable</span>
+                                <p class='preventable-dec'>This action following this event is preventable. When any
+                                    of the listeners returns false, the action is cancelled.</p>
                             {{/preventable}}
-                            {{#readonly}}
-                                <span class='readonly'>readonly</span>
-                            {{/readonly}}
-                            {{#static}}
-                                <span class='static'>static</span>
-                            {{/static}}
-                            {{#required}}
-                                <span class='required'>required</span>
-                            {{/required}}
+                            {{#removedVersion}}
+                                <p class='removed-dec'>This method has been REMOVED since {{{.}}}</p>
+                            {{/removedVersion}}
                             {{#template}}
-                                <span class='template'>template</span>
+                                <p class='template-dec'>This is a template method. a hook into the functionality of this
+                                    class. Feel free to override it in child classes.</p>
                             {{/template}}
-                            {{#access}}
-                                <span class='{{{.}}}'>{{{.}}}</span>
-                            {{/access}}
-                        </h2>
-                        {{#text}}
-                            <p>{{{.}}}</p>
-                        {{/text}}
-                        {{#exists value}}
-                            <p class="defaults-to-dec">Defaults to: {{{value}}}</p>
-                        {{/exists}}
-                        {{#since}}
-                            <p class="since-dec">Available since: {{{.}}}</p>
-                        {{/since}}
-                        {{#items}}
-                            {{#is $type "param"}}
-                                {{#if @first}}
-                                    <h3 class="detail-header">Parameters</h3>
-                                {{/if}}
-
-                                <p><span class="params-list">{{{name}}}</span> :
-                                {{#if type}}
-                                    <span class="memberType">{{{type}}}</span>
-                                {{else}}
-                                    <span class="memberType">Object</span>
-                                {{/if}}
-
-                                </p>
-                                <p>{{{text}}}</p>
-                            {{/is}}
-
-                            {{#is $type "property"}}
-                                {{#unless @index}}
-                                    <h3 class="detail-header">Properties</h3>
-                                {{/unless}}
-
-                                <p><span class="params-list">{{{name}}}</span> : <span class="memberType">{{{type}}}</span></p>
-                                <p>{{{text}}}</p>
-                            {{/is}}
-
-                            {{#is $type "return"}}
-                                <h3 class="detail-header">Returns</h3>
-                                <p><span class="memberType">{{{type}}}</span></p>
-                                <p>{{{text}}}</p>
-                            {{/is}}
-
-                            {{#if @last}}
-                                {{#is ../$type "event"}}
-                                    <p>eOpts : <span class="memberType"><a href="Object.html">Object</a></span></p>
-                                    <p>The options object passed to <a href="Ext.util.Observable.html">Ext.util.Observable.addListener</a>.</p>
-                                {{/is}}
-                            {{/if}}
-                        {{/items}}
-                        {{#deprecatedMessage}}
-                            <p class="deprecated-dec">Deprecated: {{{.}}}</p>
-                        {{/deprecatedMessage}}
-                        {{#preventable}}
-                            <p class='preventable-dec'>This action following this event is preventable. When any
-                                of the listeners returns false, the action is cancelled.</p>
-                        {{/preventable}}
-                        {{#removedVersion}}
-                            <p class='removed-dec'>This method has been REMOVED since {{{.}}}</p>
-                        {{/removedVersion}}
-                        {{#template}}
-                            <p class='template-dec'>This is a template method. a hook into the functionality of this
-                                class. Feel free to override it in child classes.</p>
-                        {{/template}}
-                    </div>
+                        </div>
+                    {{/unless}}
                 {{/items}}
                 </div>
             {{/members}}

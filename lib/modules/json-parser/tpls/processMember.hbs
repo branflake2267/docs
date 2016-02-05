@@ -20,14 +20,14 @@
         {{#if hasParams}}
         )</span>
         {{/if}}
-            //</a>
+            </a>
         {{#items}}
         {{#is $type "return"}}
-            <span class="memberType">{{{type}}}</span>
+            : <span class="memberType">{{{type}}}</span>
         {{/is}}
         {{/items}}
         {{#type}}
-            <span class="memberType">{{{.}}}</span>
+            : <span class="memberType">{{{.}}}</span>
         {{/type}}
         {{#chainable}}
             <span class="chainable">chainable</span>
@@ -94,7 +94,7 @@
 
         {{#is $type "return"}}
             <h3 class="detail-header">Returns</h3>
-            <p><span class="memberType">{{{type}}}</span></p>
+            <span style="margin-left:12px;" class="memberType">{{{type}}}</span>
             <p>{{{text}}}</p>
         {{/is}}
 
@@ -126,42 +126,41 @@
         </div>
         {{/if}}
         {{#autoGetter}}
-        <div class="classmembers member accessor-method isGetter" data-member-name="get{{capitalize name}}" data-accessor="true">
-        <h2 id="{{{$type}}}-get{{capitalize name}}" class="member-header">
-        <a href="#{{{$type}}}-get{{capitalize name}}" class="member-name">
-        get{{capitalize name}}
-        </a>
-        <span class="memberType">{{{type}}}</span>
-        </h2>
-        <p>Returns the value of {{name}}</p>
-        <h3 class="detail-header">Returns</h3>
-        <p><span class="memberType">{{{type}}}</span></p>
-        </div>
+            <div class="classmembers member accessor-method isGetter" data-member-name="get{{capitalize name}}" data-accessor="true">
+                <h2 id="{{{$type}}}-get{{capitalize name}}" class="member-header">
+                    <a href="#{{{$type}}}-get{{capitalize name}}" class="member-name">
+                    get{{capitalize name}}
+                    </a>
+                    <span class="memberType">{{{type}}}</span>
+                </h2>
+                <p>Returns the value of {{name}}</p>
+                <h3 class="detail-header">Returns</h3>
+                <p><span class="memberType">{{{type}}}</span></p>
+            </div>
         {{/autoGetter}}
         {{#if setter}}
-        <div class="accessor-method isSetter">
-        {{> processMember setter}}
-        </div>
+            <div class="accessor-method isSetter">
+                {{> processMember setter}}
+            </div>
         {{/if}}
         {{#autoSetter}}
-        <div class="classmembers member accessor-method isSetter" data-member-name="set{{capitalize name}}" data-accessor="true">
-        <h2 id="{{{$type}}}-set{{capitalize name}}" class="member-header">
-        <a href="#{{{$type}}}-set{{capitalize name}}" class="member-name">
-        set{{capitalize name}}
-        </a>
-         <span class="params-list">({{name}})</span>
-        </h2>
-        <p>Sets the value of {{name}}</p>
-        <h3 class="detail-header">Parameters</h3>
-        <p><span class="params-list">{{{name}}}</span> :
-        {{#if type}}
-        <span class="memberType">&nbsp;{{{type}}}</span>
-        {{else}}
-        <span class="memberType">&nbsp;Object</span>
-        {{/if}}
-
-        </p>
-        </div>
+            <div class="classmembers member accessor-method isSetter" data-member-name="set{{capitalize name}}" data-accessor="true">
+                <h2 id="{{{$type}}}-set{{capitalize name}}" class="member-header">
+                    <a href="#{{{$type}}}-set{{capitalize name}}" class="member-name">
+                    set{{capitalize name}}
+                    </a>
+                    <span class="params-list">({{name}})</span>
+                </h2>
+                <p>Sets the value of {{name}}</p>
+                <h3 class="detail-header">Parameters</h3>
+                <p><span class="params-list">{{{name}}}</span> :
+                    {{#if type}}
+                        <span class="memberType">&nbsp;{{{type}}}</span>
+                    {{else}}
+                        <span class="memberType">&nbsp;Object</span>
+                    {{/if}}
+                </p>
+            </div>
         {{/autoSetter}}
         </div> 
         {{/unless}}

@@ -1,6 +1,6 @@
 {{#unless hide}}
     <div class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is $type "config"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}} {{#fromObject}}fromObject{{/fromObject}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
-        <div class="source-class">{{srcClass}}</div>
+        <div class="source-class"><a href="{{srcClass}}.html">{{srcClass}}</a>{{{srcLink}}}</div>
         <h2 id="{{{$type}}}-{{{name}}}" class="member-header">
         <a href="#{{{$type}}}-{{{name}}}" class="member-name">
             {{{name}}}
@@ -107,21 +107,21 @@
         {{/if}}
         {{/items}}
         {{#deprecatedMessage}}
-        <p class="deprecated-dec">Deprecated: {{{.}}}</p>
+            <p class="deprecated-dec">Deprecated: {{{.}}}</p>
         {{/deprecatedMessage}}
         {{#preventable}}
-        <p class="preventable-dec">This action following this event is preventable. When any
+            <p class="preventable-dec">This action following this event is preventable. When any
         of the listeners returns false, the action is cancelled.</p>
         {{/preventable}}
         {{#removedVersion}}
-        <p class="removed-dec">This method has been REMOVED since {{{.}}}</p>
+            <p class="removed-dec">This method has been REMOVED since {{{.}}}</p>
         {{/removedVersion}}
         {{#template}}
-        <p class="template-dec">This is a template method. a hook into the functionality of this
+            <p class="template-dec">This is a template method. a hook into the functionality of this
         class. Feel free to override it in child classes.</p>
         {{/template}}
         {{#if getter}}
-        <div class="accessor-method isGetter">
+            <div class="accessor-method isGetter">
         {{> processMember getter}}
         </div>
         {{/if}}

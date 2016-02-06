@@ -1,0 +1,48 @@
+<html>
+<head>
+    <title>{{{name}}}</title>
+    <meta charset="UTF-8">
+    {{#if stylesheet}}<link rel="stylesheet" type="text/css" href="{{stylesheet}}">{{/if}}
+</head>
+<body>
+<div id="header">
+    <h1>{{{name}}}</h1>
+    <div class="search">
+        <form><input type="text" placeholder="search" id="searchtext"></form>
+        <div id="searchresults">
+            <ul id="searchresultslist" class="hide"></ul>
+        </div>
+    </div>
+    <div class="resourceLinks">
+        <a href="./index.html"><div class="toolbarButton">
+            api docs
+            <div class="nav-btn-mask"></div>
+        </div></a>
+        <a href="./guides/index.html"><div class="toolbarButton">
+            guides
+            <div class="nav-btn-mask"></div>
+        </div></a>
+    </div>
+</div>
+<div id="centerContent">
+    <div id="class-tree-ct">
+        <div id="tree-header">
+            All Guides
+        </div>
+        <div id="tree" class="tree-shown"></div>
+    </div>
+</div>
+<div id="footer">{{{footer}}} Generated on {{{date}}}</a></div>
+</body>
+<script type="text/javascript">
+    var ExtL = ExtL || {};
+
+    ExtL.treeData = {{{tree}}};
+</script>
+<script type="text/javascript" src="js/home.js"></script>
+<script>
+    if (ExtL.treeData) {
+        tree = new TreeView(ExtL.treeData, 'tree');
+    }
+</script>
+</html>

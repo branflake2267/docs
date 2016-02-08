@@ -1,6 +1,8 @@
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/app.css">
     {{#headhtml}}
         {{{.}}}
@@ -12,6 +14,7 @@
         {{#classAlias}}
             <span class='alias'>alias: {{{.}}}</span>
         {{/classAlias}}
+        <span id="menu-icon" class="menu-icon"></span>
     </h1>
     <div class="search">
         <form autocomplete="off"><input type="text" type="search" placeholder="search" id="searchtext"></form>
@@ -66,12 +69,28 @@
     </div>
 </div>
 <div id="centerContent">
-    <div id="class-tree-ct">
+    <div id="class-tree-ct" class="tree-hidden">
         <div id="tree-header">
             All Classes
             <div id="hide-class-tree"></div>
         </div>
         <div id="tree" class="tree-shown"></div>
+        <div class="other-resources">
+            <div class="sub-header">
+                Resources
+            </div>
+            <ul class="resourceMenu">
+                <li>
+                    <a href="./index.html">Api Docs</a>
+                </li>
+                <li>
+                    <a href="./guides/index.html">Guides</a>
+                </li>
+                <li>
+                    <a href="http://examples.sencha.com/extjs/6.0.0/examples/" target="_blank">Examples</a>
+                </li>
+            </div>   
+        </div> 
     </div>
     <div id="rightMembers">
         <div id="member-toolbars">
@@ -82,6 +101,8 @@
             </div>
             <div id="toolbar">
                 <div id="toggle-class-tree">&nbsp;</div>
+                <div id="show-membertypes">&nbsp;</div>
+                <div id="member-types-menu" class="member-types-menu">
                 {{#memberTypeGroups}}
                     {{#is $type "configs"}}
                          <a href="#configs"><div id="configs-nav-btn" class="toolbarButton">
@@ -126,6 +147,7 @@
                         </div></a>
                     {{/is}}
                 {{/memberTypeGroups}}
+                </div>
                 <div class="memberFilter">
                     <input placeholder="Filter members..." type="search" id="box" name="box">
                 </div>

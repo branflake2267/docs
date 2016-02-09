@@ -1,6 +1,9 @@
+<!DOCTYPE html>
 <html>
 <head>
+    <title>{{{title}}}</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/app.css">
     {{#headhtml}}
         {{{.}}}
@@ -12,12 +15,10 @@
         {{#classAlias}}
             <span class='alias'>alias: {{{.}}}</span>
         {{/classAlias}}
+        <span id="menu-icon" class="menu-icon"></span>
     </h1>
     <div class="search">
-        <form><input type="text" placeholder="search" id="searchtext"></form>
-        <div id="searchresults">
-            <ul id="searchresultslist" class="hide"></ul>
-        </div>
+        <form autocomplete="off"><input type="text" type="search" placeholder="search" id="searchtext"></form>
     </div>
     <div class="resourceLinks">
         <a href="./index.html"><div class="toolbarButton">
@@ -30,148 +31,149 @@
         </div></a>
     </div>
 </div>
-<div id="classHead" class="classHead">
-    <div class="classMetaHeader">
-        Related Classes <a id="related-classes" class="button" href="javascript:void(0);"">collapse</a>
-    </div>
-    <div class="classMeta">
-        {{#if altNames}}
-            <div class="classMetaColumn">
-                <h3>Alternate Names</h3>
-                <p class="list">{{{altNames}}}</p>
-            </div>
-        {{/if}}
-        {{#if mixins}}
-            <div class="classMetaColumn">
-                <h3>Inherited Mixins</h3>
-                <p class="list">{{{mixins}}}</p>
-            </div>
-        {{/if}}
-        {{#if requires}}
-            <div class="classMetaColumn">
-                <h3>Requires</h3>
-                <p class="list">{{{requires}}}</p>
-            </div>
-        {{/if}}
-        {{#if extends}}
-            <div class="classMetaColumn">
-                <h3>Hierarchy</h3>
-                <p class="list">{{{extends}}}</p>
-            </div>
-        {{/if}}
-    </div>
-</div>
 <div id="centerContent">
-    <div id="class-tree-ct">
+    <div id="class-tree-ct" class="tree-hidden">
         <div id="tree-header">
             All Classes
             <div id="hide-class-tree"></div>
         </div>
         <div id="tree" class="tree-shown"></div>
-    </div>
-    <div id="rightMembers">
-        <div id="member-toolbars">
-            <div id="member-display">
-                <div class="member-access-display"><label><input id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public</label></div>
-                <div class="member-access-display"><label><input id="protectedCheckbox" type="checkbox" value="member-protected"/>Protected</label></div>
-                <div class="member-access-display"><label><input id="privateCheckbox" type="checkbox" value="member-private"/>Private</label></div>
+        <div class="other-resources">
+            <div class="sub-header">
+                Resources
             </div>
-            <div id="toolbar">
-                <div id="toggle-class-tree">&nbsp;</div>
+            <ul class="resourceMenu">
+                <li>
+                    <a href="./index.html">Api Docs</a>
+                </li>
+                <li>
+                    <a href="./guides/index.html">Guides</a>
+                </li>
+                <li>
+                    <a href="http://examples.sencha.com/extjs/6.0.0/examples/" target="_blank">Examples</a>
+                </li>
+        </div>
+    </div>
+</div>
+<div id="rightMembers">
+    <div id="member-toolbars">
+        <div id="member-display">
+            <div class="member-access-display"><label><input id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public</label></div>
+            <div class="member-access-display"><label><input id="protectedCheckbox" type="checkbox" value="member-protected"/>Protected</label></div>
+            <div class="member-access-display"><label><input id="privateCheckbox" type="checkbox" value="member-private"/>Private</label></div>
+        </div>
+        <div id="toolbar">
+            <div id="toggle-class-tree">&nbsp;</div>
+            <div id="show-membertypes">&nbsp;</div>
+            <div id="member-types-menu" class="member-types-menu">
                 {{#memberTypeGroups}}
                     {{#is $type "configs"}}
-                        <div id="configs-nav-btn" class="toolbarButton">
-                            <a href="#configs">configs</a>
+                        <a href="#configs"><div id="configs-nav-btn" class="toolbarButton">
+                            configs
                             <div id="configs-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
-                        </div>
+                        </div></a>
                     {{/is}}
                     {{#is $type "properties"}}
-                        <div id="properties-nav-btn" class="toolbarButton">
-                            <a href="#properties">properties</a>
+                        <a href="#properties"><div id="properties-nav-btn" class="toolbarButton">
+                            properties
                             <div id="properties-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
-                        </div>
+                        </div></a>
                     {{/is}}
-                    {{!-- {{#is $type "static-properties"}}
-                        <div id="static-properties-nav-btn" class="toolbarButton">
-                            <a href="#static-properties">static-properties</a>
-                            <div id="static-properties-count" class="nav-btn-count"></div>
-                            <div class="nav-btn-mask"></div>
-                        </div>
-                    {{/is}} --}}
                     {{#is $type "methods"}}
-                        <div id="methods-nav-btn" class="toolbarButton">
-                            <a href="#methods">methods</a>
+                        <a href="#methods"><div id="methods-nav-btn" class="toolbarButton">
+                            methods
                             <div id="methods-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
-                        </div>
+                        </div></a>
                     {{/is}}
-                    {{!-- {{#is $type "static-methods"}}
-                        <div id="static-methods-nav-btn" class="toolbarButton">
-                            <a href="#static-methods">static methods</a>
-                            <div id="static-methods-count" class="nav-btn-count"></div>
-                            <div class="nav-btn-mask"></div>
-                        </div>
-                    {{/is}} --}}
                     {{#is $type "events"}}
-                        <div id="events-nav-btn" class="toolbarButton">
-                            <a href="#events">events</a>
+                        <a href="#events"><div id="events-nav-btn" class="toolbarButton">
+                            events
                             <div id="events-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
-                        </div>
+                        </div></a>
                     {{/is}}
-                    {{!-- {{#is $type "mixins"}}
-                        <div id="mixins-nav-btn" class="toolbarButton">
-                            <a href="#mixins">mixins</a>
-                            <div id="mixins-count" class="nav-btn-count"></div>
-                            <div class="nav-btn-mask"></div>
-                        </div>
-                    {{/is}} --}}
                     {{#is $type "vars"}}
-                        <div id="vars-nav-btn" class="toolbarButton">
-                            <a href="#vars">css variables</a>
+                        <a href="#vars"><div id="vars-nav-btn" class="toolbarButton">
+                            css variables
                             <div id="vars-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
-                        </div>
+                        </div></a>
                     {{/is}}
                     {{#is $type "sass-mixins"}}
-                        <div id="sass-mixins-nav-btn" class="toolbarButton">
-                            <a href="#sass-mixins">sass-mixins</a>
+                        <a href="#sass-mixins"><div id="sass-mixins-nav-btn" class="toolbarButton">
+                            sass-mixins
                             <div id="sass-mixins-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
-                        </div>
+                        </div></a>
                     {{/is}}
                 {{/memberTypeGroups}}
-                <div class="memberFilter">
-                    <input placeholder="Filter members..." type="search" id="box" name="box">
-                </div>
+            </div>
+            <div class="memberFilter">
+                <input placeholder="Filter members..." type="search" id="box" name="box">
             </div>
         </div>
-        <div id="member-toolbars-placeholder"></div>
-        <div class="classText"><h2>Summary</h2>{{{classText}}}</div>
-        <div class="no-visible-members-warning">No members found using the current filters</div>
-        <a href="#" id="back-to-top">top </a>
-        <div class="members">
-            {{#memberTypeGroups}}
-                <div id="{{{$type}}}-ct">
+    </div>
+    <div id="member-toolbars-placeholder"></div>
+    <div class="classText">
+        <div id="classHead" class="classHead">
+            <div class="classMetaHeader">
+                Related Classes <a id="related-classes" class="button" href="javascript:void(0);"">collapse</a>
+            </div>
+            <div class="classMeta">
+                {{#if altNames}}
+                    <div class="classMetaColumn">
+                        <h3>Alternate Names</h3>
+                        <p class="list">{{{altNames}}}</p>
+                    </div>
+                {{/if}}
+                {{#if mixins}}
+                    <div class="classMetaColumn">
+                        <h3>Inherited Mixins</h3>
+                        <p class="list">{{{mixins}}}</p>
+                    </div>
+                {{/if}}
+                {{#if requires}}
+                    <div class="classMetaColumn">
+                        <h3>Requires</h3>
+                        <p class="list">{{{requires}}}</p>
+                    </div>
+                {{/if}}
+                {{#if extends}}
+                    <div class="classMetaColumn">
+                        <h3>Hierarchy</h3>
+                        <p class="list">{{{extends}}}</p>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+        <h2>Summary</h2>{{{classText}}}
+    </div>
+    <div class="no-visible-members-warning">No members found using the current filters</div>
+    <a href="#" id="back-to-top">top </a>
+    <div class="members">
+        {{#memberTypeGroups}}
+            <div id="{{{$type}}}-ct">
                 <h2 id="{{{$type}}}" class="type">{{{$type}}}</h2>
                 <a name="{{{$type}}}"></a>
                 {{#items}}
                     {{> processMember}}  {{!-- process the member template --}}
                 {{/items}}
-                </div>
-            {{/memberTypeGroups}}
-        </div>
-        <div class="members-mask"></div>
+            </div>
+        {{/memberTypeGroups}}
     </div>
+</div>
 </div>
 <div id="footer">{{{footer}}} Generated on {{{date}}}</a></div>
 </body>
 <script type="text/javascript">
-    var ExtL = ExtL || {};
+    var ExtL = ExtL || {},
+            isHome = false;
 
     ExtL.treeData = {{{tree}}};
 </script>
+<script type="text/javascript" src="js/ace.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 </html>

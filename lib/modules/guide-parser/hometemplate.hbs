@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     {{#if stylesheet}}<link rel="stylesheet" type="text/css" href="{{stylesheet}}">{{/if}}
 </head>
-<body>
+<body class="condensed-header">
 <div id="header">
     <h1>{{{name}}}<span id="menu-icon" class="menu-icon"></span></h1>
     <div class="search">
@@ -31,13 +31,18 @@
         </div>
         <div id="tree" class="tree-shown"></div>
     </div>
-    <a href="#" id="back-to-top"></a>
+    <div id="rightMembers">
+        <a href="#" id="back-to-top">top </a>
+        <div class="generic-content">
+            Guide home content
+        </div>
+    </div>
 </div>
 <div id="footer">{{{footer}}} Generated on {{{date}}}</a></div>
 </body>
 <script type="text/javascript">
     var ExtL = ExtL || {},
-        isHome = true;
+            isHome = true;
 
     ExtL.treeData = {{{tree}}};
 </script>
@@ -45,7 +50,7 @@
 <script type="text/javascript" src="js/home.js"></script>
 <script>
     if (ExtL.treeData) {
-        tree = new TreeView(ExtL.treeData, 'tree');
+        tree = new TreeView(ExtL.treeData, 'tree', '{{{pathPrefix}}}');
     }
 </script>
 </html>

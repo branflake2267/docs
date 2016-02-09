@@ -1,12 +1,14 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>{{{name}}}</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     {{#if stylesheet}}<link rel="stylesheet" type="text/css" href="{{stylesheet}}">{{/if}}
 </head>
 <body>
 <div id="header">
-    <h1>{{{title}}}</h1>
+    <h1>{{{name}}}<span id="menu-icon" class="menu-icon"></span></h1>
     <div class="search">
         <form><input type="text" placeholder="search" id="searchtext"></form>
         <div id="searchresults">
@@ -36,19 +38,18 @@
         <div id="tree" class="tree-shown"></div>
     </div>
     <div id="rightMembers">
-        <div id="toolbar"></div>
-        <div class="members">
+        <div class="classText">
+            {{#if toc}}
+                <div class="toc">
+                    {{#each toc}}
+                        <div class="toc-item"><a href="#{{this.id}}">{{this.name}}</a></div>
+                    {{/each}}
+                </div>
+            {{/if}}
             {{{content}}}
         </div>
     </div>
 </div>
-{{#if toc}}
-    <div class="toc">
-        {{#each toc}}
-            <div class="toc-item"><a href="#{{this.id}}">{{this.name}}</a></div>
-        {{/each}}
-    </div>
-{{/if}}
 <div id="footer">{{{footer}}} Generated on {{{date}}}</a></div>
 </body>
 <script type="text/javascript">

@@ -1,11 +1,19 @@
-{{> headerHome}}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{{title}}}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
+    {{#headhtml}}
+        {{{.}}}
+    {{/headhtml}}
+</head>
+<body>
 <div id="header">
     <h1>{{{title}}}</h1>
     <div class="search">
-        <form><input type="text" placeholder="search" id="searchtext"></form>
-        <div id="searchresults">
-            <ul id="searchresultslist" class="hide"></ul>
-        </div>
+        <form autocomplete="off"><input type="text" type="search" placeholder="search" id="searchtext"></form>
     </div>
     <div class="resourceLinks">
         <a href="./index.html"><div class="toolbarButton">
@@ -27,6 +35,7 @@
     </div>
     <div id="rightMembers">
         <div id="toolbar"></div>
+        <a href="#" id="back-to-top">top </a>
         <div class="members">
             <div class="homeColumnOne">
                 <div class="homeBubble">
@@ -131,4 +140,13 @@
         </div>
     </div>
 </div>
-{{> footerHome}}  {{!-- process the footer template --}}
+<div id="footer">{{{footer}}} Generated on {{{date}}}</a></div>
+</body>
+<script type="text/javascript">
+    var ExtL   = ExtL || {},
+        isHome = true;
+
+    ExtL.treeData = {{{tree}}};
+</script>
+<script type="text/javascript" src="js/app.js"></script>
+</html>

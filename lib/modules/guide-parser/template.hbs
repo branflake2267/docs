@@ -8,7 +8,9 @@
 </head>
 <body class="condensed-header">
 <div id="header">
-    <h1>{{{name}}}<span id="menu-icon" class="menu-icon"></span></h1>
+    <h1 class="class">{{{name}}}
+        <span id="menu-icon" class="menu-icon"></span>
+    </h1>
     <div class="search">
         <form autocomplete="off"><input type="text" type="search" placeholder="search" id="searchtext"></form>
     </div>
@@ -47,16 +49,27 @@
 <div id="footer">{{{footer}}} Generated on {{{date}}}</a></div>
 </body>
 <script type="text/javascript">
-    var ExtL = ExtL || {},
-        isHome = true;
+    var ExtL = ExtL || {};
 
     ExtL.treeData = {{{tree}}};
 </script>
-<script type="text/javascript" src="../js/app.js"></script>
 <script type="text/javascript" src="{{pathPrefix}}{{homejs}}"></script>
 <script>
+    document.onreadystatechange = function () {
+        if (document.readyState == "interactive") {
+            expandTreeToClass();
+        }
+    }
+
     if (ExtL.treeData) {
         tree = new TreeView(ExtL.treeData, 'tree', '{{{pathPrefix}}}');
     }
+
+    function expandTreeToClass() {
+        var name = document.querySelector('.class').innerHTML;
+
+        name = name.substring(0, name.indexOf('\n'));
+        tree.expandTo('[data-item*="' + name + '"][isLeaf="true"]');
+    };
 </script>
 </html>

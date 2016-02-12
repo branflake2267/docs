@@ -3,15 +3,18 @@
 html {
     font-family: 'Open Sans', Helvetica-Neue, Arial, sans-serif;
     color: #444;
+    height: 100%;
 }
 
 body {
     margin: 0px;
-    padding-top: 55px;
-    padding-bottom: 42px;
+    /*padding-top: 55px;
+    padding-bottom: 42px;*/
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 15px;
+    overflow: hidden;
+    height: 100%;
 }
 
 a {
@@ -93,6 +96,17 @@ input[type='checkbox'] {
     padding-top: 10px;
     padding-left: 10px;
 }
+
+#centerContent {
+    position: absolute;
+    /* padding-bottom: 42px; */
+    /* height: 100%; */
+    top: 55px;
+    left: 0;
+    right: 0;
+    bottom: 42px;
+}
+
 .resourceLinks {
     float:right;
 }
@@ -246,6 +260,7 @@ h3.detail-header {
     border-radius: 3px;
     padding: 6px 18px;
     font-weight: bold;
+    margin-top: 6px !important;
 }
 
 .preventable-dec, .template-dec {
@@ -258,10 +273,11 @@ h3.detail-header {
 
 .protected, .private, .deprecated, .preventable, .static, .readonly, .template, .chainable, .required, .bindable {
     color: white;
-    padding: 4px 8px;
+    padding: 3px 8px 5px 8px;
     margin-left: 12px;
     line-height: 11px;
     font-size: .73em;
+    font-size: 11px;
 }
 
 .deprecated{
@@ -427,21 +443,36 @@ h3.detail-header {
 }
 
 #class-tree-ct {
-    /*transition: all 250ms;*/
-    position: fixed;
-    left: 0;
-    top: 55px;
+    /* transition: all 250ms; */
     transform: translateZ(0);
-    overflow-y: auto;
-    height: 100%;
-    z-index: 100;
+    /* overflow-y: auto; */
     background: white;
     border-right: 2px solid #E4E4E4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 298px;
+    overflow: hidden;
 }
 
 #rightMembers{
-    margin-left: 300px;
-    position: relative;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 300px;
+}
+
+.class-body-wrap {
+    position: absolute;
+    top: 133px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-bottom: 7px;
 }
 
 #toolbar{
@@ -685,8 +716,8 @@ h3.detail-header {
 }
 
 #member-toolbars {
-    z-index: 1;
-    background-color: white;
+    /*z-index: 1;
+    background-color: white;*/
 }
 
 .toolbarButton.disabled {
@@ -979,6 +1010,7 @@ h3.detail-header {
 .viewSource a {
     color: #999;
     font-size: .66em;
+    background-color: white;
 }
 
 @-webkit-keyframes sk-scaleout {
@@ -1170,8 +1202,9 @@ h3.detail-header {
 }
 .member-tags {
     /*margin-bottom: 5px;*/
-    display: inline-block;
-    margin-left: 12px;
+    /*display: inline-block;
+    margin-left: 12px;*/
+    display: none;
 }
 .protected, .private, .deprecated, .preventable, .static, .readonly, .template, .chainable, .required, .bindable {
     color: white;
@@ -1423,7 +1456,11 @@ h3.detail-header {
     }
     .classmembers.member > h2.member-header, .classmembers.member-protected > h2.member-header, .classmembers.member-private > h2.member-header {
         padding-top:0px;
-        margin-top: 15px;
+        margin-top: 9px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 80%;
     }
     .alias, .memberType {
         font-size: 0.8em;
@@ -1481,6 +1518,9 @@ h3.detail-header {
         text-align: center;
         background: none;
         margin-right: 10px;
+    }
+    .members p {
+        width: 80%;
     }
     #toolbar {
         padding: 0 15px;
@@ -1601,7 +1641,11 @@ h3.detail-header {
         text-align: center;
     }
     #rightMembers{
-        margin-left: 0px;
+        /*margin-left: 0px;*/
+        left: 0;
+    }
+    .class-body-wrap {
+        top: 122px;
     }
     .sticky #tree {
         margin-bottom: 0px;

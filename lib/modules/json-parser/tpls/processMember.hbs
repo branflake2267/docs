@@ -1,8 +1,8 @@
 {{#unless hide}}
-    <div class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is $type "config"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}} {{#fromObject}}fromObject{{/fromObject}} {{#isGetter}}accessor-method explicit-accessor-method isGetter{{/isGetter}} {{#isSetter}}accessor-method explicit-accessor-method isSetter{{/isSetter}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
+    <div id="{{{$type}}}-{{{name}}}" class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is $type "config"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}} {{#fromObject}}fromObject{{/fromObject}} {{#isGetter}}accessor-method explicit-accessor-method isGetter{{/isGetter}} {{#isSetter}}accessor-method explicit-accessor-method isSetter{{/isSetter}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
         <div class="collapse-toggle"></div>
         <div class="source-class"><a href="{{srcClass}}.html">{{srcClass}}{{{srcLink}}}</a></div>
-        <h2 id="{{{$type}}}-{{{name}}}" class="member-header">
+            <h2 class="member-header">
             <a href="#{{{$type}}}-{{{name}}}" class="member-name">
                 {{{name}}}
             </a>
@@ -131,9 +131,9 @@
             {{> processMember getter}}
         {{/if}}
         {{#autoGetter}}
-            <div class="classmembers member accessor-method auto-accessor-method isGetter" data-member-name="get{{capitalize name}}" data-accessor="true">
+            <div id="{{{$type}}}-get{{capitalize name}}" class="classmembers member accessor-method auto-accessor-method isGetter" data-member-name="get{{capitalize name}}" data-accessor="true">
                 <div class="collapse-toggle"></div>
-                <h2 id="{{{$type}}}-get{{capitalize name}}" class="member-header">
+                <h2 class="member-header">
                     <a href="#{{{$type}}}-get{{capitalize name}}" class="member-name">
                         get{{capitalize name}}
                     </a>
@@ -148,9 +148,9 @@
             {{> processMember setter}}
         {{/if}}
         {{#autoSetter}}
-            <div class="classmembers member accessor-method isSetter" data-member-name="set{{capitalize name}}" data-accessor="true">
+            <div id="{{{$type}}}-set{{capitalize name}}" class="classmembers member accessor-method isSetter" data-member-name="set{{capitalize name}}" data-accessor="true">
                 <div class="collapse-toggle"></div>
-                <h2 id="{{{$type}}}-set{{capitalize name}}" class="member-header">
+                <h2 class="member-header">
                     <a href="#{{{$type}}}-set{{capitalize name}}" class="member-name">
                         set{{capitalize name}}
                     </a>

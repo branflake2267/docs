@@ -3,37 +3,40 @@
         <div class="collapse-toggle"></div>
         <div class="source-class"><a href="{{srcClass}}.html">{{srcClass}}{{{srcLink}}}</a></div>
         <h2 id="{{{$type}}}-{{{name}}}" class="member-header">
-        <a href="#{{{$type}}}-{{{name}}}" class="member-name">
-            {{{name}}}
-        </a>
-        {{#if hasParams}}<span class="params-list"> ({{/if}}
-
-        {{#items}}
-            {{#is $type "param"}}
-                {{#unless @first}}, {{/unless}}
+            <a href="#{{{$type}}}-{{{name}}}" class="member-name">
                 {{{name}}}
-                {{#if @last}}
-                    {{#is ../$type "event"}}, eOpts{{/is}}
-                {{/if}}
-            {{/is}}
-        {{/items}}
+            </a>
+            {{#if hasParams}}<span class="params-list"> ({{/if}}
 
-        {{#if hasParams}}
-        )</span>
-        {{/if}}
+            {{#items}}
+                {{#is $type "param"}}
+                    {{#unless @first}}, {{/unless}}
+                    {{{name}}}
+                    {{#if @last}}
+                        {{#is ../$type "event"}}, eOpts{{/is}}
+                    {{/if}}
+                {{/is}}
+            {{/items}}
 
-        {{#items}}
-        {{#is $type "return"}}
-            : <span class="memberType">{{{type}}}</span>
-        {{/is}}
-        {{/items}}
-        {{#type}}
-            : <span class="memberType">{{{.}}}</span>
-        {{/type}}
+            {{#if hasParams}}
+                )</span>
+            {{/if}}
+
+            {{#items}}
+                {{#is $type "return"}}
+                    : <span class="memberType">{{{type}}}</span>
+                {{/is}}
+            {{/items}}
+            {{#type}}
+                : <span class="memberType">{{{.}}}</span>
+            {{/type}}
             <div class="member-tags">
                 {{#chainable}}
                     <span class="chainable">chainable</span>
                 {{/chainable}}
+                {{#deprecatedMessage}}
+                    <span class="deprecated">deprecated</span>
+                {{/deprecatedMessage}}
                 {{#setter}}
                     <span class="bindable">bindable</span>
                 {{/setter}}
@@ -71,58 +74,58 @@
             <p class="since-dec">Available since: {{{.}}}</p>
         {{/since}}
         {{#items}}
-        {{#is $type "param"}}
-        {{#if @first}}
-            <h3 class="detail-header">Parameters</h3>
-        {{/if}}
+            {{#is $type "param"}}
+                {{#if @first}}
+                    <h3 class="detail-header">Parameters</h3>
+                {{/if}}
 
-        <p><span class="params-list">{{{name}}}</span> :
-        {{#if type}}
-            <span class="memberType">&nbsp;{{{type}}}</span>
-        {{else}}
-            <span class="memberType">&nbsp;Object</span>
-        {{/if}}
+                <p><span class="params-list">{{{name}}}</span> :
+                    {{#if type}}
+                        <span class="memberType">&nbsp;{{{type}}}</span>
+                    {{else}}
+                        <span class="memberType">&nbsp;Object</span>
+                    {{/if}}
 
-        </p>
-        <p>{{{text}}}</p>
-        {{/is}}
+                </p>
+                <p>{{{text}}}</p>
+            {{/is}}
 
-        {{#is $type "property"}}
-            {{#unless @index}}
-                <h3 class="detail-header">Properties</h3>
-            {{/unless}}
+            {{#is $type "property"}}
+                {{#unless @index}}
+                    <h3 class="detail-header">Properties</h3>
+                {{/unless}}
 
-            <p><span class="params-list">{{{name}}}</span> : <span class="memberType">{{{type}}}</span></p>
-            <p>{{{text}}}</p>
-        {{/is}}
+                <p><span class="params-list">{{{name}}}</span> : <span class="memberType">{{{type}}}</span></p>
+                <p>{{{text}}}</p>
+            {{/is}}
 
-        {{#is $type "return"}}
-            <h3 class="detail-header">Returns</h3>
-            <span style="margin-left:12px;" class="memberType">{{{type}}}</span>
-            <p>{{{text}}}</p>
-        {{/is}}
+            {{#is $type "return"}}
+                <h3 class="detail-header">Returns</h3>
+                <span style="margin-left:12px;" class="memberType">{{{type}}}</span>
+                <p>{{{text}}}</p>
+            {{/is}}
 
-        {{#if @last}}
+            {{#if @last}}
 
-        {{#is ../$type "event"}}
-            <p>eOpts : <span class="memberType"><a href="Object.html">Object</a></span></p>
-            <p>The options object passed to <a href="Ext.util.Observable.html">Ext.util.Observable.addListener</a>.</p>
-        {{/is}}
-        {{/if}}
+                {{#is ../$type "event"}}
+                    <p>eOpts : <span class="memberType"><a href="Object.html">Object</a></span></p>
+                    <p>The options object passed to <a href="Ext.util.Observable.html">Ext.util.Observable.addListener</a>.</p>
+                {{/is}}
+            {{/if}}
         {{/items}}
         {{#deprecatedMessage}}
             <p class="deprecated-dec">Deprecated: {{{.}}}</p>
         {{/deprecatedMessage}}
         {{#preventable}}
             <p class="preventable-dec">This action following this event is preventable. When any
-        of the listeners returns false, the action is cancelled.</p>
+                of the listeners returns false, the action is cancelled.</p>
         {{/preventable}}
         {{#removedVersion}}
             <p class="removed-dec">This method has been REMOVED since {{{.}}}</p>
         {{/removedVersion}}
         {{#template}}
             <p class="template-dec">This is a template method. a hook into the functionality of this
-        class. Feel free to override it in child classes.</p>
+                class. Feel free to override it in child classes.</p>
         {{/template}}
         {{#if getter}}
             {{> processMember getter}}
@@ -132,7 +135,7 @@
                 <div class="collapse-toggle"></div>
                 <h2 id="{{{$type}}}-get{{capitalize name}}" class="member-header">
                     <a href="#{{{$type}}}-get{{capitalize name}}" class="member-name">
-                    get{{capitalize name}}
+                        get{{capitalize name}}
                     </a>
                     <span class="memberType">{{{type}}}</span>
                 </h2>
@@ -149,7 +152,7 @@
                 <div class="collapse-toggle"></div>
                 <h2 id="{{{$type}}}-set{{capitalize name}}" class="member-header">
                     <a href="#{{{$type}}}-set{{capitalize name}}" class="member-name">
-                    set{{capitalize name}}
+                        set{{capitalize name}}
                     </a>
                     <span class="params-list">({{name}})</span>
                 </h2>
@@ -164,5 +167,5 @@
                 </p>
             </div>
         {{/autoSetter}}
-        </div> 
-        {{/unless}}
+    </div>
+{{/unless}}

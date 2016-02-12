@@ -1,34 +1,6 @@
 {{#unless hide}}
-    <div class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is $type "config"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}} {{#fromObject}}fromObject{{/fromObject}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
-        <div class="member-tags">
-            {{#chainable}}
-                <span class="chainable">chainable</span>
-            {{/chainable}}
-            {{#setter}}
-                <span class="bindable">bindable</span>
-            {{/setter}}
-            {{#autoSetter}}
-                <span class="bindable">bindable</span>
-            {{/autoSetter}}
-            {{#preventable}}
-                <span class="preventable">preventable</span>
-            {{/preventable}}
-            {{#readonly}}
-                <span class="readonly">readonly</span>
-            {{/readonly}}
-            {{#static}}
-                <span class="static">static</span>
-            {{/static}}
-            {{#required}}
-                <span class="required">required</span>
-            {{/required}}
-            {{#template}}
-                <span class="template">template</span>
-            {{/template}}
-            {{#access}}
-                <span class="{{{.}}}">{{{.}}}</span>
-            {{/access}}
-        </div>
+    <div class="classmembers member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is $type "config"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#isInherited}}isInherited{{/isInherited}} {{#fromObject}}fromObject{{/fromObject}} {{#isGetter}}accessor-method explicit-accessor-method isGetter{{/isGetter}} {{#isSetter}}accessor-method explicit-accessor-method isSetter{{/isSetter}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
+        <div class="collapse-toggle"></div>
         <div class="source-class"><a href="{{srcClass}}.html">{{srcClass}}{{{srcLink}}}</a></div>
         <h2 id="{{{$type}}}-{{{name}}}" class="member-header">
         <a href="#{{{$type}}}-{{{name}}}" class="member-name">
@@ -58,7 +30,37 @@
         {{#type}}
             : <span class="memberType">{{{.}}}</span>
         {{/type}}
+            <div class="member-tags">
+                {{#chainable}}
+                    <span class="chainable">chainable</span>
+                {{/chainable}}
+                {{#setter}}
+                    <span class="bindable">bindable</span>
+                {{/setter}}
+                {{#autoSetter}}
+                    <span class="bindable">bindable</span>
+                {{/autoSetter}}
+                {{#preventable}}
+                    <span class="preventable">preventable</span>
+                {{/preventable}}
+                {{#readonly}}
+                    <span class="readonly">readonly</span>
+                {{/readonly}}
+                {{#static}}
+                    <span class="static">static</span>
+                {{/static}}
+                {{#required}}
+                    <span class="required">required</span>
+                {{/required}}
+                {{#template}}
+                    <span class="template">template</span>
+                {{/template}}
+                {{#access}}
+                    <span class="{{{.}}}">{{{.}}}</span>
+                {{/access}}
+            </div>
         </h2>
+
         {{#text}}
             <p>{{{.}}}</p>
         {{/text}}
@@ -123,12 +125,11 @@
         class. Feel free to override it in child classes.</p>
         {{/template}}
         {{#if getter}}
-            <div class="accessor-method explicit-accessor-method isGetter">
-                {{> processMember getter}}
-            </div>
+            {{> processMember getter}}
         {{/if}}
         {{#autoGetter}}
             <div class="classmembers member accessor-method auto-accessor-method isGetter" data-member-name="get{{capitalize name}}" data-accessor="true">
+                <div class="collapse-toggle"></div>
                 <h2 id="{{{$type}}}-get{{capitalize name}}" class="member-header">
                     <a href="#{{{$type}}}-get{{capitalize name}}" class="member-name">
                     get{{capitalize name}}
@@ -141,12 +142,11 @@
             </div>
         {{/autoGetter}}
         {{#if setter}}
-            <div class="accessor-method isSetter">
-                {{> processMember setter}}
-            </div>
+            {{> processMember setter}}
         {{/if}}
         {{#autoSetter}}
             <div class="classmembers member accessor-method isSetter" data-member-name="set{{capitalize name}}" data-accessor="true">
+                <div class="collapse-toggle"></div>
                 <h2 id="{{{$type}}}-set{{capitalize name}}" class="member-header">
                     <a href="#{{{$type}}}-set{{capitalize name}}" class="member-name">
                     set{{capitalize name}}

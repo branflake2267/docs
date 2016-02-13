@@ -5,22 +5,21 @@
     <!--  Generated on {{{date}}} -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{#if stylesheet}}<link rel="stylesheet" type="text/css" href="{{stylesheet}}">{{/if}}
+    {{#if stylesheet}}<link rel="stylesheet" type="text/css" href="{{pathPrefix}}{{stylesheet}}">{{/if}}
 </head>
 <body>
 <div id="header">
-    <h1>{{{name}}}
+    <div class="logo"><img src="../{{pathPrefix}}home-images/sencha_logo1x.png"/></div>
+    <h2>{{{name}}}
+        <div class="class" style="display: none">{{nodeId}}</div>
         <span id="menu-icon" class="menu-icon"></span>
         <span id="search-icon" class="search-icon"></span>
         <div id="peekaboo-input" class="peekaboo-input">
             <input type="text" id="mobile-input" />
         </div>
-    </h1>
+    </h2>
     <div class="search">
-        <form><input type="text" placeholder="search" id="searchtext"></form>
-        <div id="searchresults">
-            <ul id="searchresultslist" class="hide"></ul>
-        </div>
+        <form autocomplete="off"><input type="text" type="search" placeholder="search" id="searchtext"></form>
     </div>
     <div class="resourceLinks">
         <a href="../{{pathPrefix}}index.html"><div class="toolbarHeaderButton">
@@ -41,10 +40,18 @@
         </div>
         <div id="tree" class="tree-shown"></div>
     </div>
+    <a href="#" id="back-to-top">top </a>
     <div id="rightMembers">
-        <a href="#" id="back-to-top">top </a>
-        <div class="generic-content">
-            Guide home content
+        <div class="classText">
+            {{#if toc}}
+                <div class="toc">
+                    Contents 
+                    {{#each toc}}
+                        <a class="toc-page-{{toLowerCase this.tag}}" href="#{{this.id}}">{{this.name}}</a>
+                    {{/each}}
+                </div>
+            {{/if}}
+            {{{content}}}
         </div>
     </div>
 </div>
@@ -58,17 +65,28 @@
 </div>
 </body>
 <script type="text/javascript">
-    var ExtL = ExtL || {},
-            isHome = true;
+    var ExtL = ExtL || {};
+    isHome = false;
 </script>
-<script type="text/javascript" src="js/guide-tree.js"></script>
-<script type="text/javascript" src="js/searchIndex.js"></script>
-<script type="text/javascript" src="../js/app.js"></script>
-<script type="text/javascript" src="js/home.js"></script>
+<script type="text/javascript" src="../{{pathPrefix}}js/searchIndex.js"></script>
+<script type="text/javascript" src="{{pathPrefix}}js/guide-tree.js"></script>
+<script type="text/javascript" src="../{{pathPrefix}}js/app.js"></script>
+<script type="text/javascript" src="{{pathPrefix}}{{homejs}}"></script>
 <script>
+    document.onreadystatechange = function () {
+        if (document.readyState == "interactive") {
+            expandTreeToClass();
+        }
+    }
+
     if (ExtL.treeData) {
         tree = new TreeView(ExtL.treeData, 'tree', '{{{pathPrefix}}}');
     }
+
+    function expandTreeToClass() {
+        var name = document.querySelector('.class').innerHTML;
+        tree.expandTo('[data-item*="'+ name + '"][isLeaf="true"]');
+    };
 </script>
 <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

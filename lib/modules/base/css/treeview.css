@@ -8,7 +8,7 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    top: 26px;
+    top: 43px;
     right: 0;
     padding: 10px 25px;
 }
@@ -68,16 +68,18 @@
 .tree-hidden .selected-node {
     background: none;
 }
-.tree-hidden #hide-class-tree:after {
-    content: '';
+#hide-class-tree:before {
     position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 5px 0px 5px 8.1px;
-    border-color: transparent transparent transparent black;
+    top: 50%;
+    margin-top: -6px;
+    color: #4a4a4a;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+}
+.tree-hidden #hide-class-tree:before {
+    content: '▸';
+    right: 4px;
+    font-size: 20px;
 }
 .tree-hidden #hide-class-tree {
     right: 6px;
@@ -88,26 +90,20 @@
 
 #hide-class-tree {
     position: absolute;
-    top: 3px;
+    top: 0px;
     right: 0px;
     height: 20px;
     width: 20px;
-    border-radius: 2px;
     cursor: pointer;
 }
 
-#hide-class-tree:after {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 5px 8.1px 5px 0;
-    border-color: transparent black transparent transparent;
+#hide-class-tree:before {
+    content: '◂';
+    font-size: 26px;
 }
-
+.tree-header-text {
+    visibility: hidden;
+}
 .tree-hidden .tree-header-text {
     -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
@@ -117,4 +113,21 @@
     position: absolute;
     right: -24px;
     top: 60px;
+}
+
+@media (max-device-width: 800px), (max-width: 800px) {
+    #tree {
+        position: relative !important;
+        top: 0px !important;
+    }
+    .related-collapsed #tree {
+        top: 0px !important;
+    }
+    
+    .tree-header-text {
+        visibility: visible !important;
+    }
+    #hide-class-tree:before {
+        margin-top: -15px !important;
+    }
 }

@@ -60,6 +60,9 @@
                     {{#classAlias}}
                         <span class='alias'>alias: {{{.}}}</span>
                     {{/classAlias}}
+                    {{#singleton}}
+                        <span class='singleton'>singleton</span>
+                    {{/singleton}}
                 </h1>
             </div>
             <div id="member-display">
@@ -155,7 +158,15 @@
                         {{/if}}
                     </div>
                 </div>
-                <h2>Summary</h2>{{{classText}}}
+                {{#is classAccess "private"}}
+                    <span class="privatecls">
+                        NOTE: This is a private utility class for internal use by the framework. Don't rely on its existence.
+                    </span>
+                {{/is}}
+                {{#if classText}}
+                    <h2>Summary</h2>
+                    {{{classText}}}
+                {{/if}}
             </div>
             <div class="no-visible-members-warning">No members found using the current filters</div>
             <a href="#" id="back-to-top">top </a>

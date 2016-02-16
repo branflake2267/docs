@@ -10,7 +10,7 @@
         {{{.}}}
     {{/headhtml}}
 </head>
-<body class="condensed-header">
+<body>
 <div id="header">
     <div class="logo"><a href="http://docs.sencha.com"><img src="../{{pathPrefix}}home-images/sencha_logo1x.png"/></a></div>
     <a href="../{{pathPrefix}}index.html"><h2>{{{title}}}
@@ -35,21 +35,25 @@
             </div>
             <div id="hide-class-tree"></div>
         </div>
-        <div id="tree" class="tree-shown hide"></div>
-        <div id="guide-tree" class="tree-shown"></div>
+        <div id="tree-scroller">
+            <div id="tree" class="tree-shown hide"></div>
+            <div id="guide-tree" class="tree-shown"></div>
+        </div>
     </div>
     <a href="#" id="back-to-top">top </a>
     <div id="rightMembers">
-        <div class="classText">
-            {{#if toc}}
-                <div class="toc">
-                    Contents 
-                    {{#each toc}}
-                        <a class="toc-page-{{toLowerCase this.tag}}" href="#{{this.id}}">{{this.name}}</a>
-                    {{/each}}
-                </div>
-            {{/if}}
-            {{{content}}}
+        <div class="guide-body-wrap">
+            <div class="classText">
+                {{#if toc}}
+                    <div class="toc">
+                        Contents 
+                        {{#each toc}}
+                            <a class="toc-page-{{toLowerCase this.tag}}" href="#{{this.id}}">{{this.name}}</a>
+                        {{/each}}
+                    </div>
+                {{/if}}
+                {{{content}}}
+            </div>
         </div>
     </div>
 </div>
@@ -70,7 +74,6 @@
 <script type="text/javascript" src="../{{pathPrefix}}js/tree.js"></script>
 <script type="text/javascript" src="{{pathPrefix}}js/guide-tree.js"></script>
 <script type="text/javascript" src="../{{pathPrefix}}js/app.js"></script>
-<script type="text/javascript" src="{{pathPrefix}}{{homejs}}"></script>
 <script>
     document.onreadystatechange = function () {
         if (document.readyState == "interactive") {

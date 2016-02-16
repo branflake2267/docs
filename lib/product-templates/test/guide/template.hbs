@@ -29,18 +29,19 @@
         <div id="tree-header">
             <span class="tree-header-text">All Guides</span>
             <div class="resourceLinks">
-                <a href="../{{pathPrefix}}index.html"><div class="toolbarHeaderButton">
+                <a href="#" id="apiTab"><div class="toolbarHeaderButton">
                     api docs
                     <div class="nav-btn-mask"></div>
                 </div></a>
-                <a href="./{{pathPrefix}}index.html"><div class="toolbarHeaderButton">
+                <a href="#" id="guideTab"><div class="toolbarHeaderButton">
                     guides
                     <div class="nav-btn-mask"></div>
                 </div></a>
             </div>
             <div id="hide-class-tree"></div>
         </div>
-        <div id="tree" class="tree-shown"></div>
+        <div id="tree" class="tree-shown hide"></div>
+        <div id="guide-tree" class="tree-shown"></div>
     </div>
     <a href="#" id="back-to-top">top </a>
     <div id="rightMembers">
@@ -71,6 +72,7 @@
     isHome = false;
 </script>
 <script type="text/javascript" src="../{{pathPrefix}}js/searchIndex.js"></script>
+<script type="text/javascript" src="../{{pathPrefix}}js/tree.js"></script>
 <script type="text/javascript" src="{{pathPrefix}}js/guide-tree.js"></script>
 <script type="text/javascript" src="../{{pathPrefix}}js/app.js"></script>
 <script type="text/javascript" src="{{pathPrefix}}{{homejs}}"></script>
@@ -81,14 +83,14 @@
         }
     }
 
-    if (ExtL.treeData) {
-        tree = new TreeView(ExtL.treeData, 'tree', '{{{pathPrefix}}}');
+    if (ExtL.treeDataGuide) {
+        guideTree = new TreeView(ExtL.treeDataGuide, 'guide-tree', '{{{pathPrefix}}}');
     }
 
     function expandTreeToClass() {
         var name = document.querySelector('h1').innerHTML;
-        tree.expandTo('[data-item*="'+ name + '"][isLeaf="true"]');
-    };
+        guideTree.expandTo('[data-item*="'+ name + '"][isLeaf="true"]');
+    }
 </script>
 <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

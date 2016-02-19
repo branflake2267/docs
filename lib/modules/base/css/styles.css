@@ -46,7 +46,7 @@ pre {
 
 p code {
     color: #3B2C48;
-    background: #FDFAFB;
+    background: #FAFCFD;
     border: 1px solid #E0E0EA;
     padding: .1rem .2rem;
     font-family: Monaco,monospace;
@@ -159,11 +159,11 @@ input[type='checkbox'] {
 .classmembers.member-protected,
 .classmembers.member-private {
     border-bottom: 1px solid #E4E4E4;
-    padding: 0px 60px 6px 30px;
+    padding: 0px 200px 6px 30px;
     font-size: .93em;
     position:relative;
     overflow: hidden;
-    height: 45px;
+    height: 46px;
 }
 
 .classmembers.member > h2.member-header,
@@ -207,7 +207,7 @@ input[type='checkbox'] {
 
 .members .memberType {
     color: #8C8C8C;
-    font-size: .8em;
+    font-size: .9em;
 }
 
 .members .memberType a {
@@ -216,10 +216,10 @@ input[type='checkbox'] {
     font-weight: bold;
 }
 
-.members p{
+.members p {
     font-size: .93em;
     line-height: 1.7em;
-    width: 900px;
+    max-width: 900px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -282,12 +282,29 @@ h3.detail-header {
     font-size: 11px;
 }
 
+.classmembers .protected.mini-flag,
+.classmembers .private.mini-flag,
+.classmembers .deprecated.mini-flag,
+.classmembers .preventable.mini-flag,
+.classmembers .static.mini-flag,
+.classmembers .readonly.mini-flag,
+.classmembers .template.mini-flag,
+.classmembers .chainable.mini-flag,
+.classmembers .required.mini-flag,
+.classmembers .bindable.mini-flag {
+    display: none;
+}
+
 .deprecated{
     background-color: #aa0000;
 }
 
-.preventable, .readonly, .template, .chainable {
+.preventable, .readonly, .template {
     background-color: #aaaaaa;
+}
+
+.chainable {
+    background-color: #00aa00;
 }
 
 .private{
@@ -299,7 +316,7 @@ h3.detail-header {
 }
 
 .static{
-    background-color: #000;
+    background-color: #4A4A4A;
 }
 
 .required {
@@ -1306,7 +1323,20 @@ img.social {
 .member-tags {
     margin-bottom: 5px;
     display: inline-block;
-    margin-left: 12px;
+    /*margin-left: 12px;*/
+}
+.member-tags > span {
+    display: inline;
+    font-size: 9px;
+    line-height: 9px;
+    font-weight: bold;
+    padding: 0px 4px 1px 4px;
+    margin-left: 5px;
+    letter-spacing: .5px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    -webkit-font-smoothing: subpixel-antialiased;
+    vertical-align: middle;
 }
 .protected, .private, .deprecated, .preventable, .static, .readonly, .template, .chainable, .required, .bindable {
     color: white;
@@ -1403,16 +1433,7 @@ img.social {
     color: #C5DAE2;
 }
 
-.member-menu-col .protected,
-.member-menu-col .private,
-.member-menu-col .deprecated,
-.member-menu-col .preventable,
-.member-menu-col .static,
-.member-menu-col .readonly,
-.member-menu-col .template,
-.member-menu-col .chainable,
-.member-menu-col .required,
-.member-menu-col .bindable {
+.member-menu-flag {
     display: inline;
     font-size: 8px;
     line-height: 8px;
@@ -1452,6 +1473,14 @@ img.social {
     font-size: 20px;
 }
 
+.classmembers pre,
+.classmembers .deprecated-dec,
+.classmembers .preventable-dec,
+.classmembers .template-dec,
+.classmembers .removed-dec {
+    display: none;
+}
+
 .classmembers.member-expanded {
     height: auto;
 }
@@ -1462,6 +1491,14 @@ img.social {
     overflow: initial;
     width: auto;
     margin: 4px 12px;
+}
+
+.classmembers.member-expanded pre,
+.classmembers.member-expanded .deprecated-dec,
+.classmembers.member-expanded .preventable-dec,
+.classmembers.member-expanded .template-dec,
+.classmembers.member-expanded .removed-dec {
+    display: block;
 }
 
 .member-expanded > .collapse-toggle {
@@ -1486,13 +1523,34 @@ img.social {
     display: block;
 }
 
-@media (max-device-width: 800px), (max-width: 800px) {
+@media (max-device-width: 920px), (max-width: 920px) {
     body {
         padding-top: 41px;
     }
-    .member-tags {
-        display: table;
-        margin-top: 5px;
+    .classmembers .protected.mini-flag,
+    .classmembers .private.mini-flag,
+    .classmembers .deprecated.mini-flag,
+    .classmembers .preventable.mini-flag,
+    .classmembers .static.mini-flag,
+    .classmembers .readonly.mini-flag,
+    .classmembers .template.mini-flag,
+    .classmembers .chainable.mini-flag,
+    .classmembers .required.mini-flag,
+    .classmembers .bindable.mini-flag {
+        display: inline-block;
+    }
+
+    .classmembers .protected.full-flag,
+    .classmembers .private.full-flag,
+    .classmembers .deprecated.full-flag,
+    .classmembers .preventable.full-flag,
+    .classmembers .static.full-flag,
+    .classmembers .readonly.full-flag,
+    .classmembers .template.full-flag,
+    .classmembers .chainable.full-flag,
+    .classmembers .required.full-flag,
+    .classmembers .bindable.full-flag {
+        display: none;
     }
     #header h2 {
         font-size: 1.5em;
@@ -1539,7 +1597,7 @@ img.social {
         padding: 0 0 0 15px;
     }
     .classmembers.member, .classmembers.member-protected, .classmembers.member-private {
-        padding: 0 15px 20px 30px;
+        padding: 0 15px 16px 30px;
     }
     .members p {
         margin: 4px 0;

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta property="og:image" content="./home-images/sencha-200.png" />
     <link rel="stylesheet" type="text/css" href="css/app.css">
     <meta name="description" content="{{{striphtml classText}}}">
     {{#headhtml}}
@@ -65,6 +66,12 @@
                     {{#classAccess}}
                         <span class="member-tags"><span class="{{../classAccess}} full-flag">{{../classAccess}}</span></span>
                     {{/classAccess}}
+                    {{#isDeprecated}}
+                        <span class="member-tags"><span class="deprecated full-flag">deprecated</span></span>
+                    {{/isDeprecated}}
+                    {{#isRemoved}}
+                        <span class="member-tags"><span class="removed full-flag">removed</span></span>
+                    {{/isRemoved}}
                     {{#singleton}}
                         <span class='singleton'>singleton</span>
                     {{/singleton}}
@@ -164,13 +171,19 @@
                         {{/if}}
                     </div>
                 </div>
+                {{#isDeprecated}}
+                    {{#deprecatedMessage}}
+                        <div class="deprecated-dec">This class has been <span class="member-tags"><span class="deprecated">deprecated</span>{{#deprecatedVersion}} since {{.}}{{/deprecatedVersion}}</span>
+                            {{{.}}}</div>
+                    {{/deprecatedMessage}}
+                {{/isDeprecated}}
                 {{#is classAccess "private"}}
-                    <span class="privatecls">
+                    <div class="privatecls-dec">
                         NOTE: This is a private utility class for internal use by the framework. Don't rely on its existence.
-                    </span>
+                    </div>
                 {{/is}}
                 {{#if classText}}
-                    <h2 {{#is classAccess "private"}}class="clearBoth"{{/is}}>Summary</h2>
+                    <h2>Summary</h2>
                     {{{classText}}}
                 {{/if}}
             </div>

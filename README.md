@@ -1,18 +1,39 @@
 # docs
 Home for new Sencha Documentation
 
-## json-parser module
+## source-parser module
 
 In order to run:
 
-    node index json-parser
+    node index source-parser --config=classic
+    
+## json-parser module
+ - *requires you to first run source-parser*
 
-Has 4 cli args:
+In order to run:
 
- - --input/-i Location of the json files to consume. Defaults to `lib/json`
- - --stylesheet/-s The CSS stylesheet. Defaults to `lib/css/styles.css`
- - --template/-t The handlebars template file. Defaults to `lib/modules/json-parser/template.hbs`
- - --destination/-d The destination location of the generated html. Defaults to `lib/output`
+    node index json-parser --config=classic
+    
+## guide-parser module
+
+In order to run:
+
+    node index guide-parser --config=classic
+    
+## CLI options
+There are 4 possible CLI args (config is REQUIRED):
+
+ - --**config**/con Config file for the default values of the page title, input directory, 
+ output directory, etc.  The possible config options are:
+    - classic
+    - modern
+    - orion
+    - architect
+    - space
+ - --**input**/-i Location of the json files to consume
+ - --**stylesheet**/-s The CSS stylesheet
+ - --**template**/-t The handlebars template file
+ - --**destination**/-d The destination location of the generated html
 
 Can use them like so:
 

@@ -1,6 +1,10 @@
 # docs
 Home for new Sencha Documentation
 
+## NODE dependency
+To run guide-parser you will need to install a specific version of the lodash module:
+npm install lodash@3.10.1
+
 ## source-parser module
 
 In order to run:

@@ -76,12 +76,27 @@
             false
         {{/if}};
 </script>
-<script type="text/javascript" src="{{jsPath}}tree.js"></script>
-<script type="text/javascript" src="{{jsPath}}searchIndex.js"></script>
+{{#if hasApi}}
+    <script type="text/javascript" src="{{jsPath}}tree.js"></script>
+    <script type="text/javascript" src="{{jsPath}}searchIndex.js"></script>
+{{/if}}
+{{#if hasGuides}}
 <script type="text/javascript" src="{{jsPath}}guide-tree.js"></script>
 <script type="text/javascript" src="{{jsPath}}guideSearch.js"></script>
+{{/if}}
 <script type="text/javascript" src="{{jsPath}}ace.js"></script>
 <script type="text/javascript" src="{{jsPath}}app.js"></script>
+<script>
+    document.onreadystatechange = function () {
+        if (document.readyState == "interactive") {
+            guideTree.expandTreeToClass();
+        }
+    }
+
+    if (ExtL.treeDataGuide) {
+        guideTree = new TreeView(ExtL.treeDataGuide, 'guide-tree', '{{{pathPrefix}}}');
+    }
+</script>
 <style>
     /*!
      *  Font Awesome 4.5.0 by @davegandy - http://fontawesome.io - @fontawesome

@@ -3,83 +3,83 @@ Home for new Sencha Documentation
 
 ## Setup
 
+### Install Node Dependencies
+You'll need the following node modules to utilize the docs software.  
+
+    npm install argv
+    npm install jsdom
+    npm install junk
+    npm install mkdirp
+    npm install node-minify
+    npm install handlebars
+    npm install swag
+    npm install util
+    npm install wrench
+    npm install node-gyp
+    npm install highlights
+    npm install xmlbuilder
+    npm install lodash@3.10.1
+    npm install natural
+    npm install event-stream
+    npm install underscore.string
+    npm install html-entities
+    npm install shelljs
+
+### Clone Docs Repository
+Clone this repository to your machine
+
+    $ git clone git@github.com:sencha/docs.git
+    $ cd docs
+
 ### Install Cmd
-
 Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/) for your platform.
-
-### Install the required SDKs
-
-1. Install the ExtJS SDK
-
-   ```sh
-   $ git clone git@github.com:extjs/SDK.git
-   $ cd SDK
-   $ git checkout ext-6.1.x
-   ```
-
-2. Install SpaceSDK
-
-   ```sh
-   $ git clone git@github.com:sencha/SpaceSDK.git
-   ```
-
-3. Install sencha-documentation
-
-   ```sh
-   $ git clone git@github.com:sencha/sencha-documentation.git
-   ```
-
-   Make sure you install the sencha-documentation repo as a sibling of of this
-   docs repo; they're currently hard coded to live at the same level.
-
-### Set up your docs repo
-
-#### Module dependencies installation
-
-    $ npm install
-
-#### Create a basePaths.json
-
-Create a file `lib/configs/basePaths.json` with the following contents, customized
-to your filesystem layout:
-
-```js
-{
-  "localSDK"  : "/path/to/your/copy/of/extJS/SDK/",
-  "extFolder" : "ext/",
-  "pkgFolder" : "packages/",
-  "localSpace": "/path/to/your/copy/of/SpaceSDK/src/",
-  "localPrim" : "../../docs/"
-}
-```
 
 ## Run the Things
 
-## Generate doxi output
+This process is broken down into three sub-processes
 
-For each config (see below) you wish to run, you have to run doxi on the code to
-generate files for the parsers to work with. Some are just API docs, some are
-just guides, and some are both.
++ Source Parser - Creates git repo if needed, checks out and pulls the most recent branch of your project, generates and 
+parses the Doxi output, creates a filemap for later use, and creates the source code output
 
-The basic gist is this: For example, for the `classic` config:
++ JSON Parser - Parses the JSON output from Doxi.  Generates homepage content and API Doc output (including the tree)
 
-    $ cd /path/to/your/extjs/SDK/docs/classic
-    $ sencha doxi build combo-nosrc
-    $ sencha doxi build all-classes
++ Guide Parser - Parses the guide markdown and generates the guides section.  This process can be run independently
+for guide-only products like Architect and IDE Tools.
+    
+### source-parser module
 
-This generates the files. Then, copy them to `lib/input/classic-json/`, creating
-the directory if it doesn't already exist:
+The source parser can be run two ways.  
 
-    $ mkdir -p /path/to/docs-repo/lib/input/classic-json
-    $ cp -a ../../build/docs/classic/* /path/to/docs-repo/lib/input/classic-json/
-
-Or drag them around in Finder or whatever. Now you're ready to run the parsers.
-
-## source-parser module
-
-In order to run:
+The first will parse previously created JSON found in the input folder.  This
+is ideal if you already have content and don't need updated Doxi output
 
     $ node index source-parser --config=classic
+    
+The second will ensure your git repo is present, checkout the appropriate branch, pull if necessary, generate Doxi output
+along with the other things.  The `pname` and `pversion` values can be found the the `configs/projectConfigs.json` file.
+
++ pname - The product-level `name`
+
++ pversion - the versions level `version`
+
+    {
+      "products": [
+        {
+          "title": "Ext JS",
+          "name" : "extjs",
+          "repo" : "SDK",
+          "versions": [
+            {
+              "version" : "6.1.0-modern",
+              "config"  : "6.1.0-modern.doxi.json",
+              "branch"  : "ext-6.1.x",
+              "tag"     : "",
+              "input"   : "modern-json",
+              "build"   : "../../build/docs/modern",
+              "rurl"    : "git@github.com:extjs/SDK.git"
+            },
+    
+    $ node index source-parser --config=classic --pname=extjs --pversion=6.1.0-classic            
     
 ## json-parser module
  - *requires you to first run source-parser*
@@ -108,6 +108,7 @@ There are 4 possible CLI args (config is REQUIRED):
  - --**stylesheet**/-s The CSS stylesheet
  - --**template**/-t The handlebars template file
  - --**destination**/-d The destination location of the generated html
+ - --**version**/-v The version of the project, which will create a sub-folder with a matching name in the output
 
 Can use them like so:
 

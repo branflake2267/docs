@@ -25,103 +25,91 @@
         </h1>
     </div>
     <div id="member-display">
-        <form>
-            <div class="multiselect">
-                <div class="selectBox" id="cbSelectBox">
-                    <select>
-                        <option>Access Level</option>
-                    </select>
-                    <div class="overSelect"></div>
-                </div>
-                <div id="checkboxes" class="checkboxesBox">
-                    <div class="member-access-display">
-                        <label class="accessCheckbox">
-                            <input class="accessCheckbox" id="publicCheckbox" type="checkbox" value="member-public" checked=true/>
-                            Public
-                        </label>
-                    </div>
-                    <div class="member-access-display">
-                        <label class="accessCheckbox">
-                            <input class="accessCheckbox" id="protectedCheckbox" type="checkbox" value="member-protected"/>
-                            Protected
-                        </label>
-                    </div>
-                    <div class="member-access-display">
-                        <label class="accessCheckbox">
-                            <input class="accessCheckbox" id="privateCheckbox" type="checkbox" value="member-private"/>
-                            Private
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </form>
+        <div class="member-access-display"><label><input id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public</label></div>
+        <div class="member-access-display"><label><input id="protectedCheckbox" type="checkbox" value="member-protected"/>Protected</label></div>
+        <div class="member-access-display"><label><input id="privateCheckbox" type="checkbox" value="member-private"/>Private</label></div>
     </div>
-    <div id="toolbar">
-        <!--<div id="toggle-class-tree">&nbsp;</div>-->
-        <div id="show-membertypes">&nbsp;</div>
-        <div id="member-types-menu" class="member-types-menu">
-        {{#memberTypeGroups}}
-            {{#is $type "configs"}}
-                <a href="#configs" id="configs-button-link"><div id="configs-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-cubes"></i>
-                    configs
-                    <div id="configs-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "properties"}}
-                <a href="#properties" id="properties-button-link"><div id="properties-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-book"></i>
-                    properties
-                    <div id="properties-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "methods"}}
-                <a href="#methods" id="methods-button-link"><div id="methods-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-object-group"></i>
-                    methods
-                    <div id="methods-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "events"}}
-                <a href="#events" id="events-button-link"><div id="events-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-bolt"></i>
-                    events
-                    <div id="events-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "vars"}}
-                <a href="#vars" id="vars-button-link"><div id="vars-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-paint-brush"></i>
-                    theme variables
-                    <div id="vars-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "sass-mixins"}}
-                <a href="#sass-mixins" id="sass-mixins-button-link"><div id="sass-mixins-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-tint"></i>
-                    theme mixins
-                    <div id="sass-mixins-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-        {{/memberTypeGroups}}
+</div>
+<div class="context-menu-ct">
+    <div class="context-menu-tabs">
+        <div id="filterTab" class="toolbarHeaderButton active-tab">
+            Filters
         </div>
-        <div class="memberFilter">
-            <input placeholder="Filter members..." type="search" id="member-filter-field" name="member-filter-field">
+        <div id="relatedClassesTab" class="toolbarHeaderButton">
+            Related Classes
         </div>
+    </div>
+    <div id="filters-ct">
+        <div id="toolbar">
+            <!--<div id="toggle-class-tree">&nbsp;</div>-->
+            <!-- <div id="show-membertypes">&nbsp;</div> -->
+            <div class="memberFilter">
+                <input placeholder="Filter members..." type="search" id="member-filter-field" name="member-filter-field">
+            </div>
+            <div id="member-types-menu" class="member-types-menu">
+            {{#memberTypeGroups}}
+                {{#is $type "configs"}}
+                    <a href="#configs" id="configs-button-link"><div id="configs-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-cubes"></i>
+                        configs
+                        <div id="configs-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "properties"}}
+                    <a href="#properties" id="properties-button-link"><div id="properties-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-book"></i>
+                        properties
+                        <div id="properties-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "methods"}}
+                    <a href="#methods" id="methods-button-link"><div id="methods-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-object-group"></i>
+                        methods
+                        <div id="methods-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "events"}}
+                    <a href="#events" id="events-button-link"><div id="events-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-bolt"></i>
+                        events
+                        <div id="events-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "vars"}}
+                    <a href="#vars" id="vars-button-link"><div id="vars-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-paint-brush"></i>
+                        theme variables
+                        <div id="vars-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "sass-mixins"}}
+                    <a href="#sass-mixins" id="sass-mixins-button-link"><div id="sass-mixins-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-tint"></i>
+                        theme mixins
+                        <div id="sass-mixins-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+            {{/memberTypeGroups}}
+            </div>
+        </div>
+    </div>
+    <div id="related-classes-context-ct">
+        <!-- We'll programmatically copy in the related classes elements here on page load -->
     </div>
 </div>
 <div id="class-body-wrap" class="class-body-wrap">
-    <div class="classText">
-        <div id="classHead" class="classHead">
-            <div class="classMetaHeader">
+    <div id="classText" class="classText">
+        <div class="classHead">
+            <!-- <div class="classMetaHeader">
                 Related Classes <a id="related-classes" class="button" href="javascript:void(0);">collapse</a>
-            </div>
+            </div> -->
             <div class="classMeta">
                 {{#if altNames}}
                     <div class="classMetaColumn">
@@ -192,4 +180,5 @@
             </div>
         {{/memberTypeGroups}}
     </div>
+    {{> footer}}
 </div>

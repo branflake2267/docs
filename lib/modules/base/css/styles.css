@@ -534,7 +534,8 @@ h3.detail-header {
 }
 
 #class-tree-ct .product-header,
-#product-tree-ct .product-header {
+#product-tree-ct .product-header,
+.context-header {
     background-color: #025b80;
     margin: 0;
     font-size: 16px;
@@ -558,9 +559,10 @@ h3.detail-header {
     left: 0;*/
     display: none;
     position: absolute;
-    top: 0;
+    top: 32px;
     left: 0;
     right: 0;
+    padding-left: 10px;
 }
 
 #rightMembers{
@@ -726,21 +728,21 @@ h3.detail-header {
 
 #back-to-top {
     position: fixed;
-    bottom: 5em;
-    right: -96px;
+    bottom: -100%;
+    right: 15px;
     text-decoration: none;
     color: #ffffff;
     background-color: #1E97CC;
     font-size: .8em;
     padding: .8em;
-    text-align:center;
-    transition: right 250ms;
+    text-align: center;
+    transition: all 250ms;
     z-index: 1;
     border: 3px solid white;
 }
 
 #back-to-top.sticky {
-    right: -3px;
+    bottom: 15px;
 }
 
 #back-to-top:hover {
@@ -1481,6 +1483,12 @@ img.social {
 #mobile-context-menu-btn {
     right: 6px;
 }
+#hide-context-menu {
+    color: white;
+    font-size: 20px;
+    margin-left: 11px;
+    cursor: pointer;
+}
 .other-resources {
     display:none;
 }
@@ -1771,13 +1779,21 @@ img.social {
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-        padding: 0px 38px;
+        margin: 0px 38px;
         -webkit-font-smoothing: subpixel-antialiased;
     }
     #class-tree-ct .product-header,
-    #product-tree-ct .product-header {
+    #product-tree-ct .product-header,
+    .context-header {
         display: block;
         line-height: 32px;
+        height: 32px;
+    }
+    #hide-class-tree {
+        margin-top: -38px;
+    }
+    #hide-class-tree:before {
+        color: white !important;
     }
     .toolbarHeaderButton {
         margin: 4px 5px 0 0;
@@ -1808,7 +1824,7 @@ img.social {
     #related-classes-context-ct {
         border-top: 1px solid #e6e6e6;
         position: absolute;
-        top: 38px;
+        top: 70px;
         right: 0;
         left: 0;
         bottom: 0;
@@ -1962,6 +1978,27 @@ img.social {
         letter-spacing: 3px;
         border-bottom:solid 1px #dadada;
     }*/
+    .classMeta {
+        display: none;
+    }
+    #related-classes-context-ct .classMeta {
+        background-color: whitesmoke;
+        float: none;
+        margin: 0;
+        padding: 5px 20px 20px 20px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        max-width: none;
+        overflow-y: auto;
+        border-width: 0;
+    }
+    #related-classes-context-ct .classMeta h3,
+    #related-classes-context-ct .classMeta .list {
+        margin: 5px 0;
+    }
     .search, .resourceLinks {
         display: none;
     }
@@ -1982,7 +2019,6 @@ img.social {
     }
     #back-to-top {
         padding: .4em;
-        bottom: 5em;
     }
     #member-display{
         margin-top: 10px;
@@ -2068,9 +2104,11 @@ img.social {
         right: 0;
     }*/
     .class-body-wrap {
-        top: 177px;
-        position: fixed;
-        bottom: 42px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
     }
     .guide-body-wrap {
         top: 0;
@@ -2214,6 +2252,9 @@ img.social {
 }
 .fa-times:before {
     content: "\f00d";
+}
+.fa-caret-right:before {
+    content: "\f0da";
 }
 
 /** Custom FA Classes **/

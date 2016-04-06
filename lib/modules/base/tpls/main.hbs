@@ -19,13 +19,21 @@
         {{{.}}}
     {{/headhtml}}
 </head>
-<body>
+<body class="{{#isHome}}is-home{{/isHome}}{{#isGuide}} is-guide{{/isGuide}}{{#isApi}} is-api{{/isApi}}">
 <div id="header">
     <div class="logo">
         <a href="http://docs.sencha.com"><img src="{{imagePath}}sencha_logo1x.png"/></a>
     </div>
     <span id="mobile-main-nav-menu-btn" class="fa fa-bars"></span>
-    <a class="page-title {{classType}}" href="{{{fileName}}}" target="_blank">{{{name}}}</a>
+    {{#isApi}}
+        <a class="page-title {{classType}}" href="{{{fileName}}}" target="_blank">{{{name}}}</a>
+    {{/isApi}}
+    {{#isHome}}
+        <div class="page-title">{{{title}}}</div>
+    {{/isHome}}
+    {{#isGuide}}
+        <div class="page-title">{{{name}}}</div>
+    {{/isGuide}}
     <span id="mobile-context-menu-btn" class="fa fa-cog"></span>
     <h2 class="product-header"><a href="{{homePath}}index.html">{{{title}}}</a>
         <span class="fa fa-chevron-circle-down product-menu-btn"></span>
@@ -35,9 +43,16 @@
             <input type="text" id="mobile-input" />
         </div>
     </h2>
-    <div class="search">
-        <form autocomplete="off"><input type="text" type="search" placeholder="search" id="searchtext"></form>
-    </div>
+    {{#isHome}}
+        <div class="search">
+            <form autocomplete="off"><input type="text" type="search" placeholder="search" id="searchtext"></form>
+        </div>
+    {{/isHome}}
+    {{#isGuide}}
+        <div class="search">
+            <form autocomplete="off"><input type="text" type="search" placeholder="search" id="searchtext"></form>
+        </div>
+    {{/isGuide}}
 </div>
 <div id="centerContent">
     <div id="class-tree-ct">

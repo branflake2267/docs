@@ -143,7 +143,7 @@
  * @method constructor
  * Creates new Array object.
  *
- * @param {Number/Object...} items Either a number that specifies the length of array or any number of items
+ * @param {Number/Object...} [items] Either a number that specifies the length of array or any number of items
  * for the array.
  */
 

@@ -1,7 +1,8 @@
 'use strict';
 
-const debug = require('../../Debug');
-const Utils = require('../shared/Utils');
+const Utils  = require('./Utils');
+const debug  = require('./Debug');
+
 const tests = [
     'access',
     'alias',

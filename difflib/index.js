@@ -1,12 +1,12 @@
 'use strict';
 
 const fs     = require('fs');
-const util   = require('util');
-const Base   = require('../base');
+const argv   = require('argv');
 const Parser = require('./Parser');
 const Output = require('./Output');
-const Utils  = require('../shared/Utils');
+const Utils  = require('./Utils');
 const mkdirp = require('mkdirp');
+const debug  = require('./Debug');
 
 const categories = [{
     name  : 'configs',
@@ -65,6 +65,11 @@ const classProps = [{
     name  : 'requires',
     label : 'Requires'
 }];
+
+//enable the logger but disable the log level, info and error will still show
+debug.enable();
+debug.disable('log');
+
 /**
  * Diff class to check API differences between two different versions.
  *
@@ -81,10 +86,16 @@ const classProps = [{
  *     node index diff -n 6.0.1 -o 6.0.0 -d ./output ./json/current/classic-all-classes.json ./json/old/classic-all-classes.json
  *     node index diff --new=6.0.1 --old=6.0.0 --destination=./output ./json/current/classic-all-classes.json ./json/old/classic-all-classes.json
  */
-
-class Diff extends Base {
+class Diff {
     constructor (targets, options) {
-        super(targets, options);
+
+        Diff.register(argv);
+
+        let args = argv.run();
+
+        this.options = options = args.options;
+
+        this.targets = args.targets;
 
         this.summary = {};
         this.includeDebugOutput = options['include-debug-output'];
@@ -96,6 +107,8 @@ class Diff extends Base {
             deprecated: options['include-deprecated'],
             class: options['include-class-details']
         };
+
+        this.run();
     }
 
     get defaultOptions () {
@@ -454,3 +467,5 @@ class Diff extends Base {
 }
 
 module.exports = Diff;
+
+new Diff();

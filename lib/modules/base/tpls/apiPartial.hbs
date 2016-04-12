@@ -24,173 +24,171 @@
             {{/isEnum}}
         </h1>
     </div>
-    <div id="member-display">
-        <form>
-            <div class="multiselect">
-                <div class="selectBox" id="cbSelectBox">
-                    <select>
-                        <option>Access Level</option>
-                    </select>
-                    <div class="overSelect"></div>
-                </div>
-                <div id="checkboxes" class="checkboxesBox">
-                    <div class="member-access-display">
-                        <label class="accessCheckbox">
-                            <input class="accessCheckbox" id="publicCheckbox" type="checkbox" value="member-public" checked=true/>
-                            Public
-                        </label>
-                    </div>
-                    <div class="member-access-display">
-                        <label class="accessCheckbox">
-                            <input class="accessCheckbox" id="protectedCheckbox" type="checkbox" value="member-protected"/>
-                            Protected
-                        </label>
-                    </div>
-                    <div class="member-access-display">
-                        <label class="accessCheckbox">
-                            <input class="accessCheckbox" id="privateCheckbox" type="checkbox" value="member-private"/>
-                            Private
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </form>
+</div>
+<div class="context-menu-ct">
+    <div class="context-header">
+        <div id="hide-context-menu" class="fa fa-caret-right"></div>
     </div>
-    <div id="toolbar">
-        <!--<div id="toggle-class-tree">&nbsp;</div>-->
-        <div id="show-membertypes">&nbsp;</div>
-        <div id="member-types-menu" class="member-types-menu">
-        {{#memberTypeGroups}}
-            {{#is $type "configs"}}
-                <a href="#configs" id="configs-button-link"><div id="configs-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-cubes"></i>
-                    configs
-                    <div id="configs-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "properties"}}
-                <a href="#properties" id="properties-button-link"><div id="properties-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-book"></i>
-                    properties
-                    <div id="properties-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "methods"}}
-                <a href="#methods" id="methods-button-link"><div id="methods-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-object-group"></i>
-                    methods
-                    <div id="methods-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "events"}}
-                <a href="#events" id="events-button-link"><div id="events-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-bolt"></i>
-                    events
-                    <div id="events-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "vars"}}
-                <a href="#vars" id="vars-button-link"><div id="vars-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-paint-brush"></i>
-                    theme variables
-                    <div id="vars-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-            {{#is $type "sass-mixins"}}
-                <a href="#sass-mixins" id="sass-mixins-button-link"><div id="sass-mixins-nav-btn" class="toolbarButton disabled">
-                    <i class="fa fa-tint"></i>
-                    theme mixins
-                    <div id="sass-mixins-count" class="nav-btn-count"></div>
-                    <div class="nav-btn-mask"></div>
-                </div></a>
-            {{/is}}
-        {{/memberTypeGroups}}
+    <div class="search">
+        <form autocomplete="off"><input type="text" type="search" placeholder="search" id="searchtext"></form>
+    </div>
+    <div class="context-menu-tabs">
+        <div id="filterTab" class="toolbarHeaderButton active-tab">
+            Filters
         </div>
-        <div class="memberFilter">
+        <div id="relatedClassesTab" class="toolbarHeaderButton">
+            Related Classes
+        </div>
+    </div>
+    <div id="filters-ct">
+        <div id="toolbar">
+            <!--<div id="toggle-class-tree">&nbsp;</div>-->
+            <!-- <div id="show-membertypes">&nbsp;</div> -->
+            <div class="memberFilter">
+                <input placeholder="Filter members..." type="search" id="member-filter-field" name="member-filter-field">
+            </div>
+            <div id="member-display">
+                <div class="member-access-display"><label><input id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public</label></div>
+                <div class="member-access-display"><label><input id="protectedCheckbox" type="checkbox" value="member-protected"/>Protected</label></div>
+                <div class="member-access-display"><label><input id="privateCheckbox" type="checkbox" value="member-private"/>Private</label></div>
+            </div>
+            <div id="member-types-menu" class="member-types-menu">
+            {{#memberTypeGroups}}
+                {{#is $type "configs"}}
+                    <a href="#configs" id="configs-button-link"><div id="configs-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-cubes"></i>
+                        configs
+                        <div id="configs-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "properties"}}
+                    <a href="#properties" id="properties-button-link"><div id="properties-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-book"></i>
+                        properties
+                        <div id="properties-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "methods"}}
+                    <a href="#methods" id="methods-button-link"><div id="methods-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-object-group"></i>
+                        methods
+                        <div id="methods-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "events"}}
+                    <a href="#events" id="events-button-link"><div id="events-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-bolt"></i>
+                        events
+                        <div id="events-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "vars"}}
+                    <a href="#vars" id="vars-button-link"><div id="vars-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-paint-brush"></i>
+                        theme variables
+                        <div id="vars-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "sass-mixins"}}
+                    <a href="#sass-mixins" id="sass-mixins-button-link"><div id="sass-mixins-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-tint"></i>
+                        theme mixins
+                        <div id="sass-mixins-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+            {{/memberTypeGroups}}
+            </div>
+        </div>
             <input placeholder="Filter members..." type="search" id="member-filter-field" name="member-filter-field">
             <div id="toggleAll">+</div>
-        </div>
+    </div>
+    <div id="related-classes-context-ct" class="hide">
+        <!-- We'll programmatically copy in the related classes elements here on page load -->
     </div>
 </div>
 <div id="class-body-wrap" class="class-body-wrap">
-    <div class="classText">
-        <div id="classHead" class="classHead">
-            <div class="classMetaHeader">
-                Related Classes <a id="related-classes" class="button" href="javascript:void(0);">collapse</a>
+    <div class="body-wrap-inner">
+        <div id="classText" class="classText">
+            <div class="classHead">
+                <!-- <div class="classMetaHeader">
+                    Related Classes <a id="related-classes" class="button" href="javascript:void(0);">collapse</a>
+                </div> -->
+                <div class="classMeta">
+                    {{#if altNames}}
+                        <div class="classMetaColumn">
+                            <h3>Alternate Names</h3>
+                            <p class="list">{{{altNames}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if mixins}}
+                        <div class="classMetaColumn">
+                            <h3>Inherited Mixins</h3>
+                            <p class="list">{{{mixins}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if requires}}
+                        <div class="classMetaColumn">
+                            <h3>Requires</h3>
+                            <p class="list">{{{requires}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if extends}}
+                        <div class="classMetaColumn">
+                            <h3>Hierarchy</h3>
+                            <p class="list">{{{extends}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if extenders}}
+                        <div class="classMetaColumn">
+                            <h3>Sub-Classes</h3>
+                            <p class="list">{{{extenders}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if mixers}}
+                        <div class="classMetaColumn">
+                            <h3>Mixed Into</h3>
+                            <p class="list">{{{mixers}}}</p>
+                        </div>
+                    {{/if}}
+                </div>
             </div>
-            <div class="classMeta">
-                {{#if altNames}}
-                    <div class="classMetaColumn">
-                        <h3>Alternate Names</h3>
-                        <p class="list">{{{altNames}}}</p>
-                    </div>
-                {{/if}}
-                {{#if mixins}}
-                    <div class="classMetaColumn">
-                        <h3>Inherited Mixins</h3>
-                        <p class="list">{{{mixins}}}</p>
-                    </div>
-                {{/if}}
-                {{#if requires}}
-                    <div class="classMetaColumn">
-                        <h3>Requires</h3>
-                        <p class="list">{{{requires}}}</p>
-                    </div>
-                {{/if}}
-                {{#if extends}}
-                    <div class="classMetaColumn">
-                        <h3>Hierarchy</h3>
-                        <p class="list">{{{extends}}}</p>
-                    </div>
-                {{/if}}
-                {{#if extenders}}
-                    <div class="classMetaColumn">
-                        <h3>Sub-Classes</h3>
-                        <p class="list">{{{extenders}}}</p>
-                    </div>
-                {{/if}}
-                {{#if mixers}}
-                    <div class="classMetaColumn">
-                        <h3>Mixed Into</h3>
-                        <p class="list">{{{mixers}}}</p>
-                    </div>
-                {{/if}}
-            </div>
+            {{#isDeprecated}}
+                {{#deprecatedMessage}}
+                    <div class="deprecated-dec">This class has been <span class="member-tags"><span class="deprecated">deprecated</span>{{#deprecatedVersion}} since {{.}}{{/deprecatedVersion}}</span>
+                        {{{.}}}</div>
+                {{/deprecatedMessage}}
+            {{/isDeprecated}}
+            {{#is classAccess "private"}}
+                <div class="privatecls-dec">
+                    NOTE: This is a private utility class for internal use by the framework. Don't rely on its existence.
+                </div>
+            {{/is}}
+            {{#if classText}}
+                <h2>Summary</h2>
+                {{{classText}}}
+            {{/if}}
+            {{#if isEnum}}
+                <div class="enum-msg">ENUM: This enumeration defines a set of String values. It exists primarily for documentation purposes - in code use the actual string values like '{{enumProperty}}', don't reference them through this class {{name}}.{{enumProperty}}.</div>
+            {{/if}}
         </div>
-        {{#isDeprecated}}
-            {{#deprecatedMessage}}
-                <div class="deprecated-dec">This class has been <span class="member-tags"><span class="deprecated">deprecated</span>{{#deprecatedVersion}} since {{.}}{{/deprecatedVersion}}</span>
-                    {{{.}}}</div>
-            {{/deprecatedMessage}}
-        {{/isDeprecated}}
-        {{#is classAccess "private"}}
-            <div class="privatecls-dec">
-                NOTE: This is a private utility class for internal use by the framework. Don't rely on its existence.
-            </div>
-        {{/is}}
-        {{#if classText}}
-            <h2>Summary</h2>
-            {{{classText}}}
-        {{/if}}
-        {{#if isEnum}}
-            <div class="enum-msg">ENUM: This enumeration defines a set of String values. It exists primarily for documentation purposes - in code use the actual string values like '{{enumProperty}}', don't reference them through this class {{name}}.{{enumProperty}}.</div>
-        {{/if}}
+        <div class="no-visible-members-warning">No members found using the current filters</div>
+        <div class="members">
+            {{#memberTypeGroups}}
+                <div id="{{{$type}}}-ct">
+                <h2 id="{{{$type}}}" class="type">{{{typeText}}}</h2>
+                <a name="{{{$type}}}"></a>
+                {{#items}}
+                    {{> processMember}}  {{!-- process the member template --}}
+                {{/items}}
+                </div>
+            {{/memberTypeGroups}}
+        </div>
     </div>
-    <div class="no-visible-members-warning">No members found using the current filters</div>
-    <div class="members">
-        {{#memberTypeGroups}}
-            <div id="{{{$type}}}-ct">
-            <h2 id="{{{$type}}}" class="type">{{{typeText}}}</h2>
-            <a name="{{{$type}}}"></a>
-            {{#items}}
-                {{> processMember}}  {{!-- process the member template --}}
-            {{/items}}
-            </div>
-        {{/memberTypeGroups}}
-    </div>
+    {{> footer}}
 </div>

@@ -2,11 +2,13 @@
 
 const fs     = require('fs');
 const argv   = require('argv');
+const path   = require('path');
+const mkdirp = require('mkdirp');
+const debug  = require('./Debug');
+
 const Parser = require('./Parser');
 const Output = require('./Output');
 const Utils  = require('./Utils');
-const mkdirp = require('mkdirp');
-const debug  = require('./Debug');
 
 const categories = [{
     name  : 'configs',
@@ -375,7 +377,7 @@ class Diff {
             totalOutput    = [],
             newCls, oldCls,
             parser, diff,
-            output, markdown;
+            output, markdown, filename;
 
         for (; i < length; i++) {
             newCls = newAllClasses[i];
@@ -462,7 +464,9 @@ class Diff {
 
         mkdirp.sync(outputDir);
 
-        fs.writeFile(outputDir + oldVersion + '_to_' + newVersion + '_changes.md', totalOutput.join('\n'), 'utf8');
+        filename = oldVersion + '_to_' + newVersion + '_changes.md';
+
+        fs.writeFile(path.join(outputDir, filename), totalOutput.join('\n'), 'utf8');
     }
 }
 

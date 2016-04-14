@@ -4,22 +4,27 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    top: 61px;
+    top: 0;
     right: 0;
     padding: 10px 25px;
     line-height: 1.5em;
     background: #f5f5f5;
     border-top: 1px solid #e6e6e6;
     color: #014D6C;
+    z-index: 1;
 }
 
 #tree-header, .sub-header {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     background-color: transparent;
     color: black;
     padding: 3px 25px 0;
     letter-spacing: 1px;
     font-weight: bold;
+    z-index: 2;
 }
 
 .sub-header {
@@ -66,7 +71,7 @@ a.tree-leaf-text {
 .selected-node {
     background-color: #e6e6e6;
     font-weight: bold;
-    width: 300px;
+    width: 100%;
     background-position: -100px;
 }
 .tree-hidden .selected-node {
@@ -120,13 +125,22 @@ a.tree-leaf-text {
     top: 60px;
 }
 
+#tree-scroller {
+    position: absolute;
+    top: 61px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 @media (max-device-width: 800px), (max-width: 800px) {
+    #tree-header, .sub-header {
+        top: 32px;
+    }
     #tree, #guide-tree {
-        position: relative !important;
-        top: 0px !important;
+        top: 12px !important;
     }
     #tree-scroller {
-        height: 100%;
         overflow-y: scroll;
     }
     .related-collapsed #tree, .related-collapsed #guide-tree {
@@ -137,6 +151,6 @@ a.tree-leaf-text {
         display: block !important;
     }
     #hide-class-tree:before {
-        margin-top: -8px !important;
+        margin-top: -12px !important;
     }
 }

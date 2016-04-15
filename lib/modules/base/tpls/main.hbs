@@ -20,6 +20,19 @@
     {{/headhtml}}
 </head>
 <body class="{{#isHome}}is-home{{/isHome}}{{#isGuide}} is-guide{{/isGuide}}{{#isApi}} is-api{{/isApi}}">
+<script type="text/javascript">
+    function getOS() {
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+        if(/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            return 'ios';
+        } else if(userAgent.match(/Android/i)) {
+            return 'android';
+        }
+    }
+
+    document.body.className += ' ' + getOS()
+</script>
 <div id="header">
     <div class="logo">
         <a href="http://docs.sencha.com"><img src="{{imagePath}}sencha_logo1x.png"/></a>

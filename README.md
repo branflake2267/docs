@@ -53,7 +53,7 @@ The source parser can be run two ways.
 The first will parse previously created JSON found in the input folder.  This
 is ideal if you already have content and don't need updated Doxi output
 
-    $ node index source-parser --config=classic
+    $ node index source-parser --config=classic --pversion=6.0.1-classic
     
 The second will ensure your git repo is present, checkout the appropriate branch, pull if necessary, generate Doxi output
 along with the other things.  The `pname` and `pversion` values can be found the the `configs/projectConfigs.json` file.
@@ -86,13 +86,13 @@ along with the other things.  The `pname` and `pversion` values can be found the
 
 In order to run:
 
-    $ node index json-parser --config=classic
+    $ node index json-parser --config=classic --pversion=6.0.1-classic
     
 ## guide-parser module
 
 In order to run:
 
-    $ node index guide-parser --config=classic
+    $ node index guide-parser --config=classic --pversion=6.0.1-classic
     
 ## CLI options
 There are 4 possible CLI args (config is REQUIRED):

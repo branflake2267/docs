@@ -1,0 +1,18 @@
+<div class="tree-leaf">
+    <div class="tree-leaf-content{{#if leaf}} isLeaf{{/if}}" id="{{#if leaf}}node{{else}}branch{{/if}}-{{elIdSlug}}" isLeaf="{{leaf}}">
+        <span class="tree-expando{{#if leaf}} hidden{{/if}}">▸</span>
+        {{#if children}}
+            <span class="folder-type"></span>
+        {{else}}
+            <span class="{{#if type}}{{type}}{{else}}class{{/if}}-type"></span>
+        {{/if}}
+        <a class="tree-leaf-text"{{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
+    </div>
+    {{#if children}}
+        <div class="tree-child-leaves hidden">
+            {{#each children}}
+                {{> treeNodePartial}}
+            {{/each}}
+        </div>
+    {{/if}}
+</div>

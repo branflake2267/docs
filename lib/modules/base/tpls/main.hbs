@@ -76,8 +76,8 @@
             <div id="hide-class-tree"></div>
         </div>
         <div id="tree-scroller">
-            <div id="tree" class="tree-shown"></div>
-            <div id="guide-tree" class="tree-shown hide"></div>
+            <div id="tree" class="tree-shown">{{#if apiJson}}{{#each apiJson}}{{> treeNodePartial}}{{/each}}{{/if}}</div>
+            <div id="guide-tree" class="tree-shown hide">{{#if guideJson}}{{#each guideJson}}{{> treeNodePartial}}{{/each}}{{/if}}</div>
         </div>
     </div>
     <div id="product-tree-ct" class="hide">
@@ -88,7 +88,7 @@
             <a href="{{homePath}}index.html">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</a>
             <span class="fa fa-chevron-circle-down product-menu-btn"></span>
         </h2>
-        <div id="product-tree"></div>
+        <div id="product-tree">{{#each productMapJson}}{{> treeNodePartial}}{{/each}}</div>
         <div class="product-tree-header">
             Product Menu
         </div>
@@ -128,14 +128,14 @@
         pversion = '{{pversion}}';
 </script>
 {{#if hasApi}}
-    <script type="text/javascript" src="{{jsPath}}tree.js"></script>
+    {{!-- <script type="text/javascript" src="{{jsPath}}tree.js"></script> --}}
     <script type="text/javascript" src="{{jsPath}}searchIndex.js"></script>
 {{/if}}
 {{#if hasGuides}}
-<script type="text/javascript" src="{{jsPath}}guide-tree.js"></script>
-<script type="text/javascript" src="{{jsPath}}guideSearch.js"></script>
+    {{!-- <script type="text/javascript" src="{{jsPath}}guide-tree.js"></script> --}}
+    <script type="text/javascript" src="{{jsPath}}guideSearch.js"></script>
 {{/if}}
-<script type="text/javascript" src="{{jsPath}}product-map.js"></script>
+{{!-- <script type="text/javascript" src="{{jsPath}}product-map.js"></script> --}}
 <script type="text/javascript" src="{{jsPath}}ace.js"></script>
 <script type="text/javascript" src="{{jsPath}}app.js"></script>
 

@@ -38,11 +38,14 @@ a > img{
 pre {
     padding: 15px 30px;
     margin-left: 12px;
+    margin-top: 40px;
     background-color: #f5f5f5;
     border: 1px solid #024059;
     line-height: 16px;
-    max-height: 500px;
-    overflow: auto;
+    /*max-height: 500px;*/
+    /*overflow: auto;*/
+    overflow: visible;
+    position: relative;
     transform: translateZ(0);
 }
 
@@ -442,6 +445,97 @@ h3.detail-header {
 
 .hide-tab {
     display: none !important;
+}
+
+.expand-code,
+.collapse-code {
+    display: inline-block;
+    background-color: transparent;
+    border: 1px solid #025B80;
+    color: #025B80;
+    padding: 2px 10px 2px 22px;
+    border-radius: 3px;
+    font-weight: bold;
+    position: relative;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 26px;
+}
+
+pre .code-controls {
+    position: absolute;
+    top: -36px;
+    left: 0;
+}
+
+.expand-code:hover,
+.collapse-code:hover,
+.expand-code:hover:before,
+.collapse-code:hover:before {
+    color: #1E97CA;
+    border-color: #1E97CA;
+}
+
+.expand-code:before,
+.collapse-code:before {
+    font-family: FontAwesome;
+    color: #025B80;
+    position: absolute;
+    left: 6px;
+    top: 2px;
+}
+
+.expand-code:before {
+    content: '\f107';
+}
+
+.collapse-code:before {
+    content: '\f106';
+}
+
+.expand-code {
+    display: none;
+}
+
+.collapse-code-all #toggleExamples {
+    background-color: #1E97CA;
+}
+
+#toggleExamples:hover {
+    background-color: #46BAEC;
+}
+
+.collapse-code-all .da-inline-code-wrap,
+.collapse-code-all pre {
+    height: 0;
+    margin: 4px 0;
+    padding: 0;
+    padding-bottom: 30px;
+    overflow: visible;
+    background: none;
+    border-width: 0;
+}
+
+.collapse-code-all .classmembers .da-inline-code-wrap,
+.collapse-code-all .classmembers pre {
+    margin: 4px 12px;
+}
+
+.collapse-code-all .da-inline-code-wrap > *,
+.collapse-code-all pre > * {
+    display: none;
+}
+
+.collapse-code-all .code-controls {
+    display: block;
+}
+
+.collapse-code-all .collapse-code {
+    display: none;
+}
+
+.collapse-code-all .expand-code {
+    display: inline-block;
 }
 
 .filtered .be-hidden,
@@ -1173,7 +1267,7 @@ span.singleton {
 
 .da-inline-code-wrap,
 .da-inline-code-wrap-fiddle {
-    height: 400px;
+    height: 440px;
     width: auto;
     position: relative;
     margin-top: 20px;
@@ -1184,7 +1278,7 @@ span.singleton {
 
 .ace_editor {
     border: 1px solid #d0d0d0;
-    height: 100%;
+    height: 408px;
     width: auto;
     z-index: 0;
 }
@@ -1199,13 +1293,19 @@ span.singleton {
     position: relative;
 }
 .da-inline-fiddle-nav-fiddle .fa-play-circle,
-.da-inline-fiddle-nav-fiddle .fa-refresh {
+.da-inline-fiddle-nav-fiddle .fa-refresh,
+.da-inline-fiddle-nav-code .fa-code {
     color: #33A0D0;
     font-size: 17px;
 }
 .da-inline-fiddle-nav-fiddle.da-inline-fiddle-nav-active .fa-play-circle,
-.da-inline-fiddle-nav-fiddle.da-inline-fiddle-nav-active .fa-refresh {
+.da-inline-fiddle-nav-fiddle.da-inline-fiddle-nav-active .fa-refresh,
+.da-inline-fiddle-nav-code.da-inline-fiddle-nav-active .fa-code {
     color: white;
+}
+.da-inline-fiddle-nav-code .fa-code {
+    vertical-align: text-bottom;
+    margin-right: 4px;
 }
 .fiddle-icon-wrap {
     overflow: hidden;
@@ -1947,7 +2047,8 @@ img.social {
     font-weight:300;
 }
 
-#toggleAll {
+#toggleAll,
+#toggleExamples {
     font-size: 13px;
     background: #025b80;
     text-decoration: none;
@@ -1960,7 +2061,12 @@ img.social {
     padding: 5px 6px;
 }
 
-#toggleAll:before {
+#toggleExamples {
+    padding: 5px 4px;
+}
+
+#toggleAll:before,
+#toggleExamples:before {
     color: white;
 }
 
@@ -2239,7 +2345,7 @@ input[type="search"] {
     }
     .memberFilter input {
         height: 20px;
-        width: 200px;
+        width: 168px;
         margin-top: 5px;
 
     }
@@ -2550,10 +2656,15 @@ input[type="search"] {
         left: 100%;
     }
 
-    #toggleAll {
+    #toggleAll,
+    #toggleExamples {
         padding: 6px 8px;
         margin-top: 6px;
         font-size: 15px;
+    }
+
+    #toggleExamples {
+        padding: 6px;
     }
  }
 
@@ -2565,6 +2676,9 @@ input[type="search"] {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #014D6C;
+}
+.fa-code:before {
+    content: '\f121';
 }
 .fa-refresh:before {
     content: '\f021';

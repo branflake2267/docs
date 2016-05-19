@@ -53,6 +53,21 @@
 
     document.body.className += ' ' + getOS()
 </script>
+<script type="text/javascript">
+var ExtL = ExtL || {},
+    specificId = '{{specificId}}',
+    {{#if fiddleId}}fiddleId = {{fiddleId}},{{/if}}
+    isClassTemplate = {{#if isApi}}true{{else}}false{{/if}},
+    isHome = {{#if isHome}}true{{else}}false{{/if}},
+    isLanding = {{#if isLanding}}true{{else}}false{{/if}},
+    isApi = {{#if isApi}}true{{else}}false{{/if}},
+    isGuide = {{#if isGuide}}true{{else}}false{{/if}},
+    homePath = '{{homePath}}',
+    product = '{{product}}',
+    pversion = '{{pversion}}';
+</script>
+<script type="text/javascript" src="{{jsPath}}ace.js"></script>
+<script type="text/javascript" src="{{jsPath}}app.js"></script>
 <div id="header">
     <div class="logo">
         <a href="http://docs.sencha.com"><img height="32" src="{{imagePath}}sencha_logo_thumb.png"/></a>
@@ -76,7 +91,7 @@
     </h2>
 </div>
 <div id="centerContent">
-    <div id="class-tree-ct" class="class-tree tree-hidden">
+    <div id="class-tree-ct" class="class-tree">
         <h2 class="product-header">
             <div class="logo">
                 <a href="http://docs.sencha.com"><img src="{{imagePath}}sencha_logo1x.png"/></a>
@@ -94,8 +109,8 @@
             <div id="hide-class-tree"></div>
         </div>
         <div id="tree-scroller">
-            <div id="tree" class="tree-shown">{{#if apiJson}}{{#each apiJson}}{{> treeNodePartial}}{{/each}}{{/if}}</div>
-            <div id="guide-tree" class="tree-shown hide">{{#if guideJson}}{{#each guideJson}}{{> treeNodePartial}}{{/each}}{{/if}}</div>
+            <div id="tree">{{#if apiJson}}{{#each apiJson}}{{> treeNodePartial}}{{/each}}{{/if}}</div>
+            <div id="guide-tree" class="hide">{{#if guideJson}}{{#each guideJson}}{{> treeNodePartial}}{{/each}}{{/if}}</div>
         </div>
     </div>
     <div id="product-tree-ct" class="hide">
@@ -113,7 +128,7 @@
         <span id="product-tree-close-btn" class="fa fa-times"></span>
     </div>
     <a href="#" id="back-to-top">top </a>
-    <div id="rightMembers" class="show-public show-protected show-private show-inherited tree-hidden">
+    <div id="rightMembers" class="show-public show-protected show-private show-inherited show-private">
         {{#isHome}}
             <div class="context-menu-ct">
                 <div class="context-header">
@@ -134,28 +149,12 @@
     </div>
 </div>
 </body>
-<script type="text/javascript">
-    var ExtL   = ExtL || {},
-        specificId = '{{specificId}}',
-        {{#if fiddleId}}fiddleId = {{fiddleId}},{{/if}}
-        isClassTemplate = {{#if isApi}}true{{else}}false{{/if}},
-        isHome = {{#if isHome}}true{{else}}false{{/if}},
-        isLanding = {{#if isLanding}}true{{else}}false{{/if}},
-        isApi = {{#if isApi}}true{{else}}false{{/if}},
-        isGuide = {{#if isGuide}}true{{else}}false{{/if}},
-        homePath = '{{homePath}}',
-        product = '{{product}}',
-        pversion = '{{pversion}}';
-</script>
 {{#if hasApi}}
     <script type="text/javascript" src="{{jsPath}}searchIndex.js"></script>
 {{/if}}
 {{#if hasGuides}}
     <script type="text/javascript" src="{{jsPath}}guideSearch.js"></script>
 {{/if}}
-{{!-- <script type="text/javascript" src="{{jsPath}}product-map.js"></script> --}}
-<script type="text/javascript" src="{{jsPath}}ace.js"></script>
-<script type="text/javascript" src="{{jsPath}}app.js"></script>
 <!--[if lt IE 9 ]>
 <script type="text/javascript" src="{{jsPath}}media-query-poly.js"></script>
 <style>

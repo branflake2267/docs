@@ -52,8 +52,15 @@
         }
     }
 
-    document.body.className += ' ' + getOS()
+    var isIE8 = false;
+
+    document.body.className += ' ' + getOS();
 </script>
+<!--[if IE 8]>
+<script type='text/javascript'>
+    isIE8 = true;
+</script>
+<![endif]-->
 <script type="text/javascript">
 var ExtL = ExtL || {},
     specificId = '{{specificId}}',
@@ -67,7 +74,7 @@ var ExtL = ExtL || {},
     product = '{{product}}',
     pversion = '{{pversion}}';
 
-    if (!ExtL.isIE8) {
+    if (!isIE8) {
         document.write('<script type=\"text/javascript\" src=\"{{jsPath}}prism.js\"><\/script>');
     }
 </script>

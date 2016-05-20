@@ -1,10 +1,19 @@
 <div class="tree-leaf tree-member{{#access}}-{{{.}}}{{/access}}">
     <div class="tree-leaf-content{{#if leaf}} isLeaf{{/if}}" id="{{#if leaf}}node{{else}}branch{{/if}}-{{elIdSlug}}" isLeaf="{{leaf}}">
         <span class="tree-expando{{#if leaf}} hidden{{/if}}">▸</span>
-        {{#if children}}
+        {{!-- {{#if children}}
             <span class="folder-type"></span>
         {{else}}
             <span class="{{#if type}}{{type}}{{else}}class{{/if}}-type"></span>
+        {{/if}} --}}
+        {{#if isSingleton}}
+            <span class="singleton-type"></span>
+        {{else}}
+            {{#if children}}
+                <span class="folder-type"></span>
+            {{else}}
+                <span class="{{#if type}}{{type}}{{else}}class{{/if}}-type"></span>
+            {{/if}}
         {{/if}}
         <a class="tree-leaf-text"{{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
     </div>

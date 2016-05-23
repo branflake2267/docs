@@ -368,7 +368,7 @@ class Diff {
             oldAllClasses  = JSON.parse(fs.readFileSync(targets[1], 'utf8')).global.items,
             newVersion     = options.new,
             oldVersion     = options.old,
-            outputDir      = options.destination,
+            outputDir      = options.destination || './output',
             i              = 0,
             length         = newAllClasses.length,
             addedOutput    = [],

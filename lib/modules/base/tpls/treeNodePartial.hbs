@@ -15,7 +15,15 @@
                 <span class="{{#if type}}{{type}}{{else}}class{{/if}}-type"></span>
             {{/if}}
         {{/if}}
-        <a class="tree-leaf-text"{{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
+        {{#if compound}}
+            <span class="tree-leaf-text">{{{name}}}
+                {{#toolkits}}
+                    <a {{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
+                {{/toolkits}}
+            </span>
+        {{else}}
+            <a class="tree-leaf-text"{{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
+        {{/if}}
     </div>
     {{#if children}}
         <div class="tree-child-leaves hidden">

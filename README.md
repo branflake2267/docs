@@ -3,28 +3,6 @@ Home for new Sencha Documentation
 
 ## Setup
 
-### Install Node Dependencies
-You'll need the following node modules to utilize the docs software.  
-
-    npm install argv
-    npm install jsdom
-    npm install junk
-    npm install mkdirp
-    npm install node-minify
-    npm install handlebars
-    npm install swag
-    npm install util
-    npm install wrench
-    npm install node-gyp
-    npm install highlights
-    npm install xmlbuilder
-    npm install lodash@3.10.1
-    npm install natural
-    npm install event-stream
-    npm install underscore.string
-    npm install html-entities
-    npm install shelljs
-
 ### Clone Docs Repository
 Clone this repository to your machine
 

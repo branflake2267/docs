@@ -575,10 +575,6 @@ h3.detail-header {
     background-color: #1E97CA;
 }
 
-#toggleExamples:hover {
-    background-color: #46BAEC;
-}
-
 .code-controls {
     background-color: #7F7F7F;
     color: white;
@@ -838,8 +834,11 @@ h3.detail-header {
     /*display: none !important;*/
 }
 
-.is-landing .product-menu-btn {
-    display: none !important;
+.is-landing #class-tree-ct {
+    display: none;
+}
+.is-landing #rightMembers {
+    left: 0;
 }
 
 #tree-header.pre-load > div {
@@ -2350,8 +2349,9 @@ img.social {
 }
 
 #toggleAll,
-#toggleExamples {
-    font-size: 13px;
+#toggleExamples,
+.toggle-tree {
+    font-size: 13px !important;
     background: #025b80;
     text-decoration: none;
     float:right;
@@ -2360,10 +2360,13 @@ img.social {
     border-radius: 2px;
     min-width: 10px;
     text-align: center;
-    padding: 5px 6px;
     position: relative;
     overflow: hidden;
     z-index: 0;
+}
+
+#toggleAll {
+    padding: 5px 6px;
 }
 
 #toggleExamples {
@@ -2377,22 +2380,33 @@ img.social {
 }
 
 #toggleAll:before,
-#toggleExamples:before {
+#toggleExamples:before,
+.toggle-tree:before {
     color: white;
+    font-size: 13px;
+    line-height: 13px;
 }
 
-#toggleAll:hover {
+#toggleAll:hover,
+.toggle-tree:hover {
     background: #0A8CC6;
     text-decoration: none;
     overflow: visible;
+    z-index: 1;
+}
+#toggleExamples:hover,
+.toggle-tree:hover {
+    overflow: visible;
 }
 #toggleExamples:hover {
-    overflow: visible;
+    background-color: #46BAEC;
+    z-index: 1;
 }
 
 #toggleAll.fa-plus:after,
 #toggleAll.fa-minus:after,
 #toggleExamples:after,
+.toggle-tree:after,
 .fiddle-code-beautify:after {
     position: absolute;
     top: 29px;
@@ -2423,13 +2437,32 @@ img.social {
     content: attr(data-collapse);
 }
 
+.toggle-tree {
+    padding: 5px 6px;
+    position: absolute;
+    top: 7px;
+    right: 7px;
+}
+
+.toggle-tree:after {
+    content: attr(data-expand);
+}
+
+.is-expanded .toggle-tree:before {
+    content: "\f068";
+}
+.is-expanded .toggle-tree:after {
+    content: attr(data-collapse);
+}
+
 .collapse-code-all #toggleExamples:after {
     content: attr(data-expand);
 }
 
 #toggleAll div:after,
 #toggleExamples div:after,
-.fiddle-code-beautify div:after {
+.fiddle-code-beautify div:after,
+.toggle-tree div:after {
     content: '';
     width: 0;
     height: 0;
@@ -2448,7 +2481,9 @@ img.social {
 #toggleAll:hover:after,
 #toggleExamples:hover div:after,
 #toggleExamples:hover:after,
-.fiddle-code-beautify:hover div:after {
+.fiddle-code-beautify:hover div:after,
+.toggle-tree:hover div:after,
+.toggle-tree:hover:after {
     display: block;
 }
 
@@ -3126,6 +3161,13 @@ input[type="search"] {
 .fa-search:before {
     content: "\f002";
 }
+.fa-expand:before {
+    content: "\f065";
+}
+.fa-compress:before {
+    content: "\f066";
+}
+
 
 /** Custom FA Classes **/
 .first {

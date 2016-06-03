@@ -6,15 +6,13 @@
             <a href="#{{$type}}-{{name}}" class="member-name-link"><span data-ref="{{$type}}-{{name}}" class="member-name">{{{name}}}</span></a>
             {{#if hasParams}}<span class="params-list"> (
 
-            {{#items}}
-                {{#is $type "param"}}
-                    {{#unless @first}}, {{/unless}}
-                    {{{name}}}
-                    {{#if @last}}
-                        {{#is ../$type "event"}}, eOpts{{/is}}
-                    {{/if}}
-                {{/is}}
-            {{/items}}
+            {{#params}}
+                {{#unless @first}}, {{/unless}}
+                {{#if optional}}[{{/if}}{{{name}}}{{#if optional}}]{{/if}}
+                {{#if @last}}
+                    {{#is ../$type "event"}}, eOpts{{/is}}
+                {{/if}}
+            {{/params}}
 
                 )</span>
             {{/if}}
@@ -99,7 +97,7 @@
                     {{else}}
                         <span class="memberType">&nbsp;Object</span>
                     {{/if}}
-
+                    {{#if optional}}<i class="memberType">(optional)</i>{{/if}}
                 </p>
                 <div class="params-desc">{{{text}}}</div>
             {{/is}}

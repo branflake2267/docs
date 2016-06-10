@@ -70,9 +70,10 @@
                     <span class="abstract full-flag">abstract</span>
                     <span class="abstract mini-flag">abs</span>
                 {{/abstract}}
-                {{#access}}
-                    <span class="{{{.}}}">{{{.}}}</span>
-                {{/access}}
+                {{#if access}}
+                    <span class="{{{access}}} full-flag">{{{access}}}</span>
+                    <span class="{{{access}}} mini-flag">{{accessMini}}</span>
+                {{/if}}
             </div>
         </h2></a>
 
@@ -83,7 +84,7 @@
             <p class="defaults-to-dec">Defaults to: {{{value}}}</p>
         {{/exists}}
         {{#since}}
-            <p class="since-dec">Available since: {{{.}}}</p>
+            <p class="since-dec">Available since: <b>{{{.}}}</b></p>
         {{/since}}
         {{#items}}
             {{#is $type "param"}}
@@ -120,7 +121,7 @@
             {{#if @last}}
 
                 {{#is ../$type "event"}}
-                    <p>eOpts : <span class="memberType"><a href="Object.html">Object</a></span></p>
+                    <p><span class="params-list">eOpts</span> : <span class="memberType"><a href="Object.html">Object</a></span></p>
                     <p>The options object passed to <a href="Ext.util.Observable.html">Ext.util.Observable.addListener</a>.</p>
                 {{/is}}
             {{/if}}

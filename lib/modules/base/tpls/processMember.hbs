@@ -101,6 +101,9 @@
                     {{#if optional}}<i class="memberType">(optional)</i>{{/if}}
                 </p>
                 <div class="params-desc">{{{text}}}</div>
+                {{#exists value}}
+                    <p class="defaults-to-dec">Defaults to: {{{value}}}</p>
+                {{/exists}}
             {{/is}}
 
             {{#is $type "property"}}
@@ -110,6 +113,9 @@
 
                 <p><span class="params-list">{{{name}}}</span> : <span class="memberType">{{{type}}}</span></p>
                 <p>{{{text}}}</p>
+                {{#exists value}}
+                    <p class="defaults-to-dec">Defaults to: {{{value}}}</p>
+                {{/exists}}
             {{/is}}
 
             {{#is $type "return"}}
@@ -126,9 +132,9 @@
                 {{/is}}
             {{/if}}
         {{/items}}
-        {{#deprecatedMessage}}
-            <p class="deprecated-dec">Deprecated: {{{.}}}</p>
-        {{/deprecatedMessage}}
+        {{#if deprecatedMessage}}
+            <p class="deprecated-dec">Deprecated{{#if deprecatedVersion}}: {{deprecatedVersion}}{{/if}}<br>{{{deprecatedMessage}}}</p>
+        {{/if}}
         {{#preventable}}
             <p class="preventable-dec">This action following this event is preventable. When any
                 of the listeners returns false, the action is cancelled.</p>

@@ -86,12 +86,9 @@
         {{#since}}
             <p class="since-dec">Available since: <b>{{{.}}}</b></p>
         {{/since}}
-        {{#items}}
-            {{#is $type "param"}}
-                {{#if @first}}
-                    <h3 class="detail-header">Parameters</h3>
-                {{/if}}
-
+        {{#if hasParams}}
+            <h3 class="detail-header">Parameters</h3>
+            {{#params}}
                 <p><span class="params-list" id="{{../$type}}-{{../name}}--{{name}}">{{{name}}}</span> :
                     {{#if type}}
                         <span class="memberType">&nbsp;{{{type}}}</span>
@@ -108,13 +105,19 @@
                 {{#if items}}
                     {{> subParamsPartial}}
                 {{/if}}
-            {{/is}}
 
-            {{#is $type "property"}}
-                {{#unless @index}}
-                    <h3 class="detail-header">Properties</h3>
-                {{/unless}}
+                {{#if @last}}
 
+                    {{#is ../$type "event"}}
+                        <p><span class="params-list">eOpts</span> : <span class="memberType"><a href="Object.html">Object</a></span></p>
+                        <p>The options object passed to <a href="Ext.util.Observable.html">Ext.util.Observable.addListener</a>.</p>
+                    {{/is}}
+                {{/if}}
+            {{/params}}
+        {{/if}}
+        {{#if hasProperties}}
+            <h3 class="detail-header">Properties</h3>
+            {{#properties}}
                 <p><span class="params-list">{{{name}}}</span> : <span class="memberType">{{{type}}}</span></p>
                 <p>{{{text}}}</p>
                 {{#exists value}}
@@ -124,26 +127,19 @@
                 {{#if items}}
                     {{> subParamsPartial}}
                 {{/if}}
-            {{/is}}
-
-            {{#is $type "return"}}
-                <h3 class="detail-header">Returns</h3>
+            {{/properties}}
+        {{/if}}
+        {{#if hasReturns}}
+            <h3 class="detail-header">Returns</h3>
+            {{#returns}}
                 <span style="margin-left:12px;" class="memberType">{{{type}}}</span>
                 <div class="return-desc">{{{text}}}</div>
 
                 {{#if items}}
                     {{> subParamsPartial}}
                 {{/if}}
-            {{/is}}
-
-            {{#if @last}}
-
-                {{#is ../$type "event"}}
-                    <p><span class="params-list">eOpts</span> : <span class="memberType"><a href="Object.html">Object</a></span></p>
-                    <p>The options object passed to <a href="Ext.util.Observable.html">Ext.util.Observable.addListener</a>.</p>
-                {{/is}}
-            {{/if}}
-        {{/items}}
+            {{/returns}}
+        {{/if}}
         {{#if deprecatedMessage}}
             <p class="deprecated-dec">Deprecated{{#if deprecatedVersion}}: {{deprecatedVersion}}{{/if}}<br>{{{deprecatedMessage}}}</p>
         {{/if}}

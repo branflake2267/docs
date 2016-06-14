@@ -39,8 +39,8 @@ pre {
     padding: 15px 30px;
     margin-left: 12px;
     margin-top: 17px;
-    background-color: #f5f5f5;
-    border: 1px solid #7F7F7F;
+    background-color: #f5f5f5 !important;
+    border: 2px solid #e4e4e4;
     line-height: 16px;
     overflow: hidden;
     position: relative;
@@ -554,20 +554,27 @@ h3.detail-header {
 .expand-tool,
 .collapse-tool {
     display: inline-block;
-    background-color: #7F7F7F;
+    background-color: #bdbdbd;
     border-radius: 3px;
     font-weight: bold;
     position: relative;
     cursor: pointer;
     padding: 8px;
     vertical-align: middle;
-    margin: -3px 7px 0 7px;
+    /* margin: -3px 7px 0 7px; */
     line-height: 1;
+    position: absolute;
+    /* overflow: visible; */
+    top: 2px;
+    right: 2px;
+    height: 11px;
+    width: 11px;
+    z-index: 1;
 }
 
 .expand-tool:hover,
 .collapse-tool:hover {
-    background-color: #5A5A5A;
+    background-color: #8e8e8e;
 }
 
 .expand-tool:before,
@@ -578,7 +585,7 @@ h3.detail-header {
     top: 50%;
     left: 50%;
     margin-left: -4px;
-    margin-top: -7px;
+    margin-top: -8px;
 }
 
 .expand-tool:before {
@@ -599,14 +606,20 @@ h3.detail-header {
     background-color: #1E97CA;
 }
 
+.code-snippet-wrap {
+    overflow: hidden;
+}
 .code-controls {
-    background-color: #7F7F7F;
-    color: white;
+    background-color: #f3f3f3;
+    color: #555555;
     margin-left: 12px;
     margin-top: 8px;
     font-weight: bold;
-    line-height: 28px;
+    line-height: 27px;
     overflow: hidden;
+    height: 0;
+    position: relative;
+    overflow: visible;
 }
 
 .code-controls + pre {
@@ -622,15 +635,18 @@ h3.detail-header {
     background-color: transparent;
     margin: 0;
     color: #4A4A4A;
+    padding-top: 9px;
 }
 
 .da-inline-code-wrap-fiddle .expand-tool,
 .da-inline-code-wrap-fiddle .collapse-tool {
-    margin-right: 12px;
+    margin-right: 8px;
     background-color: transparent;
     font-size: 20px;
     line-height: 20px;
     padding: 12px;
+    position: relative;
+    margin-top: -16px;
 }
 
 .da-inline-code-wrap-fiddle .expand-tool {
@@ -638,7 +654,8 @@ h3.detail-header {
 }
 
 .da-inline-code-wrap-fiddle .collapse-tool {
-    margin-bottom: -15px;
+    margin-top: -8px;
+    margin-left: 2px;
 }
 
 .da-inline-code-wrap-fiddle .expand-tool:before,
@@ -656,6 +673,22 @@ h3.detail-header {
 .da-inline-code-wrap-fiddle .expand-tool:hover:before,
 .da-inline-code-wrap-fiddle .collapse-tool:hover:before {
     color: #1E97CC;
+}
+
+/*.da-inline-code-wrap-fiddle.example-collapsed .expand tool {
+    margin-top: 3px;
+}*/
+
+.da-inline-code-wrap-fiddle.example-collapsed .da-inline-fiddle-nav {
+    padding: 0px 0px 1px 4px;
+}
+.da-inline-code-wrap-fiddle.example-collapsed .code-controls {
+    padding: 0;
+}
+.da-inline-code-wrap-fiddle.example-collapsed .expand-tool {
+    top: 0px;
+    margin-top: -7px;
+    padding: 7px 12px;
 }
 
 .example-collapsed.da-inline-code-wrap-fiddle {
@@ -678,10 +711,15 @@ h3.detail-header {
 .example-collapsed .expand-tool,
 .example-collapsed .expand-code {
     display: inline-block;
+    top: 0;
+    right: 0;
 }
 
 .example-collapsed.code-controls {
     margin-bottom: 8px;
+    height: auto;
+    padding-left: 12px;
+    border: 2px solid #e4e4e4;
 }
 
 .filtered .be-hidden,

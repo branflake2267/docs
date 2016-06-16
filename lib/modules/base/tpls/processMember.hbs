@@ -5,14 +5,17 @@
         <h2 class="member-header">
             <a href="#{{$type}}-{{name}}" class="member-name-link"><span data-ref="{{$type}}-{{name}}" class="member-name">{{{name}}}</span></a>
             {{#if hasParams}}<span class="params-list"> (
-
-            {{#params}}
-                {{#unless @first}}, {{/unless}}
-                {{#if optional}}[{{/if}}{{{name}}}{{#if optional}}]{{/if}}
-                {{#if @last}}
-                    {{#is ../$type "event"}}, eOpts{{/is}}
-                {{/if}}
-            {{/params}}
+                {{#is $type "css_mixin"}}
+                    ...list...
+                {{else}}
+                    {{#params}}
+                        {{#unless @first}}, {{/unless}}
+                        {{#if optional}}[{{/if}}{{{name}}}{{#if optional}}]{{/if}}
+                        {{#if @last}}
+                            {{#is ../$type "event"}}, eOpts{{/is}}
+                        {{/if}}
+                    {{/params}}
+                {{/is}}
 
                 )</span>
             {{/if}}

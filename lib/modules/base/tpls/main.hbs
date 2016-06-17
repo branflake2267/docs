@@ -52,7 +52,22 @@
             }
         }
 
-        var isIE8 = false;
+        var hash = document.location.hash,
+                rawhash, newhash, prop, member,
+                isIE8 = false;
+
+        if(hash.indexOf('#!') > -1) {
+            hash    = hash.replace('#!/api/','');
+            rawhash = hash.split('-'),
+            prop    = (rawhash[1] == 'static') ? rawhash[2] : rawhash[1],
+            member  = (rawhash[1] == 'static') ? rawhash[3] : rawhash[2];
+
+            newhash = rawhash[0] + '.html#' + prop + '-' + member;
+
+            if (rawhash[0] && prop && member) {
+                document.location.href = newhash;
+            }
+        }
 
         document.body.className += ' ' + getOS();
     </script>

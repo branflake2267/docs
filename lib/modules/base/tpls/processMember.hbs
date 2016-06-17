@@ -4,7 +4,7 @@
         <div class="source-class"><a href="{{srcClass}}.html">{{srcClass}}{{{srcLink}}}</a></div>
         <h2 class="member-header">
             <a href="#{{$type}}-{{name}}" class="member-name-link"><span data-ref="{{$type}}-{{name}}" class="member-name">{{{name}}}</span></a>
-            {{#if hasParams}}<span class="params-list"> (
+            {{#if listParams}}<span class="params-list"> (
                 {{#is $type "css_mixin"}}
                     ...list...
                 {{else}}
@@ -20,11 +20,13 @@
                 )</span>
             {{/if}}
 
-            {{#items}}
-                {{#is $type "return"}}
-                    : <span class="memberType">{{{type}}}</span>
-                {{/is}}
-            {{/items}}
+            {{#if listReturn}}
+                :
+                {{#returns}}
+                    <span class="memberType">{{{type}}}</span>
+                {{/returns}}
+            {{/if}}
+
             {{#type}}
                 : <span class="memberType">{{{.}}}</span>
             {{/type}}
@@ -132,7 +134,7 @@
                 {{/if}}
             {{/properties}}
         {{/if}}
-        {{#if hasReturns}}
+        {{#if hasReturn}}
             <h3 class="detail-header">Returns</h3>
             {{#returns}}
                 <span style="margin-left:12px;" class="memberType">{{{type}}}</span>

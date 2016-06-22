@@ -60,13 +60,14 @@
             hash    = hash.replace('#!/api/','');
             rawhash = hash.split('-'),
             prop    = (rawhash[1] == 'static') ? rawhash[2] : rawhash[1],
-            member  = (rawhash[1] == 'static') ? rawhash[3] : rawhash[2];
+            member  = (rawhash[1] == 'static') ? rawhash[3] : rawhash[2],
+            newhash = rawhash[0] + '.html';
 
-            newhash = rawhash[0] + '.html#' + prop + '-' + member;
-
-            if (rawhash[0] && prop && member) {
-                document.location.href = newhash;
+            if (prop && member) {
+                newhash += '#' + prop + '-' + member;
             }
+
+            document.location.href = newhash;
         }
 
         document.body.className += ' ' + getOS();

@@ -40,7 +40,7 @@
         {{{.}}}
     {{/headhtml}}
 </head>
-<body class="{{#isHome}}is-home{{/isHome}}{{#isGuide}} is-guide{{/isGuide}}{{#isApi}} is-api{{/isApi}}{{#isLanding}} is-landing{{/isLanding}} {{#if hasGuides}} has-guides{{/if}} {{#if hasApi}} has-api{{/if}}">
+<body class="{{#isHome}}is-home{{/isHome}}{{#isGuide}} is-guide{{/isGuide}}{{#isApi}} is-api{{/isApi}}{{#isLanding}} is-landing{{/isLanding}} {{#if hasGuides}} has-guides{{/if}} {{#if quickStartJson}} has-quick-start{{/if}} {{#if hasApi}} has-api{{/if}}">
     <script type="text/javascript">
         function getOS() {
             var userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -88,6 +88,7 @@
             isGuide = {{#if isGuide}}true{{else}}false{{/if}},
             hasApi = {{#if hasApi}}true{{else}}false{{/if}},
             hasGuides = {{#if hasGuides}}true{{else}}false{{/if}},
+            hasQuickStart = {{#if quickStartJson}}true{{else}}false{{/if}}
             singleton = {{#if singleton}}true{{else}}false{{/if}},
             pageName = '{{name}}',
             pageTitle = '{{title}}',
@@ -137,6 +138,11 @@
                 <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn  tooltip tooltip-tl-bl"><div class="callout callout-b"></div></span>
             </h2>
             <div id="tree-header" class="pre-load">
+                {{#if quickStartJson}}
+                    <div id="quickStartTab" class="toolbarHeaderButton{{#isQuickStart}} active-tab{{/isQuickStart}}">
+                        Quick Start
+                    </div>
+                {{/if}}
                 <div id="guideTab" class="toolbarHeaderButton{{#isGuide}} active-tab{{/isGuide}}">
                     Guides
                 </div>
@@ -154,6 +160,11 @@
                     {{#if guideJson}}{{#each guideJson}}{{> treeNodePartial}}{{/each}}{{/if}}
                     <div class="fa fa-plus toggle-tree hide tooltip tooltip-tr-br" data-expand="Expand All Guides" data-collapse="Collapse All Guides"><div class="callout callout-b"></div></div>
                 </div>
+                {{#if quickStartJson}}
+                    <div id="quick-start-tree" class="hide is-tree">
+                        {{#each quickStartJson}}{{> quickStartPartial}}{{/each}}
+                    </div>
+                {{/if}}
             </div>
         </div>
         <a href="#" id="back-to-top">top </a>

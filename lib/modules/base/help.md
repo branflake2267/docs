@@ -188,6 +188,25 @@ methods section as well as in the configs section of both the API doc and the me
 menus just beneath the config they work with.  The getter and setter method documentation 
 will be found in the config row for easy reference.
 
+### History Bar
+
+Your page history is kept in localstorage and displayed (using the available real estate) 
+just below the top title bar.  By default, the only search results shown are the pages 
+matching the product / version you're currently viewing.  You can expand what is 
+displayed by clicking on the <span class="icon-demo history-config"></span> button on the 
+right-hand side of the history bar and choosing the "All" radio option.  This will show 
+all recent pages in the history bar for all products / versions.
+
+Within the history config menu you will also see a listing of your recent page visits. 
+The results are filtered by the "Current Product / Version" and "All" radio options. 
+Clicking on the <span class="icon-demo history-clear"></span> button will clear the history bar as 
+well as the history kept in local storage.
+
+If "All" is selected in the history config menu the checkbox option for "Show product 
+details in the history bar" will be enabled.  When checked, the product/version for each 
+historic page will show alongside the page name in the history bar.  Hovering the cursor 
+over the page names in the history bar will also show the product/version as a tooltip.
+
 ### Search and Filters
 
 Both API docs and guides can be searched for using the search field at the top of the 
@@ -198,6 +217,8 @@ using the filter string.  In addition to filtering by string you can filter the 
 members by access level and inheritance.  This is done using the checkboxes at the top of 
 the page.  **Note** that filtering out `private` members also filters the API class 
 navigation tree.
+
+Clicking on an empty search field will show your last 10 searches for quick navigation.
 
 ### API Doc Class Metadata
 

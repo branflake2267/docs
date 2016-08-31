@@ -191,8 +191,9 @@ class Output {
                 obj.items[action].forEach(function(member) {
                     if (me.canDisplay(member)) {
                         let display = me._capitalize(action) + ' _' + member.name + '_ ' + member.$type;
-                        me.addObject(member, display, null, output, (indention + (indentInc*2)), true);
-                    } 
+                        //me.addObject(member, display, null, output, (indention + (indentInc*2)), true);
+                        me.addObject(member, display, null, output, (indention + (indentInc)), true);
+                    }
                 });
             }
         }

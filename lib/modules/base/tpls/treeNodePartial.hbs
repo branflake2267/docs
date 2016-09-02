@@ -1,5 +1,5 @@
 <div class="tree-leaf tree-member{{#access}}-{{{.}}}{{/access}}">
-    <div class="tree-leaf-content{{#if leaf}} isLeaf{{else}} isNotLeaf{{/if}}{{#if displayNew}} display-new{{/if}}" id="{{#if isSingleton}}singleton{{else}}{{#if leaf}}node{{else}}branch{{/if}}{{/if}}-{{elIdSlug}}" isLeaf="{{leaf}}">
+    <div class="tree-leaf-content{{#if leaf}} isLeaf{{else}} isNotLeaf{{/if}}{{#if displayNew}} display-new{{/if}} {{#if guideTlkit}}{{guideTlkit}}-decoration{{/if}}" id="{{#if isSingleton}}singleton{{else}}{{#if leaf}}node{{else}}branch{{/if}}{{/if}}-{{elIdSlug}}" isLeaf="{{leaf}}">
         <span class="tree-expando{{#if leaf}} hidden{{/if}}">▸</span>
         {{#if isSingleton}}
             <span class="singleton-type"></span>
@@ -7,7 +7,11 @@
             {{#if children}}
                 <span class="folder-type"></span>
             {{else}}
-                <span class="{{#if type}}{{type}}{{else}}class{{/if}}-type"></span>
+                {{#if guideTlkit}}
+                    <span class="{{guideTlkit}}-guide guide"></span>
+                {{else}}
+                    <span class="{{#if type}}{{type}}{{else}}class{{/if}}-type"></span>
+                {{/if}}
             {{/if}}
         {{/if}}
         {{#if compound}}

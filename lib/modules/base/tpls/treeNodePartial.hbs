@@ -1,5 +1,5 @@
 <div class="tree-leaf tree-member{{#access}}-{{{.}}}{{/access}}">
-    <div class="tree-leaf-content{{#if leaf}} isLeaf{{else}} isNotLeaf{{/if}}{{#if displayNew}} display-new{{/if}} {{#if guideTlkit}}{{guideTlkit}}-decoration{{/if}}" id="{{#if isSingleton}}singleton{{else}}{{#if leaf}}node{{else}}branch{{/if}}{{/if}}-{{elIdSlug}}" isLeaf="{{leaf}}">
+    <{{#if preparedHref}}a href="{{preparedHref}}"{{else}}div{{/if}} class="tree-leaf-content{{#if leaf}} isLeaf{{else}} isNotLeaf{{/if}}{{#if displayNew}} display-new{{/if}} {{#if guideTlkit}}{{guideTlkit}}-decoration{{/if}}" id="{{#if isSingleton}}singleton{{else}}{{#if leaf}}node{{else}}branch{{/if}}{{/if}}-{{elIdSlug}}" isLeaf="{{leaf}}">
         <span class="tree-expando{{#if leaf}} hidden{{/if}}">▸</span>
         {{#if isSingleton}}
             <span class="singleton-type"></span>
@@ -21,9 +21,9 @@
                 {{/toolkits}}
             </span>
         {{else}}
-            <a class="tree-leaf-text"{{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
+            <span class="tree-leaf-text">{{{name}}}</span>
         {{/if}}
-    </div>
+    </{{#if preparedHref}}a{{else}}div{{/if}}>
     {{#if children}}
         <div class="tree-child-leaves hidden">
             {{#each children}}

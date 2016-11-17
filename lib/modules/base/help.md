@@ -215,8 +215,10 @@ page.
 On API doc pages there is also a filter input field that filters the member rows 
 using the filter string.  In addition to filtering by string you can filter the class 
 members by access level and inheritance.  This is done using the checkboxes at the top of 
-the page.  **Note** that filtering out `private` members also filters the API class 
-navigation tree.
+the page.
+
+The checkbox at the bottom of the API class navigation tree filters the class list to 
+include or exclude private classes.
 
 Clicking on an empty search field will show your last 10 searches for quick navigation.
 

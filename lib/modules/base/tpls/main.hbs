@@ -106,26 +106,6 @@
     <script type="text/javascript" src="{{jsPath}}beautify.js"></script>
     <script type="text/javascript" src="{{jsPath}}app.js"></script>
     {{> helpPartial}}
-    <div id="header">
-        <div class="logo">
-            <a href="http://docs.sencha.com"><img height="32" src="{{imagePath}}sencha_logo_thumb.png"/></a>
-        </div>
-        <span id="mobile-main-nav-menu-btn" class="fa fa-bars"></span>
-        <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl landing-product-menu-btn"><div class="callout callout-b"></div></span>
-        {{#isApi}}
-            <a class="page-title {{classType}}" href="{{{fileName}}}" target="_blank">{{{name}}}</a>
-        {{/isApi}}
-        {{#isHome}}
-            <div class="page-title">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</div>
-        {{/isHome}}
-        {{#isGuide}}
-            <div class="page-title">{{{name}}}</div>
-        {{/isGuide}}
-        {{#if toolkitLink}}
-            <a class="toolkit-switch" href="{{toolkitLink}}">{{toolkit}} Toolkit</a>
-        {{/if}}
-        <span id="mobile-context-menu-btn" class="fa fa-cog"></span>
-    </div>
     <div id="centerContent">
         <div id="history-nav">
             <span id="history-config" class="history-config tooltip tooltip-tr-br" data-tip="Configure / Clear History"><div class="callout callout-b"></div></span>
@@ -201,6 +181,35 @@
             {{#if isApi}}{{> apiPartial}}{{/if}}
         </div>
     </div>
+
+    <div id="header">
+        <div class="logo">
+            <a href="http://docs.sencha.com"><img height="32" src="{{imagePath}}sencha_logo_thumb.png"/></a>
+        </div>
+        <span id="mobile-main-nav-menu-btn" class="fa fa-bars"></span>
+        <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl landing-product-menu-btn"><div class="callout callout-b"></div></span>
+        {{#isApi}}
+            {{#if multSrc}}
+                <span class="page-title {{classType}} multi-src-btn">
+                    {{{name}}}
+                </span>
+                <div class="multi-src-picker">{{#srcFiles}}<a href="{{{href}}}" target="_blank">{{{path}}}</a>{{/srcFiles}}</div>
+            {{else}}
+                <a class="page-title {{classType}}" href="{{{fileName}}}" target="_blank">{{{name}}}</a>
+            {{/if}}
+        {{/isApi}}
+        {{#isHome}}
+            <div class="page-title">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</div>
+        {{/isHome}}
+        {{#isGuide}}
+            <div class="page-title">{{{name}}}</div>
+        {{/isGuide}}
+        {{#if toolkitLink}}
+            <a class="toolkit-switch" href="{{toolkitLink}}">{{toolkit}} Toolkit</a>
+        {{/if}}
+        <span id="mobile-context-menu-btn" class="fa fa-cog"></span>
+    </div>
+
     <h2 class="product-header"><a href="{{homePath}}index.html">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</a>
         <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl"><div class="callout callout-b"></div></span>
         <div id="peekaboo-input" class="peekaboo-input">

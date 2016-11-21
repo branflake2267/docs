@@ -4,7 +4,15 @@
             <span class='{{{.}}}-icon'></span>
         {{/clsSpec}}
 
-        <h1 class='{{classType}}'><a href="{{{fileName}}}" target="_blank">{{{name}}}</a>
+        <h1 class='{{classType}}'>
+            {{#if multSrc}}
+                <span class="multi-src-btn">
+                    {{{name}}}
+                    <div class="multi-src-picker">{{#srcFiles}}<a href="{{{href}}}" target="_blank">{{{path}}}</a>{{/srcFiles}}</div>
+                </span>
+            {{else}}
+                <a href="{{{fileName}}}" target="_blank">{{{name}}}</a>
+            {{/if}}
             {{#classAlias}}
                 <span class='alias'>{{../aliasName}}: {{{.}}}</span>
             {{/classAlias}}

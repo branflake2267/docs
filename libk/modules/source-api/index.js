@@ -39,55 +39,150 @@ class SourceApi extends Base {
     constructor (options) {
         super(options);
 
-        /**
-         * @property srcFileMap
-         * An object map of source file path to output source .html file names
-         */
-        //this.srcFileMap = {};
-
-        // a map of class names
-        //this.classMap = {};
+        let o = this.options;
 
         /**
          * @property srcTemplate
          * The template used to output the source HTML files
          */
-        // TODO consider making the source template hbs something that's stipulated in the project config file
-        this.srcTemplate = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-src.hbs'), 'utf-8'));
-        //this.srcTemplate = Handlebars.compile(Fs.readFileSync(__dirname + '/src-template.hbs', 'utf-8'));
+        this.srcTemplate = Handlebars.compile(Fs.readFileSync(Path.join(o._myRoot, o.htmlSourceTpl), 'utf-8'));
+
+        // create the file Doxi will use to parse the SDK
+        this.createTempDoxiFile();
     }
 
+    /**
+     * Default entry point for this module
+     */
     run () {
         this.prepareApiSource();
     }
 
+    /**
+     * Returns the name of the doxi config file name to use when parsing the SDK.  Uses
+     * the product, version, and toolkit currently being acted on.
+     * @return {String} The doxi config file name
+     */
     get doxiCfgFileName () {
         let options = this.options,
-        product = options.product,
-        version = options.version,
-        toolkit = options.toolkit || product;
+            product = options.product,
+            version = options.version,
+            toolkit = options.toolkit || product;
 
         return version + '-' + toolkit + '.doxi.json';
     }
 
+    /**
+     * Returns the path to the doxi config file
+     * @param {String} fromDir The directory to start from when locating the doxi config
+     * directory
+     * @return {String} The path to the doxi config files
+     */
     getDoxiCfgPath (fromDir) {
         let rel = Path.relative(fromDir || __dirname, this.options._myRoot);
 
         return Path.join(rel, Utils.format(this.options.parserConfigPath, this.options));
     }
 
-    get doxiCfgFile () {
+    /**
+     * Returns the path to the doxi config file (used to create the temp doxi file with
+     * the {@link #createTempDoxiFile} method)
+     * @return {String} The path to the doxi config file for the current product/version
+     */
+    /*get doxiCfgFile () {
         return Path.join(this.getDoxiCfgPath(), this.doxiCfgFileName);
-    }
+    }*/
 
+    /**
+     * Returns the doxi config using the current product / version (used by the
+     * {@link #createTempDoxiFile} method)
+     * @return {Object} The original doxi config
+     */
     get doxiCfg () {
         // TODO cache this and other getters
-        return require(this.doxiCfgFile);
+        return require(Path.join(this.getDoxiCfgPath(), this.doxiCfgFileName));
     }
 
+    /**
+     * The doxi config used by the app processors.  It is created using the
+     * {@link #createTempDoxiFile} method.
+     * @return {Object} The doxi config object used by the docs processors
+     */
+    get tempDoxiCfg () {
+        return require(Path.join(this.tempDir, 'tempDoxiCfg'));
+    }
+
+    /**
+     * The full path to the temp directory used to host the doxi config file assembled
+     * for the docs processors
+     * @return {String} The path to the temp directory
+     */
+    get tempDir () {
+        return Path.join(this.options._myRoot, '_temp');
+    }
+
+    /**
+     * The full path to the directory housing all of the class json files created by
+     * running doxi for all products / versions.  Used by {@link #doxiInputDir}
+     * @return {String} The path to the directory of the doxi-processed files
+     */
+    get rootApiInputDir () {
+        let o = this.options;
+        return Path.join(o._myRoot, o.apiInputDir);
+    }
+
+    /**
+     * Create the doxi config file used when processing the docs.  The original config
+     * file for the given product / version is fetched and any placeholder tokens in the
+     * paths are replaced with values supplied by the passed options (projectDefaults,
+     * app.json, CLI)
+     */
+    createTempDoxiFile () {
+        let me      = this,
+            o       = me.options,
+            cfg     = me.doxiCfg,
+            sources = cfg.sources,
+            outputs = cfg.outputs,
+            i       = 0,
+            len     = sources.length;
+
+        for (; i < len; i++) {
+            let j    = 0,
+                path = sources[i].path,
+                jLen = path.length;
+
+            for (; j < jLen; j++) {
+                path[j] = Utils.format(path[j], {
+                    apiSourceDir: me.apiSourceDir,
+                    _myRoot: o._myRoot
+                });
+            }
+        }
+
+        outputs['combo-nosrc'].dir         = Utils.format(outputs['combo-nosrc'].dir, {
+            apiInputDir: me.apiInputDir
+        });
+        outputs['all-classes'].dir         = Utils.format(outputs['all-classes'].dir, {
+            apiInputDir: me.apiInputDir
+        });
+        outputs['all-classes-flatten'].dir = Utils.format(outputs['all-classes-flatten'].dir, {
+            apiInputDir: me.apiInputDir
+        });
+
+        Mkdirp.sync(me.tempDir);
+        Fs.writeFileSync(Path.join(me.tempDir, 'tempDoxiCfg.json'), JSON.stringify(cfg, null, 4), 'utf8', (err) => {
+            if (err) console.log('createTempDoxiFile error');
+        });
+    }
+
+    /**
+     * The full path of the doxi output files for the current product / version (/
+     * toolkit potentially)
+     * @return {String} The path to the doxi files for the current product / version
+     */
     get doxiInputDir () {
         let cfgDir       = this.getDoxiCfgPath(),
-            cfg          = this.doxiCfg,
+            cfg          = this.tempDoxiCfg,
             outputDir    = cfg.outputs['combo-nosrc'].dir,
             relToDoxiCfg = Path.resolve(__dirname, cfgDir),
             inputDir     = Path.resolve(relToDoxiCfg, outputDir);
@@ -95,6 +190,11 @@ class SourceApi extends Base {
         return inputDir;
     }
 
+    /**
+     * Checks to see if the doxi files folder is missing (not yet created with a previous
+     * run of the docs processor) or empty
+     * @return {Boolean} True if the folder is missing or empty
+     */
     get doxiInputFolderIsEmpty () {
         let dir = this.doxiInputDir;
 
@@ -108,26 +208,53 @@ class SourceApi extends Base {
         return files.length === 0;
     }
 
+    /**
+     * Returns the api source directory used by Doxi to create all of the doxi (input)
+     * files.  By default the product's repo (if configured in the projectDefaults or
+     * app.json) will be appended to the SDK source directory.
+     */
+    get apiSourceDir () {
+        let o   = this.options,
+            cfg = Object.assign({}, o, {
+                repo: o.products[o.product].repo || null
+            });
+
+        return Path.resolve(o._myRoot, Utils.format(o.apiSourceDir, cfg));
+    }
+
+    /**
+     * The central method for this module that runs doxi, processes the source files from
+     * the SDK to HTML files for use in the final docs output, and reads over all doxi
+     * class files to create the output used by the docs post processors (HTML docs or
+     * Ext app).  Is called by the {@link #run} method.
+     */
     prepareApiSource () {
         this.runDoxi();
         this.readDoxiFiles();
         console.log('DONE WITH PREPAREAPISOURCE');
     }
 
+    /**
+     * Runs doxi against the SDK to output class files used by the docs post processors
+     * (HTML docs or Ext app)
+     */
     runDoxi () {
         let me      = this,
             options = me.options;
 
+        // if the `forceDoxi` options is passed or the doxi input directory is empty /
+        // missing then run doxi
         if (me.options.forceDoxi || me.doxiInputFolderIsEmpty) {
-            // TODO this should be preventable with some flag from the CLI
-            me.syncRemote(me.options.product);
+            me.syncRemote(me.options.product, me.apiSourceDir);
 
             let path = Shell.pwd(),
                 cmd  = 'sencha';
 
-            Shell.cd(path + me.getDoxiCfgPath(path.stdout));
+            //Shell.cd(path + me.getDoxiCfgPath(path.stdout));
+            Shell.cd(me.tempDir);
             // TODO enable an option for users to specify where the SDK source folder is (within the app.js file and probably CLI params)
-            Shell.exec(cmd + ' doxi build -p ' + me.doxiCfgFileName + ' combo-nosrc');
+            //Shell.exec(cmd + ' doxi build -p ' + me.doxiCfgFileName + ' combo-nosrc');
+            Shell.exec(cmd + ' doxi build -p tempDoxiCfg.json combo-nosrc');
             Shell.cd(path);
         }
     }
@@ -155,22 +282,24 @@ class SourceApi extends Base {
         }
     }
 
+    /**
+     * Entry method to process the doxi files into files for use by the HTML docs or Ext
+     * app
+     */
     readDoxiFiles () {
         let me       = this,
             inputDir = this.doxiInputDir,
             map      = me.srcFileMap = {},
             classMap = me.classMap = {};
 
+        // if the doxi files have not been created run doxi before proceeding
         if (this.doxiInputFolderIsEmpty) {
             this.runDoxi();
         }
 
-        let files = Fs.readdirSync(inputDir);
-        // filter out unwanted os files
-        files = me.getFilteredFiles(files);
-
-        let i   = 0,
-            len = files.length;
+        let files = me.getFilteredFiles(Fs.readdirSync(inputDir)),
+            i     = 0,
+            len   = files.length;
 
         me.log('Processing the parsed SDK source files');
 
@@ -209,6 +338,8 @@ class SourceApi extends Base {
         i = 0;
         len = classNames.length;
 
+        // create the resources directory where the processed doxi input files will be
+        // saved for use by the Ext app
         Mkdirp.sync(Path.resolve(__dirname, Path.join(me.resourcesDir, me.apiDirName)));
 
         let dt = new Date();
@@ -231,27 +362,32 @@ class SourceApi extends Base {
     }
 
     /**
-     *
+     * Outputs the processed doxi file to a .json file in the resources folder for use by
+     * the Ext app
      */
     outputApiFile (className, prepared) {
         let resourcePath = Path.join(this.resourcesDir, this.apiDirName, className + '.json'),
             fileName = Path.resolve(__dirname, resourcePath);
 
         Fs.writeFileSync(fileName, JSON.stringify(prepared, null, 4), 'utf8', (err) => {
-            if (err) throw err;
+            if (err) console.log('outputApiFile error');
         });
     }
 
+    /**
+     * Decorate each doxi class file with metadata / member groupings to be used by the
+     * HTML docs or Ext app
+     * @param {String} className The name of the class to be processed
+     */
     decorateClass (className) {
         let me       = this,
             classMap = me.classMap,
+            // TODO does the raw doxi output need to be cached or can it just be passed directly here?  Is it used somewhere else that it needs to be cached?
             raw      = classMap[className].raw,
             prepared = classMap[className].prepared;
 
         let rawRoot  = raw.global.items[0];
 
-        //prepared.files = raw.files;
-        //Object.assign(prepared, rawRoot);
         // TODO note whether this is a singleton or not
         // TODO note whether this is a "component" or not
 
@@ -285,7 +421,11 @@ class SourceApi extends Base {
     }
 
     /**
-     *
+     * Process all members of a given type
+     * @param {String} className The name of the class that the members belong to
+     * @param {String} type The type of member being processed
+     * @param {Object[]} items Array of member objects to process
+     * @return {Object[]} Array of processed member objects
      */
     processMembers (className, type, items) {
         let me  = this,
@@ -300,7 +440,10 @@ class SourceApi extends Base {
     }
 
     /**
-     *
+     * Process the raw class member object from Doxi for consumption by the HTML docs or
+     * @param {String} className The name of the class that the members belong to
+     * @param {String} type The type of member being processed
+     * @param {Object} member The member object to process
      */
     processMember (className, type, member) {
         let me      = this,
@@ -451,7 +594,8 @@ class SourceApi extends Base {
             map       = this.srcFileMap,
             keys      = Object.keys(map),
             len       = keys.length,
-            names     = {};
+            names     = {},
+            inputDir = me.doxiInputDir;
 
         for (; i < len; i++) {
             let path = keys[i],
@@ -473,6 +617,12 @@ class SourceApi extends Base {
             // once the file names are sorted for duplicates add the final file name to
             // the source file map
             map[keys[i]].filename = name;
+            //map[keys[i]]._myRoot = me.options._myRoot;
+
+            keys[i] = {
+                path     : keys[i],
+                inputDir : inputDir
+            };
         }
 
         // time stamp and log status
@@ -540,7 +690,7 @@ class SourceApi extends Base {
 
             // write out the current source file
             Fs.writeFile(outDir + '/' + filename + '.html', me.srcTemplate(data), 'utf8', (err) => {
-                if (err) throw err;
+                if (err) console.log('outputSrcFiles error');
 
                 // keep track of the total so we know when all async write operations are
                 // complete

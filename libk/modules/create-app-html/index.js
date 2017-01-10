@@ -47,7 +47,7 @@ class HtmlApp extends AppBase {
 
         if (meta.hasGuides) {
             me.emitter.on('apiDone', function () {
-                this.runGuides();
+                me.runGuides();
             });
         }
         // TODO process the output HTML files here in the create-app-html class (maybe by overriding the output method in source-api)

@@ -25,41 +25,66 @@ class SourceGuides extends SourceApi {
         this.guidesTree = {};
     }
 
+    /**
+     * Default entry point for this module
+     */
     run () {
         this.processGuides();
     }
 
+    /**
+     * Returns the guides source directory used the source-guides module.  By default the
+     * guides' repo (if configured in the projectDefaults or app.json) will be appended
+     * to the guides source directory.
+     * @return {String} The full path to the source directory for guides
+     */
+    get guideSourceDir () {
+        let o = this.options,
+            cfg = Object.assign({}, o, {
+                repo: o.products.guides.repo || null
+            });
+
+        return Path.resolve(o._myRoot, Utils.format(o.guideSourceDir, cfg));
+    }
+
+    /**
+     * The handlebars template for guide output (may be overridden by the post processor
+     * modules)
+     * @return {Object} The compiled handlebars template
+     */
     get guideTemplate () {
         let tpl = this._guideTpl;
 
         if (!tpl) {
-            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-guide.hbs'), 'utf-8'));
+            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/guide.hbs'), 'utf-8'));
         }
 
         return tpl;
     }
 
-    get guidesRepoDir () {
-        let dir = this._guidesRepoDir;
-
-        if (!dir) {
-            let o = this.options;
-            dir = this._guidesRepoDir = Utils.format(o.guidesInputDir, o);
-        }
-
-        return dir;
-    }
-
+    /**
+     * The full path for the config file used to process the guides for the current
+     * product / version
+     * @return {String} The full path to the guides config file
+     */
     get guideConfigPath () {
-        console.log(this.guidesRepoDir);
-        // TODO this needs to be resolved dynamically, not with static paths
-        return Path.resolve('../', Path.join('localRepos/guides'), 'configs', this.options.product);
+        return Path.resolve(this.guideSourceDir, 'configs', this.options.product);
     }
 
+    /**
+     * The config used to process guides for the current product / version.  Each config
+     * file is evaluated to see if it is the same or closest to (without going over) the
+     * version being processed.
+     *
+     * For example, if there is a config-6.0.0 and config-7.0.0 and the current version
+     * being processed is 6.2.0 then config-6.0.0 would be selected
+     *
+     * @return {Object} The guide config object
+     */
     get guideConfig () {
-        // TODO we need to be able to pick the right config file based on the currently processed version
-        let files   = this.getFiles(this.guideConfigPath),
-            version = this.options.version,
+        let me      = this,
+            files   = me.getFiles(me.guideConfigPath),
+            version = me.options.version,
             cfgVer  = '0',
             file;
 
@@ -76,45 +101,58 @@ class SourceGuides extends SourceApi {
             }
         }
 
-        // TODO make this path smarter
-        return require(Path.resolve('../', Path.join('localRepos/guides', 'configs', this.options.product, file)));
+        return require(Path.join(me.guideConfigPath, file));
     }
 
+    /**
+     * The full path to the guide source for the current product
+     * @return {String} The guide source path
+     */
     get guidePath () {
-        // TODO this needs to be intelligent, not static
-        return Path.resolve('../', Path.join('localRepos/guides', this.options.product));
+        return Path.join(this.guideSourceDir, this.options.product);
     }
 
-    get guideDirs () {
-        return this.getDirs(this.guidePath);
-    }
-
+    /**
+     * Fetch the eligible guide directory paths for the given product / version.  Only
+     * directories matching or lower than the version being processed will be returned.
+     * @return {String[]} Array of paths of eligible guide directories
+     */
     get guideDirPaths () {
-        let dirs  = this.guideDirs,
-            i     = 0,
-            len   = dirs.length,
-            paths = [];
+        let me      = this,
+            version = me.options.version,
+            dirs    = me.getDirs(me.guidePath),
+            i       = 0,
+            len     = dirs.length,
+            paths   = [];
 
         for (; i < len; i++) {
             // add only the eligible directories given the current product version being built
-            if (CompareVersions(dirs[i], this.options.version) <= 0) {
-                paths.push(Path.join(this.guidePath, dirs[i]));
+            if (CompareVersions(dirs[i], version) <= 0) {
+                paths.push(Path.join(me.guidePath, dirs[i]));
             }
         }
 
         return paths;
     }
 
+    /**
+     * Create a map of guides (from the guide config) to their paths on disc.  The most
+     * recent version if a given guide will be the one mapped so that older guide
+     * versions are able to be eclipsed by newer versions.
+     * @return {Object} The hash of guide > guide paths
+     */
     get guidePathMap () {
         let map = this._guidePathMap;
 
         if (!map) {
             map = this._guidePathMap = {};
 
+            // get all applicable guide directories
             let verDirs = this.guideDirPaths.reverse(),
                 i       = 0,
                 len     = verDirs.length;
 
+            // loop through the directories and add the files to the guide map
             for (; i < len; i++) {
                 let dir = verDirs[i];
 
@@ -124,6 +162,9 @@ class SourceGuides extends SourceApi {
         return map;
     }
 
+    /**
+     *
+     */
     mapFiles (sourceDir, path, dir, map) {
         let files = this.getFiles(sourceDir),
             i   = 0,
@@ -155,7 +196,7 @@ class SourceGuides extends SourceApi {
      *
      */
     processGuides () {
-        this.syncRemote('guides');
+        this.syncRemote('guides', this.guideSourceDir);
         this.guidePathMap;
         this.readGuideCfg();
     }
@@ -215,7 +256,7 @@ class SourceGuides extends SourceApi {
      *
      */
     makeGuideDir (path) {
-        Mkdirp.sync(Path.join(Path.resolve(__dirname, this.resourcesDir), 'guides', path));
+        Mkdirp.sync(Path.join(this.resourcesDir, 'guides', path));
     }
 
     /**

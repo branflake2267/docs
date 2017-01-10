@@ -1,13 +1,5 @@
 'use strict';
 
-/**
- * enable logging
- * log out
- * all the status methods
- * processQueue for multi-thread stuff
- *
- */
-
 const EventEmitter = require('events'),
       Debug        = require('../../Debug'),
       Worker       = require('tiny-worker'),
@@ -22,13 +14,15 @@ const EventEmitter = require('events'),
       Mkdirp       = require('mkdirp'),
       marked       = require('sencha-marked'),
       safeLinkRe   = /(\[]|\.\.\.)/g,
-      idRe         = /[^\w]+/g;
+      idRe         = /[^\w]+/g,
+      Git          = require('git-state');
 
 class Base {
     constructor (options) {
         let me = this;
         me.options = options;
 
+        // init events - events help control the flow of the app
         me.emitter = new EventEmitter();
 
         // enable logging options using the project options / CLI param
@@ -49,36 +43,51 @@ class Base {
             "static-properties": "static-property"
         };
 
+        // possible member types
         me.memberTypes = ['cfg', 'property', 'method', 'event', 'css_var-S', 'css_mixin'];
     }
 
     /**
-     *
+     * Returns the resources directory used to house resource files for the apps
+     * @return {String} the common resources directory (full) path
      */
     get resourcesDir () {
-        return Path.join(this.outputDir, this.options.resourcesDir);
+        return Path.join(this.outputProductDir, this.options.resourcesDir);
     }
 
+    /**
+     * Filters out any system files (i.e. .DS_Store)
+     * @param {String[]} files Array of file names
+     * @return [String[]] Array of file names minus system files
+     */
     getFilteredFiles (files) {
         return files.filter(item => !(/(^|\/)\.[^\/\.]/g).test(item));
     }
 
     /**
-     *
+     * Get all files from the passed directory / path
+     * @param {String} path The path of the directory that all files should be returned
+     * from
+     * @return {String[]} Array of file names from the source directory
      */
     getFiles (path) {
+        // filter out system files and only return files (filter out directories)
         return this.getFilteredFiles(Fs.readdirSync(path)).filter(function(file) {
             return Fs.statSync(Path.join(path, file)).isFile();
-        });;
+        });
     }
 
     /**
-     *
+     * Returns all directories from a path / directory (system files will be filtered
+     * out)
+     * @param {String} path The path of the directory that all child directories should
+     * be returned from
+     * @return {String[]} Array of directory names
      */
     getDirs (path) {
         return Fs.readdirSync(path).filter(function(item) {
             return Fs.statSync(Path.join(path, item)).isDirectory();
-        });;
+        });
     }
 
     /**
@@ -388,49 +397,47 @@ class Base {
     }
 
     /**
-     *
+     * Returns the full path of the output directory + the product name (and version if
+     * applicable).
+     * @return {String} The full output directory path
      */
-    get outputDir () {
-        // TODO cache this and all the other static getters
+    get outputProductDir () {
+        // TODO cache this and all the other applicable static getters
         let options     = this.options,
             product     = options.product,
-            outPath     = Utils.format(options.outputDir, options),
+            outPath     = Utils.format(options.outputProductDir, options),
             hasVersions = options.products[product].hasVersions,
             relPrefix   = Path.relative(__dirname, options._myRoot);
 
         if (hasVersions) {
             outPath = Path.join(outPath, options.version);
         }
-        return Path.join(relPrefix, outPath);
+        return Path.resolve(__dirname, Path.join(relPrefix, outPath));
     }
 
     /**
-     *
+     * Returns the directory name for the api docs output.  Will be the toolkit set on
+     * the 'options' object if it exists else "api".
+     * @return {String} The directory for API output
      */
     get apiDirName () {
-        let options = this.options,
-            product = options.product,
-            hasVersions = options.products[product].hasVersions;
-
-        return hasVersions ? options.toolkit : 'api';
+        return this.options.toolkit || 'api';
     }
 
     /**
-     *
+     *  Returns the full path of the ouput directory + product (+ version if applicable)
+     * + api directory name
+     * @return {String} The api files' output path
      */
     get apiDir () {
-        return Path.join(this.outputDir, this.apiDirName);
+        return Path.join(this.outputProductDir, this.apiDirName);
     }
 
     /**
-     *
-     */
-    get resourcesDir () {
-        return Path.join(this.outputDir, this.options.resourcesDir);
-    }
-
-    /**
-     *
+     * Converts the passed in markdown text to HTML markup
+     * @param {String} text The markdown string to convert to HTML
+     * @param {String} cls The API class being marked up (if applicable)
+     * @return {String} The converted HTML text
      */
     markup (text, cls) {
         if (!text) {
@@ -447,29 +454,43 @@ class Base {
     }
 
     /**
+     * Accepts a delimited string of class names and returns each string decorated as an
+     * HTML link
      *
+     * Example:
+     * splitInline('String,Ext.grid.Panel,Ext.Component', '<br>);
+     *
+     * Returns:
+     * <a href="{link to String}">String</a><br><a href="{link to String}">String</a>
      */
     splitInline (text, joinStr) {
         if (!text) {
             return '';
         }
 
+        // replace pipes with slash
         text.replace(/\|/, '/');
-        let me = this,
-            str = [],
+        let me        = this,
+            str       = [],
+            // set the delimiter based on what is found in the `text` string
             delimiter = text.includes(',') ? ',' : (text.includes('/') ? '/' : ','),
-            joinWith = joinStr || delimiter;
+            // and we'll rejoin the links afterwards with the delimiter found unless one
+            // is passed in
+            joinWith  = joinStr || delimiter;
 
+        // create links to the associated class (if found) from each item in the `text`
+        // TODO not sure if the if > else is required here, but don't want to remove this before I can test with real output
         if (text && text.includes(delimiter)) {
             text = text.split(delimiter);
 
             for (var i = 0; i < text.length; i++) {
-                var item = text[i];
+                let item = text[i],
+                    link = item.replace(safeLinkRe, '');
 
-                let link = item.replace(safeLinkRe, '');
-
+                // if the string is a class name in the classMap create a link from it
                 if (me.classMap[link]) {
                     str.push(me.createLink(link + '.html', item));
+                // else just return the string back
                 } else {
                     str.push(item);
                 }
@@ -477,13 +498,16 @@ class Base {
         } else {
             let link = text.replace(safeLinkRe, '');
 
+            // if the string is a class name in the classMap create a link from it
             if (me.classMap[link]) {
                 str.push(me.createLink(link + '.html', text));
+            // else just return the string back
             } else{
                 str.push(text);
             }
         }
 
+        // return the string of <a> links separated by the `joinWith` delimiter
         return str.join(joinWith);
     }
 
@@ -495,12 +519,20 @@ class Base {
      * @param {String} product A product name relating to a key in the projectDefaults'
      * products node.  Used to collect up the name of the repo for this product, the
      * branch in Git to pull from, etc.
+     * @param {String} sourceDir The source directory of the local repo
      */
-    syncRemote (product) {
-        let me      = this,
-            options = me.options;
+    syncRemote (product, sourceDir) {
+        let me           = this,
+            options      = me.options;
 
-        if (options.forceSyncRemote) {
+        // if the api source directory exists and is not a git repo then skip syncing
+        if (Fs.existsSync(sourceDir) && !Git.isGitSync(sourceDir)) {
+            me.log('Cannot perform remote Git sync: API source directory is not a Git repo', 'info');
+            return;
+        }
+
+        // only sync to a remote if syncRemote is true
+        if (options.syncRemote) {
             let path      = Shell.pwd(),
                 version   = options.version,
                 wToolkit  = version + '-' + (options.toolkit || product),
@@ -511,23 +543,23 @@ class Base {
                 tag       = verInfo && verInfo.tag,
                 repo      = prodCfg.repo,
                 remoteUrl = prodCfg.remoteUrl,
-                // TODO make the reposPath configurable in the app.json and CLI params
-                reposPath = '../localRepos',
+                reposPath = options.localReposDir,
                 cmd       = 'sencha';
 
             // This is to determine if we're local or on TeamCity
+            // TODO can these paths be improved to be less static?
             me.log("Checking for Sencha Cmd");
             if (Fs.existsSync('../../sencha-cmd')) {
                 cmd = '../../../../../sencha-cmd/sencha';
             }
 
-            Mkdirp.sync(reposPath);
-            Shell.cd(reposPath);
+            // if the api source directory doesn't exist (may or may not be within the
+            // repos directory) then create the repos directory and clone the remote
+            if (!Fs.existsSync(sourceDir)) {
+                // create the repos directory if it doesn't exist already
+                Mkdirp.sync(reposPath);
 
-            me.log('Checking for "' + Path.join(reposPath, repo) + '" folder');
-            // if the target repo for this product doesn't exist then clone it
-            if (!Fs.existsSync(repo)) {
-                // format the git URL to use when cloning a remote repo
+                Shell.cd(reposPath);
                 remoteUrl = Utils.format(remoteUrl, prodCfg);
 
                 me.log('Repo not found.  Cloning repo: ' + repo);
@@ -535,7 +567,15 @@ class Base {
             }
 
             // cd into the repo directory and fetch all + tags
-            Shell.cd(repo);
+            Shell.cd(sourceDir);
+
+            // find out if there are dirty or untracked files and if so skip syncing
+            let status = Git.checkSync(sourceDir);
+            if (status.dirty || status.untracked) {
+                me.log('API source directory has modified / untracked changes - skipping remote sync', 'info');
+                return;
+            }
+
             Shell.exec('git fetch --tags');
 
             // check out the branch used for this product / version
@@ -552,6 +592,7 @@ class Base {
                 Shell.exec('git checkout -b ' + wToolkit + ' ' + tag);
             }
 
+            // get back to the original working directory
             Shell.cd(path);
         }
     }

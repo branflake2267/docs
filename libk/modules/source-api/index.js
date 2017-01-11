@@ -39,16 +39,13 @@ class SourceApi extends Base {
     constructor (options) {
         super(options);
 
-        let o = this.options;
+        let opts = this.options;
 
         /**
          * @property srcTemplate
          * The template used to output the source HTML files
          */
-        this.srcTemplate = Handlebars.compile(Fs.readFileSync(Path.join(o._myRoot, o.htmlSourceTpl), 'utf-8'));
-
-        // create the file Doxi will use to parse the SDK
-        this.createTempDoxiFile();
+        this.srcTemplate = Handlebars.compile(Fs.readFileSync(Path.join(opts._myRoot, opts.htmlSourceTpl), 'utf-8'));
     }
 
     /**
@@ -79,9 +76,16 @@ class SourceApi extends Base {
      * @return {String} The path to the doxi config files
      */
     getDoxiCfgPath (fromDir) {
-        let rel = Path.relative(fromDir || __dirname, this.options._myRoot);
-
-        return Path.join(rel, Utils.format(this.options.parserConfigPath, this.options));
+        return Path.join(
+            Path.relative(
+                fromDir || __dirname,
+                this.options._myRoot
+            ),
+            Utils.format(
+                this.options.parserConfigPath,
+                this.options
+            )
+        );
     }
 
     /**
@@ -100,7 +104,12 @@ class SourceApi extends Base {
      */
     get doxiCfg () {
         // TODO cache this and other getters
-        return require(Path.join(this.getDoxiCfgPath(), this.doxiCfgFileName));
+        return require(
+            Path.join(
+                this.getDoxiCfgPath(),
+                this.doxiCfgFileName
+            )
+        );
     }
 
     /**
@@ -109,7 +118,12 @@ class SourceApi extends Base {
      * @return {Object} The doxi config object used by the docs processors
      */
     get tempDoxiCfg () {
-        return require(Path.join(this.tempDir, 'tempDoxiCfg'));
+        return require(
+            Path.join(
+                this.tempDir,
+                'tempDoxiCfg'
+            )
+        );
     }
 
     /**
@@ -118,7 +132,10 @@ class SourceApi extends Base {
      * @return {String} The path to the temp directory
      */
     get tempDir () {
-        return Path.join(this.options._myRoot, '_temp');
+        return Path.join(
+            this.options._myRoot,
+            '_temp'
+        );
     }
 
     /**
@@ -127,8 +144,11 @@ class SourceApi extends Base {
      * @return {String} The path to the directory of the doxi-processed files
      */
     get rootApiInputDir () {
-        let o = this.options;
-        return Path.join(o._myRoot, o.apiInputDir);
+        let options = this.options;
+        return Path.join(
+            options._myRoot,
+            options.apiInputDir
+        );
     }
 
     /**
@@ -138,13 +158,13 @@ class SourceApi extends Base {
      * app.json, CLI)
      */
     createTempDoxiFile () {
-        let me      = this,
-            o       = me.options,
-            cfg     = me.doxiCfg,
-            sources = cfg.sources,
-            outputs = cfg.outputs,
-            i       = 0,
-            len     = sources.length;
+        let options     = this.options,
+            cfg         = this.doxiCfg,
+            sources     = cfg.sources,
+            outputs     = cfg.outputs,
+            i           = 0,
+            len         = sources.length,
+            apiInputDir = this.rootApiInputDir;
 
         for (; i < len; i++) {
             let j    = 0,
@@ -153,25 +173,32 @@ class SourceApi extends Base {
 
             for (; j < jLen; j++) {
                 path[j] = Utils.format(path[j], {
-                    apiSourceDir: me.apiSourceDir,
-                    _myRoot: o._myRoot
+                    apiSourceDir: this.apiSourceDir,
+                    _myRoot: options._myRoot
                 });
             }
         }
 
         outputs['combo-nosrc'].dir         = Utils.format(outputs['combo-nosrc'].dir, {
-            apiInputDir: me.apiInputDir
+            apiInputDir: apiInputDir
         });
         outputs['all-classes'].dir         = Utils.format(outputs['all-classes'].dir, {
-            apiInputDir: me.apiInputDir
+            apiInputDir: apiInputDir
         });
         outputs['all-classes-flatten'].dir = Utils.format(outputs['all-classes-flatten'].dir, {
-            apiInputDir: me.apiInputDir
+            apiInputDir: apiInputDir
         });
 
-        Mkdirp.sync(me.tempDir);
-        Fs.writeFileSync(Path.join(me.tempDir, 'tempDoxiCfg.json'), JSON.stringify(cfg, null, 4), 'utf8', (err) => {
-            if (err) console.log('createTempDoxiFile error');
+        Mkdirp.sync(this.tempDir);
+        Fs.writeFileSync(
+            Path.join(
+                this.tempDir,
+                'tempDoxiCfg.json'
+            ),
+            JSON.stringify(cfg, null, 4),
+            'utf8',
+            (err) => {
+                if (err) console.log('createTempDoxiFile error');
         });
     }
 
@@ -214,12 +241,18 @@ class SourceApi extends Base {
      * app.json) will be appended to the SDK source directory.
      */
     get apiSourceDir () {
-        let o   = this.options,
-            cfg = Object.assign({}, o, {
-                repo: o.products[o.product].repo || null
+        let options = this.options,
+            cfg     = Object.assign({}, options, {
+                repo: options.products[options.product].repo || null
             });
 
-        return Path.resolve(o._myRoot, Utils.format(o.apiSourceDir, cfg));
+        return Path.resolve(
+            options._myRoot,
+            Utils.format(
+                options.apiSourceDir,
+                cfg
+            )
+        );
     }
 
     /**
@@ -229,6 +262,9 @@ class SourceApi extends Base {
      * Ext app).  Is called by the {@link #run} method.
      */
     prepareApiSource () {
+        // create the file Doxi will use to parse the SDK
+        this.createTempDoxiFile();
+
         this.runDoxi();
         this.readDoxiFiles();
         console.log('DONE WITH PREPAREAPISOURCE');
@@ -239,22 +275,21 @@ class SourceApi extends Base {
      * (HTML docs or Ext app)
      */
     runDoxi () {
-        let me      = this,
-            options = me.options;
+        let options = this.options;
 
         // if the `forceDoxi` options is passed or the doxi input directory is empty /
         // missing then run doxi
-        if (me.options.forceDoxi || me.doxiInputFolderIsEmpty) {
-            me.syncRemote(me.options.product, me.apiSourceDir);
+        if (this.options.forceDoxi || this.doxiInputFolderIsEmpty) {
+            this.syncRemote(
+                this.options.product,
+                this.apiSourceDir
+            );
 
             let path = Shell.pwd(),
                 cmd  = 'sencha';
 
-            //Shell.cd(path + me.getDoxiCfgPath(path.stdout));
-            Shell.cd(me.tempDir);
-            // TODO enable an option for users to specify where the SDK source folder is (within the app.js file and probably CLI params)
-            //Shell.exec(cmd + ' doxi build -p ' + me.doxiCfgFileName + ' combo-nosrc');
-            Shell.exec(cmd + ' doxi build -p tempDoxiCfg.json combo-nosrc');
+            Shell.cd(this.tempDir);
+            Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json combo-nosrc`);
             Shell.cd(path);
         }
     }
@@ -340,7 +375,15 @@ class SourceApi extends Base {
 
         // create the resources directory where the processed doxi input files will be
         // saved for use by the Ext app
-        Mkdirp.sync(Path.resolve(__dirname, Path.join(me.resourcesDir, me.apiDirName)));
+        Mkdirp.sync(
+            Path.resolve(
+                __dirname,
+                Path.join(
+                    me.resourcesDir,
+                    me.apiDirName
+                )
+            )
+        );
 
         let dt = new Date();
         for (; i < len; i++) {
@@ -369,7 +412,11 @@ class SourceApi extends Base {
         let resourcePath = Path.join(this.resourcesDir, this.apiDirName, className + '.json'),
             fileName = Path.resolve(__dirname, resourcePath);
 
-        Fs.writeFileSync(fileName, JSON.stringify(prepared, null, 4), 'utf8', (err) => {
+        Fs.writeFileSync(
+            fileName,
+            JSON.stringify(prepared, null, 4),
+            'utf8',
+            (err) => {
             if (err) console.log('outputApiFile error');
         });
     }
@@ -446,12 +493,12 @@ class SourceApi extends Base {
      * @param {Object} member The member object to process
      */
     processMember (className, type, member) {
-        let me      = this,
+        let me       = this,
             classMap = me.classMap,
             raw      = classMap[className].raw,
             prepared = classMap[className].prepared,
-            rawRoot = raw.global.items[0],
-            clsName = rawRoot.name;
+            rawRoot  = raw.global.items[0],
+            clsName  = rawRoot.name;
 
         if (type === 'vars') {
             member.$type = 'css_var-S'
@@ -465,8 +512,8 @@ class SourceApi extends Base {
         }
         member.text = me.markup(member.text);
 
-        member.params = [];
-        member.returns = [];
+        member.params     = [];
+        member.returns    = [];
         member.properties = [];
 
         if (member.items) {
@@ -589,13 +636,12 @@ class SourceApi extends Base {
      */
     createSrcFiles () {
         console.log('CREATE SOURCE FILES !!!');
-        let me        = this,
-            i         = 0,
+        let i         = 0,
             map       = this.srcFileMap,
             keys      = Object.keys(map),
             len       = keys.length,
             names     = {},
-            inputDir = me.doxiInputDir;
+            inputDir = this.doxiInputDir;
 
         for (; i < len; i++) {
             let path = keys[i],
@@ -617,7 +663,6 @@ class SourceApi extends Base {
             // once the file names are sorted for duplicates add the final file name to
             // the source file map
             map[keys[i]].filename = name;
-            //map[keys[i]]._myRoot = me.options._myRoot;
 
             keys[i] = {
                 path     : keys[i],
@@ -626,21 +671,21 @@ class SourceApi extends Base {
         }
 
         // time stamp and log status
-        //me.openStatus('Create source HTML files');
+        //this.openStatus('Create source HTML files');
 
 
         // loop over the source file paths and HTML-ify them
-        me.processQueue(keys, __dirname + '/htmlify.js', function (items) {
+        this.processQueue(keys, __dirname + '/htmlify.js', function (items) {
 
             // once all files have been HTML-ified add anchor tags with the name of each
             // class-member so that you can link to that place in the docs
-            let anchored = me.addAnchorsAll(items);
+            let anchored = this.addAnchorsAll(items);
 
             // conclude 'Create source HTML files' status
-            //me.closeStatus();
+            //this.closeStatus();
 
             // output all of the source HTML files
-            me.outputSrcFiles(anchored);
+            this.outputSrcFiles(anchored);
 
             this.emitter.emit('apiProcessed');
         });
@@ -689,7 +734,7 @@ class SourceApi extends Base {
                 };
 
             // write out the current source file
-            Fs.writeFile(outDir + '/' + filename + '.html', me.srcTemplate(data), 'utf8', (err) => {
+            Fs.writeFile(`${outDir}/${filename}.html.html`, me.srcTemplate(data), 'utf8', (err) => {
                 if (err) console.log('outputSrcFiles error');
 
                 // keep track of the total so we know when all async write operations are
@@ -758,8 +803,8 @@ class SourceApi extends Base {
      * @return {String} The source HTML with anchors added
      */
     addAnchors (html, srcPath) {
-        let me = this,
-            src = me.srcFileMap[srcPath],
+        let me     = this,
+            src    = me.srcFileMap[srcPath],
             clsSrc = src.input;
 
         if (clsSrc) {

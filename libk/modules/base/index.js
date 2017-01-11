@@ -563,7 +563,7 @@ class Base {
                 remoteUrl = Utils.format(remoteUrl, prodCfg);
 
                 me.log('Repo not found.  Cloning repo: ' + repo);
-                Shell.exec('git clone ' + remoteUrl);
+                Shell.exec(`git clone ${remoteUrl}`);
             }
 
             // cd into the repo directory and fetch all + tags
@@ -579,8 +579,8 @@ class Base {
             Shell.exec('git fetch --tags');
 
             // check out the branch used for this product / version
-            me.log('Checkout out main branch: ' + branch);
-            Shell.exec('git checkout ' + branch);
+            me.log(`Checkout out main branch: ${branch}`);
+            Shell.exec(`git checkout ${branch}`);
             // and pull latest
             // TODO is this step necessary?  Maybe when switching between versions on different runs of "read-source"?
             Shell.exec('git pull');
@@ -588,8 +588,8 @@ class Base {
             // if there is a tag to use for this version then switch off of head over to the
             // tagged branch
             if (tag) {
-                me.log('Checking out tagged version: ' + tag);
-                Shell.exec('git checkout -b ' + wToolkit + ' ' + tag);
+                me.log(`Checking out tagged version: ${tag}`);
+                Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
             }
 
             // get back to the original working directory

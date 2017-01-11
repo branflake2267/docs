@@ -22,31 +22,35 @@ class HtmlApp extends AppBase {
     }
 
     run () {
-        let dt = new Date();
+        let me = this,
+            dt = new Date();
         //super.run();
 
         // TODO this seems like this could be hoisted up to app-base: all of the processing of the source collection, that is
-        let me   = this,
-            o    = me.options,
-            meta = o.prodVerMeta;
+        let options = this.options,
+            meta    = options.prodVerMeta;
 
-        me.toolkitList = Utils.from(meta.hasToolkits ? (o.toolkit || meta.toolkit) : false);
+        this.toolkitList = Utils.from(
+            meta.hasToolkits ?
+            (options.toolkit || meta.toolkit) :
+            false
+        );
 
         if (meta.hasApi) {
-            me.emitter.on('apiProcessed', function () {
+            this.emitter.on('apiProcessed', function () {
                 setTimeout(function () { // had memory issues before deferring the runApi to allow for garbage collection
                     me.runApi();
                 }, 10);
             });
 
-            me.runApi();
+            this.runApi();
         } else {
             // TODO prolly move this to the source-api module as a method call: apiDone() or something that emits the event
-            me.emitter.emit('apiDone');
+            this.emitter.emit('apiDone');
         }
 
         if (meta.hasGuides) {
-            me.emitter.on('apiDone', function () {
+            this.emitter.on('apiDone', function () {
                 me.runGuides();
             });
         }
@@ -55,14 +59,13 @@ class HtmlApp extends AppBase {
     }
 
     runApi () {
-        let me = this,
-            tk = me.options.toolkit = me.toolkitList.shift();
+        let tk = this.options.toolkit = this.toolkitList.shift();
 
         if (tk) {
-            me.prepareApiSource();
+            this.prepareApiSource();
         } else {
             // TODO prolly move this to the source-api module as a method call: apiDone() or something that emits the event
-            me.emitter.emit('apiDone');
+            this.emitter.emit('apiDone');
         }
     }
 

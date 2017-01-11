@@ -39,12 +39,12 @@ class SourceGuides extends SourceApi {
      * @return {String} The full path to the source directory for guides
      */
     get guideSourceDir () {
-        let o = this.options,
-            cfg = Object.assign({}, o, {
-                repo: o.products.guides.repo || null
+        let options = this.options,
+            cfg     = Object.assign({}, options, {
+                repo: options.products.guides.repo || null
             });
 
-        return Path.resolve(o._myRoot, Utils.format(o.guideSourceDir, cfg));
+        return Path.resolve(options._myRoot, Utils.format(options.guideSourceDir, cfg));
     }
 
     /**
@@ -163,28 +163,43 @@ class SourceGuides extends SourceApi {
     }
 
     /**
+     * Iterates over all guides in a directory and adds them to the guide map (dictated
+     * by the guide config).  Since lower versioned guide folders are processed before
+     * higher ones the most recent / relevant guide is always the one that ends up being
+     * the on places on the guide map.
      *
+     * When subdirectories are encountered they are passed to mapFiles as well.
+     *
+     * @param {String} sourceDir The folder path of the guides to loop over
+     * @param {String} path The current folder path.  Used as a key in the guide map.
+     * @param {String} dir The root directory of the guides (for the currently processed
+     * versioned guide folder)
+     * @param {Object} map The guide map that the relevant file paths are added to
      */
     mapFiles (sourceDir, path, dir, map) {
         let files = this.getFiles(sourceDir),
-            i   = 0,
-            len = files.length;
+            i     = 0,
+            len   = files.length;
 
+        // loop over all files in the sourceDir
         for (; i < len; i++) {
             let file   = files[i],
                 full   = Path.join(path, file),
                 parsed = Path.parse(full);
 
+            // see if the path + file exists on the map of files and if not add it
             if (!map[full]) {
                 map[Path.join(parsed.dir, parsed.name)] = Path.join(dir, full);
             }
         }
 
+        // get any subdirectories for processing to the map
         let dirs = this.getDirs(sourceDir);
 
         i   = 0;
         len = dirs.length;
 
+        // loop over any subdirectories and pass them to sourceDir
         for (; i < len; i++) {
             let d = dirs[i];
 
@@ -193,7 +208,9 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     *
+     * The central method for this module that syncs the guides to the repo, creates the
+     * map of guide files using the guide config, and then finally processing the guide
+     * output.  Is called by the {@link #run} method.
      */
     processGuides () {
         this.syncRemote('guides', this.guideSourceDir);
@@ -202,7 +219,12 @@ class SourceGuides extends SourceApi {
     }
 
     /**
+     * Processes the guide config by:
      *
+     *  - adding the guides to a guide tree to be used by the HTML docs and Ext app
+     *  - processing the guides (their markdown, links, etc)
+     *
+     * Finally, the guide tree is output
      */
     readGuideCfg () {
         let cfg   = this.guideConfig,
@@ -211,40 +233,46 @@ class SourceGuides extends SourceApi {
             len   = items.length;
 
         for (; i < len; i++) {
-            this.processGuideTree(items[i]);
+            let guidesObj = items[i];
+            //this.processGuideTree(items[i]);
+            this.guidesTree[guidesObj.text] = guidesObj.items;
+            this.prepareGuides(guidesObj.items, guidesObj.rootPath || '');
         }
+
+        // TODO output the guide tree
     }
 
     /**
-     *
-     */
-    processGuideTree (guidesObj) {
-        let nodes = this.guidesTree[guidesObj.text] = guidesObj.items;
-
-        this.prepareGuides(guidesObj.items, guidesObj.rootPath || '');
-    }
-
-    /**
-     *
+     * The guides from the guide config are processed; making the guide directory in the
+     * output directory, decorating the tree nodes for consumption by the
+     * post-processors, and outputting the guide itself
+     * @param {Object[]} nodes The nodes (or child nodes) from the guide tree to process
+     * @param {String} rootPath the path on disc where the guides from the nodes are
+     * located
      */
     prepareGuides (nodes, rootPath) {
         let i   = 0,
             len = nodes.length;
 
+        // loop through all nodes
         for (; i < len; i++) {
             let node     = nodes[i],
                 children = node.children,
                 slug     = node.slug;
 
+            // if a rootPath was passed in create a directory in the output folder
             if (rootPath) {
                 this.makeGuideDir(rootPath);
             }
+            // if this node has children create the directory in the output folder for
+            // the child guides and prepared the child nodes
             if (children) {
                 this.makeGuideDir(Path.join(rootPath, slug));
                 this.prepareGuides(children, Path.join(rootPath, slug));
+            // else decorate the node as leaf = true
             } else {
                 node.leaf = true;
-                //console.log(rootPath, this.guidePathMap[Path.join(rootPath, slug)]);
+                // if the node isn't simply a link itself then output its guide
                 if (!node.link) {
                     this.outputGuide(node, rootPath);
                 }
@@ -253,14 +281,18 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     *
+     * Create guide folders in the resources directory using the supplied path
+     * @param {String} path The path to create on disk
      */
     makeGuideDir (path) {
         Mkdirp.sync(Path.join(this.resourcesDir, 'guides', path));
     }
 
     /**
-     *
+     * Output the guide for the passed node
+     * @param {Object} node The guide tree node describing the guide
+     * @param {String} rootPath The path where the guide resides on disk and where it
+     * will be subsequently be written for final output
      */
     outputGuide (node, rootPath) {
         let html     = Fs.readFileSync(this.guidePathMap[Path.join(rootPath, node.slug)], 'utf-8'),
@@ -277,6 +309,7 @@ class SourceGuides extends SourceApi {
     }
 
     /**
+     * Translates the guide markdown file to HTML markup
      * // can be extended in an app post-processor subclass to do this and that if needed
      */
     processGuideHtml (html) {

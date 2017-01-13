@@ -12,7 +12,7 @@
 
 const SourceApi       = require('../source-api'),
       CompareVersions = require('compare-versions'),
-      Fs              = require('fs'),
+      Fs              = require('fs-extra'),
       Path            = require('path'),
       Mkdirp          = require('mkdirp'),
       Handlebars      = require('handlebars'),
@@ -204,18 +204,50 @@ class SourceGuides extends SourceApi {
             let d = dirs[i];
 
             this.mapFiles(Path.join(sourceDir, d), Path.join(path, d), dir, map);
+
         }
     }
 
     /**
-     * The central method for this module that syncs the guides to the repo, creates the
-     * map of guide files using the guide config, and then finally processing the guide
-     * output.  Is called by the {@link #run} method.
+     * The central method for this module that syncs the guides to the repo and then
+     * processes the guide output.  Is called by the {@link #run} method.
      */
     processGuides () {
         this.syncRemote('guides', this.guideSourceDir);
-        this.guidePathMap;
+        //this.guidePathMap;
         this.readGuideCfg();
+        this.copyResources();
+    }
+
+    /**
+     * Copies all non markdown resources from the source directory to the output
+     * directory
+     */
+    copyResources () {
+        let map  = this.guidePathMap,
+            keys = Object.keys(map),
+            i    = 0,
+            len  = keys.length;
+
+        // loop over all files from the guide map
+        for (; i < len; i++) {
+            let path    = keys[i],
+                file    = map[path],
+                dir     = path.substr(0, path.lastIndexOf('/')),
+                destDir = Path.join(this.resourcesDir, 'guides', dir);
+
+            // ensure the directory is created
+            this.makeGuideDir(dir);
+            Fs.copySync(
+                Path.parse(file).dir,
+                Path.join(this.resourcesDir, 'guides', dir),
+                {
+                    filter: function (file) {
+                        return Path.parse(file).ext !== '.md';
+                    }
+                }
+            );
+        }
     }
 
     /**

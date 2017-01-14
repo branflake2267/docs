@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 /**
@@ -214,13 +215,21 @@ class SourceGuides extends SourceApi {
      */
     processGuides () {
         this.syncRemote('guides', this.guideSourceDir);
-        //this.guidePathMap;
         this.readGuideCfg();
         this.copyResources();
     }
 
     /**
-     * Copies all non markdown resources from the source directory to the output
+     * @private
+     * Used by {@link copyResources} to filter a file to be copied or not depending on
+     * whether it's a markdown file or not
+     */
+    isMarkdown (file) {
+        return Path.parse(file).ext !== '.md';
+    }
+
+    /**
+     * Copies all non-markdown resources from the source directory to the output
      * directory
      */
     copyResources () {
@@ -238,13 +247,12 @@ class SourceGuides extends SourceApi {
 
             // ensure the directory is created
             this.makeGuideDir(dir);
+            // copy any file over that is not a markdown (.md) file
             Fs.copySync(
                 Path.parse(file).dir,
                 Path.join(this.resourcesDir, 'guides', dir),
                 {
-                    filter: function (file) {
-                        return Path.parse(file).ext !== '.md';
-                    }
+                    filter: this.isMarkdown
                 }
             );
         }
@@ -321,6 +329,17 @@ class SourceGuides extends SourceApi {
     }
 
     /**
+     * Assemble the guide file's path for writing to disk  
+     * May be overridden in the post processor module
+     * @param {String} rootPath The path of the guide file
+     * @param {String} name The guide file name
+     * @return {String} The full path for the guide file
+     */
+    getGuideFilePath (rootPath, name) {
+        return Path.join(Path.resolve(__dirname, this.resourcesDir), 'guides', rootPath, name) + '.html';
+    }
+
+    /**
      * Output the guide for the passed node
      * @param {Object} node The guide tree node describing the guide
      * @param {String} rootPath The path where the guide resides on disk and where it
@@ -328,12 +347,14 @@ class SourceGuides extends SourceApi {
      */
     outputGuide (node, rootPath) {
         let html     = Fs.readFileSync(this.guidePathMap[Path.join(rootPath, node.slug)], 'utf-8'),
-            filePath = Path.join(Path.resolve(__dirname, this.resourcesDir), 'guides', rootPath, node.name) + '.html',
+            //filePath = Path.join(Path.resolve(__dirname, this.resourcesDir), 'guides', rootPath, node.name) + '.html',
+            filePath = this.getGuideFilePath(rootPath, node.name),
             data     = Object.assign({}, node);
 
         Object.assign(this.options, data);
         Object.assign(this.options.prodVerMeta, data);
         data.content = this.processGuideHtml(html);
+        this.processGuideDataObject(data);
 
         Fs.writeFileSync(filePath, this.guideTemplate(data), 'utf8', (err) => {
             if (err) throw err;
@@ -341,12 +362,36 @@ class SourceGuides extends SourceApi {
     }
 
     /**
+     * @template
+     * Template method to allow for additional guide data processing prior to handing the
+     * data over to the guide template for final output
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processGuideDataObject (data) {
+        // can be extended in the app post-processor subclasses
+    }
+
+    /**
      * Translates the guide markdown file to HTML markup
      * // can be extended in an app post-processor subclass to do this and that if needed
+     * @param {String} html The markdown from the guide source file
+     * @return {String} The HTML processed from the markdown processor
      */
     processGuideHtml (html) {
-        // TODO finish with the guide HTML: decorate @examples, process links, etc.
+        // TODO finish with the guide HTML: decorate @examples, process links, etc.  Some of that may happen in some base class or may happen in a post processor module
+        html = this.decorateExamples(html);
         return this.markup(html);
+    }
+
+    /**
+     * Decorate @example blocks so that they can operate as inline fiddle examples
+     * @param {String} html The guide body HTML
+     * @return {String} The decorated guide body HTML
+     */
+    // TODO
+    decorateExamples (html) {
+
     }
 }
 

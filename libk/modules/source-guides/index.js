@@ -257,23 +257,27 @@ class SourceGuides extends SourceApi {
      * directory
      */
     copyResources () {
-        let map  = this.guidePathMap,
-            keys = Object.keys(map),
-            i    = 0,
-            len  = keys.length,
+        let map      = this.guidePathMap,
+            keys     = Object.keys(map),
+            i        = 0,
+            len      = keys.length,
             promises = [];
 
+        // loop over all files in the `guidePathMap`
         keys.map((path) => {
             let file    = map[path],
                 dir     = path.substr(0, path.lastIndexOf('/')),
+                fromDir = Path.parse(file).dir,
                 destDir = Path.join(this.guidesOutputDir, dir);
 
             promises.push(new Promise((resolve, reject) => {
                 // ensure the directory is created
+                this.log(`Ensure directory "${destDir}" exists - if not, create it`);
                 Fs.ensureDir(destDir, () => {
                     // copy any file over that is not a markdown (.md) file
+                    this.log(`Copy all non-markdown files from "${fromDir}" to "${destDir}"`);
                     Fs.copy(
-                        Path.parse(file).dir,
+                        fromDir,
                         destDir,
                         {
                             filter: this.isMarkdown
@@ -354,7 +358,13 @@ class SourceGuides extends SourceApi {
      * @param {String} path The path to create on disk
      */
     makeGuideDir (path) {
-        Mkdirp.sync(Path.join(this.resourcesDir, 'guides', path));
+        Mkdirp.sync(
+            Path.join(
+                this.resourcesDir,
+                'guides',
+                path
+            )
+        );
     }
 
     /**
@@ -365,7 +375,17 @@ class SourceGuides extends SourceApi {
      * @return {String} The full path for the guide file
      */
     getGuideFilePath (rootPath, name) {
-        return Path.join(Path.resolve(__dirname, this.resourcesDir), 'guides', rootPath, name) + '.html';
+        let path = Path.join(
+                Path.resolve(
+                    __dirname,
+                    this.resourcesDir
+                ),
+                'guides',
+                rootPath,
+                name
+            );
+
+        return path  + '.html';
     }
 
     /**
@@ -376,7 +396,6 @@ class SourceGuides extends SourceApi {
      */
     outputGuide (node, rootPath) {
         let html     = Fs.readFileSync(this.guidePathMap[Path.join(rootPath, node.slug)], 'utf-8'),
-            //filePath = Path.join(Path.resolve(__dirname, this.resourcesDir), 'guides', rootPath, node.name) + '.html',
             filePath = this.getGuideFilePath(rootPath, node.name),
             data     = Object.assign({}, node);
 
@@ -420,7 +439,7 @@ class SourceGuides extends SourceApi {
      */
     // TODO
     decorateExamples (html) {
-
+        return html;
     }
 }
 

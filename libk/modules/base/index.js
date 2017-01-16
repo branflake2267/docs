@@ -18,22 +18,25 @@ const EventEmitter = require('events'),
       idRe         = /[^\w]+/g,
       Git          = require('git-state');
 
+// TODO add this.log() stuff throughout all classes: `log` for general messaging, `info` for warnings, and `error` for serious / fatal errors
+// TODO add status() endpoints for each section we want to show to users as the app runs
+// TODO create a BuildApps class for running both the HTML and Ext builds (maybe controllable with CLI params)
 class Base {
     constructor (options) {
-        let me = this;
-        me.options = options;
+        this.options = options;
 
         // init events - events help control the flow of the app
-        me.emitter = new EventEmitter();
+        // TODO wire up promises so we can remove events
+        this.emitter = new EventEmitter();
 
         // enable logging options using the project options / CLI param
         if (options.log) {
-            me.enableLogging(options.log);
+            this.enableLogging(options.log);
         }
 
         // a map of doxi member type group names to the format expected by the docs
         // post-processors
-        me.memberTypesMap = {
+        this.memberTypesMap = {
             configs            : "cfg",
             properties         : "property",
             methods            : "method",
@@ -45,7 +48,7 @@ class Base {
         };
 
         // possible member types
-        me.memberTypes = ['cfg', 'property', 'method', 'event', 'css_var-S', 'css_mixin'];
+        this.memberTypes = ['cfg', 'property', 'static-property', 'method', 'static-method', 'event', 'css_var-S', 'css_mixin'];
     }
 
     /**
@@ -178,12 +181,10 @@ class Base {
      * will be collected into the `responses` param
      */
     processQueue (items, mod, callback) {
-        let me        = this,
-            i         = 0,
+        let i         = 0,
             len       = items.length < CpuCount ? items.length : CpuCount,
             responses = [],
-            //complete  = false,
-            workers = [];
+            workers   = [];
 
         // the Worker pool will be the number of cores your processor has or the number
         // of items passed in; whichever is smaller
@@ -196,7 +197,7 @@ class Base {
             // callback is to be called.
             workers.push(worker);
             // set the onmessage listener to handle the response from the Worker
-            worker.onmessage = function (ev) {
+            worker.onmessage = (ev) => {
                 // collect the response to hand off to the callback
                 responses.push(ev.data);
 
@@ -210,7 +211,7 @@ class Base {
                     // the callback (if there is one)
                     if (!workers.length) {
                         if (callback) {
-                            callback.call(me, responses);
+                            callback.call(this, responses);
                         }
                     }
                 } else {
@@ -238,7 +239,7 @@ class Base {
      * @return {String} a human-readable elapsed time
      */
     getElapsed (startTime, endTime) {
-        endTime = endTime || new Date();
+        endTime     = endTime || new Date();
         let elapsed = new Date(endTime - startTime),
             minutes = elapsed.getMinutes(),
             seconds = elapsed.getSeconds(),
@@ -284,9 +285,9 @@ class Base {
      */
     setStatus (msg, append) {
         let status = this.status,
-            text = status.text;
+            text   = status.text;
 
-        status.text = append ? text += msg : msg;
+        status.text = append ? (text += msg) : msg;
         status.render();
         status.active = true;
         return status;
@@ -337,10 +338,8 @@ class Base {
      * @param {String} msg The status text to show
      */
     openStatus (msg) {
-        let me = this;
-
-        me._statusStamp = new Date();
-        me.setStatus(msg);
+        this._statusStamp = new Date();
+        this.setStatus(msg);
     }
 
     /**
@@ -350,7 +349,7 @@ class Base {
      */
     closeStatus (success) {
         let elapsed = this.getElapsed(this._statusStamp, new Date()),
-            action = success === false ? 'statusFail' : 'statusSuccess';
+            action  = success === false ? 'statusFail' : 'statusSuccess';
 
         this[action]('    ' + Chalk.gray(elapsed), true);
     }
@@ -363,8 +362,7 @@ class Base {
     createLink (href, text) {
         // TODO not sure what link map does for us, yet.  Might have to re-add it later.
         //let linkmap = this.linkmap,
-        let me = this,
-            openExternal = '',
+        let openExternal = '',
             hash, split;
 
         if (href.includes('#') && href.charAt(0) != '#') {
@@ -394,8 +392,8 @@ class Base {
             href = href + hash;
         }
 
-        for (var i = 0; i < me.memberTypes.length; i++) {
-            var item = me.memberTypes[i];
+        for (var i = 0; i < this.memberTypes.length; i++) {
+            let item = this.memberTypes[i];
 
             if (text.includes(item + '-')) {
                 text = text.replace(item + '-', '');
@@ -483,8 +481,7 @@ class Base {
 
         // replace pipes with slash
         text.replace(/\|/, '/');
-        let me        = this,
-            str       = [],
+        let str       = [],
             // set the delimiter based on what is found in the `text` string
             delimiter = text.includes(',') ? ',' : (text.includes('/') ? '/' : ','),
             // and we'll rejoin the links afterwards with the delimiter found unless one
@@ -501,8 +498,8 @@ class Base {
                     link = item.replace(safeLinkRe, '');
 
                 // if the string is a class name in the classMap create a link from it
-                if (me.classMap[link]) {
-                    str.push(me.createLink(link + '.html', item));
+                if (this.classMap[link]) {
+                    str.push(this.createLink(link + '.html', item));
                 // else just return the string back
                 } else {
                     str.push(item);
@@ -512,8 +509,8 @@ class Base {
             let link = text.replace(safeLinkRe, '');
 
             // if the string is a class name in the classMap create a link from it
-            if (me.classMap[link]) {
-                str.push(me.createLink(link + '.html', text));
+            if (this.classMap[link]) {
+                str.push(this.createLink(link + '.html', text));
             // else just return the string back
             } else{
                 str.push(text);
@@ -535,12 +532,11 @@ class Base {
      * @param {String} sourceDir The source directory of the local repo
      */
     syncRemote (product, sourceDir) {
-        let me           = this,
-            options      = me.options;
+        let options = this.options;
 
         // if the api source directory exists and is not a git repo then skip syncing
         if (Fs.existsSync(sourceDir) && !Git.isGitSync(sourceDir)) {
-            me.log('Cannot perform remote Git sync: API source directory is not a Git repo', 'info');
+            this.log('Cannot perform remote Git sync: API source directory is not a Git repo', 'info');
             return;
         }
 
@@ -561,7 +557,7 @@ class Base {
 
             // This is to determine if we're local or on TeamCity
             // TODO can these paths be improved to be less static?
-            me.log("Checking for Sencha Cmd");
+            this.log("Checking for Sencha Cmd");
             if (Fs.existsSync('../../sencha-cmd')) {
                 cmd = '../../../../../sencha-cmd/sencha';
             }
@@ -575,7 +571,7 @@ class Base {
                 Shell.cd(reposPath);
                 remoteUrl = Utils.format(remoteUrl, prodCfg);
 
-                me.log('Repo not found.  Cloning repo: ' + repo);
+                this.log('Repo not found.  Cloning repo: ' + repo);
                 Shell.exec(`git clone ${remoteUrl}`);
             }
 
@@ -585,14 +581,14 @@ class Base {
             // find out if there are dirty or untracked files and if so skip syncing
             let status = Git.checkSync(sourceDir);
             if (status.dirty || status.untracked) {
-                me.log('API source directory has modified / untracked changes - skipping remote sync', 'info');
+                this.log('API source directory has modified / untracked changes - skipping remote sync', 'info');
                 return;
             }
 
             Shell.exec('git fetch --tags');
 
             // check out the branch used for this product / version
-            me.log(`Checkout out main branch: ${branch}`);
+            this.log(`Checkout out main branch: ${branch}`);
             Shell.exec(`git checkout ${branch}`);
             // and pull latest
             // TODO is this step necessary?  Maybe when switching between versions on different runs of "read-source"?
@@ -601,7 +597,7 @@ class Base {
             // if there is a tag to use for this version then switch off of head over to the
             // tagged branch
             if (tag) {
-                me.log(`Checking out tagged version: ${tag}`);
+                this.log(`Checking out tagged version: ${tag}`);
                 Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
             }
 
@@ -650,7 +646,14 @@ class Base {
 
             // warn if the member is ambiguous - doesn't have a type specified
             if (hash) {
-                let typeEval = /^(cfg-|property-|static-property-|method-|static-method-|event-|css_var-S-|css_mixin-)?([a-zA-Z0-9$-_]+)/.exec(hash);
+                // get the types and add a dash as that's how the link would be 
+                // constructed
+                let types    = this.memberTypes.map((type) => {
+                    return `${type}-`;
+                }).join('|'),
+                    typeEval = new RegExp(`^(${types})?([a-zA-Z0-9$-_]+)`).exec(hash);
+
+                // if no type is specified in the link throw a warning
                 if (!typeEval[1]) {
                     this.log(`Ambiguous member name '${hash}'.  Consider adding a type to the URL`, 'info');
                 }

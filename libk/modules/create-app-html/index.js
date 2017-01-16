@@ -25,6 +25,18 @@ class HtmlApp extends AppBase {
     }
 
     /**
+     * 
+     */
+    run () {
+        super.run();
+
+        this.copyAssets();
+
+        // TODO create a product home page
+        // TODO create a Landing page class (if a CLI param is passed - or can be called directly, of course)
+    }
+
+    /**
      * @property
      * Get the guides output directory where all guides / guide directories will be 
      * output (creating it if it does not already exist)
@@ -65,6 +77,14 @@ class HtmlApp extends AppBase {
     }
 
     /**
+     * Copy supporting assets to the output folder.  
+     * i.e. app.js, app.css, ace editor assets, etc.
+     */
+    copyAssets () {
+        //
+    }
+
+    /**
      * Create guide folders in the guides output directory using the supplied path
      * @param {String} path The path to create on disk
      */
@@ -80,7 +100,6 @@ class HtmlApp extends AppBase {
      * @return {String} The full path for the guide file
      */
     getGuideFilePath (rootPath, name) {
-        //return Path.join(Path.resolve(__dirname, this.outputProductDir), 'guides', rootPath, name) + '.html';
         return Path.join(this.guidesOutputDir, rootPath, name) + '.html';
     }
 

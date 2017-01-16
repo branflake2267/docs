@@ -42,6 +42,7 @@ class AppBase extends SourceGuides {
     /**
      * Default entry point for this module
      */
+    // TODO wire up promises instead of events for app flow control
     run () {
         let me = this,
             dt = new Date();
@@ -88,6 +89,7 @@ class AppBase extends SourceGuides {
      * Run the api processor (for the toolkit stipulated in the options or against 
      * each toolkit - if applicable)
      */
+    // TODO remove events in favor of promises
     runApi () {
         // set the toolkit for the current api docs processor run (and pop it out of the 
         // toolkits array so it's not processed on the next run)

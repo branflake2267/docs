@@ -164,6 +164,30 @@ class SourceGuides extends SourceApi {
     }
 
     /**
+     * @property
+     * Get the guides output directory where all guides / guide directories will be
+     * output (creating it if it does not already exist)
+     * @return {String} The full path to the guides output directory
+     */
+    get guidesOutputDir () {
+        let dir = this._guidesOutputDir;
+
+        if (!dir) {
+            dir = this._guidesOutputDir = Path.join(
+                Path.resolve(
+                    __dirname,
+                    this.resourcesDir
+                ),
+                'guides'
+            );
+            // make sure the directory exists on disk and if not, create it
+            Fs.ensureDirSync(dir);
+        }
+
+        return dir;
+    }
+
+    /**
      * Iterates over all guides in a directory and adds them to the guide map (dictated
      * by the guide config).  Since lower versioned guide folders are processed before
      * higher ones the most recent / relevant guide is always the one that ends up being
@@ -236,26 +260,31 @@ class SourceGuides extends SourceApi {
         let map  = this.guidePathMap,
             keys = Object.keys(map),
             i    = 0,
-            len  = keys.length;
+            len  = keys.length,
+            promises = [];
 
-        // loop over all files from the guide map
-        for (; i < len; i++) {
-            let path    = keys[i],
-                file    = map[path],
+        keys.map((path) => {
+            let file    = map[path],
                 dir     = path.substr(0, path.lastIndexOf('/')),
-                destDir = Path.join(this.resourcesDir, 'guides', dir);
+                destDir = Path.join(this.guidesOutputDir, dir);
 
-            // ensure the directory is created
-            this.makeGuideDir(dir);
-            // copy any file over that is not a markdown (.md) file
-            Fs.copySync(
-                Path.parse(file).dir,
-                Path.join(this.resourcesDir, 'guides', dir),
-                {
-                    filter: this.isMarkdown
-                }
-            );
-        }
+            promises.push(new Promise((resolve, reject) => {
+                // ensure the directory is created
+                Fs.ensureDir(destDir, () => {
+                    // copy any file over that is not a markdown (.md) file
+                    Fs.copy(
+                        Path.parse(file).dir,
+                        destDir,
+                        {
+                            filter: this.isMarkdown
+                        },
+                        resolve
+                    );
+                });
+            }));
+        });
+
+        return Promise.all(promises);
     }
 
     /**

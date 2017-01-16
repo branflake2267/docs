@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 /**
@@ -13,63 +14,147 @@
  * Create the product / version landing page
  */
 
-const AppBase = require('../create-app-base'),
-      Utils   = require('../shared/Utils');
+const AppBase    = require('../create-app-base'),
+      Path       = require('path'),
+      Handlebars = require('handlebars'),
+      Fs         = require('fs-extra');
 
 class HtmlApp extends AppBase {
     constructor (options) {
         super(options);
     }
 
+    /**
+     * 
+     */
     run () {
-        let dt = new Date();
-        //super.run();
+        super.run();
 
-        // TODO this seems like this could be hoisted up to app-base: all of the processing of the source collection, that is
-        let me   = this,
-            o    = me.options,
-            meta = o.prodVerMeta;
+        this.copyAssets();
 
-        me.toolkitList = Utils.from(meta.hasToolkits ? (o.toolkit || meta.toolkit) : false);
-
-        if (meta.hasApi) {
-            me.emitter.on('apiProcessed', function () {
-                setTimeout(function () { // had memory issues before deferring the runApi to allow for garbage collection
-                    me.runApi();
-                }, 10);
-            });
-
-            me.runApi();
-        } else {
-            // TODO prolly move this to the source-api module as a method call: apiDone() or something that emits the event
-            me.emitter.emit('apiDone');
-        }
-
-        if (meta.hasGuides) {
-            me.emitter.on('apiDone', function () {
-                this.runGuides();
-            });
-        }
-        // TODO process the output HTML files here in the create-app-html class (maybe by overriding the output method in source-api)
-        console.log('PROCESS ALL OF THE SOURCE FILES TO ');
+        // TODO create a product home page
+        // TODO create a Landing page class (if a CLI param is passed - or can be called directly, of course)
     }
 
-    runApi () {
-        let me = this,
-            tk = me.options.toolkit = me.toolkitList.shift();
+    /**
+     * @property
+     * Get the guides output directory where all guides / guide directories will be 
+     * output (creating it if it does not already exist)
+     * @return {String} The full path to the guides output directory
+     */
+    get guidesOutputDir () {
+        let dir = this._guidesOutputDir;
 
-        if (tk) {
-            me.prepareApiSource();
-        } else {
-            // TODO prolly move this to the source-api module as a method call: apiDone() or something that emits the event
-            me.emitter.emit('apiDone');
+        if (!dir) {
+            dir = this._guidesOutputDir = Path.join(
+                Path.resolve(
+                    __dirname,
+                    this.outputProductDir
+                ),
+                'guides'
+            );
+            // make sure the directory exists on disk and if not, create it
+            Fs.ensureDirSync(dir);
         }
+
+        return dir;
     }
 
-    runGuides () {
-        if (this.options.prodVerMeta.hasGuides) {
-            this.processGuides();
+    /**
+     * The handlebars template for guide output (may be overridden by the post processor
+     * modules)
+     * @return {Object} The compiled handlebars template
+     */
+    get guideTemplate () {
+        let tpl = this._guideTpl;
+
+        if (!tpl) {
+            // TODO differentiate the HTML guide template file for use in the HTML docs.  Will need TOC, google analytics, etc.
+            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-guide.hbs'), 'utf-8'));
         }
+
+        return tpl;
+    }
+
+    /**
+     * Copy supporting assets to the output folder.  
+     * i.e. app.js, app.css, ace editor assets, etc.
+     */
+    copyAssets () {
+        //
+    }
+
+    /**
+     * Create guide folders in the guides output directory using the supplied path
+     * @param {String} path The path to create on disk
+     */
+    makeGuideDir (path) {
+        Fs.ensureDirSync(Path.join(this.guidesOutputDir, path));
+    }
+
+    /**
+     * Assemble the guide file's path for writing to disk  
+     * May be overridden in the post processor module
+     * @param {String} rootPath The path of the guide file
+     * @param {String} name The guide file name
+     * @return {String} The full path for the guide file
+     */
+    getGuideFilePath (rootPath, name) {
+        return Path.join(this.guidesOutputDir, rootPath, name) + '.html';
+    }
+
+    /**
+     * Processes the HTML of the guide body.  Decorates `@example` instances, processes
+     * links, etc.
+     * @param {String} html The markdown from the guide source file
+     * @return {String} The processed guide HTML
+     */
+    processGuideHtml (html) {
+        // processes the markdown to HTML
+        html = super.processGuideHtml(html);
+
+        // TODO finish with the guide HTML: decorate @examples, process links, etc.
+
+        html = this.parseApiLinks(html);
+
+        return html;
+    }
+
+    /**
+     * Additional guide data processing prior to handing the data over to the guide 
+     * template for final output
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processGuideDataObject (data) {
+        this.buildToc(data);
+    }
+
+    /**
+     * Build the guide table of contents using the heading tags in the doc
+     * @param {Object} data The data object to apply to the guide template
+     */
+    buildToc (data) {
+        // the guide body HTML
+        let content = data.content;
+        //TODO build the TOC and set it back on the data object
+    }
+
+    /**
+     * Process API links using the passed product, version, class name, etc.
+     * @param {String} product The product name
+     * @param {String} version The version stipulated in the [[link]] or null if not
+     * specified
+     * @param {String} toolkit The specified toolkit or 'api'
+     * @param {String} className The name of the SDK class
+     * @param {String} memberName The name of the member (or member group potentially) or
+     * undefined if no member was specified in the link
+     * @param {String} text The text to display in the link if specified
+     * @return {String} The link markup
+     */
+    // TODO process the api links for HTML guides
+    createApiLink(product, version, toolkit, className, memberName, text) {
+        //
     }
 }
 

@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 /**
@@ -19,8 +20,21 @@ class ExtApp extends AppBase {
         super(options);
     }
 
-    run () {
-
+    /**
+     * Process API links using the passed product, version, class name, etc.
+     * @param {String} product The product name
+     * @param {String} version The version stipulated in the [[link]] or null if not
+     * specified
+     * @param {String} toolkit The specified toolkit or 'api'
+     * @param {String} className The name of the SDK class
+     * @param {String} memberName The name of the member (or member group potentially) or
+     * undefined if no member was specified in the link
+     * @param {String} text The text to display in the link if specified
+     * @return {String} The link markup
+     */
+    // TODO process the api links for Ext app guides
+    createApiLink(product, version, toolkit, className, memberName, text) {
+        //
     }
 }
 

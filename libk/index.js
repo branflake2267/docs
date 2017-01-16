@@ -42,7 +42,7 @@ const args = require('yargs')
             description : 'Force doxi to parse the SDK source files',
             example     : 'node index read-source -product=extjs -version=6.2.1 -toolkit=classic'
         },
-        'forceSyncRemote': {
+        'syncRemote': {
             type        : 'boolean',
             description : 'Force a sync between SDK folder and Git',
             example     : 'node index read-source -product=extjs -version=6.2.1 -toolkit=classic'
@@ -74,4 +74,6 @@ if (canRun) {
     // create the designated module
     let cls = require('./modules/' + targetMod);
     new cls(options)[method]();
+} else {
+    console.log('INVALID MODULE:', targetMod);
 }

@@ -44,7 +44,7 @@ class AppBase extends SourceGuides {
      */
     // TODO wire up promises instead of events for app flow control
     run () {
-        let me = this,
+        /*let me = this,
             dt = new Date();
 
         let options = this.options,
@@ -82,7 +82,10 @@ class AppBase extends SourceGuides {
         }
 
         // TODO process the output HTML files here in the create-app-html class (maybe by overriding the output method in source-api)
-        console.log('PROCESS ALL OF THE SOURCE FILES TO ');
+        console.log('PROCESS ALL OF THE SOURCE FILES TO ');*/
+
+        this.runApi()
+        .then(this.runGuides.bind(this));
     }
 
     /**
@@ -91,6 +94,7 @@ class AppBase extends SourceGuides {
      */
     // TODO remove events in favor of promises
     runApi () {
+        /*
         // set the toolkit for the current api docs processor run (and pop it out of the 
         // toolkits array so it's not processed on the next run)
         let tk = this.options.toolkit = this.toolkitList.shift();
@@ -102,7 +106,21 @@ class AppBase extends SourceGuides {
         } else {
             // TODO prolly move this to the source-api module as a method call: apiDone() or something that emits the event
             this.emitter.emit('apiDone');
-        }
+        }*/
+        let options = this.options,
+            meta = this.options.prodVerMeta,
+            toolkitList = Utils.from(
+                meta.hasToolkits ?
+                (options.toolkit || meta.toolkit) :
+                false
+            );
+        
+        return toolkitList.reduce((sequence, tk) => {
+            return sequence.then(() => {
+                this.options.toolkit = tk;
+                return this.prepareApiSource();
+            });
+        }, Promise.resolve());
     }
 
     /**

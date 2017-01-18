@@ -238,6 +238,7 @@ class SourceGuides extends SourceApi {
      * processes the guide output.  Is called by the {@link #run} method.
      */
     processGuides () {
+        console.log('PROCESSING GUIDES');
         this.syncRemote('guides', this.guideSourceDir);
         this.readGuideCfg();
         this.copyResources();

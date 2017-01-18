@@ -32,7 +32,7 @@ const Base       = require('../base'),
       Path       = require('path'),
       Utils      = require('../shared/Utils'),
       Handlebars = require('handlebars'),
-      Fs         = require('fs'),
+      Fs         = require('fs-extra'),
       Shell      = require('shelljs'),
       Mkdirp     = require('mkdirp');
 
@@ -267,7 +267,7 @@ class SourceApi extends Base {
         this.createTempDoxiFile();
 
         this.runDoxi();
-        this.readDoxiFiles();
+        return this.readDoxiFiles();
         console.log('DONE WITH PREPAREAPISOURCE');
     }
 
@@ -402,7 +402,7 @@ class SourceApi extends Base {
         }
         console.log(new Date() - dt);
 
-        me.createSrcFiles();
+        return me.createSrcFiles();
     }
 
     /**
@@ -636,59 +636,61 @@ class SourceApi extends Base {
      * Create an HTML version of the each source JS file in the framework
      */
     createSrcFiles () {
-        console.log('CREATE SOURCE FILES !!!');
-        let i         = 0,
-            map       = this.srcFileMap,
-            keys      = Object.keys(map),
-            len       = keys.length,
-            names     = {},
-            inputDir = this.doxiInputDir;
+        return new Promise((resolve, reject) => {
+            console.log('CREATE SOURCE FILES !!!');
+            let i         = 0,
+                map       = this.srcFileMap,
+                keys      = Object.keys(map),
+                len       = keys.length,
+                names     = {},
+                inputDir = this.doxiInputDir;
 
-        for (; i < len; i++) {
-            let path = keys[i],
-                // returns 'file.ext' from the full path
-                name = Path.parse(path).base;
+            for (; i < len; i++) {
+                let path = keys[i],
+                    // returns 'file.ext' from the full path
+                    name = Path.parse(path).base;
 
-            // rename the file name to be used in the source file output if it's been
-            // used already.  i.e. the first Button.js class will be Button.js and any
-            // additional Button classes will have a number appended.  The next would be
-            // Button.js-1 as the file name
-            if (names[name]) {
-                let rename = name + '-' + names[name].length;
-                names[name].push(rename);
-                name = rename;
-            } else {
-                names[name] = [name];
+                // rename the file name to be used in the source file output if it's been
+                // used already.  i.e. the first Button.js class will be Button.js and any
+                // additional Button classes will have a number appended.  The next would be
+                // Button.js-1 as the file name
+                if (names[name]) {
+                    let rename = name + '-' + names[name].length;
+                    names[name].push(rename);
+                    name = rename;
+                } else {
+                    names[name] = [name];
+                }
+
+                // once the file names are sorted for duplicates add the final file name to
+                // the source file map
+                map[keys[i]].filename = name;
+
+                keys[i] = {
+                    path     : keys[i],
+                    inputDir : inputDir
+                };
             }
 
-            // once the file names are sorted for duplicates add the final file name to
-            // the source file map
-            map[keys[i]].filename = name;
-
-            keys[i] = {
-                path     : keys[i],
-                inputDir : inputDir
-            };
-        }
-
-        // time stamp and log status
-        //this.openStatus('Create source HTML files');
+            // time stamp and log status
+            //this.openStatus('Create source HTML files');
 
 
-        // loop over the source file paths and HTML-ify them
-        this.processQueue(keys, __dirname + '/htmlify.js', function (items) {
+            // loop over the source file paths and HTML-ify them
+            this.processQueue(keys, __dirname + '/htmlify.js', (items) => {
 
-            // once all files have been HTML-ified add anchor tags with the name of each
-            // class-member so that you can link to that place in the docs
-            let anchored = this.addAnchorsAll(items);
+                // once all files have been HTML-ified add anchor tags with the name of each
+                // class-member so that you can link to that place in the docs
+                let anchored = this.addAnchorsAll(items);
 
-            // conclude 'Create source HTML files' status
-            //this.closeStatus();
+                // conclude 'Create source HTML files' status
+                //this.closeStatus();
 
-            // output all of the source HTML files
-            this.outputSrcFiles(anchored);
+                // output all of the source HTML files
+                this.outputSrcFiles(anchored).then(resolve);
 
-            this.emitter.emit('apiProcessed');
+                //this.emitter.emit('apiProcessed');
+            });
         });
     }
 
@@ -702,14 +704,15 @@ class SourceApi extends Base {
      * to get the filename to output
      */
     outputSrcFiles (contents) {
-        console.log('OUTPUT SOURCE FILES');
+        /*console.log('OUTPUT SOURCE FILES');
         let me      = this,
             i       = 0,
             len     = contents.length,
             map     = this.srcFileMap,
             options = me.options,
             // TODO = this should be set globally probably in the base constructor
-            outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
+            //outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
+            outDir = Path.join(this.apiDir, 'src'),
             total   = len;
 
         // create the output directory
@@ -749,7 +752,61 @@ class SourceApi extends Base {
 
             delete map[content.path];
         }
-        console.log('OUTPUT SOURCE FILES IS DONE !!!');
+        console.log('OUTPUT SOURCE FILES IS DONE !!!');*/
+
+        return new Promise((resolve, reject) => {
+            console.log('OUTPUT SOURCE FILES');
+            let me      = this,
+                i       = 0,
+                len     = contents.length,
+                map     = this.srcFileMap,
+                options = me.options,
+                // TODO = this should be set globally probably in the base constructor
+                //outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
+                outDir = Path.join(this.apiDir, 'src');
+
+            // create the output directory
+            //Mkdirp.sync(outDir);
+            Fs.ensureDir(outDir, () => {
+                // time stamp and lot status
+                //me.openStatus('Write out source HTML files')
+
+                let writes = [];
+
+                // loop through all items to be output
+                for (; i < len; i++) {
+                    writes.push(new Promise((resolve, reject) => {
+                        let content  = contents[i],
+                            filename = map[content.path].filename, // the filename to write out
+                            // the data object to apply to the source HTML handlebars template
+                            data     = {
+                                content: content.html,
+                                name   : filename,
+                                title  : options.product,
+                                version: options.version,
+                                // TODO figure out what numVer is in production today
+                                numVer : '...',
+                                // TODO this should be output more thoughtfully than just using options.toolkit
+                                meta   : options.toolkit
+                            };
+
+                        // write out the current source file
+                        Fs.writeFile(`${outDir}/${filename}.html.html`, me.srcTemplate(data), 'utf8', (err) => {
+                            //if (err) console.log('outputSrcFiles error');
+                            if (err) reject('outputSrcFiles error');
+
+                            delete map[content.path];
+                            resolve();
+                        });
+                    }));
+                }
+                
+                console.log('OUTPUT SOURCE FILES IS DONE !!!');
+
+                return Promise.all(writes)
+                .then(resolve);
+            });
+        });
     }
 
     /**

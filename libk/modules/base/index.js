@@ -423,7 +423,13 @@ class Base {
         if (hasVersions) {
             outPath = Path.join(outPath, options.version);
         }
-        return Path.resolve(__dirname, Path.join(relPrefix, outPath));
+        return Path.resolve(
+            __dirname,
+            Path.join(
+                relPrefix,
+                outPath
+            )
+        );
     }
 
     /**
@@ -432,6 +438,7 @@ class Base {
      * @return {String} The directory for API output
      */
     get apiDirName () {
+        // ** NOTE ** Do not cache since the options.toolkit may be changed between builds
         return this.options.toolkit || 'api';
     }
 
@@ -441,6 +448,7 @@ class Base {
      * @return {String} The api files' output path
      */
     get apiDir () {
+        // ** NOTE ** Do not cache since the apiDirName may be changed between toolkits
         return Path.join(this.outputProductDir, this.apiDirName);
     }
 

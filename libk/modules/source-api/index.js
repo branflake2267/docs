@@ -77,14 +77,19 @@ class SourceApi extends Base {
      * @return {String} The path to the doxi config files
      */
     getDoxiCfgPath (fromDir) {
-        return Path.join(
-            Path.relative(
-                fromDir || __dirname,
-                this.options._myRoot
-            ),
-            Utils.format(
-                this.options.parserConfigPath,
-                this.options
+        let dir = fromDir || __dirname;
+
+        return Path.resolve(
+            dir,
+            Path.join(
+                Path.relative(
+                    dir,
+                    this.options._myRoot
+                ),
+                Utils.format(
+                    this.options.parserConfigPath,
+                    this.options
+                )
             )
         );
     }
@@ -105,7 +110,7 @@ class SourceApi extends Base {
      */
     get doxiCfg () {
         // TODO cache this and other getters
-        return require(
+        return Fs.readJsonSync(
             Path.join(
                 this.getDoxiCfgPath(),
                 this.doxiCfgFileName
@@ -119,10 +124,10 @@ class SourceApi extends Base {
      * @return {Object} The doxi config object used by the docs processors
      */
     get tempDoxiCfg () {
-        return require(
+        return Fs.readJsonSync(
             Path.join(
                 this.tempDir,
-                'tempDoxiCfg'
+                'tempDoxiCfg.json'
             )
         );
     }
@@ -190,7 +195,7 @@ class SourceApi extends Base {
             apiInputDir: apiInputDir
         });
 
-        Mkdirp.sync(this.tempDir);
+        Fs.ensureDirSync(this.tempDir);
         Fs.writeFileSync(
             Path.join(
                 this.tempDir,
@@ -341,7 +346,7 @@ class SourceApi extends Base {
 
         // loop over all Doxi files
         for (; i < len; i++) {
-            let cls     = require(Path.join(inputDir, files[i])),
+            let cls     = Fs.readJsonSync(Path.join(inputDir, files[i])),
                 clsObj  = cls.global.items[0], // the class obj
                 // the index in the files list where the class is primarily sourced
                 srcIdx  = (clsObj.src.text || clsObj.src.name).substring(0, 1),
@@ -637,60 +642,62 @@ class SourceApi extends Base {
      */
     createSrcFiles () {
         return new Promise((resolve, reject) => {
-            console.log('CREATE SOURCE FILES !!!');
-            let i         = 0,
-                map       = this.srcFileMap,
-                keys      = Object.keys(map),
-                len       = keys.length,
-                names     = {},
-                inputDir = this.doxiInputDir;
+            //setTimeout(() => {
+                console.log('CREATE SOURCE FILES !!!');
+                let i         = 0,
+                    map       = this.srcFileMap,
+                    keys      = Object.keys(map),
+                    len       = keys.length,
+                    names     = {},
+                    inputDir = this.doxiInputDir;
 
-            for (; i < len; i++) {
-                let path = keys[i],
-                    // returns 'file.ext' from the full path
-                    name = Path.parse(path).base;
+                for (; i < len; i++) {
+                    let path = keys[i],
+                        // returns 'file.ext' from the full path
+                        name = Path.parse(path).base;
 
-                // rename the file name to be used in the source file output if it's been
-                // used already.  i.e. the first Button.js class will be Button.js and any
-                // additional Button classes will have a number appended.  The next would be
-                // Button.js-1 as the file name
-                if (names[name]) {
-                    let rename = name + '-' + names[name].length;
-                    names[name].push(rename);
-                    name = rename;
-                } else {
-                    names[name] = [name];
+                    // rename the file name to be used in the source file output if it's been
+                    // used already.  i.e. the first Button.js class will be Button.js and any
+                    // additional Button classes will have a number appended.  The next would be
+                    // Button.js-1 as the file name
+                    if (names[name]) {
+                        let rename = name + '-' + names[name].length;
+                        names[name].push(rename);
+                        name = rename;
+                    } else {
+                        names[name] = [name];
+                    }
+
+                    // once the file names are sorted for duplicates add the final file name to
+                    // the source file map
+                    map[keys[i]].filename = name;
+
+                    keys[i] = {
+                        path     : keys[i],
+                        inputDir : inputDir
+                    };
                 }
 
-                // once the file names are sorted for duplicates add the final file name to
-                // the source file map
-                map[keys[i]].filename = name;
-
-                keys[i] = {
-                    path     : keys[i],
-                    inputDir : inputDir
-                };
-            }
-
-            // time stamp and log status
-            //this.openStatus('Create source HTML files');
+                // time stamp and log status
+                //this.openStatus('Create source HTML files');
 
 
-            // loop over the source file paths and HTML-ify them
-            this.processQueue(keys, __dirname + '/htmlify.js', (items) => {
+                // loop over the source file paths and HTML-ify them
+                this.processQueue(keys, __dirname + '/htmlify.js', (items) => {
 
-                // once all files have been HTML-ified add anchor tags with the name of each
-                // class-member so that you can link to that place in the docs
-                let anchored = this.addAnchorsAll(items);
+                    // once all files have been HTML-ified add anchor tags with the name of each
+                    // class-member so that you can link to that place in the docs
+                    let anchored = this.addAnchorsAll(items);
 
-                // conclude 'Create source HTML files' status
-                //this.closeStatus();
+                    // conclude 'Create source HTML files' status
+                    //this.closeStatus();
 
-                // output all of the source HTML files
-                this.outputSrcFiles(anchored).then(resolve);
+                    // output all of the source HTML files
+                    this.outputSrcFiles(anchored).then(resolve);
 
-                //this.emitter.emit('apiProcessed');
-            });
+                    //this.emitter.emit('apiProcessed');
+                });
+            //}, 100);
         });
     }
 
@@ -780,14 +787,14 @@ class SourceApi extends Base {
                             filename = map[content.path].filename, // the filename to write out
                             // the data object to apply to the source HTML handlebars template
                             data     = {
-                                content: content.html,
-                                name   : filename,
-                                title  : options.product,
-                                version: options.version,
+                                content : content.html,
+                                name    : filename,
+                                title   : options.product,
+                                version : options.version,
                                 // TODO figure out what numVer is in production today
-                                numVer : '...',
+                                numVer  : '...',
                                 // TODO this should be output more thoughtfully than just using options.toolkit
-                                meta   : options.toolkit
+                                meta    : options.toolkit
                             };
 
                         // write out the current source file
@@ -796,7 +803,9 @@ class SourceApi extends Base {
                             if (err) reject('outputSrcFiles error');
 
                             delete map[content.path];
-                            resolve();
+                            //setTimeout(() => {
+                                resolve();
+                            //}, 10);
                         });
                     }));
                 }

@@ -102,7 +102,7 @@ class SourceGuides extends SourceApi {
             }
         }
 
-        return require(Path.join(me.guideConfigPath, file));
+        return Fs.readJsonSync(Path.join(me.guideConfigPath, file + '.json'));
     }
 
     /**

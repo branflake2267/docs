@@ -102,7 +102,7 @@ class SourceGuides extends SourceApi {
             }
         }
 
-        return require(Path.join(me.guideConfigPath, file));
+        return Fs.readJsonSync(Path.join(me.guideConfigPath, file + '.json'));
     }
 
     /**
@@ -238,9 +238,16 @@ class SourceGuides extends SourceApi {
      * processes the guide output.  Is called by the {@link #run} method.
      */
     processGuides () {
+        let dt = new Date();
+        console.log('PROCESSING GUIDES');
         this.syncRemote('guides', this.guideSourceDir);
-        this.readGuideCfg();
-        this.copyResources();
+        //this.readGuideCfg();
+        //this.copyResources();
+        this.readGuideCfg()
+        .then(this.copyResources.bind(this))
+        .then(() => {
+            console.log('runGuides:', this.getElapsed(dt));
+        });
     }
 
     /**
@@ -300,19 +307,25 @@ class SourceGuides extends SourceApi {
      * Finally, the guide tree is output
      */
     readGuideCfg () {
-        let cfg   = this.guideConfig,
-            items = cfg.items,
-            i     = 0,
-            len   = items.length;
+        return new Promise((resolve, reject) => {
+            let cfg       = this.guideConfig,
+                items     = cfg.items,
+                i         = 0,
+                len       = items.length,
+                outputArr = [];
 
-        for (; i < len; i++) {
-            let guidesObj = items[i];
-            //this.processGuideTree(items[i]);
-            this.guidesTree[guidesObj.text] = guidesObj.items;
-            this.prepareGuides(guidesObj.items, guidesObj.rootPath || '');
-        }
+            for (; i < len; i++) {
+                let guidesObj = items[i];
+                
+                this.guidesTree[guidesObj.text] = guidesObj.items;
+                this.prepareGuides(guidesObj.items, guidesObj.rootPath || '', outputArr);
+            }
 
-        // TODO output the guide tree
+            // TODO output the guide tree
+            
+            Promise.all(outputArr).then(resolve);
+        });
+
     }
 
     /**
@@ -323,7 +336,7 @@ class SourceGuides extends SourceApi {
      * @param {String} rootPath the path on disc where the guides from the nodes are
      * located
      */
-    prepareGuides (nodes, rootPath) {
+    prepareGuides (nodes, rootPath, outputArr) {
         let i   = 0,
             len = nodes.length;
 
@@ -340,14 +353,17 @@ class SourceGuides extends SourceApi {
             // if this node has children create the directory in the output folder for
             // the child guides and prepared the child nodes
             if (children) {
-                this.makeGuideDir(Path.join(rootPath, slug));
-                this.prepareGuides(children, Path.join(rootPath, slug));
+                let path = Path.join(rootPath, slug);
+
+                this.makeGuideDir(path);
+                this.prepareGuides(children, path, outputArr);
             // else decorate the node as leaf = true
             } else {
                 node.leaf = true;
                 // if the node isn't simply a link itself then output its guide
                 if (!node.link) {
-                    this.outputGuide(node, rootPath);
+                    
+                    outputArr.push(this.outputGuide(node, rootPath));
                 }
             }
         }
@@ -395,17 +411,29 @@ class SourceGuides extends SourceApi {
      * will be subsequently be written for final output
      */
     outputGuide (node, rootPath) {
-        let html     = Fs.readFileSync(this.guidePathMap[Path.join(rootPath, node.slug)], 'utf-8'),
-            filePath = this.getGuideFilePath(rootPath, node.name),
-            data     = Object.assign({}, node);
+        return new Promise((resolve, reject) => {
+            let path = this.guidePathMap[Path.join(rootPath, node.slug)];
 
-        Object.assign(this.options, data);
-        Object.assign(this.options.prodVerMeta, data);
-        data.content = this.processGuideHtml(html);
-        this.processGuideDataObject(data);
+            Fs.readFile(path, 'utf-8', (err, html) => {
+                if (err) {
+                    reject(Error(err));
+                }
 
-        Fs.writeFileSync(filePath, this.guideTemplate(data), 'utf8', (err) => {
-            if (err) throw err;
+                let filePath = this.getGuideFilePath(rootPath, node.name),
+                    data     = Object.assign({}, node);
+
+                Object.assign(this.options, data);
+                Object.assign(this.options.prodVerMeta, data);
+                data.content = this.processGuideHtml(html);
+                this.processGuideDataObject(data);
+
+                Fs.writeFile(filePath, this.guideTemplate(data), 'utf8', (err) => {
+                    if (err) {
+                        reject(Error(err));
+                    }
+                    resolve();
+                });
+            });
         });
     }
 

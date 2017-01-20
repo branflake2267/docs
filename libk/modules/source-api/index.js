@@ -32,7 +32,7 @@ const Base       = require('../base'),
       Path       = require('path'),
       Utils      = require('../shared/Utils'),
       Handlebars = require('handlebars'),
-      Fs         = require('fs'),
+      Fs         = require('fs-extra'),
       Shell      = require('shelljs'),
       Mkdirp     = require('mkdirp');
 
@@ -77,26 +77,22 @@ class SourceApi extends Base {
      * @return {String} The path to the doxi config files
      */
     getDoxiCfgPath (fromDir) {
-        return Path.join(
-            Path.relative(
-                fromDir || __dirname,
-                this.options._myRoot
-            ),
-            Utils.format(
-                this.options.parserConfigPath,
-                this.options
+        let dir = fromDir || __dirname;
+
+        return Path.resolve(
+            dir,
+            Path.join(
+                Path.relative(
+                    dir,
+                    this.options._myRoot
+                ),
+                Utils.format(
+                    this.options.parserConfigPath,
+                    this.options
+                )
             )
         );
     }
-
-    /**
-     * Returns the path to the doxi config file (used to create the temp doxi file with
-     * the {@link #createTempDoxiFile} method)
-     * @return {String} The path to the doxi config file for the current product/version
-     */
-    /*get doxiCfgFile () {
-        return Path.join(this.getDoxiCfgPath(), this.doxiCfgFileName);
-    }*/
 
     /**
      * Returns the doxi config using the current product / version (used by the
@@ -105,7 +101,7 @@ class SourceApi extends Base {
      */
     get doxiCfg () {
         // TODO cache this and other getters
-        return require(
+        return Fs.readJsonSync(
             Path.join(
                 this.getDoxiCfgPath(),
                 this.doxiCfgFileName
@@ -119,10 +115,10 @@ class SourceApi extends Base {
      * @return {Object} The doxi config object used by the docs processors
      */
     get tempDoxiCfg () {
-        return require(
+        return Fs.readJsonSync(
             Path.join(
                 this.tempDir,
-                'tempDoxiCfg'
+                'tempDoxiCfg.json'
             )
         );
     }
@@ -190,7 +186,7 @@ class SourceApi extends Base {
             apiInputDir: apiInputDir
         });
 
-        Mkdirp.sync(this.tempDir);
+        Fs.ensureDirSync(this.tempDir);
         Fs.writeFileSync(
             Path.join(
                 this.tempDir,
@@ -267,8 +263,8 @@ class SourceApi extends Base {
         this.createTempDoxiFile();
 
         this.runDoxi();
-        this.readDoxiFiles();
-        console.log('DONE WITH PREPAREAPISOURCE');
+        return this.readDoxiFiles();
+
     }
 
     /**
@@ -319,90 +315,134 @@ class SourceApi extends Base {
     }
 
     /**
-     * Entry method to process the doxi files into files for use by the HTML docs or Ext
-     * app
+     * Creates the source file map from the Doxi output
+     * @return {Object} Promise
      */
-    readDoxiFiles () {
-        let me       = this,
-            inputDir = this.doxiInputDir,
-            map      = me.srcFileMap = {},
-            classMap = me.classMap = {};
+    createSrcFileMap () {
+        let inputDir = this.doxiInputDir,
+            map      = this.srcFileMap = {},
+            classMap = this.classMap = {};
 
         // if the doxi files have not been created run doxi before proceeding
         if (this.doxiInputFolderIsEmpty) {
             this.runDoxi();
         }
 
-        let files = me.getFilteredFiles(Fs.readdirSync(inputDir)),
+        let files = this.getFilteredFiles(Fs.readdirSync(inputDir)),
             i     = 0,
-            len   = files.length;
+            len   = files.length,
+            ops   = [];
 
-        me.log('Processing the parsed SDK source files');
+        this.log('Processing the parsed SDK source files');
 
-        // loop over all Doxi files
         for (; i < len; i++) {
-            let cls     = require(Path.join(inputDir, files[i])),
-                clsObj  = cls.global.items[0], // the class obj
-                // the index in the files list where the class is primarily sourced
-                srcIdx  = (clsObj.src.text || clsObj.src.name).substring(0, 1),
-                // the path of the class source from the SDK
-                // TODO this is a crutch for now - need doxi to give us the source class (classes)
-                srcPath = cls.files[srcIdx];
+            ops.push(
+                new Promise((resolve, reject) => {
+                    let path = Path.join(inputDir, files[i]);
 
-            // add all source files for this class to the master source file map
-            me.mapSrcFiles(cls.files || []);
+                    Fs.readJson(path, (err, cls) => {
+                        if (err) {
+                            reject(err);
+                        }
 
-            // if the current file is a "class" file then cache the contents in the
-            // source file hash
-            // Supports #addAnchors
-            if (clsObj.$type === 'class') {
-                map[srcPath].input = cls;
-            }
+                        let clsObj  = cls.global.items[0], // the class obj
+                            // the index in the files list where the class is primarily sourced
+                            srcIdx  = (clsObj.src.text || clsObj.src.name).substring(0, 1),
+                            // the path of the class source from the SDK
+                            // TODO this is a crutch for now - need doxi to give us the source class (classes)
+                            srcPath = cls.files[srcIdx];
 
-            if (clsObj.$type === 'class') {
-                let prepared = Object.assign({}, clsObj);
-                delete prepared.items;
+                        // add all source files for this class to the master source file map
+                        this.mapSrcFiles(cls.files || []);
 
-                classMap[clsObj.name] = {
-                    raw: cls,
-                    prepared: prepared
-                };
-            }
+                        // if the current file is a "class" file then cache the contents in the
+                        // source file hash
+                        // Supports #addAnchors
+                        if (clsObj.$type === 'class') {
+                            map[srcPath].input = cls;
+                        }
+
+                        if (clsObj.$type === 'class') {
+                            let prepared = Object.assign({}, clsObj);
+                            delete prepared.items;
+
+                            classMap[clsObj.name] = {
+                                raw: cls,
+                                prepared: prepared
+                            };
+                        }
+
+                        resolve();
+                    });
+                })
+            );
         }
+        return Promise.all(ops);
+    }
 
-        let classNames = Object.keys(classMap);
-        i = 0;
-        len = classNames.length;
-
-        // create the resources directory where the processed doxi input files will be
-        // saved for use by the Ext app
-        Mkdirp.sync(
-            Path.resolve(
+    /**
+     * Create the resources directory if not already created
+     * @return {Object} Promise
+     */
+    ensureResourcesDir () {
+        return new Promise((resolve, reject) => {
+            let path = Path.resolve(
                 __dirname,
                 Path.join(
-                    me.resourcesDir,
-                    me.apiDirName
+                    this.resourcesDir,
+                    this.apiDirName
                 )
-            )
-        );
+            );
 
+            Fs.ensureDir(path, (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+
+    /**
+     * Entry method to process the doxi files into files for use by the HTML docs or Ext
+     * app
+     */
+    readDoxiFiles () {
         let dt = new Date();
+        return this.createSrcFileMap()
+        .then(this.ensureResourcesDir.bind(this))
+        .then(this.outputApiFiles.bind(this))
+        .then(() => {
+            console.log(new Date() - dt);
+            return this.createSrcFiles();
+        })
+        .catch((err) => {
+            console.log(Error(err));
+        });
+    }
+
+    /**
+     * 
+     */
+    outputApiFiles () {
+        let outputs = [],
+            classMap = this.classMap,
+            classNames = Object.keys(classMap),
+            i = 0,
+            len = classNames.length;
+
         for (; i < len; i++) {
-            let className = classNames[i];
+            let className = classNames[i],
+                prepared = classMap[className].prepared;
 
             // TODO MAKE SEARCH HAPPEN HERE SOMEHOW -> then later output the search file itself
             // TODO MAKE THE CLASS TREE
 
-            //PROCESS API FILE INTO CURRATED API CLASS FILE
-            me.decorateClass(className);
-            delete classMap[className].raw;
-            me.outputApiFile(className, classMap[className].prepared);
-            delete classMap[className].prepared;
-            //delete classMap[className].prepared;
+            // Process API file into curated API class file
+            outputs.push(this.outputApiFile(className, prepared));
         }
-        console.log(new Date() - dt);
-
-        me.createSrcFiles();
+        return Promise.all(outputs);
     }
 
     /**
@@ -410,15 +450,20 @@ class SourceApi extends Base {
      * the Ext app
      */
     outputApiFile (className, prepared) {
-        let resourcePath = Path.join(this.resourcesDir, this.apiDirName, className + '.json'),
-            fileName = Path.resolve(__dirname, resourcePath);
+        return new Promise((resolve, reject) => {
+            let resourcePath = Path.join(this.resourcesDir, this.apiDirName, className + '.json'),
+                fileName     = Path.resolve(__dirname, resourcePath),
+                output       = JSON.stringify(prepared, null, 4),
+                classMap     = this.classMap;
 
-        Fs.writeFileSync(
-            fileName,
-            JSON.stringify(prepared, null, 4),
-            'utf8',
-            (err) => {
-            if (err) console.log('outputApiFile error');
+            this.decorateClass(className);
+            delete classMap[className].raw;
+
+            Fs.writeFile(fileName, output, 'utf8', (err) => {
+                if (err) console.log('outputApiFile error');
+                delete classMap[className];
+                setTimeout(resolve, 100);
+            });
         });
     }
 
@@ -634,61 +679,63 @@ class SourceApi extends Base {
 
     /**
      * Create an HTML version of the each source JS file in the framework
+     * @return {Object} Promise
      */
     createSrcFiles () {
-        console.log('CREATE SOURCE FILES !!!');
-        let i         = 0,
-            map       = this.srcFileMap,
-            keys      = Object.keys(map),
-            len       = keys.length,
-            names     = {},
-            inputDir = this.doxiInputDir;
+        return new Promise((resolve, reject) => {
+            console.log('CREATE SOURCE FILES !!!');
+            let i         = 0,
+                map       = this.srcFileMap,
+                keys      = Object.keys(map),
+                len       = keys.length,
+                names     = {},
+                inputDir = this.doxiInputDir;
 
-        for (; i < len; i++) {
-            let path = keys[i],
-                // returns 'file.ext' from the full path
-                name = Path.parse(path).base;
+            for (; i < len; i++) {
+                let path = keys[i],
+                    // returns 'file.ext' from the full path
+                    name = Path.parse(path).base;
 
-            // rename the file name to be used in the source file output if it's been
-            // used already.  i.e. the first Button.js class will be Button.js and any
-            // additional Button classes will have a number appended.  The next would be
-            // Button.js-1 as the file name
-            if (names[name]) {
-                let rename = name + '-' + names[name].length;
-                names[name].push(rename);
-                name = rename;
-            } else {
-                names[name] = [name];
+                // rename the file name to be used in the source file output if it's been
+                // used already.  i.e. the first Button.js class will be Button.js and any
+                // additional Button classes will have a number appended.  The next would be
+                // Button.js-1 as the file name
+                if (names[name]) {
+                    let namesLength = names[name].length,
+                        rename = `${name}-${namesLength}`;
+
+                    names[name].push(rename);
+                    name = rename;
+                } else {
+                    names[name] = [name];
+                }
+
+                // once the file names are sorted for duplicates add the final file name to
+                // the source file map
+                map[keys[i]].filename = name;
+
+                keys[i] = {
+                    path     : keys[i],
+                    inputDir : inputDir
+                };
             }
 
-            // once the file names are sorted for duplicates add the final file name to
-            // the source file map
-            map[keys[i]].filename = name;
-
-            keys[i] = {
-                path     : keys[i],
-                inputDir : inputDir
-            };
-        }
-
-        // time stamp and log status
-        //this.openStatus('Create source HTML files');
+            // time stamp and log status
+            //this.openStatus('Create source HTML files');
 
 
-        // loop over the source file paths and HTML-ify them
-        this.processQueue(keys, __dirname + '/htmlify.js', function (items) {
+            // loop over the source file paths and HTML-ify them
+            this.processQueue(keys, __dirname + '/htmlify.js', (items) => {
+                // once all files have been HTML-ified add anchor tags with the name of each
+                // class-member so that you can link to that place in the docs
+                let anchored = this.addAnchorsAll(items);
 
-            // once all files have been HTML-ified add anchor tags with the name of each
-            // class-member so that you can link to that place in the docs
-            let anchored = this.addAnchorsAll(items);
+                // conclude 'Create source HTML files' status
+                //this.closeStatus();
 
-            // conclude 'Create source HTML files' status
-            //this.closeStatus();
-
-            // output all of the source HTML files
-            this.outputSrcFiles(anchored);
-
-            this.emitter.emit('apiProcessed');
+                // output all of the source HTML files
+                this.outputSrcFiles(anchored).then(resolve);
+            });
         });
     }
 
@@ -702,54 +749,57 @@ class SourceApi extends Base {
      * to get the filename to output
      */
     outputSrcFiles (contents) {
-        console.log('OUTPUT SOURCE FILES');
-        let me      = this,
-            i       = 0,
-            len     = contents.length,
-            map     = this.srcFileMap,
-            options = me.options,
-            // TODO = this should be set globally probably in the base constructor
-            outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
-            total   = len;
+        return new Promise((resolve, reject) => {
+            console.log('OUTPUT SOURCE FILES');
+            let i       = 0,
+                len     = contents.length,
+                map     = this.srcFileMap,
+                options = this.options,
+                // TODO = this should be set globally probably in the base constructor
+                //outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
+                outDir = Path.join(this.apiDir, 'src');
 
-        // create the output directory
-        Mkdirp.sync(outDir);
+            // create the output directory
+            Fs.ensureDir(outDir, () => {
+                // time stamp and lot status
+                //me.openStatus('Write out source HTML files')
 
-        // time stamp and lot status
-        //me.openStatus('Write out source HTML files')
+                let writes = [];
 
-        // loop through all items to be output
-        for (; i < len; i++) {
-            let content  = contents[i],
-                filename = map[content.path].filename, // the filename to write out
-                // the data object to apply to the source HTML handlebars template
-                data     = {
-                    content: content.html,
-                    name   : filename,
-                    title  : options.product,
-                    version: options.version,
-                    // TODO figure out what numVer is in production today
-                    numVer : '...',
-                    // TODO this should be output more thoughtfully than just using options.toolkit
-                    meta   : options.toolkit
-                };
+                // loop through all items to be output
+                for (; i < len; i++) {
+                    writes.push(new Promise((resolve, reject) => {
+                        let content  = contents[i],
+                            filename = map[content.path].filename, // the filename to write out
+                            // the data object to apply to the source HTML handlebars template
+                            data     = {
+                                content : content.html,
+                                name    : filename,
+                                title   : options.product,
+                                version : options.version,
+                                // TODO figure out what numVer is in production today
+                                numVer  : '...',
+                                // TODO this should be output more thoughtfully than just using options.toolkit
+                                meta    : options.toolkit
+                            };
 
-            // write out the current source file
-            Fs.writeFile(`${outDir}/${filename}.html.html`, me.srcTemplate(data), 'utf8', (err) => {
-                if (err) console.log('outputSrcFiles error');
+                        // write out the current source file
+                        Fs.writeFile(`${outDir}/${filename}.html.html`, this.srcTemplate(data), 'utf8', (err) => {
+                            //if (err) console.log('outputSrcFiles error');
+                            if (err) reject('outputSrcFiles error');
 
-                // keep track of the total so we know when all async write operations are
-                // complete
-                total--;
-                if (total === 0) {
-                    // conclude 'Write out source HTML files' status
-                    //me.closeStatus();
+                            delete map[content.path];
+                                resolve();
+                        });
+                    }));
                 }
-            });
+                
+                console.log('OUTPUT SOURCE FILES IS DONE !!!');
 
-            delete map[content.path];
-        }
-        console.log('OUTPUT SOURCE FILES IS DONE !!!');
+                return Promise.all(writes)
+                .then(resolve);
+            });
+        });
     }
 
     /**
@@ -776,18 +826,18 @@ class SourceApi extends Base {
      * @return {Object} The source path and processed HTML
      */
     addAnchorsAll (items) {
-        let me       = this,
-            i        = 0,
+        let i        = 0,
             len      = items.length,
             anchored = [];
 
         for (; i < len; i++) {
             let item = items[i],
+                html = item.html,
                 path = item.path;
 
             anchored.push({
-                html: me.addAnchors(item.html, path),
-                path: path
+                html : this.addAnchors(html, path),
+                path : path
             });
         }
 
@@ -821,7 +871,7 @@ class SourceApi extends Base {
                 // find the location within the file where the class is described
                 loc = me.getLocArray(cls);
                 // and prepend an anchor tag with the name of the class
-                lines[loc[1]] = '<a name="' + clsName + '">' + lines[loc[1]];
+                lines[loc[1]] = `<a name="${clsName}">` + lines[loc[1]];
             }
 
             // if there are any class members (an array of class member types)
@@ -839,9 +889,10 @@ class SourceApi extends Base {
                     // if there are members in this group
                     if (members && membersLen) {
                         let group = memberTypes[i],
+                            type = me.memberTypesMap[group.$type],
                             // get the class + member type info to prefix to the
                             // following members as they're processed
-                            name  = clsName + "-" + me.memberTypesMap[group.$type] + "-",
+                            name  = `${clsName}-${type}-`,
                             j     = 0;
 
                         // loop over all members in this type group
@@ -858,12 +909,14 @@ class SourceApi extends Base {
                             // back the pointer up one so it's pointing to the top of
                             // the description
                             if (memloc && memloc[1]) {
-                                memloc[1] = memloc[1]-1;
+                                memloc[1] = memloc[1] - 1;
                             }
 
                             // inject the class and member type and member name
                             if (memloc && memloc[0] === loc[0]) {
-                                lines[memloc[1]] = '<a name="' + name + member.name + '">' + lines[memloc[1]];
+                                let memberName = member.name;
+
+                                lines[memloc[1]] = `<a name="${name}${memberName}">` + lines[memloc[1]];
                             }
                         }
                     }
@@ -876,7 +929,7 @@ class SourceApi extends Base {
             // loop over all of the lines and add an anchor for line number linking
             for (; i < len; i++) {
                 if (i !== 0) {
-                    lines[i] = '<a name="line' + i + '">' + lines[i];
+                    lines[i] = `<a name="line${i}">` + lines[i];
                 }
             }
 

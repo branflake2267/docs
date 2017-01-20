@@ -315,10 +315,10 @@ class SourceApi extends Base {
     }
 
     /**
-     * Entry method to process the doxi files into files for use by the HTML docs or Ext
-     * app
+     * Creates the source file map from the Doxi output
+     * @return {Object} Promise
      */
-    readDoxiFiles () {
+    createSrcFileMap () {
         let inputDir = this.doxiInputDir,
             map      = this.srcFileMap = {},
             classMap = this.classMap = {};
@@ -330,80 +330,119 @@ class SourceApi extends Base {
 
         let files = this.getFilteredFiles(Fs.readdirSync(inputDir)),
             i     = 0,
-            len   = files.length;
+            len   = files.length,
+            ops   = [];
 
         this.log('Processing the parsed SDK source files');
 
-        // loop over all Doxi files
         for (; i < len; i++) {
-            let cls     = Fs.readJsonSync(Path.join(inputDir, files[i])),
-                clsObj  = cls.global.items[0], // the class obj
-                // the index in the files list where the class is primarily sourced
-                srcIdx  = (clsObj.src.text || clsObj.src.name).substring(0, 1),
-                // the path of the class source from the SDK
-                // TODO this is a crutch for now - need doxi to give us the source class (classes)
-                srcPath = cls.files[srcIdx];
+            ops.push(
+                new Promise((resolve, reject) => {
+                    let path = Path.join(inputDir, files[i]);
 
-            // add all source files for this class to the master source file map
-            this.mapSrcFiles(cls.files || []);
+                    Fs.readJson(path, (err, cls) => {
+                        if (err) {
+                            reject(err);
+                        }
 
-            // if the current file is a "class" file then cache the contents in the
-            // source file hash
-            // Supports #addAnchors
-            if (clsObj.$type === 'class') {
-                map[srcPath].input = cls;
-            }
+                        let clsObj  = cls.global.items[0], // the class obj
+                            // the index in the files list where the class is primarily sourced
+                            srcIdx  = (clsObj.src.text || clsObj.src.name).substring(0, 1),
+                            // the path of the class source from the SDK
+                            // TODO this is a crutch for now - need doxi to give us the source class (classes)
+                            srcPath = cls.files[srcIdx];
 
-            if (clsObj.$type === 'class') {
-                let prepared = Object.assign({}, clsObj);
-                delete prepared.items;
+                        // add all source files for this class to the master source file map
+                        this.mapSrcFiles(cls.files || []);
 
-                classMap[clsObj.name] = {
-                    raw: cls,
-                    prepared: prepared
-                };
-            }
+                        // if the current file is a "class" file then cache the contents in the
+                        // source file hash
+                        // Supports #addAnchors
+                        if (clsObj.$type === 'class') {
+                            map[srcPath].input = cls;
+                        }
+
+                        if (clsObj.$type === 'class') {
+                            let prepared = Object.assign({}, clsObj);
+                            delete prepared.items;
+
+                            classMap[clsObj.name] = {
+                                raw: cls,
+                                prepared: prepared
+                            };
+                        }
+
+                        resolve();
+                    });
+                })
+            );
         }
+        return Promise.all(ops);
+    }
 
-        let classNames = Object.keys(classMap);
-        i = 0;
-        len = classNames.length;
-
-        // create the resources directory where the processed doxi input files will be
-        // saved for use by the Ext app
-        Mkdirp.sync(
-            Path.resolve(
+    /**
+     * Create the resources directory if not already created
+     * @return {Object} Promise
+     */
+    ensureResourcesDir () {
+        return new Promise((resolve, reject) => {
+            let path = Path.resolve(
                 __dirname,
                 Path.join(
                     this.resourcesDir,
                     this.apiDirName
                 )
-            )
-        );
+            );
 
+            Fs.ensureDir(path, (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+
+    /**
+     * Entry method to process the doxi files into files for use by the HTML docs or Ext
+     * app
+     */
+    readDoxiFiles () {
         let dt = new Date();
-        let outputs = [];
+        return this.createSrcFileMap()
+        .then(this.ensureResourcesDir.bind(this))
+        .then(this.outputApiFiles.bind(this))
+        .then(() => {
+            console.log(new Date() - dt);
+            return this.createSrcFiles();
+        })
+        .catch((err) => {
+            console.log(Error(err));
+        });
+    }
+
+    /**
+     * 
+     */
+    outputApiFiles () {
+        let outputs = [],
+            classMap = this.classMap,
+            classNames = Object.keys(classMap),
+            i = 0,
+            len = classNames.length;
+
         for (; i < len; i++) {
-            let className = classNames[i];
+            let className = classNames[i],
+                prepared = classMap[className].prepared;
 
             // TODO MAKE SEARCH HAPPEN HERE SOMEHOW -> then later output the search file itself
             // TODO MAKE THE CLASS TREE
 
-            //PROCESS API FILE INTO CURRATED API CLASS FILE
-            //this.decorateClass(className);
-            //delete classMap[className].raw;
-            //this.outputApiFile(className, classMap[className].prepared);
-            //delete classMap[className].prepared;
-            outputs.push(this.outputApiFile(className, classMap[className].prepared));
+            // Process API file into curated API class file
+            outputs.push(this.outputApiFile(className, prepared));
         }
-        //console.log(new Date() - dt);
-
-        //resolve(this.createSrcFiles());
-        return Promise.all(outputs)
-        .then(() => {
-            console.log(new Date() - dt);
-            return this.createSrcFiles();
-        });
+        return Promise.all(outputs);
     }
 
     /**
@@ -640,6 +679,7 @@ class SourceApi extends Base {
 
     /**
      * Create an HTML version of the each source JS file in the framework
+     * @return {Object} Promise
      */
     createSrcFiles () {
         return new Promise((resolve, reject) => {
@@ -720,7 +760,6 @@ class SourceApi extends Base {
                 outDir = Path.join(this.apiDir, 'src');
 
             // create the output directory
-            //Mkdirp.sync(outDir);
             Fs.ensureDir(outDir, () => {
                 // time stamp and lot status
                 //me.openStatus('Write out source HTML files')

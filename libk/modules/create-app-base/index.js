@@ -45,10 +45,13 @@ class AppBase extends SourceGuides {
     // TODO wire up promises instead of events for app flow control
     run () {
         // TODO process the output HTML files here in the create-app-html class (maybe by overriding the output method in source-api)
-        console.log('PROCESS ALL OF THE SOURCE FILES TO ');*/
-
+        //console.log('PROCESS ALL OF THE SOURCE FILES TO ');
+        let dt = new Date();
         this.runApi()
-        .then(this.runGuides.bind(this));
+        .then(this.runGuides.bind(this))
+        .then(() => {
+            console.log('ALL TOLD:', this.getElapsed(dt));
+        });
     }
 
     /**

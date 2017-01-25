@@ -431,7 +431,7 @@ class Base {
         // loop over all of the tags and add the specified class / classes to them
         for (; i < len; i++) {
             let tag      = tagNames[i],
-                reString = '(<a(?!.*class)[^>]*)(>[\\s\\S]*?<\/a>)|(<a.*?class=["\']?.*?)(["\']?[^>]*>[\\s\\S]*?<\/a>)',
+                reString = `(<${tag}(?!.*class)[^>]*?)(>[\\s\\S]*?<\/${tag}>)|(<${tag}.*?class=["']?.*?)(["']?[^>]*?>[\\s\\S]*?<\/${tag}>)`,
                 re       = new RegExp(reString, 'gim');
             
             cls = tags[tag];

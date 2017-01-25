@@ -70,7 +70,7 @@ class HtmlApp extends AppBase {
 
         if (!tpl) {
             // TODO differentiate the HTML guide template file for use in the HTML docs.  Will need TOC, google analytics, etc.
-            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-guide.hbs'), 'utf-8'));
+            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-main.hbs'), 'utf-8'));
         }
 
         return tpl;
@@ -127,7 +127,8 @@ class HtmlApp extends AppBase {
      * supplying it to the template
      */
     processGuideDataObject (data) {
-        this.buildToc(data);
+        data = super.processGuideDataObject(data);
+        return this.buildToc(data);
     }
 
     /**
@@ -137,6 +138,7 @@ class HtmlApp extends AppBase {
     buildToc (data) {
         // the guide body HTML
         let content = data.content;
+        return data;
         //TODO build the TOC and set it back on the data object
     }
 

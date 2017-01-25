@@ -1,0 +1,52 @@
+<div class="context-menu-ct">
+    <div class="context-header">
+        <div id="hide-context-menu" class="fa fa-caret-right"></div>
+    </div>
+    <div class="search">
+        <form autocomplete="off">
+            {{#myToolkit}}
+                <div class="toolkit-search-filter-ct">
+                    <span id="modern-search-filter" class="tooltip tooltip-tr-br active" data-tip="Include Modern Search Results"><div class="callout callout-b"></div></span>
+                    <span id="classic-search-filter" class="tooltip tooltip-tr-br active" data-tip="Include Classic Search Results"><div class="callout callout-b"></div></span>
+                </div>
+            {{/myToolkit}}
+
+            <input type="text" type="search" placeholder="search" id="searchtext">
+            <i id="filtersubmit" class="fa fa-search"></i>
+            <span id="help-btn" data-tip="Docs Help" class="tooltip tooltip-tr-br"><div class="callout callout-b"></div></span>
+        </form>
+    </div>
+    <div id="toc-context-ct">
+        <!-- context content added at runtime -->
+    </div>
+</div>
+<div class="guide-body-wrap">
+    <div class="body-wrap-inner">
+        <div class="classText">
+            {{#if appliesToToolkit}}
+                <div class="toolkit-badge-ct {{appliesToToolkit}}-badge">
+                    Guide applies to:
+                    <span class="toolkit-badge {{appliesToToolkit}}">
+                        {{#is appliesToToolkit "classic"}}classic{{/is}}
+                        {{#is appliesToToolkit "modern"}}modern{{/is}}
+                        {{#is appliesToToolkit "universal"}}classic &amp; modern{{/is}}
+                    </span>
+                </div>
+            {{/if}}
+
+            <div id="toggleExamples" class="fa fa-code tooltip tooltip-tr-br" data-expand="Expand All Examples" data-collapse="Collapse All Examples"><div class="callout callout-b"></div></div>
+            {{#if toc}}
+                <div class="toc">
+                    <h2>Contents</h2>
+                    {{#each toc}}
+                        <a class="toc-page-{{toLowerCase this.tag}}" href="#{{this.id}}">{{{this.name}}}</a>
+                    {{/each}}
+                </div>
+            {{/if}}
+            {{#if tier}}
+                <span class="guide-tags"><span class="{{{tier}}}">{{{tier}}}</span></span>
+            {{/if}}
+            {{{content}}}
+        </div>
+    </div>
+</div>

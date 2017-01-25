@@ -16,7 +16,8 @@ const EventEmitter = require('events'),
       marked       = require('sencha-marked'),
       safeLinkRe   = /(\[]|\.\.\.)/g,
       idRe         = /[^\w]+/g,
-      Git          = require('git-state');
+      Git          = require('git-state'),
+      Handlebars   = require('handlebars');
 
 // TODO add this.log() stuff throughout all classes: `log` for general messaging, `info` for warnings, and `error` for serious / fatal errors
 // TODO add status() endpoints for each section we want to show to users as the app runs
@@ -49,6 +50,11 @@ class Base {
 
         // possible member types
         this.memberTypes = ['cfg', 'property', 'static-property', 'method', 'static-method', 'event', 'css_var-S', 'css_mixin'];
+
+        this.escapeRegexRe = /([-.*+?\^${}()|\[\]\/\\])/g;
+
+        this.registerHandlebarsPartials();
+        this.registerHandlebarsHelpers();
     }
 
     /**
@@ -57,6 +63,37 @@ class Base {
      */
     get resourcesDir () {
         return Path.join(this.outputProductDir, this.options.resourcesDir);
+    }
+
+    /**
+     * 
+     */
+    get assetsDir () {
+        let dir = this._assetsDir;
+
+        if (!dir) {
+            let options = this.options;
+            dir = this._assetsDir = options.assetsDir = Utils.format(options.assetsDir, options);
+        }
+        
+        return dir;
+    }
+
+    /**
+     * 
+     */
+    get cssDir () {
+        let dir = this._cssDir;
+
+        if (!dir) {
+            let assetsDir = this.assetsDir,
+                options   = this.options,
+                cssDir    = Utils.format(options.cssDir, options);
+
+            dir = this._cssDir = options.cssDir = Path.resolve(options._myRoot, cssDir);
+        }
+
+        return dir;
     }
 
     /**
@@ -95,6 +132,18 @@ class Base {
     }
 
     /**
+     * Filter out only the handlebars partial files from a list of files (those that have 
+     * a file name that starts with an underscore)
+     * @param {Stringp[]} files Array of file names to filter
+     * @return {Stringp[]} The array of filtered file names
+     */
+    getPartials (files) {
+        return files.filter((file) => {
+            return file.charAt(0) === '_';
+        });
+    }
+
+    /**
      * Returns the normalized product name.
      * i.e. some links have the product name of ext, but most everywhere in the docs we're referring to Ext JS as 'extjs'
      *
@@ -104,6 +153,66 @@ class Base {
      */
     getProduct (prod) {
         return this.options.normalizedProductList[prod];
+    }
+
+    /**
+     * Register all handlebars partials from the templates directory
+     */
+    registerHandlebarsPartials () {
+        let templateDir = Path.join(this.options._myRoot, 'templates'),
+            files       = this.getPartials(this.getFiles(templateDir)),
+            len         = files.length,
+            i           = 0;
+
+        for (; i < len; i++) {
+            let fileName = files[i],
+                partialPath = Path.join(templateDir, fileName),
+                partialName = Path.parse(partialPath).name,
+                template = Fs.readFileSync(partialPath, 'utf8');;
+            
+            Handlebars.registerPartial(partialName, template);
+        }
+        
+        /*let partialsDir = __dirname + '/modules/base/tpls';
+        let filenames = fs.readdirSync(partialsDir);
+
+        filenames.forEach(function (filename) {
+            let matches = /^([^.]+).hbs$/.exec(filename),
+                name, template;
+            if (!matches) {
+                return;
+            }
+            name = matches[1];
+            template = fs.readFileSync(partialsDir + '/' + filename, 'utf8');
+            handlebars.registerPartial(name, template);
+        });
+
+        if (args.mod != 'diff') {
+            partialsDir = __dirname + '/product-templates/' + args.config;
+            filenames = fs.readdirSync(partialsDir);
+
+            filenames.forEach(function (filename) {
+                let matches = /^([^.]+).hbs$/.exec(filename),
+                    name, template;
+                if (!matches) {
+                    return;
+                }
+                name = matches[1];
+                template = fs.readFileSync(partialsDir + '/' + filename, 'utf8');
+                handlebars.registerPartial(name, template);
+            });
+        }*/
+    }
+
+    /**
+     * Register all handlebars helpers
+     */
+    registerHandlebarsHelpers () {
+        // The `json` helper stringifies a Javascript object.  Helpful when you want to 
+        // pass a hash of information directly to a handlebars template.
+        Handlebars.registerHelper('json', function(context) {
+            return JSON.stringify(context);
+        });
     }
 
     /**
@@ -257,6 +366,86 @@ class Base {
         }
 
         return ret.join(' ');
+    }
+
+    /**
+     * 
+     */
+    escapeRegExp (str) {
+        //return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        return str.replace(this.escapeRegexRe, '\\$1');
+    }
+
+    /**
+     * Adds a class (or classes) to all HTML elements of a given type (or array of types) 
+     * within a blob of HTML.  
+     * 
+     * Example adding a single class to one tag type:
+     * 
+     *     this.addCls('html, 'a', 'foo');
+     * 
+     * Example adding multiple classes to multiple tags:
+     * 
+     *     this.addCls('html', ['a', 'code'], ['foo', 'bar']);
+     * 
+     * Example adding different classes to different tags:
+     * 
+     *     this.addCls('html', {
+     *         a    : 'foo',
+     *         code : 'bar'
+     *     });
+     * 
+     * @param {String} html The HTML block containing the elements receiving the added 
+     * classes
+     * @param {String/String[]/Object} tags An element tag name, or array of tag names, 
+     * to search for an add the specified CSS class.  A hash of tag names: classes may 
+     * also be passed.
+     * @param {String/String[]} [cls] The class or classes to add to the specified tag / 
+     * tags.
+     * @return {String} The HTML blob with the classes added.
+     */
+    addCls (html, tags, cls) {
+        // create a string from an array of class strings is possible
+        cls  = cls && Array.isArray(cls) ? cls.join(' ') : cls;
+        // if tags is a string then wrap it in an array
+        tags = Utils.isString(tags) ? Utils.from(tags) : tags;
+
+        let len = tags.length,
+            i   = 0;
+
+        // if tags is not already an object create one with the tags as keys and the cls
+        // as the class to add to the element
+        if (!Utils.isObject(tags)) {
+            let temp = {};
+            for (; i < len; i++) {
+                let tag   = tags[i];
+                temp[tag] = cls;
+            }
+            tags = temp;
+        }
+
+        let tagNames = Object.keys(tags);
+        len = tagNames.length;
+        i   = 0;
+
+        // loop over all of the tags and add the specified class / classes to them
+        for (; i < len; i++) {
+            let tag      = tagNames[i],
+                reString = '(<a(?!.*class)[^>]*)(>[\\s\\S]*?<\/a>)|(<a.*?class=["\']?.*?)(["\']?[^>]*>[\\s\\S]*?<\/a>)',
+                re       = new RegExp(reString, 'gim');
+            
+            cls = tags[tag];
+
+            html = html.replace(re, (match, p1, p2, p3, p4) => {
+                let pre      = p1 || p3,
+                    post     = p2 || p4,
+                    classStr = p1 ? ` class="${cls}"` : ` ${cls}`;
+
+                return `${pre}${classStr}${post}`;
+            });
+        }
+
+        return html;
     }
 
     /**

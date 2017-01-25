@@ -57,11 +57,34 @@ class SourceGuides extends SourceApi {
         let tpl = this._guideTpl;
 
         if (!tpl) {
-            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/guide.hbs'), 'utf-8'));
+            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-main.hbs'), 'utf-8'));
         }
 
         return tpl;
     }
+
+    /**
+     * The handlebars template for guide output (may be overridden by the post processor
+     * modules)
+     * @return {Object} The compiled handlebars template
+     */
+    /*get guideBodyTemplate () {
+        let tpl = this._guideTpl;
+
+        if (!tpl) {
+            tpl = this._guideTpl = Handlebars.compile(
+                Fs.readFileSync(
+                    Path.join(
+                        this.options._myRoot,
+                        'templates/_html-guideBody.hbs'
+                        ),
+                    'utf-8'
+                )
+            );
+        }
+
+        return tpl;
+    }*/
 
     /**
      * The full path for the config file used to process the guides for the current
@@ -422,10 +445,12 @@ class SourceGuides extends SourceApi {
                 let filePath = this.getGuideFilePath(rootPath, node.name),
                     data     = Object.assign({}, node);
 
-                Object.assign(this.options, data);
-                Object.assign(this.options.prodVerMeta, data);
+                data = Object.assign(this.options, data);
+                data = Object.assign(this.options.prodVerMeta, data);
                 data.content = this.processGuideHtml(html);
-                this.processGuideDataObject(data);
+                data.rootPath = Path.parse(filePath).dir;
+                data = this.processGuideDataObject(data);
+                data.contentPartial = '_html-guideBody';
 
                 Fs.writeFile(filePath, this.guideTemplate(data), 'utf8', (err) => {
                     if (err) {
@@ -446,6 +471,9 @@ class SourceGuides extends SourceApi {
      */
     processGuideDataObject (data) {
         // can be extended in the app post-processor subclasses
+        data.cssPath = Path.relative(data.rootPath, this.cssDir);
+        
+        return data;
     }
 
     /**
@@ -456,8 +484,14 @@ class SourceGuides extends SourceApi {
      */
     processGuideHtml (html) {
         // TODO finish with the guide HTML: decorate @examples, process links, etc.  Some of that may happen in some base class or may happen in a post processor module
+        html = this.markup(html);
         html = this.decorateExamples(html);
-        return this.markup(html);
+        //html = this.guideBodyTemplate(html);
+        //html = this.decorateLinks(html);
+        html = this.addCls(html, {
+            a: 'link'
+        });
+        return html;
     }
 
     /**

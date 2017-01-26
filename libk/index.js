@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 /**
@@ -14,7 +15,6 @@ const args = require('yargs')
     .option({
         'log': {
             alias       : 'l',
-            //type        : 'string',
             description : 'The level of logging output allowed.  Possible options are: log, info, and error.',
             example     : 'node index read-source -log=true',
             array       : true
@@ -46,6 +46,12 @@ const args = require('yargs')
             type        : 'boolean',
             description : 'Force a sync between SDK folder and Git',
             example     : 'node index read-source -product=extjs -version=6.2.1 -toolkit=classic'
+        },
+        'production': {
+            type        : 'boolean',
+            default     : false,
+            description : 'Minifies files for production',
+            example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --production=true'
         }
     })
     .command('command', 'Module to run', { alias: 'command' })
@@ -66,9 +72,9 @@ if (canRun) {
     // get the default project options and merge them with the app config
     // TODO see if the 'productIndex' of projectDefaults is even needed after we're all done
     let options = require('./configs/projectDefaults');
-    options = Object.assign(options, require('./configs/app'));
+    options     = Object.assign(options, require('./configs/app'));
     // then merge the CLI params on top of that
-    options = Object.assign(options, args);
+    options     = Object.assign(options, args);
     options._myRoot = __dirname;
 
     // create the designated module

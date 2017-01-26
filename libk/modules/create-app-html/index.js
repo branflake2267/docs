@@ -17,11 +17,15 @@
 const AppBase    = require('../create-app-base'),
       Path       = require('path'),
       Handlebars = require('handlebars'),
-      Fs         = require('fs-extra');
+      Fs         = require('fs-extra'),
+      UglifyJS   = require("uglify-js"),
+      CleanCSS   = require('clean-css');
 
 class HtmlApp extends AppBase {
     constructor (options) {
         super(options);
+
+        this.copyAssets();
     }
 
     /**
@@ -29,8 +33,6 @@ class HtmlApp extends AppBase {
      */
     run () {
         super.run();
-
-        this.copyAssets();
 
         // TODO create a product home page
         // TODO create a Landing page class (if a CLI param is passed - or can be called directly, of course)
@@ -81,7 +83,25 @@ class HtmlApp extends AppBase {
      * i.e. app.js, app.css, ace editor assets, etc.
      */
     copyAssets () {
-        //
+        /*let root = this.options._myRoot,
+            mainCss = Path.join(root, 'assets/css/main.css'),
+            tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css');
+        console.log(tachyonsCss);
+        let css = UglifyJS.minify([tachyonsCss, mainCss]);
+
+        console.log(css);
+        return;*/
+
+        let root        = this.options._myRoot,
+            mainCss     = Path.join(root, 'assets/css/main.css'),
+            tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css'),
+            css         = new CleanCSS({
+                compatibility : 'ie9',
+                level         : 0
+            }).minify([mainCss, tachyonsCss]);
+
+        Fs.ensureDirSync(this.cssDir);
+        Fs.writeFileSync(Path.join(this.cssDir, 'app.css'), css.styles, 'utf8')
     }
 
     /**

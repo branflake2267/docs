@@ -72,8 +72,11 @@ class Base {
         let dir = this._assetsDir;
 
         if (!dir) {
-            let options = this.options;
-            dir = this._assetsDir = options.assetsDir = Utils.format(options.assetsDir, options);
+            let options   = this.options,
+                assetsDir = options.assetsDir,
+                formatted = Utils.format(assetsDir, options);
+                
+            dir = this._assetsDir = options.assetsDir = Path.join(options._myRoot, formatted);
         }
         
         return dir;
@@ -369,14 +372,6 @@ class Base {
     }
 
     /**
-     * 
-     */
-    escapeRegExp (str) {
-        //return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-        return str.replace(this.escapeRegexRe, '\\$1');
-    }
-
-    /**
      * Adds a class (or classes) to all HTML elements of a given type (or array of types) 
      * within a blob of HTML.  
      * 
@@ -406,7 +401,7 @@ class Base {
      */
     addCls (html, tags, cls) {
         // create a string from an array of class strings is possible
-        cls  = cls && Array.isArray(cls) ? cls.join(' ') : cls;
+        //cls  = cls && Array.isArray(cls) ? cls.join(' ') : cls;
         // if tags is a string then wrap it in an array
         tags = Utils.isString(tags) ? Utils.from(tags) : tags;
 
@@ -435,6 +430,8 @@ class Base {
                 re       = new RegExp(reString, 'gim');
             
             cls = tags[tag];
+            // create a string from an array of class strings is possible
+            cls  = cls && Array.isArray(cls) ? cls.join(' ') : cls;
 
             html = html.replace(re, (match, p1, p2, p3, p4) => {
                 let pre      = p1 || p3,

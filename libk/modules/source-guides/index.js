@@ -489,7 +489,11 @@ class SourceGuides extends SourceApi {
         //html = this.guideBodyTemplate(html);
         //html = this.decorateLinks(html);
         html = this.addCls(html, {
-            a: 'link'
+            a: [
+                'link',
+                'underline-hover',
+                'blue'
+            ]
         });
         return html;
     }

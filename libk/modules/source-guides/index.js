@@ -264,8 +264,6 @@ class SourceGuides extends SourceApi {
         let dt = new Date();
         console.log('PROCESSING GUIDES');
         this.syncRemote('guides', this.guideSourceDir);
-        //this.readGuideCfg();
-        //this.copyResources();
         this.readGuideCfg()
         .then(this.copyResources.bind(this))
         .then(() => {
@@ -471,8 +469,8 @@ class SourceGuides extends SourceApi {
      */
     processGuideDataObject (data) {
         // can be extended in the app post-processor subclasses
-        data.cssPath = Path.relative(data.rootPath, this.cssDir);
-        
+        data.cssPath    = Path.relative(data.rootPath, this.cssDir);
+        data.imagesPath = Path.relative(data.rootPath, this.imagesDir);
         return data;
     }
 
@@ -486,8 +484,6 @@ class SourceGuides extends SourceApi {
         // TODO finish with the guide HTML: decorate @examples, process links, etc.  Some of that may happen in some base class or may happen in a post processor module
         html = this.markup(html);
         html = this.decorateExamples(html);
-        //html = this.guideBodyTemplate(html);
-        //html = this.decorateLinks(html);
         html = this.addCls(html, {
             a: [
                 'link',

@@ -95,7 +95,8 @@ class HtmlApp extends AppBase {
         let options     = this.options,
             production  = options.production,
             root        = options._myRoot,
-            mainCss     = Path.join(root, 'assets/css/main.css'),
+            assetsSrc   = Path.join(root, 'assets'),
+            mainCss     = Path.join(assetsSrc, 'css/main.css'),
             tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css'),
             css         = new CleanCSS({
                 compatibility : 'ie9',
@@ -121,10 +122,15 @@ class HtmlApp extends AppBase {
                     },
                     wrapAt: false // controls maximum line length; defaults to `false` 
                 }
-            }).minify([mainCss, tachyonsCss]);
+            }).minify([
+                tachyonsCss, // the tachyons CSS base
+                mainCss      // app-specific styling / overrides
+            ]);
 
         Fs.ensureDirSync(this.cssDir);
         Fs.writeFileSync(Path.join(this.cssDir, 'app.css'), css.styles, 'utf8')
+
+        Fs.copySync(assetsSrc, this.assetsDir);
     }
 
     /**

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta property="og:image" content="{{imagePath}}sencha-200.png" />
+    <meta property="og:image" content="{{imagesPath}}/sencha-200.png" />
     <meta property="og:title" content="{{#if name}}{{{name}}}{{else}}Docs{{/if}} | {{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}} {{/if}}" />
     <meta property="og:description" content="{{description}}" />
     <meta property="og:site_name" content="Sencha Documentation" />
@@ -17,19 +17,7 @@
          *  Font Awesome 4.5.0 by @davegandy - http://fontawesome.io - @fontawesome
          *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
          */
-        /* FONT PATH
-         * -------------------------- */
-        @font-face {
-            font-family: 'FontAwesome';
-            src: url('{{cssPath}}fonts/fontawesome-webfont.eot?v=4.5.0');
-            src: url('{{cssPath}}fonts/fontawesome-webfont.eot?#iefix&v=4.5.0') format('embedded-opentype'),
-            url('{{cssPath}}fonts/fontawesome-webfont.woff2?v=4.5.0') format('woff2'),
-            url('{{cssPath}}fonts/fontawesome-webfont.woff?v=4.5.0') format('woff'),
-            url('{{cssPath}}fonts/fontawesome-webfont.ttf?v=4.5.0') format('truetype'),
-            url('{{cssPath}}fonts/fontawesome-webfont.svg?v=4.5.0#fontawesomeregular') format('svg');
-            font-weight: normal;
-            font-style: normal;
-        }
+        
 
     </style>
     <link rel="stylesheet" type="text/css" href="{{cssPath}}/prism.css">
@@ -73,12 +61,14 @@
 
     {{> _help}}
 
-    <div id="header" class="w-100 bg-dark-blue fixed z-2 h3">
-        <div class="logo">
-            <a class="link blue underline-hover" href="http://docs.sencha.com"><img height="32" src="{{imagePath}}sencha_logo_thumb.png"/></a>
+    <div id="header" class="w-100 bg-dark-blue fixed z-2 fl top-0">
+        <div class="logo fl">
+            <a class="link blue underline-hover" href="http://docs.sencha.com"><img height="32" src="{{imagesPath}}/sencha_logo_thumb.png"/></a>
         </div>
-        <span id="mobile-main-nav-menu-btn" class="fa fa-bars"></span>
-        <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl landing-product-menu-btn"><div class="callout callout-b"></div></span>
+        <span id="mobile-main-nav-menu-btn" class="fa fa-bars dn absolute wuite lh-2 f3 top-0 pointer"></span>
+        <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl landing-product-menu-btn">
+            <div class="callout callout-b"></div>
+        </span>
         {{#isApi}}
             {{#if multSrc}}
                 <span class="page-title {{classType}} multi-src-btn">{{{name}}}</span>
@@ -98,14 +88,14 @@
         <span id="mobile-context-menu-btn" class="fa fa-cog"></span>
     </div>
 
-    <div id="centerContent" class="absolute top-2 absolute--fill z-2">
-        <div id="history-nav" class="absolute absolute--fill pr4 pl3 bg-near-white h3 bb b--light-gray">
+    <div id="centerContent" class="absolute absolute--fill z-2">
+        <div id="history-nav" class="absolute absolute--fill pr4 pl3 bg-near-white bb b--light-gray">
             <span id="history-config" class="history-config tooltip tooltip-tr-br" data-tip="Configure / Clear History"><div class="callout callout-b"></div></span>
         </div>
         <div id="class-tree-ct" class="bg-white absolute absolute--fill top-2 w4 overflow-hidden br bw1 b--light-gray class-tree">
             <h2 class="product-header bg-navy ma0 dn">
                 <div class="logo">
-                    <a class="link blue underline-hover" href="http://docs.sencha.com"><img src="{{imagePath}}sencha_logo1x.png"/></a>
+                    <a class="link blue underline-hover" href="http://docs.sencha.com"><img src="{{imagesPath}}/sencha_logo1x.png"/></a>
                 </div>
                 <a class="link underline-hover blue" href="{{homePath}}index.html">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</a>
                 <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn  tooltip tooltip-tl-bl"><div class="callout callout-b"></div></span>
@@ -124,15 +114,15 @@
                     API
                 </div>
                 --}}
-                <div id="hide-class-tree"></div>
+                <div id="hide-class-tree" class="absolute top-1 right-0 pointer fa fa-caret-left near-black"></div>
             </div>
-            <div id="tree-scroller" class="absolute absolute--fill top-2">
+            <div id="tree-scroller" class="absolute absolute--fill">
                 <div id="tree" class="show-private show-protected is-tree hide{{#if classic}} ct-only{{/if}} absolute absolute--fill bottom-2 lh-copy bg-near-white bt b--light-gray z-1 overflow-hidden pa0">
                     {{{treeview}}}
                 </div>
                 <div class="private-class-toggle-ct absolute left-0 right-0 bottom-0 z-1 bg-white lh-copy bt b--light-gray">
-                    <label for="private-class-toggle">Show private classes</label>
-                    <input id="private-class-toggle" type="checkbox" name="privateClassToggle" />
+                    <label class="pointer near-black" for="private-class-toggle">Show private classes</label>
+                    <input class="pointer br2 ba b--light-gray" id="private-class-toggle" type="checkbox" name="privateClassToggle" />
                 </div>
                 <div id="guide-tree" class="hide is-tree overflow-x-hidden overflow-y-auto absolute absolute--fill lh-copy bg-near-white bt b--light-gray navy z-1">
                     {{#if guideJson}}{{#each guideJson}}{{> treeNodePartial}}{{/each}}{{/if}}
@@ -146,7 +136,11 @@
             </div>
         </div>
 
-        <a class="link white fixed right-2 no-underline bg-blue pa2 dim z-2 ba tc" href="#" id="back-to-top">top </a>
+        <a class="link white fixed right-2 no-underline bg-blue pa2 dim z-2 ba tc" href="#" id="back-to-top">
+            <div class="fa fa-angle-up"></div>
+            <br>
+            top 
+        </a>
 
         <div id="rightMembers" class="absolute top-2 bottom-0 right-0 overflow-visible bg-white">
             {{!-- The content to use in the main part of the page is determined by script 
@@ -156,7 +150,8 @@
         </div>
     </div>
 
-    <h2 class="product-header absolute z-2 top-2 left-2 ma0 white"><a class="link underline-hover blue" href="{{homePath}}index.html">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</a>
+    <h2 class="product-header absolute z-2 ma0 white">
+        <a class="link underline-hover" href="{{homePath}}index.html">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</a>
         <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl"><div class="callout callout-b"></div></span>
         <div id="peekaboo-input" class="peekaboo-input dn">
             <input type="text" id="mobile-input" />

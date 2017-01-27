@@ -66,7 +66,9 @@ class Base {
     }
 
     /**
-     * 
+     * The directory where assets like images, js, and CSS files should be copied to in a 
+     * build
+     * @return {String} The full path to the output assets directory
      */
     get assetsDir () {
         let dir = this._assetsDir;
@@ -83,7 +85,8 @@ class Base {
     }
 
     /**
-     * 
+     * The directory where CSS assets should be copied to in a build
+     * @return {String} The full path to the output CSS directory
      */
     get cssDir () {
         let dir = this._cssDir;
@@ -94,6 +97,24 @@ class Base {
                 cssDir    = Utils.format(options.cssDir, options);
 
             dir = this._cssDir = options.cssDir = Path.resolve(options._myRoot, cssDir);
+        }
+
+        return dir;
+    }
+
+    /**
+     * The directory where image assets should be copied to in a build
+     * @return {String} The full path to the output images directory
+     */
+    get imagesDir () {
+        let dir = this._imagesDir;
+
+        if (!dir) {
+            let assetsDir = this.assetsDir,
+                options   = this.options,
+                imagesDir    = Utils.format(options.imagesDir, options);
+
+            dir = this._imagesDir = options.imagesDir = Path.resolve(options._myRoot, imagesDir);
         }
 
         return dir;

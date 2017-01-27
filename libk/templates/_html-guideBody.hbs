@@ -1,32 +1,32 @@
 <div class="context-menu-ct">
-    <div class="context-header">
-        <div id="hide-context-menu" class="fa fa-caret-right"></div>
+    <div class="context-header dn ma0 bg-navy">
+        <div id="hide-context-menu" class="fa fa-caret-right white pointer tc"></div>
     </div>
-    <div class="search">
+    <div class="search absolute ma0 fn">
         <form autocomplete="off">
             {{#myToolkit}}
-                <div class="toolkit-search-filter-ct">
-                    <span id="modern-search-filter" class="tooltip tooltip-tr-br active" data-tip="Include Modern Search Results"><div class="callout callout-b"></div></span>
-                    <span id="classic-search-filter" class="tooltip tooltip-tr-br active" data-tip="Include Classic Search Results"><div class="callout callout-b"></div></span>
+                <div class="toolkit-search-filter-ct dib">
+                    <span id="modern-search-filter" class="tooltip tooltip-tr-br active mr0 br2 br--left white bg-navy pointer tc ba b--blue pa0 dib relative" data-tip="Include Modern Search Results"><div class="callout callout-b"></div></span>
+                    <span id="classic-search-filter" class="tooltip tooltip-tr-br active mr0 br2 br--right white bg-navy pointer tc ba b--blue pa0 dib relative" data-tip="Include Classic Search Results"><div class="callout callout-b"></div></span>
                 </div>
             {{/myToolkit}}
 
-            <input type="text" type="search" placeholder="search" id="searchtext">
-            <i id="filtersubmit" class="fa fa-search"></i>
-            <span id="help-btn" data-tip="Docs Help" class="tooltip tooltip-tr-br"><div class="callout callout-b"></div></span>
+            <input class="br2 ba b--light-gray" type="text" type="search" placeholder="search" id="searchtext">
+            <i id="filtersubmit" class="fa fa-search relative z-1 gray"></i>
+            <span id="help-btn" data-tip="Docs Help" class="tooltip tooltip-tr-br relative pointer fa fa-question-circle"><div class="callout callout-b"></div></span>
         </form>
     </div>
     <div id="toc-context-ct">
         <!-- context content added at runtime -->
     </div>
 </div>
-<div class="guide-body-wrap">
-    <div class="body-wrap-inner">
-        <div class="classText">
+<div class="guide-body-wrap absolute absolute--fill overflow-x-hidden overflow-y-auto bg-white">
+    <div class="body-wrap-inner min-h-100">
+        <div class="classText cf">
             {{#if appliesToToolkit}}
-                <div class="toolkit-badge-ct {{appliesToToolkit}}-badge">
+                <div class="toolkit-badge-ct {{appliesToToolkit}}-badge dn bg-near-white">
                     Guide applies to:
-                    <span class="toolkit-badge {{appliesToToolkit}}">
+                    <span class="toolkit-badge {{appliesToToolkit}} b orange">
                         {{#is appliesToToolkit "classic"}}classic{{/is}}
                         {{#is appliesToToolkit "modern"}}modern{{/is}}
                         {{#is appliesToToolkit "universal"}}classic &amp; modern{{/is}}
@@ -34,12 +34,12 @@
                 </div>
             {{/if}}
 
-            <div id="toggleExamples" class="fa fa-code tooltip tooltip-tr-br" data-expand="Expand All Examples" data-collapse="Collapse All Examples"><div class="callout callout-b"></div></div>
+            <div id="toggleExamples" class="fa fa-code tooltip tooltip-tr-br absolute bg-navy no-underline fr pointer br2 tc overflow-hidden z-0" data-expand="Expand All Examples" data-collapse="Collapse All Examples"><div class="callout callout-b"></div></div>
             {{#if toc}}
-                <div class="toc">
+                <div class="toc bg-near-white ba bw1 b--light-gray br2 fr b lh-copy gray">
                     <h2>Contents</h2>
                     {{#each toc}}
-                        <a class="toc-page-{{toLowerCase this.tag}}" href="#{{this.id}}">{{{this.name}}}</a>
+                        <a class="toc-page-{{toLowerCase this.tag}} link underline-hover db lh-copy gray " href="#{{this.id}}">{{{this.name}}}</a>
                     {{/each}}
                 </div>
             {{/if}}

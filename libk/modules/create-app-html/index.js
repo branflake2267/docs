@@ -29,7 +29,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * 
+     * Default entry point for this module
      */
     run () {
         super.run();
@@ -208,10 +208,6 @@ class HtmlApp extends AppBase {
         if (memberName) {
             href += `#${memberName}`;
         }
-
-        //console.log('href:', product, version, toolkit, className, memberName);
-        //console.log(Path.join(rootPath, product, version, toolkit, `${className}.html`));
-        //console.log(relPath);
 
         return `<a href="${href}" class="link underline-hover blue">${text}</a>`;
     }

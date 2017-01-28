@@ -64,29 +64,6 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * The handlebars template for guide output (may be overridden by the post processor
-     * modules)
-     * @return {Object} The compiled handlebars template
-     */
-    /*get guideBodyTemplate () {
-        let tpl = this._guideTpl;
-
-        if (!tpl) {
-            tpl = this._guideTpl = Handlebars.compile(
-                Fs.readFileSync(
-                    Path.join(
-                        this.options._myRoot,
-                        'templates/_html-guideBody.hbs'
-                        ),
-                    'utf-8'
-                )
-            );
-        }
-
-        return tpl;
-    }*/
-
-    /**
      * The full path for the config file used to process the guides for the current
      * product / version
      * @return {String} The full path to the guides config file
@@ -342,7 +319,8 @@ class SourceGuides extends SourceApi {
                 this.prepareGuides(guidesObj.items, guidesObj.rootPath || '', outputArr);
             }
 
-            // TODO output the guide tree
+            // TODO output the guide tree in a promise-based method after the promise.all below
+            //console.log(this.guidesTree);
             
             Promise.all(outputArr).then(resolve);
         });
@@ -422,7 +400,7 @@ class SourceGuides extends SourceApi {
                 name
             );
 
-        return path  + '.html';
+        return `${path}.html`;
     }
 
     /**
@@ -433,22 +411,28 @@ class SourceGuides extends SourceApi {
      */
     outputGuide (node, rootPath) {
         return new Promise((resolve, reject) => {
-            let path = this.guidePathMap[Path.join(rootPath, node.slug)];
+            let slug = node.slug,
+                path = this.guidePathMap[Path.join(rootPath, slug)];
 
             Fs.readFile(path, 'utf-8', (err, html) => {
                 if (err) {
                     reject(Error(err));
                 }
 
-                let filePath = this.getGuideFilePath(rootPath, node.name),
-                    data     = Object.assign({}, node);
+                let filePath = this.getGuideFilePath(rootPath, node.slug),
+                    data     = Object.assign({}, node),
+                    rootPathDir = Path.parse(filePath).dir,
+                    relPath = Path.relative(rootPathDir, this.guidesOutputDir),
+                    link = Path.join(relPath, rootPath, `${slug}.html`);
 
                 data = Object.assign(data, this.options);
                 data = Object.assign(data, this.options.prodVerMeta);
-                data.rootPath = Path.parse(filePath).dir;
+                data.rootPath = rootPathDir;
                 data.content = this.processGuideHtml(html, data);
                 data = this.processGuideDataObject(data);
                 data.contentPartial = '_html-guideBody';
+
+                node.link = link;
 
                 Fs.writeFile(filePath, this.guideTemplate(data), 'utf8', (err) => {
                     if (err) {

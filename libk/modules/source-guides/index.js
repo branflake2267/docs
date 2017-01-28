@@ -443,10 +443,10 @@ class SourceGuides extends SourceApi {
                 let filePath = this.getGuideFilePath(rootPath, node.name),
                     data     = Object.assign({}, node);
 
-                data = Object.assign(this.options, data);
-                data = Object.assign(this.options.prodVerMeta, data);
-                data.content = this.processGuideHtml(html);
+                data = Object.assign(data, this.options);
+                data = Object.assign(data, this.options.prodVerMeta);
                 data.rootPath = Path.parse(filePath).dir;
+                data.content = this.processGuideHtml(html, data);
                 data = this.processGuideDataObject(data);
                 data.contentPartial = '_html-guideBody';
 
@@ -480,7 +480,7 @@ class SourceGuides extends SourceApi {
      * @param {String} html The markdown from the guide source file
      * @return {String} The HTML processed from the markdown processor
      */
-    processGuideHtml (html) {
+    processGuideHtml (html, data) {
         // TODO finish with the guide HTML: decorate @examples, process links, etc.  Some of that may happen in some base class or may happen in a post processor module
         html = this.markup(html);
         html = this.decorateExamples(html);
@@ -491,16 +491,6 @@ class SourceGuides extends SourceApi {
                 'blue'
             ]
         });
-        return html;
-    }
-
-    /**
-     * Decorate @example blocks so that they can operate as inline fiddle examples
-     * @param {String} html The guide body HTML
-     * @return {String} The decorated guide body HTML
-     */
-    // TODO
-    decorateExamples (html) {
         return html;
     }
 }

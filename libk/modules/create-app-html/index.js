@@ -83,21 +83,13 @@ class HtmlApp extends AppBase {
      * i.e. app.js, app.css, ace editor assets, etc.
      */
     copyAssets () {
-        /*let root = this.options._myRoot,
-            mainCss = Path.join(root, 'assets/css/main.css'),
-            tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css');
-        console.log(tachyonsCss);
-        let css = UglifyJS.minify([tachyonsCss, mainCss]);
-
-        console.log(css);
-        return;*/
-
         let options     = this.options,
             production  = options.production,
             root        = options._myRoot,
             assetsSrc   = Path.join(root, 'assets'),
             mainCss     = Path.join(assetsSrc, 'css/main.css'),
             tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css'),
+            faCss       = Path.join(assetsSrc, 'css/docs-font-awesome.css'),
             css         = new CleanCSS({
                 compatibility : 'ie9',
                 level         : production ? 2 : 0,
@@ -123,6 +115,7 @@ class HtmlApp extends AppBase {
                     wrapAt: false // controls maximum line length; defaults to `false` 
                 }
             }).minify([
+                faCss,       // font awesome styles
                 tachyonsCss, // the tachyons CSS base
                 mainCss      // app-specific styling / overrides
             ]);
@@ -158,13 +151,13 @@ class HtmlApp extends AppBase {
      * @param {String} html The markdown from the guide source file
      * @return {String} The processed guide HTML
      */
-    processGuideHtml (html) {
+    processGuideHtml (html, data) {
         // processes the markdown to HTML
-        html = super.processGuideHtml(html);
+        html = super.processGuideHtml(html, data);
 
         // TODO finish with the guide HTML: decorate @examples, process links, etc.
 
-        html = this.parseApiLinks(html);
+        html = this.parseApiLinks(html, data);
 
         return html;
     }
@@ -201,11 +194,26 @@ class HtmlApp extends AppBase {
      * @param {String} memberName The name of the member (or member group potentially) or
      * undefined if no member was specified in the link
      * @param {String} text The text to display in the link if specified
+     * @param {Object} data The data object to be applied to the template for the current 
+     * doc / guide page
      * @return {String} The link markup
      */
     // TODO process the api links for HTML guides
-    createApiLink(product, version, toolkit, className, memberName, text) {
-        //
+    createApiLink(product, version, toolkit, className, memberName, text, data) {
+        let rootPath   = data.rootPath,
+            outputDir  = this.options.outputDir,
+            relPath    = Path.relative(rootPath, outputDir),
+            href       = Path.join(relPath, product, version, toolkit, `${className}.html`);
+        
+        if (memberName) {
+            href += `#${memberName}`;
+        }
+
+        //console.log('href:', product, version, toolkit, className, memberName);
+        //console.log(Path.join(rootPath, product, version, toolkit, `${className}.html`));
+        //console.log(relPath);
+
+        return `<a href="${href}" class="link underline-hover blue">${text}</a>`;
     }
 }
 

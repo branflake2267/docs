@@ -820,66 +820,6 @@ class Base {
             Shell.cd(path);
         }
     }
-
-    /**
-     * Parse the API links found in an HTML blob.  The parser is looking for pseudo-links
-     * with a syntax like: [[product-version:ClassName#memberName text]].
-     *
-     * Examples:
-     * [[ext:Ext]] // the Ext class for the current version
-     * [[ext-6.0.2:Ext]] // the Ext class for version 6.0.2
-     * [[ext:Ext myExt]] // the Ext class for the current version with a display text of 'myExt'
-     * [[ext-5.0.0:Ext.grid.Panel#cfg-store]] // the `store` config on the Ext.grid.Panel class in 5.0.0
-     * [[ext-5.0.0:Ext.grid.Panel#cfg-store store]] // the `store` config on the Ext.grid.Panel class in 5.0.0 with display text of 'store'
-     *
-     * @param {String} html The HTML blob to mine for api links
-     * @return {String} The HTML blob with the pseudo-links replaced with actual links
-     */
-    parseApiLinks (html) {
-        html = html.replace(/\[{2}([a-z0-9.]+):([a-z0-9._\-#]+)\s?([a-z$\/'.()[\]\\_-\s]*)\]{2}/gim, (match, productVer, link, text) => {
-            let hasHash       = link.indexOf('#'),
-                hasDash       = link.indexOf('-'),
-                canSplit      = !!(hasHash > -1 || hasDash > -1),
-                splitIndex    = (hasHash > -1) ? hasHash                  : hasDash,
-                className     = canSplit ? link.substring(0, splitIndex)  : link,
-                hash          = canSplit ? link.substring(splitIndex + 1) : null,
-                prodDelimiter = productVer.indexOf('-'),
-                hasVersion    = prodDelimiter > -1,
-                product       = hasVersion ? productVer.substring(0, prodDelimiter) : productVer,
-                version       = hasVersion ? productVer.substr(prodDelimiter + 1)   : false,
-                toolkit       = (product === 'classic' || product === 'modern') ? product : 'api',
-                memberName;
-
-            product = this.getProduct(product);
-
-            // catches when a link is parsable, but does not contain a valid product to
-            // point to.  Throw and error and just return the originally matched string.
-            if (!product) {
-                this.log(`The link ${match} does not contain a valid product`, 'error');
-                return match;
-            }
-
-            // warn if the member is ambiguous - doesn't have a type specified
-            if (hash) {
-                // get the types and add a dash as that's how the link would be 
-                // constructed
-                let types    = this.memberTypes.map((type) => {
-                    return `${type}-`;
-                }).join('|'),
-                    typeEval = new RegExp(`^(${types})?([a-zA-Z0-9$-_]+)`).exec(hash);
-
-                // if no type is specified in the link throw a warning
-                if (!typeEval[1]) {
-                    this.log(`Ambiguous member name '${hash}'.  Consider adding a type to the URL`, 'info');
-                }
-
-            }
-
-            return this.createApiLink(product, version, toolkit, className, memberName, text);
-        });
-
-        return html;
-    }
 }
 
 module.exports = Base;

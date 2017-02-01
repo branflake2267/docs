@@ -176,8 +176,8 @@ class Base {
     /**
      * Filter out only the handlebars partial files from a list of files (those that have 
      * a file name that starts with an underscore)
-     * @param {Stringp[]} files Array of file names to filter
-     * @return {Stringp[]} The array of filtered file names
+     * @param {String[]} files Array of file names to filter
+     * @return {String[]} The array of filtered file names
      */
     getPartials (files) {
         return files.filter((file) => {
@@ -210,40 +210,10 @@ class Base {
             let fileName = files[i],
                 partialPath = Path.join(templateDir, fileName),
                 partialName = Path.parse(partialPath).name,
-                template = Fs.readFileSync(partialPath, 'utf8');;
+                template = Fs.readFileSync(partialPath, 'utf8');
             
             Handlebars.registerPartial(partialName, template);
         }
-        
-        /*let partialsDir = __dirname + '/modules/base/tpls';
-        let filenames = fs.readdirSync(partialsDir);
-
-        filenames.forEach(function (filename) {
-            let matches = /^([^.]+).hbs$/.exec(filename),
-                name, template;
-            if (!matches) {
-                return;
-            }
-            name = matches[1];
-            template = fs.readFileSync(partialsDir + '/' + filename, 'utf8');
-            handlebars.registerPartial(name, template);
-        });
-
-        if (args.mod != 'diff') {
-            partialsDir = __dirname + '/product-templates/' + args.config;
-            filenames = fs.readdirSync(partialsDir);
-
-            filenames.forEach(function (filename) {
-                let matches = /^([^.]+).hbs$/.exec(filename),
-                    name, template;
-                if (!matches) {
-                    return;
-                }
-                name = matches[1];
-                template = fs.readFileSync(partialsDir + '/' + filename, 'utf8');
-                handlebars.registerPartial(name, template);
-            });
-        }*/
     }
 
     /**
@@ -300,7 +270,7 @@ class Base {
      * to `log`.
      *
      * **Note:** The message will only log out if the type passed is enabled by
-     * {@link #enabeLogging}
+     * {@link #enableLogging}
      */
     log (msg, type) {
         type = type || 'log';
@@ -558,7 +528,7 @@ class Base {
     }
 
     /**
-     * Sets the current status to the passed `msg` text.  A timestamp is recorded in
+     * Sets the current status to the passed `msg` text.  A time stamp is recorded in
      * order for {@link #closeStatus} to be able to display the elapsed time
      * @param {String} msg The status text to show
      */
@@ -668,7 +638,7 @@ class Base {
     }
 
     /**
-     *  Returns the full path of the ouput directory + product (+ version if applicable)
+     *  Returns the full path of the output directory + product (+ version if applicable)
      * + api directory name
      * @return {String} The api files' output path
      */

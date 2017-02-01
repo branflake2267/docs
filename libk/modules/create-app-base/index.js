@@ -24,11 +24,11 @@ class AppBase extends SourceGuides {
         let o = options,
             product    = o.product,
             version    = o.version,
-            majorVer   = version.charAt(),
+            majorVer   = this.apiVersion.charAt(),
             prodObj    = o.products[product],
             toolkitObj = prodObj.toolkit && prodObj.toolkit[majorVer],
             toolkits   = toolkitObj ? toolkitObj.toolkits : false,
-            toolkit    = o.toolkit || toolkitObj.defaultToolkit || 'api';
+            toolkit    = o.toolkit || (toolkitObj && toolkitObj.defaultToolkit) || 'api';
 
         o.prodVerMeta   = {
             majorVer    : majorVer,
@@ -43,6 +43,23 @@ class AppBase extends SourceGuides {
     }
 
     /**
+     * Returns the version passed by the CLI build command or the `currentVersion` from 
+     * the config file if there was no version passed initially
+     * @return {String} The version number for the current product
+     */
+    get apiVersion () {
+        let ver = this._apiVer;
+
+        if (!ver) {
+            let options = this.options;
+
+            ver = this._apiVer = options.version || options.currentVersion;
+        }
+
+        return ver;
+    }
+
+    /**
      * Default entry point for this module
      */
     // TODO wire up promises instead of events for app flow control
@@ -54,6 +71,9 @@ class AppBase extends SourceGuides {
         .then(this.runGuides.bind(this))
         .then(() => {
             console.log('ALL TOLD:', this.getElapsed(dt));
+        })
+        .catch((err) => {
+            this.log(err, 'error');
         });
     }
 
@@ -63,13 +83,18 @@ class AppBase extends SourceGuides {
      */
     // TODO remove events in favor of promises
     runApi () {
-        let options = this.options,
-            meta = this.options.prodVerMeta,
+        let options     = this.options,
+            meta        = this.options.prodVerMeta,
+            hasApi      = meta.hasApi,
             toolkitList = Utils.from(
                 meta.hasToolkits ?
-                (options.toolkit || meta.toolkits) :
-                false
+                    (options.toolkit || meta.toolkits) :
+                    false
             );
+        
+        if (!hasApi) {
+            return Promise.resolve();
+        }
         
         return toolkitList.reduce((sequence, tk) => {
             return sequence.then(() => {
@@ -184,13 +209,15 @@ class AppBase extends SourceGuides {
             out = html,
             options = this.options,
             prodObj = this.options.prodVerMeta.prodObj,
-            version = options.toolkit,
-            toolkit = options.toolkit,
-            fidMeta = {
+            hasApi  = prodObj.hasApi,
+            version = hasApi && options.toolkit,
+            toolkit = hasApi && options.toolkit;
+
+        let fidMeta = {
                 framework: prodObj.title, // either "Ext JS" or "Sencha Touch" as required by Fiddle
                 version: version,
                 toolkit: toolkit,
-                theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : prodObj.theme[version] || 'neptune'
+                theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
             },
             keyedRe      = /(\w+) = ([\w.]+)/i,
             frameworkMap = {
@@ -203,37 +230,7 @@ class AppBase extends SourceGuides {
         out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, function (match, meta, code) {
             meta = meta.trim();
             code = code.trim();
-                //id = me.id(),
-                //wrapId = me.id(),
-                //fid = {},
-                //prodObj = me.projectConfigs.productIndex[me.product],
-                //toolkit = me.toolkit,
-                //version = me.numberVer;
 
-            /*if (p1.indexOf('extjs') === 0 || p1.indexOf('touch') === 0) {
-                // should be formatted like: framework-fullVersion-theme-toolkit
-                // e.g.: extjs-6.0.2-neptune-classic
-                let parts = p1.split('-');
-
-                fid.framework = parts[0] === 'touch' ? 'Sencha Touch' : 'Ext JS';
-                fid.version   = parts[1];
-                fid.theme     = parts[2];
-                fid.toolkit   = parts[3];
-            } else {
-                fid = {
-                    framework: me.product === 'touch' ? 'Sencha Touch' : 'Ext JS',
-                    theme: toolkit ? prodObj.theme[version][toolkit] : prodObj.theme[version] || 'neptune',
-                    toolkit: toolkit || null,
-                    version: version
-                };
-            }
-
-            ret = Utils.format(fiddleWrap, id, ret, wrapId, JSON.stringify(fid));
-
-            return ret;*/
-
-            // if fiddle metadata is specified in the @example line merge it with the
-            // default values
             if (meta) {
                 fidMeta = Object.assign({}, fidMeta);
                 if (meta.includes(' ')) {

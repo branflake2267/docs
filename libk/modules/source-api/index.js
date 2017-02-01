@@ -20,7 +20,7 @@
  *  - decorate the member object as needed
  *  - adds the member to special objects on the class resource object for later use (i.e. indicating a list of instanceMethods that we can check against later when deriving accessors, etc.)
  * Loop over the configs and create any applicable getter / setter methods and add those to the methods group on the class resource obj
- * ? sort the items in each member group (? maybe just ones that get things moved around like properties and methods because of the accessors and static ones or maybe configs because of requried configs)
+ * ? sort the items in each member group (? maybe just ones that get things moved around like properties and methods because of the accessors and static ones or maybe configs because of required configs)
  * The class resource object should now be sorted out and ready to be saved somewhere, but first..
  * Add the class to the search
  * Add the class to the class tree
@@ -547,13 +547,13 @@ class SourceApi extends Base {
             clsName  = rawRoot.name;
 
         if (type === 'vars') {
-            member.$type = 'css_var-S'
+            member.$type = 'css_var-S';
         }
         if (type === 'sass-mixins') {
-            member.$type = 'css_mixin'
+            member.$type = 'css_mixin';
         }
 
-        if (member.type != null) {
+        if (member.type !== null) {
             member.type = this.splitInline(member.type,  ' / ');
         }
         member.text = me.markup(member.text);

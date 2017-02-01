@@ -61,7 +61,7 @@ const args = require('yargs')
     .argv;
 
 //const targets   = ['read-source', 'build-html', 'build-app', 'landing'],
-const targets   = ['create-app-html', 'create-app-ext', 'source-api', 'source-guides', 'landing'],
+const targets   = ['create-app-html', 'create-rext-app-html', 'create-app-ext', 'source-api', 'source-guides', 'landing'],
       targetMod = args._[0], // the target module to run
       method    = args._[1] || 'run',
       canRun    = targets.indexOf(targetMod) > -1;

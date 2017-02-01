@@ -245,6 +245,9 @@ class SourceGuides extends SourceApi {
         .then(this.copyResources.bind(this))
         .then(() => {
             console.log('runGuides:', this.getElapsed(dt));
+        })
+        .catch((err) => {
+            this.log(err, 'error');
         });
     }
 
@@ -441,7 +444,7 @@ class SourceGuides extends SourceApi {
                 node.href = Path.join('guides', outPath);
                 node.id   = `${rootPath}/${slug}`;
 
-                let data = Object.assign({}, node)
+                let data = Object.assign({}, node);
                 data     = Object.assign(data, this.options);
                 data     = Object.assign(data, this.options.prodVerMeta);
 

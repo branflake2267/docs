@@ -178,7 +178,7 @@ window.ExtL = window.ExtL || {};
             state = !!state;
         }
 
-        if (state == true) {
+        if (state === true) {
             if (!this.hasCls(el, cls)) {
                 el.className += ' ' + this.trim(cls);
                 el.className = ExtL.trim(el.className).replace(/  +/g, ' ');
@@ -196,7 +196,7 @@ window.ExtL = window.ExtL || {};
      */
     ExtL.canLocalStorage = function() {
         var ls = ExtL.hasLocalStorage,
-            uid = new Date,
+            uid = new Date(),
             result;
 
         try {
@@ -221,7 +221,7 @@ window.ExtL = window.ExtL || {};
      * @return {Boolean}
      */
     ExtL.isEmpty = function(value, allowEmptyString) {
-        return (value == null) || (!allowEmptyString ? value === '' : false) || (this.isArray(value) && value.length === 0);
+        return (value === null) || (!allowEmptyString ? value === '' : false) || (this.isArray(value) && value.length === 0);
     };
 
     /**
@@ -314,7 +314,7 @@ window.ExtL = window.ExtL || {};
      */
     ExtL.assign = function(target, varArgs) { // .length of function is 2
         'use strict';
-        if (target == null) { // TypeError if undefined or null
+        if (target === null) { // TypeError if undefined or null
             throw new TypeError('Cannot convert undefined or null to object');
         }
 
@@ -323,7 +323,7 @@ window.ExtL = window.ExtL || {};
         for (var index = 1; index < arguments.length; index++) {
             var nextSource = arguments[index];
 
-            if (nextSource != null) { // Skip over if undefined or null
+            if (nextSource !== null) { // Skip over if undefined or null
                 for (var nextKey in nextSource) {
                     // Avoid bugs when hasOwnProperty is shadowed
                     if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
@@ -400,7 +400,7 @@ window.ExtL = window.ExtL || {};
         } else if ( document.attachEvent ) {  // IE
 
             try {
-                isFrame = window.frameElement != null;
+                isFrame = window.frameElement !== null;
             } catch(e) {}
 
             // IE, the document is not inside a frame
@@ -701,7 +701,7 @@ window.ExtL = window.ExtL || {};
             i = 0,
             enc, len, key;
 
-        if (value == null) {
+        if (value === null) {
             return 'e:1';
         } else if(typeof value === 'number') {
             enc = 'n:' + value;
@@ -1109,5 +1109,5 @@ window.ExtL = window.ExtL || {};
         var e = document.createElement('div');
         e.innerHTML = input;
         return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-    }
+    };
 })();

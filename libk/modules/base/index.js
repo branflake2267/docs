@@ -103,6 +103,24 @@ class Base {
     }
 
     /**
+     * The directory where JS assets should be copied to in a build
+     * @return {String} The full path to the output JS directory
+     */
+    get jsDir () {
+        let dir = this._jsDir;
+
+        if (!dir) {
+            let assetsDir = this.assetsDir,
+                options   = this.options,
+                jsDir    = Utils.format(options.jsDir, options);
+
+            dir = this._jsDir = options.jsDir = Path.resolve(options._myRoot, jsDir);
+        }
+
+        return dir;
+    }
+
+    /**
      * The directory where image assets should be copied to in a build
      * @return {String} The full path to the output images directory
      */

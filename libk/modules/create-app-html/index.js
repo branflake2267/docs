@@ -83,6 +83,20 @@ class HtmlApp extends AppBase {
      * i.e. app.js, app.css, ace editor assets, etc.
      */
     copyAssets () {
+        let options   = this.options,
+            root      = options._myRoot,
+            assetsSrc = Path.join(root, 'assets');
+
+        this.copyCss();
+        this.copyJs();
+
+        Fs.copySync(assetsSrc, this.assetsDir);
+    }
+
+    /**
+     * Copy the CSS needed for the docs / guides
+     */
+    copyCss () {
         let options     = this.options,
             production  = options.production,
             root        = options._myRoot,
@@ -121,9 +135,41 @@ class HtmlApp extends AppBase {
             ]);
 
         Fs.ensureDirSync(this.cssDir);
-        Fs.writeFileSync(Path.join(this.cssDir, 'app.css'), css.styles, 'utf8')
+        Fs.writeFileSync(Path.join(this.cssDir, 'app.css'), css.styles, 'utf8');
+    }
 
-        Fs.copySync(assetsSrc, this.assetsDir);
+    /**
+     * 
+     */
+    copyJs () {
+        let options    = this.options,
+            production = options.production,
+            root       = options._myRoot,
+            assetsSrc  = Path.join(root, 'assets'),
+            extl       = Path.join(assetsSrc, 'js/ExtL.js'),
+            main       = Path.join(assetsSrc, 'js/main.js'),
+            aceFolder  = Path.join(root, 'node_modules/ace-builds/src-min-noconflict'),
+            ace        = Path.join(aceFolder, 'ace.js'),
+            modeJs     = Path.join(aceFolder, 'mode-javascript.js'),
+            worker     = Path.join(aceFolder, 'worker-javascript.js'),
+            theme      = Path.join(aceFolder, 'theme-chrome.js'),
+            jsMinified = UglifyJS.minify([
+                extl,
+                ace,
+                modeJs,
+                worker,
+                theme,
+                main
+            ], {
+                compress : production,
+                mangle   : production,
+                output   : {
+                    beautify : !production
+                }
+            });
+
+        Fs.ensureDirSync(this.jsDir);
+        Fs.writeFileSync(Path.join(this.jsDir, 'app.js'), jsMinified.code.toString(), 'utf8');
     }
 
     /**

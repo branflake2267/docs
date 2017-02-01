@@ -17,20 +17,22 @@
 const AppBase    = require('../create-app-base'),
       Path       = require('path'),
       Handlebars = require('handlebars'),
-      Fs         = require('fs-extra');
+      Fs         = require('fs-extra'),
+      UglifyJS   = require("uglify-js"),
+      CleanCSS   = require('clean-css');
 
 class HtmlApp extends AppBase {
     constructor (options) {
         super(options);
+
+        this.copyAssets();
     }
 
     /**
-     * 
+     * Default entry point for this module
      */
     run () {
         super.run();
-
-        this.copyAssets();
 
         // TODO create a product home page
         // TODO create a Landing page class (if a CLI param is passed - or can be called directly, of course)
@@ -70,7 +72,7 @@ class HtmlApp extends AppBase {
 
         if (!tpl) {
             // TODO differentiate the HTML guide template file for use in the HTML docs.  Will need TOC, google analytics, etc.
-            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-guide.hbs'), 'utf-8'));
+            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-main.hbs'), 'utf-8'));
         }
 
         return tpl;
@@ -81,7 +83,95 @@ class HtmlApp extends AppBase {
      * i.e. app.js, app.css, ace editor assets, etc.
      */
     copyAssets () {
-        //
+        let options   = this.options,
+            root      = options._myRoot,
+            assetsSrc = Path.join(root, 'assets');
+
+        this.copyCss();
+        this.copyJs();
+
+        Fs.copySync(assetsSrc, this.assetsDir);
+    }
+
+    /**
+     * Copy the CSS needed for the docs / guides
+     */
+    copyCss () {
+        let options     = this.options,
+            production  = options.production,
+            root        = options._myRoot,
+            assetsSrc   = Path.join(root, 'assets'),
+            mainCss     = Path.join(assetsSrc, 'css/main.css'),
+            tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css'),
+            faCss       = Path.join(assetsSrc, 'css/docs-font-awesome.css'),
+            css         = new CleanCSS({
+                compatibility : 'ie9',
+                level         : production ? 2 : 0,
+                format: {
+                    breaks: { // controls where to insert breaks 
+                        afterAtRule: !production, // controls if a line break comes after an at-rule; e.g. `@charset`; defaults to `false` 
+                        afterBlockBegins: !production, // controls if a line break comes after a block begins; e.g. `@media`; defaults to `false` 
+                        afterBlockEnds: !production, // controls if a line break comes after a block ends, defaults to `false` 
+                        afterComment: !production, // controls if a line break comes after a comment; defaults to `false` 
+                        afterProperty: !production, // controls if a line break comes after a property; defaults to `false` 
+                        afterRuleBegins: !production, // controls if a line break comes after a rule begins; defaults to `false` 
+                        afterRuleEnds: !production, // controls if a line break comes after a rule ends; defaults to `false` 
+                        beforeBlockEnds: !production, // controls if a line break comes before a block ends; defaults to `false` 
+                        betweenSelectors: !production // controls if a line break comes between selectors; defaults to `false` 
+                    },
+                    indentBy: production ? 0 : 4, // controls number of characters to indent with; defaults to `0` 
+                    indentWith: 'space', // controls a character to indent with, can be `'space'` or `'tab'`; defaults to `'space'` 
+                    spaces: { // controls where to insert spaces 
+                        aroundSelectorRelation: !production, // controls if spaces come around selector relations; e.g. `div > a`; defaults to `false` 
+                        beforeBlockBegins: !production, // controls if a space comes before a block begins; e.g. `.block {`; defaults to `false` 
+                        beforeValue: !production // controls if a space comes before a value; e.g. `width: 1rem`; defaults to `false` 
+                    },
+                    wrapAt: false // controls maximum line length; defaults to `false` 
+                }
+            }).minify([
+                faCss,       // font awesome styles
+                tachyonsCss, // the tachyons CSS base
+                mainCss      // app-specific styling / overrides
+            ]);
+
+        Fs.ensureDirSync(this.cssDir);
+        Fs.writeFileSync(Path.join(this.cssDir, 'app.css'), css.styles, 'utf8');
+    }
+
+    /**
+     * 
+     */
+    copyJs () {
+        let options    = this.options,
+            production = options.production,
+            root       = options._myRoot,
+            assetsSrc  = Path.join(root, 'assets'),
+            extl       = Path.join(assetsSrc, 'js/ExtL.js'),
+            main       = Path.join(assetsSrc, 'js/main.js'),
+            beautify   = Path.join(assetsSrc, 'js/beautify.js'),
+            aceFolder  = Path.join(root, 'node_modules/ace-builds/src-min-noconflict'),
+            ace        = Path.join(aceFolder, 'ace.js'),
+            modeJs     = Path.join(aceFolder, 'mode-javascript.js'),
+            worker     = Path.join(aceFolder, 'worker-javascript.js'),
+            theme      = Path.join(aceFolder, 'theme-chrome.js'),
+            jsMinified = UglifyJS.minify([
+                extl,
+                ace,
+                modeJs,
+                worker,
+                theme,
+                beautify,
+                main
+            ], {
+                compress : production,
+                mangle   : production,
+                output   : {
+                    beautify : !production
+                }
+            });
+
+        Fs.ensureDirSync(this.jsDir);
+        Fs.writeFileSync(Path.join(this.jsDir, 'app.js'), jsMinified.code.toString(), 'utf8');
     }
 
     /**
@@ -109,13 +199,13 @@ class HtmlApp extends AppBase {
      * @param {String} html The markdown from the guide source file
      * @return {String} The processed guide HTML
      */
-    processGuideHtml (html) {
+    processGuideHtml (html, data) {
         // processes the markdown to HTML
-        html = super.processGuideHtml(html);
+        html = super.processGuideHtml(html, data);
 
         // TODO finish with the guide HTML: decorate @examples, process links, etc.
 
-        html = this.parseApiLinks(html);
+        html = this.parseApiLinks(html, data);
 
         return html;
     }
@@ -127,7 +217,8 @@ class HtmlApp extends AppBase {
      * supplying it to the template
      */
     processGuideDataObject (data) {
-        this.buildToc(data);
+        data = super.processGuideDataObject(data);
+        return this.buildToc(data);
     }
 
     /**
@@ -137,6 +228,7 @@ class HtmlApp extends AppBase {
     buildToc (data) {
         // the guide body HTML
         let content = data.content;
+        return data;
         //TODO build the TOC and set it back on the data object
     }
 
@@ -150,11 +242,22 @@ class HtmlApp extends AppBase {
      * @param {String} memberName The name of the member (or member group potentially) or
      * undefined if no member was specified in the link
      * @param {String} text The text to display in the link if specified
+     * @param {Object} data The data object to be applied to the template for the current 
+     * doc / guide page
      * @return {String} The link markup
      */
     // TODO process the api links for HTML guides
-    createApiLink(product, version, toolkit, className, memberName, text) {
-        //
+    createApiLink(product, version, toolkit, className, memberName, text, data) {
+        let rootPath   = data.rootPath,
+            outputDir  = this.options.outputDir,
+            relPath    = Path.relative(rootPath, outputDir),
+            href       = Path.join(relPath, product, version, toolkit, `${className}.html`);
+        
+        if (memberName) {
+            href += `#${memberName}`;
+        }
+
+        return `<a href="${href}" class="link underline-hover blue">${text}</a>`;
     }
 }
 

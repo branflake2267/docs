@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="h-100 dark-gray">
+<head>
+    <title>{{#if name}}{{{name}}}{{else}}Docs{{/if}} | {{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}} {{/if}}</title>
+    <!--  Generated on {{{date}}} -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta property="og:image" content="{{imagesPath}}/sencha-200.png" />
+    <meta property="og:title" content="{{#if name}}{{{name}}}{{else}}Docs{{/if}} | {{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}} {{/if}}" />
+    <meta property="og:description" content="{{description}}" />
+    <meta property="og:site_name" content="Sencha Documentation" />
+    <meta property="og:url" content="{{canonical}}" />
+    <meta name="description" content="{{{description}}}">
+    <style>
+        /*!
+         *  Font Awesome 4.5.0 by @davegandy - http://fontawesome.io - @fontawesome
+         *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+         */
+        
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="{{cssPath}}/prism.css">
+    <link rel="stylesheet" type="text/css" href="{{cssPath}}/app.css">
+    <!-- <link rel="stylesheet" type="text/css" href="{{cssPath}}/../../../node_modules/tachyons/css/tachyons.css"> -->
+    
+    {{#headhtml}}
+        {{{.}}}
+    {{/headhtml}}
+
+</head>
+<body class="h-100 relative overflow-hidden {{#isHome}}is-home{{/isHome}}{{#isGuide}} is-guide{{/isGuide}}{{#isApi}} is-api{{/isApi}}{{#isLanding}} is-landing{{/isLanding}} {{#if hasGuides}} has-guides{{/if}} {{#if quickStartJson}} has-quick-start{{/if}} {{#if hasApi}} has-api{{/if}} tree-shown">
+    <script type="text/javascript">
+        function getOS() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+            if(/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return 'ios';
+            } else if(userAgent.match(/Android/i)) {
+                return 'android';
+            }
+        }
+
+        var isIE8 = false;
+
+        document.body.className += ' ' + getOS();
+
+        window.DocsApp = window.DocsApp || {};
+        DocsApp.meta   = {{{json myMeta}}};
+    </script>
+    <!--[if IE 8]>
+    <script type='text/javascript'>
+        isIE8 = true;
+    </script>
+    <![endif]-->
+    <script type="text/javascript">        
+        if (!isIE8) {
+            document.write('<script type=\"text/javascript\" src=\"{{jsPath}}/prism.js\"><\/script>');
+        }
+        if (DocsApp.meta.hasGuides) {
+            document.write('<script type=\"text/javascript\" src=\"{{jsPath}}/guidesTree.js\"><\/script>');
+        }
+        if (DocsApp.meta.hasApi) {
+            document.write('<script type=\"text/javascript\" src=\"{{jsPath}}/apiTree.js\"><\/script>');
+        }
+    </script>
+    <!-- <script type="text/javascript" src="{{jsPath}}ace.js"></script> -->
+    <script type="text/javascript" src="{{jsPath}}/app.js"></script>
+
+    {{> _help}}
+
+    <div id="header" class="w-100 bg-dark-blue fixed z-2 fl top-0">
+        <div class="logo fl">
+            <a class="link blue underline-hover" href="http://docs.sencha.com"><img height="32" src="{{imagesPath}}/sencha_logo_thumb.png"/></a>
+        </div>
+        <span id="mobile-main-nav-menu-btn" class="fa fa-bars absolute wuite lh-2 f3 top-0 pointer dn"></span>
+        <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl landing-product-menu-btn dn">
+            <div class="callout callout-b"></div>
+        </span>
+        {{#isApi}}
+            {{#if multSrc}}
+                <span class="page-title {{classType}} multi-src-btn">{{{name}}}</span>
+            {{else}}
+                <a class="link blue underline-hover page-title {{classType}}" href="{{{fileName}}}" target="_blank">{{{name}}}</a>
+            {{/if}}
+        {{/isApi}}
+        {{#isHome}}
+            <div class="page-title">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</div>
+        {{/isHome}}
+        {{#isGuide}}
+            <div class="page-title">{{{name}}}</div>
+        {{/isGuide}}
+        {{#if toolkitLink}}
+            <a class="link blue underline-hover toolkit-switch" href="{{toolkitLink}}">{{toolkit}} Toolkit</a>
+        {{/if}}
+        <span id="mobile-context-menu-btn" class="fa fa-cog"></span>
+    </div>
+
+    <div id="centerContent" class="absolute absolute--fill z-2">
+        <div id="history-nav" class="absolute absolute--fill pr4 pl3 bg-near-white bb b--light-gray">
+            <span id="history-config" class="history-config tooltip tooltip-tr-br" data-tip="Configure / Clear History"><div class="callout callout-b"></div></span>
+        </div>
+        <div id="class-tree-ct" class="bg-white absolute absolute--fill top-2 w4 overflow-hidden br bw1 b--light-gray class-tree">
+            <h2 class="product-header bg-navy ma0 dn">
+                <div class="logo">
+                    <a class="link blue underline-hover" href="http://docs.sencha.com"><img src="{{imagesPath}}/sencha_logo1x.png"/></a>
+                </div>
+                <a class="link underline-hover blue" href="{{homePath}}index.html">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</a>
+                <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn  tooltip tooltip-tl-bl"><div class="callout callout-b"></div></span>
+            </h2>
+            <div id="tree-header" class="pre-load absolute top-0 left-0 right-0 bg-transparent black z-2 b pl3">
+                {{!-- 
+                {{#if quickStartJson}}
+                    <div id="quickStartTab" class="toolbarHeaderButton{{#isQuickStart}} active-tab{{/isQuickStart}}">
+                        Quick Start
+                    </div>
+                {{/if}}
+                <div id="guideTab" class="toolbarHeaderButton{{#isGuide}} active-tab{{/isGuide}}">
+                    Guides
+                </div>
+                <div id="apiTab" class="toolbarHeaderButton{{#isApi}} active-tab{{/isApi}}">
+                    API
+                </div>
+                --}}
+                <div id="hide-class-tree" class="absolute top-1 right-0 pointer fa fa-caret-left near-black f3 ph2 pv1"></div>
+            </div>
+            <div id="tree-scroller" class="absolute absolute--fill">
+                <div id="tree" class="show-private show-protected is-tree hide{{#if classic}} ct-only{{/if}} absolute absolute--fill bg-near-white bt b--black-10 z-1 overflow-y-auto pa0">
+                    {{{treeview}}}
+                </div>
+                <!-- <div class="private-class-toggle-ct absolute left-0 right-0 bottom-0 z-1 bg-white lh-copy bt b--light-gray">
+                    <label class="pointer near-black" for="private-class-toggle">Show private classes</label>
+                    <input class="pointer br2 ba b--light-gray" id="private-class-toggle" type="checkbox" name="privateClassToggle" />
+                </div> -->
+
+                <!-- <div id="guide-tree" class="hide is-tree overflow-x-hidden overflow-y-auto absolute absolute--fill lh-copy bg-near-white bt b--light-gray navy z-1">
+                    {{#if guideJson}}{{#each guideJson}}{{> treeNodePartial}}{{/each}}{{/if}}
+                    <div class="fa fa-plus toggle-tree hide tooltip tooltip-tr-br" data-expand="Expand All Guides" data-collapse="Collapse All Guides"><div class="callout callout-b"></div></div>
+                </div> -->
+                {{!-- {{#if quickStartJson}}
+                    <div id="quick-start-tree" class="hide is-tree overflow-x-hidden overflow-y-auto absolute absolute--fill lh-copy bg-near-white bt b--light-gray navy z-1">
+                        {{#each quickStartJson}}{{> quickStartPartial}}{{/each}}
+                    </div>
+                {{/if}} --}}
+            </div>
+        </div>
+
+        <a class="link white fixed right-2 no-underline bg-blue pa2 dim z-2 ba tc bottom-2 mb3 dn" href="#" id="back-to-top">
+            <div class="fa fa-angle-up"></div>
+            <br>
+            top 
+        </a>
+
+        <div id="rightMembers" class="absolute top-2 bottom-0 right-0 overflow-visible bg-white">
+            {{!-- The content to use in the main part of the page is determined by script 
+            outputting the page.  The correct handlebars-partial file name should be 
+            passed in here --}}
+            {{> (lookup . 'contentPartial')}}
+        </div>
+    </div>
+
+    <h2 class="product-header absolute z-2 ma0 white">
+        <a class="link underline-hover" href="{{homePath}}index.html">{{{title}}} {{{numVer}}} {{#if meta}}- {{{meta}}}{{/if}}</a>
+        <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl"><div class="callout callout-b"></div></span>
+        <div id="peekaboo-input" class="peekaboo-input dn">
+            <input type="text" id="mobile-input" />
+        </div>
+    </h2>
+
+    <div id="product-tree-ct" class="hide dn bg-near-white absolute w4 h4 overflow-hidden z-max shadow-1">
+        <div id="product-tree" class="absolute absolute--fill pv1 ph2 navy z-3">
+            <div class="product-name-ct">
+                {{!-- TODO should rethink how we're working with the product tree
+                {{#each productTree}}
+                    <div id="product-menu-{{id}}" class="product-name-item">{{name}}</div>
+                {{/each}}
+                --}}
+            </div>
+            {{!-- TODO should rethink how we're working with the product tree
+            {{#each productTree}}
+                <div class="product-version-ct hide {{id}}">
+                    {{#if children}}
+                        <h2>{{name}}</h2>
+                        {{#each children}}
+                            {{#if children}}
+                            <h3>{{name}}</h3>
+                                {{#each children}}
+                                    {{#if compound}}
+                                        <div class="compound-product-item">{{{name}}}
+                                            {{#toolkits}}
+                                                <a {{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
+                                            {{/toolkits}}
+                                        </div>
+                                    {{else}}
+                                        <a class="product-item"{{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
+                                    {{/if}}
+                                {{/each}}
+                            {{else}}
+                                <a class="product-item"{{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
+                            {{/if}}
+                        {{/each}}
+                    {{else}}
+                        <h2>{{name}}</h2>
+                        <a {{#if preparedHref}} href="{{preparedHref}}"{{/if}}>{{{name}}}</a>
+                    {{/if}}
+                </div>
+            {{/each}}
+            --}}
+        </div>
+    </div>
+
+    <div id="historyConfigPanel" class="dn absolute z-4 shadow-1 bg-white overflow-hidden">
+        {{!-- TODO consider making history a partial? --}}
+        <div class="history-type-selector relative bg-moon-gray">
+            <input class="br2 ba b--light-gray" id="historyTypeCurrent" type="radio" name="historyType" value="current" checked="true" />
+            <label for="historyTypeCurrent">Current Product / Version</label><br>
+            <input class="br2 ba b--light-gray" id="historyTypeAll" type="radio" name="historyType" value="all" />
+            <label for="historyTypeAll">All</label><br>
+            <div id="history-label-toggle" class="relative ml2 o-50">
+                <input class="br2 ba b--light-gray" id="history-all-labels" type="checkbox" checked="true" />
+                <label for="history-all-labels">Show product details in the history bar</label>
+                <div class="mask absolute absolute--fill"></div>
+            </div>
+            <span id="history-clear" class="history-clear tooltip tooltip-tr-br absolute top-1 right-1 white bg-navy pointer br2 tc" data-tip="Clear History"><div class="callout callout-b"></div></span>
+        </div>
+        <div id="history-full-list" class="overflow-y-auto"></div>
+    </div>
+
+    <div id="search-history-panel" class="dn absolute z-4 shadow-1 bg-white overflow-hidden"></div>
+
+    {{!-- TODO are we even doing anythihng with modal anymore?  Can this be removed altogether? --}}
+    <div id="modal-placeholder" class="modal dn fixed z-2 pt4 left-0 top-0 w-100 h-100 overflow-auto bg-black-90">
+        <span id="modal-close" class="absolute top-2 right-3 b f-3">&times;</span>
+        <img id="modal-content" class="w-80">
+        <div id="modal-caption" class="db w-80 tc gray pv1 h4"></div>
+    </div>
+
+    {{#if multSrc}}
+        <div id="multi-src-picker">{{#srcFiles}}<a href="{{{href}}}" target="_blank">{{{path}}}</a>{{/srcFiles}}</div>
+    {{/if}}
+
+</body>
+{{#if hasApi}}
+    <script type="text/javascript" src="{{jsPath}}searchIndex.js"></script>
+{{/if}}
+{{#if hasGuides}}
+    <script type="text/javascript" src="{{jsPath}}guideSearch.js"></script>
+{{/if}}
+<!--[if lt IE 9 ]>
+<script type="text/javascript" src="{{jsPath}}media-query-poly.js"></script>
+<style>
+    span.da-inline-fiddle-nav-fiddle.x-fa.fa-play-circle {
+        display: none;
+    }
+</style>
+<![endif]-->
+<script>
+    if (navigator.userAgent.indexOf("Safari") > -1) {
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload()
+            }
+        };
+    }
+</script>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-1396058-28', 'auto');
+    ga('send', 'pageview');
+</script>
+</html>

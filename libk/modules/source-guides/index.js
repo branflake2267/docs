@@ -57,7 +57,7 @@ class SourceGuides extends SourceApi {
         let tpl = this._guideTpl;
 
         if (!tpl) {
-            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/guide.hbs'), 'utf-8'));
+            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-main.hbs'), 'utf-8'));
         }
 
         return tpl;
@@ -241,8 +241,6 @@ class SourceGuides extends SourceApi {
         let dt = new Date();
         console.log('PROCESSING GUIDES');
         this.syncRemote('guides', this.guideSourceDir);
-        //this.readGuideCfg();
-        //this.copyResources();
         this.readGuideCfg()
         .then(this.copyResources.bind(this))
         .then(() => {
@@ -316,14 +314,18 @@ class SourceGuides extends SourceApi {
 
             for (; i < len; i++) {
                 let guidesObj = items[i];
-                
+
                 this.guidesTree[guidesObj.text] = guidesObj.items;
-                this.prepareGuides(guidesObj.items, guidesObj.rootPath || '', outputArr);
+                this.prepareGuides(guidesObj.items, guidesObj.rootPath || '', outputArr, guidesObj.text);
             }
 
-            // TODO output the guide tree
+            // TODO output the guide tree in a promise-based method after the promise.all below
+            //console.log(this.guidesTree);
             
-            Promise.all(outputArr).then(resolve);
+            Promise.all(outputArr).then(() => {
+                this.outputGuideTree();
+                resolve();
+            });
         });
 
     }
@@ -336,15 +338,23 @@ class SourceGuides extends SourceApi {
      * @param {String} rootPath the path on disc where the guides from the nodes are
      * located
      */
-    prepareGuides (nodes, rootPath, outputArr) {
+    prepareGuides (nodes, rootPath, outputArr, navTreeName) {
         let i   = 0,
             len = nodes.length;
 
         // loop through all nodes
         for (; i < len; i++) {
-            let node     = nodes[i],
-                children = node.children,
-                slug     = node.slug;
+            let node        = nodes[i],
+                children    = node.children,
+                slug        = node.slug,
+                iconClasses = {
+                    universal : 'fa fa-file-text-o blue dib w1 mr1 ml3',
+                    classic   : 'classic-guide dib w1 mr1 ml3',
+                    modern    : 'modern-guide dib w1 mr1 ml3'
+                };
+
+            node.navTreeName = navTreeName;
+            node.text        = node.name;
 
             // if a rootPath was passed in create a directory in the output folder
             if (rootPath) {
@@ -355,14 +365,16 @@ class SourceGuides extends SourceApi {
             if (children) {
                 let path = Path.join(rootPath, slug);
 
+                node.id = node.slug;
+                node.iconCls = 'fa fa-folder-o dib w1 mr1';
                 this.makeGuideDir(path);
-                this.prepareGuides(children, path, outputArr);
+                this.prepareGuides(children, path, outputArr, navTreeName);
             // else decorate the node as leaf = true
             } else {
                 node.leaf = true;
+                node.iconCls = iconClasses[node.toolkit] || iconClasses.universal;
                 // if the node isn't simply a link itself then output its guide
                 if (!node.link) {
-                    
                     outputArr.push(this.outputGuide(node, rootPath));
                 }
             }
@@ -401,7 +413,7 @@ class SourceGuides extends SourceApi {
                 name
             );
 
-        return path  + '.html';
+        return `${path}.html`;
     }
 
     /**
@@ -412,20 +424,33 @@ class SourceGuides extends SourceApi {
      */
     outputGuide (node, rootPath) {
         return new Promise((resolve, reject) => {
-            let path = this.guidePathMap[Path.join(rootPath, node.slug)];
+            let slug = node.slug,
+                path = this.guidePathMap[Path.join(rootPath, slug)];
 
             Fs.readFile(path, 'utf-8', (err, html) => {
                 if (err) {
                     reject(Error(err));
                 }
 
-                let filePath = this.getGuideFilePath(rootPath, node.name),
-                    data     = Object.assign({}, node);
+                let filePath    = this.getGuideFilePath(rootPath, node.slug),
+                    rootPathDir = Path.parse(filePath).dir,
+                    relPath     = Path.relative(rootPathDir, this.guidesOutputDir),
+                    outPath     = Path.join(rootPath, `${slug}.html`),
+                    link        = Path.join(relPath, outPath);
 
-                Object.assign(this.options, data);
-                Object.assign(this.options.prodVerMeta, data);
-                data.content = this.processGuideHtml(html);
-                this.processGuideDataObject(data);
+                node.href = Path.join('guides', outPath);
+                node.id   = `${rootPath}/${slug}`;
+
+                let data = Object.assign({}, node)
+                data     = Object.assign(data, this.options);
+                data     = Object.assign(data, this.options.prodVerMeta);
+
+                data.rootPath = rootPathDir;
+                data.content = this.processGuideHtml(html, data);
+
+                data = this.processGuideDataObject(data);
+
+                data.contentPartial = '_html-guideBody';
 
                 Fs.writeFile(filePath, this.guideTemplate(data), 'utf8', (err) => {
                     if (err) {
@@ -446,6 +471,19 @@ class SourceGuides extends SourceApi {
      */
     processGuideDataObject (data) {
         // can be extended in the app post-processor subclasses
+        data.cssPath    = Path.relative(data.rootPath, this.cssDir);
+        data.jsPath     = Path.relative(data.rootPath, this.jsDir);
+        data.imagesPath = Path.relative(data.rootPath, this.imagesDir);
+
+        data.myMeta     = {
+            hasGuides   : data.hasGuides,
+            hasApi      : data.hasApi,
+            navTreeName : data.navTreeName,
+            myId        : data.id,
+            rootPath    : Path.relative(data.rootPath, this.outputProductDir)
+        };
+
+        return data;
     }
 
     /**
@@ -454,20 +492,36 @@ class SourceGuides extends SourceApi {
      * @param {String} html The markdown from the guide source file
      * @return {String} The HTML processed from the markdown processor
      */
-    processGuideHtml (html) {
+    processGuideHtml (html, data) {
         // TODO finish with the guide HTML: decorate @examples, process links, etc.  Some of that may happen in some base class or may happen in a post processor module
+        html = this.markup(html);
         html = this.decorateExamples(html);
-        return this.markup(html);
+        html = this.addCls(html, {
+            a: [
+                'link',
+                'underline-hover',
+                'blue'
+            ]
+        });
+        return html;
     }
 
     /**
-     * Decorate @example blocks so that they can operate as inline fiddle examples
-     * @param {String} html The guide body HTML
-     * @return {String} The decorated guide body HTML
+     * 
      */
-    // TODO
-    decorateExamples (html) {
-        return html;
+    outputGuideTree () {
+        return new Promise((resolve, reject) => {
+            let trees = JSON.stringify(this.guidesTree, null, 4),
+                wrap  = `DocsApp.guidesTree = ${trees}`,
+                dest  = Path.join(this.jsDir, 'guidesTree.js');
+
+            Fs.writeFile(dest, wrap, 'utf8', (err) => {
+                if (err) {
+                    reject(Error(err));
+                }
+                resolve();
+            });
+        });
     }
 }
 

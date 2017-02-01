@@ -15,17 +15,20 @@ function Tree (data, renderTo) {
     // render to the page.  This will create the parent node, child node, and the 
     // wrapping element around the child nodes used to collapse / hide child nodes
     var nodeCfgs = me.createNodeCfgs(data),
-        i = 0,
-        len = nodeCfgs.length,
+        i        = 0,
+        len      = nodeCfgs.length,
         // get the element we'll render the tree to
-        target = document.getElementById(renderTo);
+        target   = document.getElementById(renderTo);
 
     // now that we have the configs used to create each tree node (and its children) 
     // using ExtL.createElement we'll append each node (and its children) to the target 
     // element one after the other
     for (; i < len; i++) {
         var cfg = nodeCfgs[i];
-        target.appendChild(ExtL.createElement(cfg));
+
+        target.appendChild(
+            ExtL.createElement(cfg)
+        );
     }
 
     // sets up the event listener that expands / collapses parent tree nodes
@@ -60,9 +63,9 @@ function Tree (data, renderTo) {
 Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     data = ExtL.from(data);
 
-    var i = 0,
-        len = data.length,
-        cfgs = [];
+    var i    = 0,
+        len  = data.length,
+        cfgs =  [];
 
     this._parentNodes = [];
 
@@ -71,40 +74,52 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     for (; i < len; i++) {
         var node = data[i],
             cfg = {
-                tag : 'a',
-                id : node.id,
-                parenttreenode : parentId || null,
-                "class": 'hover-bg-black-10 db f6 black-80 tree-depth-' + depth
+                tag            : 'a',
+                id             : node.id,
+                parentTreeNode : parentId || null,
+                "class"        : 'truncate hover-bg-black-10 db f6 black-80 tree-depth-' + depth
             };
 
         if (node.children) {
             this._parentNodes.push(node.id);
             cfg["class"] += ' tree-parent-node pointer ' + this.collapseCls;
             cfg.cn = [{
-                tag: 'span',
-                html: '▸',
-                "class": 'tree-expando tree-expando-collapsed w1 dib'
+                tag     : 'span',
+                html    : '▸',
+                "class" : 'tree-expando tree-expando-collapsed w1 dib f4 mr1 tc'
             }, {
-                tag: 'span',
-                html: '▿',
-                "class": 'tree-expando tree-expando-expanded w1 dib'
+                tag     : 'span',
+                html    : '▿',
+                "class" : 'tree-expando tree-expando-expanded w1 dib f4 mr1 tc'
             }, {
-                tag: 'span',
-                html: node.text,
-                "class": 'tree-node-component'
+                tag     : 'i',
+                "class" : node.iconCls || ''
+            }, {
+                tag  : 'span',
+                html : node.text,
             }];
             cfgs.push(cfg);
 
             cfgs.push({
-                tag: 'div',
-                "class": 'child-nodes-ct',
-                cn: this.createNodeCfgs(node.children, node.id, depth + 1)
+                tag     : 'div',
+                "class" : 'child-nodes-ct',
+                cn      : this.createNodeCfgs(node.children, node.id, depth + 1)
             });
         } else {
             cfg.leaf = true;
-            cfg.html = node.text;
+            //cfg.html = node.text;
             cfg.href = node.link || (DocsApp.meta.rootPath + '/' + node.href);
             cfg["class"] += ' link underline-hover'
+            cfg.cn = [{
+                tag     : 'i',
+                "class" : node.iconCls || ''
+            }, {
+                tag  : 'span',
+                html : node.text,
+            }, {
+                tag     : 'i',
+                "class" : node.displayNew ? 'fa fa-star gold ml2' : ''
+            }];
             cfgs.push(cfg);
         }
     }
@@ -153,7 +168,7 @@ Tree.prototype.expandTo = function (node) {
     var el = ExtL.get(node);
     
     while (el) {
-        el = ExtL.get(el.getAttribute('parenttreenode'));
+        el = ExtL.get(el.getAttribute('parentTreeNode'));
         this.expand(el);
     }
 
@@ -279,9 +294,12 @@ DocsApp.initNavTreeTabs = function (tabs) {
     // the tab names so that we know which tab is active
     var navTreeName = DocsApp.meta.navTreeName,
         // the tree header container for all tabs
-        treeHeader = ExtL.get('tree-header'),
-        i    = 0,
-        len  = tabs.length,
+        treeHeader  = ExtL.get('tree-header'),
+        apiTree     = DocsApp.apiTree || {},
+        guidesTree  = DocsApp.guidesTree || {},
+        navTrees    = ExtL.assign({}, apiTree, guidesTree),
+        i           = 0,
+        len         = tabs.length,
         tab, isActive, cfg;
 
     // loop over the tab names and create each tab for the nav tree header
@@ -302,6 +320,7 @@ DocsApp.initNavTreeTabs = function (tabs) {
             cfg["class"] += ' active-tab bg-near-white ba b--black-10';
         // else it's decorated as an inactive tab
         } else {
+            console.log(navTrees[navTreeName]);
             cfg.href = 'sss';
             cfg["class"] += ' link bg-white bl bt br b--transparent hover-bg-black-10';
         }

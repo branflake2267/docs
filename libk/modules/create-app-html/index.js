@@ -148,6 +148,7 @@ class HtmlApp extends AppBase {
             assetsSrc  = Path.join(root, 'assets'),
             extl       = Path.join(assetsSrc, 'js/ExtL.js'),
             main       = Path.join(assetsSrc, 'js/main.js'),
+            beautify   = Path.join(assetsSrc, 'js/beautify.js'),
             aceFolder  = Path.join(root, 'node_modules/ace-builds/src-min-noconflict'),
             ace        = Path.join(aceFolder, 'ace.js'),
             modeJs     = Path.join(aceFolder, 'mode-javascript.js'),
@@ -159,6 +160,7 @@ class HtmlApp extends AppBase {
                 modeJs,
                 worker,
                 theme,
+                beautify,
                 main
             ], {
                 compress : production,

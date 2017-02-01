@@ -344,9 +344,14 @@ class SourceGuides extends SourceApi {
 
         // loop through all nodes
         for (; i < len; i++) {
-            let node     = nodes[i],
-                children = node.children,
-                slug     = node.slug;
+            let node        = nodes[i],
+                children    = node.children,
+                slug        = node.slug,
+                iconClasses = {
+                    universal : 'fa fa-file-text-o blue dib w1 mr1 ml3',
+                    classic   : 'classic-guide dib w1 mr1 ml3',
+                    modern    : 'modern-guide dib w1 mr1 ml3'
+                };
 
             node.navTreeName = navTreeName;
             node.text        = node.name;
@@ -361,11 +366,13 @@ class SourceGuides extends SourceApi {
                 let path = Path.join(rootPath, slug);
 
                 node.id = node.slug;
+                node.iconCls = 'fa fa-folder-o dib w1 mr1';
                 this.makeGuideDir(path);
                 this.prepareGuides(children, path, outputArr, navTreeName);
             // else decorate the node as leaf = true
             } else {
                 node.leaf = true;
+                node.iconCls = iconClasses[node.toolkit] || iconClasses.universal;
                 // if the node isn't simply a link itself then output its guide
                 if (!node.link) {
                     outputArr.push(this.outputGuide(node, rootPath));
@@ -470,6 +477,7 @@ class SourceGuides extends SourceApi {
 
         data.myMeta     = {
             hasGuides   : data.hasGuides,
+            hasApi      : data.hasApi,
             navTreeName : data.navTreeName,
             myId        : data.id,
             rootPath    : Path.relative(data.rootPath, this.outputProductDir)

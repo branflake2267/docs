@@ -58,8 +58,6 @@ function Tree (data, renderTo) {
  * @return {Object[]} The array of configs to pass to ExtL.createElement to create the 
  * actual tree nodes on the page
  */
-// TODO update the template to show a star if the node has "new" or whatever it is
-// TODO update the template to show an icon (this should be set on the node either explicitly in a config file or as output by a source parser)
 Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     data = ExtL.from(data);
 
@@ -67,12 +65,17 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         len  = data.length,
         cfgs =  [];
 
+    // cache the parent nodes - used by the collapseAll / expandAll methods
     this._parentNodes = [];
 
+    // the node depth is used to style the tree with extra padding per tree level
     depth = depth || 0;
 
+    // loop over all passed nodes
     for (; i < len; i++) {
-        var node = data[i],
+        var node = data[i], // the current node
+            // the default config to use for this node when processed to the DOM by 
+            // ExtL.createElement
             cfg = {
                 tag            : 'a',
                 id             : node.id,
@@ -80,9 +83,16 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 "class"        : 'truncate hover-bg-black-10 db f6 black-80 tree-depth-' + depth
             };
 
+        // if the node is not a leaf node and has its own child nodes then process 
+        // decorate the node accordingly and pass the children back into this method 
+        // recursively for their own processing
         if (node.children) {
+            // since this node is a parent node add it to the _parentNodes property
             this._parentNodes.push(node.id);
             cfg["class"] += ' tree-parent-node pointer ' + this.collapseCls;
+            // add the expand / collapse icons, any passed iconCls for the node, the node 
+            // text, and finally a wrapping container for all child nodes (used to 
+            // collapse children in the UI)
             cfg.cn = [{
                 tag     : 'span',
                 html    : '▸',
@@ -100,16 +110,18 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             }];
             cfgs.push(cfg);
 
+            // the child node wrap (for expand / collapse control)
             cfgs.push({
                 tag     : 'div',
                 "class" : 'child-nodes-ct',
                 cn      : this.createNodeCfgs(node.children, node.id, depth + 1)
             });
         } else {
+            // decorate this node as a leaf node
             cfg.leaf = true;
-            //cfg.html = node.text;
-            cfg.href = node.link || (DocsApp.meta.rootPath + '/' + node.href);
-            cfg["class"] += ' link underline-hover'
+            cfg.href = DocsApp.buildTreeNodeHref(node);
+            cfg["class"] += ' pa1 link underline-hover';
+            // add the leaf node's icon, text, and a star if it's indicated as "new"
             cfg.cn = [{
                 tag     : 'i',
                 "class" : node.iconCls || ''
@@ -286,6 +298,46 @@ DocsApp.initNavTree = function () {
 };
 
 /**
+ * @private
+ * Returns the link or constructed href (using the page's relative path to the docs 
+ * output root).  Returns `undefined` if the node passed in has neither a link or href.
+ * @param {Object} node The tree node to evaluate for link / href
+ * @return {String} The href for this node or `undefined` if none are found
+ */
+DocsApp.buildTreeNodeHref = function (node) {
+    var href;
+
+    if (node.href || node.link) {
+        href = node.link || (DocsApp.meta.rootPath + '/' + node.href);
+    }
+
+    return href;
+};
+
+/**
+ * @private
+ * Returns the first nav tree link / href.  Used by {@link #initNavTreeTabs} when 
+ * building the tabs in the nav tree header.  Tabs that are not for the active nav tree 
+ * are links to another page relating to that tab.
+ * @param {Object} node The node to evaluate for href / link
+ * @return {String} The href to set on the tab's anchor element
+ */
+DocsApp.getNodeHref = function (node) {
+    // cfg.href = node.link || (DocsApp.meta.rootPath + '/' + node.href);
+    var href;
+
+    while (!href) {
+        if (node.href || node.link) {
+            href = DocsApp.buildTreeNodeHref(node);
+        } else {
+            node = node.children[0];
+        }
+    }
+    
+    return href;
+};
+
+/**
  * Creates the navigation tabs for the navigation panel using the passed tab names
  * @param {String[]} tabs The names of the tabs to create
  */
@@ -318,10 +370,12 @@ DocsApp.initNavTreeTabs = function (tabs) {
         // if this is the active tab decorate it as active
         if (isActive) {
             cfg["class"] += ' active-tab bg-near-white ba b--black-10';
-        // else it's decorated as an inactive tab
+        // else it's decorated as an inactive tab and given a link to that tab's landing 
+        // page
         } else {
-            console.log(navTrees[navTreeName]);
-            cfg.href = 'sss';
+            cfg.href = DocsApp.getNodeHref(
+                navTrees[tab][0]
+            );
             cfg["class"] += ' link bg-white bl bt br b--transparent hover-bg-black-10';
         }
 

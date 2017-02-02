@@ -388,7 +388,7 @@ class SourceApi extends Base {
      * Create the resources directory if not already created
      * @return {Object} Promise
      */
-    ensureResourcesDir () {
+    /*ensureResourcesDir () {
         return new Promise((resolve, reject) => {
             let path = Path.resolve(
                 __dirname,
@@ -406,7 +406,7 @@ class SourceApi extends Base {
                 }
             });
         });
-    }
+    }*/
 
     /**
      * Entry method to process the doxi files into files for use by the HTML docs or Ext
@@ -415,8 +415,13 @@ class SourceApi extends Base {
     readDoxiFiles () {
         let dt = new Date();
         return this.createSrcFileMap()
-        .then(this.ensureResourcesDir.bind(this))
+        //.then(this.ensureResourcesDir.bind(this))
+        .then(() => {
+            this.ensureDir(this.apiDir);
+        })
         .then(this.outputApiFiles.bind(this))
+        // TODO add in a couple of then()s that 1) output the search file itself and 2) 
+        // output the class tree
         .then(() => {
             console.log(new Date() - dt);
             return this.createSrcFiles();
@@ -427,7 +432,10 @@ class SourceApi extends Base {
     }
 
     /**
-     * 
+     * Outputs all class files from the Doxi processing (and any post-processing from 
+     * source-api) by passing the classname and class object to {@link #outputApiFile}
+     * @return {Object} A Promise that processes all class files and calls to 
+     * `outputApiFile`
      */
     outputApiFiles () {
         let outputs = [],
@@ -436,11 +444,13 @@ class SourceApi extends Base {
             i = 0,
             len = classNames.length;
 
+        // loops through all class names from the classMap
         for (; i < len; i++) {
             let className = classNames[i],
+                // the prepared object is the one that has been created by 
+                // `createSrcFileMap` and will be processed in `decorateClass`
                 prepared = classMap[className].prepared;
 
-            // TODO MAKE SEARCH HAPPEN HERE SOMEHOW -> then later output the search file itself
             // TODO MAKE THE CLASS TREE
 
             // Process API file into curated API class file
@@ -451,21 +461,35 @@ class SourceApi extends Base {
 
     /**
      * Outputs the processed doxi file to a .json file in the resources folder for use by
-     * the Ext app
+     * the Ext app  
+     * 
+     * **Note:** This method is likely to be overridden by any app-processing module 
+     * (such as create-app-html) to output an HTML file rather than a JSON file
+     * @return {Object} A promise the resolves once the api file is written to the output 
+     * directory
      */
     outputApiFile (className, prepared) {
         return new Promise((resolve, reject) => {
-            let resourcePath = Path.join(this.resourcesDir, this.apiDirName, className + '.json'),
-                fileName     = Path.resolve(__dirname, resourcePath),
+            let fileName = Path.join(this.apiDir, `${className}.json`),
                 output       = JSON.stringify(prepared, null, 4),
                 classMap     = this.classMap;
 
             this.decorateClass(className);
+            // delete the cached Doxi object to free memory
             delete classMap[className].raw;
+            
+            // TODO search - search processing is cumulative as each class is added to 
+            // the search blob as its processed.  So, process this class to the search 
+            // blob and then output the search blob after all files are processed / output
+
+            // TODO class tree - each class will need to be added to a class tree for use 
+            // in navigation the API docs.  Each class should be added to the tree and 
+            // then once it's all said and done we spit out the class json file.
 
             Fs.writeFile(fileName, output, 'utf8', (err) => {
                 if (err) console.log('outputApiFile error');
                 delete classMap[className];
+                // resolve after a timeout to let garbage collection catch up
                 setTimeout(resolve, 100);
             });
         });
@@ -473,13 +497,18 @@ class SourceApi extends Base {
 
     /**
      * Decorate each doxi class file with metadata / member groupings to be used by the
-     * HTML docs or Ext app
+     * HTML docs or Ext app.  The class name is passed in and looked up in the `classMap` 
+     * which has cached a copy of the raw Doxi output (classMap.raw) and a copy to be 
+     * processed (classMap.processed).  This method evaluates the raw output and adjusts 
+     * / sorts / mutates it as needed for the final output and applies changes to the 
+     * 'processed' object.  
      * @param {String} className The name of the class to be processed
      */
     decorateClass (className) {
         let me       = this,
             classMap = me.classMap,
-            // TODO does the raw doxi output need to be cached or can it just be passed directly here?  Is it used somewhere else that it needs to be cached?
+            // TODO does the raw doxi output need to be cached or can it just be passed 
+            // directly here?  Is it used somewhere else that it needs to be cached?
             raw      = classMap[className].raw,
             prepared = classMap[className].prepared;
 

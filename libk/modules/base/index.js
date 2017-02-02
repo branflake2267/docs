@@ -563,6 +563,15 @@ class Base {
     }
 
     /**
+     * Performs and cleanup / status as the build concludes
+     */
+    concludeBuild () {
+        // TODO see about replacing this with a closeStatus() call instead once we have 
+        // the process populated with statuses
+        process.exit();
+    }
+
+    /**
      * @method createLink
      * @param href
      * @param text
@@ -661,6 +670,23 @@ class Base {
     get apiDir () {
         // ** NOTE ** Do not cache since the apiDirName may be changed between toolkits
         return Path.join(this.outputProductDir, this.apiDirName);
+    }
+
+    /**
+     * Ensures that a directory exists and if not then it's created (mkdirp-style)
+     * @param {String} path The directory path to ensure / create
+     * @return {Object} A Promise that resolves once the directory is found / created
+     */
+    ensureDir (path) {
+        return new Promise((resolve, reject) => {
+            Fs.ensureDir(path, (err) => {
+                if (!err) {
+                    resolve(true);
+                }
+            });
+        }).catch((err) => {
+            this.log(err, 'error');
+        });
     }
 
     /**

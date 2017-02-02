@@ -246,7 +246,7 @@ class SourceGuides extends SourceApi {
         .then(() => {
             console.log('runGuides:', this.getElapsed(dt));
             // TODO Maybe ove to create-app-base after "All Told" once promise is respected
-            process.exit();
+            this.concludeBuild();
         })
         .catch((err) => {
             this.log(err, 'error');
@@ -327,7 +327,9 @@ class SourceGuides extends SourceApi {
             // TODO output the guide tree in a promise-based method after the promise.all below
             //console.log(this.guidesTree);
             
-            Promise.all(outputArr).then(() => {
+            Promise.all(outputArr)
+            // TODO search - here we'll need to output the search blob to a file
+            .then(() => {
                 this.outputGuideTree();
                 resolve();
             });
@@ -433,6 +435,10 @@ class SourceGuides extends SourceApi {
                 path = this.guidePathMap[Path.join(rootPath, slug)];
 
             Fs.readFile(path, 'utf-8', (err, html) => {
+
+                // TODO search - guide search will be cumulative.  In this step we add
+                // the guide to the search blob and later output the whole search file.
+
                 if (err) {
                     reject(Error(err));
                 }
@@ -471,17 +477,23 @@ class SourceGuides extends SourceApi {
      * @method makeID
      * Returns a string that has spaces, special characters, and slashes replaced
      * for id use.
-     * @param id
-     * @param name
-     * @returns {*}
+     * @param {String} id The element id to normalize
+     * @param {String} name The element text node
+     * @returns {String} The modified id
      */
     makeID (id, name) {
-        return id.replace("/", "-_-") + "_-_" + name.replace(/[^\w]+/g, "_").toLowerCase();
+        return id.replace("/", "-_-") + "_-_" + name.replace(/[^\w]+/g, "_")
+            .toLowerCase();
     }
 
     /**
-     * Build the table of contents from the HTML content and headers for each guide
-     * @param html
+     * Build the table of contents from the HTML content and headers for each guide 
+     * (excluding any <h1> headers)
+     * @param {String} html The html to mine for headings to turn in to the table of 
+     * contents
+     * @param {String} id The id of the guide being processed (for guides that's the path
+     *  to the guide + the guide slug)
+     * @return {String} The table of contents markup
      */
     buildTOC (html, id) {
         let rx = /<(h[2|3|4|5|6]+)(?:(?:\s+id=["]?)([a-zA-Z0-9-_]*)(?:["]?))?>(.*)<\/h[2|3|4|5|6]+>/gi,
@@ -507,6 +519,7 @@ class SourceGuides extends SourceApi {
      * data over to the guide template for final output
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
+     * @return {Object} The data object to apply to the guide template
      */
     processGuideDataObject (data) {
         // can be extended in the app post-processor subclasses

@@ -702,33 +702,6 @@ class Base {
     }
 
     /**
-     * Build the table of contents from the HTML content and headers for each guide
-     * (excluding any <h1> headers)
-     * @param {String} html The html to mine for headings to turn in to the table of
-     * contents
-     * @param {String} id The id of the guide being processed (for guides that's the path
-     *  to the guide + the guide slug)
-     * @return {String} The table of contents markup
-     */
-    buildTOC (html, id) {
-        let rx = /<(h[2|3|4|5|6]+)(?:(?:\s+id=["]?)([a-zA-Z0-9-_]*)(?:["]?))?>(.*)<\/h[2|3|4|5|6]+>/gi,
-            results = [],
-            result;
-
-        while ((result = rx.exec(html))) {
-            let name = result[3].replace(/<([^>]+?)([^>]*?)>(.*?)<\/\1>/ig, "");
-
-            results.push({
-                id   : this.makeID(id, name),
-                name : name,
-                tag  : result[1].toLowerCase()
-            });
-        }
-
-        return results;
-    }
-
-    /**
      * Converts the passed in markdown text to HTML markup
      * @param {String} text The markdown string to convert to HTML
      * @param {String} cls The API class being marked up (if applicable)

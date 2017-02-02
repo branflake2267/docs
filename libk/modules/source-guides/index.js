@@ -49,21 +49,6 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * The handlebars template for guide output (may be overridden by the post processor
-     * modules)
-     * @return {Object} The compiled handlebars template
-     */
-    get guideTemplate () {
-        let tpl = this._guideTpl;
-
-        if (!tpl) {
-            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-main.hbs'), 'utf-8'));
-        }
-
-        return tpl;
-    }
-
-    /**
      * The full path for the config file used to process the guides for the current
      * product / version
      * @return {String} The full path to the guides config file
@@ -463,7 +448,7 @@ class SourceGuides extends SourceApi {
 
                 data.contentPartial = '_html-guideBody';
 
-                Fs.writeFile(filePath, this.guideTemplate(data), 'utf8', (err) => {
+                Fs.writeFile(filePath, this.mainTemplate(data), 'utf8', (err) => {
                     if (err) {
                         reject(Error(err));
                     }

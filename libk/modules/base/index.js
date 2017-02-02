@@ -201,6 +201,20 @@ class Base {
     }
 
     /**
+     * The handlebars template for HTML output
+     * @return {Object} The compiled handlebars template
+     */
+    get mainTemplate () {
+        let tpl = this._guideTpl;
+
+        if (!tpl) {
+            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-main.hbs'), 'utf-8'));
+        }
+
+        return tpl;
+    }
+
+    /**
      * Register all handlebars partials from the templates directory
      */
     registerHandlebarsPartials () {

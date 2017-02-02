@@ -451,6 +451,18 @@ class SourceApi extends Base {
                 // `createSrcFileMap` and will be processed in `decorateClass`
                 prepared = classMap[className].prepared;
 
+            this.decorateClass(className);
+            // delete the cached Doxi object to free memory
+            delete classMap[className].raw;
+
+            // TODO search - search processing is cumulative as each class is added to 
+            // the search blob as its processed.  So, process this class to the search 
+            // blob and then output the search blob after all files are processed / output
+
+            // TODO class tree - each class will need to be added to a class tree for use 
+            // in navigation the API docs.  Each class should be added to the tree and 
+            // then once it's all said and done we spit out the class json file.
+
             // TODO MAKE THE CLASS TREE
 
             // Process API file into curated API class file
@@ -465,30 +477,19 @@ class SourceApi extends Base {
      * 
      * **Note:** This method is likely to be overridden by any app-processing module 
      * (such as create-app-html) to output an HTML file rather than a JSON file
+     * @param {String} className The name of the class to be output
+     * @param {Object} data The prepared Doxi object to be output
      * @return {Object} A promise the resolves once the api file is written to the output 
      * directory
      */
-    outputApiFile (className, prepared) {
+    outputApiFile (className, data) {
         return new Promise((resolve, reject) => {
             let fileName = Path.join(this.apiDir, `${className}.json`),
-                output       = JSON.stringify(prepared, null, 4),
-                classMap     = this.classMap;
-
-            this.decorateClass(className);
-            // delete the cached Doxi object to free memory
-            delete classMap[className].raw;
-            
-            // TODO search - search processing is cumulative as each class is added to 
-            // the search blob as its processed.  So, process this class to the search 
-            // blob and then output the search blob after all files are processed / output
-
-            // TODO class tree - each class will need to be added to a class tree for use 
-            // in navigation the API docs.  Each class should be added to the tree and 
-            // then once it's all said and done we spit out the class json file.
+                output   = JSON.stringify(data, null, 4);
 
             Fs.writeFile(fileName, output, 'utf8', (err) => {
                 if (err) console.log('outputApiFile error');
-                delete classMap[className];
+                delete this.classMap[className];
                 // resolve after a timeout to let garbage collection catch up
                 setTimeout(resolve, 100);
             });
@@ -530,6 +531,8 @@ class SourceApi extends Base {
         prepared.requiredConfigs = [];
         prepared.optionalConfigs = [];
         prepared.instanceMethods = {};
+
+        prepared.contentPartial = '_html-apiBody';
 
         let i   = 0,
             memberTypeGroups = rawRoot.items || [],

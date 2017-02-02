@@ -474,46 +474,6 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * @method makeID
-     * Returns a string that has spaces, special characters, and slashes replaced
-     * for id use.
-     * @param {String} id The element id to normalize
-     * @param {String} name The element text node
-     * @returns {String} The modified id
-     */
-    makeID (id, name) {
-        return id.replace("/", "-_-") + "_-_" + name.replace(/[^\w]+/g, "_")
-            .toLowerCase();
-    }
-
-    /**
-     * Build the table of contents from the HTML content and headers for each guide 
-     * (excluding any <h1> headers)
-     * @param {String} html The html to mine for headings to turn in to the table of 
-     * contents
-     * @param {String} id The id of the guide being processed (for guides that's the path
-     *  to the guide + the guide slug)
-     * @return {String} The table of contents markup
-     */
-    buildTOC (html, id) {
-        let rx = /<(h[2|3|4|5|6]+)(?:(?:\s+id=["]?)([a-zA-Z0-9-_]*)(?:["]?))?>(.*)<\/h[2|3|4|5|6]+>/gi,
-            results = [],
-            result;
-
-        while ((result = rx.exec(html))) {
-            let name = result[3].replace(/<([^>]+?)([^>]*?)>(.*?)<\/\1>/ig, "");
-
-            results.push({
-                id   : this.makeID(id, name),
-                name : name,
-                tag  : result[1].toLowerCase()
-            });
-        }
-
-        return results;
-    }
-
-    /**
      * @template
      * Template method to allow for additional guide data processing prior to handing the
      * data over to the guide template for final output
@@ -528,7 +488,7 @@ class SourceGuides extends SourceApi {
         data.imagesPath = Path.relative(data.rootPath, this.imagesDir);
         data.product    = data.prodObj.title;
 
-        data.toc       = this.buildTOC(data.content, data.id);
+        data.toc        = this.buildTOC(data.content, data.id);
 
         data.myMeta     = {
             version     : data.version,
@@ -551,7 +511,7 @@ class SourceGuides extends SourceApi {
     processGuideHtml (html, data) {
         // TODO finish with the guide HTML: decorate @examples, process links, etc.
         // TODO Some of that may happen in some base class or may happen in a post processor module
-        html = this.markup(html);
+        html = this.markup(html, data.id);
         html = this.decorateExamples(html);
         html = this.addCls(html, {
             a: [

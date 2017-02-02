@@ -88,7 +88,9 @@ class SourceApi extends Base {
                 ),
                 Utils.format(
                     this.options.parserConfigPath,
-                    this.options
+                    {
+                        product: this.apiProduct
+                    }
                 )
             )
         );
@@ -101,6 +103,7 @@ class SourceApi extends Base {
      */
     get doxiCfg () {
         // TODO cache this and other getters
+
         return Fs.readJsonSync(
             Path.join(
                 this.getDoxiCfgPath(),
@@ -142,6 +145,7 @@ class SourceApi extends Base {
      */
     get rootApiInputDir () {
         let options = this.options;
+        
         return Path.join(
             options._myRoot,
             options.apiInputDir
@@ -784,7 +788,7 @@ class SourceApi extends Base {
                             };
 
                         // write out the current source file
-                        Fs.writeFile(`${outDir}/${filename}.html.html`, this.srcTemplate(data), 'utf8', (err) => {
+                        Fs.writeFile(`${outDir}/${filename}.html`, this.srcTemplate(data), 'utf8', (err) => {
                             //if (err) console.log('outputSrcFiles error');
                             if (err) reject('outputSrcFiles error');
 

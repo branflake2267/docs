@@ -69,7 +69,7 @@ class AppBase extends SourceGuides {
         let dt = new Date();
         this.runApi()
         .then(() => {
-            this.runGuides.bind(this);
+            this.runGuides();
         })
         .then(() => {
             console.log('ALL TOLD:', this.getElapsed(dt));

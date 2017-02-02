@@ -690,19 +690,33 @@ class Base {
     }
 
     /**
+     * @method makeID
+     * Returns a string that has spaces, special characters, and slashes replaced
+     * for id use.
+     * @param {String} id The element id to normalize
+     * @param {String} name The element text node
+     * @returns {String} The modified id
+     */
+    makeID (id, name) {
+        return id.replace("/", "-_-") + "_-_" + name.replace(/[^\w]+/g, "_").toLowerCase();
+    }
+
+    /**
      * Converts the passed in markdown text to HTML markup
      * @param {String} text The markdown string to convert to HTML
      * @param {String} cls The API class being marked up (if applicable)
      * @return {String} The converted HTML text
      */
     markup (text, cls) {
+        let me = this;
+
         if (!text) {
             return '';
         }
 
         return marked(text, {
             addHeaderId: !cls ? false : function (text, level, raw) {
-                return cls.name.toLowerCase().replace(idRe, '-') + '_' + raw.toLowerCase().replace(idRe, '-');
+                return me.makeID(cls, raw)
             },
             appendLink: true,
             decorateExternal: true

@@ -610,6 +610,8 @@ class Base {
         }
 
         if (!href.includes('sencha.com') && (href.includes('http:')) || href.includes('https:')) {
+            //TODO external-link is being concated with blue, to make blueexternal-link
+            //Need to not do that, and have blue external-link instead.
             openExternal = "class='external-link' target='_blank' ";
         }
 

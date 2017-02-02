@@ -545,6 +545,11 @@ class SourceGuides extends SourceApi {
                 'link',
                 'underline-hover',
                 'blue'
+            ],
+            h1 : [
+                'truncated',
+                'fw4',
+                'dark-blue'
             ]
         });
         return html;

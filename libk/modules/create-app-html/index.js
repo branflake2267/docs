@@ -103,7 +103,7 @@ class HtmlApp extends AppBase {
             assetsSrc   = Path.join(root, 'assets'),
             mainCss     = Path.join(assetsSrc, 'css/main.css'),
             tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css'),
-            faCss       = Path.join(assetsSrc, 'css/docs-font-awesome.css'),
+            faCss       = Path.join(assetsSrc, 'css/docs-fonts.css'),
             css         = new CleanCSS({
                 compatibility : 'ie9',
                 level         : production ? 2 : 0,

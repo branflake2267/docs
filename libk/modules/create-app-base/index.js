@@ -60,6 +60,22 @@ class AppBase extends SourceGuides {
     }
 
     /**
+     * Returns the product passed by the CLI build command
+     * @return {String} The product to generate the API output for
+     */
+    get apiProduct () {
+        let prod = this._apiProd;
+
+        if (!prod) {
+            let options = this.options;
+
+            prod = this._apiProd = options.product;
+        }
+
+        return prod;
+    }
+
+    /**
      * Default entry point for this module
      */
     // TODO wire up promises instead of events for app flow control
@@ -95,7 +111,7 @@ class AppBase extends SourceGuides {
         if (!hasApi) {
             return Promise.resolve();
         }
-        
+
         return toolkitList.reduce((sequence, tk) => {
             return sequence.then(() => {
                 this.options.toolkit = tk;

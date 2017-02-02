@@ -55,6 +55,20 @@ class RextHtmlApp extends HtmlApp {
     }
 
     /**
+     * Returns the `extjs` product name used for processing the API output
+     * @return {String} The `extjs` product name
+     */
+    get apiProduct () {
+        let prod = this._apiProd;
+
+        if (!prod) {
+            prod = this._apiProd = 'extjs';
+        }
+
+        return prod;
+    }
+
+    /**
      * Returns the name of the doxi config file name to use when parsing the SDK.  Uses
      * the product of 'extjs', version associated with the currently building version of 
      * Rext JS (from the projectDefaults.json file), and toolkit currently being acted on.

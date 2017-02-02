@@ -19,12 +19,14 @@ const AppBase    = require('../create-app-base'),
       Handlebars = require('handlebars'),
       Fs         = require('fs-extra'),
       UglifyJS   = require("uglify-js"),
-      CleanCSS   = require('clean-css');
+      CleanCSS   = require('clean-css'),
+      Swag       = require('swag');
 
 class HtmlApp extends AppBase {
     constructor (options) {
         super(options);
 
+        Swag.registerHelpers(Handlebars);
         this.copyAssets();
     }
 
@@ -63,20 +65,18 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * The handlebars template for guide output (may be overridden by the post processor
-     * modules)
+     * The handlebars template for guide output
      * @return {Object} The compiled handlebars template
      */
-    get guideTemplate () {
+    /*get guideTemplate () {
         let tpl = this._guideTpl;
 
         if (!tpl) {
-            // TODO differentiate the HTML guide template file for use in the HTML docs.  Will need TOC, google analytics, etc.
             tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-main.hbs'), 'utf-8'));
         }
 
         return tpl;
-    }
+    }*/
 
     /**
      * Copy supporting assets to the output folder.  
@@ -258,6 +258,26 @@ class HtmlApp extends AppBase {
         }
 
         return `<a href="${href}" class="link underline-hover blue">${text}</a>`;
+    }
+
+    /**
+     * Outputs the processed doxi file to an HTML file  
+     * @param {String} className The name of the class to be output
+     * @param {Object} data The prepared Doxi object to be output
+     * @return {Object} A promise the resolves once the api file is written to the output 
+     * directory
+     */
+    outputApiFile (className, data) {
+        return new Promise((resolve, reject) => {
+            let fileName = Path.join(this.apiDir, `${className}.html`);
+
+            Fs.writeFile(fileName, this.mainTemplate(data), 'utf8', (err) => {
+                if (err) this.log(err, 'error');
+                delete this.classMap[className];
+                // resolve after a timeout to let garbage collection catch up
+                setTimeout(resolve, 100);
+            });
+        });
     }
 }
 

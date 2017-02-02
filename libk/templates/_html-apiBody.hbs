@@ -1,0 +1,225 @@
+<div id="member-toolbars">
+    <div id="member-class-name">
+        {{#clsSpec}}
+            <span class='{{{.}}}-icon'></span>
+        {{/clsSpec}}
+
+        <h1 class='{{classType}}'>
+            {{#if multSrc}}
+                <span class="multi-src-btn">{{{name}}}</span>
+            {{else}}
+                <a href="{{{fileName}}}" target="_blank">{{{name}}}</a>
+            {{/if}}
+            {{#classAlias}}
+                <span class='alias'>{{../aliasName}}: {{{.}}}</span>
+            {{/classAlias}}
+            {{#classAccess}}
+                <span class="member-tags"><span class="{{../classAccess}} full-flag">{{../classAccess}}</span></span>
+            {{/classAccess}}
+            {{#isDeprecated}}
+                <span class="member-tags"><span class="deprecated full-flag">deprecated</span></span>
+            {{/isDeprecated}}
+            {{#isRemoved}}
+                <span class="member-tags"><span class="removed full-flag">removed</span></span>
+            {{/isRemoved}}
+            {{#singleton}}
+                <span class="member-tags"><span class='singleton'>singleton</span></span>
+            {{/singleton}}
+            {{#abstract}}
+                <span class="member-tags"><span class='abstract'>abstract</span></span>
+            {{/abstract}}
+            {{#isEnum}}
+                <span class='alias'>enum of <b>String</b></span>
+            {{/isEnum}}
+            {{#if tier}}
+                <span class="member-tags"><span class="{{{tier}}}">{{{tier}}}</span></span>
+            {{/if}}
+        </h1>
+    </div>
+</div>
+<div class="context-menu-ct">
+    <div class="context-header">
+        <div id="hide-context-menu" class="fa fa-caret-right"></div>
+    </div>
+    <div class="search">
+        <form autocomplete="off">
+            {{#myToolkit}}
+                <div class="toolkit-search-filter-ct">
+                    <span id="modern-search-filter" class="tooltip tooltip-tr-br active" data-tip="Include Modern Search Results"><div class="callout callout-b"></div></span>
+                    <span id="classic-search-filter" class="tooltip tooltip-tr-br active" data-tip="Include Classic Search Results"><div class="callout callout-b"></div></span>
+                </div>
+            {{/myToolkit}}
+
+            <input type="text" type="search" placeholder="search" id="searchtext">
+            <i id="filtersubmit" class="fa fa-search"></i>
+            <span id="help-btn" data-tip="Docs Help" class="tooltip tooltip-tr-br"><div class="callout callout-b"></div></span>
+        </form>
+    </div>
+    <div class="context-menu-tabs">
+        <div id="filterTab" class="toolbarHeaderButton active-tab">
+            Filters
+        </div>
+        <div id="relatedClassesTab" class="toolbarHeaderButton">
+            Related Classes
+        </div>
+    </div>
+    <div id="filters-ct">
+        <div id="toolbar">
+            <div class="memberFilter">
+                <input placeholder="Filter members..." type="search" id="member-filter-field" name="member-filter-field">
+                <div id="toggleExamples" class="fa fa-code tooltip tooltip-tr-br" data-expand="Expand All Examples" data-collapse="Collapse All Examples"><div class="callout callout-b"></div></div>
+                <div id="toggleAll" class="fa fa-plus tooltip tooltip-tr-br" data-expand="Expand All Members" data-collapse="Collapse All Members"><div class="callout callout-b"></div></div>
+            </div>
+            <div id="member-display">
+                <div class="member-access-display"><label><input id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public</label></div>
+                <div class="member-access-display"><label><input id="protectedCheckbox" type="checkbox" value="member-protected" checked=true/>Protected</label></div>
+                <div class="member-access-display"><label><input id="privateCheckbox" type="checkbox" value="member-private" checked=true/>Private</label></div>
+                <div class="member-access-display"><label><input id="inheritedCheckbox" type="checkbox" value="member-inherited" checked=true/>Inherited</label></div>
+            </div>
+            <div id="member-types-menu" class="member-types-menu">
+            {{#memberTypeGroups}}
+                {{#is $type "configs"}}
+                    <a href="#configs" id="configs-button-link"><div id="configs-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-cubes"></i>
+                        <span class="member-type-btn-text">configs</span>
+                        <div id="configs-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "properties"}}
+                    <a href="#properties" id="properties-button-link"><div id="properties-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-book"></i>
+                        <span class="member-type-btn-text">properties</span>
+                        <div id="properties-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "methods"}}
+                    <a href="#methods" id="methods-button-link"><div id="methods-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-object-group"></i>
+                        <span class="member-type-btn-text">methods</span>
+                        <div id="methods-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "events"}}
+                    <a href="#events" id="events-button-link"><div id="events-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-bolt"></i>
+                        <span class="member-type-btn-text">events</span>
+                        <div id="events-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "vars"}}
+                    <a href="#vars" id="vars-button-link"><div id="vars-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-paint-brush"></i>
+                        <span class="member-type-btn-text">theme variables</span>
+                        <div id="vars-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+                {{#is $type "sass-mixins"}}
+                    <a href="#sass-mixins" id="sass-mixins-button-link"><div id="sass-mixins-nav-btn" class="toolbarButton disabled">
+                        <i class="fa fa-tint"></i>
+                        <span class="member-type-btn-text">theme mixins</span>
+                        <div id="sass-mixins-count" class="nav-btn-count"></div>
+                        <div class="nav-btn-mask"></div>
+                    </div></a>
+                {{/is}}
+            {{/memberTypeGroups}}
+            </div>
+        </div>
+    </div>
+    <div id="related-classes-context-ct" class="hide">
+        <!-- We'll programmatically copy in the related classes elements here on page load -->
+    </div>
+</div>
+<div id="class-body-wrap" class="class-body-wrap">
+    <div class="body-wrap-inner">
+        <div id="classText" class="classText">
+            <div class="classHead">
+                <div class="classMeta">
+                    {{#if altNames}}
+                        <div class="classMetaColumn">
+                            <h3>Alternate Names</h3>
+                            <p class="list">{{{altNames}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if extends}}
+                        <div class="classMetaColumn">
+                            <h3>Hierarchy</h3>
+                            {{{extends}}}
+                        </div>
+                    {{/if}}
+                    {{#if localMixins}}
+                        <div class="classMetaColumn">
+                            <h3>Mixins</h3>
+                            <p class="list">{{{localMixins}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if mixins}}
+                        <div class="classMetaColumn">
+                            <h3>Inherited Mixins</h3>
+                            <p class="list">{{{mixins}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if requires}}
+                        <div class="classMetaColumn">
+                            <h3>Requires</h3>
+                            <p class="list">{{{requires}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if uses}}
+                        <div class="classMetaColumn">
+                            <h3>Uses</h3>
+                            <p class="list">{{{uses}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if extenders}}
+                        <div class="classMetaColumn">
+                            <h3>Sub-Classes</h3>
+                            <p class="list">{{{extenders}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if mixers}}
+                        <div class="classMetaColumn">
+                            <h3>Mixed Into</h3>
+                            <p class="list">{{{mixers}}}</p>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+            {{#isDeprecated}}
+                {{#deprecatedMessage}}
+                    <div class="deprecated-dec">This class has been <span class="member-tags"><span class="deprecated">deprecated</span>{{#deprecatedVersion}} since {{.}}{{/deprecatedVersion}}</span>
+                        {{{.}}}</div>
+                {{/deprecatedMessage}}
+            {{/isDeprecated}}
+            {{#is classAccess "private"}}
+                <div class="privatecls-dec">
+                    NOTE: This is a private utility class for internal use by the framework. Don't rely on its existence.
+                </div>
+            {{/is}}
+            {{#if classText}}
+                <h2>Summary</h2>
+                {{{classText}}}
+            {{/if}}
+            {{#if isEnum}}
+                <div class="enum-msg">ENUM: This enumeration defines a set of String values. It exists primarily for documentation purposes - in code use the actual string values like '{{enumProperty}}', don't reference them through this class {{name}}.{{enumProperty}}.</div>
+            {{/if}}
+        </div>
+        <div class="no-visible-members-warning">No members found using the current filters</div>
+        <div class="members">
+            {{#memberTypeGroups}}
+                <div id="{{{$type}}}-ct">
+                    <h2 id="{{{$type}}}" class="type">{{{typeText}}}</h2>
+                    <a name="{{{$type}}}"></a>
+                    {{#items}}
+                        {{> _api-member}}  {{!-- process the member template --}}
+                    {{/items}}
+                </div>
+            {{/memberTypeGroups}}
+        </div>
+    </div>
+    {{> _footer}}
+</div>

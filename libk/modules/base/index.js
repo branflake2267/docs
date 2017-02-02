@@ -19,9 +19,11 @@ const EventEmitter = require('events'),
       Git          = require('git-state'),
       Handlebars   = require('handlebars');
 
-// TODO add this.log() stuff throughout all classes: `log` for general messaging, `info` for warnings, and `error` for serious / fatal errors
+// TODO add this.log() stuff throughout all classes: `log` for general messaging, `info`
+// for warnings, and `error` for serious / fatal errors
 // TODO add status() endpoints for each section we want to show to users as the app runs
-// TODO create a BuildApps class for running both the HTML and Ext builds (maybe controllable with CLI params)
+// TODO create a BuildApps class for running both the HTML and Ext builds (maybe
+// controllable with CLI params)
 class Base {
     constructor (options) {
         this.options = options;
@@ -49,7 +51,8 @@ class Base {
         };
 
         // possible member types
-        this.memberTypes = ['cfg', 'property', 'static-property', 'method', 'static-method', 'event', 'css_var-S', 'css_mixin'];
+        this.memberTypes = ['cfg', 'property', 'static-property', 'method',
+                            'static-method', 'event', 'css_var-S', 'css_mixin'];
 
         this.escapeRegexRe = /([-.*+?\^${}()|\[\]\/\\])/g;
 
@@ -232,6 +235,14 @@ class Base {
      * @param {Boolean/Object} level `true` to enable logging for all levels.  Else an
      * array containing one or more of the `log`, `info`, or `error` levels to enable.
      *
+     * **Note:** Logging can be enabled by passing `--log` or `--log=true` at the end of
+     * your CLI command.
+     *
+     * **Note:** You can specify message types by passing the type as a string, or
+     * comma separated string.  For instance:
+     *
+     *     `--log=error,info`
+     *
      * To enable `error` and `info`:
      *
      *     enableLogging(['error', 'info']);
@@ -268,6 +279,8 @@ class Base {
      * @param {String} msg The message to log
      * @param {String} type The type of logging to do: `error`, `log`, `info`.  Defaults
      * to `log`.
+     *
+     *      this.log('Oh no!', 'error');
      *
      * **Note:** The message will only log out if the type passed is enabled by
      * {@link #enableLogging}
@@ -570,7 +583,8 @@ class Base {
             text = href;
         }
 
-        // TODO This is probably in here for a reason, but for now I can't figure out what linkmap does for us.  Might have to test on it at some point
+        // TODO This is probably in here for a reason, but for now I can't figure out
+        // TODO what linkmap does for us.  Might have to test on it at some point
         /*for (var i = 0; i < linkmap.length; i++) {
             var item = linkmap[i];
 
@@ -596,6 +610,8 @@ class Base {
         }
 
         if (!href.includes('sencha.com') && (href.includes('http:')) || href.includes('https:')) {
+            //TODO external-link is being concated with blue, to make blueexternal-link
+            //Need to not do that, and have blue external-link instead.
             openExternal = "class='external-link' target='_blank' ";
         }
 

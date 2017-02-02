@@ -60,7 +60,6 @@ const args = require('yargs')
     .wrap()
     .argv;
 
-//const targets   = ['read-source', 'build-html', 'build-app', 'landing'],
 const targets   = ['create-app-html', 'create-rext-app-html', 'create-app-ext', 'source-api', 'source-guides', 'landing'],
       targetMod = args._[0], // the target module to run
       method    = args._[1] || 'run',
@@ -72,10 +71,10 @@ if (canRun) {
     // get the default project options and merge them with the app config
     // TODO see if the 'productIndex' of projectDefaults is even needed after we're all done
     let options = require('./configs/projectDefaults');
-    options     = Object.assign(options, require('./configs/app'));
-    // then merge the CLI params on top of that
-    options     = Object.assign(options, args);
-    options._myRoot = __dirname;
+        options     = Object.assign(options, require('./configs/app'));
+        // then merge the CLI params on top of that
+        options     = Object.assign(options, args);
+        options._myRoot = __dirname;
 
     // create the designated module
     let cls = require('./modules/' + targetMod);

@@ -84,7 +84,9 @@ class AppBase extends SourceGuides {
         //console.log('PROCESS ALL OF THE SOURCE FILES TO ');
         let dt = new Date();
         this.runApi()
-        .then(this.runGuides.bind(this))
+        .then(() => {
+            this.runGuides();
+        })
         .then(() => {
             console.log('ALL TOLD:', this.getElapsed(dt));
         })

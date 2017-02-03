@@ -1,6 +1,12 @@
 window.DocsApp = window.DocsApp || {};
 
 /**
+ * ***********************************
+ * TREE
+ * ***********************************
+ */
+
+/**
  * Tree class to create the nav tree for guides and docs
  * @param {Object[]} data The array of tree nodes to process
  * @param {String} renderTo The ID of the element to render the tree to
@@ -10,6 +16,9 @@ function Tree (data, renderTo) {
 
     // the class to apply to a node when it and its children are collapsed
     me.collapseCls = 'tree-node-collapsed';
+
+    // cache the parent nodes - used by the collapseAll / expandAll methods
+    me._parentNodes = [];
 
     // first we'll loop over all of the tree nodes and create the tree node elements to 
     // render to the page.  This will create the parent node, child node, and the 
@@ -65,9 +74,6 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         len  = data.length,
         cfgs =  [];
 
-    // cache the parent nodes - used by the collapseAll / expandAll methods
-    this._parentNodes = [];
-
     // the node depth is used to style the tree with extra padding per tree level
     depth = depth || 0;
 
@@ -106,7 +112,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 "class" : node.iconCls || ''
             }, {
                 tag  : 'span',
-                html : node.text,
+                html : node.text
             }];
             cfgs.push(cfg);
 
@@ -127,7 +133,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 "class" : node.iconCls || ''
             }, {
                 tag  : 'span',
-                html : node.text,
+                html : node.text
             }, {
                 tag     : 'i',
                 "class" : node.displayNew ? 'fa fa-star gold ml2' : ''
@@ -155,7 +161,7 @@ Tree.prototype.toggleCollapse = function (el, collapse) {
 
 /**
  * Expands the passed parent tree node
- * @param {String/HTMLElement} el The HTML element or ID of the tree node to expand
+ * @param {String/HTMLElement} node The HTML element or ID of the tree node to expand
  * @return {Object} The tree instance
  */
 Tree.prototype.expand = function (node) {
@@ -164,7 +170,7 @@ Tree.prototype.expand = function (node) {
 
 /**
  * Collapses the passed parent tree node
- * @param {String/HTMLElement} el The HTML element or ID of the tree node to collapse
+ * @param {String/HTMLElement} node The HTML element or ID of the tree node to collapse
  * @return {Object} The tree instance
  */
 Tree.prototype.collapse = function (node) {
@@ -173,7 +179,7 @@ Tree.prototype.collapse = function (node) {
 
 /**
  * Expand all ancestor nodes up to the passed node
- * @param {String/HTMLElement} el The HTML element or ID of the tree node to expand to
+ * @param {String/HTMLElement} node The HTML element or ID of the tree node to expand to
  * @return {Object} The tree instance
  */
 Tree.prototype.expandTo = function (node) {
@@ -201,6 +207,10 @@ Tree.prototype.toggleCollapseAll = function (collapse) {
     for (; i < len; i++) {
         this.toggleCollapse(parentNodes[i], collapse);
     }
+
+    //console.log(this);
+
+    //this.collapseCls = (this.collapseCls == "tree-node-collapsed") ? "" : "tree-node-collapsed";
 
     return this;
 };
@@ -233,7 +243,7 @@ Tree.prototype.getParentNodes = function () {
 
 /**
  * Decorates the passed tree node as selected
- * @param {String/HTMLElement} el The HTML element or ID of the tree node to select
+ * @param {String/HTMLElement} node The HTML element or ID of the tree node to select
  * @return {Object} The tree instance
  */
 Tree.prototype.select = function (node) {
@@ -243,8 +253,11 @@ Tree.prototype.select = function (node) {
     return this;
 };
 
-
-///////////////////////////
+/**
+ * ***********************************
+ * DOCS APP
+ * ***********************************
+ */
 
 /**
  * Builds the navigation tree using the passed tree object (determined in 
@@ -385,8 +398,108 @@ DocsApp.initNavTreeTabs = function (tabs) {
 };
 
 /**
+ * ***********************************
+ * EVENT HANDLERS
+ * ***********************************
+ */
+
+DocsApp.initEventHandlers = function () {
+    ExtL.get('toggleExamples').onclick   = onToggleExamplesClick;
+
+    ExtL.get('hide-class-tree').onclick  = toggleTreeVisibility;
+
+    ExtL.getByCls('toggle-tree').onclick = toggleTreeNodes;
+};
+
+/**
+ * ***********************************
+ * DOCUMENT READY
+ * ***********************************
+ */
+
+/**
  * Kicks off the logic of the page once the DOM is ready
  */
 ExtL.bindReady(function () {
     DocsApp.initNavTree();
+    DocsApp.initEventHandlers();
 });
+
+/**
+ * ***********************************
+ * FUNCTIONS
+ * ***********************************
+ */
+
+/* Begin Expand/Collapse Tree Nodes */
+
+function toggleTreeNodes() {
+    var navTree   = DocsApp.navTree,
+        collapsed = ExtL.hasCls(this, 'fa-minus');
+
+    navTree.toggleCollapseAll(collapsed);
+
+    this.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Classes');
+
+    ExtL.toggleCls(this, 'fa-minus');
+    ExtL.toggleCls(this, 'fa-plus');
+}
+
+/* End Expand/Collapse Tree Nodes */
+
+/* Begin Toggle Tree Visibility */
+
+function toggleTreeVisibility() {
+    var makeVisible = ExtL.hasCls(document.body, 'tree-hidden');
+
+    setTreeVisibility(makeVisible);
+
+    /*if (isStateful) {
+     saveState();
+     }*/
+}
+
+/**
+ * Set class tree visibility
+ * @param {Boolean} visible false to hide - defaults to true
+ */
+function setTreeVisibility(visible) {
+    visible = (visible !== false);
+    ExtL.toggleCls(document.body, 'tree-hidden', !visible);
+    ExtL.toggleCls(document.body, 'tree-shown', visible);
+
+    //saveState();
+}
+
+/* End Toggle Tree Visibility  */
+
+/* Begin Expand/Collapse Example Code */
+
+function onToggleExamplesClick () {
+    var body = document.querySelector('body'),
+        collapsed = ExtL.hasCls(body, 'collapse-code-all');
+
+    toggleExamples(!collapsed);
+
+    //saveState();
+}
+
+/**
+ * Collapse or expand all code / fiddle blocks
+ * @param {Boolean} collapse True to collapse, false to expand, or null to toggle all
+ * code / fiddle blocks
+ */
+function toggleExamples (collapse) {
+    var body = document.querySelector('body'),
+        collapseCls = 'collapse-code-all',
+        collapsed = ExtL.hasCls(body, collapseCls),
+        doCollapse = ExtL.isEmpty(collapse) ? !collapsed : collapse,
+        action = doCollapse ? 'addCls' : 'removeCls';
+
+    ExtL[action](body, collapseCls);
+    ExtL.each(ExtL.fromNodeList(document.getElementsByClassName('example-collapse-target')), function (ex) {
+        ExtL[action](ex, 'example-collapsed');
+    });
+}
+
+/* End Expand/Collapse Example Code */

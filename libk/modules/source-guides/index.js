@@ -526,15 +526,15 @@ class SourceGuides extends SourceApi {
         html = this.markup(html, data.id);
         html = this.decorateExamples(html);
         html = this.addCls(html, {
-            a: [
-                'link',
-                'underline-hover',
-                'blue'
-            ],
             h1 : [
                 'truncated',
                 'fw4',
                 'dark-blue'
+            ],
+            a: [
+                'link',
+                'underline-hover',
+                'blue'
             ]
         });
         return html;

@@ -1,6 +1,12 @@
 window.DocsApp = window.DocsApp || {};
 
 /**
+ * ***********************************
+ * TREE
+ * ***********************************
+ */
+
+/**
  * Tree class to create the nav tree for guides and docs
  * @param {Object[]} data The array of tree nodes to process
  * @param {String} renderTo The ID of the element to render the tree to
@@ -247,7 +253,11 @@ Tree.prototype.select = function (node) {
     return this;
 };
 
-///////////////////////////
+/**
+ * ***********************************
+ * DOCS APP
+ * ***********************************
+ */
 
 /**
  * Builds the navigation tree using the passed tree object (determined in 
@@ -388,84 +398,108 @@ DocsApp.initNavTreeTabs = function (tabs) {
 };
 
 /**
+ * ***********************************
+ * EVENT HANDLERS
+ * ***********************************
+ */
+
+DocsApp.initEventHandlers = function () {
+    ExtL.get('toggleExamples').onclick   = onToggleExamplesClick;
+
+    ExtL.get('hide-class-tree').onclick  = toggleTreeVisibility;
+
+    ExtL.getByCls('toggle-tree').onclick = toggleTreeNodes;
+};
+
+/**
+ * ***********************************
+ * DOCUMENT READY
+ * ***********************************
+ */
+
+/**
  * Kicks off the logic of the page once the DOM is ready
  */
 ExtL.bindReady(function () {
     DocsApp.initNavTree();
-
-    /* Begin Expand/Collapse Example Code */
-
-    ExtL.get('toggleExamples').onclick = onToggleExamplesClick;
-
-    function onToggleExamplesClick () {
-        var body = document.querySelector('body'),
-            collapsed = ExtL.hasCls(body, 'collapse-code-all');
-
-        toggleExamples(!collapsed);
-        // TODO add state stuff
-        //saveState();
-    }
-
-    /**
-     * Collapse or expand all code / fiddle blocks
-     * @param {Boolean} collapse True to collapse, false to expand, or null to toggle all
-     * code / fiddle blocks
-     */
-    function toggleExamples (collapse) {
-        var body = document.querySelector('body'),
-            collapseCls = 'collapse-code-all',
-            collapsed = ExtL.hasCls(body, collapseCls),
-            doCollapse = ExtL.isEmpty(collapse) ? !collapsed : collapse,
-            action = doCollapse ? 'addCls' : 'removeCls';
-
-        ExtL[action](body, collapseCls);
-        ExtL.each(ExtL.fromNodeList(document.getElementsByClassName('example-collapse-target')), function (ex) {
-            ExtL[action](ex, 'example-collapsed');
-        });
-    }
-
-    /* End Expand/Collapse Example Code */
-
-    /* Begin Expand/Collapse Tree Nodes */
-
-    ExtL.getByCls('toggle-tree').onclick = function() {
-        var navTree   = DocsApp.navTree,
-            collapsed = ExtL.hasCls(this, 'fa-minus');
-
-        navTree.toggleCollapseAll(collapsed);
-
-        this.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Classes');
-
-        ExtL.toggleCls(this, 'fa-minus');
-        ExtL.toggleCls(this, 'fa-plus');
-    };
-
-    /* End Expand/Collapse Tree Nodes */
-
-    /* Begin Hide Tree */
-
-    ExtL.get('hide-class-tree').onclick = function() {
-        var makeVisible = ExtL.hasCls(document.body, 'tree-hidden');
-
-        setTreeVisibility(makeVisible);
-
-        /*if (isStateful) {
-            saveState();
-        }*/
-    };
-
-    /**
-     * Set class tree visibility
-     * @param {Boolean} visible false to hide - defaults to true
-     */
-    function setTreeVisibility(visible) {
-        visible = (visible !== false);
-        ExtL.toggleCls(document.body, 'tree-hidden', !visible);
-        ExtL.toggleCls(document.body, 'tree-shown', visible);
-
-        //saveState();
-    }
-
-    /* Toggle Tree */
-
+    DocsApp.initEventHandlers();
 });
+
+/**
+ * ***********************************
+ * FUNCTIONS
+ * ***********************************
+ */
+
+/* Begin Expand/Collapse Tree Nodes */
+
+function toggleTreeNodes() {
+    var navTree   = DocsApp.navTree,
+        collapsed = ExtL.hasCls(this, 'fa-minus');
+
+    navTree.toggleCollapseAll(collapsed);
+
+    this.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Classes');
+
+    ExtL.toggleCls(this, 'fa-minus');
+    ExtL.toggleCls(this, 'fa-plus');
+}
+
+/* End Expand/Collapse Tree Nodes */
+
+/* Begin Toggle Tree Visibility */
+
+function toggleTreeVisibility() {
+    var makeVisible = ExtL.hasCls(document.body, 'tree-hidden');
+
+    setTreeVisibility(makeVisible);
+
+    /*if (isStateful) {
+     saveState();
+     }*/
+}
+
+/**
+ * Set class tree visibility
+ * @param {Boolean} visible false to hide - defaults to true
+ */
+function setTreeVisibility(visible) {
+    visible = (visible !== false);
+    ExtL.toggleCls(document.body, 'tree-hidden', !visible);
+    ExtL.toggleCls(document.body, 'tree-shown', visible);
+
+    //saveState();
+}
+
+/* End Toggle Tree Visibility  */
+
+/* Begin Expand/Collapse Example Code */
+
+function onToggleExamplesClick () {
+    var body = document.querySelector('body'),
+        collapsed = ExtL.hasCls(body, 'collapse-code-all');
+
+    toggleExamples(!collapsed);
+
+    //saveState();
+}
+
+/**
+ * Collapse or expand all code / fiddle blocks
+ * @param {Boolean} collapse True to collapse, false to expand, or null to toggle all
+ * code / fiddle blocks
+ */
+function toggleExamples (collapse) {
+    var body = document.querySelector('body'),
+        collapseCls = 'collapse-code-all',
+        collapsed = ExtL.hasCls(body, collapseCls),
+        doCollapse = ExtL.isEmpty(collapse) ? !collapsed : collapse,
+        action = doCollapse ? 'addCls' : 'removeCls';
+
+    ExtL[action](body, collapseCls);
+    ExtL.each(ExtL.fromNodeList(document.getElementsByClassName('example-collapse-target')), function (ex) {
+        ExtL[action](ex, 'example-collapsed');
+    });
+}
+
+/* End Expand/Collapse Example Code */

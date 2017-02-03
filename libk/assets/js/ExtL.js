@@ -148,6 +148,14 @@ window.ExtL = window.ExtL || {};
     };
 
     /**
+     * Returns the first instance of a found class
+     * @param cls
+     */
+    ExtL.getByCls = function(cls) {
+        return document.getElementsByClassName(cls)[0];
+    };
+
+    /**
      * Removes a CSS class from the top level element representing this component.
      * @param {Element} el The target element to remove the class from
      * @param {String} cls The CSS to remove
@@ -221,7 +229,7 @@ window.ExtL = window.ExtL || {};
      * @return {Boolean}
      */
     ExtL.isEmpty = function(value, allowEmptyString) {
-        return (value === null) || (!allowEmptyString ? value === '' : false) || (this.isArray(value) && value.length === 0);
+        return (value === null || value === undefined) || (!allowEmptyString ? value === '' : false) || (this.isArray(value) && value.length === 0);
     };
 
     /**

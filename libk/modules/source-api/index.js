@@ -572,11 +572,11 @@ class SourceApi extends Base {
         // indicates whether the class is of type component, singleton, or some other 
         // class
         if (cls.extended && cls.extended.includes('Ext.Component')) {
-            cls.clsSpec = 'component';
+            cls.clsSpec = 'component fa fa-gear black-60 f3 fl';
         } else if (cls.singleton === true) {
-            cls.clsSpec = 'singleton';
+            cls.clsSpec = 'singleton fa fa-cube f3 fl dark-pink';
         } else {
-            cls.clsSpec = 'class';
+            cls.clsSpec = 'class fa fa-cube f3 fl dark-blue';
         }
         
         data.myMeta     = {
@@ -604,8 +604,6 @@ class SourceApi extends Base {
                 data[type] = this.processMembers(className, type, members);
             }
         }
-
-        //console.log(data);
     }
 
     /**

@@ -1,17 +1,17 @@
 <div id="member-toolbars">
     <div id="member-class-name">
-        {{#clsSpec}}
-            <span class='{{{.}}}-icon'></span>
-        {{/clsSpec}}
+        {{#cls.clsSpec}}
+            <span class='{{.}}-icon'></span>
+        {{/cls.clsSpec}}
 
-        <h1 class='{{cls.$type}}'>
+        <h1 class='{{cls.$type}} black-50 truncated fw4 f3'>
             {{#if multSrc}}
                 <span class="multi-src-btn">{{{name}}}</span>
             {{else}}
-                <a href="{{{fileName}}}" target="_blank">{{{name}}}</a>
+                <a class="link blue underline-hover" href="{{{fileName}}}" target="_blank">{{{name}}}</a>
             {{/if}}
             {{#cls.alias}}
-                <span class='alias'>{{../cls.aliasPrefix}}: {{../cls.aliasName}}</span>
+                <span class='alias f6'>{{../cls.aliasPrefix}}: {{../cls.aliasName}}</span>
             {{/cls.alias}}
             {{#cls.access}}
                 <span class="member-tags"><span class="{{.}} full-flag">{{.}}</span></span>
@@ -38,10 +38,10 @@
     </div>
 </div>
 <div class="context-menu-ct">
-    <div class="context-header">
-        <div id="hide-context-menu" class="fa fa-caret-right"></div>
+    <div class="context-header navy ma0 dn">
+        <div id="hide-context-menu" class="fa fa-caret-right white f4 pointer tc "></div>
     </div>
-    <div class="search">
+    <div class="search absolute ma0 f">
         <form autocomplete="off">
             {{#prodVerMeta.hasToolkits}}
                 <div class="toolkit-search-filter-ct">
@@ -50,40 +50,52 @@
                 </div>
             {{/prodVerMeta.hasToolkits}}
 
-            <input type="text" type="search" placeholder="search" id="searchtext">
-            <i id="filtersubmit" class="fa fa-search"></i>
-            <span id="help-btn" data-tip="Docs Help" class="tooltip tooltip-tr-br"><div class="callout callout-b"></div></span>
+            <input class="br2 ba b--light-gray" type="text" type="search" placeholder="search" id="searchtext">
+            <i id="filtersubmit" class="fa fa-search fa fa-search absolute z-1 gray right-2 mt1"></i>
+            <span id="help-btn" data-tip="Docs Help" class="tooltip tooltip-tr-br"><div class="callout callout-b tooltip tooltip-tr-br relative pointer fa fa-question-circle white f3 v-mid pl1"></div></span>
         </form>
     </div>
-    <div class="context-menu-tabs">
+    <div class="context-menu-tabs tracked b z-1 dn absolute left-0 right-0">
         <div id="filterTab" class="toolbarHeaderButton active-tab">
             Filters
         </div>
-        <div id="relatedClassesTab" class="toolbarHeaderButton">
+        <div id="relatedClassesTab" class="toolbarHeaderButton dib bg-white color dark-gray br2 f6 pointer">
             Related Classes
         </div>
     </div>
     <div id="filters-ct">
-        <div id="toolbar">
-            <div class="memberFilter">
+        <div id="toolbar" class="bg-near-white bt bb b--light-gray relative cf">
+            <div class="memberFilter fr">
                 <input placeholder="Filter members..." type="search" id="member-filter-field" name="member-filter-field">
-                <div id="toggleExamples" class="fa fa-code tooltip tooltip-tr-br" data-expand="Expand All Examples" data-collapse="Collapse All Examples"><div class="callout callout-b"></div></div>
-                <div id="toggleAll" class="fa fa-plus tooltip tooltip-tr-br" data-expand="Expand All Members" data-collapse="Collapse All Members"><div class="callout callout-b"></div></div>
+                <div id="toggleExamples" class="fa fa-code tooltip tooltip-tr-br bg-navy white fr pointer br2 relative z-0" data-expand="Expand All Examples" data-collapse="Collapse All Examples">
+                    <div class="callout callout-b"></div>
+                </div>
+                <div id="toggleAll" class="fa fa-plus tooltip tooltip-tr-br bg-navy white fr pointer br2 relative z-0" data-expand="Expand All Members" data-collapse="Collapse All Members">
+                    <div class="callout callout-b"></div>
+                </div>
             </div>
-            <div id="member-display">
-                <div class="member-access-display"><label><input id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public</label></div>
-                <div class="member-access-display"><label><input id="protectedCheckbox" type="checkbox" value="member-protected" checked=true/>Protected</label></div>
-                <div class="member-access-display"><label><input id="privateCheckbox" type="checkbox" value="member-private" checked=true/>Private</label></div>
-                <div class="member-access-display"><label><input id="inheritedCheckbox" type="checkbox" value="member-inherited" checked=true/>Inherited</label></div>
+            <div id="member-display" class="bg-white absolute right-0 ">
+                <div class="member-access-display dib mr3"><label class="pointer">
+                    <input id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public</label>
+                </div>
+                <div class="member-access-display dib mr3">
+                    <label class="pointer"><input id="protectedCheckbox" type="checkbox" value="member-protected" checked=true/>Protected</label>
+                </div>
+                <div class="member-access-display dib mr3">
+                    <label class="pointer"><input id="privateCheckbox" type="checkbox" value="member-private" checked=true/>Private</label>
+                </div>
+                <div class="member-access-display dib mr3"><label class="pointer">
+                    <input id="inheritedCheckbox" type="checkbox" value="member-inherited" checked=true/>Inherited</label>
+                </div>
             </div>
-            <div id="member-types-menu" class="member-types-menu">
-            {{#memberTypeGroups}}
+            <div id="member-types-menu" class="member-types-menu dib">
+            {{#cls.memberTypeGroups}}
                 {{#is $type "configs"}}
-                    <a href="#configs" id="configs-button-link"><div id="configs-nav-btn" class="toolbarButton disabled">
+                    <a href="#configs" id="configs-button-link" class="black link"><div id="configs-nav-btn" class="toolbarButton disabled dib mr3 bg-near-white relative br2">
                         <i class="fa fa-cubes"></i>
-                        <span class="member-type-btn-text">configs</span>
-                        <div id="configs-count" class="nav-btn-count"></div>
-                        <div class="nav-btn-mask"></div>
+                        <span class="member-type-btn-text black">configs</span>
+                        <div id="configs-count" class="nav-btn-count absolute navy bg-near-white f6 b ba b--navy"></div>
+                        <div class="nav-btn-mask absolute top-0 left-0"></div>
                     </div></a>
                 {{/is}}
                 {{#is $type "properties"}}
@@ -126,19 +138,19 @@
                         <div class="nav-btn-mask"></div>
                     </div></a>
                 {{/is}}
-            {{/memberTypeGroups}}
+            {{/cls.memberTypeGroups}}
             </div>
         </div>
     </div>
-    <div id="related-classes-context-ct" class="hide">
+    <div id="related-classes-context-ct" class="dn">
         <!-- We'll programmatically copy in the related classes elements here on page load -->
     </div>
 </div>
-<div id="class-body-wrap" class="class-body-wrap">
-    <div class="body-wrap-inner">
-        <div id="classText" class="classText">
+<div id="class-body-wrap" class="class-body-wrap absolute bottom-0 left-0 right-0 overflow-x-hidden overflow-y-auto bg-white z-0">
+    <div class="body-wrap-inner min-h-100">
+        <div id="classText" class="classText lh-copy cf">
             <div class="classHead">
-                <div class="classMeta">
+                <div class="classMeta ba bw1 b--light-gray black-60 fr bg-light-gray pa3 overflow-hidden">
                     {{#if altNames}}
                         <div class="classMetaColumn">
                             <h3>Alternate Names</h3>
@@ -147,44 +159,44 @@
                     {{/if}}
                     {{#if extends}}
                         <div class="classMetaColumn">
-                            <h3>Hierarchy</h3>
+                            <h3 class="ma0">Hierarchy</h3>
                             {{{extends}}}
                         </div>
                     {{/if}}
                     {{#if localMixins}}
                         <div class="classMetaColumn">
-                            <h3>Mixins</h3>
-                            <p class="list">{{{localMixins}}}</p>
+                            <h3 class="ma0">Mixins</h3>
+                            <p class="list black-60 lh-copy">{{{localMixins}}}</p>
                         </div>
                     {{/if}}
                     {{#if mixins}}
                         <div class="classMetaColumn">
-                            <h3>Inherited Mixins</h3>
-                            <p class="list">{{{mixins}}}</p>
+                            <h3 class="ma0">Inherited Mixins</h3>
+                            <p class="list black-60 lh-copy">{{{mixins}}}</p>
                         </div>
                     {{/if}}
                     {{#if requires}}
                         <div class="classMetaColumn">
-                            <h3>Requires</h3>
-                            <p class="list">{{{requires}}}</p>
+                            <h3 class="ma0">Requires</h3>
+                            <p class="list black-60 lh-copy">{{{requires}}}</p>
                         </div>
                     {{/if}}
                     {{#if uses}}
                         <div class="classMetaColumn">
-                            <h3>Uses</h3>
-                            <p class="list">{{{uses}}}</p>
+                            <h3 class="ma0">Uses</h3>
+                            <p class="list black-60 lh-copy">{{{uses}}}</p>
                         </div>
                     {{/if}}
                     {{#if extenders}}
                         <div class="classMetaColumn">
-                            <h3>Sub-Classes</h3>
-                            <p class="list">{{{extenders}}}</p>
+                            <h3 class="ma0">Sub-Classes</h3>
+                            <p class="list black-60 lh-copy">{{{extenders}}}</p>
                         </div>
                     {{/if}}
                     {{#if mixers}}
                         <div class="classMetaColumn">
-                            <h3>Mixed Into</h3>
-                            <p class="list">{{{mixers}}}</p>
+                            <h3 class="ma0">Mixed Into</h3>
+                            <p class="list black-60 lh-copy">{{{mixers}}}</p>
                         </div>
                     {{/if}}
                 </div>
@@ -209,11 +221,11 @@
             {{/if}}
         </div>
         <div class="no-visible-members-warning">No members found using the current filters</div>
-        <div class="members">
+        <div class="members cf bt b--light-gray">
             {{#memberTypeGroups}}
                 <div id="{{{$type}}}-ct">
-                    <h2 id="{{{$type}}}" class="type">{{{typeText}}}</h2>
-                    <a name="{{{$type}}}"></a>
+                    <h2 id="{{{$type}}}" class="type blue mt1 lh-copy tracked ttu f4 bb bw3 b--black-30 fw4">{{{typeText}}}</h2>
+                    <a class="link underline-hover blue" name="{{{$type}}}"></a>
                     {{#items}}
                         {{> _api-member}}  {{!-- process the member template --}}
                     {{/items}}

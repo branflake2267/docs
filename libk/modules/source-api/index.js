@@ -563,10 +563,21 @@ class SourceApi extends Base {
         data = Object.assign(data, options);
         data = Object.assign(data, options.prodVerMeta);
 
+        // set the asset paths
         data.cssPath    = Path.relative(apiDir, this.cssDir);
         data.jsPath     = Path.relative(apiDir, this.jsDir);
         data.imagesPath = Path.relative(apiDir, this.imagesDir);
         data.product    = data.prodObj.title;
+
+        // indicates whether the class is of type component, singleton, or some other 
+        // class
+        if (cls.extended && cls.extended.includes('Ext.Component')) {
+            cls.clsSpec = 'component';
+        } else if (cls.singleton === true) {
+            cls.clsSpec = 'singleton';
+        } else {
+            cls.clsSpec = 'class';
+        }
         
         data.myMeta     = {
             version     : data.version,
@@ -577,6 +588,8 @@ class SourceApi extends Base {
             //rootPath    : Path.relative(data.rootPath, this.outputProductDir)
             rootPath    : ''
         };
+
+        data.memberTypeGroups = cls.items;
 
         let i   = 0,
             memberTypeGroups = cls.items || [],

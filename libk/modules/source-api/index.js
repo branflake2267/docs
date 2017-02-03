@@ -34,7 +34,8 @@ const Base       = require('../base'),
       Handlebars = require('handlebars'),
       Fs         = require('fs-extra'),
       Shell      = require('shelljs'),
-      Mkdirp     = require('mkdirp');
+      Mkdirp     = require('mkdirp'),
+      WidgetRe   = /widget\./g;
 
 class SourceApi extends Base {
     constructor (options) {
@@ -506,19 +507,20 @@ class SourceApi extends Base {
      * @param {String} className The name of the class to be processed
      */
     decorateClass (className) {
-        let me       = this,
-            classMap = me.classMap,
+        let options  = this.options,
+            classMap = this.classMap,
             // TODO does the raw doxi output need to be cached or can it just be passed 
             // directly here?  Is it used somewhere else that it needs to be cached?
             raw      = classMap[className].raw,
-            prepared = classMap[className].prepared;
-
-        let rawRoot  = raw.global.items[0];
+            data     = classMap[className].prepared,
+            cls      = raw.global.items[0],
+            apiDir   = this.apiDir;
+            
 
         // TODO note whether this is a singleton or not
         // TODO note whether this is a "component" or not
 
-        prepared.text = me.markup(prepared.text);
+        data.text = this.markup(data.text);
         // TODO need to decorate the following.  Not sure if this would be done differently for HTML and Ext app output
         /*mixins            : cls.mixed               ? me.splitInline(cls.mixed, '<br>')                                  : '',
         localMixins       : cls.mixins              ? me.splitInline(cls.mixins, '<br>')                                 : '',
@@ -528,14 +530,69 @@ class SourceApi extends Base {
         extenders         : cls.extenders           ? me.splitInline(JsonParser.processCommaLists(cls.extenders, false), '<br>') : '',
         mixers            : cls.mixers              ? me.splitInline(JsonParser.processCommaLists(cls.mixers, false), '<br>')    : '',*/
 
-        prepared.requiredConfigs = [];
-        prepared.optionalConfigs = [];
-        prepared.instanceMethods = {};
+        data.requiredConfigs = [];
+        data.optionalConfigs = [];
+        data.instanceMethods = {};
 
-        prepared.contentPartial = '_html-apiBody';
+        data.contentPartial = '_html-apiBody';
+
+        // set the alias info if the class has an alias
+        // .. if the alias is widget use the alias of 'xtype' in the output
+        // and list all aliases separated by a comma
+        let alias = cls.alias;
+
+        if (alias) {
+            let isWidget = alias.includes('widget');
+
+            cls.aliasPrefix = isWidget ? 'xtype' : alias.substr(0, alias.indexOf('.'));
+            cls.aliasName   = (isWidget ? alias.replace(WidgetRe, '') : alias)
+                              .replace(',', ', ');
+        }
+
+        // indicate if the class is deprecated
+        cls.isDeprecated = !!(cls.deprecatedMessage || cls.deprecatedVersion);
+        // indicate if the class is removed
+        cls.isRemoved    = !!(cls.removedMessage    || cls.removedVersion);
+        // indicate if the class is an enum
+        cls.isEnum       = cls.$type === 'enum'
+        data.cls = cls;
+
+
+        // TODO there's a lot of overlap here with guides - should see how we can 
+        // reconcile some of this into some sort of applyContext(data) method
+        data = Object.assign(data, options);
+        data = Object.assign(data, options.prodVerMeta);
+
+        // set the asset paths
+        data.cssPath    = Path.relative(apiDir, this.cssDir);
+        data.jsPath     = Path.relative(apiDir, this.jsDir);
+        data.imagesPath = Path.relative(apiDir, this.imagesDir);
+        data.product    = data.prodObj.title;
+
+        // indicates whether the class is of type component, singleton, or some other 
+        // class
+        if (cls.extended && cls.extended.includes('Ext.Component')) {
+            cls.clsSpec = 'component fa fa-gear black-60 f3 fl';
+        } else if (cls.singleton === true) {
+            cls.clsSpec = 'singleton fa fa-cube f3 fl dark-pink';
+        } else {
+            cls.clsSpec = 'class fa fa-cube f3 fl dark-blue';
+        }
+        
+        data.myMeta     = {
+            version     : data.version,
+            hasGuides   : data.hasGuides,
+            hasApi      : data.hasApi,
+            navTreeName : data.navTreeName,
+            myId        : data.id,
+            //rootPath    : Path.relative(data.rootPath, this.outputProductDir)
+            rootPath    : ''
+        };
+
+        data.memberTypeGroups = cls.items;
 
         let i   = 0,
-            memberTypeGroups = rawRoot.items || [],
+            memberTypeGroups = cls.items || [],
             len = memberTypeGroups.length;
 
         for (; i < len; i++) {
@@ -544,7 +601,7 @@ class SourceApi extends Base {
                 members = group.items;
 
             if (members && members.length) {
-                prepared[type] = me.processMembers(className, type, members);
+                data[type] = this.processMembers(className, type, members);
             }
         }
     }

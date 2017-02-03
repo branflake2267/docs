@@ -85,9 +85,9 @@
         {{#text}}
             {{{.}}}
         {{/text}}
-        {{#exists value}}
-            <p class="defaults-to-dec">Defaults to: {{value}}</p>
-        {{/exists}}
+        {{#value}}
+            <p class="defaults-to-dec">Defaults to: {{.}}</p>
+        {{/value}}
         {{#since}}
             <p class="since-dec">Available since: <b>{{{.}}}</b></p>
         {{/since}}
@@ -104,12 +104,12 @@
                         {{#if optional}}<i class="memberType">(optional)</i>{{/if}}
                     </p>
                     <div class="params-desc">{{{text}}}</div>
-                    {{#exists value}}
-                        <p class="defaults-to-dec">Defaults to: {{value}}</p>
-                    {{/exists}}
+                    {{#value}}
+                        <p class="defaults-to-dec">Defaults to: {{.}}</p>
+                    {{/value}}
 
                     {{#if items}}
-                        {{> subParamsPartial}}
+                        {{> _sub-params}}
                     {{/if}}
                 </div>
                 {{#if @last}}
@@ -128,12 +128,12 @@
             {{#properties}}
                 <p><span class="params-list">{{{name}}}</span> : <span class="memberType">{{{type}}}</span></p>
                 <p>{{{text}}}</p>
-                {{#exists value}}
-                    <p class="defaults-to-dec">Defaults to: {{value}}</p>
-                {{/exists}}
+                {{#value}}
+                    <p class="defaults-to-dec">Defaults to: {{.}}</p>
+                {{/value}}
 
                 {{#if items}}
-                    {{> subParamsPartial}}
+                    {{> _sub-params}}
                 {{/if}}
             {{/properties}}
         {{/if}}
@@ -144,7 +144,7 @@
                 <div class="return-desc">{{{text}}}</div>
 
                 {{#if items}}
-                    {{> subParamsPartial}}
+                    {{> _sub-params}}
                 {{/if}}
             {{/returns}}
         {{/if}}

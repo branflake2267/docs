@@ -4,36 +4,36 @@
             <span class='{{{.}}}-icon'></span>
         {{/clsSpec}}
 
-        <h1 class='{{classType}}'>
+        <h1 class='{{cls.$type}}'>
             {{#if multSrc}}
                 <span class="multi-src-btn">{{{name}}}</span>
             {{else}}
                 <a href="{{{fileName}}}" target="_blank">{{{name}}}</a>
             {{/if}}
-            {{#classAlias}}
-                <span class='alias'>{{../aliasName}}: {{{.}}}</span>
-            {{/classAlias}}
-            {{#classAccess}}
-                <span class="member-tags"><span class="{{../classAccess}} full-flag">{{../classAccess}}</span></span>
-            {{/classAccess}}
-            {{#isDeprecated}}
+            {{#cls.alias}}
+                <span class='alias'>{{../cls.aliasPrefix}}: {{../cls.aliasName}}</span>
+            {{/cls.alias}}
+            {{#cls.access}}
+                <span class="member-tags"><span class="{{.}} full-flag">{{.}}</span></span>
+            {{/cls.access}}
+            {{#cls.isDeprecated}}
                 <span class="member-tags"><span class="deprecated full-flag">deprecated</span></span>
-            {{/isDeprecated}}
-            {{#isRemoved}}
+            {{/cls.isDeprecated}}
+            {{#cls.isRemoved}}
                 <span class="member-tags"><span class="removed full-flag">removed</span></span>
-            {{/isRemoved}}
-            {{#singleton}}
+            {{/cls.isRemoved}}
+            {{#cls.singleton}}
                 <span class="member-tags"><span class='singleton'>singleton</span></span>
-            {{/singleton}}
-            {{#abstract}}
+            {{/cls.singleton}}
+            {{#cls.abstract}}
                 <span class="member-tags"><span class='abstract'>abstract</span></span>
-            {{/abstract}}
-            {{#isEnum}}
+            {{/cls.abstract}}
+            {{#cls.isEnum}}
                 <span class='alias'>enum of <b>String</b></span>
-            {{/isEnum}}
-            {{#if tier}}
+            {{/cls.isEnum}}
+            {{#cls.tier}}
                 <span class="member-tags"><span class="{{{tier}}}">{{{tier}}}</span></span>
-            {{/if}}
+            {{/cls.tier}}
         </h1>
     </div>
 </div>
@@ -43,12 +43,12 @@
     </div>
     <div class="search">
         <form autocomplete="off">
-            {{#myToolkit}}
+            {{#prodVerMeta.hasToolkits}}
                 <div class="toolkit-search-filter-ct">
                     <span id="modern-search-filter" class="tooltip tooltip-tr-br active" data-tip="Include Modern Search Results"><div class="callout callout-b"></div></span>
                     <span id="classic-search-filter" class="tooltip tooltip-tr-br active" data-tip="Include Classic Search Results"><div class="callout callout-b"></div></span>
                 </div>
-            {{/myToolkit}}
+            {{/prodVerMeta.hasToolkits}}
 
             <input type="text" type="search" placeholder="search" id="searchtext">
             <i id="filtersubmit" class="fa fa-search"></i>

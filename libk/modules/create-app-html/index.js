@@ -65,20 +65,6 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * The handlebars template for guide output
-     * @return {Object} The compiled handlebars template
-     */
-    /*get guideTemplate () {
-        let tpl = this._guideTpl;
-
-        if (!tpl) {
-            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-main.hbs'), 'utf-8'));
-        }
-
-        return tpl;
-    }*/
-
-    /**
      * Copy supporting assets to the output folder.  
      * i.e. app.js, app.css, ace editor assets, etc.
      */

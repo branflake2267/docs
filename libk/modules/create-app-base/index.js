@@ -38,7 +38,7 @@ class AppBase extends SourceGuides {
             hasToolkits : toolkits && toolkits.length > 1,
             toolkits    : toolkits,
             toolkit     : toolkit,
-            hasGuides   : prodObj.hasGuides === false ? false : true
+            hasGuides   : prodObj.hasGuides !== false
         };
     }
 
@@ -95,6 +95,16 @@ class AppBase extends SourceGuides {
             }
             this.log(err, 'error');
         });
+
+        /*
+        try {
+            await this.runApi();
+            await this.processGuides();
+            await this.concludeBuild();
+        } catch(err) {
+            console.log(err);
+        }*/
+
     }
 
     /**
@@ -129,7 +139,7 @@ class AppBase extends SourceGuides {
      */
     runGuides () {
         return this.processGuides()
-        .next(() => {
+        .then(() => {
             this.concludeBuild();
         });
     }

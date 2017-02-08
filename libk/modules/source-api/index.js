@@ -284,7 +284,8 @@ class SourceApi extends Base {
             Object.assign(meta, {
                 navTreeName : 'API',
                 myId        : data.cls.name,
-                rootPath    : '..'
+                rootPath    : '..',
+                pageType    : 'api'
             });
         }
 

@@ -47,7 +47,22 @@ class SourceApi extends Base {
          * @property srcTemplate
          * The template used to output the source HTML files
          */
-        this.srcTemplate = Handlebars.compile(Fs.readFileSync(Path.join(opts._myRoot, opts.htmlSourceTpl), 'utf-8'));
+        this.srcTemplate = Handlebars.compile(
+            Fs.readFileSync(
+                Path.join(
+                    opts._myRoot,
+                    opts.htmlSourceTpl
+                ),
+                'utf-8'
+            )
+        );
+
+        /**
+         * @property apiTree
+         * The tree of API classes (used to build the tree nav in the UI)
+         */
+        this.apiTree = [];
+
     }
 
     /**
@@ -410,6 +425,114 @@ class SourceApi extends Base {
     }*/
 
     /**
+     * Add the passed class name to the api tree used for UI nav
+     * @param {String} className The full class name to process and add to the API tree
+     * @param {String} icon An icon class name to include if passed:
+     * 
+     *  - component
+     *  - singleton
+     *  - class
+     */
+    addToApiTree (className, icon) {
+        let nameArray   = className.split('.'),
+            elementsLen = nameArray.length;
+
+        // process all parts of the class name (each string in the .-separated full class 
+        // name)
+        //
+        // node - initially the node is the api tree object itself.  As each element of 
+        // the full class name is processed what is passed back into the reduce callback 
+        // is the child nodes array that the next element will be added to
+        //
+        // name - the element of the split className currently being evaluated
+        //
+        // i - the index in the array at this stage of the reduce action
+        nameArray.reduce((nodes, name, i) => {
+            // if the reduce index matches the length (minus 1) of the split className 
+            // then this is a leaf.  Though, root namespace items like "Ext" and "ST" 
+            // will be later have a `children` property added as necessary and be 
+            // "unleafed"
+            let leaf = (i === (elementsLen - 1)),
+                id = this.getNodeId(className, i),
+                // the default node configuration
+                baseNode = {
+                    name        : name,
+                    text        : name,
+                    navTreeName : 'api',
+                    id          : id,
+                    leaf        : leaf
+                },
+                target = this.getExistingNode(nodes, id),
+                newNode;
+
+            if (!leaf) {
+                newNode  = Object.assign(baseNode, {
+                    iconCls  : 'fa fa-folder-o dib w1 mr1 ml3',
+                    children : []
+                });
+                // else we're processing a leaf node (note, this could be a node / namespace 
+                // like "Ext" or "ST", but we account for that in the processing above)
+            } else {
+                //create the leaf node configuration
+                newNode = Object.assign(baseNode, {
+                    href    : `${id}.html`,
+                    iconCls : `${icon} fa fa-folder-o dib w1 mr1 ml3`
+                });
+            }
+
+            if (!target) {
+                nodes.push(newNode);
+            }
+            target = target || newNode;
+            return target.children;
+        }, this.apiTree);   // initially we pass in the apiTree property itself
+    }
+
+    /**
+     * 
+     */
+    getNodeId (className, currentIndex) {
+        let nameArr = className.split('.'),
+            id      = [],
+            i       = 0;
+
+        for (; i < currentIndex + 1; i++) {
+            let element = nameArr[i];
+            id.push(element);
+        }
+
+        return id.join('.');
+    }
+
+    /**
+     * @private
+     * Private method used to find an existing api node in an array of api nodes on the 
+     * api tree
+     * @param {Array} nodes Array of api nodes (could be [])
+     * @param {String} name The class name element (package name) to look for
+     * @return {Object} The existing node or false if an existing node was not found
+     */
+    getExistingNode (nodes, name) {
+        let len    = nodes.length,
+            i      = 0,
+            target = false;
+
+        for (; i < len; i++) {
+            let node = nodes[i];
+
+            // if it exists already break out of the loop and indicate which 
+            // child node should be used when processing the next reduce 
+            // iteration
+            if (node && node.id === name) {
+                target = node;
+                break;
+            }
+        }
+
+        return target;
+    }
+
+    /**
      * Entry method to process the doxi files into files for use by the HTML docs or Ext
      * app
      */
@@ -420,15 +543,16 @@ class SourceApi extends Base {
         .then(() => {
             this.ensureDir(this.apiDir);
         })
-        .then(this.outputApiFiles.bind(this))
+        .then(this.processApiFiles.bind(this))
         // TODO add in a couple of then()s that 1) output the search file itself and 2) 
         // output the class tree
+        .then(this.outputApiTree.bind(this))
         .then(() => {
             console.log(new Date() - dt);
             return this.createSrcFiles();
         })
         .catch((err) => {
-            console.log(Error(err));
+            this.log(Error(err), 'error');
         });
     }
 
@@ -438,7 +562,7 @@ class SourceApi extends Base {
      * @return {Object} A Promise that processes all class files and calls to 
      * `outputApiFile`
      */
-    outputApiFiles () {
+    processApiFiles () {
         let outputs = [],
             classMap = this.classMap,
             classNames = Object.keys(classMap),
@@ -456,15 +580,11 @@ class SourceApi extends Base {
             // delete the cached Doxi object to free memory
             delete classMap[className].raw;
 
+            this.addToApiTree(className, prepared.cls.clsSpecIcon);
+
             // TODO search - search processing is cumulative as each class is added to 
             // the search blob as its processed.  So, process this class to the search 
             // blob and then output the search blob after all files are processed / output
-
-            // TODO class tree - each class will need to be added to a class tree for use 
-            // in navigation the API docs.  Each class should be added to the tree and 
-            // then once it's all said and done we spit out the class json file.
-
-            // TODO MAKE THE CLASS TREE
 
             // Process API file into curated API class file
             outputs.push(this.outputApiFile(className, prepared));
@@ -509,18 +629,13 @@ class SourceApi extends Base {
     decorateClass (className) {
         let options  = this.options,
             classMap = this.classMap,
-            // TODO does the raw doxi output need to be cached or can it just be passed 
-            // directly here?  Is it used somewhere else that it needs to be cached?
             raw      = classMap[className].raw,
             data     = classMap[className].prepared,
             cls      = raw.global.items[0],
+            alias    = cls.alias,
             apiDir   = this.apiDir;
             
-
-        // TODO note whether this is a singleton or not
-        // TODO note whether this is a "component" or not
-
-        data.text = this.markup(data.text);
+        data.classText = this.markup(data.text);
         // TODO need to decorate the following.  Not sure if this would be done differently for HTML and Ext app output
         /*mixins            : cls.mixed               ? me.splitInline(cls.mixed, '<br>')                                  : '',
         localMixins       : cls.mixins              ? me.splitInline(cls.mixins, '<br>')                                 : '',
@@ -530,17 +645,18 @@ class SourceApi extends Base {
         extenders         : cls.extenders           ? me.splitInline(JsonParser.processCommaLists(cls.extenders, false), '<br>') : '',
         mixers            : cls.mixers              ? me.splitInline(JsonParser.processCommaLists(cls.mixers, false), '<br>')    : '',*/
 
-        data.requiredConfigs = [];
-        data.optionalConfigs = [];
-        data.instanceMethods = {};
+        data.requiredConfigs    = [];
+        data.optionalConfigs    = [];
+        data.instanceMethods    = [];
+        data.staticMethods      = [];
+        data.instanceProperties = [];
+        data.staticProperties   = [];
 
         data.contentPartial = '_html-apiBody';
 
         // set the alias info if the class has an alias
         // .. if the alias is widget use the alias of 'xtype' in the output
         // and list all aliases separated by a comma
-        let alias = cls.alias;
-
         if (alias) {
             let isWidget = alias.includes('widget');
 
@@ -572,14 +688,17 @@ class SourceApi extends Base {
         // indicates whether the class is of type component, singleton, or some other 
         // class
         if (cls.extended && cls.extended.includes('Ext.Component')) {
-            cls.clsSpec = 'component fa fa-gear black-60 f3 fl';
+            cls.clsSpec     = 'component fa fa-gear black-60 f3 fl';
+            cls.clsSpecIcon = 'component';
         } else if (cls.singleton === true) {
-            cls.clsSpec = 'singleton fa fa-cube f3 fl dark-pink';
+            cls.clsSpec     = 'singleton fa fa-cube f3 fl dark-pink';
+            cls.clsSpecIcon = 'singleton';
         } else {
-            cls.clsSpec = 'class fa fa-cube f3 fl dark-blue';
+            cls.clsSpec     = 'class fa fa-cube f3 fl dark-blue';
+            cls.clsSpecIcon = 'class';
         }
         
-        data.myMeta     = {
+        data.myMeta = {
             version     : data.version,
             hasGuides   : data.hasGuides,
             hasApi      : data.hasApi,
@@ -591,19 +710,75 @@ class SourceApi extends Base {
 
         data.memberTypeGroups = cls.items;
 
-        let i   = 0,
+        let i                = 0,
             memberTypeGroups = cls.items || [],
-            len = memberTypeGroups.length;
+            len              = memberTypeGroups.length;
 
         for (; i < len; i++) {
-            let group = memberTypeGroups[i],
-                type = group.$type,
+            let group   = memberTypeGroups[i],
+                type    = group.$type,
                 members = group.items;
 
             if (members && members.length) {
                 data[type] = this.processMembers(className, type, members);
             }
         }
+
+        // process configs
+        if (data.hasConfigs) {
+            data.configs = this.splitMemberGroups(
+                'configs',
+                data,
+                'requiredConfigs',
+                'optionalConfigs'
+            );
+
+            // TOOD inject getters and setters
+            this.injectGettersAndSetters(data);
+        }
+
+        // process properties
+        if (data.hasProperties) {
+            data.properties = this.splitMemberGroups(
+                'properties',
+                data,
+                'instanceProperties',
+                'staticProperties'
+            );
+        }
+
+        // process methods
+        if (data.hasMethods) {
+            data.methods = this.splitMemberGroups(
+                'methods',
+                data,
+                'instanceMethods',
+                'staticMethods'
+            );
+        }
+    }
+
+    /**
+     * @private
+     * Used by {@link #decorateClass} to create sub-objects for configs, properties, and 
+     * methods
+     * @param {String} type The member type being processed
+     * @param {Object} data The class object to be passed to the template
+     * @param {String} strA The first property string
+     * @param {String} strB The second property string
+     * @return {Object} The prepared object
+     */
+    splitMemberGroups (type, data, strA, strB) {
+        let obj = {},
+            a = data[strA],
+            b = data[strB];
+
+        obj['has' + Utils.capitalize(strA)] = !!a.length;
+        obj['has' + Utils.capitalize(strB)] = !!b.length;
+        obj[strA] = a;
+        obj[strB] = b;
+
+        return obj;
     }
 
     /**
@@ -614,12 +789,13 @@ class SourceApi extends Base {
      * @return {Object[]} Array of processed member objects
      */
     processMembers (className, type, items) {
-        let me  = this,
+        let prepared = this.classMap[className].prepared,
             i   = 0,
             len = items.length;
 
         for (; i < len; i++) {
-            me.processMember(className, type, items[i]);
+            prepared['has' + Utils.capitalize(type)] = true;
+            this.processMember(className, type, items[i]);
         }
 
         return items;
@@ -632,13 +808,13 @@ class SourceApi extends Base {
      * @param {Object} member The member object to process
      */
     processMember (className, type, member) {
-        let me       = this,
-            classMap = me.classMap,
+        let classMap = this.classMap,
             raw      = classMap[className].raw,
             prepared = classMap[className].prepared,
             rawRoot  = raw.global.items[0],
             clsName  = rawRoot.name;
 
+        // set the type to what the template is expecting for the SASS sections
         if (type === 'vars') {
             member.$type = 'css_var-S';
         }
@@ -646,10 +822,11 @@ class SourceApi extends Base {
             member.$type = 'css_mixin';
         }
 
+        // split the member type if there are multiple
         if (member.type !== null) {
             member.type = this.splitInline(member.type,  ' / ');
         }
-        member.text = me.markup(member.text);
+        member.text = this.markup(member.text);
 
         member.params     = [];
         member.returns    = [];
@@ -660,15 +837,15 @@ class SourceApi extends Base {
                 len = member.items.length;
 
             for (; i < len; i++) {
-                var item = member.items[i];
+                let item = member.items[i];
 
                 // prepare the param and return text
                 if (item.text && (item.$type === 'param' || item.$type === 'return' || item.$type === 'property')) {
-                    item.text = me.markup(item.text);
+                    item.text = this.markup(item.text);
                 }
                 // linkify the return types
                 if (item.$type === 'return' || item.$type === 'param') {
-                    item.type = me.splitInline(item.type,  ' / ');
+                    item.type = this.splitInline(item.type,  ' / ');
                 }
                 if (item.$type === 'return') {
                     member.returns.push(item);
@@ -684,7 +861,7 @@ class SourceApi extends Base {
 
                 // process any sub-items that this param / property may have
                 if (item.items) {
-                    me.processMembers(className, type, item.items);
+                    this.processMembers(className, type, item.items);
                 }
             }
 
@@ -696,7 +873,7 @@ class SourceApi extends Base {
             // also, collect up private params to be removed from the params list
 
             for (i = 0; i < member.params.length; i++) {
-                var param = member.params[i];
+                let param = member.params[i];
 
                 if (param.access === undefined) {
                     member.hasParams = true;
@@ -709,20 +886,28 @@ class SourceApi extends Base {
             member.params = Utils.difference(member.params, member.privateParams);
         }
 
+        // cache the instance and static methods and properties
         if (type === 'methods') {
-            prepared.instanceMethods[member.name] = member;
+            prepared.instanceMethods.push(member);
+        }
+        if (type === 'static-methods') {
+            prepared.staticMethods.push(member);
+        }
+        if (type === 'properties') {
+            prepared.instanceProperties.push(member);
+        }
+        if (type === 'static-properties') {
+            prepared.staticProperties.push(member);
         }
 
-        // TODO see if this is necessary - prolly is.  :|
-        /*if (type === 'events' || type === 'methods' || type === 'static-methods' || type === 'sass-mixins') {
+        if (type === 'events' || type === 'methods' || type === 'static-methods' || type === 'sass-mixins') {
             member.listParams = member.hasParams;
             member.listReturn = member.hasReturn;
-        }*/
+        }
 
         // collect up the required and optional configs for sorting later
         if (type === 'configs') {
-            // TODO should we manipulate all of the configs in one pass or leave them ad hoc like in the configs conditional here?
-            member.$type = 'cfg';
+            member.$type = 'cfg'; // needed for linking using past parser schema
             prepared[member.required ? 'requiredConfigs' : 'optionalConfigs'].push(member);
         }
 
@@ -768,6 +953,36 @@ class SourceApi extends Base {
         if (member.static === true) {
             member.$type = 'static-' + member.$type;
         }
+    }
+
+    /**
+     * @private
+     * Injects getter and setter methods for config options with accessor: true
+     * @param {Object} data The class object to be passed to the HTML template
+     */
+    injectGettersAndSetters (data) {
+        //
+    }
+
+    /**
+     * Output the api tree for UI nav once all classes are processed
+     * @return Promise wrapping the writing of the api tree file
+     */
+    outputApiTree () {
+        return new Promise((resolve, reject) => {
+            let apiTree = JSON.stringify({
+                API: this.apiTree
+            }, null, 4),
+                wrap    = `DocsApp.apiTree = ${apiTree}`,
+                dest    = Path.join(this.jsDir, 'apiTree.js');
+
+            Fs.writeFile(dest, wrap, 'utf8', (err) => {
+                if (err) {
+                    reject(Error(err));
+                }
+                resolve();
+            });
+        });
     }
 
     /**
@@ -947,8 +1162,7 @@ class SourceApi extends Base {
      * @return {String} The source HTML with anchors added
      */
     addAnchors (html, srcPath) {
-        let me     = this,
-            src    = me.srcFileMap[srcPath],
+        let src    = this.srcFileMap[srcPath],
             clsSrc = src.input;
 
         if (clsSrc) {
@@ -962,7 +1176,7 @@ class SourceApi extends Base {
             // if the class itself has documentation add the anchor for it
             if (cls.src) {
                 // find the location within the file where the class is described
-                loc = me.getLocArray(cls);
+                loc = this.getLocArray(cls);
                 // and prepend an anchor tag with the name of the class
                 lines[loc[1]] = `<a name="${clsName}">` + lines[loc[1]];
             }
@@ -982,7 +1196,7 @@ class SourceApi extends Base {
                     // if there are members in this group
                     if (members && membersLen) {
                         let group = memberTypes[i],
-                            type = me.memberTypesMap[group.$type],
+                            type = this.memberTypesMap[group.$type],
                             // get the class + member type info to prefix to the
                             // following members as they're processed
                             name  = `${clsName}-${type}-`,
@@ -996,7 +1210,7 @@ class SourceApi extends Base {
                             // if the member has description in this class
                             if (member.src) {
                                 // get the location where it's described
-                                memloc = me.getLocArray(member);
+                                memloc = this.getLocArray(member);
                             }
 
                             // back the pointer up one so it's pointing to the top of

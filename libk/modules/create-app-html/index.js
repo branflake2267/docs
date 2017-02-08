@@ -14,13 +14,16 @@
  * Create the product / version landing page
  */
 
-const AppBase    = require('../create-app-base'),
-      Path       = require('path'),
-      Handlebars = require('handlebars'),
-      Fs         = require('fs-extra'),
-      UglifyJS   = require("uglify-js"),
-      CleanCSS   = require('clean-css'),
-      Swag       = require('swag');
+const AppBase     = require('../create-app-base'),
+      Path        = require('path'),
+      Handlebars  = require('handlebars'),
+      Fs          = require('fs-extra'),
+      UglifyJS    = require("uglify-js"),
+      CleanCSS    = require('clean-css'),
+      Swag        = require('swag'),
+      LinkRe      = /['`]*\{\s*@link(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
+      ImgRe       = /{\s*@img(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
+      HashStartRe = /^#/;
 
 class HtmlApp extends AppBase {
     constructor (options) {
@@ -219,31 +222,51 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Process API links using the passed product, version, class name, etc.
-     * @param {String} product The product name
-     * @param {String} version The version stipulated in the [[link]] or null if not
-     * specified
-     * @param {String} toolkit The specified toolkit or 'api'
-     * @param {String} className The name of the SDK class
-     * @param {String} memberName The name of the member (or member group potentially) or
-     * undefined if no member was specified in the link
-     * @param {String} text The text to display in the link if specified
-     * @param {Object} data The data object to be applied to the template for the current 
-     * doc / guide page
+     * Create a link from the passed href and link text
+     * @param {String} href The link to use in the anchor href
+     * @param {String} text The text to display for the link
      * @return {String} The link markup
      */
-    // TODO process the api links for HTML guides
-    createApiLink(product, version, toolkit, className, memberName, text, data) {
-        let rootPath   = data.rootPath,
-            outputDir  = this.options.outputDir,
-            relPath    = Path.relative(rootPath, outputDir),
-            href       = Path.join(relPath, product, version, toolkit, `${className}.html`);
-        
-        if (memberName) {
-            href += `#${memberName}`;
-        }
-
+    createApiLink(href, text) {
         return `<a href="${href}" class="link underline-hover blue">${text}</a>`;
+    }
+
+    /**
+     * Processes all JSDOC image strings into `img` tags
+     * @param {String} html The HTML to process images on
+     * @return {String} The processed HTML
+     */
+    processImageTags (html) {
+        return html.replace(ImgRe, (match, img) => {
+            return "<img src='images/"+ img +"'/>";
+        });
+    }
+
+    /**
+     * Turns all `{@link}` instances into API links within the passed HTML string
+     * @param {String} html The HTML markup whose links require processing
+     * @return {String} The original HTML string with all links processed
+     */
+    parseApiLinks (html) {
+        return html.replace(LinkRe, (match, link, text) => {
+            link = link.replace('!','-');
+            text = text || link;
+
+            return this.createApiLink(link, text.replace(HashStartRe, ''));
+        });
+    }
+
+    /**
+     * Post-process the HTML string returned from the markdown-to-markup processing
+     * @param {String} html The markup to process
+     * @return {String} The processed HTML
+     */
+    processApiHtml (html) {
+        html = this.decorateExamples(html);
+        html = this.processImageTags(html);
+        html = this.parseApiLinks(html);
+
+        return html;
     }
 
     /**
@@ -255,9 +278,12 @@ class HtmlApp extends AppBase {
      */
     outputApiFile (className, data) {
         return new Promise((resolve, reject) => {
-            let fileName = Path.join(this.apiDir, `${className}.html`);
+            let fileName = Path.join(this.apiDir, `${className}.html`),
+                html = this.mainTemplate(data);
 
-            Fs.writeFile(fileName, this.mainTemplate(data), 'utf8', (err) => {
+            html = this.processApiHtml(html);
+
+            Fs.writeFile(fileName, html, 'utf8', (err) => {
                 if (err) this.log(err, 'error');
                 delete this.classMap[className];
                 // resolve after a timeout to let garbage collection catch up

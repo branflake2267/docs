@@ -273,6 +273,25 @@ class SourceApi extends Base {
     }
 
     /**
+     * Returns common metadata needed by app API pages
+     * @param {Object} data Current data hash to be applied to the page template
+     * @return {Object} Hash of common current page metadata
+     */
+    getApiMetaData (data) {
+        let meta = super.getCommonMetaData();
+
+        if (data) {
+            Object.assign(meta, {
+                navTreeName : 'API',
+                myId        : data.cls.name,
+                rootPath    : '..'
+            });
+        }
+
+        return meta;
+    }
+
+    /**
      * The central method for this module that runs doxi, processes the source files from
      * the SDK to HTML files for use in the final docs output, and reads over all doxi
      * class files to create the output used by the docs post processors (HTML docs or
@@ -435,7 +454,8 @@ class SourceApi extends Base {
      */
     addToApiTree (className, icon) {
         let nameArray   = className.split('.'),
-            elementsLen = nameArray.length;
+            elementsLen = nameArray.length,
+            apiDirName  = this.apiDirName;
 
         // process all parts of the class name (each string in the .-separated full class 
         // name)
@@ -475,7 +495,7 @@ class SourceApi extends Base {
             } else {
                 //create the leaf node configuration
                 newNode = Object.assign(baseNode, {
-                    href    : `${id}.html`,
+                    href    : `${apiDirName}/${id}.html`,
                     iconCls : `${icon} fa fa-folder-o dib w1 mr1 ml3`
                 });
             }
@@ -489,6 +509,65 @@ class SourceApi extends Base {
     }
 
     /**
+     * @private
+     * Sorter method that sorts an array of api tree nodes with parent nodes on top and 
+     * leaf nodes on bottom and each of those groups ordered by their node name.  
+     * 
+     * Supports {@link #sortTree}
+     * @param {Object[]} nodes An array of api tree nodes to sort
+     * @return {Object[]} The sorted array
+     */
+    sortNodes (nodes) {
+        return nodes.sort((a, b) => {
+            if (a.children === b.children) {
+                if (a.name > b.name) {
+                    return 1;
+                }
+                if (b.name > a.name) {
+                    return -1;
+                }
+                return 0;
+            } else {
+                return a.children ? -1 : 1;
+            }
+        });
+    }
+
+    /**
+     * Sorts the api tree recursively.  Initially the tree is passed in.  Each node in 
+     * the tree that has children then passes those children back through `sortTree`.
+     * @param {Object[]} tree The tree nodes to sort - either the tree root or an array 
+     * of child nodes
+     * @return {Object[]} The sorted tree
+     */
+    sortTree (tree) {
+        let len = tree.length,
+            i   = 0;
+
+        for (; i < len; i++) {
+            let node     = tree[i],
+                children = node.children;
+
+            if (children) {
+                this.sortTree(children);
+                node.children = this.sortNodes(children);
+            }
+        }
+
+        return this.sortNodes(tree);
+    }
+
+    /**
+     * @private
+     * Returns the id for a tree node using the full class name and an index to count in 
+     * 'x' number of .'s in the full class name.  For example, if the className of 
+     * "Ext.grid.Panel" was passed in with the currentIndex of 0 then "Ext.grid" would be 
+     * returned.  
+     * 
+     * Used by {@link #addToApiTree}
+     * @param {String} className The full class name for the current node
+     * @param {Number} currentIndex The index for the current node's processing - 
+     * essentially the depth this node is in the tree when the ID is requested
      * 
      */
     getNodeId (className, currentIndex) {
@@ -551,8 +630,11 @@ class SourceApi extends Base {
             console.log(new Date() - dt);
             return this.createSrcFiles();
         })
-        .catch((err) => {
-            this.log(Error(err), 'error');
+        .catch(err => {
+            if (!(err instanceof Error)) {
+                err = new Error(err);
+            }
+            this.log(err, 'error');
         });
     }
 
@@ -698,17 +780,17 @@ class SourceApi extends Base {
             cls.clsSpecIcon = 'class';
         }
         
-        data.myMeta = {
+        /*data.myMeta = {
             version     : data.version,
             hasGuides   : data.hasGuides,
             hasApi      : data.hasApi,
-            navTreeName : data.navTreeName,
-            myId        : data.id,
-            //rootPath    : Path.relative(data.rootPath, this.outputProductDir)
+            navTreeName : 'API',
+            myId        : data.cls.name,
             rootPath    : ''
-        };
+        };*/
+        data.myMeta = this.getApiMetaData(data);
 
-        data.memberTypeGroups = cls.items;
+        //data.memberTypeGroups = cls.items;
 
         let i                = 0,
             memberTypeGroups = cls.items || [],
@@ -970,9 +1052,10 @@ class SourceApi extends Base {
      */
     outputApiTree () {
         return new Promise((resolve, reject) => {
-            let apiTree = JSON.stringify({
-                API: this.apiTree
-            }, null, 4),
+            let sortedTree = this.sortTree(this.apiTree),
+                apiTree = JSON.stringify({
+                    API: sortedTree
+                }, null, 4),
                 wrap    = `DocsApp.apiTree = ${apiTree}`,
                 dest    = Path.join(this.jsDir, 'apiTree.js');
 

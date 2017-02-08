@@ -173,6 +173,25 @@ class SourceGuides extends SourceApi {
     }
 
     /**
+     * Returns common metadata needed by app API pages
+     * @param {Object} data Current data hash to be applied to the page template
+     * @return {Object} Hash of common current page metadata
+     */
+    getGuideMetaData (data) {
+        let meta = super.getCommonMetaData();
+
+        if (data) {
+            Object.assign(meta, {
+                navTreeName : data.navTreeName,
+                myId        : data.id,
+                rootPath    : Path.relative(data.rootPath, this.outputProductDir)
+            });
+        }
+
+        return meta;
+    }
+
+    /**
      * Iterates over all guides in a directory and adds them to the guide map (dictated
      * by the guide config).  Since lower versioned guide folders are processed before
      * higher ones the most recent / relevant guide is always the one that ends up being
@@ -502,14 +521,15 @@ class SourceGuides extends SourceApi {
 
         data.toc        = this.buildTOC(data.content, data.id);
 
-        data.myMeta     = {
+        /*data.myMeta     = {
             version     : data.version,
             hasGuides   : data.hasGuides,
             hasApi      : data.hasApi,
             navTreeName : data.navTreeName,
             myId        : data.id,
             rootPath    : Path.relative(data.rootPath, this.outputProductDir)
-        };
+        };*/
+        data.myMeta = this.getGuideMetaData(data);
 
         return data;
     }

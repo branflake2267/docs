@@ -89,7 +89,10 @@ class AppBase extends SourceGuides {
             console.log('ALL TOLD:', this.getElapsed(dt));
             this.concludeBuild();
         })
-        .catch((err) => {
+        .catch(err => {
+            if (!(err instanceof Error)) {
+                err = new Error(err);
+            }
             this.log(err, 'error');
         });
     }

@@ -142,6 +142,19 @@ class Base {
     }
 
     /**
+     * Returns common metadata needed by app pages
+     * @return {Object} Hash of common current page metadata
+     */
+    getCommonMetaData () {
+        let options = this.options,
+            meta    = Object.assign({}, options.prodVerMeta);
+
+        return Object.assign(meta, {
+            version     : options.version,
+        });
+    }
+
+    /**
      * Filters out any system files (i.e. .DS_Store)
      * @param {String[]} files Array of file names
      * @return [String[]] Array of file names minus system files

@@ -151,6 +151,7 @@ class Base {
 
         return Object.assign(meta, {
             version     : options.version,
+            pageType    : 'common'
         });
     }
 

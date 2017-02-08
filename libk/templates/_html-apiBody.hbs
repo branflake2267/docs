@@ -222,15 +222,108 @@
         </div>
         <div class="no-visible-members-warning tc white bg-light-red b cf pv4 dn">No members found using the current filters</div>
         <div class="members cf bt b--light-gray">
-            {{#memberTypeGroups}}
-                <div id="{{{$type}}}-ct">
-                    <h2 id="{{{$type}}}" class="type blue mt1 lh-copy tracked ttu f4 bb bw3 b--black-30 fw4">{{{$type}}}</h2>
-                    <a class="link underline-hover blue" name="{{{$type}}}"></a>
-                    {{#items}}
-                        {{> _api-member}}  {{!-- process the member template --}}
-                    {{/items}}
+            {{#if hasConfigs}}
+                <div id="configs-ct">
+                    <h2 id="configs" class="type blue mt1 lh-copy tracked ttu f4 bb bw3 b--black-30 fw4">configs</h2>
+                    <a class="link underline-hover blue" name="configs"></a>
+                    {{#if configs.hasRequiredConfigs}}
+                        <div id="required-configs-ct">
+                            <div class="type-sub-category-title black-60 bg-light-gray tracked ttu f6 pv2 ph3">Required Configs</div>
+                            {{#configs.requiredConfigs}}
+                                {{> _api-member}}
+                            {{/configs.requiredConfigs}}
+                        </div>
+                    {{/if}}
+
+                    {{#if configs.hasOptionalConfigs}}
+                        <div id="optional-configs-ct">
+                            <div class="type-sub-category-title black-60 bg-light-gray tracked ttu f6 pv2 ph3">Optional Configs</div>
+                            {{#configs.optionalConfigs}}
+                                {{> _api-member}}
+                            {{/configs.optionalConfigs}}
+                        </div>
+                    {{/if}}
                 </div>
-            {{/memberTypeGroups}}
+            {{/if}}
+
+            {{#if hasProperties}}
+                <div id="properties-ct">
+                    <h2 id="properties" class="type blue mt1 lh-copy tracked ttu f4 bb bw3 b--black-30 fw4">properties</h2>
+                    <a class="link underline-hover blue" name="properties"></a>
+                    {{#if properties.hasInstanceProperties}}
+                        <div id="instance-properties-ct">
+                            <div class="type-sub-category-title black-60 bg-light-gray tracked ttu f6 pv2 ph3">Instance Properties</div>
+                            {{#properties.instanceProperties}}
+                                {{> _api-member}}
+                            {{/properties.instanceProperties}}
+                        </div>
+                    {{/if}}
+
+                    {{#if properties.hasStaticProperties}}
+                        <div id="static-properties-ct">
+                            <div class="type-sub-category-title black-60 bg-light-gray tracked ttu f6 pv2 ph3">Static Properties</div>
+                            {{#properties.staticProperties}}
+                                {{> _api-member}}
+                            {{/properties.staticProperties}}
+                        </div>
+                    {{/if}}
+                </div>
+            {{/if}}
+
+            {{#if hasMethods}}
+                <div id="methods-ct">
+                    <h2 id="methods" class="type blue mt1 lh-copy tracked ttu f4 bb bw3 b--black-30 fw4">methods</h2>
+                    <a class="link underline-hover blue" name="methods"></a>
+                    {{#if methods.hasInstanceMethods}}
+                        <div id="instance-methods-ct">
+                            <div class="type-sub-category-title black-60 bg-light-gray tracked ttu f6 pv2 ph3">Instance Methods</div>
+                            {{#methods.instanceMethods}}
+                                {{> _api-member}}
+                            {{/methods.instanceMethods}}
+                        </div>
+                    {{/if}}
+
+                    {{#if methods.hasStaticMethods}}
+                        <div id="static-methods-ct">
+                            <div class="type-sub-category-title black-60 bg-light-gray tracked ttu f6 pv2 ph3">Static Methods</div>
+                            {{#methods.staticMethods}}
+                                {{> _api-member}}
+                            {{/methods.staticMethods}}
+                        </div>
+                    {{/if}}
+                </div>
+            {{/if}}
+
+            {{#if hasEvents}}
+                <div id="events-ct">
+                    <h2 id="events" class="type blue mt1 lh-copy tracked ttu f4 bb bw3 b--black-30 fw4">events</h2>
+                    <a class="link underline-hover blue" name="events"></a>
+                    {{#events}}
+                        {{> _api-member}}
+                    {{/events}}
+                </div>
+            {{/if}}
+
+            {{#if hasVars}}
+                <div id="vars-ct">
+                    <h2 id="vars" class="type blue mt1 lh-copy tracked ttu f4 bb bw3 b--black-30 fw4">theme variables</h2>
+                    <a class="link underline-hover blue" name="vars"></a>
+                    {{#vars}}
+                        {{> _api-member}}
+                    {{/vars}}
+                </div>
+            {{/if}}
+
+            {{#if hasSass-mixins}}
+                <div id="sass-mixins-ct">
+                    <h2 id="sass-mixins" class="type blue mt1 lh-copy tracked ttu f4 bb bw3 b--black-30 fw4">theme mixins</h2>
+                    <a class="link underline-hover blue" name="sass-mixins"></a>
+                    {{#sass-mixins}}
+                        {{> _api-member}}
+                    {{/sass-mixins}}
+                </div>
+            {{/if}}
+
         </div>
     </div>
     {{> _footer}}

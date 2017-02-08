@@ -84,11 +84,10 @@ class AppBase extends SourceGuides {
         //console.log('PROCESS ALL OF THE SOURCE FILES TO ');
         let dt = new Date();
         this.runApi()
-        .then(() => {
-            return this.runGuides();
-        })
+        .then(this.processGuides.bind(this))
         .then(() => {
             console.log('ALL TOLD:', this.getElapsed(dt));
+            this.concludeBuild();
         })
         .catch((err) => {
             this.log(err, 'error');
@@ -126,7 +125,10 @@ class AppBase extends SourceGuides {
      * Run the guide processor (if the product has guides)
      */
     runGuides () {
-        this.processGuides();
+        return this.processGuides()
+        .next(() => {
+            this.concludeBuild();
+        });
     }
 
     /**
@@ -249,16 +251,17 @@ class AppBase extends SourceGuides {
             meta = meta.trim();
             code = code.trim();
 
-            if (meta) {
+            if (meta && meta.length) {
                 fidMeta = Object.assign({}, fidMeta);
-                if (meta.includes(' ')) {
+                if (meta.includes(' ') && meta.includes('=')) {
                     // should be formatted with space-separated key=value pairs
                     // e.g.: toolkit=modern
                     meta = meta.split(' ');
 
                     meta.forEach(function(option) {
-                        let optionMatch = option.match(keyedRe),
-                            key = optionMatch[1],
+                        let optionMatch = option.match(keyedRe);
+                        
+                        let key = optionMatch[1],
                             val = optionMatch[2],
                             mapped = frameworkMap[val];
 

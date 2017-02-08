@@ -226,12 +226,12 @@ class SourceGuides extends SourceApi {
         let dt = new Date();
         console.log('PROCESSING GUIDES');
         this.syncRemote('guides', this.guideSourceDir);
-        this.readGuideCfg()
+        return this.readGuideCfg()
         .then(this.copyResources.bind(this))
         .then(() => {
             console.log('runGuides:', this.getElapsed(dt));
             // TODO Maybe ove to create-app-base after "All Told" once promise is respected
-            this.concludeBuild();
+            //this.concludeBuild();
         })
         .catch((err) => {
             this.log(err, 'error');

@@ -7,6 +7,7 @@ window.DocsApp = window.DocsApp || {};
  */
 
 /**
+ * @constructor
  * Tree class to create the nav tree for guides and docs
  * @param {Object[]} data The array of tree nodes to process
  * @param {String} renderTo The ID of the element to render the tree to
@@ -42,8 +43,8 @@ function Tree (data, renderTo) {
 
     // sets up the event listener that expands / collapses parent tree nodes
     target.addEventListener('click', function (e) {
-        e = e || window.event;
-        var el = e.target || e.srcElement;
+        e = DocsApp.getEvent(e);
+        var el = DocsApp.getEventTarget(e);
         // walk up the tree until we find a LI item
         while (el && el.tagName !== 'A') {
            el = el.parentNode;
@@ -56,6 +57,7 @@ function Tree (data, renderTo) {
 }
 
 /**
+ * @method createNodeCfgs
  * Return a config object used by ExtL.createElement to create each tree node (and its 
  * child nodes if it has any)
  * @param {Object/Object[]} data The tree node or array of nodes to turn be rendered to 
@@ -146,8 +148,9 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
 };
 
 /**
+ * @method toggleCollapse
  * Toggles the collapse state of the tree node
- * @param {String/HTMLElement} el The HTML element or ID of the tree node to toggle
+ * @param {String/Element} el The HTML element or ID of the tree node to toggle
  * @param {Boolean} collapse Pass `true` or `false` to force the toggle to collapse or 
  * expand.  Passing `true` will force collapse while `false` will force expand.
  * @return {Object} The tree instance
@@ -160,8 +163,9 @@ Tree.prototype.toggleCollapse = function (el, collapse) {
 };
 
 /**
+ * @method expand
  * Expands the passed parent tree node
- * @param {String/HTMLElement} node The HTML element or ID of the tree node to expand
+ * @param {String/Element} node The HTML element or ID of the tree node to expand
  * @return {Object} The tree instance
  */
 Tree.prototype.expand = function (node) {
@@ -169,8 +173,9 @@ Tree.prototype.expand = function (node) {
 };
 
 /**
+ * @method collapse
  * Collapses the passed parent tree node
- * @param {String/HTMLElement} node The HTML element or ID of the tree node to collapse
+ * @param {String/Element} node The HTML element or ID of the tree node to collapse
  * @return {Object} The tree instance
  */
 Tree.prototype.collapse = function (node) {
@@ -178,8 +183,9 @@ Tree.prototype.collapse = function (node) {
 };
 
 /**
+ * @method expandTo
  * Expand all ancestor nodes up to the passed node
- * @param {String/HTMLElement} node The HTML element or ID of the tree node to expand to
+ * @param {String/Element} node The HTML element or ID of the tree node to expand to
  * @return {Object} The tree instance
  */
 Tree.prototype.expandTo = function (node) {
@@ -194,6 +200,7 @@ Tree.prototype.expandTo = function (node) {
 };
 
 /**
+ * @method toggleCollapseAll
  * Toggles the collapse state of all parent tree nodes
  * @param {Boolean} collapse Pass `true` or `false` to force the toggle to collapse or 
  * expand.  Passing `true` will force collapse while `false` will force expand.
@@ -212,6 +219,7 @@ Tree.prototype.toggleCollapseAll = function (collapse) {
 };
 
 /**
+ * @method expandAll
  * Expands all tree nodes
  * @return {Object} The tree instance
  */
@@ -220,6 +228,7 @@ Tree.prototype.expandAll = function () {
 };
 
 /**
+ * @method collapseAll
  * Collapses all tree nodes
  * @return {Object} The tree instance
  */
@@ -228,6 +237,7 @@ Tree.prototype.collapseAll = function () {
 };
 
 /**
+ * @method getParentNodes
  * @private
  * Returns all parent node IDs in the tree.  Used by {@link #collapseAll} and 
  * {@link #expandAll}
@@ -238,6 +248,7 @@ Tree.prototype.getParentNodes = function () {
 };
 
 /**
+ * @method select
  * Decorates the passed tree node as selected
  * @param {String/HTMLElement} node The HTML element or ID of the tree node to select
  * @return {Object} The tree instance
@@ -254,8 +265,17 @@ Tree.prototype.select = function (node) {
  * DOCS APP
  * ***********************************
  */
+DocsApp.appMeta = {
+    internalId    : 0,
+    pageSize      : 10,
+    menuCanClose  : true,
+    allowSave     : false,
+    searchHistory : [],
+    pos           : {}
+};
 
 /**
+ * @method buildNavTree
  * Builds the navigation tree using the passed tree object (determined in 
  * {@link #initNavTree}).  The navigation tree instance is cached on DocsApp.navTree.
  */
@@ -264,6 +284,7 @@ DocsApp.buildNavTree = function (navTree) {
 };
 
 /**
+ * @method initNavTree
  * Once the dom is ready the navigation tree for the current page (and the navigation 
  * panel's tabs) are created.  The apiTree object and the guidesTree object are both used 
  * (as applicable as some products are guides-only) to create the navigation tree and its 
@@ -306,6 +327,7 @@ DocsApp.initNavTree = function () {
 };
 
 /**
+ * @method buildTreeNodeHref
  * @private
  * Returns the link or constructed href (using the page's relative path to the docs 
  * output root).  Returns `undefined` if the node passed in has neither a link or href.
@@ -323,6 +345,7 @@ DocsApp.buildTreeNodeHref = function (node) {
 };
 
 /**
+ * @method getNodeHref
  * @private
  * Returns the first nav tree link / href.  Used by {@link #initNavTreeTabs} when 
  * building the tabs in the nav tree header.  Tabs that are not for the active nav tree 
@@ -345,7 +368,7 @@ DocsApp.getNodeHref = function (node) {
 };
 
 /**
- *
+ * @method toggleTreeNodes
  */
 DocsApp.toggleTreeNodes = function() {
     var me        = this,
@@ -361,19 +384,21 @@ DocsApp.toggleTreeNodes = function() {
 };
 
 /**
- *
+ * @method toggleTreeVisibility
  */
 DocsApp.toggleTreeVisibility = function() {
     var makeVisible = ExtL.hasCls(document.body, 'tree-hidden');
 
     DocsApp.setTreeVisibility(makeVisible);
 
-    if (isStateful) {
+    /*
+    if (DocsApp.isStateful) {
         DocsApp.saveState();
-    }
+    }*/
 };
 
 /**
+ * @method setTreeVisibility
  * Set class tree visibility
  * @param {Boolean} visible false to hide - defaults to true
  */
@@ -386,7 +411,7 @@ DocsApp.setTreeVisibility = function(visible) {
 };
 
 /**
- *
+ * @event onToggleExamplesClick
  */
 DocsApp.onToggleExamplesClick = function() {
     var body = document.querySelector('body'),
@@ -398,6 +423,7 @@ DocsApp.onToggleExamplesClick = function() {
 };
 
 /**
+ * @method toggleExamples
  * Collapse or expand all code / fiddle blocks
  * @param {Boolean} collapse True to collapse, false to expand, or null to toggle all
  * code / fiddle blocks
@@ -416,34 +442,28 @@ DocsApp.toggleExamples = function(collapse) {
 };
 
 /**
- *
- */
-DocsApp.wrapSubCategories = function() {
-    console.log('wrap sub cats');
-};
-
-/**
- *
+ * @event onFilterClassCheckboxToggle
  */
 DocsApp.onFilterClassCheckboxToggle = function() {
     console.log('on filter class checkbox toggle');
 };
 
 /**
- *
+ * @event onClickMemberMenuType
  */
 DocsApp.onClickMemberMenuType = function() {
     console.log('on click member menu type');
 };
 
 /**
- *
+ * @event onAccessCheckboxClick
  */
 DocsApp.onAccessCheckboxClick = function() {
     console.log('on access checkbox click');
 };
 
 /**
+ * @event onToggleAllClick
  * Toggle expand/collapse of all members
  */
 DocsApp.onToggleAllClick = function() {
@@ -451,6 +471,7 @@ DocsApp.onToggleAllClick = function() {
 };
 
 /**
+ * @method getState
  * Returns the local state object
  */
 DocsApp.getState = function(id) {
@@ -458,6 +479,7 @@ DocsApp.getState = function(id) {
 };
 
 /**
+ * @method saveState
  * The stateful aspects of the page are collected and saved to localStorage
  */
 DocsApp.saveState = function() {
@@ -465,6 +487,7 @@ DocsApp.saveState = function() {
 };
 
 /**
+ * @method fetchState
  * Fetches the state of the page from localStorage and applies the saved values to
  * the page
  */
@@ -473,6 +496,7 @@ DocsApp.fetchState = function() {
 };
 
 /**
+ * @method initNavTreeTabs
  * Creates the navigation tabs for the navigation panel using the passed tab names
  * @param {String[]} tabs The names of the tabs to create
  */
@@ -520,6 +544,7 @@ DocsApp.initNavTreeTabs = function (tabs) {
 };
 
 /**
+ * @method filter
  * Filter the members using the filter input field value
  */
 DocsApp.filter = ExtL.createBuffered(function (e, target) {
@@ -527,16 +552,16 @@ DocsApp.filter = ExtL.createBuffered(function (e, target) {
 }, 200);
 
 /**
- *
+ * @method filterMember
  * @param e
  */
 DocsApp.filterMember = function(e) {
-    e = e || window.event;
-    DocsApp.filter(e, e.target || e.srcElement);
+    e = DocsApp.getEvent(e);
+    DocsApp.filter(e, DocsApp.getEventTarget(e));
 };
 
 /**
- *
+ * @method filterSearchByToolkit
  * @param e
  */
 DocsApp.filterSearchByToolkit = function(e) {
@@ -544,14 +569,14 @@ DocsApp.filterSearchByToolkit = function(e) {
 };
 
 /**
- *
+ * @method addEventsAndSetMenuClose
  * @param item
  * @param event
  * @param menuClose
  * @param fn
  */
 DocsApp.addEventsAndSetMenuClose = function(item, event, menuClose, fn) {
-    var menuCanClose;
+    var menuCanClose = DocsApp.appMeta.menuCanClose;
 
     ExtL.on(item, event, function() {
         // menuCanClose is a closure variable
@@ -566,10 +591,11 @@ DocsApp.addEventsAndSetMenuClose = function(item, event, menuClose, fn) {
 };
 
 /**
- *
+ * @method hideMemberTypeMenu
  */
 DocsApp.hideMemberTypeMenu = function() {
-    var menu = DocsApp.getMemberTypeMenu();
+    var menu         = DocsApp.getMemberTypeMenu(),
+        menuCanClose = DocsApp.appMeta.menuCanClose;
 
     if (menuCanClose) { // menuCanClose is a closure variable
         ExtL.removeCls(menu, 'show-menu');
@@ -577,8 +603,8 @@ DocsApp.hideMemberTypeMenu = function() {
 };
 
 /**
- *
- * @returns {boolean}
+ * @method getMemberTypeMenu
+ * @returns {Element}
  */
 DocsApp.getMemberTypeMenu = function() {
     var menu;
@@ -601,6 +627,7 @@ DocsApp.getMemberTypeMenu = function() {
 };
 
 /**
+ * @method highlightTypeMenuItem
  * Highlight the member nav button in the top nav toolbar when that section is
  * scrolled up against the top nav toolbar
  */
@@ -609,14 +636,15 @@ DocsApp.highlightTypeMenuItem = function() {
 };
 
 /**
- *
+ * @event onMemberTypeMenuClick
  * @param e
  */
 DocsApp.onMemberTypeMenuClick = function(e) {
-    var target, menuCanClose;
+    var target,
+        menuCanClose = DocsApp.appMeta.menuCanClose;
 
-    e = e || window.event;
-    target = e.target || e.srcElement;
+    e = DocsApp.getEvent(e);
+    target = DocsApp.getEventTarget(e);
 
     if (ExtL.is(target, 'a')) {
         // menuCanClose is a closure variable
@@ -627,26 +655,26 @@ DocsApp.onMemberTypeMenuClick = function(e) {
 };
 
 /**
- *
+ * @method hideSearchHistory
  */
 DocsApp.hideSearchHistory = function() {
     console.log('hide search history');
 };
 
 /**
- *
+ * @method searchFilter
  */
 DocsApp.searchFilter = function() {
     console.log('search filter');
 };
 
 /**
- *
+ * @event onSearchHistoryClick
  * @param e
  */
 DocsApp.onSearchHistoryClick = function(e) {
-    e = e || window.event;
-    var target = e.target || e.srcElement,
+    e = DocsApp.getEvent(e);
+    var target = DocsApp.getEventTarget(e),
         field = ExtL.get('searchtext');
 
     if (target) {
@@ -659,6 +687,7 @@ DocsApp.onSearchHistoryClick = function(e) {
 };
 
 /**
+ * @method toggleHelp
  * Show / hide the help page
  */
 DocsApp.toggleHelp = function() {
@@ -666,7 +695,7 @@ DocsApp.toggleHelp = function() {
 };
 
 /**
- *
+ * @method getRelativePath
  * @param curl
  * @returns {string}
  */
@@ -686,7 +715,7 @@ DocsApp.getRelativePath = function(curl) {
 };
 
 /**
- *
+ * @event onHashChange
  * @param force
  */
 DocsApp.onHashChange = function(force) {
@@ -694,7 +723,7 @@ DocsApp.onHashChange = function(force) {
 };
 
 /**
- *
+ * @event onBodyClick
  * @param e
  */
 DocsApp.onBodyClick = function(e) {
@@ -702,14 +731,14 @@ DocsApp.onBodyClick = function(e) {
 };
 
 /**
- *
+ * @method resizeHandler;
  */
 DocsApp.resizeHandler = ExtL.createBuffered(function() {
     console.log('resize handler');
 }, 0);
 
 /**
- *
+ * @method doLogSearchValue
  * @param val
  */
 DocsApp.doLogSearchValue = function(val) {
@@ -735,11 +764,12 @@ DocsApp.doLogSearchValue = function(val) {
 };
 
 /**
- *
+ * @method logSearchValue
  */
 DocsApp.logSearchValue = ExtL.createBuffered(DocsApp.doLogSearchValue, 750);
 
 /**
+ * @method handleScroll
  * Do all of the scroll related actions
  */
 DocsApp.handleScroll = function() {
@@ -750,6 +780,7 @@ DocsApp.handleScroll = function() {
 };
 
 /**
+ * @method monitorScrollToTop
  * Listen to the scroll event and show / hide the "scroll to top" element
  * depending on the current scroll position
  */
@@ -761,6 +792,7 @@ DocsApp.monitorScrollToTop = function() {
 };
 
 /**
+ * @method getScrollPosition
  * Returns the vertical scroll position of the page
  */
 DocsApp.getScrollPosition = function() {
@@ -791,6 +823,7 @@ DocsApp.getScrollPosition = function() {
 };
 
 /**
+ * @method setScrollPos
  * Scroll to the top of the document (no animation)
  * @param e
  * @param pos
@@ -802,7 +835,7 @@ DocsApp.setScrollPos = function(e,pos) {
 
     pos = pos || 0;
 
-    e = e || window.event;
+    e = DocsApp.getEvent(e);
     if(e && e.preventDefault) {
         e.preventDefault();
     }
@@ -863,6 +896,7 @@ DocsApp.wheelHandler = function() {
 };
 
 /**
+ * @method isMacWebkit
  * Returns whether current user agent is mac webkit
  * @returns {boolean}
  */
@@ -873,6 +907,7 @@ DocsApp.isMacWebkit = function() {
 };
 
 /**
+ * @method isFirefox
  * Returns whether current user agent is firefox
  * @returns {boolean}
  */
@@ -881,8 +916,9 @@ DocsApp.isFirefox = function() {
 };
 
 /**
+ * @method addMultipleEventListeners
  * Add multiple event listeners to an element
- * @param {HtmlElement} el
+ * @param {Element} el
  * @param {String} events
  * @param {Function} func
  */
@@ -895,10 +931,29 @@ DocsApp.addMultipleEventListeners = function(el, events, func) {
 };
 
 /**
- *
+ * @method getEvent
+ * @param e
+ * @returns {*|Event}
+ */
+DocsApp.getEvent = function (e) {
+    return e || window.event;
+};
+
+/**
+ * @method getEventTarget
+ * @param e
+ * @returns {EventTarget|Object}
+ */
+DocsApp.getEventTarget = function (e) {
+    e = DocsApp.getEvent(e);
+    return e.target || e.srcElement;
+};
+
+/**
+ * @method stopEvent
  */
 DocsApp.stopEvent = function (e) {
-    e = e || window.event;
+    e = DocsApp.getEvent(e);
     if (e.preventDefault) e.preventDefault();
     if (e.stopPropagation) e.stopPropagation();
     e.cancelBubble = true;  // IE events
@@ -912,7 +967,24 @@ DocsApp.stopEvent = function (e) {
  */
 
 DocsApp.initEventHandlers = function () {
-    var memberTypeMenu          = DocsApp.getMemberTypeMenu();
+    var memberTypeMenu          = DocsApp.getMemberTypeMenu(),
+        memberFilterField       = ExtL.get('member-filter-field'),
+        backToTop               = ExtL.get('back-to-top'),
+        helpBtn                 = ExtL.get('help-btn'),
+        helpClose               = ExtL.get('help-close'),
+        toggleExamples          = ExtL.get('toggleExamples'),
+        hideClassTree           = ExtL.get('hide-class-tree'),
+        memberTypesMenu         = ExtL.get('member-types-menu'),
+        publicCheckBox          = ExtL.get('publicCheckbox'),
+        privateCheckBox         = ExtL.get('privateCheckbox'),
+        protectedCheckBox       = ExtL.get('protectedCheckbox'),
+        inheritedCheckBox       = ExtL.get('inheritedCheckbox'),
+        privateClassToggle      = ExtL.get('private-class-toggle'),
+        toggleAll               = ExtL.get('toggleAll'),
+        modernSearchFilter      = ExtL.get('modern-search-filter'),
+        classicSearchFilter     = ExtL.get('classic-search-filter'),
+        searchHistoryPanel      = ExtL.get('search-history-panel'),
+        toggleTree              = ExtL.getByCls('toggle-tree');
 
     // handle the following of a link in the member type menu
     memberTypeMenu.onclick      = DocsApp.onMemberTypeMenuClick;
@@ -926,81 +998,84 @@ DocsApp.initEventHandlers = function () {
         memberTypeMenu.addEventListener("DOMMouseScroll", DocsApp.wheelHandler, false);
     }
 
-    if (ExtL.get('member-filter-field')) {
-        DocsApp.addMultipleEventListeners(ExtL.get('member-filter-field'), 'oninput onkeyup onchange', DocsApp.filterMember());
+    if (memberFilterField) {
+        DocsApp.addMultipleEventListeners(memberFilterField, 'oninput onkeyup onchange', DocsApp.filterMember());
     }
 
-    if (ExtL.get('back-to-top')) {
-        ExtL.get('back-to-top').onclick           = DocsApp.setScrollPos;
+    if (backToTop) {
+        backToTop.onclick           = DocsApp.setScrollPos;
     }
 
-    if (ExtL.get('help-btn')) {
-        ExtL.get('help-btn').onclick              = DocsApp.toggleHelp;
+    if (helpBtn) {
+        helpBtn.onclick             = DocsApp.toggleHelp;
     }
 
-    if (ExtL.get('help-close')) {
-        ExtL.get('help-close').onclick            = DocsApp.toggleHelp;
+    if (helpClose) {
+        helpClose.onclick           = DocsApp.toggleHelp;
     }
 
-    if (ExtL.get('toggleExamples')) {
-        ExtL.get('toggleExamples').onclick        = DocsApp.onToggleExamplesClick;
+    if (toggleExamples) {
+        toggleExamples.onclick      = DocsApp.onToggleExamplesClick;
     }
 
-    if (ExtL.get('hide-class-tree')) {
-        ExtL.get('hide-class-tree').onclick       = DocsApp.toggleTreeVisibility;
+    if (hideClassTree) {
+        hideClassTree.onclick       = DocsApp.toggleTreeVisibility;
     }
 
-    if (ExtL.get('member-types-menu')) {
-        ExtL.get('member-types-menu').onclick     = DocsApp.onClickMemberMenuType;
+    if (memberTypesMenu) {
+        memberTypesMenu.onclick     = DocsApp.onClickMemberMenuType;
     }
 
-    if (ExtL.get('publicCheckbox')) {
-        ExtL.get('publicCheckbox').onclick        = DocsApp.onAccessCheckboxClick;
+    if (publicCheckBox) {
+        publicCheckBox.onclick      = DocsApp.onAccessCheckboxClick;
     }
 
-    if (ExtL.get('protectedCheckbox')) {
-        ExtL.get('protectedCheckbox').onclick     = DocsApp.onAccessCheckboxClick;
+    if (protectedCheckBox) {
+        protectedCheckBox.onclick   = DocsApp.onAccessCheckboxClick;
     }
 
-    if (ExtL.get('privateCheckbox')) {
-        ExtL.get('privateCheckbox').onclick       = DocsApp.onAccessCheckboxClick;
+    if (privateCheckBox) {
+        privateCheckBox.onclick     = DocsApp.onAccessCheckboxClick;
     }
 
-    if (ExtL.get('inheritedCheckbox')) {
-        ExtL.get('inheritedCheckbox').onclick     = DocsApp.onAccessCheckboxClick;
+    if (inheritedCheckBox) {
+        inheritedCheckBox.onclick   = DocsApp.onAccessCheckboxClick;
     }
 
-    if (ExtL.get('private-class-toggle')) {
-        ExtL.get('private-class-toggle').onclick  = DocsApp.onFilterClassCheckboxToggle;
+    if (privateClassToggle) {
+        privateClassToggle.onclick  = DocsApp.onFilterClassCheckboxToggle;
     }
 
-    if (ExtL.get('toggleAll')) {
-        ExtL.get('toggleAll').onclick             = DocsApp.onToggleAllClick;
+    if (toggleAll) {
+        toggleAll.onclick           = DocsApp.onToggleAllClick;
+    }
+
+    if (toggleTree) {
+        toggleTree.onclick           = DocsApp.toggleTreeNodes;
     }
 
     // Set up search results toolkit filter button handlers
-    if (ExtL.get('modern-search-filter')) {
-        ExtL.on(ExtL.get('modern-search-filter'), 'click', DocsApp.filterSearchByToolkit);
-    }
-    if (ExtL.get('classic-search-filter')) {
-        ExtL.on(ExtL.get('classic-search-filter'), 'click', DocsApp.filterSearchByToolkit);
+    if (modernSearchFilter) {
+        ExtL.on(modernSearchFilter, 'click', DocsApp.filterSearchByToolkit);
     }
 
-    // Set up search history panel (and ultimately item) click handler
-    ExtL.on(ExtL.get('search-history-panel'), 'click', DocsApp.onSearchHistoryClick);
+    if (classicSearchFilter) {
+        ExtL.on(classicSearchFilter, 'click', DocsApp.filterSearchByToolkit);
+    }
+
+    if (searchHistoryPanel) {
+        // Set up search history panel (and ultimately item) click handler
+        ExtL.on(searchHistoryPanel, 'click', DocsApp.onSearchHistoryClick);
+    }
 
     // globally handle body click events
     document.body.onclick = DocsApp.onBodyClick;
 
     // monitor changes in the url hash
-    window.onhashchange                          = DocsApp.onHashChange;
+    window.onhashchange   = DocsApp.onHashChange;
 
     // monitor viewport resizing
     ExtL.on(window, 'resize', DocsApp.resizeHandler);
-
-    if (ExtL.getByCls('toggle-tree')) {
-        ExtL.getByCls('toggle-tree').onclick      = DocsApp.toggleTreeNodes;
-    }
 };
 
 /**
@@ -1015,9 +1090,9 @@ DocsApp.initEventHandlers = function () {
 ExtL.bindReady(function () {
     DocsApp.initNavTree();
     DocsApp.initEventHandlers();
-    DocsApp.wrapSubCategories();
 
-    ExtL.removeCls(ExtL.get('tree-header'), 'pre-load');
+    // TODO is this still needed?
+    //ExtL.removeCls(ExtL.get('tree-header'), 'pre-load');
 
     DocsApp.resizeHandler();
     DocsApp.handleScroll();
@@ -1041,6 +1116,7 @@ ExtL.bindReady(function () {
             href = link.href,
             name = href.substring(href.lastIndexOf('/')+1),
             curl = window.location.href,
+            // TODO Remove this in favor of DocsApp.meta.rootPath (ish)
             rel  = (curl.indexOf('guides') > -1) ? DocsApp.getRelativePath(curl) : '';
 
         link.href = null;

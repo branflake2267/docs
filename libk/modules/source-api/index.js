@@ -508,15 +508,17 @@ class SourceApi extends Base {
         }, this.apiTree);   // initially we pass in the apiTree property itself
     }
 
+    /**
+     * @private
+     * Sorter method that sorts an array of api tree nodes with parent nodes on top and 
+     * leaf nodes on bottom and each of those groups ordered by their node name.  
+     * 
+     * Supports {@link #sortTree}
+     * @param {Object[]} nodes An array of api tree nodes to sort
+     * @return {Object[]} The sorted array
+     */
     sortNodes (nodes) {
         return nodes.sort((a, b) => {
-            /*if (a.children) {
-                return (a.name > b.name) ? 1 : -1;
-            } else {
-                return (a.name > b.name) ? 1 : -1;
-            }
-
-            return 0;*/
             if (a.children === b.children) {
                 if (a.name > b.name) {
                     return 1;
@@ -526,17 +528,17 @@ class SourceApi extends Base {
                 }
                 return 0;
             } else {
-                if (a.children) {
-                    return -1;
-                } else {
-                    return 1;
-                }
+                return a.children ? -1 : 1;
             }
         });
     }
 
     /**
-     * 
+     * Sorts the api tree recursively.  Initially the tree is passed in.  Each node in 
+     * the tree that has children then passes those children back through `sortTree`.
+     * @param {Object[]} tree The tree nodes to sort - either the tree root or an array 
+     * of child nodes
+     * @return {Object[]} The sorted tree
      */
     sortTree (tree) {
         let len = tree.length,

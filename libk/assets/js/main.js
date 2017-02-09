@@ -1095,8 +1095,8 @@ DocsApp.sizeSearchResultsCt = function() {
  */
 DocsApp.getSearchResultsCt = function() {
     var ct       = ExtL.get('search-results-ct'),
-        hasApi   = ExtL.get('api-tab').offsetHeight,
-        hasGuide = ExtL.get('guides-tab').offsetHeight,
+        hasApi   = DocsApp.meta.hasApi,
+        hasGuide = DocsApp.meta.hasGuides,
         cn;
 
     if (!ct) {

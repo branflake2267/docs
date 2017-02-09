@@ -423,67 +423,6 @@ DocsApp.onToggleExamplesClick = function() {
 };
 
 /**
- * @method toggleNavTab
- * @param {String} tab The id of the tab to set active: api-tab or guides-tab
- */
-DocsApp.toggleNavTab = function(tab) {
-    if (this !== window && ExtL.hasCls(tab, 'active-tab')) {
-        return;
-    }
-
-    var apiTab         = ExtL.get('api-tab'),
-        guideTab       = ExtL.get('guides-tab'),
-        quickStartTab  = ExtL.get('quick-start-tab'),
-        classicTab     = ExtL.get('classicTab'),
-        modernTab      = ExtL.get('modernTab'),
-        toSave         = true,
-        tree           = ExtL.get('tree'),
-        guideTree      = ExtL.get('guide-tree'),
-        quickStartTree = ExtL.get('quick-start-tree'),
-        classicTree    = ExtL.get('classicTree'),
-        modernTree     = ExtL.get('modernTree');
-
-    if (!ExtL.isString(tab)) {
-        tab = tab || window.event;
-        tab = tab.target || tab.srcElement;
-        tab = tab.id;
-    }
-
-    tab = ExtL.get(tab);
-
-    if (!tab) {
-        return;
-    }
-
-    // deactivate all the tabs
-    ExtL.each(ExtL.fromNodeList(tab.parentNode.querySelectorAll('.active-tab')), function (t) {
-        ExtL.removeCls(t, 'active-tab');
-    });
-
-    ExtL.addCls(tab, 'active-tab');
-
-    if (tree) {
-        ExtL.toggleCls(tree, 'hide', !ExtL.hasCls(apiTab, 'active-tab'));
-    }
-    if (guideTree) {
-        ExtL.toggleCls(guideTree, 'hide', !ExtL.hasCls(guideTab, 'active-tab'));
-    }
-    if (quickStartTree) {
-        ExtL.toggleCls(quickStartTree, 'hide', !ExtL.hasCls(quickStartTab, 'active-tab'));
-    }
-    if (classicTree) {
-        ExtL.toggleCls(classicTree, 'hide', !ExtL.hasCls(classicTab, 'active-tab'));
-    }
-    if (modernTree) {
-        ExtL.toggleCls(modernTree, 'hide', !ExtL.hasCls(modernTab, 'active-tab'));
-    }
-
-    if (toSave) {
-        DocsApp.saveState();
-    }
-};
-
-/**
  * @method setHistoryType
  */
 DocsApp.setHistoryType = function() {
@@ -748,18 +687,6 @@ DocsApp.fetchState = function(skipSave, returnOnly) {
         state = ExtL.decodeValue(saved) || {
             showTree: null
         };
-
-    if (pageType == 'guide' || pageType == 'home') {
-        DocsApp.toggleNavTab('guides-tab');
-    } else if (pageType == 'api') {
-        if (myToolkit) {
-            DocsApp.toggleNavTab(ExtL.get(myToolkit + '-tab'));
-        } else {
-            DocsApp.toggleNavTab(ExtL.get('api-tab'));
-        }
-    } else if (pageType == 'quickstart') {
-        DocsApp.toggleNavTab('quick-start-tab');
-    }
 
     if (returnOnly) {
         return state;

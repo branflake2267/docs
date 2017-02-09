@@ -771,13 +771,13 @@ class SourceApi extends Base {
         // indicates whether the class is of type component, singleton, or some other 
         // class
         if (cls.extended && cls.extended.includes('Ext.Component')) {
-            cls.clsSpec     = 'component fa fa-gear black-60 f3 fl';
+            cls.clsSpec     = 'title-decoration component fa fa-gear black-60 f3 fl ';
             cls.clsSpecIcon = 'component';
         } else if (cls.singleton === true) {
-            cls.clsSpec     = 'singleton fa fa-cube f3 fl dark-pink';
+            cls.clsSpec     = 'title-decoration singleton fa fa-cube f3 fl dark-pink ';
             cls.clsSpecIcon = 'singleton';
         } else {
-            cls.clsSpec     = 'class fa fa-cube f3 fl dark-blue';
+            cls.clsSpec     = 'title-decoration class fa fa-cube f3 fl dark-blue ';
             cls.clsSpecIcon = 'class';
         }
         

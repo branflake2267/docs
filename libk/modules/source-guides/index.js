@@ -17,7 +17,10 @@ const SourceApi       = require('../source-api'),
       Path            = require('path'),
       Mkdirp          = require('mkdirp'),
       Handlebars      = require('handlebars'),
-      Utils           = require('../shared/Utils');
+      Utils           = require('../shared/Utils'),
+      _               = require('lodash'),
+      Entities        = require('html-entities').AllHtmlEntities,
+      Gramophone      = require('sencha-gramophone'); // https://github.com/edlea/gramophone;
 
 class SourceGuides extends SourceApi {
     constructor (options) {
@@ -68,26 +71,46 @@ class SourceGuides extends SourceApi {
      * @return {Object} The guide config object
      */
     get guideConfig () {
-        let me      = this,
-            files   = me.getFiles(me.guideConfigPath),
-            version = me.options.version,
+        let path        = this.guideConfigPath,
+            options     = this.options,
+            hasVersions = options.prodVerMeta.hasVersions;
+
+        // if there are not multiple versions just read config.json
+        if (!hasVersions) {
+            return Fs.readJsonSync(
+                Path.join(
+                    path,
+                    'config.json'
+                )
+            );
+        }
+
+        let files   = this.getFiles(path),
+            version = options.version,
             cfgVer  = '0',
+            i       = 0,
+            len     = files.length,
             file;
 
-        let i   = 0,
-            len = files.length;
-
+        // else loop over all config files and compare their version number to the 
+        // version being processed to find the right config file
         for (; i < len; i++) {
             let name = Path.parse(files[i]).name,
                 v    = name.substring(name.indexOf('-') + 1);
 
             if (CompareVersions(v, version) <= 0 && CompareVersions(v, cfgVer) > 0) {
                 cfgVer = v;
-                file = name;
+                file   = name;
             }
         }
 
-        return Fs.readJsonSync(Path.join(me.guideConfigPath, file + '.json'));
+        // and then read the contents of the config file
+        return Fs.readJsonSync(
+            Path.join(
+                path,
+                `${file}.json`
+            )
+        );
     }
 
     /**
@@ -173,6 +196,20 @@ class SourceGuides extends SourceApi {
     }
 
     /**
+     * 
+     */
+    get guideSearchBlacklist () {
+        return ['Release Notes'];
+    }
+
+    /**
+     * 
+     */
+    get guideSearchWhitelist () {
+        return ['vs', 'getting', 'new'];
+    }
+
+    /**
      * Returns common metadata needed by app API pages
      * @param {Object} data Current data hash to be applied to the page template
      * @return {Object} Hash of common current page metadata
@@ -244,9 +281,15 @@ class SourceGuides extends SourceApi {
      */
     processGuides () {
         let dt = new Date();
+
         console.log('PROCESSING GUIDES');
         this.syncRemote('guides', this.guideSourceDir);
-        return this.readGuideCfg()
+
+        return this.processGuideCfg()
+        .then(this.readGuides.bind(this))
+        .then(this.assembleSearch.bind(this))//
+        .then(this.outputSearch.bind(this))//
+        .then(this.outputGuides.bind(this))//
         .then(this.copyResources.bind(this))
         .then(() => {
             console.log('runGuides:', this.getElapsed(dt));
@@ -256,6 +299,238 @@ class SourceGuides extends SourceApi {
         .catch((err) => {
             this.log(err, 'error');
         });
+    }
+
+    /**
+     * 
+     */
+    assembleSearch () {
+        // TODO need to also include Cmd search (or whatever coordinating product is stipulated in the project config)
+        let searchObj = this.getSearchFromGuides(this.guidesTree);
+
+        return Utils.from(searchObj);
+    }
+
+    /**
+     * 
+     */
+    flattenGuides (nodes, flattened) {
+        flattened = flattened || [];
+
+        if (Utils.isObject(nodes)) {
+            nodes = _.flatten(_.values(nodes));
+        }
+
+        let i   = 0,
+            len = nodes.length;
+
+        for (; i < len; i++) {
+            let node       = nodes[i],
+                childNodes = node.children;
+
+            flattened.push(node);
+            if (childNodes) {
+                this.flattenGuides(childNodes, flattened);
+            }
+        }
+
+        return flattened;
+    }
+
+    /**
+     * 
+     */
+    getSearchFromGuides (guides, search) {
+        guides = this.flattenGuides(guides);
+
+        let options   = this.options,
+            i         = 0,
+            len       = guides.length,
+            blacklist = this.guideSearchBlacklist,
+            searchObj = {
+                searchWordsIndex : null,
+                searchWords      : {},
+                searchRef        : [],
+                searchUrls       : [],
+                prod             : options.product,
+                version          : options.prodVerMeta.hasVersions && options.version
+            };
+
+        for (; i < len; i++) {
+            let guide   = guides[i],
+                name    = guide.name.replace(/&amp;/g, '&'),
+                content = guide.content,
+                href    = guide.href;
+
+            //console.log(name, _.includes(blacklist, name));
+            if (content && !_.includes(blacklist, name)) {
+                searchObj.searchRef.push(name);
+                searchObj.searchUrls.push(href);
+                searchObj.searchWordsIndex = i;
+                this.parseSearchWords(searchObj, name, content);
+            }
+        }
+
+        return searchObj;
+    }
+
+    /**
+     * Collect up keywords from the doc
+     * @param {Object} obj The accumulating search object
+     * @param {String} title The doc title
+     * @param {String} body The body text of the document
+     */
+    parseSearchWords (obj, title, body) {
+        let me        = this,
+            entities  = new Entities(),
+            whitelist = this.guideSearchWhitelist,
+            configDefault = {
+                html                 : true,
+                score                : true,
+                ngrams               : [1, 2, 3, 4, 5, 6, 7],
+                alternativeTokenizer : true
+            },
+            parsedTitle, parsedBody;
+
+        parsedBody = Gramophone.extract(
+            entities.decode(body),
+            configDefault
+        );
+
+        parsedTitle = Gramophone.extract(
+            entities.decode(title),
+            Object.assign(configDefault, {
+                min        : 1,
+                startWords : whitelist
+            })
+        );
+
+        me.addTerms(obj, parsedTitle, 't');
+        me.addTerms(obj, parsedBody,  'b');
+    }
+
+    /**
+     * @private
+     * Private method used by parseSearchWords to add the collected words to the parent
+     * search words object
+     */
+    addTerms (obj, terms, type) {
+        let words = obj.searchWords,
+            i     = 0,
+            len   = terms.length;
+
+        for (; i < len; i++) {
+            let item = terms[i],
+                term = terms[i].term;
+
+            item.t = type;
+            // the index of the guide where the match was made
+            item.r = obj.searchWordsIndex;
+            item.m = item.term;
+            delete item.term;
+            // the frequency / number of instances
+            item.f = item.tf;
+            delete item.tf;
+
+            if (typeof words[term] !== 'function') {
+                words[term] = words[term] || [];
+                words[term].push(item);
+            }
+        }
+    }
+
+    /**
+     * 
+     */
+    outputSearch (searchOutput) {
+        let output = JSON.stringify(searchOutput),
+            options = this.options,
+            product = options.product,
+            version = options.version;
+        
+        version = options.prodVerMeta.hasVersions ? `${version}` : '';
+
+        return new Promise((resolve, reject) => {
+            Fs.writeFile(Path.join(this.jsDir, `${product}-${version}-guideSearch.js`), output, 'utf8', err => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+
+    /**
+     * 
+     */
+    outputGuides () {
+        let guidesTree = this.guidesTree,
+            flattened  = this.flattenGuides(guidesTree),
+            writeArr   = [],
+            i          = 0,
+            len        = flattened.length;
+
+        for (; i < len; i++) {
+            let node = flattened[i];
+
+            if (node.content) {
+                writeArr.push(
+                    new Promise((resolve, reject) => {
+                        let path        = node.id,
+                            content     = node.content,
+                            filePath    = this.getGuideFilePath(path),
+                            rootPathDir = Path.parse(filePath).dir;
+
+                        let data = Object.assign({}, node);
+                        data     = Object.assign(data, this.options);
+                        data     = Object.assign(data, this.options.prodVerMeta);
+
+                        data.rootPath = rootPathDir;
+                        data.content  = this.processGuideHtml(content, data);
+                        data = this.processGuideDataObject(data);
+                        data.contentPartial = '_html-guideBody';
+
+                        Fs.writeFile(filePath, this.mainTemplate(data), 'utf8', (err) => {
+                            if (err) {
+                                reject(err);
+                            }
+                            resolve();
+                        });
+                    })
+                );
+            }
+        }
+
+        /*writeArr = flattened.reduce((sequence, node) => {
+            return sequence.then(() => {
+                return new Promise((resolve, reject) => {
+                    let path        = node.id,
+                        content     = node.content,
+                        filePath    = this.getGuideFilePath(path),
+                        rootPathDir = Path.parse(filePath).dir;
+
+                    let data = Object.assign({}, node);
+                    data     = Object.assign(data, this.options);
+                    data     = Object.assign(data, this.options.prodVerMeta);
+
+                    data.rootPath = rootPathDir;
+                    data.content  = this.processGuideHtml(content, data);
+                    data = this.processGuideDataObject(data);
+                    data.contentPartial = '_html-guideBody';
+
+                    Fs.writeFile(filePath, this.mainTemplate(data), 'utf8', (err) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve();
+                    });
+                });
+                return Promise.resolve();
+            });
+        }, Promise.resolve());*/
+
+        return Promise.all(writeArr);
     }
 
     /**
@@ -314,30 +589,31 @@ class SourceGuides extends SourceApi {
      *
      * Finally, the guide tree is output
      */
-    readGuideCfg () {
+    processGuideCfg () {
         return new Promise((resolve, reject) => {
             let cfg       = this.guideConfig,
                 items     = cfg.items,
                 i         = 0,
                 len       = items.length,
-                outputArr = [];
+                toReadArr = [];
 
             for (; i < len; i++) {
                 let guidesObj = items[i];
 
                 this.guidesTree[guidesObj.text] = guidesObj.items;
-                this.prepareGuides(guidesObj.items, guidesObj.rootPath || '', outputArr, guidesObj.text);
+                this.prepareGuides(guidesObj.items, guidesObj.rootPath || '', toReadArr, guidesObj.text);
             }
 
             // TODO output the guide tree in a promise-based method after the promise.all below
             //console.log(this.guidesTree);
             
-            Promise.all(outputArr)
+            /*Promise.all(nodesArr)
             // TODO search - here we'll need to output the search blob to a file
             .then(() => {
                 this.outputGuideTree();
                 resolve();
-            });
+            });*/
+            resolve(toReadArr);
         });
 
     }
@@ -350,7 +626,7 @@ class SourceGuides extends SourceApi {
      * @param {String} rootPath the path on disc where the guides from the nodes are
      * located
      */
-    prepareGuides (nodes, rootPath, outputArr, navTreeName) {
+    prepareGuides (nodes, rootPath, toReadArr, navTreeName) {
         let i   = 0,
             len = nodes.length;
 
@@ -377,17 +653,22 @@ class SourceGuides extends SourceApi {
             if (children) {
                 let path = Path.join(rootPath, slug);
 
-                node.id = node.slug;
+                //node.id = node.slug;
+                node.id = Path.join(rootPath, slug);
                 node.iconCls = 'fa fa-folder-o dib w1 mr1';
                 this.makeGuideDir(path);
-                this.prepareGuides(children, path, outputArr, navTreeName);
-            // else decorate the node as leaf = true
+                this.prepareGuides(children, path, toReadArr, navTreeName);
+                
+                // else decorate the node as leaf = true
             } else {
-                node.leaf = true;
+                node.id      = Path.join(rootPath, slug);
+                node.leaf    = true;
                 node.iconCls = iconClasses[node.toolkit] || iconClasses.universal;
                 // if the node isn't simply a link itself then output its guide
                 if (!node.link) {
-                    outputArr.push(this.outputGuide(node, rootPath));
+                    //nodesArr.push(this.outputGuide(node, rootPath));
+                    node.href = Path.join('guides', rootPath, `${slug}.html`);
+                    toReadArr.push(this.readGuide(node, rootPath));
                 }
             }
         }
@@ -410,22 +691,51 @@ class SourceGuides extends SourceApi {
     /**
      * Assemble the guide file's path for writing to disk  
      * May be overridden in the post processor module
-     * @param {String} rootPath The path of the guide file
-     * @param {String} name The guide file name
+     * @param {String} path The path of the guide file
      * @return {String} The full path for the guide file
      */
-    getGuideFilePath (rootPath, name) {
-        let path = Path.join(
+    getGuideFilePath (path) {
+        let filePath = Path.join(this.guidesOutputDir, path);
+
+        return `${filePath}.html`;
+        /*
+        return Path.join(this.guidesOutputDir, rootPath, name) + '.html';
+
+        let filePath = Path.join(
                 Path.resolve(
                     __dirname,
                     this.resourcesDir
                 ),
                 'guides',
-                rootPath,
-                name
+                path
             );
 
-        return `${path}.html`;
+        return `${filePath}.html`;*/
+    }
+
+    /**
+     * 
+     */
+    readGuides (toReadArr) {
+        return Promise.all(toReadArr);
+    }
+
+    /**
+     * 
+     */
+    readGuide (node) {
+        return new Promise ((resolve, reject) => {
+            let path = this.guidePathMap[node.id];
+
+            Fs.readFile(path, 'utf-8', (err, content) => {
+                if (err) {
+                    reject(err);
+                }
+
+                node.content = content;
+                resolve();
+            });
+        });
     }
 
     /**
@@ -440,19 +750,15 @@ class SourceGuides extends SourceApi {
                 path = this.guidePathMap[Path.join(rootPath, slug)];
 
             Fs.readFile(path, 'utf-8', (err, html) => {
-
-                // TODO search - guide search will be cumulative.  In this step we add
-                // the guide to the search blob and later output the whole search file.
-
                 if (err) {
-                    reject(Error(err));
+                    reject(err);
                 }
 
                 let filePath    = this.getGuideFilePath(rootPath, node.slug),
                     rootPathDir = Path.parse(filePath).dir,
-                    relPath     = Path.relative(rootPathDir, this.guidesOutputDir),
-                    outPath     = Path.join(rootPath, `${slug}.html`),
-                    link        = Path.join(relPath, outPath);
+                    //relPath     = Path.relative(rootPathDir, this.guidesOutputDir),
+                    outPath     = Path.join(rootPath, `${slug}.html`);
+                    //link        = Path.join(relPath, outPath);
 
                 node.href = Path.join('guides', outPath);
                 node.id   = `${rootPath}/${slug}`;

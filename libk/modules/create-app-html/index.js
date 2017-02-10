@@ -178,9 +178,9 @@ class HtmlApp extends AppBase {
      * @param {String} name The guide file name
      * @return {String} The full path for the guide file
      */
-    getGuideFilePath (rootPath, name) {
+    /*getGuideFilePath (rootPath, name) {
         return Path.join(this.guidesOutputDir, rootPath, name) + '.html';
-    }
+    }*/
 
     /**
      * Processes the HTML of the guide body.  Decorates `@example` instances, processes

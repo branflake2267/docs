@@ -631,12 +631,7 @@ class SourceApi extends Base {
             console.log(new Date() - dt);
             return this.createSrcFiles();
         })
-        .catch(err => {
-            if (!(err instanceof Error)) {
-                err = new Error(err);
-            }
-            this.log(err, 'error');
-        });
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -1126,7 +1121,9 @@ class SourceApi extends Base {
                 //this.closeStatus();
 
                 // output all of the source HTML files
-                this.outputSrcFiles(anchored).then(resolve);
+                this.outputSrcFiles(anchored)
+                .then(resolve)
+                .catch(this.error.bind(this));
             });
         });
     }
@@ -1189,7 +1186,8 @@ class SourceApi extends Base {
                 console.log('OUTPUT SOURCE FILES IS DONE !!!');
 
                 return Promise.all(writes)
-                .then(resolve);
+                .then(resolve)
+                .catch(this.error.bind(this));
             });
         });
     }

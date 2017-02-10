@@ -21,7 +21,7 @@ class AppBase extends SourceGuides {
     constructor (options) {
         super(options);
 
-        let o = options,
+        let o = this.options,
             product    = o.product,
             version    = o.version,
             majorVer   = this.apiVersion.charAt(),
@@ -89,22 +89,7 @@ class AppBase extends SourceGuides {
             console.log('ALL TOLD:', this.getElapsed(dt));
             this.concludeBuild();
         })
-        .catch(err => {
-            if (!(err instanceof Error)) {
-                err = new Error(err);
-            }
-            this.log(err, 'error');
-        });
-
-        /*
-        try {
-            await this.runApi();
-            await this.processGuides();
-            await this.concludeBuild();
-        } catch(err) {
-            console.log(err);
-        }*/
-
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -141,7 +126,8 @@ class AppBase extends SourceGuides {
         return this.processGuides()
         .then(() => {
             this.concludeBuild();
-        });
+        })
+        .catch(this.error.bind(this));
     }
 
     /**

@@ -70,15 +70,19 @@ const targets   = ['create-app-html', 'create-rext-app-html', 'create-app-ext', 
 if (canRun) {
     // get the default project options and merge them with the app config
     // TODO see if the 'productIndex' of projectDefaults is even needed after we're all done
-    let options = require('./configs/projectDefaults');
+    /*let options = require('./configs/projectDefaults');
         options     = Object.assign(options, require('./configs/app'));
         // then merge the CLI params on top of that
-        options     = Object.assign(options, args);
-        options._myRoot = __dirname;
+        options     = Object.assign(options, args);*/
+    let options = args;
+    
+    options._args   = args;
+    options._myRoot = __dirname;
 
     // create the designated module
     let cls = require('./modules/' + targetMod);
     new cls(options)[method]();
 } else {
     console.log('INVALID MODULE:', targetMod);
+    console.log('VALID MODULES INCLUDE:', targets.join(', '));
 }

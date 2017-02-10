@@ -27,6 +27,16 @@ const EventEmitter = require('events'),
 // controllable with CLI params)
 class Base {
     constructor (options) {
+        let root = options._myRoot,
+            projectDefaults = Fs.readJsonSync(
+                Path.join(root, 'configs/projectDefaults.json')
+            ),
+            appDefaults = Fs.readJsonSync(Path.join(root, 'configs/app.json'));
+
+        // merge in the project defaults, then the app defaults, then finally the CLI 
+        // args
+        options = Object.assign({}, projectDefaults, appDefaults, options);
+
         this.options = options;
 
         // init events - events help control the flow of the app
@@ -81,7 +91,7 @@ class Base {
             let options   = this.options,
                 assetsDir = options.assetsDir,
                 formatted = Utils.format(assetsDir, options);
-                
+            
             dir = this._assetsDir = options.assetsDir = Path.join(options._myRoot, formatted);
         }
         
@@ -386,6 +396,18 @@ class Base {
             // the items queue
             worker.postMessage(items.shift());
         }
+    }
+
+    /**
+     * Convenience error logging method
+     * @param {String/Object} err The error instance or error string to wrap as an error 
+     * instance
+     */
+    error (err) {
+        if (!(err instanceof Error)) {
+            err = new Error(err);
+        }
+        this.log(err, 'error');
     }
 
     /**
@@ -715,9 +737,7 @@ class Base {
                     resolve(true);
                 }
             });
-        }).catch((err) => {
-            this.log(err, 'error');
-        });
+        }).catch(this.error.bind(this));
     }
 
     /**

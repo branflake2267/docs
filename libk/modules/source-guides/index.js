@@ -287,9 +287,9 @@ class SourceGuides extends SourceApi {
 
         return this.processGuideCfg()
         .then(this.readGuides.bind(this))
-        .then(this.assembleSearch.bind(this))//
-        .then(this.outputSearch.bind(this))//
-        .then(this.outputGuides.bind(this))//
+        .then(this.assembleSearch.bind(this))
+        .then(this.outputSearch.bind(this))
+        .then(this.outputGuides.bind(this))
         .then(this.copyResources.bind(this))
         .then(() => {
             console.log('runGuides:', this.getElapsed(dt));
@@ -304,11 +304,50 @@ class SourceGuides extends SourceApi {
     /**
      * 
      */
-    assembleSearch () {
-        // TODO need to also include Cmd search (or whatever coordinating product is stipulated in the project config)
-        let searchObj = this.getSearchFromGuides(this.guidesTree);
+    getSearch() {
+        return this.processGuideCfg()
+        .then(this.readGuides.bind(this))
+        .then(() => {
+            return this.getSearchFromGuides(this.guidesTree);
+        })
+        .catch(err => {
+            this.log(err, 'error');
+        });
+    }
 
-        return Utils.from(searchObj);
+    /**
+     * 
+     */
+    assembleSearch () {
+        let actionArr      = [],
+            options        = this.options,
+            product        = options.product,
+            products       = options.products,
+            searchPartners = products[product].guideSearchPartners;
+
+        actionArr.push(
+            this.getSearchFromGuides(this.guidesTree)
+        );
+
+        if (searchPartners) {
+            let i          = 0,
+                len        = searchPartners.length,
+                HtmlApp    = require('../create-app-html'),
+                optionsObj = Object.assign({}, options);;
+
+            for (; i < len; i++) {
+                let partnerProduct  = searchPartners[i],
+                    partnerInstance = new HtmlApp(
+                        Object.assign(options, {
+                            product: partnerProduct
+                        })
+                    );
+                
+                actionArr.push(partnerInstance.getSearch());
+            }
+        }
+
+        return Promise.all(actionArr);
     }
 
     /**
@@ -340,38 +379,40 @@ class SourceGuides extends SourceApi {
     /**
      * 
      */
-    getSearchFromGuides (guides, search) {
-        guides = this.flattenGuides(guides);
+    getSearchFromGuides (guides) {
+        return new Promise((resolve, reject) => {
+            guides = this.flattenGuides(guides);
 
-        let options   = this.options,
-            i         = 0,
-            len       = guides.length,
-            blacklist = this.guideSearchBlacklist,
-            searchObj = {
-                searchWordsIndex : null,
-                searchWords      : {},
-                searchRef        : [],
-                searchUrls       : [],
-                prod             : options.product,
-                version          : options.prodVerMeta.hasVersions && options.version
-            };
+            let options   = this.options,
+                i         = 0,
+                len       = guides.length,
+                blacklist = this.guideSearchBlacklist,
+                searchObj = {
+                    searchWordsIndex : null,
+                    searchWords      : {},
+                    searchRef        : [],
+                    searchUrls       : [],
+                    prod             : options.product,
+                    version          : options.prodVerMeta.hasVersions && options.version
+                };
 
-        for (; i < len; i++) {
-            let guide   = guides[i],
-                name    = guide.name.replace(/&amp;/g, '&'),
-                content = guide.content,
-                href    = guide.href;
+            for (; i < len; i++) {
+                let guide   = guides[i],
+                    name    = guide.name.replace(/&amp;/g, '&'),
+                    content = guide.content,
+                    href    = guide.href;
 
-            //console.log(name, _.includes(blacklist, name));
-            if (content && !_.includes(blacklist, name)) {
-                searchObj.searchRef.push(name);
-                searchObj.searchUrls.push(href);
-                searchObj.searchWordsIndex = i;
-                this.parseSearchWords(searchObj, name, content);
+                //console.log(name, _.includes(blacklist, name));
+                if (content && !_.includes(blacklist, name)) {
+                    searchObj.searchRef.push(name);
+                    searchObj.searchUrls.push(href);
+                    searchObj.searchWordsIndex = i;
+                    this.parseSearchWords(searchObj, name, content);
+                }
             }
-        }
 
-        return searchObj;
+            resolve(searchObj);
+        });
     }
 
     /**
@@ -472,16 +513,15 @@ class SourceGuides extends SourceApi {
             len        = flattened.length;
 
         for (; i < len; i++) {
-            let node = flattened[i];
+            let node        = flattened[i],
+                content     = node.content,
+                path        = node.id,
+                filePath    = this.getGuideFilePath(path),
+                rootPathDir = Path.parse(filePath).dir;
 
-            if (node.content) {
+            if (content) {
                 writeArr.push(
                     new Promise((resolve, reject) => {
-                        let path        = node.id,
-                            content     = node.content,
-                            filePath    = this.getGuideFilePath(path),
-                            rootPathDir = Path.parse(filePath).dir;
-
                         let data = Object.assign({}, node);
                         data     = Object.assign(data, this.options);
                         data     = Object.assign(data, this.options.prodVerMeta);
@@ -501,34 +541,6 @@ class SourceGuides extends SourceApi {
                 );
             }
         }
-
-        /*writeArr = flattened.reduce((sequence, node) => {
-            return sequence.then(() => {
-                return new Promise((resolve, reject) => {
-                    let path        = node.id,
-                        content     = node.content,
-                        filePath    = this.getGuideFilePath(path),
-                        rootPathDir = Path.parse(filePath).dir;
-
-                    let data = Object.assign({}, node);
-                    data     = Object.assign(data, this.options);
-                    data     = Object.assign(data, this.options.prodVerMeta);
-
-                    data.rootPath = rootPathDir;
-                    data.content  = this.processGuideHtml(content, data);
-                    data = this.processGuideDataObject(data);
-                    data.contentPartial = '_html-guideBody';
-
-                    Fs.writeFile(filePath, this.mainTemplate(data), 'utf8', (err) => {
-                        if (err) {
-                            reject(err);
-                        }
-                        resolve();
-                    });
-                });
-                return Promise.resolve();
-            });
-        }, Promise.resolve());*/
 
         return Promise.all(writeArr);
     }
@@ -731,6 +743,10 @@ class SourceGuides extends SourceApi {
                 if (err) {
                     reject(err);
                 }
+
+                //if (this.options.product === 'cmd') {
+                    console.log(this.options.product);
+                //}
 
                 node.content = content;
                 resolve();

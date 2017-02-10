@@ -522,7 +522,17 @@ DocsApp.setTypeNavAndHeaderVisibility = function() {
  * Toggle expand/collapse of all members
  */
 DocsApp.onToggleAllClick = function() {
-    console.log('on toggle all click');
+    var memberList  = ExtL.fromNodeList(document.querySelectorAll('.classmembers')),
+        symbText    = ExtL.get('toggleAll'),
+        isCollapsed = ExtL.hasCls(symbText, 'fa-plus'),
+        itemAction  = isCollapsed ? 'addCls' : 'removeCls';
+
+    ExtL.each(memberList, function (item) {
+        ExtL[itemAction](item, 'member-expanded');
+    });
+
+    ExtL.removeCls(symbText, isCollapsed ? 'fa-plus' : 'fa-minus');
+    ExtL.addCls(symbText, isCollapsed ? 'fa-minus' : 'fa-plus');
 };
 
 /**
@@ -564,7 +574,7 @@ DocsApp.saveState = function() {
         pageType             = DocsApp.getPageType(),
         product              = DocsApp.meta.prodObj.title,
         pversion             = DocsApp.meta.prodObj.currentVersion,
-        text                 = DocsApp.meta.prodObj.myId,
+        text                 = DocsApp.meta.myId,
         title                = text,
         activeNavTab;
 
@@ -788,6 +798,79 @@ DocsApp.initNavTreeTabs = function (tabs) {
 };
 
 /**
+ * @method initHistory
+ */
+DocsApp.initHistory = function() {
+    DocsApp.saveState();
+
+    var history  = DocsApp.getHistory(),
+        nav  = ExtL.get('history-nav'),
+        list = ExtL.get('history-full-list'),
+        prodObj = DocsApp.meta.prodObj,
+        currentVersion = prodObj.currentVersion;
+
+    nav.appendChild(ExtL.createElement({
+        tag: 'span',
+        html: 'History:',
+        "class": 'history-title'
+    }));
+
+    if (history && history.length) {
+        history.reverse();
+
+        ExtL.each(history, function (item) {
+            // TODO Check current and other
+            var badge = ExtL.isIE8() ? '' : ' ' + item.product + '-badge badge',
+                isGuide = (item.path.indexOf('/guides/') > -1);
+
+            nav.appendChild(ExtL.createElement({
+                tag: 'a',
+                "class": 'tooltip tooltip-tl-bl history-btn',
+                href: item.path,
+                'data-tip': item.title + ' ' + (isGuide ? currentVersion : item.pversion),
+                cn: [{
+                    tag: 'span',
+                    html: item.title + ' '   + (isGuide ? currentVersion : item.pversion) + ' | ',
+                    "class": 'history-meta'
+                }, {
+                    tag: 'span',
+                    html: item.title
+                }, {
+                    "class": 'callout callout-bl'
+                }]
+            }));
+
+            list.appendChild(ExtL.createElement({
+                tag: 'a',
+                "class": 'tooltip tooltip-tr-br history-item',
+                href: item.path,
+                cn: [{
+                    tag: 'div',
+                    html: item.title
+                }, {
+                    tag: 'div',
+                    html: item.title + ' ' + item.pversion,
+                    "class": 'history-meta'
+                }]
+            }));
+        });
+    }
+};
+
+/**
+ * @method getHistory
+ */
+DocsApp.getHistory = function() {
+    if (!ExtL.canLocalStorage()) {
+        return false;
+    }
+
+    var saved = ExtL.decodeValue(localStorage.getItem('htmlDocsState')) || {};
+
+    return saved.history;
+};
+
+/**
  * @method filter
  * Filter the members using the filter input field value
  */
@@ -870,6 +953,14 @@ DocsApp.getMemberTypeMenu = function() {
     return menu;
 };
 
+DocsApp.hideMultiSrcPanel = function() {
+    var picker = ExtL.get('multi-src-picker');
+
+    if (picker) {
+        ExtL.removeCls(picker, 'show-multi')
+    }
+};
+
 /**
  * @method highlightTypeMenuItem
  * Highlight the member nav button in the top nav toolbar when that section is
@@ -877,6 +968,17 @@ DocsApp.getMemberTypeMenu = function() {
  */
 DocsApp.highlightTypeMenuItem = function() {
     console.log('highlight type menu item');
+};
+
+/**
+ * @method onMemberCollapseToggleClick
+ * Handles the expanding / collapsing of members on click
+ * @param {HTMLElement} collapseEl The collapse / expand toggle element
+ */
+DocsApp.onMemberCollapseToggleClick = function(collapseEl) {
+    var member = ExtL.up(collapseEl, '.classmembers');
+
+    ExtL.toggleCls(member, 'member-expanded');
 };
 
 /**
@@ -899,6 +1001,22 @@ DocsApp.onMemberTypeMenuClick = function(e) {
 };
 
 /**
+ * @method loadApiSearchPage
+ * @param page
+ */
+DocsApp.loadApiSearchPage = function(page) {
+    console.log('load api search page');
+};
+
+/**
+ * @method loadGuideSearchPage
+ * @param page
+ */
+DocsApp.loadGuideSearchPage = function(page) {
+    console.log('load guide search page');
+};
+
+/**
  * @method hideProductMenu
  * Hides the product menu
  */
@@ -906,7 +1024,59 @@ DocsApp.hideProductMenu = function() {
     var productTreeCt = ExtL.get('product-tree-ct');
 
     ExtL.addCls(productTreeCt, 'hide');
-}
+};
+
+/**
+ * @method hideSearchResults
+ */
+DocsApp.hideSearchResults = function() {
+    if (ExtL.hasCls(DocsApp.getSearchResultsCt(), 'show-search-results')) {
+        DocsApp.hideMobileSearch();
+    }
+    ExtL.removeCls(DocsApp.getSearchResultsCt(), 'show-search-results');
+};
+
+/**
+ * @method showSearchResults
+ */
+DocsApp.showSearchResults = function(page) {
+    var apiTab       = ExtL.get('apiTab'),
+        apiVisible   = apiTab.offsetHeight,
+        guideTab     = ExtL.get('guideTab'),
+        guideVisible = guideTab.offsetHeight,
+        ct           = DocsApp.getSearchResultsCt(),
+        size         = DocsApp.getViewportSize(),
+        compressed   = size.width <= 950,
+        posRef, boundingBox, top, right;
+
+    posRef = compressed ? document.querySelector('.context-menu-ct') : ExtL.get('searchtext');
+    boundingBox = posRef.getBoundingClientRect();
+    top = compressed ? (boundingBox.top + 32) : (boundingBox.top + posRef.clientHeight);
+    right = compressed ? 0 : (document.body.clientWidth - boundingBox.right);
+
+    ct.style.right = right.toString() + 'px';
+    ct.style.top   = top.toString() + 'px';
+
+    DocsApp.sizeSearchResultsCt();
+
+    ExtL.addCls(ct, 'show-search-results');
+
+    if (page && apiVisible) {
+        DocsApp.loadApiSearchPage(page);
+    }
+
+    if (page && guideVisible) {
+        DocsApp.loadGuideSearchPage(page);
+    }
+};
+
+/**
+ * @method hideMobileSearch
+ */
+DocsApp.hideMobileSearch = function() {
+    var input = ExtL.get('peekaboo-input');
+    input.style.visibility = 'hidden';
+};
 
 /**
  * @method hideSearchHistory
@@ -920,6 +1090,13 @@ DocsApp.hideSearchHistory = function() {
  */
 DocsApp.searchFilter = function() {
     console.log('search filter');
+};
+
+/**
+ * @method hideHistoryConfigPanel
+ */
+DocsApp.hideHistoryConfigPanel = function() {
+    ExtL.removeCls(document.body, 'show-history-panel');
 };
 
 /**
@@ -945,6 +1122,7 @@ DocsApp.onSearchHistoryClick = function(e) {
  * Show / hide the help page
  */
 DocsApp.toggleHelp = function() {
+    console.log('HELP!');
     ExtL.toggleCls(document.body, 'show-help');
 };
 
@@ -977,7 +1155,59 @@ DocsApp.resetTempShownMembers = function() {
  * @param e
  */
 DocsApp.onBodyClick = function(e) {
-    console.log('on body click');
+    e = DocsApp.getEvent(e);
+    var target               = DocsApp.getEventTarget(e),
+        searchText           = ExtL.get('searchtext'),
+        isSearchInput        = target.id === 'searchtext',
+        isSearchNav          = ExtL.up(target, '.search-results-nav-header'),
+        isPagingNav          = ExtL.up(target, '.search-results-nav'),
+        isProductMenu        = ExtL.up(target, '#product-tree-ct'),
+        isHistoryConfigPanel = ExtL.up(target, '#historyConfigPanel'),
+        isMultiSrcBtn        = ExtL.hasCls(target, 'multi-src-btn'),
+        productMenu          = ExtL.get('product-tree-ct'),
+        rightMembers         = ExtL.get('rightMembers'),
+        treeVis              = ExtL.hasCls(document.body, 'tree-hidden'),
+        width                = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+    if (target.id !== 'classic-search-filter' && target.id !== 'modern-search-filter' && target.id != 'searchtext' && !isSearchNav && !isPagingNav) {
+        DocsApp.hideSearchResults();
+    } else {
+        if (DocsApp.getSearchResultsCt().childNodes.length && searchText.value.length > 0) {
+            DocsApp.showSearchResults();
+        }
+    }
+
+    if (ExtL.hasCls(target, 'member-name') || ExtL.hasCls(target, 'collapse-toggle') || (ExtL.hasCls(e.srcElement, 'collapse-toggle'))) {
+        DocsApp.onMemberCollapseToggleClick(target);
+    }
+
+    if (ExtL.hasCls(rightMembers, 'show-context-menu')) {
+        if (!ExtL.hasCls(target, 'fa-cog') && !ExtL.hasCls(target, 'context-menu-ct') && !ExtL.up(target, '.context-menu-ct')) {
+            ExtL.toggleCls(rightMembers, 'show-context-menu');
+        }
+    }
+
+    if (!treeVis && width < 950 && !isProductMenu) {
+        if (!ExtL.hasCls(target, 'fa-bars') && !ExtL.hasCls(target, 'class-tree') && !ExtL.up(target, '.class-tree')) {
+            DocsApp.setTreeVisibility(false);
+        }
+    }
+
+    if (!isProductMenu && !ExtL.hasCls(productMenu, 'hide')) {
+        DocsApp.hideProductMenu();
+    }
+
+    if (!isHistoryConfigPanel && ExtL.hasCls(document.body, 'show-history-panel')) {
+        DocsApp.hideHistoryConfigPanel();
+    }
+
+    if (!isSearchInput && ExtL.hasCls(document.body, 'show-search-history')) {
+        DocsApp.hideSearchHistory();
+    }
+
+    if (!isMultiSrcBtn) {
+        DocsApp.hideMultiSrcPanel();
+    }
 };
 
 /**
@@ -1083,9 +1313,9 @@ DocsApp.getViewportSize = function() {
  */
 DocsApp.sizeSearchResultsCt = function() {
     var searchCt = DocsApp.getSearchResultsCt(),
-    size = DocsApp.getViewportSize(),
-    vpHeight = size.height,
-    h = (vpHeight < 509) ? (vpHeight - 58) : 451;
+        size = DocsApp.getViewportSize(),
+        vpHeight = size.height,
+        h = (vpHeight < 509) ? (vpHeight - 58) : 451;
 
     searchCt.style.height = h.toString() + 'px';
 };
@@ -1327,6 +1557,9 @@ DocsApp.initEventHandlers = function () {
         searchHistoryPanel      = ExtL.get('search-history-panel'),
         toggleTree              = ExtL.getByCls('toggle-tree');
 
+    ExtL.get('help-btn').onclick   = DocsApp.toggleHelp;
+    ExtL.get('help-close').onclick = DocsApp.toggleHelp;
+
     // handle the following of a link in the member type menu
     memberTypeMenu.onclick      = DocsApp.onMemberTypeMenuClick;
 
@@ -1392,7 +1625,7 @@ DocsApp.initEventHandlers = function () {
     }
 
     if (toggleTree) {
-        toggleTree.onclick           = DocsApp.toggleTreeNodes;
+        toggleTree.onclick          = DocsApp.toggleTreeNodes;
     }
 
     // Set up search results toolkit filter button handlers
@@ -1434,6 +1667,7 @@ ExtL.bindReady(function () {
     DocsApp.resizeHandler();
     DocsApp.handleScroll();
     DocsApp.fetchState(true);
+    DocsApp.initHistory();
 
     DocsApp.appMeta.allowSave = true;
 
@@ -1454,7 +1688,6 @@ ExtL.bindReady(function () {
         var link = ExtL.getByCls('toolkit-switch'),
             href = link.href,
             name = href.substring(href.lastIndexOf('/')+1),
-            curl = window.location.href,
             rel  = DocsApp.meta.rootPath;
 
         link.href = null;

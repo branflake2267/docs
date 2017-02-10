@@ -1122,7 +1122,6 @@ DocsApp.onSearchHistoryClick = function(e) {
  * Show / hide the help page
  */
 DocsApp.toggleHelp = function() {
-    console.log('HELP!');
     ExtL.toggleCls(document.body, 'show-help');
 };
 
@@ -1555,10 +1554,17 @@ DocsApp.initEventHandlers = function () {
         modernSearchFilter      = ExtL.get('modern-search-filter'),
         classicSearchFilter     = ExtL.get('classic-search-filter'),
         searchHistoryPanel      = ExtL.get('search-history-panel'),
+        helpBtn                 = ExtL.get('help-btn'),
+        helpClose               = ExtL.get('help-close'),
         toggleTree              = ExtL.getByCls('toggle-tree');
 
-    ExtL.get('help-btn').onclick   = DocsApp.toggleHelp;
-    ExtL.get('help-close').onclick = DocsApp.toggleHelp;
+    if (helpBtn) {
+        helpBtn.onclick         = DocsApp.toggleHelp;
+    }
+
+    if (helpClose) {
+        helpClose.onclick       = DocsApp.toggleHelp;
+    }
 
     // handle the following of a link in the member type menu
     memberTypeMenu.onclick      = DocsApp.onMemberTypeMenuClick;

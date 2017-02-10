@@ -1040,10 +1040,8 @@ DocsApp.hideSearchResults = function() {
  * @method showSearchResults
  */
 DocsApp.showSearchResults = function(page) {
-    var apiTab       = ExtL.get('apiTab'),
-        apiVisible   = apiTab.offsetHeight,
-        guideTab     = ExtL.get('guideTab'),
-        guideVisible = guideTab.offsetHeight,
+    var hasApi   = DocsApp.meta.hasApi,
+        hasGuide = DocsApp.meta.hasGuides,
         ct           = DocsApp.getSearchResultsCt(),
         size         = DocsApp.getViewportSize(),
         compressed   = size.width <= 950,
@@ -1061,11 +1059,11 @@ DocsApp.showSearchResults = function(page) {
 
     ExtL.addCls(ct, 'show-search-results');
 
-    if (page && apiVisible) {
+    if (page && hasApi) {
         DocsApp.loadApiSearchPage(page);
     }
 
-    if (page && guideVisible) {
+    if (page && hasGuide) {
         DocsApp.loadGuideSearchPage(page);
     }
 };
@@ -1075,7 +1073,10 @@ DocsApp.showSearchResults = function(page) {
  */
 DocsApp.hideMobileSearch = function() {
     var input = ExtL.get('peekaboo-input');
-    input.style.visibility = 'hidden';
+
+    if (input) {
+        input.style.visibility = 'hidden';
+    }
 };
 
 /**
@@ -1104,7 +1105,6 @@ DocsApp.hideHistoryConfigPanel = function() {
  * @param e
  */
 DocsApp.onSearchHistoryClick = function(e) {
-    e = DocsApp.getEvent(e);
     var target = DocsApp.getEventTarget(e),
         field = ExtL.get('searchtext');
 
@@ -1122,7 +1122,6 @@ DocsApp.onSearchHistoryClick = function(e) {
  * Show / hide the help page
  */
 DocsApp.toggleHelp = function() {
-    console.log('HELP!');
     ExtL.toggleCls(document.body, 'show-help');
 };
 
@@ -1555,10 +1554,17 @@ DocsApp.initEventHandlers = function () {
         modernSearchFilter      = ExtL.get('modern-search-filter'),
         classicSearchFilter     = ExtL.get('classic-search-filter'),
         searchHistoryPanel      = ExtL.get('search-history-panel'),
+        helpBtn                 = ExtL.get('help-btn'),
+        helpClose               = ExtL.get('help-close'),
         toggleTree              = ExtL.getByCls('toggle-tree');
 
-    ExtL.get('help-btn').onclick   = DocsApp.toggleHelp;
-    ExtL.get('help-close').onclick = DocsApp.toggleHelp;
+    if (helpBtn) {
+        helpBtn.onclick         = DocsApp.toggleHelp;
+    }
+
+    if (helpClose) {
+        helpClose.onclick       = DocsApp.toggleHelp;
+    }
 
     // handle the following of a link in the member type menu
     memberTypeMenu.onclick      = DocsApp.onMemberTypeMenuClick;

@@ -1105,7 +1105,6 @@ DocsApp.hideHistoryConfigPanel = function() {
  * @param e
  */
 DocsApp.onSearchHistoryClick = function(e) {
-    e = DocsApp.getEvent(e);
     var target = DocsApp.getEventTarget(e),
         field = ExtL.get('searchtext');
 

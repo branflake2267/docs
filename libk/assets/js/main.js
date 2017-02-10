@@ -271,7 +271,8 @@ DocsApp.appMeta = {
     menuCanClose  : true,
     allowSave     : false,
     searchHistory : [],
-    pos           : {}
+    pos           : {},
+    isStateful    : true
 };
 
 /**
@@ -391,10 +392,9 @@ DocsApp.toggleTreeVisibility = function() {
 
     DocsApp.setTreeVisibility(makeVisible);
 
-    /*
-    if (DocsApp.isStateful) {
+    if (DocsApp.appMeta.isStateful) {
         DocsApp.saveState();
-    }*/
+    }
 };
 
 /**
@@ -419,6 +419,26 @@ DocsApp.onToggleExamplesClick = function() {
 
     DocsApp.toggleExamples(!collapsed);
 
+    DocsApp.saveState();
+};
+
+/**
+ * @method setHistoryType
+ */
+DocsApp.setHistoryType = function() {
+    var all = ExtL.get('historyTypeAll').checked;
+
+    ExtL.toggleCls(document.body, 'show-all-history', all);
+    DocsApp.saveState();
+};
+
+/**
+ * @event onToggleHistoryLabels
+ */
+DocsApp.onToggleHistoryLabels = function() {
+    var cb = ExtL.get('history-all-labels');
+
+    ExtL.toggleCls(document.body, 'show-history-labels', cb.checked);
     DocsApp.saveState();
 };
 
@@ -449,6 +469,33 @@ DocsApp.onFilterClassCheckboxToggle = function() {
 };
 
 /**
+ * @method filterByAccess
+ * Show / hide members based on whether public, protected, private, or some
+ * combination is checked.
+ */
+DocsApp.filterByAccess = function() {
+    var publicCheckbox     = ExtL.get('publicCheckbox'),
+        protectedCheckbox  = ExtL.get('protectedCheckbox'),
+        privateCheckbox    = ExtL.get('privateCheckbox'),
+        inheritedCheckbox  = ExtL.get('inheritedCheckbox'),
+        publicCls          = 'show-public',
+        protectedCls       = 'show-protected',
+        privateCls         = 'show-private',
+        inheritedCls       = 'show-inherited',
+        membersCt          = ExtL.get('rightMembers');
+
+    DocsApp.resetTempShownMembers();
+
+    ExtL.toggleCls(membersCt, publicCls, publicCheckbox.checked === true);
+    ExtL.toggleCls(membersCt, protectedCls, protectedCheckbox.checked === true);
+    ExtL.toggleCls(membersCt, privateCls, privateCheckbox.checked === true);
+    ExtL.toggleCls(membersCt, inheritedCls, inheritedCheckbox.checked === true);
+
+    DocsApp.setTypeNavAndHeaderVisibility();
+    DocsApp.highlightTypeMenuItem();
+}
+
+/**
  * @event onClickMemberMenuType
  */
 DocsApp.onClickMemberMenuType = function() {
@@ -459,7 +506,15 @@ DocsApp.onClickMemberMenuType = function() {
  * @event onAccessCheckboxClick
  */
 DocsApp.onAccessCheckboxClick = function() {
-    console.log('on access checkbox click');
+    DocsApp.filterByAccess();
+
+    if (DocsApp.appMeta.isStateful) {
+        DocsApp.saveState();
+    }
+};
+
+DocsApp.setTypeNavAndHeaderVisibility = function() {
+    console.log('set type nav and header visibility');
 };
 
 /**
@@ -483,7 +538,123 @@ DocsApp.getState = function(id) {
  * The stateful aspects of the page are collected and saved to localStorage
  */
 DocsApp.saveState = function() {
-    console.log('save state');
+    var path           = window.location.pathname,
+        allowSave      = DocsApp.appMeta.allowSave,
+        historyRemoves = [];
+
+    if (allowSave !== true || !ExtL.canLocalStorage()) {
+        return;
+    }
+
+    var publicCheckbox       = ExtL.get('publicCheckbox'),
+        protectedCheckbox    = ExtL.get('protectedCheckbox'),
+        privateCheckbox      = ExtL.get('privateCheckbox'),
+        inheritedCheckbox    = ExtL.get('inheritedCheckbox'),
+        privateClassCheckbox = ExtL.get('private-class-toggle'),
+        historyType          = ExtL.get('historyTypeCurrent'),
+        historyLabelCheckbox = ExtL.get('history-all-labels'),
+        apiTab               = ExtL.get('api-tab'),
+        guideTab             = ExtL.get('guides-tab'),
+        quickStartTab        = ExtL.get('quick-start-tab'),
+        modernSearchFilter   = ExtL.get('modern-search-filter'),
+        classicSearchFilter  = ExtL.get('classic-search-filter'),
+        body                 = document.querySelector('body'),
+        collapsed            = ExtL.hasCls(body, 'collapse-code-all'),
+        state                = DocsApp.getState() || {},
+        pageType             = DocsApp.getPageType(),
+        product              = DocsApp.meta.prodObj.title,
+        pversion             = DocsApp.meta.prodObj.currentVersion,
+        text                 = DocsApp.meta.prodObj.myId,
+        title                = text,
+        activeNavTab;
+
+    if (apiTab && ExtL.hasCls(apiTab, 'active-tab')) {
+        activeNavTab = 'api-tab';
+    }
+    if (guideTab && ExtL.hasCls(guideTab, 'active-tab')) {
+        activeNavTab = 'guides-tab';
+    }
+    if (quickStartTab && ExtL.hasCls(quickStartTab, 'active-tab')) {
+        activeNavTab = 'quick-start-tab';
+    }
+
+    state.showTree = !ExtL.hasCls(body, 'tree-hidden');
+
+    if (publicCheckbox) {
+        state.publicCheckbox = publicCheckbox.checked;
+    }
+
+    if (protectedCheckbox) {
+        state.protectedCheckbox = protectedCheckbox.checked;
+    }
+
+    if (privateCheckbox) {
+        state.privateCheckbox = privateCheckbox.checked;
+    }
+
+    if (inheritedCheckbox) {
+        state.inheritedCheckbox = inheritedCheckbox.checked;
+    }
+
+    if (privateClassCheckbox) {
+        state.privateClassCheckbox = privateClassCheckbox.checked;
+    }
+
+    if (modernSearchFilter && classicSearchFilter) {
+        if (ExtL.hasCls(modernSearchFilter, 'active')) {
+            state.toolkitFilter = ExtL.hasCls(classicSearchFilter, 'active') ? 'both' : 'modern';
+        } else {
+            state.toolkitFilter = 'classic';
+        }
+    }
+
+    if (pageType == "guide" || pageType == "api") {
+        state.history = state.history || [];
+
+        if (state.history.length > 0) {
+            ExtL.each(state.history, function (item, i) {
+                if (item.product === product &&
+                    item.pversion === pversion &&
+                    item.text === text &&
+                    item.path === path) {
+
+                    historyRemoves.push(i);
+                }
+            });
+        }
+
+        if (historyRemoves.length > 0) {
+            ExtL.each(historyRemoves, function (item) {
+                state.history.splice(item, 1);
+            });
+        }
+
+        state.history.push({
+            product: product,
+            pversion: pversion,
+            text: text,
+            path: path,
+            title: title
+        });
+
+        // limit the history size to 150 items (across all products)
+        if (state.history.length > 150) {
+            state.history.length = 150;
+        }
+    }
+
+    if (historyType) {
+        state.historyType = historyType.checked ? 'current' : 'all';
+    }
+
+    if (historyLabelCheckbox) {
+        state.historyLabels = historyLabelCheckbox.checked;
+    }
+
+    state.searchHistory = searchHistory;
+    state.collapseExamples = collapsed;
+    state.activeNavTab = activeNavTab;
+    localStorage.setItem('htmlDocsState', ExtL.encodeValue(state));
 };
 
 /**
@@ -491,8 +662,79 @@ DocsApp.saveState = function() {
  * Fetches the state of the page from localStorage and applies the saved values to
  * the page
  */
-DocsApp.fetchState = function() {
-    console.log('fetch state');
+DocsApp.fetchState = function(skipSave, returnOnly) {
+    var saved                = localStorage.getItem('htmlDocsState'),
+        publicCheckbox       = ExtL.get('publicCheckbox'),
+        protectedCheckbox    = ExtL.get('protectedCheckbox'),
+        privateCheckbox      = ExtL.get('privateCheckbox'),
+        inheritedCheckbox    = ExtL.get('inheritedCheckbox'),
+        privateClassCheckbox = ExtL.get('private-class-toggle'),
+        historyTypeCurrent   = ExtL.get('historyTypeCurrent'),
+        historyTypeAll       = ExtL.get('historyTypeAll'),
+        historyLabelCheckbox = ExtL.get('history-all-labels'),
+        mButton              = ExtL.get('modern-search-filter'),
+        cButton              = ExtL.get('classic-search-filter'),
+        apiTab               = ExtL.get('api-tab'),
+        guideTab             = ExtL.get('guides-tab'),
+        body                 = document.querySelector('body'),
+        hash                 = window.location.hash,
+        qi                   = hash.indexOf('?'),
+        pageType             = DocsApp.getPageType(),
+        myToolkit            = DocsApp.meta.toolkit,
+        queryString          = (qi > -1) ? hash.substr(qi + 1) : false,
+        queryObj, examplesCollapseDir;
+
+        state = ExtL.decodeValue(saved) || {
+            showTree: null
+        };
+
+    if (returnOnly) {
+        return state;
+    }
+    if (publicCheckbox) {
+        publicCheckbox.checked = !(state.publicCheckbox === false);
+    }
+    if (protectedCheckbox) {
+        protectedCheckbox.checked = !(state.protectedCheckbox === false);
+    }
+    if (privateCheckbox) {
+        privateCheckbox.checked = !(state.privateCheckbox === false);
+    }
+    if (inheritedCheckbox) {
+        inheritedCheckbox.checked = !(state.inheritedCheckbox === false);
+    }
+    if (privateClassCheckbox) {
+        privateClassCheckbox.checked = !(state.privateClassCheckbox === false);
+    }
+    if (historyLabelCheckbox) {
+        historyLabelCheckbox.checked = state.historyLabels;
+        DocsApp.onToggleHistoryLabels();
+    }
+    if (historyTypeCurrent && historyTypeAll && state.historyType) {
+        ExtL.get('historyType' + ExtL.capitalize(state.historyType)).checked = true;
+        DocsApp.setHistoryType();
+    }
+
+    searchHistory = state.searchHistory;
+
+    if (queryString) {
+        queryObj = ExtL.fromQueryString(queryString);
+        if (queryObj.collapseExamples && (queryObj.collapseExamples === 'true' || queryObj.collapseExamples === 'false')) {
+            examplesCollapseDir = queryObj.collapseExamples === 'true';
+        }
+        DocsApp.toggleExamples(examplesCollapseDir);
+    } else {
+        DocsApp.toggleExamples(!!state.collapseExamples);
+    }
+
+    if (mButton && cButton && state.toolkitFilter) {
+        DocsApp.filterSearchByToolkit(state.toolkitFilter);
+    }
+
+    DocsApp.setTreeVisibility(state.showTree);
+    if (!skipSave) {
+        DocsApp.saveState();
+    }
 };
 
 /**
@@ -511,11 +753,12 @@ DocsApp.initNavTreeTabs = function (tabs) {
         navTrees    = ExtL.assign({}, apiTree, guidesTree),
         i           = 0,
         len         = tabs.length,
-        tab, isActive, cfg;
+        tab, tabId, tabCls, isActive, cfg;
 
     // loop over the tab names and create each tab for the nav tree header
     for (; i < len; i++) {
         tab      = tabs[i];
+        tabId    = tabCls = tab.replace(/\s+/g, '-').toLowerCase() + '-tab';
         // the active tab is the one that matches tha tree name of the current page
         isActive = tab === navTreeName;
         
@@ -523,19 +766,20 @@ DocsApp.initNavTreeTabs = function (tabs) {
         cfg = {
             tag : isActive ? 'div' : 'a',
             "class" : 'nav-tab dib black-70 br1 br--top f6',
-            html: tab
+            html: tab,
+            id: tabId
         };
 
         // if this is the active tab decorate it as active
         if (isActive) {
-            cfg["class"] += ' active-tab bg-near-white ba b--black-10';
+            cfg["class"] += ' active-tab bg-near-white ba b--black-10 ' + tabCls;
         // else it's decorated as an inactive tab and given a link to that tab's landing 
         // page
         } else {
             cfg.href = DocsApp.getNodeHref(
                 navTrees[tab][0]
             );
-            cfg["class"] += ' link bg-white bl bt br b--transparent hover-bg-black-10';
+            cfg["class"] += ' link bg-white bl bt br b--transparent hover-bg-black-10 ' + tabCls;
         }
 
         // append the tab to the tree header element
@@ -655,6 +899,16 @@ DocsApp.onMemberTypeMenuClick = function(e) {
 };
 
 /**
+ * @method hideProductMenu
+ * Hides the product menu
+ */
+DocsApp.hideProductMenu = function() {
+    var productTreeCt = ExtL.get('product-tree-ct');
+
+    ExtL.addCls(productTreeCt, 'hide');
+}
+
+/**
  * @method hideSearchHistory
  */
 DocsApp.hideSearchHistory = function() {
@@ -695,31 +949,27 @@ DocsApp.toggleHelp = function() {
 };
 
 /**
- * @method getRelativePath
- * @param curl
- * @returns {string}
- */
-DocsApp.getRelativePath = function(curl) {
-    var regex = new RegExp('.*guides\/(.*?)\.html'),
-        guideMatch = regex.exec(curl)[1],
-        slashCount = guideMatch.split("/"),
-        rel = '', i;
-
-    if (slashCount.length > 0) {
-        for (i = 0; i < slashCount.length; i++) {
-            rel = '../' + rel;
-        }
-    }
-
-    return rel;
-};
-
-/**
  * @event onHashChange
  * @param force
  */
 DocsApp.onHashChange = function(force) {
     console.log('on hash change');
+};
+
+/**
+ * @method resetTempShownMembers
+ * Reset any temporarily shown class members
+ */
+DocsApp.resetTempShownMembers = function() {
+    var temps = document.querySelectorAll('.temp-show');
+
+    temps = ExtL.fromNodeList(temps);
+
+    if (temps.length) {
+        ExtL.each(temps, function (item) {
+            ExtL.removeCls(item, 'temp-show');
+        });
+    }
 };
 
 /**
@@ -731,10 +981,28 @@ DocsApp.onBodyClick = function(e) {
 };
 
 /**
- * @method resizeHandler;
+ * @method resizeHandler
  */
 DocsApp.resizeHandler = ExtL.createBuffered(function() {
-    console.log('resize handler');
+    var size = DocsApp.getViewportSize(),
+        showTree = DocsApp.getState('showTree'),
+        width = size.width;
+
+    ExtL.toggleCls(document.body, 'vp-med-size', (width < 1280 && width > 950));
+
+    if (width > 950 && showTree !== false) {
+        DocsApp.setTreeVisibility(true);
+    } else if (width <= 950 && showTree !== true) {
+        DocsApp.setTreeVisibility(false);
+    }
+
+    if (DocsApp.isLanding) {
+        var ct = ExtL.get('rightMembers');
+        ExtL[(width < 1280) ? 'addCls' : 'removeCls'](ct, 'transitional');
+    }
+
+    DocsApp.sizeSearchResultsCt();
+    DocsApp.hideProductMenu();
 }, 0);
 
 /**
@@ -789,6 +1057,72 @@ DocsApp.monitorScrollToTop = function() {
 
     ExtL.toggleCls(ExtL.get('back-to-top'), 'sticky', vertical_position > 345);
     ExtL.toggleCls(document.body, 'sticky', vertical_position > 345);
+};
+
+/**
+ * Returns an object with:
+ *  - width: the viewport width
+ *  - height: the viewport height
+ */
+DocsApp.getViewportSize = function() {
+    var e = window,
+        a = 'inner';
+
+    if (!('innerWidth' in window)){
+        a = 'client';
+        e = document.documentElement || document.body;
+    }
+    return {
+        width: e[ a+'Width' ],
+        height: e[ a+'Height' ]
+    };
+};
+
+/**
+ * @method sizeSearchResultsCt
+ */
+DocsApp.sizeSearchResultsCt = function() {
+    var searchCt = DocsApp.getSearchResultsCt(),
+    size = DocsApp.getViewportSize(),
+    vpHeight = size.height,
+    h = (vpHeight < 509) ? (vpHeight - 58) : 451;
+
+    searchCt.style.height = h.toString() + 'px';
+};
+
+/**
+ * @method getSearchResultsCt
+ */
+DocsApp.getSearchResultsCt = function() {
+    var ct       = ExtL.get('search-results-ct'),
+        hasApi   = DocsApp.meta.hasApi,
+        hasGuide = DocsApp.meta.hasGuides,
+        cn;
+
+    if (!ct) {
+        if (hasApi || hasGuide) {
+            cn = [];
+        }
+        if (hasGuide) {
+            cn.push({
+                id: 'guide-search-results',
+                "class": 'isHidden'
+            });
+        }
+        if (hasApi) {
+            cn.push({
+                id: 'api-search-results'
+            });
+        }
+        ct = ExtL.createElement({
+            tag: 'span',
+            id: 'search-results-ct',
+            cn: cn
+        });
+        document.body.appendChild(ct);
+    }
+
+    return ct;
 };
 
 /**
@@ -893,6 +1227,13 @@ DocsApp.wheelHandler = function() {
     e.cancelBubble = true;  // IE events
     e.returnValue = false;  // IE events
     return false;
+};
+
+/**
+ * @method getPageType
+ */
+DocsApp.getPageType = function() {
+    return DocsApp.meta.pageType;
 };
 
 /**
@@ -1090,15 +1431,13 @@ DocsApp.initEventHandlers = function () {
 ExtL.bindReady(function () {
     DocsApp.initNavTree();
     DocsApp.initEventHandlers();
-
-    // TODO is this still needed?
-    //ExtL.removeCls(ExtL.get('tree-header'), 'pre-load');
-
     DocsApp.resizeHandler();
     DocsApp.handleScroll();
     DocsApp.fetchState(true);
 
-    var pageType  = DocsApp.meta.pageType,
+    DocsApp.appMeta.allowSave = true;
+
+    var pageType  = DocsApp.getPageType(),
         classType;
 
     if (pageType == 'api') {
@@ -1116,8 +1455,7 @@ ExtL.bindReady(function () {
             href = link.href,
             name = href.substring(href.lastIndexOf('/')+1),
             curl = window.location.href,
-            // TODO Remove this in favor of DocsApp.meta.rootPath (ish)
-            rel  = (curl.indexOf('guides') > -1) ? DocsApp.getRelativePath(curl) : '';
+            rel  = DocsApp.meta.rootPath;
 
         link.href = null;
         link.href = '../' + rel + name;

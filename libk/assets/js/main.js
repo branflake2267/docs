@@ -411,6 +411,32 @@ DocsApp.setTreeVisibility = function(visible) {
 };
 
 /**
+ * @event onToggleExampleClick
+ */
+DocsApp.onToggleExampleClick = function(e) {
+    var target      = DocsApp.getEventTarget(),
+        targetEl    = ExtL.hasCls(target, 'example-collapse-target') || ExtL.up(target, '.example-collapse-target'),
+        headerClick = ExtL.hasCls(target, 'da-inline-fiddle-nav');
+
+    DocsApp.stopEvent(e);
+
+    // Clicking on the header should expand the example, but not collapse it
+    if (headerClick && !ExtL.hasCls(targetEl, 'example-collapsed')) {
+        return;
+    }
+    // Clicking on an element in an expanded header on anything other than the
+    // collapse tool should halt
+    if (!ExtL.hasCls(targetEl, 'example-collapsed') && !ExtL.hasCls(target, 'collapse-tool')) {
+        return;
+    }
+
+    ExtL.toggleCls(targetEl, 'example-collapsed');
+    if (ExtL.isIE8()) {
+        ExtL.toggleCls(document.body, 'placebo');
+    }
+};
+
+/**
  * @event onToggleExamplesClick
  */
 DocsApp.onToggleExamplesClick = function() {
@@ -466,6 +492,17 @@ DocsApp.toggleExamples = function(collapse) {
  */
 DocsApp.onFilterClassCheckboxToggle = function() {
     console.log('on filter class checkbox toggle');
+};
+
+/**
+ * @method filterClassTreeByAccess
+ */
+DocsApp.filterClassTreeByAccess = function() {
+    /*var privateCheckbox = ExtL.get('private-class-toggle'),
+        privateCls      = 'show-private',
+        treeMembersCt   = ExtL.get('tree');
+
+    ExtL.toggleCls(treeMembersCt, privateCls, privateCheckbox.checked === true);*/
 };
 
 /**
@@ -858,6 +895,41 @@ DocsApp.initHistory = function() {
 };
 
 /**
+ * @method initMemberTypeMouseoverHandlers
+ */
+DocsApp.initMemberTypeMouseoverHandlers = function() {
+    var btns = document.querySelectorAll('.toolbarButton'),
+    len = btns.length,
+    i = 0;
+
+    for (; i < len; i++) {
+        DocsApp.addEventsAndSetMenuClose(btns.item(i), 'mouseenter', false);
+        DocsApp.addEventsAndSetMenuClose(btns.item(i), 'mouseleave', true);
+        DocsApp.addEventsAndSetMenuClose(btns.item(i), 'click', true, DocsApp.hideMemberTypeMenu);
+
+        ExtL.monitorMouseLeave(btns.item(i), 250, DocsApp.hideMemberTypeMenu);
+        ExtL.monitorMouseEnter(btns.item(i), 150, DocsApp.showMemberTypeMenu);
+    }
+}
+
+/**
+ * @method copyRelatedClasses
+ */
+DocsApp.copyRelatedClasses = function() {
+    var desktopRelated    = document.querySelector('.classMeta'),
+        copy              = desktopRelated.cloneNode(true),
+        relatedClasses    = ExtL.get('related-classes-context-ct'),
+        relatedClassesTab = ExtL.get('relatedClassesTab');
+
+    if (desktopRelated.children.length > 0 && relatedClasses) {
+        relatedClasses.appendChild(copy);
+    } else if (relatedClassesTab) {
+        ExtL.addCls(relatedClassesTab, 'hide-tab');
+        desktopRelated.style.display = 'none';
+    }
+};
+
+/**
  * @method getHistory
  */
 DocsApp.getHistory = function() {
@@ -927,6 +999,13 @@ DocsApp.hideMemberTypeMenu = function() {
     if (menuCanClose) { // menuCanClose is a closure variable
         ExtL.removeCls(menu, 'show-menu');
     }
+};
+
+/**
+ * @method showMemberTypeMenu
+ */
+DocsApp.showMemberTypeMenu = function() {
+    console.log('show member type menu');
 };
 
 /**
@@ -1025,6 +1104,28 @@ DocsApp.hideProductMenu = function() {
 
     ExtL.addCls(productTreeCt, 'hide');
 };
+
+/**
+ * @event onToggleClassTreeClickNoState
+ * Handles the click of the toggle class tree button, but does not save state
+ */
+DocsApp.onToggleClassTreeClickNoState = function() {
+    DocsApp.toggleTreeVisibility();
+};
+
+/**
+ * @method toggleContextMenu
+ */
+DocsApp.toggleContextMenu = function() {
+    var rightMembers = ExtL.get('rightMembers'),
+        mainEdgeMenu = ExtL.get('class-tree-ct');
+
+    if (mainEdgeMenu.style.left !== "0px") {
+        var t = DocsApp.getScrollPosition();
+        ExtL.toggleCls(rightMembers, 'show-context-menu');
+        DocsApp.setScrollPos(null, t);
+    }
+}
 
 /**
  * @method hideSearchResults
@@ -1213,9 +1314,9 @@ DocsApp.onBodyClick = function(e) {
  * @method resizeHandler
  */
 DocsApp.resizeHandler = ExtL.createBuffered(function() {
-    var size = DocsApp.getViewportSize(),
+    var size     = DocsApp.getViewportSize(),
         showTree = DocsApp.getState('showTree'),
-        width = size.width;
+        width    = size.width;
 
     ExtL.toggleCls(document.body, 'vp-med-size', (width < 1280 && width > 950));
 
@@ -1554,9 +1655,13 @@ DocsApp.initEventHandlers = function () {
         modernSearchFilter      = ExtL.get('modern-search-filter'),
         classicSearchFilter     = ExtL.get('classic-search-filter'),
         searchHistoryPanel      = ExtL.get('search-history-panel'),
-        helpBtn                 = ExtL.get('help-btn'),
-        helpClose               = ExtL.get('help-close'),
-        toggleTree              = ExtL.getByCls('toggle-tree');
+        toggleTree              = ExtL.getByCls('toggle-tree'),
+        hideContextMenu         = ExtL.get('hide-context-menu'),
+        mobileMenuBtn           = ExtL.get('mobile-main-nav-menu-btn');
+
+    if (mobileMenuBtn) {
+        mobileMenuBtn.onclick   = DocsApp.onToggleClassTreeClickNoState;
+    }
 
     if (helpBtn) {
         helpBtn.onclick         = DocsApp.toggleHelp;
@@ -1648,6 +1753,12 @@ DocsApp.initEventHandlers = function () {
         ExtL.on(searchHistoryPanel, 'click', DocsApp.onSearchHistoryClick);
     }
 
+    ExtL.get('mobile-context-menu-btn').onclick = DocsApp.toggleContextMenu;
+
+    if (hideContextMenu) {
+        hideContextMenu.onclick   = DocsApp.toggleContextMenu;
+    }
+
     // globally handle body click events
     document.body.onclick = DocsApp.onBodyClick;
 
@@ -1656,6 +1767,26 @@ DocsApp.initEventHandlers = function () {
 
     // monitor viewport resizing
     ExtL.on(window, 'resize', DocsApp.resizeHandler);
+
+    ExtL.each(ExtL.fromNodeList(document.getElementsByClassName('collapse-tool')), function (btn) {
+        btn.onclick = DocsApp.onToggleExampleClick;
+    });
+
+    ExtL.each(ExtL.fromNodeList(document.getElementsByClassName('expand-tool')), function (btn) {
+        ExtL.up(btn, '.da-inline-fiddle-nav').onclick = DocsApp.onToggleExampleClick;
+    });
+
+    // handle the following of a link in the member type menu
+    DocsApp.getMemberTypeMenu().onclick = DocsApp.onMemberTypeMenuClick;
+
+    // prevent scrolling of the body when scrolling the member menu
+    DocsApp.getMemberTypeMenu().onmousewheel = DocsApp.wheelHandler;
+    DocsApp.getMemberTypeMenu().onwheel = DocsApp.wheelHandler;
+
+    if (DocsApp.isFirefox()) { // Firefox only
+        DocsApp. getMemberTypeMenu().scrollTop = 0;
+        DocsApp.getMemberTypeMenu().addEventListener("DOMMouseScroll", DocsApp.wheelHandler, false);
+    }
 };
 
 /**
@@ -1679,6 +1810,13 @@ ExtL.bindReady(function () {
 
     var pageType  = DocsApp.getPageType(),
         classType;
+
+    if (pageType == "api") {
+        DocsApp.filterClassTreeByAccess();
+        DocsApp.filterByAccess();
+        DocsApp.initMemberTypeMouseoverHandlers();
+        DocsApp.copyRelatedClasses();
+    }
 
     if (pageType == 'api') {
         classType = '.class-body-wrap';

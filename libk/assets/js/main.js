@@ -1784,7 +1784,7 @@ DocsApp.initEventHandlers = function () {
     DocsApp.getMemberTypeMenu().onwheel = DocsApp.wheelHandler;
 
     if (DocsApp.isFirefox()) { // Firefox only
-        DocsApp. getMemberTypeMenu().scrollTop = 0;
+        DocsApp.getMemberTypeMenu().scrollTop = 0;
         DocsApp.getMemberTypeMenu().addEventListener("DOMMouseScroll", DocsApp.wheelHandler, false);
     }
 };

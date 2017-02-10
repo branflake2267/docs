@@ -26,6 +26,10 @@ class SourceGuides extends SourceApi {
     constructor (options) {
         super(options);
 
+        /**
+         * @property guidesTree
+         * The tree of guide nodes.  This is populated as the guides config is processed
+         */
         this.guidesTree = {};
     }
 
@@ -196,14 +200,17 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * 
+     * A list of guide names to blacklist from the search parser
+     * @return {String[]} An array of blacklisted guides
      */
     get guideSearchBlacklist () {
         return ['Release Notes'];
     }
 
     /**
-     * 
+     * A list of search whitelist words
+     * See: https://www.npmjs.com/package/gramophone#option-startwords
+     * @return {String[]} Array of whitelist words
      */
     get guideSearchWhitelist () {
         return ['vs', 'getting', 'new'];
@@ -278,6 +285,7 @@ class SourceGuides extends SourceApi {
     /**
      * The central method for this module that syncs the guides to the repo and then
      * processes the guide output.  Is called by the {@link #run} method.
+     * @return {Object} Promise
      */
     processGuides () {
         let dt = new Date();
@@ -290,33 +298,39 @@ class SourceGuides extends SourceApi {
         .then(this.assembleSearch.bind(this))
         .then(this.outputSearch.bind(this))
         .then(this.outputGuides.bind(this))
+        .then(this.outputGuideTree.bind(this))
         .then(this.copyResources.bind(this))
         .then(() => {
             console.log('runGuides:', this.getElapsed(dt));
             // TODO Maybe ove to create-app-base after "All Told" once promise is respected
             //this.concludeBuild();
         })
-        .catch((err) => {
-            this.log(err, 'error');
-        });
+        .catch(this.error.bind(this));
     }
 
     /**
-     * 
+     * Returns a Promise that ultimately outputs the guide search object for the current 
+     * product.  This is uses by {@link assembleSearch} by creating an HTML app module 
+     * instance for a product other than the one being initially built and then calling 
+     * `getSearch`.
+     * @return {Object} Promise
      */
     getSearch() {
         return this.processGuideCfg()
         .then(this.readGuides.bind(this))
-        .then(() => {
-            return this.getSearchFromGuides(this.guidesTree);
-        })
-        .catch(err => {
-            this.log(err, 'error');
-        });
+        .then(this.getSearchFromGuides.bind(this))
+        .catch(this.error.bind(this));
     }
 
     /**
-     * 
+     * Collects the parsed search words for any applicable products; meaning the current 
+     * product whose guides are being output along with any partner product as dictated 
+     * by the 'guideSearchPartners` info in the projectConfigs.  The reason this is done 
+     * is that some products' guides may pair well with the current product's guides.  
+     * For example, when building for Ext JS we also want to see the guides for Cmd since 
+     * Ext JS uses Cmd extensively.
+     * @return {Object} Promise that returns an array of search objects from each 
+     * applicable product
      */
     assembleSearch () {
         let actionArr      = [],
@@ -325,20 +339,26 @@ class SourceGuides extends SourceApi {
             products       = options.products,
             searchPartners = products[product].guideSearchPartners;
 
+        // to start we'll get the current product's guide search info
         actionArr.push(
-            this.getSearchFromGuides(this.guidesTree)
+            this.getSearchFromGuides()
         );
 
+        // then if this product has coordinating products to include searches
         if (searchPartners) {
             let i          = 0,
                 len        = searchPartners.length,
-                HtmlApp    = require('../create-app-html'),
-                optionsObj = Object.assign({}, options);;
+                HtmlApp    = require('../create-app-html');
 
+            // loop over all partner products and create its search output to ultimately 
+            // be passed on to the outputSearch method
             for (; i < len; i++) {
                 let partnerProduct  = searchPartners[i],
                     partnerInstance = new HtmlApp(
-                        Object.assign(options, {
+                        // options._args has the initial set of arguments from the CLI 
+                        // for this product build
+                        // - all that is really needed to instantiate a module
+                        Object.assign({}, options._args, {
                             product: partnerProduct
                         })
                     );
@@ -351,11 +371,20 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * 
+     * Flattens the guides tree into a single array of all guide nodes (leaf and parent 
+     * both)
+     * @param {Object/Object[]} nodes Either the tree object or an array of tree nodes.  
+     * Initially the tree object will be passed and then flattenGuides passes each parent 
+     * node's child nodes back into itself recursively
+     * @param {Array} flattened This doesn't need to be passed in externally.  It's used 
+     * privately for recursive calls when processing child nodes
+     * @return {Object[]} The flattened array of all guide nodes
      */
     flattenGuides (nodes, flattened) {
         flattened = flattened || [];
 
+        // if this is the first call to flattenGuides what is passed will be the tree 
+        // itself, not an array of nodes
         if (Utils.isObject(nodes)) {
             nodes = _.flatten(_.values(nodes));
         }
@@ -363,6 +392,7 @@ class SourceGuides extends SourceApi {
         let i   = 0,
             len = nodes.length;
 
+        // we loop over all nodes and pass child nodes back into this function
         for (; i < len; i++) {
             let node       = nodes[i],
                 childNodes = node.children;
@@ -377,11 +407,13 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * 
+     * Parses the search words from all guides
+     * @return {Object} Promise the returns the search object that will be added to the 
+     * array of possible search objects collected in {@link #assembleSearch}
      */
-    getSearchFromGuides (guides) {
+    getSearchFromGuides () {
         return new Promise((resolve, reject) => {
-            guides = this.flattenGuides(guides);
+            let guides = this.flattenGuides(this.guidesTree);
 
             let options   = this.options,
                 i         = 0,
@@ -396,13 +428,15 @@ class SourceGuides extends SourceApi {
                     version          : options.prodVerMeta.hasVersions && options.version
                 };
 
+            // loop over all guide nodes (from flattenGuides) and parse the guide content
+            // and attach the parse pieces onto the `searchObj` to later be output to the 
+            // UI
             for (; i < len; i++) {
                 let guide   = guides[i],
                     name    = guide.name.replace(/&amp;/g, '&'),
                     content = guide.content,
                     href    = guide.href;
 
-                //console.log(name, _.includes(blacklist, name));
                 if (content && !_.includes(blacklist, name)) {
                     searchObj.searchRef.push(name);
                     searchObj.searchUrls.push(href);
@@ -454,6 +488,12 @@ class SourceGuides extends SourceApi {
      * @private
      * Private method used by parseSearchWords to add the collected words to the parent
      * search words object
+     * @param {Object} obj The search object that the parsing pieces are added to
+     * @param {Array} terms The results of the guide parsing action in 
+     * {@link #parseSearchWords}
+     * @param {String} type The type of parsing that was done in 
+     * {@link #parseSearchWords}.  This will either be 't' if it was the guide title that 
+     * was parsed or 'b' if it was the body that was parsed.
      */
     addTerms (obj, terms, type) {
         let words = obj.searchWords,
@@ -481,7 +521,10 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * 
+     * Writes the parsed search output from all guides to disk for use by the UI
+     * @param {Object[]} searchOutput An array of search objects for all applicable 
+     * products
+     * @return {Object} Promise
      */
     outputSearch (searchOutput) {
         let output = JSON.stringify(searchOutput),
@@ -503,7 +546,8 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * 
+     * Output all guides in the `guidesTree` property
+     * @return Promise
      */
     outputGuides () {
         let guidesTree = this.guidesTree,
@@ -512,6 +556,7 @@ class SourceGuides extends SourceApi {
             i          = 0,
             len        = flattened.length;
 
+        // loop over all guide nodes
         for (; i < len; i++) {
             let node        = flattened[i],
                 content     = node.content,
@@ -519,6 +564,7 @@ class SourceGuides extends SourceApi {
                 filePath    = this.getGuideFilePath(path),
                 rootPathDir = Path.parse(filePath).dir;
 
+            // if the node has content then output the guide file for this node
             if (content) {
                 writeArr.push(
                     new Promise((resolve, reject) => {
@@ -526,6 +572,7 @@ class SourceGuides extends SourceApi {
                         data     = Object.assign(data, this.options);
                         data     = Object.assign(data, this.options.prodVerMeta);
 
+                        // prepare the data object to be passed to the guide template
                         data.rootPath = rootPathDir;
                         data.content  = this.processGuideHtml(content, data);
                         data = this.processGuideDataObject(data);
@@ -535,6 +582,8 @@ class SourceGuides extends SourceApi {
                             if (err) {
                                 reject(err);
                             }
+                            // delete node content before the node is passed to the UI
+                            delete node.content;
                             resolve();
                         });
                     })
@@ -616,15 +665,6 @@ class SourceGuides extends SourceApi {
                 this.prepareGuides(guidesObj.items, guidesObj.rootPath || '', toReadArr, guidesObj.text);
             }
 
-            // TODO output the guide tree in a promise-based method after the promise.all below
-            //console.log(this.guidesTree);
-            
-            /*Promise.all(nodesArr)
-            // TODO search - here we'll need to output the search blob to a file
-            .then(() => {
-                this.outputGuideTree();
-                resolve();
-            });*/
             resolve(toReadArr);
         });
 
@@ -710,30 +750,20 @@ class SourceGuides extends SourceApi {
         let filePath = Path.join(this.guidesOutputDir, path);
 
         return `${filePath}.html`;
-        /*
-        return Path.join(this.guidesOutputDir, rootPath, name) + '.html';
-
-        let filePath = Path.join(
-                Path.resolve(
-                    __dirname,
-                    this.resourcesDir
-                ),
-                'guides',
-                path
-            );
-
-        return `${filePath}.html`;*/
     }
 
     /**
-     * 
+     * Promise that reads all guides from disk
+     * @return {Object} Promise
      */
     readGuides (toReadArr) {
         return Promise.all(toReadArr);
     }
 
     /**
-     * 
+     * Reads the contents of the guide on-disk and attaches it to the guide's tree node
+     * @param {Object} node The guide tree node for the current guide being read
+     * @return {Object} Promise
      */
     readGuide (node) {
         return new Promise ((resolve, reject) => {
@@ -744,58 +774,8 @@ class SourceGuides extends SourceApi {
                     reject(err);
                 }
 
-                //if (this.options.product === 'cmd') {
-                    console.log(this.options.product);
-                //}
-
                 node.content = content;
                 resolve();
-            });
-        });
-    }
-
-    /**
-     * Output the guide for the passed node
-     * @param {Object} node The guide tree node describing the guide
-     * @param {String} rootPath The path where the guide resides on disk and where it
-     * will be subsequently be written for final output
-     */
-    outputGuide (node, rootPath) {
-        return new Promise((resolve, reject) => {
-            let slug = node.slug,
-                path = this.guidePathMap[Path.join(rootPath, slug)];
-
-            Fs.readFile(path, 'utf-8', (err, html) => {
-                if (err) {
-                    reject(err);
-                }
-
-                let filePath    = this.getGuideFilePath(rootPath, node.slug),
-                    rootPathDir = Path.parse(filePath).dir,
-                    //relPath     = Path.relative(rootPathDir, this.guidesOutputDir),
-                    outPath     = Path.join(rootPath, `${slug}.html`);
-                    //link        = Path.join(relPath, outPath);
-
-                node.href = Path.join('guides', outPath);
-                node.id   = `${rootPath}/${slug}`;
-
-                let data = Object.assign({}, node);
-                data     = Object.assign(data, this.options);
-                data     = Object.assign(data, this.options.prodVerMeta);
-
-                data.rootPath = rootPathDir;
-                data.content = this.processGuideHtml(html, data);
-
-                data = this.processGuideDataObject(data);
-
-                data.contentPartial = '_html-guideBody';
-
-                Fs.writeFile(filePath, this.mainTemplate(data), 'utf8', (err) => {
-                    if (err) {
-                        reject(Error(err));
-                    }
-                    resolve();
-                });
             });
         });
     }
@@ -840,19 +820,9 @@ class SourceGuides extends SourceApi {
         data.cssPath    = Path.relative(data.rootPath, this.cssDir);
         data.jsPath     = Path.relative(data.rootPath, this.jsDir);
         data.imagesPath = Path.relative(data.rootPath, this.imagesDir);
-        data.product    = data.prodObj.title;
-
+        data.title      = data.prodObj.title;
         data.toc        = this.buildTOC(data.content, data.id);
-
-        /*data.myMeta     = {
-            version     : data.version,
-            hasGuides   : data.hasGuides,
-            hasApi      : data.hasApi,
-            navTreeName : data.navTreeName,
-            myId        : data.id,
-            rootPath    : Path.relative(data.rootPath, this.outputProductDir)
-        };*/
-        data.myMeta = this.getGuideMetaData(data);
+        data.myMeta     = this.getGuideMetaData(data);
 
         return data;
     }
@@ -864,8 +834,6 @@ class SourceGuides extends SourceApi {
      * @return {String} The HTML processed from the markdown processor
      */
     processGuideHtml (html, data) {
-        // TODO finish with the guide HTML: decorate @examples, process links, etc.
-        // TODO Some of that may happen in some base class or may happen in a post processor module
         html = this.markup(html, data.id);
         html = this.decorateExamples(html);
         html = this.addCls(html, {
@@ -884,7 +852,8 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * 
+     * Writes the guide tree to disk for use by the UI's navigation view
+     * @return {Object} Promise
      */
     outputGuideTree () {
         return new Promise((resolve, reject) => {

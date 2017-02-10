@@ -11,6 +11,7 @@ const EventEmitter = require('events'),
       Ora          = require('ora'),
       Chalk        = require('chalk'),
       Shell        = require('shelljs'),
+      Play         = require('play'),
       Fs           = require('fs-extra'),
       Mkdirp       = require('mkdirp'),
       marked       = require('sencha-marked'),
@@ -597,7 +598,8 @@ class Base {
     concludeBuild () {
         // TODO see about replacing this with a closeStatus() call instead once we have 
         // the process populated with statuses
-        process.exit();
+        Play.sound('./assets/audio/jobsdone.m4a');
+        process.exit()
     }
 
     /**

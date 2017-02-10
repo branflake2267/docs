@@ -1040,10 +1040,8 @@ DocsApp.hideSearchResults = function() {
  * @method showSearchResults
  */
 DocsApp.showSearchResults = function(page) {
-    var apiTab       = ExtL.get('apiTab'),
-        apiVisible   = apiTab.offsetHeight,
-        guideTab     = ExtL.get('guideTab'),
-        guideVisible = guideTab.offsetHeight,
+    var hasApi   = DocsApp.meta.hasApi,
+        hasGuide = DocsApp.meta.hasGuides,
         ct           = DocsApp.getSearchResultsCt(),
         size         = DocsApp.getViewportSize(),
         compressed   = size.width <= 950,
@@ -1061,11 +1059,11 @@ DocsApp.showSearchResults = function(page) {
 
     ExtL.addCls(ct, 'show-search-results');
 
-    if (page && apiVisible) {
+    if (page && hasApi) {
         DocsApp.loadApiSearchPage(page);
     }
 
-    if (page && guideVisible) {
+    if (page && hasGuide) {
         DocsApp.loadGuideSearchPage(page);
     }
 };
@@ -1075,7 +1073,10 @@ DocsApp.showSearchResults = function(page) {
  */
 DocsApp.hideMobileSearch = function() {
     var input = ExtL.get('peekaboo-input');
-    input.style.visibility = 'hidden';
+
+    if (input) {
+        input.style.visibility = 'hidden';
+    }
 };
 
 /**

@@ -296,7 +296,7 @@ class SourceGuides extends SourceApi {
         return this.processGuideCfg()
         .then(this.readGuides.bind(this))
         .then(this.assembleSearch.bind(this))
-        .then(this.outputSearch.bind(this))
+        .then(this.outputGuideSearch.bind(this))
         .then(this.outputGuides.bind(this))
         .then(this.outputGuideTree.bind(this))
         .then(this.copyResources.bind(this))
@@ -315,7 +315,7 @@ class SourceGuides extends SourceApi {
      * `getSearch`.
      * @return {Object} Promise
      */
-    getSearch() {
+    getGuideSearch() {
         return this.processGuideCfg()
         .then(this.readGuides.bind(this))
         .then(this.getSearchFromGuides.bind(this))
@@ -363,7 +363,7 @@ class SourceGuides extends SourceApi {
                         })
                     );
                 
-                actionArr.push(partnerInstance.getSearch());
+                actionArr.push(partnerInstance.getGuideSearch());
             }
         }
 
@@ -526,13 +526,14 @@ class SourceGuides extends SourceApi {
      * products
      * @return {Object} Promise
      */
-    outputSearch (searchOutput) {
+    outputGuideSearch (searchOutput) {
         let output = JSON.stringify(searchOutput),
             options = this.options,
             product = options.product,
             version = options.version;
         
         version = options.prodVerMeta.hasVersions ? `${version}` : '';
+        output = `DocsApp.guideSearch =${output};`;
 
         return new Promise((resolve, reject) => {
             Fs.writeFile(Path.join(this.jsDir, `${product}-${version}-guideSearch.js`), output, 'utf8', err => {
@@ -577,7 +578,7 @@ class SourceGuides extends SourceApi {
                         data.content  = this.processGuideHtml(content, data);
                         data = this.processGuideDataObject(data);
                         data.contentPartial = '_html-guideBody';
-
+                        
                         Fs.writeFile(filePath, this.mainTemplate(data), 'utf8', (err) => {
                             if (err) {
                                 reject(err);
@@ -606,6 +607,7 @@ class SourceGuides extends SourceApi {
     /**
      * Copies all non-markdown resources from the source directory to the output
      * directory
+     * @return {Object} Promise
      */
     copyResources () {
         let map      = this.guidePathMap,
@@ -649,6 +651,7 @@ class SourceGuides extends SourceApi {
      *  - processing the guides (their markdown, links, etc)
      *
      * Finally, the guide tree is output
+     * @return {Object} Promise
      */
     processGuideCfg () {
         return new Promise((resolve, reject) => {

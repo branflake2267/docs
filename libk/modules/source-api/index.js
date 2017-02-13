@@ -63,6 +63,13 @@ class SourceApi extends Base {
          */
         this.apiTree = [];
 
+        /**
+         * @private
+         * @property
+         * The api search object all search is added to
+         */
+        this.apiSearchIndex = {};
+
     }
 
     /**
@@ -473,8 +480,8 @@ class SourceApi extends Base {
             // then this is a leaf.  Though, root namespace items like "Ext" and "ST" 
             // will be later have a `children` property added as necessary and be 
             // "unleafed"
-            let leaf = (i === (elementsLen - 1)),
-                id = this.getNodeId(className, i),
+            let leaf     = (i === (elementsLen - 1)),
+                id       = this.getNodeId(className, i),
                 // the default node configuration
                 baseNode = {
                     name        : name,
@@ -483,7 +490,7 @@ class SourceApi extends Base {
                     id          : id,
                     leaf        : leaf
                 },
-                target = this.getExistingNode(nodes, id),
+                target    = this.getExistingNode(nodes, id),
                 newNode;
 
             if (!leaf) {
@@ -624,8 +631,8 @@ class SourceApi extends Base {
             this.ensureDir(this.apiDir);
         })
         .then(this.processApiFiles.bind(this))
-        // TODO add in a couple of then()s that 1) output the search file itself and 2) 
-        // output the class tree
+        .then(this.getApiSearch.bind(this))
+        .then(this.outputApiFiles.bind(this))
         .then(this.outputApiTree.bind(this))
         .then(() => {
             console.log(new Date() - dt);
@@ -641,11 +648,14 @@ class SourceApi extends Base {
      * `outputApiFile`
      */
     processApiFiles () {
-        let outputs = [],
-            classMap = this.classMap,
+        let classMap = this.classMap,
             classNames = Object.keys(classMap),
             i = 0,
             len = classNames.length;
+
+        // reset the apiTree property on each processApiFiles run since this module 
+        // instance is reused between toolkits
+        this.apiTree = [];
 
         // loops through all class names from the classMap
         for (; i < len; i++) {
@@ -656,17 +666,33 @@ class SourceApi extends Base {
 
             this.decorateClass(className);
             // delete the cached Doxi object to free memory
-            delete classMap[className].raw;
+            //delete classMap[className].raw;
 
             this.addToApiTree(className, prepared.cls.clsSpecIcon);
+        }
+    }
 
-            // TODO search - search processing is cumulative as each class is added to 
-            // the search blob as its processed.  So, process this class to the search 
-            // blob and then output the search blob after all files are processed / output
+    /**
+     * Outputs all API doc files
+     * @return {Object} Promise
+     */
+    outputApiFiles () {
+        let classMap   = this.classMap,
+            classNames = Object.keys(classMap),
+            i          = 0,
+            len        = classNames.length,
+            outputs    = [];
 
-            // Process API file into curated API class file
+        // loops through all class names from the classMap
+        for (; i < len; i++) {
+            let className = classNames[i],
+                // the prepared object is the one that has been created by 
+                // `createSrcFileMap` and will be processed in `decorateClass`
+                prepared  = classMap[className].prepared;
+
             outputs.push(this.outputApiFile(className, prepared));
         }
+
         return Promise.all(outputs);
     }
 
@@ -688,7 +714,7 @@ class SourceApi extends Base {
 
             Fs.writeFile(fileName, output, 'utf8', (err) => {
                 if (err) console.log('outputApiFile error');
-                delete this.classMap[className];
+                //delete this.classMap[className];
                 // resolve after a timeout to let garbage collection catch up
                 setTimeout(resolve, 100);
             });
@@ -761,7 +787,8 @@ class SourceApi extends Base {
         data.cssPath    = Path.relative(apiDir, this.cssDir);
         data.jsPath     = Path.relative(apiDir, this.jsDir);
         data.imagesPath = Path.relative(apiDir, this.imagesDir);
-        data.product    = data.prodObj.title;
+        data.product    = this.getProduct(options.product);
+        data.version    = options.version;
 
         // indicates whether the class is of type component, singleton, or some other 
         // class
@@ -1043,17 +1070,182 @@ class SourceApi extends Base {
     }
 
     /**
+     * @param {String} suffix A suffix to append to the search key.  Helpful when you are
+     * combining multiple search results together.
+     */
+    getApiSearch () {
+        let map         = this.classMap,
+            classNames  = Object.keys(map),
+            i           = 0,
+            len         = classNames.length,
+            toolkit     = this.options.toolkit,
+            searchIndex = this.apiSearchIndex,
+            suffix = toolkit.charAt(0) || '',
+            typeRef     = {
+                configs             : 'c',
+                properties          : 'p',
+                "static-properties" : 'sp',
+                methods             : 'm',
+                "static-methods"    : 'sm',
+                events              : 'e',
+                vars                : 'v',
+                "sass-mixins"       : 'x',
+                "sass-mixin-params" : 'z'
+            },
+            memberTypes = [
+                'requiredConfigs',
+                'optionalConfigs',
+                'instanceProperties',
+                'staticProperties',
+                'instanceMethods',
+                'staticMethods',
+                'events',
+                'vars',
+                'sass-mixins'
+            ];
+
+        for (; i < len; i++) {
+            let className = classNames[i],
+                cls       = map[className].prepared,
+                key       = `${i}${suffix}`;
+
+            cls.typeRef = typeRef;
+
+            searchIndex[key] = {
+                n : cls.name,
+                t : toolkit ? toolkit : null
+            };
+
+            if (cls.access) {
+                searchIndex[key].a = 'i';
+            }
+            if (cls.alias) {
+                let alias = cls.alias.split(',');
+                searchIndex[key].x = alias;
+            }
+            if (cls.alternateClassNames) {
+                let altClassNames = cls.alternateClassNames.split(','),
+                    j             = 0,
+                    namesLength   = altClassNames.length;
+                
+                searchIndex[key].g = classNames;
+
+                for (; j < namesLength; j++) {
+                    let altName = altClassNames[j];
+
+                    searchIndex[altName + key] = {
+                        n : altName,
+                        t : toolkit    ? toolkit : null,
+                        a : cls.access ? 'i'     : null
+                    };
+                }
+            }
+            
+            let typesLen = memberTypes.length,
+                k        = 0;
+
+            for (; k < typesLen; k++) {
+                let type       = memberTypes[k],
+                    members    = cls[type],
+                    membersLen = members ? members.length : 0,
+                    l          = 0;
+
+                for (; l < membersLen; l++) {
+                    let member = members[l];
+
+                    this.processMemberSearch(member, key, cls, type, searchIndex);
+                }
+            }
+        }
+
+        return searchIndex;
+    }
+
+    /**
+     * Process the class member for the API search output
+     * @param {Object} member The member Object
+     * @param {String} key The reference key for this class in the searchIndex object
+     * @param {Object} cls The original class object
+     * @param {String} type The member type
+     * @param {Object} searchIndex The search object that all assembled search is being 
+     * cached on until it's output
+     */
+    processMemberSearch (member, key, cls, type, searchIndex) {
+        if (!member.hide && !member.from) {
+            let acc = member.access === 'private' ? 'i' : (member.access === 'protected' ? 'o' : 'p'),
+                extras;
+
+            if (member.removedVersion) {
+                extras = 'r';
+            } else if (member.deprecatedVersion) {
+                extras = 'd';
+            } else if (member.static) {
+                extras = 's';
+            } else if (member.readonly) {
+                extras = 'ro';
+            }
+
+            // add any SASS mixin params found to the search index so they're discoverable in a global search
+            if (member.$type === 'css_mixin' && member.items && member.items.length) {
+                Utils.each(member.items, function (param) {
+                    searchIndex[key]['z.' + param.name] = {
+                        a : acc,
+                        t : member.name
+                    };
+                });
+            }
+
+            searchIndex[key][cls.typeRef[type] + '.' + member.name] = {
+                a : acc
+            };
+
+            if (extras) {
+                searchIndex[key][cls.typeRef[type] + '.' + member.name].x = extras;
+            }
+
+            if (member.accessor) {
+                searchIndex[key][cls.typeRef[type] + '.' + member.name].g = 1;
+            }
+        }
+    }
+
+    /**
+     * Writes the parsed search output from all API classes to disk for use by the UI
+     * @return {Object} Promise
+     */
+    outputApiSearch () {
+        let apiSearch = this.apiSearchIndex,
+            output = JSON.stringify(apiSearch),
+            options = this.options,
+            product = options.product,
+            version = options.version;
+
+        version = options.prodVerMeta.hasVersions ? `${version}` : '';
+        output = `DocsApp.apiSearch =${output};`;
+
+        return new Promise((resolve, reject) => {
+            Fs.writeFile(Path.join(this.jsDir, `${product}-${version}-apiSearch.js`), output, 'utf8', err => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+
+    /**
      * Output the api tree for UI nav once all classes are processed
      * @return Promise wrapping the writing of the api tree file
      */
     outputApiTree () {
         return new Promise((resolve, reject) => {
             let sortedTree = this.sortTree(this.apiTree),
-                apiTree = JSON.stringify({
+                apiTree    = JSON.stringify({
                     API: sortedTree
                 }, null, 4),
-                wrap    = `DocsApp.apiTree = ${apiTree}`,
-                dest    = Path.join(this.jsDir, 'apiTree.js');
+                wrap       = `DocsApp.apiTree = ${apiTree}`,
+                dest       = Path.join(this.jsDir, 'apiTree.js');
 
             Fs.writeFile(dest, wrap, 'utf8', (err) => {
                 if (err) {
@@ -1069,6 +1261,11 @@ class SourceApi extends Base {
      * @return {Object} Promise
      */
     createSrcFiles () {
+        if (this.options.skipSourceFiles === true) {
+            this.log('Skipping creating source HTML files: --skipSourceFiles');
+            return Promise.resolve();
+        }
+
         return new Promise((resolve, reject) => {
             console.log('CREATE SOURCE FILES !!!');
             let i         = 0,
@@ -1164,7 +1361,7 @@ class SourceApi extends Base {
                             data     = {
                                 content : content.html,
                                 name    : filename,
-                                title   : options.product,
+                                title   : options.prodVerMeta.prodObj.title,
                                 version : options.version,
                                 // TODO figure out what numVer is in production today
                                 numVer  : '...',

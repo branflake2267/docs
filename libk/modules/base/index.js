@@ -162,7 +162,9 @@ class Base {
 
         return Object.assign(meta, {
             version     : options.version,
-            pageType    : 'common'
+            pageType    : 'common',
+            product     : this.getProduct(options.product),
+            version     : this.options.version
         });
     }
 

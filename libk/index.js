@@ -19,39 +19,45 @@ const args = require('yargs')
             example     : 'node index read-source -log=true',
             array       : true
         },
-        'product': {
+        'product' : {
             alias       : 'prod',
             type        : 'string',
             description : 'The product being processed',
             example     : 'node index read-source -product=extjs'
         },
-        'version': {
+        'version' : {
             alias       : 'v',
             type        : 'string',
             description : 'The product version being processed',
             example     : 'node index read-source -product=extjs -version=6.2.1'
         },
-        'toolkit': {
+        'toolkit' : {
             alias       : 'tk',
             type        : 'string',
             description : 'The product toolkit being processed',
             example     : 'node index read-source -product=extjs -version=6.2.1 -toolkit=classic'
         },
-        'forceDoxi': {
+        'forceDoxi' : {
             type        : 'boolean',
             description : 'Force doxi to parse the SDK source files',
             example     : 'node index read-source -product=extjs -version=6.2.1 -toolkit=classic'
         },
-        'syncRemote': {
+        'syncRemote' : {
             type        : 'boolean',
             description : 'Force a sync between SDK folder and Git',
             example     : 'node index read-source -product=extjs -version=6.2.1 -toolkit=classic'
         },
-        'production': {
+        'production' : {
             type        : 'boolean',
             default     : false,
             description : 'Minifies files for production',
-            example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --production=true'
+            example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --production'
+        },
+        'skipSourceFiles' : {
+            type        : 'boolean',
+            default     : false,
+            description : 'Skips the creation of the source HTML files for API docs',
+            example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --skipSourceFiles'
         }
     })
     .command('command', 'Module to run', { alias: 'command' })

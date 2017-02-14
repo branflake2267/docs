@@ -722,6 +722,53 @@ class SourceApi extends Base {
     }
 
     /**
+     * @private
+     * Outputs the class hierarchy for classes related to the passed class
+     * @param {Object} cls The class object to output the hierarchy for
+     * @return {String} The hierarchy HTML
+     */
+    processHierarchy (cls) {
+        let name = cls.name,
+            list = this.splitInline(
+                this.processCommaLists(cls.extended, false, true, true),
+                '<div class="hierarchy">'
+            ),
+            ret = `<div class="list">${list}<div class="hierarchy">${name}`;
+
+        // close out all of the generated divs above with closing div tags
+        ret += Utils.repeat('</div>', ret.split('<div').length - 1);
+
+        return ret;
+    }
+
+    /**
+     * @private
+     * Processes a comma separated list.  Used by {@link #decorateClass}
+     * @param list The array of items to process
+     * @param [sort] Sort the array elements
+     * @param [trim] Pop the last element.  **Note:** Pop is processed before reverse and 
+     * sort.
+     * @param [rev] Reverse the list
+     */
+    processCommaLists (list, sort, trim, rev) {
+        let arr = list.split(',');
+
+        if (trim) {
+            arr.pop();
+        }
+
+        if (rev) {
+            arr.reverse();
+        }
+
+        if (sort) {
+            arr.sort();
+        }
+
+        return arr.join(',');
+    }
+
+    /**
      * Decorate each doxi class file with metadata / member groupings to be used by the
      * HTML docs or Ext app.  The class name is passed in and looked up in the `classMap` 
      * which has cached a copy of the raw Doxi output (classMap.raw) and a copy to be 
@@ -741,13 +788,13 @@ class SourceApi extends Base {
             
         data.classText = this.markup(data.text);
         // TODO need to decorate the following.  Not sure if this would be done differently for HTML and Ext app output
-        /*mixins            : cls.mixed               ? me.splitInline(cls.mixed, '<br>')                                  : '',
-        localMixins       : cls.mixins              ? me.splitInline(cls.mixins, '<br>')                                 : '',
-        requires          : cls.requires            ? me.splitInline(cls.requires, '<br>')                               : '',
-        uses              : cls.uses                ? me.splitInline(cls.uses, '<br>')                                   : '',
-        extends           : cls.extended            ? me.processHierarchy(cls)                                           : '',
-        extenders         : cls.extenders           ? me.splitInline(JsonParser.processCommaLists(cls.extenders, false), '<br>') : '',
-        mixers            : cls.mixers              ? me.splitInline(JsonParser.processCommaLists(cls.mixers, false), '<br>')    : '',*/
+        data.mixins      = cls.mixed     ? this.splitInline(cls.mixed, '<br>')                                  : '',
+        data.localMixins = cls.mixins    ? this.splitInline(cls.mixins, '<br>')                                 : '',
+        data.requires    = cls.requires  ? this.splitInline(cls.requires, '<br>')                               : '',
+        data.uses        = cls.uses      ? this.splitInline(cls.uses, '<br>')                                   : '',
+        data.extends     = cls.extended  ? this.processHierarchy(cls)                                           : '',
+        data.extenders   = cls.extenders ? this.splitInline(this.processCommaLists(cls.extenders, false), '<br>') : '',
+        data.mixers      = cls.mixers    ? this.splitInline(this.processCommaLists(cls.mixers, false), '<br>')    : '',
 
         data.requiredConfigs    = [];
         data.optionalConfigs    = [];
@@ -1080,6 +1127,7 @@ class SourceApi extends Base {
             len         = classNames.length,
             toolkit     = this.options.toolkit,
             searchIndex = this.apiSearchIndex,
+            // suffix allows us to combine toolkits in one search
             suffix = toolkit.charAt(0) || '',
             typeRef     = {
                 configs             : 'c',
@@ -1092,7 +1140,7 @@ class SourceApi extends Base {
                 "sass-mixins"       : 'x',
                 "sass-mixin-params" : 'z'
             },
-            memberTypes = [
+            memberTypes = [ // all possible member types in a given class
                 'requiredConfigs',
                 'optionalConfigs',
                 'instanceProperties',
@@ -1104,25 +1152,32 @@ class SourceApi extends Base {
                 'sass-mixins'
             ];
 
+        // loop over all class names to parse search from the class map
         for (; i < len; i++) {
             let className = classNames[i],
                 cls       = map[className].prepared,
                 key       = `${i}${suffix}`;
 
+            // caches the member type short names on the class object for use in the 
+            // processMemberSearch method
             cls.typeRef = typeRef;
 
+            // record the class name and toolkit
             searchIndex[key] = {
                 n : cls.name,
                 t : toolkit ? toolkit : null
             };
 
+            // record the class access level
             if (cls.access) {
                 searchIndex[key].a = 'i';
             }
+            // record the alias / alias list
             if (cls.alias) {
                 let alias = cls.alias.split(',');
                 searchIndex[key].x = alias;
             }
+            // record an entry for all alternate class names
             if (cls.alternateClassNames) {
                 let altClassNames = cls.alternateClassNames.split(','),
                     j             = 0,
@@ -1144,12 +1199,15 @@ class SourceApi extends Base {
             let typesLen = memberTypes.length,
                 k        = 0;
 
+            // loop over all possible member types
             for (; k < typesLen; k++) {
                 let type       = memberTypes[k],
                     members    = cls[type],
                     membersLen = members ? members.length : 0,
                     l          = 0;
 
+                // then over the members for each type to process each member into the 
+                // search object
                 for (; l < membersLen; l++) {
                     let member = members[l];
 
@@ -1175,6 +1233,7 @@ class SourceApi extends Base {
             let acc = member.access === 'private' ? 'i' : (member.access === 'protected' ? 'o' : 'p'),
                 extras;
 
+            // evaluate possible extra metadata for this method
             if (member.removedVersion) {
                 extras = 'r';
             } else if (member.deprecatedVersion) {
@@ -1195,14 +1254,17 @@ class SourceApi extends Base {
                 });
             }
 
+            // record the member access
             searchIndex[key][cls.typeRef[type] + '.' + member.name] = {
                 a : acc
             };
 
+            // record any extra metadata
             if (extras) {
                 searchIndex[key][cls.typeRef[type] + '.' + member.name].x = extras;
             }
 
+            // record whether a member is an accessor or not
             if (member.accessor) {
                 searchIndex[key][cls.typeRef[type] + '.' + member.name].g = 1;
             }

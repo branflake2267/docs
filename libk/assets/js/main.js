@@ -419,7 +419,7 @@ DocsApp.setTreeVisibility = function(visible) {
  * @event onToggleExampleClick
  */
 DocsApp.onToggleExampleClick = function(e) {
-    var target      = DocsApp.getEventTarget(),
+    var target      = DocsApp.getEventTarget(e),
         targetEl    = ExtL.hasCls(target, 'example-collapse-target') || ExtL.up(target, '.example-collapse-target'),
         headerClick = ExtL.hasCls(target, 'da-inline-fiddle-nav');
 
@@ -890,6 +890,16 @@ DocsApp.runFiddleExample = function(wrap) {
 };
 
 /**
+ * Progressive ID generator
+ * @param {String} prefix String to prepend to the ID.  Default to 'e-'.
+ */
+function id (prefix) {
+    prefix = prefix || 'e-';
+    DocsApp.appMeta.internalId++;
+    return prefix + DocsApp.appMeta.internalId;
+}
+
+/**
  * @private
  * Used by the runFiddleExample method.  Builds / returns an iframe used to run
  * the fiddle code.
@@ -902,7 +912,7 @@ DocsApp.getIFrame = function(wrap) {
     if (!iframe) {
         iframe = document.createElement('iframe');
 
-        iframe.id = iframe.name = id(); //needs to be unique on whole page
+        iframe.id = iframe.name = DocsApp.id(); //needs to be unique on whole page
 
         wrap.appendChild(iframe);
     }
@@ -1065,11 +1075,11 @@ DocsApp.onAccessCheckboxClick = function() {
 
 DocsApp.setTypeNavAndHeaderVisibility = function() {
     var headers = [],
-    types = ['configs', 'properties', 'methods', 'events', 'vars', 'sass-mixins'],
-    typeLen = types.length,
-    i = 0,
-    totalCount = 0,
-    typeCt, headersLen, els, len, j, hasVisible, count, btn, memberEl;
+        types = ['configs', 'properties', 'methods', 'events', 'vars', 'sass-mixins'],
+        typeLen = types.length,
+        i = 0,
+        totalCount = 0,
+        typeCt, headersLen, els, len, j, hasVisible, count, btn, memberEl;
 
     for (; i < typeLen; i++) {
         typeCt = ExtL.get(types[i] + '-ct');
@@ -1518,6 +1528,18 @@ DocsApp.getHistory = function() {
 };
 
 /**
+ * @method copyTOC
+ */
+DocsApp.copyTOC = function() {
+    var desktopToc = document.querySelector('.toc'),
+        copy = (desktopToc) ? desktopToc.cloneNode(true) : null;
+
+    if (copy != null) {
+        ExtL.get('toc-context-ct').appendChild(copy);
+    }
+};
+
+/**
  * @method highlightMemberMatch
  * @param member
  * @param value
@@ -1544,6 +1566,10 @@ DocsApp.unhighlightMemberMatch = function(member) {
  * @method filter
  */
 var filter = ExtL.createBuffered(function (e, target) {
+    if (!target && !target.value) {
+        return;
+    }
+
     var value        = ExtL.trim(target.value),
         matcher      = new RegExp(value.replace('$', '\\$'), 'gi'),
         classmembers = ExtL.fromNodeList(document.getElementsByClassName('classmembers')),
@@ -2009,6 +2035,9 @@ DocsApp.getMemberTypeMenu = function() {
     return menu;
 };
 
+/**
+ * @method hideMultiSrcPanel
+ */
 DocsApp.hideMultiSrcPanel = function() {
     var picker = ExtL.get('multi-src-picker');
 
@@ -2183,13 +2212,13 @@ DocsApp.loadApiSearchPage = function(page) {
  * @param page
  */
 DocsApp.loadGuideSearchPage = function(page) {
-    var i       = 0,
+    var i        = 0,
         pageSize = DocsApp.appMeta.pageSize,
-        start   = page * pageSize - pageSize,
-        value   = ExtL.get('searchtext').value,
-        guideCt = ExtL.get('guide-search-results'),
-        len     = pageSize < guideSearchRecords.length ? pageSize : guideSearchRecords.length,
-        matchEl, item, cn, href, badge;
+        start    = page * pageSize - pageSize,
+        value    = ExtL.get('searchtext').value,
+        guideCt  = ExtL.get('guide-search-results'),
+        len      = pageSize < guideSearchRecords.length ? pageSize : guideSearchRecords.length,
+        matchEl, item, cn, href, badge, re;
 
     page = page || 1;
 
@@ -2244,7 +2273,7 @@ DocsApp.loadGuideSearchPage = function(page) {
         }
     }
 
-    addSearchPagingToolbar(guideCt, guideSearchRecords, page);
+    DocsApp.addSearchPagingToolbar(guideCt, guideSearchRecords, page);
 
     re = new RegExp('(' + value.replace('$', '\\$').replace(/"/g, '') + ')', 'ig');
     len = guideCt.childNodes.length;
@@ -2258,7 +2287,13 @@ DocsApp.loadGuideSearchPage = function(page) {
     }
 };
 
-function addSearchPagingToolbar (ct, records, page) {
+/**
+ * @method addSearchPagingToolbar
+ * @param ct
+ * @param records
+ * @param page
+ */
+DocsApp.addSearchPagingToolbar = function(ct, records, page) {
     var isApi    = DocsApp.getPageType() === 'api',
         rowCount = ct.querySelectorAll(isApi ? '.search-item' : '.guide-search-item').length;
 
@@ -2309,7 +2344,7 @@ function addSearchPagingToolbar (ct, records, page) {
         DocsApp.currentApiPage = null;
         DocsApp.currentGuidePage = null;
     }
-}
+};
 
 /**
  * @method hideProductMenu
@@ -2675,6 +2710,103 @@ DocsApp.hideHistoryConfigPanel = function() {
 };
 
 /**
+ * @method showMultiSrcPanel
+ */
+DocsApp.showMultiSrcPanel = function(e) {
+    e = e || window.event;
+    var target    = e.target || e.srcElement,
+        picker    = ExtL.get('multi-src-picker'),
+        targetBox = target.getBoundingClientRect();
+
+    if (picker) {
+        ExtL.applyStyles(picker, {
+            top  : targetBox.bottom + 'px',
+            left : targetBox.left + 'px'
+        });
+        ExtL.addCls(picker, 'show-multi');
+    }
+};
+
+/**
+ * @method hideMultiSrcPanel
+ */
+DocsApp.hideMultiSrcPanel = function() {
+    var picker = ExtL.get('multi-src-picker');
+
+    if (picker) {
+        ExtL.removeCls(picker, 'show-multi')
+    }
+};
+
+/**
+ * @method showHistoryConfigPanel
+ */
+DocsApp.showHistoryConfigPanel = function(e) {
+    e = e || window.event;
+
+    var panel = ExtL.get('historyConfigPanel'),
+        btn = ExtL.get('history-config'),
+        btnBox = btn.getBoundingClientRect();
+
+    DocsApp.stopEvent(e);
+
+    ExtL.addCls(document.body, 'show-history-panel');
+
+    ExtL.applyStyles(panel, {
+        top  : btnBox.bottom + 'px',
+        left : (btnBox.right - panel.clientWidth) + 'px'
+    });
+}
+
+/**
+ * @method hideHistoryConfigPanel
+ */
+DocsApp.hideHistoryConfigPanel = function() {
+    ExtL.removeCls(document.body, 'show-history-panel');
+};
+
+/**
+ * @method setHistoryType
+ */
+DocsApp.setHistoryType = function() {
+    var all = ExtL.get('historyTypeAll').checked;
+
+    ExtL.toggleCls(document.body, 'show-all-history', all);
+    DocsApp.saveState();
+};
+
+/**
+ * @event onToggleHistoryLabels
+ */
+DocsApp.onToggleHistoryLabels = function() {
+    var cb = ExtL.get('history-all-labels');
+
+    ExtL.toggleCls(document.body, 'show-history-labels', cb.checked);
+    DocsApp.saveState();
+};
+
+/**
+ * @method clearHistory
+ */
+DocsApp.clearHistory = function() {
+    var historyItems = ExtL.fromNodeList(ExtL.get('history-full-list').childNodes),
+        historyBtns  = ExtL.fromNodeList(ExtL.get('history-nav').querySelectorAll('.history-btn'));
+
+    if (ExtL.canLocalStorage()) {
+        getState().history = [];
+        DocsApp.saveState();
+    }
+
+    ExtL.each(historyItems, function (item) {
+        item.parentNode.removeChild(item);
+    });
+
+    ExtL.each(historyBtns, function (btn) {
+        btn.parentNode.removeChild(btn);
+    });
+};
+
+/**
  * @event onSearchHistoryClick
  * @param e
  */
@@ -2765,7 +2897,7 @@ DocsApp.highlightMemberRow = function(target) {
             ExtL.removeCls(target, fadeCls);
         }, 1401);
     }, 400);
-}
+};
 
 /**
  * @method resetTempShownMembers
@@ -2844,6 +2976,82 @@ DocsApp.onBodyClick = function(e) {
 };
 
 /**
+ * @event onProductMenuItemClick
+ * @param e
+ */
+DocsApp.onProductMenuItemClick = function(e) {
+    e = e || window.event;
+    var target = e.target || e.srcElement,
+        ct = ExtL.up(target, '#product-tree-ct'),
+        prodId = target.id.substr("product-menu-".length),
+        items = ExtL.fromNodeList(ct.querySelectorAll('.product-name-item')),
+        versionCts = ExtL.fromNodeList(ct.querySelectorAll('.product-version-ct'));
+
+    ExtL.each(items, function (item) {
+        ExtL[item === target ? 'addCls' : 'removeCls'](item, 'prod-menu-selected');
+    });
+
+    ExtL.each(versionCts, function (verCt) {
+        ExtL[ExtL.hasCls(verCt, prodId) ? 'removeCls' : 'addCls'](verCt, 'hide');
+    });
+};
+
+/**
+ *
+ * @param e
+ */
+DocsApp.showProductMenu = function(e) {
+    var productTreeCt = ExtL.get('product-tree-ct');
+
+    if (ExtL.hasCls(productTreeCt, 'hide')) {
+        stopEvent(e);
+    }
+
+    ExtL.removeCls(productTreeCt, 'hide');
+    DocsApp.positionProductMenu();
+}
+
+/**
+ * Positions the product menu next to the show product menu button.  The height and
+ * position are constrained to the viewport.
+ */
+DocsApp.positionProductMenu = function() {
+    var productTreeCt = ExtL.get('product-tree-ct'),
+        btns = ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn')),
+        vpSize = DocsApp.getViewportSize(),
+        defaultHeight = 450,
+        btn, btnBox, heightAvail, height, vpOffset;
+
+    ExtL.each(btns, function (el) {
+        btn = el.offsetHeight ? el : btn;
+    });
+
+    if (btn) {
+        btnBox = btn.getBoundingClientRect();
+        heightAvail = vpSize.height - btnBox.bottom;
+        height = heightAvail < defaultHeight ? heightAvail - 10 : defaultHeight;
+        vpOffset = (btnBox.left + ExtL.getWidth(productTreeCt)) - vpSize.width;
+
+        ExtL.applyStyles(productTreeCt, {
+            top: btnBox.bottom + 'px',
+            height: height + 'px',
+            left: ((vpOffset > 0) ? (btnBox.left - vpOffset) : btnBox.left) + 'px'
+        });
+    } else {
+        DocsApp.hideProductMenu();
+    }
+};
+
+/**
+ * Hides the product menu
+ */
+DocsApp.hideProductMenu = function() {
+    var productTreeCt = ExtL.get('product-tree-ct');
+
+    ExtL.addCls(productTreeCt, 'hide');
+}
+
+/**
  * @method resizeHandler
  */
 DocsApp.resizeHandler = ExtL.createBuffered(function() {
@@ -2875,7 +3083,7 @@ DocsApp.resizeHandler = ExtL.createBuffered(function() {
 DocsApp.doLogSearchValue = function(val) {
     var field = ExtL.get('searchtext'),
         value = val || field.value,
-        temp = [],
+        temp  = [],
         limit = 10;
 
     ExtL.each(DocsApp.searchHistory, function (item) {
@@ -2894,6 +3102,32 @@ DocsApp.doLogSearchValue = function(val) {
     DocsApp.saveState();
 };
 
+/**
+ * @method isMobile
+ * @returns {boolean}
+ */
+DocsApp.isMobile = function() {
+    return DocsApp.getViewportSize().width < 950;
+};
+
+/**
+ * @event onClassTreeCtClick
+ * @param e
+ */
+DocsApp.onClassTreeCtClick = function(e) {
+    e = e || window.event;
+    var target = e.target || e.srcElement,
+        href = target.href;
+
+    if (href && DocsApp.isMobile()) {
+        DocsApp.setTreeVisibility(false);
+    }
+}
+
+/**
+ * @event onMobileInputBlur
+ * @param e
+ */
 DocsApp.onMobileInputBlur = function(e) {
     var target = e.relatedTarget,
         node = target,
@@ -2901,7 +3135,7 @@ DocsApp.onMobileInputBlur = function(e) {
         isResult = false;
 
     while (node) {
-        if (node.id===search) {
+        if (node.id === search) {
             isResult = true;
             break;
         }
@@ -2942,7 +3176,7 @@ DocsApp.onSearchTab = function() {
     if (first) {
         first.focus();
     }
-}
+};
 
 /**
  * @event onResultsCtClick
@@ -3020,7 +3254,7 @@ DocsApp.toggleSearchTabs = function(e) {
 
     ExtL.toggleCls(apiResults, 'isHidden');
     ExtL.toggleCls(guideResults, 'isHidden');
-}
+};
 
 /**
  * @method logSearchValue
@@ -3510,6 +3744,59 @@ DocsApp.setScrollPos = function(e,pos) {
 };
 
 /**
+ * @method createWrapper
+ * @param ct
+ * @param selector
+ * @param id
+ * @param title
+ */
+DocsApp.createWrapper = function(ct, selector, id, title) {
+    var items = ct.querySelectorAll(selector),
+        wrap, header, textEl, i, len;
+
+    len = items.length;
+
+    if (len) {
+        wrap = document.createElement('div');
+        wrap.id = id;
+        header = document.createElement('div');
+        header.className = 'type-sub-category-title';
+        textEl = document.createTextNode(title);
+        header.appendChild(textEl);
+        wrap.appendChild(header);
+        ct.insertBefore(wrap, items.item(0));
+
+        for (i = 0; i < len; i++) {
+            wrap.appendChild(items.item(i));
+        }
+    }
+};
+
+/**
+ * @method wrapSubCategories
+ */
+DocsApp.wrapSubCategories = function() {
+    var propertiesCt = ExtL.get('properties-ct'),
+        methodsCt    = ExtL.get('methods-ct'),
+        configsCt    = ExtL.get('configs-ct');
+
+    if (propertiesCt) {
+        DocsApp.createWrapper(propertiesCt, 'div.isNotStatic', 'instance-properties-ct', 'Instance Properties');
+        DocsApp.createWrapper(propertiesCt, 'div.isStatic', 'static-properties-ct', 'Static Properties');
+    }
+
+    if (methodsCt) {
+        DocsApp.createWrapper(methodsCt, 'div.isNotStatic', 'instance-methods-ct', 'Instance Methods');
+        DocsApp.createWrapper(methodsCt, 'div.isStatic', 'static-methods-ct', 'Static Methods');
+    }
+
+    if (configsCt) {
+        DocsApp.createWrapper(configsCt, 'div.isNotRequired', 'optional-configs-ct', 'Optional Configs');
+        DocsApp.createWrapper(configsCt, 'div.isRequired', 'required-configs-ct', 'Required Configs');
+    }
+}
+
+/**
  * @method wheelHandler
  * https://dimakuzmich.wordpress.com/2013/07/16/prevent-scrolling-of-parent-element-with-javascript/
  * http://jsfiddle.net/dima_k/5mPkB/1/
@@ -3643,9 +3930,19 @@ DocsApp.initEventHandlers = function () {
         modernSearchFilter      = ExtL.get('modern-search-filter'),
         classicSearchFilter     = ExtL.get('classic-search-filter'),
         searchHistoryPanel      = ExtL.get('search-history-panel'),
+        historyTypeConfig       = ExtL.get('historyTypeCurrent'),
+        historyTypeAll          = ExtL.get('historyTypeAll'),
+        historyConfig           = ExtL.get('history-config'),
+        historyClear            = ExtL.get('history-clear'),
+        historyAllLabels        = ExtL.get('history-all-labels'),
+        classTreeCt             = ExtL.get('class-tree-ct'),
         toggleTree              = ExtL.getByCls('toggle-tree'),
         hideContextMenu         = ExtL.get('hide-context-menu'),
         mobileMenuBtn           = ExtL.get('mobile-main-nav-menu-btn');
+
+    if (classTreeCt) {
+        classTreeCt.onclick     = DocsApp.onClassTreeCtClick;
+    }
 
     if (mobileMenuBtn) {
         mobileMenuBtn.onclick   = DocsApp.onToggleClassTreeClickNoState;
@@ -3741,6 +4038,26 @@ DocsApp.initEventHandlers = function () {
         ExtL.on(searchHistoryPanel, 'click', DocsApp.onSearchHistoryClick);
     }
 
+    if (historyAllLabels) {
+        historyAllLabels.onclick    = DocsApp.onToggleHistoryLabels;
+    }
+
+    if (historyConfig) {
+        historyConfig.onclick       = DocsApp.showHistoryConfigPanel;
+    }
+
+    if (historyTypeConfig) {
+        historyTypeConfig.onclick   = DocsApp.setHistoryType;
+    }
+
+    if (historyTypeAll) {
+        historyTypeAll.onclick      = DocsApp.setHistoryType;
+    }
+
+    if (historyClear) {
+        historyClear.onclick        = DocsApp.clearHistory;
+    }
+
     ExtL.get('mobile-context-menu-btn').onclick = DocsApp.toggleContextMenu;
 
     if (hideContextMenu) {
@@ -3756,12 +4073,23 @@ DocsApp.initEventHandlers = function () {
     // monitor viewport resizing
     ExtL.on(window, 'resize', DocsApp.resizeHandler);
 
+    // Set up the product menu nav
+    ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.product-name-item')), function (item) {
+        ExtL.on(item, 'click', DocsApp.onProductMenuItemClick);
+        ExtL.on(item, 'mouseenter', DocsApp.onProductMenuItemClick);
+    });
+
     ExtL.each(ExtL.fromNodeList(document.getElementsByClassName('collapse-tool')), function (btn) {
         btn.onclick = DocsApp.onToggleExampleClick;
     });
 
     ExtL.each(ExtL.fromNodeList(document.getElementsByClassName('expand-tool')), function (btn) {
         ExtL.up(btn, '.da-inline-fiddle-nav').onclick = DocsApp.onToggleExampleClick;
+    });
+
+    // Setup multi-src click handler
+    ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.multi-src-btn')), function (item) {
+        ExtL.on(item, 'click', showMultiSrcPanel);
     });
 
     // handle the following of a link in the member type menu
@@ -3829,13 +4157,13 @@ ExtL.bindReady(function () {
         DocsApp.copyRelatedClasses();
 
         memberFilterField.oninput = function (e) {
-            filter(DocsApp.getEventTarget());
+            filter(DocsApp.getEventTarget(e));
         };
         memberFilterField.onkeyup = function (e) {
-            filter(DocsApp.getEventTarget());
+            filter(DocsApp.getEventTarget(e));
         };
         memberFilterField.onchange = function (e) {
-            filter(DocsApp.getEventTarget());
+            filter(DocsApp.getEventTarget(e));
         };
     }
 
@@ -3843,6 +4171,8 @@ ExtL.bindReady(function () {
         classType = '.class-body-wrap';
     } else if (pageType == 'guide') {
         classType = '.guide-body-wrap';
+        DocsApp.copyTOC();
+        document.querySelector('.guide-body-wrap').onscroll = DocsApp.handleScroll;
     } else {
         classType = '.generic-content';
     }

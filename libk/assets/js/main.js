@@ -3740,59 +3740,6 @@ DocsApp.setScrollPos = function(e,pos) {
 };
 
 /**
- * @method createWrapper
- * @param ct
- * @param selector
- * @param id
- * @param title
- */
-DocsApp.createWrapper = function(ct, selector, id, title) {
-    var items = ct.querySelectorAll(selector),
-        wrap, header, textEl, i, len;
-
-    len = items.length;
-
-    if (len) {
-        wrap = document.createElement('div');
-        wrap.id = id;
-        header = document.createElement('div');
-        header.className = 'type-sub-category-title';
-        textEl = document.createTextNode(title);
-        header.appendChild(textEl);
-        wrap.appendChild(header);
-        ct.insertBefore(wrap, items.item(0));
-
-        for (i = 0; i < len; i++) {
-            wrap.appendChild(items.item(i));
-        }
-    }
-};
-
-/**
- * @method wrapSubCategories
- */
-DocsApp.wrapSubCategories = function() {
-    var propertiesCt = ExtL.get('properties-ct'),
-        methodsCt    = ExtL.get('methods-ct'),
-        configsCt    = ExtL.get('configs-ct');
-
-    if (propertiesCt) {
-        DocsApp.createWrapper(propertiesCt, 'div.isNotStatic', 'instance-properties-ct', 'Instance Properties');
-        DocsApp.createWrapper(propertiesCt, 'div.isStatic', 'static-properties-ct', 'Static Properties');
-    }
-
-    if (methodsCt) {
-        DocsApp.createWrapper(methodsCt, 'div.isNotStatic', 'instance-methods-ct', 'Instance Methods');
-        DocsApp.createWrapper(methodsCt, 'div.isStatic', 'static-methods-ct', 'Static Methods');
-    }
-
-    if (configsCt) {
-        DocsApp.createWrapper(configsCt, 'div.isNotRequired', 'optional-configs-ct', 'Optional Configs');
-        DocsApp.createWrapper(configsCt, 'div.isRequired', 'required-configs-ct', 'Required Configs');
-    }
-}
-
-/**
  * @method wheelHandler
  * https://dimakuzmich.wordpress.com/2013/07/16/prevent-scrolling-of-parent-element-with-javascript/
  * http://jsfiddle.net/dima_k/5mPkB/1/

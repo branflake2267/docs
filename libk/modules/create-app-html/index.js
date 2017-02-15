@@ -134,22 +134,23 @@ class HtmlApp extends AppBase {
     copyJs () {
         let options    = this.options,
             production = options.production,
+            jsDir      = this.jsDir,
             root       = options._myRoot,
             assetsSrc  = Path.join(root, 'assets'),
             extl       = Path.join(assetsSrc, 'js/ExtL.js'),
             main       = Path.join(assetsSrc, 'js/main.js'),
             beautify   = Path.join(assetsSrc, 'js/beautify.js'),
             aceFolder  = Path.join(root, 'node_modules/ace-builds/src-min-noconflict'),
-            ace        = Path.join(aceFolder, 'ace.js'),
-            modeJs     = Path.join(aceFolder, 'mode-javascript.js'),
-            worker     = Path.join(aceFolder, 'worker-javascript.js'),
-            theme      = Path.join(aceFolder, 'theme-chrome.js'),
+            //ace        = Path.join(aceFolder, 'ace.js'),
+            //modeJs     = Path.join(aceFolder, 'mode-javascript.js'),
+            //worker     = Path.join(aceFolder, 'worker-javascript.js'),
+            //theme      = Path.join(aceFolder, 'theme-chrome.js'),
             jsMinified = UglifyJS.minify([
                 extl,
-                ace,
-                modeJs,
-                worker,
-                theme,
+                //ace,
+                //worker,
+                //modeJs,
+                //theme,
                 beautify,
                 main
             ], {
@@ -160,8 +161,9 @@ class HtmlApp extends AppBase {
                 }
             });
 
-        Fs.ensureDirSync(this.jsDir);
-        Fs.writeFileSync(Path.join(this.jsDir, 'app.js'), jsMinified.code.toString(), 'utf8');
+        Fs.ensureDirSync(jsDir);
+        Fs.writeFileSync(Path.join(jsDir, 'app.js'), jsMinified.code.toString(), 'utf8');
+        Fs.copySync(aceFolder, jsDir)
     }
 
     /**
@@ -265,7 +267,7 @@ class HtmlApp extends AppBase {
      */
     processHierarchy (cls) {
         let name = cls.name,
-            elementCls  = 'hierarchy ml2',
+            elementCls  = 'hierarchy pl3',
             list = this.splitInline(
                 Utils.processCommaLists(cls.extended, false, true, true),
                 `<div class="${elementCls}">`

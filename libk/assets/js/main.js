@@ -3672,7 +3672,7 @@ DocsApp.initEventHandlers = function () {
     }
 
     if (memberFilterField) {
-        DocsApp.addMultipleEventListeners(memberFilterField, 'oninput onkeyup onchange', DocsApp.filterMember());
+        DocsApp.addMultipleEventListeners(memberFilterField, 'oninput onkeyup onchange', DocsApp.filterMember);
     }
 
     if (backToTop) {

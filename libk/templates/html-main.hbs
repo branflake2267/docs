@@ -56,7 +56,7 @@
             document.write('<script type=\"text/javascript\" src=\"{{jsPath}}/apiTree.js\"><\/script>');
         }
     </script>
-    <!-- <script type="text/javascript" src="{{jsPath}}ace.js"></script> -->
+    <script type="text/javascript" src="{{jsPath}}/ace.js"></script>
     <script type="text/javascript" src="{{jsPath}}/app.js"></script>
 
     {{> _help}}
@@ -73,7 +73,7 @@
             {{#if multSrc}}
                 <span class="page-title {{classType}} multi-src-btn">{{{name}}}</span>
             {{else}}
-                <a class="link blue underline-hover page-title {{classType}}" href="{{{fileName}}}" target="_blank">{{{name}}}</a>
+                <a class="link blue underline-hover page-title dn {{classType}}" href="{{{fileName}}}" target="_blank">{{{name}}}</a>
             {{/if}}
         {{/isApi}}
         {{#isHome}}
@@ -90,7 +90,10 @@
 
     <div id="centerContent" class="absolute absolute--fill z-2">
         <div id="history-nav" class="absolute absolute--fill pr4 pl3 bg-near-white bb b--light-gray">
-            <span id="history-config" class="history-config tooltip tooltip-tr-br" data-tip="Configure / Clear History"><div class="callout callout-b"></div></span>
+            <span id="history-config" class="history-config tooltip tooltip-tr-br f6 bg-dark-blue pointer br1 tc white absolute" data-tip="Configure / Clear History">
+                <i class="fa fa-history"></i>
+                <div class="callout callout-b"></div>
+            </span>
         </div>
         <div id="class-tree-ct" class="bg-white absolute absolute--fill top-2 w4 overflow-hidden br bw1 b--light-gray class-tree">
             <h2 class="product-header bg-dark-blue ma0 dn">
@@ -109,21 +112,22 @@
                         <div id="modern-tab" class="active-tab">modern</div>
                         <div id="classic-tab">classic</div>
                     </div>
-                    <div class="fa fa-plus toggle-tree hide absolute pa2" data-toggle="Expand All Classes">
+                    <div class="toggle-tree tooltip tooltip-tr-br hide absolute f6 bg-dark-blue pointer br1 tc overflow-hidden z-0 white" data-toggle="Expand All Classes">
+                        <i class="fa fa-plus"></i>
                         <div class="callout callout-b"></div>
                     </div>
                     {{{treeview}}}
                 </div>
                 {{#if isApi}}
-                    <div class="private-class-toggle-ct">
-                        <label for="private-class-toggle">Show private classes</label>
+                    <div class="private-class-toggle-ct absolute left-0 bottom-0 right-0 z-1 bg-white bt b--black-10">
+                        <label for="private-class-toggle" class="pointer gray">Show private classes</label>
                         <input id="private-class-toggle" type="checkbox" name="privateClassToggle" />
                     </div>
                 {{/if}}
             </div>
         </div>
 
-        <a class="link white fixed right-2 no-underline bg-blue pa2 dim z-2 ba tc bottom-2 mb3 dn" href="#" id="back-to-top">
+        <a class="link white fixed right-2 no-underline bg-blue pa2 z-2 tc dn f6 ba b--white bw2" href="#" id="back-to-top">
             <div class="fa fa-angle-up"></div>
             <br>
             top 
@@ -138,8 +142,8 @@
     </div>
 
     <h2 class="product-header absolute z-2 ma0 white">
-        <a class="link underline-hover white" href="{{homePath}}index.html">{{{title}}} {{{version}}} {{#if meta}}- {{{meta}}}{{/if}}</a>
-        <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl">
+        <a class="link underline-hover white hover-white" href="{{homePath}}index.html">{{{title}}} {{{version}}} {{#if meta}}- {{{meta}}}{{/if}}</a>
+        <span data-tip="Product / Version Menu" class="fa fa-chevron-circle-down product-menu-btn tooltip tooltip-tl-bl relative">
             <div class="callout callout-b"></div>
         </span>
         <div id="peekaboo-input" class="peekaboo-input dn">

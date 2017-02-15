@@ -1260,15 +1260,16 @@ class SourceApi extends Base {
             // suffix allows us to combine toolkits in one search
             suffix = toolkit.charAt(0) || '',
             typeRef     = {
-                configs             : 'c',
-                properties          : 'p',
-                "static-properties" : 'sp',
-                methods             : 'm',
-                "static-methods"    : 'sm',
+                optionalConfigs     : 'c',
+                requiredConfigs     : 'c',
+                instanceProperties  : 'p',
+                staticProperties    : 'sp',
+                instanceMethods     : 'm',
+                staticMethods       : 'sm',
                 events              : 'e',
                 vars                : 'v',
-                "sass-mixins"       : 'x',
-                "sass-mixin-params" : 'z'
+                "sass-mixins"       : 'x'//,
+                //"sass-mixin-params" : 'z'
             },
             memberTypes = [ // all possible member types in a given class
                 'requiredConfigs',
@@ -1383,7 +1384,7 @@ class SourceApi extends Base {
                     };
                 });
             }
-
+            console.log(cls.name, member.name, cls.typeRef[type], type);
             // record the member access
             searchIndex[key][cls.typeRef[type] + '.' + member.name] = {
                 a : acc

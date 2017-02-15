@@ -1566,10 +1566,6 @@ DocsApp.unhighlightMemberMatch = function(member) {
  * @method filter
  */
 var filter = ExtL.createBuffered(function (e, target) {
-    if (!target && !target.value) {
-        return;
-    }
-
     var value        = ExtL.trim(target.value),
         matcher      = new RegExp(value.replace('$', '\\$'), 'gi'),
         classmembers = ExtL.fromNodeList(document.getElementsByClassName('classmembers')),
@@ -3969,7 +3965,7 @@ DocsApp.initEventHandlers = function () {
     }
 
     if (memberFilterField) {
-        DocsApp.addMultipleEventListeners(memberFilterField, 'oninput onkeyup onchange', DocsApp.filterMember());
+        DocsApp.addMultipleEventListeners(memberFilterField, 'oninput onkeyup onchange', DocsApp.filterMember);
     }
 
     if (backToTop) {

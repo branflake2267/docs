@@ -38,7 +38,8 @@ class AppBase extends SourceGuides {
             hasToolkits : toolkits && toolkits.length > 1,
             toolkits    : toolkits,
             toolkit     : toolkit,
-            hasGuides   : prodObj.hasGuides !== false
+            hasGuides   : prodObj.hasGuides !== false,
+            title       : prodObj.title
         };
     }
 

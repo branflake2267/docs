@@ -72,6 +72,14 @@ class Base {
     }
 
     /**
+     * Returns the folder node class used for tree navigation
+     * @return {String} The navigation tree's folder node class
+     */
+    get folderNodeCls () {
+        return 'fa fa-folder-o dib w1 mr1 ml1';
+    }
+
+    /**
      * Returns the resources directory used to house resource files for the apps
      * @return {String} the common resources directory (full) path
      */
@@ -158,13 +166,14 @@ class Base {
      */
     getCommonMetaData () {
         let options = this.options,
-            meta    = Object.assign({}, options.prodVerMeta);
+            meta    = Object.assign({}, options.prodVerMeta),
+            product = this.getProduct(options.product);
 
         return Object.assign(meta, {
-            version     : options.version,
-            pageType    : 'common',
-            product     : this.getProduct(options.product),
-            version     : this.options.version
+            version  : options.version,
+            pageType : 'common',
+            product  : product,
+            title    : meta.title
         });
     }
 

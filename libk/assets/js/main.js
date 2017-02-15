@@ -104,11 +104,11 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             cfg.cn = [{
                 tag     : 'span',
                 html    : '▸',
-                "class" : 'tree-expando tree-expando-collapsed w1 dib f4 mr1 tc'
+                "class" : 'tree-expando tree-expando-collapsed w1 dib f4 mr1 tc system-sans-serif'
             }, {
                 tag     : 'span',
                 html    : '▿',
-                "class" : 'tree-expando tree-expando-expanded w1 dib f4 mr1 tc'
+                "class" : 'tree-expando tree-expando-expanded w1 dib f4 mr1 tc system-sans-serif'
             }, {
                 tag     : 'i',
                 "class" : node.iconCls || ''
@@ -1424,7 +1424,7 @@ DocsApp.initHistory = function() {
     nav.appendChild(ExtL.createElement({
         tag: 'span',
         html: 'History:',
-        "class": 'history-title'
+        "class": 'history-title f6'
     }));
 
     if (history && history.length) {

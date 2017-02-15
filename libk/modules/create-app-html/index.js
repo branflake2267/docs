@@ -207,7 +207,7 @@ class HtmlApp extends AppBase {
      * supplying it to the template
      */
     processGuideDataObject (data) {
-        data = super.processGuideDataObject(data);
+        super.processGuideDataObject(data);
         return this.buildToc(data);
     }
 
@@ -265,11 +265,12 @@ class HtmlApp extends AppBase {
      */
     processHierarchy (cls) {
         let name = cls.name,
+            elementCls  = 'hierarchy ml2',
             list = this.splitInline(
                 Utils.processCommaLists(cls.extended, false, true, true),
-                '<div class="hierarchy">'
+                `<div class="${elementCls}">`
             ),
-            ret = `<div class="list">${list}<div class="hierarchy">${name}`;
+            ret = `<div class="list">${list}<div class="${elementCls}">${name}`;
 
         // close out all of the generated divs above with closing div tags
         ret += Utils.repeat('</div>', ret.split('<div').length - 1);

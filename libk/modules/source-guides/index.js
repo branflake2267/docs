@@ -710,7 +710,7 @@ class SourceGuides extends SourceApi {
 
                 //node.id = node.slug;
                 node.id = Path.join(rootPath, slug);
-                node.iconCls = 'fa fa-folder-o dib w1 mr1';
+                node.iconCls = this.folderNodeCls;
                 this.makeGuideDir(path);
                 this.prepareGuides(children, path, toReadArr, navTreeName);
                 
@@ -811,12 +811,10 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * @template
      * Template method to allow for additional guide data processing prior to handing the
      * data over to the guide template for final output
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
-     * @return {Object} The data object to apply to the guide template
      */
     processGuideDataObject (data) {
         // can be extended in the app post-processor subclasses
@@ -826,8 +824,7 @@ class SourceGuides extends SourceApi {
         data.title      = data.prodObj.title;
         data.toc        = this.buildTOC(data.content, data.id);
         data.myMeta     = this.getGuideMetaData(data);
-
-        return data;
+        data.isGuide    = true;
     }
 
     /**

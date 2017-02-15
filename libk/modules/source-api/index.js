@@ -525,14 +525,15 @@ class SourceApi extends Base {
                     text        : name,
                     navTreeName : 'api',
                     id          : id,
-                    leaf        : leaf
+                    leaf        : leaf,
                 },
-                target    = this.getExistingNode(nodes, id),
+                target        = this.getExistingNode(nodes, id),
+                folderNodeCls = this.folderNodeCls,
                 newNode;
 
             if (!leaf) {
                 newNode  = Object.assign(baseNode, {
-                    iconCls  : 'fa fa-folder-o dib w1 mr1 ml3',
+                    iconCls  : folderNodeCls,
                     children : []
                 });
                 // else we're processing a leaf node (note, this could be a node / namespace 
@@ -541,7 +542,7 @@ class SourceApi extends Base {
                 //create the leaf node configuration
                 newNode = Object.assign(baseNode, {
                     href    : `${apiDirName}/${id}.html`,
-                    iconCls : `${icon} fa fa-folder-o dib w1 mr1 ml3`
+                    iconCls : `${icon} ${folderNodeCls}`
                 });
             }
 
@@ -744,7 +745,7 @@ class SourceApi extends Base {
      * @return {Object} A promise the resolves once the api file is written to the output 
      * directory
      */
-    outputApiFile (className, data) {
+    /*outputApiFile (className, data) {
         return new Promise((resolve, reject) => {
             let fileName = Path.join(this.apiDir, `${className}.json`),
                 output   = JSON.stringify(data, null, 4);
@@ -756,7 +757,7 @@ class SourceApi extends Base {
                 setTimeout(resolve, 100);
             });
         });
-    }
+    }*/
 
     /**
      * @template
@@ -765,6 +766,25 @@ class SourceApi extends Base {
      * @param {Object} data The recipient of the processed related classes
      */
     processRelatedClasses () {}
+
+    /**
+     * Prepares additional api data processing prior to handing the data over to the api 
+     * template for final output
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processApiDataObject (data) {
+        let options  = this.options,
+            apiDir   = this.apiDir;
+
+        data.cssPath    = Path.relative(apiDir, this.cssDir);
+        data.jsPath     = Path.relative(apiDir, this.jsDir);
+        data.imagesPath = Path.relative(apiDir, this.imagesDir);
+        data.product    = this.getProduct(options.product);
+        data.version    = options.version;
+        data.myMeta     = this.getApiMetaData(data);
+        data.isApi      = true;
+    }
 
     /**
      * Decorate each doxi class file with metadata / member groupings to be used by the
@@ -781,8 +801,7 @@ class SourceApi extends Base {
             raw      = classMap[className].raw,
             data     = classMap[className].prepared,
             cls      = raw.global.items[0],
-            alias    = cls.alias,
-            apiDir   = this.apiDir;
+            alias    = cls.alias;
             
         data.classText = this.markup(data.text);
         // TODO need to decorate the following.  Not sure if this would be done differently for HTML and Ext app output
@@ -817,18 +836,12 @@ class SourceApi extends Base {
         cls.isEnum       = cls.$type === 'enum'
         data.cls = cls;
 
+        this.processApiDataObject(data);
 
         // TODO there's a lot of overlap here with guides - should see how we can 
         // reconcile some of this into some sort of applyContext(data) method
         data = Object.assign(data, options);
         data = Object.assign(data, options.prodVerMeta);
-
-        // set the asset paths
-        data.cssPath    = Path.relative(apiDir, this.cssDir);
-        data.jsPath     = Path.relative(apiDir, this.jsDir);
-        data.imagesPath = Path.relative(apiDir, this.imagesDir);
-        data.product    = this.getProduct(options.product);
-        data.version    = options.version;
 
         // indicates whether the class is of type component, singleton, or some other 
         // class
@@ -842,18 +855,6 @@ class SourceApi extends Base {
             cls.clsSpec     = 'title-decoration class fa fa-cube f3 fl dark-blue ';
             cls.clsSpecIcon = 'class';
         }
-        
-        /*data.myMeta = {
-            version     : data.version,
-            hasGuides   : data.hasGuides,
-            hasApi      : data.hasApi,
-            navTreeName : 'API',
-            myId        : data.cls.name,
-            rootPath    : ''
-        };*/
-        data.myMeta = this.getApiMetaData(data);
-
-        //data.memberTypeGroups = cls.items;
 
         let i                = 0,
             memberTypeGroups = cls.items || [],
@@ -1147,103 +1148,103 @@ class SourceApi extends Base {
             mixins             = data.mixed && data.mixed.split(','),
             mixesBindable      = mixins && mixins.includes('Ext.mixin.Bindable');
 
-            for (; i < configsLen; i++) {
-                let config      = configs[i],
-                    name        = config.name,
-                    capitalName = Utils.capitalize(name),
-                    // edge cases like 'ui' and 'setUI'
-                    upperName   = name.toUpperCase(),
-                    accessor    = config.accessor;
+        for (; i < configsLen; i++) {
+            let config      = configs[i],
+                name        = config.name,
+                capitalName = Utils.capitalize(name),
+                // edge cases like 'ui' and 'setUI'
+                upperName   = name.toUpperCase(),
+                accessor    = config.accessor;
 
-                // set the capitalized name on the config for use by the template
-                config.capitalName = capitalName;
+            // set the capitalized name on the config for use by the template
+            config.capitalName = capitalName;
 
-                // cache any existing getter / setter instance methods
-                let g = config.getter = instanceMethodsObj[`get${capitalName}`] ||
-                                instanceMethodsObj[`get${upperName}`];
-                let s = config.setter = instanceMethodsObj[`set${capitalName}`] ||
-                                instanceMethodsObj[`set${upperName}`];
+            // cache any existing getter / setter instance methods
+            let g = config.getter = instanceMethodsObj[`get${capitalName}`] ||
+                            instanceMethodsObj[`get${upperName}`];
+            let s = config.setter = instanceMethodsObj[`set${capitalName}`] ||
+                            instanceMethodsObj[`set${upperName}`];
 
-                // if there is a getter or the config is accessor decorate the getter 
-                // method config
-                if (g || accessor === true || accessor === 'r') {
-                    let idx = g ? instanceMethods.indexOf(g) : null;
+            // if there is a getter or the config is accessor decorate the getter 
+            // method config
+            if (g || accessor === true || accessor === 'r') {
+                let idx = g ? instanceMethods.indexOf(g) : null;
 
-                    if (g) {
-                        g.isGetter = true;
-                    }
-
-                    let getterName = g ? g.name : `get${capitalName}`,
-                        getterCfg  = {
-                            name         : getterName,
-                            $type        : g ? 'placeholder-simple' : 'placeholder-accessor',
-                            access       : g ? g.access : config.access,
-                            text         : 'see: <a href="#method-' + getterName + '">' + config.name + '</a>',
-                            isInherited  : g ? g.isInherited : config.isInherited,
-                            isAutoGetter : !g
-                        };
-
-                    // if the getter came from the instance methods directly
-                    if (idx) {
-                        // we're replacing the getter method in the instance methods with 
-                        // the placeholder config
-                        instanceMethods[idx] = getterCfg;
-                    } else {
-                        // else add it
-                        if (instanceMethods) {
-                            instanceMethods.push(getterCfg);
-                        }            
-                    }
-                }
-                // if there is a setter or the config is accessor decorate the setter 
-                // method config
-                if (s || accessor === true || accessor === 'w') {
-                    let idx = s ? instanceMethods.indexOf(s) : null;
-
-                    if (s) {
-                        s.isSetter = true;
-                    }
-
-                    let setterName = s ? s.name : `set${capitalName}`,
-                        setterCfg  = {
-                            name         : setterName,
-                            $type        : s ? 'placeholder' : 'placeholder-accessor',
-                            access       : s ? s.access : config.access,
-                            text         : 'see: <a href="#method-' + setterName + '">' + config.name + '</a>',
-                            isInherited  : s ? s.isInherited : config.isInherited,
-                            isAutoSetter : !s
-                        };
-
-                    // if the getter came from the instance methods directly
-                    if (idx) {
-                        // we're replacing the getter method in the instance methods with 
-                        // the placeholder config
-                        instanceMethods[idx] = setterCfg;
-                    } else {
-                        // else add it
-                        if (instanceMethods) {
-                            instanceMethods.push(setterCfg);
-                        }
-                    }
-                    if (data.name === 'Ext.panel.Panel' && config.name === 'header') {
-                        console.log(s, accessor);
-                    }
-                    config.hasSetter = true;
+                if (g) {
+                    g.isGetter = true;
                 }
 
-                // decorate the config as `bindable: true` if there is a setter method
-                if (config.hasSetter && mixesBindable) {
-                    config.bindable = true;
-                }
+                let getterName = g ? g.name : `get${capitalName}`,
+                    getterCfg  = {
+                        name         : getterName,
+                        $type        : g ? 'placeholder-simple' : 'placeholder-accessor',
+                        access       : g ? g.access : config.access,
+                        text         : 'see: <a href="#method-' + getterName + '">' + config.name + '</a>',
+                        isInherited  : g ? g.isInherited : config.isInherited,
+                        isAutoGetter : !g
+                    };
 
-                // finally, note on any accessor configs when a getter / setter
-                // should be added automatically for accessor configs that don't
-                // have explicitly described getter / setter methods
-                if (accessor) {
-                    config.autoGetter = !g;
-                    config.autoSetter = !s;
+                // if the getter came from the instance methods directly
+                if (idx) {
+                    // we're replacing the getter method in the instance methods with 
+                    // the placeholder config
+                    instanceMethods[idx] = getterCfg;
+                } else {
+                    // else add it
+                    if (instanceMethods) {
+                        instanceMethods.push(getterCfg);
+                    }            
                 }
             }
+            // if there is a setter or the config is accessor decorate the setter 
+            // method config
+            if (s || accessor === true || accessor === 'w') {
+                let idx = s ? instanceMethods.indexOf(s) : null;
+
+                if (s) {
+                    s.isSetter = true;
+                }
+
+                let setterName = s ? s.name : `set${capitalName}`,
+                    setterCfg  = {
+                        name         : setterName,
+                        $type        : s ? 'placeholder' : 'placeholder-accessor',
+                        access       : s ? s.access : config.access,
+                        text         : 'see: <a href="#method-' + setterName + '">' + config.name + '</a>',
+                        isInherited  : s ? s.isInherited : config.isInherited,
+                        isAutoSetter : !s
+                    };
+
+                // if the getter came from the instance methods directly
+                if (idx) {
+                    // we're replacing the getter method in the instance methods with 
+                    // the placeholder config
+                    instanceMethods[idx] = setterCfg;
+                } else {
+                    // else add it
+                    if (instanceMethods) {
+                        instanceMethods.push(setterCfg);
+                    }
+                }
+                if (data.name === 'Ext.panel.Panel' && config.name === 'header') {
+                    console.log(s, accessor);
+                }
+                config.hasSetter = true;
+            }
+
+            // decorate the config as `bindable: true` if there is a setter method
+            if (config.hasSetter && mixesBindable) {
+                config.bindable = true;
+            }
+
+            // finally, note on any accessor configs when a getter / setter
+            // should be added automatically for accessor configs that don't
+            // have explicitly described getter / setter methods
+            if (accessor) {
+                config.autoGetter = !g;
+                config.autoSetter = !s;
+            }
+        }
     }
 
     /**

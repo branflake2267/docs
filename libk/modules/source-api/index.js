@@ -1384,7 +1384,7 @@ class SourceApi extends Base {
                     };
                 });
             }
-            console.log(cls.name, member.name, cls.typeRef[type], type);
+            
             // record the member access
             searchIndex[key][cls.typeRef[type] + '.' + member.name] = {
                 a : acc

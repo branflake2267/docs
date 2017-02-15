@@ -16,6 +16,7 @@
 
 const AppBase     = require('../create-app-base'),
       Path        = require('path'),
+      Utils       = require('../shared/Utils'),
       Handlebars  = require('handlebars'),
       Fs          = require('fs-extra'),
       UglifyJS    = require("uglify-js"),
@@ -254,6 +255,55 @@ class HtmlApp extends AppBase {
 
             return this.createApiLink(link, text.replace(HashStartRe, ''));
         });
+    }
+
+    /**
+     * @private
+     * Outputs the class hierarchy for classes related to the passed class
+     * @param {Object} cls The class object to output the hierarchy for
+     * @return {String} The hierarchy HTML
+     */
+    processHierarchy (cls) {
+        let name = cls.name,
+            list = this.splitInline(
+                Utils.processCommaLists(cls.extended, false, true, true),
+                '<div class="hierarchy">'
+            ),
+            ret = `<div class="list">${list}<div class="hierarchy">${name}`;
+
+        // close out all of the generated divs above with closing div tags
+        ret += Utils.repeat('</div>', ret.split('<div').length - 1);
+
+        return ret;
+    }
+
+    /**
+     * @private
+     * Private method to process the contents of the related classes for HTML output.  
+     * Separates each class name / link with a line break.
+     */
+    splitRelatedClasses (classes) {
+        if (classes) {
+            return this.splitInline(classes, '<br>');
+        }
+        return '';
+    }
+     
+    /**
+     * Processes the API object's related classes for HTML output
+     * @param {Object} cls The original class object
+     * @param {Object} data The recipient of the processed related classes
+     */
+    processRelatedClasses (cls, data) {
+        data.mixins      = this.splitRelatedClasses(cls.mixed);
+        data.localMixins = this.splitRelatedClasses(cls.mixins);
+        data.requires    = this.splitRelatedClasses(cls.requires);
+        data.uses        = this.splitRelatedClasses(cls.uses);
+        data.extends     = cls.extended  ? this.processHierarchy(cls) : '';
+        data.extenders   = cls.extenders ? Utils.processCommaLists(cls.extenders, false) : '';
+        data.extenders   = this.splitRelatedClasses(cls.extenders);
+        data.mixers      = cls.mixers    ? Utils.processCommaLists(cls.mixers, false) : '';
+        data.mixers      = this.splitRelatedClasses(cls.mixers);
     }
 
     /**

@@ -185,6 +185,32 @@ class Utils {
     }
 
     /**
+     * Processes a comma separated list
+     * @param list The array of items to process
+     * @param [sort] Sort the array elements
+     * @param [trim] Pop the last element.  **Note:** Pop is processed before reverse and 
+     * sort.
+     * @param [rev] Reverse the list
+     */
+    static processCommaLists (list, sort, trim, rev) {
+        let arr = list.split(',');
+
+        if (trim) {
+            arr.pop();
+        }
+
+        if (rev) {
+            arr.reverse();
+        }
+
+        if (sort) {
+            arr.sort();
+        }
+
+        return arr.join(',');
+    }
+
+    /**
      * Converts a value to an array if it's not already an array; returns an the param
      * wrapped as an array (or the array itself if it's an already an array)
      * @return {Array}

@@ -424,7 +424,44 @@ class SourceApi extends Base {
                 })
             );
         }
-        return Promise.all(ops);
+        return Promise.all(ops)
+        .then(() => {
+            let i         = 0,
+                map       = this.srcFileMap,
+                keys      = Object.keys(map),
+                len       = keys.length,
+                names     = {},
+                inputDir = this.doxiInputDir;
+
+            for (; i < len; i++) {
+                let path = keys[i],
+                    // returns 'file.ext' from the full path
+                    name = Path.parse(path).base;
+
+                // rename the file name to be used in the source file output if it's been
+                // used already.  i.e. the first Button.js class will be Button.js and any
+                // additional Button classes will have a number appended.  The next would be
+                // Button.js-1 as the file name
+                if (names[name]) {
+                    let namesLength = names[name].length,
+                        rename = `${name}-${namesLength}`;
+
+                    names[name].push(rename);
+                    name = rename;
+                } else {
+                    names[name] = [name];
+                }
+
+                // once the file names are sorted for duplicates add the final file name to
+                // the source file map
+                map[keys[i]].filename = name;
+
+                keys[i] = {
+                    path     : keys[i],
+                    inputDir : inputDir
+                };
+            }
+        });
     }
 
     /**
@@ -714,7 +751,7 @@ class SourceApi extends Base {
 
             Fs.writeFile(fileName, output, 'utf8', (err) => {
                 if (err) console.log('outputApiFile error');
-                //delete this.classMap[className];
+                delete this.classMap[className];
                 // resolve after a timeout to let garbage collection catch up
                 setTimeout(resolve, 100);
             });
@@ -722,51 +759,12 @@ class SourceApi extends Base {
     }
 
     /**
-     * @private
-     * Outputs the class hierarchy for classes related to the passed class
-     * @param {Object} cls The class object to output the hierarchy for
-     * @return {String} The hierarchy HTML
+     * @template
+     * Template method to process the lists of related classes
+     * @param {Object} cls The original class object
+     * @param {Object} data The recipient of the processed related classes
      */
-    processHierarchy (cls) {
-        let name = cls.name,
-            list = this.splitInline(
-                this.processCommaLists(cls.extended, false, true, true),
-                '<div class="hierarchy">'
-            ),
-            ret = `<div class="list">${list}<div class="hierarchy">${name}`;
-
-        // close out all of the generated divs above with closing div tags
-        ret += Utils.repeat('</div>', ret.split('<div').length - 1);
-
-        return ret;
-    }
-
-    /**
-     * @private
-     * Processes a comma separated list.  Used by {@link #decorateClass}
-     * @param list The array of items to process
-     * @param [sort] Sort the array elements
-     * @param [trim] Pop the last element.  **Note:** Pop is processed before reverse and 
-     * sort.
-     * @param [rev] Reverse the list
-     */
-    processCommaLists (list, sort, trim, rev) {
-        let arr = list.split(',');
-
-        if (trim) {
-            arr.pop();
-        }
-
-        if (rev) {
-            arr.reverse();
-        }
-
-        if (sort) {
-            arr.sort();
-        }
-
-        return arr.join(',');
-    }
+    processRelatedClasses () {}
 
     /**
      * Decorate each doxi class file with metadata / member groupings to be used by the
@@ -788,20 +786,15 @@ class SourceApi extends Base {
             
         data.classText = this.markup(data.text);
         // TODO need to decorate the following.  Not sure if this would be done differently for HTML and Ext app output
-        data.mixins      = cls.mixed     ? this.splitInline(cls.mixed, '<br>')                                  : '',
-        data.localMixins = cls.mixins    ? this.splitInline(cls.mixins, '<br>')                                 : '',
-        data.requires    = cls.requires  ? this.splitInline(cls.requires, '<br>')                               : '',
-        data.uses        = cls.uses      ? this.splitInline(cls.uses, '<br>')                                   : '',
-        data.extends     = cls.extended  ? this.processHierarchy(cls)                                           : '',
-        data.extenders   = cls.extenders ? this.splitInline(this.processCommaLists(cls.extenders, false), '<br>') : '',
-        data.mixers      = cls.mixers    ? this.splitInline(this.processCommaLists(cls.mixers, false), '<br>')    : '',
+        this.processRelatedClasses(cls, data);
 
-        data.requiredConfigs    = [];
-        data.optionalConfigs    = [];
-        data.instanceMethods    = [];
-        data.staticMethods      = [];
-        data.instanceProperties = [];
-        data.staticProperties   = [];
+        data.requiredConfigs     = [];
+        data.optionalConfigs     = [];
+        data.instanceMethods     = [];
+        data.instanceMethodsObj  = {};
+        data.staticMethods       = [];
+        data.instanceProperties  = [];
+        data.staticProperties    = [];
 
         data.contentPartial = '_html-apiBody';
 
@@ -885,8 +878,7 @@ class SourceApi extends Base {
                 'optionalConfigs'
             );
 
-            // TOOD inject getters and setters
-            this.injectGettersAndSetters(data);
+            this.postProcessConfigs(data);
         }
 
         // process properties
@@ -941,13 +933,25 @@ class SourceApi extends Base {
      * @return {Object[]} Array of processed member objects
      */
     processMembers (className, type, items) {
-        let prepared = this.classMap[className].prepared,
-            i   = 0,
-            len = items.length;
+        let prepared        = this.classMap[className].prepared,
+            i               = 0,
+            len             = items.length,
+            capitalizedType = Utils.capitalize(type);
 
+        // loop over the member groups.  Indicate on the class object that each member 
+        // type is present and process the member object itself.
         for (; i < len; i++) {
-            prepared['has' + Utils.capitalize(type)] = true;
+            prepared[`has${capitalizedType}`] = true;
             this.processMember(className, type, items[i]);
+        }
+        // add hasProperties in case there is a class with only static properties
+        //  .. the template wants to know if there are ANY properties
+        if (prepared['hasStatic-properties']) {
+            prepared.hasProperties = true;
+        }
+        //  .. same goes for methods
+        if (prepared['hasStatic-methods']) {
+            prepared.hasMethods = true;
         }
 
         return items;
@@ -964,7 +968,8 @@ class SourceApi extends Base {
             raw      = classMap[className].raw,
             prepared = classMap[className].prepared,
             rawRoot  = raw.global.items[0],
-            clsName  = rawRoot.name;
+            clsName  = rawRoot.name,
+            name     = member.name;
 
         // set the type to what the template is expecting for the SASS sections
         if (type === 'vars') {
@@ -1041,6 +1046,8 @@ class SourceApi extends Base {
         // cache the instance and static methods and properties
         if (type === 'methods') {
             prepared.instanceMethods.push(member);
+            // used when creating accessor methods
+            prepared.instanceMethodsObj[name] = member;;
         }
         if (type === 'static-methods') {
             prepared.staticMethods.push(member);
@@ -1080,6 +1087,20 @@ class SourceApi extends Base {
                          '<a target="_blank" href="src/' +
                             fileLink + '#' + member.srcClass + '-' + member.linkType + '-' + member.name + '">' +
                          'view source</a></div>';*/
+        
+        //member.srcLink = 'src/'
+        //console.log(this.srcFileMap[className].filename);
+        let src = member.src,
+            idx = src && (src.text || src.name || src.constructor).split(',')[0],
+            srcFile = Utils.isEmpty(idx) ? null : raw.files[idx];
+
+        if (srcFile) {
+            let filename = this.srcFileMap[srcFile].filename,
+                srcClass = member.srcClass,
+                type     = member.linkType;
+
+            member.srcLink = `${filename}.html#${srcClass}-${type}-${name}`;
+        }
 
         member.access = member.access || 'public';
         member.accessMini = member.access.substr(0, 3);
@@ -1109,11 +1130,120 @@ class SourceApi extends Base {
 
     /**
      * @private
-     * Injects getter and setter methods for config options with accessor: true
+     * Injects getter and setter methods for config options with `accessor: true`.  
+     * Decorates bindable configs with `bindable: true`.  Used by {@link #decorateClass} 
+     * after {@link #processMembers} is complete
      * @param {Object} data The class object to be passed to the HTML template
      */
-    injectGettersAndSetters (data) {
-        //
+    postProcessConfigs (data) {
+        let instanceMethods    = data.instanceMethods,
+            instanceMethodsObj = data.instanceMethodsObj,
+            configsObj         = data.configs,
+            optionalConfigs    = configsObj.optionalConfigs,
+            requiredConfigs    = configsObj.requiredConfigs,
+            configs            = optionalConfigs.concat(requiredConfigs),
+            configsLen         = configs.length,
+            i                  = 0,
+            mixins             = data.mixed && data.mixed.split(','),
+            mixesBindable      = mixins && mixins.includes('Ext.mixin.Bindable');
+
+            for (; i < configsLen; i++) {
+                let config      = configs[i],
+                    name        = config.name,
+                    capitalName = Utils.capitalize(name),
+                    // edge cases like 'ui' and 'setUI'
+                    upperName   = name.toUpperCase(),
+                    accessor    = config.accessor;
+
+                // set the capitalized name on the config for use by the template
+                config.capitalName = capitalName;
+
+                // cache any existing getter / setter instance methods
+                let g = config.getter = instanceMethodsObj[`get${capitalName}`] ||
+                                instanceMethodsObj[`get${upperName}`];
+                let s = config.setter = instanceMethodsObj[`set${capitalName}`] ||
+                                instanceMethodsObj[`set${upperName}`];
+
+                // if there is a getter or the config is accessor decorate the getter 
+                // method config
+                if (g || accessor === true || accessor === 'r') {
+                    let idx = g ? instanceMethods.indexOf(g) : null;
+
+                    if (g) {
+                        g.isGetter = true;
+                    }
+
+                    let getterName = g ? g.name : `get${capitalName}`,
+                        getterCfg  = {
+                            name         : getterName,
+                            $type        : g ? 'placeholder-simple' : 'placeholder-accessor',
+                            access       : g ? g.access : config.access,
+                            text         : 'see: <a href="#method-' + getterName + '">' + config.name + '</a>',
+                            isInherited  : g ? g.isInherited : config.isInherited,
+                            isAutoGetter : !g
+                        };
+
+                    // if the getter came from the instance methods directly
+                    if (idx) {
+                        // we're replacing the getter method in the instance methods with 
+                        // the placeholder config
+                        instanceMethods[idx] = getterCfg;
+                    } else {
+                        // else add it
+                        if (instanceMethods) {
+                            instanceMethods.push(getterCfg);
+                        }            
+                    }
+                }
+                // if there is a setter or the config is accessor decorate the setter 
+                // method config
+                if (s || accessor === true || accessor === 'w') {
+                    let idx = s ? instanceMethods.indexOf(s) : null;
+
+                    if (s) {
+                        s.isSetter = true;
+                    }
+
+                    let setterName = s ? s.name : `set${capitalName}`,
+                        setterCfg  = {
+                            name         : setterName,
+                            $type        : s ? 'placeholder' : 'placeholder-accessor',
+                            access       : s ? s.access : config.access,
+                            text         : 'see: <a href="#method-' + setterName + '">' + config.name + '</a>',
+                            isInherited  : s ? s.isInherited : config.isInherited,
+                            isAutoSetter : !s
+                        };
+
+                    // if the getter came from the instance methods directly
+                    if (idx) {
+                        // we're replacing the getter method in the instance methods with 
+                        // the placeholder config
+                        instanceMethods[idx] = setterCfg;
+                    } else {
+                        // else add it
+                        if (instanceMethods) {
+                            instanceMethods.push(setterCfg);
+                        }
+                    }
+                    if (data.name === 'Ext.panel.Panel' && config.name === 'header') {
+                        console.log(s, accessor);
+                    }
+                    config.hasSetter = true;
+                }
+
+                // decorate the config as `bindable: true` if there is a setter method
+                if (config.hasSetter && mixesBindable) {
+                    config.bindable = true;
+                }
+
+                // finally, note on any accessor configs when a getter / setter
+                // should be added automatically for accessor configs that don't
+                // have explicitly described getter / setter methods
+                if (accessor) {
+                    config.autoGetter = !g;
+                    config.autoSetter = !s;
+                }
+            }
     }
 
     /**
@@ -1334,32 +1464,9 @@ class SourceApi extends Base {
                 map       = this.srcFileMap,
                 keys      = Object.keys(map),
                 len       = keys.length,
-                names     = {},
                 inputDir = this.doxiInputDir;
 
             for (; i < len; i++) {
-                let path = keys[i],
-                    // returns 'file.ext' from the full path
-                    name = Path.parse(path).base;
-
-                // rename the file name to be used in the source file output if it's been
-                // used already.  i.e. the first Button.js class will be Button.js and any
-                // additional Button classes will have a number appended.  The next would be
-                // Button.js-1 as the file name
-                if (names[name]) {
-                    let namesLength = names[name].length,
-                        rename = `${name}-${namesLength}`;
-
-                    names[name].push(rename);
-                    name = rename;
-                } else {
-                    names[name] = [name];
-                }
-
-                // once the file names are sorted for duplicates add the final file name to
-                // the source file map
-                map[keys[i]].filename = name;
-
                 keys[i] = {
                     path     : keys[i],
                     inputDir : inputDir

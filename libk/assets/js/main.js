@@ -3118,7 +3118,7 @@ DocsApp.onClassTreeCtClick = function(e) {
     if (href && DocsApp.isMobile()) {
         DocsApp.setTreeVisibility(false);
     }
-}
+};
 
 /**
  * @event onMobileInputBlur

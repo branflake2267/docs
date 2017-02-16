@@ -1582,8 +1582,9 @@ var filter = ExtL.createBuffered(function (e, target) {
     var value        = ExtL.trim(target.value),
         matcher      = new RegExp(value.replace('$', '\\$'), 'gi'),
         classmembers = ExtL.fromNodeList(document.getElementsByClassName('classmembers')),
-        classText    = ExtL.getByCls('classText'),
-        matches      = [], matchesLen, owner;
+        classText    = document.getElementsByClassName('classText')[0],
+        matches      = [],
+        matchesLen, owner;
 
     DocsApp.resetTempShownMembers();
 
@@ -2469,74 +2470,63 @@ DocsApp.showSearchHistory = function(e) {
 };
 
 DocsApp.getSearchList = function() {
-    var list      = DocsApp.appMeta.masterSearchList,
-        apiSearch = DocsApp.apiSearch,
-        itemTpl   = '{0}-{1}`';
+    var list = DocsApp.appMeta.masterSearchList,
+        itemTpl = '{0}-{1}`';
 
     if (!list) {
         list = '';
+        ExtL.each(DocsApp.apiSearch, function (i, cls) {  // iterate over each class object
+            var missingAccessors = [],              // collect up any missing auto-generated accessors to be added to the class object
+                composite;
 
-        for (prop in apiSearch) {
-            if (!apiSearch.hasOwnProperty(prop)) {
-                continue;
-            }
+            ExtL.each(cls, function (key, obj) {    // inspect each member - could be the class name, alias, or a class member object
+                var memberName, cap;
 
-            var cls = apiSearch[prop], missingAccessors = [], composite;
-
-            for (key in cls) {
-                if (!cls.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                var classKey = cls[key], memberName, cap;
-
-                if (key === 'n') { // this is the class name
-                    list += ExtL.format(itemTpl, key, classKey);
-                }else if (key === 'g') {           // this is any alternate class names
-                    for (innerestprop in classKey) {
-                        if (!classKey.hasOwnProperty(innerestprop)) {
-                            continue;
-                        }
-
-                        list += ExtL.format(itemTpl, innerestprop, classKey[innerestprop]);
-                    }
-                }  else if (key === 't') {           // this is the toolkit
+                if (key === 'n') {                  // this is the class name
+                    list += ExtL.format(itemTpl, i, obj);
+                } else if (key === 'g') {           // this is any alternate class names
+                    ExtL.each(obj, function (x) {
+                        list += ExtL.format(itemTpl, i, obj);
+                    });
+                } else if (key === 't') {           // this is the toolkit
                     // and we want to skip doing anything with it
                 } else if (key === 'x') {           // this is any aliases found for the class
-                    for (innerestprop in classKey) {
-                        if (!classKey.hasOwnProperty(innerestprop)) {
-                            continue;
-                        }
-
-                        list += ExtL.format(itemTpl, innerestprop, classKey[innerestprop]);
-                    }
+                    ExtL.each(obj, function (obj) {
+                        list += ExtL.format(itemTpl, i, obj);
+                    });
                 } else if (key !== 'a') {                            // else this is a member object
-                    //list += ExtL.format(itemTpl, i, key);
+                    list += ExtL.format(itemTpl, i, key);
 
                     composite = key.substr(0, key.indexOf('.')) + '.' + cls.n + '.' + key.substr(key.indexOf('.') + 1);
-                    list += ExtL.format(itemTpl, key, composite);
+                    list += ExtL.format(itemTpl, i, composite);
 
                     memberName = key.substr(key.indexOf('.') + 1);
                     cap = ExtL.capitalize(memberName);
 
-                    if (classKey.g) { // if this is an accessor
+                    if (obj.g) {                    // if this is an accessor
                         if (!cls['m.get' + cap]) { // if the getter doesn't exist already
                             missingAccessors.push('get' + cap);
-                            list += ExtL.format(itemTpl, key, 'm.get' + cap);
+                            list += ExtL.format(itemTpl, i, 'm.get' + cap);
                         }
                         if (!cls['m.set' + cap]) { // if the setter doesn't exist already
                             missingAccessors.push('set' + cap);
-                            list += ExtL.format(itemTpl, key, 'm.set' + cap);
+                            list += ExtL.format(itemTpl, i, 'm.set' + cap);
                         }
                     }
                 }
-            }
+            });
 
-        }
+            // add each missing accessor method to the class object
+            // as a public setter / getter
+            ExtL.each(missingAccessors, function (accessor) {
+                cls['m.' + accessor] = {
+                    a: 'p'
+                };
+            });
+        });
 
         DocsApp.appMeta.masterSearchList = list;
     }
-
     return list;
 };
 
@@ -2552,18 +2542,17 @@ DocsApp.hideSearchHistory = function() {
  * @method searchFilter
  */
 DocsApp.searchFilter = function(e) {
-    var results = [],
-        hits = [],
-        hasApi   = DocsApp.meta.hasApi,
-        hasGuide = DocsApp.meta.hasGuides,
-        myToolkit = DocsApp.meta.toolkit,
+    var results     = [], hits = [],
+        hasApi      = DocsApp.meta.hasApi,
+        hasGuide    = DocsApp.meta.hasGuides,
         searchField = ExtL.get('searchtext'),
-        value = searchField.value,
-        forceExact = /^".+"$/.test(value),
-        unique = [],
-        catalog = {},
-        mButton = ExtL.get('modern-search-filter'),
-        cButton = ExtL.get('classic-search-filter'),
+        value       = searchField.value,
+        forceExact  = /^".+"$/.test(value),
+        unique      = [],
+        catalog     = {},
+        mButton     = ExtL.get('modern-search-filter'),
+        cButton     = ExtL.get('classic-search-filter'),
+        myToolkit   = DocsApp.meta.toolkit,
         searchList, keyCode, result, rx, re, item, match,
         filterClassic, filterModern, classObj, matchStr;
 
@@ -2609,9 +2598,6 @@ DocsApp.searchFilter = function(e) {
 
         rx = new RegExp('(\\d+\\D?)(?:-)([$a-zA-Z0-9\\.\-]*' + value.replace(/"/g, '') + '[a-zA-Z0-9\\.\-]*)(?:`)', 'gi');
 
-        //console.log('Search filter');
-        //console.log(searchList);
-
         while ((result = rx.exec(searchList))) {
             classObj = DocsApp.apiSearch[result[1]];
             matchStr = result[2];
@@ -2630,14 +2616,13 @@ DocsApp.searchFilter = function(e) {
             if (!forceExact || (forceExact && value.replace(/"/g, '').toLowerCase() === matchStr.toLowerCase())) {
                 // if the product has toolkits check against the toolkit filter before
                 // returning the result
-                /*if (myToolkit) {
+                if (myToolkit) {
                     if ((classObj.t === 'modern' && filterModern) || (classObj.t === 'classic' && filterClassic)) {
                         results.push(item);
                     }
                 } else {
                     results.push(item);
-                }*/
-                results.push(item);
+                }
             }
         }
 
@@ -2646,9 +2631,9 @@ DocsApp.searchFilter = function(e) {
         // Strip out any duplicate entries from the search results
         ExtL.each(apiSearchRecords, function (rec) {
             var name = rec.classObj.n,
-            type = rec.memberType,
-            member = rec.sortValue,
-            toolkit;
+                type = rec.memberType,
+                member = rec.sortValue,
+                toolkit;
 
             if (rec.byClassMember !== true) {
                 toolkit = rec.classObj.t || 'u';
@@ -2675,13 +2660,11 @@ DocsApp.searchFilter = function(e) {
     }
 
     // NEXT WE'LL FOCUS ON THE GUIDE SEARCH STUFF
-
     if (hasGuide) {
         re = new RegExp(value.replace('$', '\\$').replace(/"/g, ''), 'i');
 
-        ExtL.each(DocsApp.guideSearch[0].searchWords, function (results) {
-
-            ExtL.each(results, function (key, val) {
+        ExtL.each(DocsApp.guideSearch, function (results) {
+            ExtL.each(results.searchWords, function (key, val) {
                 match = key.match(re);
                 if (match) {
                     ExtL.each(val, function (item) {
@@ -4109,13 +4092,16 @@ ExtL.bindReady(function () {
         DocsApp.copyRelatedClasses();
 
         memberFilterField.oninput = function (e) {
-            filter(DocsApp.getEventTarget(e));
+            e = e || window.event;
+            filter(e, e.target || e.srcElement);
         };
         memberFilterField.onkeyup = function (e) {
-            filter(DocsApp.getEventTarget(e));
+            e = e || window.event;
+            filter(e, e.target || e.srcElement);
         };
         memberFilterField.onchange = function (e) {
-            filter(DocsApp.getEventTarget(e));
+            e = e || window.event;
+            filter(e, e.target || e.srcElement);
         };
     }
 

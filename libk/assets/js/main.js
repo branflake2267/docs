@@ -379,14 +379,15 @@ DocsApp.getNodeHref = function (node) {
 DocsApp.toggleTreeNodes = function() {
     var me        = this,
         navTree   = DocsApp.navTree,
-        collapsed = ExtL.hasCls(me, 'fa-minus');
+        indicator = ExtL.get('toggle-indicator'),
+        collapsed = ExtL.hasCls(indicator, 'fa-minus');
 
     navTree.toggleCollapseAll(collapsed);
 
     me.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Classes');
 
-    ExtL.toggleCls(me, 'fa-minus');
-    ExtL.toggleCls(me, 'fa-plus');
+    ExtL.toggleCls(indicator, 'fa-minus');
+    ExtL.toggleCls(indicator, 'fa-plus');
 };
 
 /**
@@ -408,9 +409,15 @@ DocsApp.toggleTreeVisibility = function() {
  * @param {Boolean} visible false to hide - defaults to true
  */
 DocsApp.setTreeVisibility = function(visible) {
+    var tree = ExtL.get('hide-class-tree');
+
     visible = (visible !== false);
+
     ExtL.toggleCls(document.body, 'tree-hidden', !visible);
     ExtL.toggleCls(document.body, 'tree-shown', visible);
+
+    ExtL.toggleCls(tree, 'fa-caret-left');
+    ExtL.toggleCls(tree, 'fa-caret-right');
 
     DocsApp.saveState();
 };
@@ -562,9 +569,9 @@ DocsApp.onCodeFiddleClick = function(e) {
  */
 DocsApp.onBeautifyClick = function(e) {
     e = e || window.event;
-    var code = e.target || e.srcElement,
-        wrap = ExtL.up(code, '.da-inline-code-wrap'),
-        editor = ace.edit(wrap.querySelector('.ace-ct').id),
+    var code       = e.target || e.srcElement,
+        wrap       = ExtL.up(code, '.da-inline-code-wrap'),
+        editor     = ace.edit(wrap.querySelector('.ace-ct').id),
         beautified = js_beautify(editor.getValue());
 
     editor.setValue(beautified.toString(), -1);
@@ -2789,7 +2796,7 @@ DocsApp.clearHistory = function() {
         historyBtns  = ExtL.fromNodeList(ExtL.get('history-nav').querySelectorAll('.history-btn'));
 
     if (ExtL.canLocalStorage()) {
-        getState().history = [];
+        DocsApp.getState().history = [];
         DocsApp.saveState();
     }
 

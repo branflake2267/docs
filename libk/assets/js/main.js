@@ -990,16 +990,19 @@ DocsApp.onToggleHistoryLabels = function() {
  * code / fiddle blocks
  */
 DocsApp.toggleExamples = function(collapse) {
-    var body = document.querySelector('body'),
+    var body        = document.querySelector('body'),
+        symbText    = ExtL.get('toggleExamples'),
         collapseCls = 'collapse-code-all',
-        collapsed = ExtL.hasCls(body, collapseCls),
-        doCollapse = ExtL.isEmpty(collapse) ? !collapsed : collapse,
-        action = doCollapse ? 'addCls' : 'removeCls';
+        collapsed   = ExtL.hasCls(body, collapseCls),
+        doCollapse  = ExtL.isEmpty(collapse) ? !collapsed : collapse,
+        action      = doCollapse ? 'addCls' : 'removeCls';
 
     ExtL[action](body, collapseCls);
     ExtL.each(ExtL.fromNodeList(document.getElementsByClassName('example-collapse-target')), function (ex) {
         ExtL[action](ex, 'example-collapsed');
     });
+
+    symbText.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Examples');
 };
 
 /**
@@ -1153,15 +1156,18 @@ DocsApp.setTypeNavAndHeaderVisibility = function() {
 DocsApp.onToggleAllClick = function() {
     var memberList  = ExtL.fromNodeList(document.querySelectorAll('.classmembers')),
         symbText    = ExtL.get('toggleAll'),
-        isCollapsed = ExtL.hasCls(symbText, 'fa-plus'),
-        itemAction  = isCollapsed ? 'addCls' : 'removeCls';
+        indicator   = ExtL.get('toggle-members-indicator'),
+        collapsed   = ExtL.hasCls(indicator, 'fa-minus'),
+        itemAction  = collapsed ? 'addCls' : 'removeCls';
 
     ExtL.each(memberList, function (item) {
         ExtL[itemAction](item, 'member-expanded');
     });
 
-    ExtL.removeCls(symbText, isCollapsed ? 'fa-plus' : 'fa-minus');
-    ExtL.addCls(symbText, isCollapsed ? 'fa-minus' : 'fa-plus');
+    symbText.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Members');
+
+    ExtL.toggleCls(indicator, 'fa-minus');
+    ExtL.toggleCls(indicator, 'fa-plus');
 };
 
 /**
@@ -1744,11 +1750,9 @@ DocsApp.dispatchClick = function(coords){
  * @param fn
  */
 DocsApp.addEventsAndSetMenuClose = function(item, event, menuClose, fn) {
-    var menuCanClose = DocsApp.appMeta.menuCanClose;
-
     ExtL.on(item, event, function() {
         if (menuClose != null) {
-            menuCanClose = menuClose;
+            DocsApp.appMeta.menuCanClose = menuClose;
         }
 
         if (fn) {
@@ -1761,10 +1765,9 @@ DocsApp.addEventsAndSetMenuClose = function(item, event, menuClose, fn) {
  * @method hideMemberTypeMenu
  */
 DocsApp.hideMemberTypeMenu = function() {
-    var menu         = DocsApp.getMemberTypeMenu(),
-        menuCanClose = DocsApp.appMeta.menuCanClose;
+    var menu = DocsApp.getMemberTypeMenu();
 
-    if (menuCanClose) {
+    if (DocsApp.appMeta.menuCanClose) {
         ExtL.removeCls(menu, 'show-menu');
     }
 };
@@ -1775,7 +1778,7 @@ DocsApp.hideMemberTypeMenu = function() {
 DocsApp.showMemberTypeMenu = function(e) {
     e = e || window.event;
     var menu        = DocsApp.getMemberTypeMenu(),
-        target = e.target || e.srcElement,
+        target      = e.target || e.srcElement,
         membersBox  = ExtL.get('class-body-wrap').getBoundingClientRect(),
         height      = (membersBox.bottom - membersBox.top) - 4,
         maxWidth    = (membersBox.right - membersBox.left) - 4,
@@ -2102,8 +2105,7 @@ DocsApp.onMemberCollapseToggleClick = function(collapseEl) {
  * @param e
  */
 DocsApp.onMemberTypeMenuClick = function(e) {
-    var target,
-        menuCanClose = DocsApp.appMeta.menuCanClose;
+    var target;
 
     e = DocsApp.getEvent(e);
     target = DocsApp.getEventTarget(e);
@@ -4039,7 +4041,7 @@ DocsApp.initEventHandlers = function () {
 
     // Setup multi-src click handler
     ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.multi-src-btn')), function (item) {
-        ExtL.on(item, 'click', showMultiSrcPanel);
+        ExtL.on(item, 'click', DocsApp.showMultiSrcPanel);
     });
 
     // handle the following of a link in the member type menu

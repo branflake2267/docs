@@ -277,7 +277,8 @@ DocsApp.appMeta = {
     searchHistory    : [],
     pos              : {},
     firefox          : (navigator.userAgent.indexOf("firefox") !== -1),
-    ios              : (navigator.userAgent.indexOf("Macintosh") !== -1 && navigator.userAgent.indexOf("WebKit") !== -1)
+    ios              : (navigator.userAgent.indexOf("Macintosh") !== -1 && navigator.userAgent.indexOf("WebKit") !== -1),
+    apiSearchRecords : null
 };
 
 /**
@@ -1180,7 +1181,7 @@ DocsApp.onToggleAllClick = function() {
         symbText    = ExtL.get('toggleAll'),
         indicator   = ExtL.get('toggle-members-indicator'),
         collapsed   = ExtL.hasCls(indicator, 'fa-minus'),
-        itemAction  = collapsed ? 'addCls' : 'removeCls';
+        itemAction  = collapsed ? 'removeCls' : 'addCls';
 
     ExtL.each(memberList, function (item) {
         ExtL[itemAction](item, 'member-expanded');
@@ -1231,7 +1232,7 @@ DocsApp.saveState = function() {
         pageType             = DocsApp.getPageType(),
         product              = DocsApp.meta.prodObj.title,
         pversion             = DocsApp.meta.version,
-        text                 = DocsApp.meta.myId,
+        text                 = DocsApp.meta.pageName,
         title                = text,
         activeNavTab;
 
@@ -2144,10 +2145,11 @@ DocsApp.onMemberTypeMenuClick = function(e) {
  * @param page
  */
 DocsApp.loadApiSearchPage = function(page) {
-    var i     = 0,
+    var i = 0,
         pageSize = DocsApp.appMeta.pageSize,
         start = page * pageSize - pageSize,
-        ct    = DocsApp.getSearchResultsCt(),
+        apiSearchRecords = DocsApp.appMeta.apiSearchRecords,
+        ct = DocsApp.getSearchResultsCt(),
         apiCt = ExtL.get('api-search-results'),
         value = ExtL.get('searchtext').value,
         rec, access, el, cn, re, matchEl, href, meta;
@@ -2160,7 +2162,7 @@ DocsApp.loadApiSearchPage = function(page) {
     ExtL.removeChildNodes(apiCt);
 
     apiCt.appendChild(ExtL.createElement({
-        "class": 'search-results-nav-header dn',
+        "class": 'search-results-nav-header',
         cn: [{
             "class": 'active-tab',
             html: 'API Docs'
@@ -2170,7 +2172,7 @@ DocsApp.loadApiSearchPage = function(page) {
     }));
 
     apiCt.appendChild(ExtL.createElement({
-        "class": 'search-results-header tc pa2 bb b--silver ttu b bg-light-gray black-70 tracked f6',
+        "class": 'search-results-header',
         html: 'API Docs'
     }));
 
@@ -2209,7 +2211,6 @@ DocsApp.loadApiSearchPage = function(page) {
             });
 
             href = rec.classObj.n + '.html';
-            //href = homePath + (rec.classObj.t || 'api') + '/' + href;
             href = DocsApp.meta.rootPath + (rec.classObj.t || 'api') + '/' + href;
 
             if (rec.byClassMember) {
@@ -2231,6 +2232,22 @@ DocsApp.loadApiSearchPage = function(page) {
             });
 
             apiCt.appendChild(el);
+        }
+    }
+
+    DocsApp.addSearchPagingToolbar(apiCt, apiSearchRecords, page);
+
+    re = new RegExp('(' + value.replace('$', '\\$').replace(/"/g, '') + ')', 'ig');
+
+    for (i = 0; i < apiCt.childNodes.length; i++) {
+        matchEl = apiCt.childNodes.item(i).querySelector('.search-match');
+        matchSrc = apiCt.childNodes.item(i).querySelector('.search-source');
+
+        if (matchEl) {
+            matchEl.innerHTML = (matchEl.textContent || matchEl.innerText).replace(re, '<strong>$1</strong>');
+        }
+        if (matchSrc) {
+            matchSrc.innerHTML = (matchSrc.textContent || matchSrc.innerText).replace(re, '<strong>$1</strong>');
         }
     }
 };
@@ -2324,8 +2341,9 @@ DocsApp.loadGuideSearchPage = function(page) {
  * @param page
  */
 DocsApp.addSearchPagingToolbar = function(ct, records, page) {
-    var isApi    = DocsApp.getPageType() === 'api',
-        rowCount = ct.querySelectorAll(isApi ? '.search-item' : '.guide-search-item').length;
+    var isApi    = ct.id === 'api-search-results',
+        rowCount = ct.querySelectorAll(isApi ? '.search-item' : '.guide-search-item').length,
+        pageSize = DocsApp.appMeta.pageSize;
 
     if (rowCount) {
         // check to see if we have more results than we can display with the results
@@ -2350,9 +2368,9 @@ DocsApp.addSearchPagingToolbar = function(ct, records, page) {
             }));
         }
         if (isApi) {
-            DocsApp.currentApiPage = page;
+            DocsApp.appMeta.currentApiPage = page;
         } else {
-            DocsApp.currentGuidePage = page;
+            DocsApp.appMeta.currentGuidePage = page;
         }
     } else {
         ct.appendChild(ExtL.createElement({
@@ -2462,8 +2480,7 @@ DocsApp.hideMobileSearch = function() {
 };
 
 DocsApp.showSearchHistory = function(e) {
-    e = e || window.event;
-    var target = e.target || e.srcElement,
+    var target = DocsApp.getEventTarget(e),
     value = target.value,
     panel, field, fieldBox;
 
@@ -2651,10 +2668,10 @@ DocsApp.searchFilter = function(e) {
             }
         }
 
-        apiSearchRecords = DocsApp.prepareApiSearchRecords(results);    // save this up so it can be used ad hoc
+        DocsApp.appMeta.apiSearchRecords = DocsApp.prepareApiSearchRecords(results);    // save this up so it can be used ad hoc
 
         // Strip out any duplicate entries from the search results
-        ExtL.each(apiSearchRecords, function (rec) {
+        ExtL.each(DocsApp.appMeta.apiSearchRecords, function (rec) {
             var name = rec.classObj.n,
                 type = rec.memberType,
                 member = rec.sortValue,
@@ -2681,7 +2698,7 @@ DocsApp.searchFilter = function(e) {
             }
         });
 
-        apiSearchRecords = unique;
+        DocsApp.appMeta.apiSearchRecords = unique;
     }
 
     // NEXT WE'LL FOCUS ON THE GUIDE SEARCH STUFF
@@ -3196,7 +3213,10 @@ DocsApp.onSearchTab = function() {
  * @param e
  */
 DocsApp.onResultsCtClick = function(e) {
-    var target, counter, item;
+    var apiSearchRecords = DocsApp.appMeta.apiSearchRecords,
+        pageSize = DocsApp.appMeta.pageSize,
+        target, counter, item;
+
         e = e || window.event;
         target  = e.target || e.srcElement;
         counter = ExtL.up(target, '#api-search-results') ? DocsApp.appMeta.currentApiPage : DocsApp.appMeta.currentGuidePage;

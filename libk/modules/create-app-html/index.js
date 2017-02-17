@@ -118,7 +118,7 @@ class HtmlApp extends AppBase {
             root        = options._myRoot,
             assetsSrc   = Path.join(root, 'assets'),
             mainCss     = Path.join(assetsSrc, 'css/main.css'),
-            tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css'),
+            //tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css'),
             faCss       = Path.join(assetsSrc, 'css/docs-fonts.css'),
             css         = new CleanCSS({
                 compatibility : 'ie9',
@@ -146,7 +146,7 @@ class HtmlApp extends AppBase {
                 }
             }).minify([
                 faCss,       // font awesome styles
-                tachyonsCss, // the tachyons CSS base
+                //tachyonsCss, // the tachyons CSS base
                 mainCss      // app-specific styling / overrides
             ]);
 

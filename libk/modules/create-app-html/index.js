@@ -38,12 +38,12 @@ class HtmlApp extends AppBase {
      * Default entry point for this module
      */
     run () {
-        /*super.run()
+        super.run()
         .then(this.outputProductHomePage.bind(this))
-        .catch(this.error.bind(this));*/
-
-        this.outputProductHomePage()
         .catch(this.error.bind(this));
+
+        /*this.outputProductHomePage()
+        .catch(this.error.bind(this));*/
 
         // TODO create a product home page
         // TODO create a Landing page class (if a CLI param is passed - or can be called directly, of course)

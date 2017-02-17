@@ -162,6 +162,16 @@ class Base {
     }
 
     /**
+     * 
+     */
+    get uniqueId () {
+        if (!this._rollingId) {
+            this._rollingId = 0;
+        }
+        return `s-${this._rollingId++}`;
+    }
+
+    /**
      * Returns common metadata needed by app pages
      * @return {Object} Hash of common current page metadata
      */

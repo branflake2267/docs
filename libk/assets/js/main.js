@@ -515,9 +515,7 @@ DocsApp.applyAceEditors = function() {
  * @param {Event} e The click event
  */
 DocsApp.onRunFiddleClick = function(e) {
-    e = e || window.event;
-
-    var fiddle = e.target || e.srcElement,
+    var fiddle = DocsApp.getEventTarget(e),
         wrap   = ExtL.up(fiddle, '.da-inline-code-wrap'),
         editor = ace.edit(wrap.querySelector('.ace-ct').id),
         code   = editor.getValue(),
@@ -628,11 +626,13 @@ DocsApp.runFiddleExample = function(wrap) {
         meta      = JSON.parse(wrap.getAttribute('data-fiddle-meta')),
         intro     = "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
         outro     = "}\n});",
+        pageName  = DocsApp.meta.myId,
         iframe    = DocsApp.getIFrame(wrap),
+        pversion  = DocsApp.meta.version,
         dash      = (pversion && pversion.indexOf('-') > -1),
         myToolkit = (meta.toolkit) ? meta.toolkit : myToolkit,
         toolkit   = (myToolkit && dash) ? meta.toolkit : myToolkit,
-        myVer     = myVersion.split('.'),
+        myVer     = pversion.split('.'),
         majorVer  = parseInt(myVer[0], 10),
         minorVer  = parseInt(myVer[1], 10),
         canPackage = (majorVer >= 6 && minorVer >= 2),
@@ -874,9 +874,9 @@ DocsApp.runFiddleExample = function(wrap) {
         }
     }
 
-    form = buildForm(iframe.id, data);
+    form = DocsApp.buildForm(iframe.id, data);
     mask = wrap.appendChild(ExtL.createElement({
-        "class": 'fiddle-mask'
+        "class": 'fiddle-mask absolute absolute--fill bg-light-gray'
     }));
 
     if (!ExtL.isIE8() && !ExtL.isIE9()) {
@@ -900,7 +900,7 @@ DocsApp.runFiddleExample = function(wrap) {
  * Progressive ID generator
  * @param {String} prefix String to prepend to the ID.  Default to 'e-'.
  */
-function id (prefix) {
+DocsApp.id = function (prefix) {
     prefix = prefix || 'e-';
     DocsApp.appMeta.internalId++;
     return prefix + DocsApp.appMeta.internalId;
@@ -920,6 +920,7 @@ DocsApp.getIFrame = function(wrap) {
         iframe = document.createElement('iframe');
 
         iframe.id = iframe.name = DocsApp.id(); //needs to be unique on whole page
+        iframe.className = 'h-100 w-100 top-0 relative ba b--black-20 dn';
 
         wrap.appendChild(iframe);
     }
@@ -1208,7 +1209,7 @@ DocsApp.saveState = function() {
         state                = DocsApp.getState() || {},
         pageType             = DocsApp.getPageType(),
         product              = DocsApp.meta.prodObj.title,
-        pversion             = DocsApp.meta.prodObj.currentVersion,
+        pversion             = DocsApp.meta.version,
         text                 = DocsApp.meta.myId,
         title                = text,
         activeNavTab;
@@ -1677,10 +1678,9 @@ var filter = ExtL.createBuffered(function (e, target) {
  * @param e
  */
 DocsApp.filterMember = function(e) {
-    //e = DocsApp.getEvent(e);
-    e = e || window.event;
+    var event = DocsApp.getEvent(e),
+        target = DocsApp.getEventTarget(e);
 
-    var target = e.target || e.srcElement;
     filter(e, target);
 };
 

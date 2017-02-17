@@ -204,35 +204,35 @@ class AppBase extends SourceGuides {
      * @return {String} The decorated guide body HTML
      */
     decorateExamples (html) {
-        //let fiddleWrap = '<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target" id="{2}" data-fiddle-meta=\'{3}\'>' +
-        let fiddleWrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" data-fiddle-meta='{1}'>
-                    <div class="da-inline-fiddle-nav relative bg-near-white ba b--light-gray">
+        let fiddleWrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{2}" data-fiddle-meta='{1}'>
+                    <div class="da-inline-fiddle-nav relative bg-near-white ba b--black-05">
                         <div class="code-controls dib bg-transparent ma0 near-black pt2 b relative overflow-visible">
-                            <span class="collapse-tool fa fa-caret-up mr2 bg-transparent lh-copy f3 ph2 relative br2 b pointer v-mid z-1 dark-gray"></span>
-                            <span class="expand-tool fa fa-caret-down mr2 bg-transparent lh-copy f3 ph2 relative br2 b pointer v-mid z-1 dark-gray dn"></span>
-                            <span class="expand-code dark-gray b lh-copy f6 dn">Expand Code</span>
+                            <span class="collapse-tool fa fa-caret-up mr2 bg-transparent lh-copy f4 ph2 mb2 ml2 relative br2 b pointer v-mid z-0 dark-gray"></span>
+                            <span class="expand-tool fa fa-caret-down mr2 bg-transparent lh-copy f4 ph1 ml2 relative br2 b pointer v-mid z-1 dark-gray dn"></span>
+                            <span class="expand-code dark-gray b lh-copy f6 v-mid dn">Expand Code</span>
                         </div>
-                        <span class="da-inline-fiddle-nav-code da-inline-fiddle-nav-active pa2 tracked f6">
-                            <span class="fa fa-code"></span>
+                        <span class="da-inline-fiddle-nav-code da-inline-fiddle-nav-active pv2 ph3 tracked f6 ba b--black-20 bg-white-50 blue">
+                            <span class="fa fa-code f5"></span>
                             Code
                         </span><!--
-                        --><span class="da-inline-fiddle-nav-fiddle blue bg-near-white pa2 tracked pointer bl bt br b--gray f6">
-                            <span class="fiddle-icon-wrap overflow-hidden relative dib v-mid">
-                                <span class="fa fa-play-circle blue">
-                                </span><span class="fa fa-refresh blue dn"></span>
+                        --><span class="da-inline-fiddle-nav-fiddle blue bg-near-white pv2 ph3 tracked pointer bl bt br b--black-20 f6">
+                            <span class="fiddle-icon-wrap overflow-hidden relative dib v-mid w1 h1">
+                                <span class="fa fa-play-circle f5 absolute left-0 top-0">
+                                </span><span class="fa fa-refresh f5 absolute left-0"></span>
                             </span>
                             Run
                         </span>
                         <span class="fiddle-code-beautify tooltip tooltip-tr-br fa fa-indent bg-blue white relative dib br2 pointer pa1 ml3" data-beautify="Beautify Code"><div class="callout callout-b"></div></span>
                     </div>
-                    <div class="ace-ct ba b--light-gray z-0">{0}</div>
+                    <div id="{3}" class="ace-ct ba b--black-20 z-0">{0}</div>
                 </div>`,
-            out = html,
-            options = this.options,
-            prodObj = this.options.prodVerMeta.prodObj,
-            hasApi  = prodObj.hasApi,
-            version = hasApi && options.toolkit,
-            toolkit = hasApi && options.toolkit;
+            out         = html,
+            options     = this.options,
+            prodObj     = this.options.prodVerMeta.prodObj,
+            hasApi      = prodObj.hasApi,
+            hasVersions = prodObj.hasVersions,
+            version     = hasVersions && options.version,
+            toolkit     = hasApi && options.toolkit;
 
         let fidMeta = {
                 framework: prodObj.title, // either "Ext JS" or "Sencha Touch" as required by Fiddle
@@ -248,7 +248,7 @@ class AppBase extends SourceGuides {
             };
 
         // decorates @example blocks as inline fiddles
-        out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, function (match, meta, code) {
+        out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
             meta = meta.trim();
             code = code.trim();
 
@@ -268,7 +268,7 @@ class AppBase extends SourceGuides {
 
                         meta[key] = (key === 'framework' && mapped) ? mapped : val;
                     });
-                } else {
+                } else if (meta.includes('-')) {
                     // should be formatted like: framework-fullVersion-theme-toolkit
                     // e.g.: extjs-6.0.2-neptune-classic
                     let parts = meta.split('-');
@@ -280,10 +280,14 @@ class AppBase extends SourceGuides {
                 }
             }
 
-            return Utils.format(fiddleWrap, code, JSON.stringify(fidMeta));
+            let fiddleId = this.uniqueId,
+                aceCtId  = this.uniqueId,
+                metaObj  = JSON.stringify(fidMeta);
+
+            return Utils.format(fiddleWrap, code, metaObj, fiddleId, aceCtId);
         });
 
-        out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, function (match, code) {
+        out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, code) => {
             return `<pre><code class="language-javascript">${code}</code></pre>`;
         });
 

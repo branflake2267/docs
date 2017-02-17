@@ -302,8 +302,24 @@ DocsApp.initNavTree = function () {
         apiTree     = DocsApp.apiTree || {},
         guidesTree  = DocsApp.guidesTree || {},
         navTrees    = ExtL.assign({}, apiTree, guidesTree),
-        // the tree object for the current page
-        navTree     = navTrees[navTreeName];
+        navTree, guideKeys, apiKeys;
+
+    // the product home page likely will not have passed a navTreeName to determine which 
+    // nav tree to display so we'll grab the first guides or the first api name we find
+    if (DocsApp.meta.pageType === 'home' && !navTreeName) {
+        guideKeys = ExtL.keys(guidesTree);
+        apiKeys   = ExtL.keys(apiTree);
+        if (guideKeys.length) {
+            navTreeName = DocsApp.meta.navTreeName = guideKeys[0];
+        } else if (apiKeys.length) {
+            navTreeName = DocsApp.meta.navTreeName = apiKeys[0];
+        } else {
+            // TODO thrown an error
+        }
+    }
+
+    // the tree object for the current page
+    navTree = navTrees[navTreeName];
 
     // if a navigation tree is found for the current page
     if (navTree) {
@@ -313,9 +329,12 @@ DocsApp.initNavTree = function () {
         // create the tree
         DocsApp.buildNavTree(navTree);
         // select the node for the current page
-        DocsApp.navTree.select(id)
-            // and expand the tree to the selected node
-            .expandTo(id);
+
+        if (id) {
+            DocsApp.navTree.select(id)
+                // and expand the tree to the selected node
+                .expandTo(id);
+        }
 
         // next we gather up the tabs to be created at the top of the nav tree
         if (guidesTree) {
@@ -344,7 +363,7 @@ DocsApp.buildTreeNodeHref = function (node) {
     var href;
 
     if (node.href || node.link) {
-        href = node.link || (DocsApp.meta.rootPath + '/' + node.href);
+        href = node.link || (DocsApp.meta.rootPath  + node.href);
     }
 
     return href;
@@ -515,9 +534,7 @@ DocsApp.applyAceEditors = function() {
  * @param {Event} e The click event
  */
 DocsApp.onRunFiddleClick = function(e) {
-    e = e || window.event;
-
-    var fiddle = e.target || e.srcElement,
+    var fiddle = DocsApp.getEventTarget(e),
         wrap   = ExtL.up(fiddle, '.da-inline-code-wrap'),
         editor = ace.edit(wrap.querySelector('.ace-ct').id),
         code   = editor.getValue(),
@@ -628,11 +645,13 @@ DocsApp.runFiddleExample = function(wrap) {
         meta      = JSON.parse(wrap.getAttribute('data-fiddle-meta')),
         intro     = "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
         outro     = "}\n});",
+        pageName  = DocsApp.meta.myId,
         iframe    = DocsApp.getIFrame(wrap),
+        pversion  = DocsApp.meta.version,
         dash      = (pversion && pversion.indexOf('-') > -1),
         myToolkit = (meta.toolkit) ? meta.toolkit : myToolkit,
         toolkit   = (myToolkit && dash) ? meta.toolkit : myToolkit,
-        myVer     = myVersion.split('.'),
+        myVer     = pversion.split('.'),
         majorVer  = parseInt(myVer[0], 10),
         minorVer  = parseInt(myVer[1], 10),
         canPackage = (majorVer >= 6 && minorVer >= 2),
@@ -874,9 +893,9 @@ DocsApp.runFiddleExample = function(wrap) {
         }
     }
 
-    form = buildForm(iframe.id, data);
+    form = DocsApp.buildForm(iframe.id, data);
     mask = wrap.appendChild(ExtL.createElement({
-        "class": 'fiddle-mask'
+        "class": 'fiddle-mask absolute absolute--fill bg-light-gray'
     }));
 
     if (!ExtL.isIE8() && !ExtL.isIE9()) {
@@ -900,7 +919,7 @@ DocsApp.runFiddleExample = function(wrap) {
  * Progressive ID generator
  * @param {String} prefix String to prepend to the ID.  Default to 'e-'.
  */
-function id (prefix) {
+DocsApp.id = function (prefix) {
     prefix = prefix || 'e-';
     DocsApp.appMeta.internalId++;
     return prefix + DocsApp.appMeta.internalId;
@@ -920,6 +939,7 @@ DocsApp.getIFrame = function(wrap) {
         iframe = document.createElement('iframe');
 
         iframe.id = iframe.name = DocsApp.id(); //needs to be unique on whole page
+        iframe.className = 'h-100 w-100 top-0 relative ba b--black-20 dn';
 
         wrap.appendChild(iframe);
     }
@@ -1002,7 +1022,9 @@ DocsApp.toggleExamples = function(collapse) {
         ExtL[action](ex, 'example-collapsed');
     });
 
-    symbText.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Examples');
+    if (symbText) {
+        symbText.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Examples');
+    }
 };
 
 /**
@@ -1208,7 +1230,7 @@ DocsApp.saveState = function() {
         state                = DocsApp.getState() || {},
         pageType             = DocsApp.getPageType(),
         product              = DocsApp.meta.prodObj.title,
-        pversion             = DocsApp.meta.prodObj.currentVersion,
+        pversion             = DocsApp.meta.version,
         text                 = DocsApp.meta.myId,
         title                = text,
         activeNavTab;
@@ -1678,10 +1700,9 @@ var filter = ExtL.createBuffered(function (e, target) {
  * @param e
  */
 DocsApp.filterMember = function(e) {
-    //e = DocsApp.getEvent(e);
-    e = e || window.event;
+    var event = DocsApp.getEvent(e),
+        target = DocsApp.getEventTarget(e);
 
-    var target = e.target || e.srcElement;
     filter(e, target);
 };
 
@@ -2139,7 +2160,7 @@ DocsApp.loadApiSearchPage = function(page) {
     ExtL.removeChildNodes(apiCt);
 
     apiCt.appendChild(ExtL.createElement({
-        "class": 'search-results-nav-header',
+        "class": 'search-results-nav-header dn',
         cn: [{
             "class": 'active-tab',
             html: 'API Docs'
@@ -2149,7 +2170,7 @@ DocsApp.loadApiSearchPage = function(page) {
     }));
 
     apiCt.appendChild(ExtL.createElement({
-        "class": 'search-results-header',
+        "class": 'search-results-header tc pa2 bb b--silver ttu b bg-light-gray black-70 tracked f6',
         html: 'API Docs'
     }));
 
@@ -2188,7 +2209,8 @@ DocsApp.loadApiSearchPage = function(page) {
             });
 
             href = rec.classObj.n + '.html';
-            href = homePath + (rec.classObj.t || 'api') + '/' + href;
+            //href = homePath + (rec.classObj.t || 'api') + '/' + href;
+            href = DocsApp.meta.rootPath + (rec.classObj.t || 'api') + '/' + href;
 
             if (rec.byClassMember) {
                 if (rec.searchMatch[0] === 'z') {
@@ -2265,9 +2287,11 @@ DocsApp.loadGuideSearchPage = function(page) {
             }
 
             if (item.prod === 'cmd') {
-                href = homePath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
+                //href = homePath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
+                href = DocsApp.meta.rootPath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
             } else {
-                href = homePath + 'guides/' + item.searchUrls[item.r] + '.html';
+                //href = homePath + 'guides/' + item.searchUrls[item.r] + '.html';
+                href = DocsApp.meta.rootPath + 'guides/' + item.searchUrls[item.r] + '.html';
             }
 
             guideCt.appendChild(ExtL.createElement({
@@ -2475,6 +2499,7 @@ DocsApp.getSearchList = function() {
 
     if (!list) {
         list = '';
+        
         ExtL.each(DocsApp.apiSearch, function (i, cls) {  // iterate over each class object
             var missingAccessors = [],              // collect up any missing auto-generated accessors to be added to the class object
                 composite;
@@ -2561,7 +2586,7 @@ DocsApp.searchFilter = function(e) {
         filterModern  = ExtL.hasCls(mButton, 'active');
     }
 
-    e = e || window.event;
+    e = DocsApp.getEvent(e);
 
     if (e && e.type === 'keydown' && value.length) {
         keyCode = e.keyCode || e.which;
@@ -3616,8 +3641,6 @@ DocsApp.prepareApiSearchRecords = function(results) {
         }
     });
 
-    console.log(results);
-
     return DocsApp.sortSearchItems(results);
 };
 
@@ -3647,9 +3670,10 @@ DocsApp.sortSearchItems = function(items) {
  * @method getSearchResultsCt
  */
 DocsApp.getSearchResultsCt = function() {
-    var ct       = ExtL.get('search-results-ct'),
-        hasApi   = DocsApp.meta.hasApi,
-        hasGuide = DocsApp.meta.hasGuides,
+    var ct            = ExtL.get('search-results-ct'),
+        hasApi        = DocsApp.meta.hasApi,
+        hasGuide      = DocsApp.meta.hasGuides,
+        resultsDivCls = 'bl bb bt b--blue bg-white fl relative',
         cn;
 
     if (!ct) {
@@ -3658,19 +3682,21 @@ DocsApp.getSearchResultsCt = function() {
         }
         if (hasGuide) {
             cn.push({
-                id: 'guide-search-results',
-                "class": 'isHidden'
+                id      : 'guide-search-results',
+                "class" : resultsDivCls + 'isHidden'
             });
         }
         if (hasApi) {
             cn.push({
-                id: 'api-search-results'
+                id      : 'api-search-results',
+                "class" : resultsDivCls
             });
         }
         ct = ExtL.createElement({
-            tag: 'span',
-            id: 'search-results-ct',
-            cn: cn
+            tag     : 'span',
+            id      : 'search-results-ct',
+            "class" : 'fixed dn z-3 shadow-4',
+            cn      : cn
         });
         document.body.appendChild(ct);
     }

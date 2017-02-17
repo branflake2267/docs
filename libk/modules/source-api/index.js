@@ -291,7 +291,7 @@ class SourceApi extends Base {
             Object.assign(meta, {
                 navTreeName : 'API',
                 myId        : data.cls.name,
-                rootPath    : '..',
+                rootPath    : '../',
                 pageType    : 'api'
             });
         }
@@ -774,16 +774,16 @@ class SourceApi extends Base {
      * supplying it to the template
      */
     processApiDataObject (data) {
-        let options  = this.options,
-            apiDir   = this.apiDir;
+        let apiDir   = this.apiDir;
 
         data.cssPath    = Path.relative(apiDir, this.cssDir);
         data.jsPath     = Path.relative(apiDir, this.jsDir);
         data.imagesPath = Path.relative(apiDir, this.imagesDir);
-        data.product    = this.getProduct(options.product);
-        data.version    = options.version;
+        //data.product    = this.getProduct(options.product);
+        //data.version    = options.version;
         data.myMeta     = this.getApiMetaData(data);
         data.isApi      = true;
+        this.processCommonDataObject(data);
     }
 
     /**
@@ -1315,7 +1315,7 @@ class SourceApi extends Base {
                     j             = 0,
                     namesLength   = altClassNames.length;
                 
-                searchIndex[key].g = classNames;
+                searchIndex[key].g = altClassNames;
 
                 for (; j < namesLength; j++) {
                     let altName = altClassNames[j];

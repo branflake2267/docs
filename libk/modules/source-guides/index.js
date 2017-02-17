@@ -228,7 +228,7 @@ class SourceGuides extends SourceApi {
             Object.assign(meta, {
                 navTreeName : data.navTreeName,
                 myId        : data.id,
-                rootPath    : Path.relative(data.rootPath, this.outputProductDir),
+                rootPath    : Path.relative(data.rootPath, this.outputProductDir) + '/',
                 pageType    : 'guide'
             });
         }

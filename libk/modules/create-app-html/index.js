@@ -40,6 +40,7 @@ class HtmlApp extends AppBase {
     run () {
         super.run()
         .then(this.outputProductHomePage.bind(this))
+        .then(this.outputMainLandingPage.bind(this))
         .catch(this.error.bind(this));
 
         /*this.outputProductHomePage()
@@ -85,7 +86,7 @@ class HtmlApp extends AppBase {
             Object.assign(meta, {
                 //navTreeName : 'API',
                 //myId        : data.cls.name,
-                rootPath    : '..',
+                rootPath    : '',
                 pageType    : 'home'
             });
         }
@@ -404,7 +405,6 @@ class HtmlApp extends AppBase {
                 version = options.version,
                 homeConfig = this.getFileByVersion(prodTplPath, version),
                 homePath = Path.join(prodTplPath, homeConfig),
-                //partialName = '_product-home',
                 dest = Path.join(this.outputProductDir, 'index.html');
 
             let data = Fs.readJsonSync(homePath);
@@ -415,7 +415,6 @@ class HtmlApp extends AppBase {
             data.contentPartial = '_product-home';
 
             this.processHomeDataObject(data);
-            //this.registerPartial(partialName, partialPath);
 
             let html = this.mainTemplate(data);
 
@@ -424,13 +423,15 @@ class HtmlApp extends AppBase {
                 
                 resolve();
             });
+        });
+    }
 
-            /*Handlebars.compile(
-                Fs.readFileSync(
-                    Path.join(this.options._myRoot, 'templates/html-main.hbs'),
-                    'utf-8'
-                )
-            );*/
+    /**
+     * 
+     */
+    outputMainLandingPage () {
+        return new Promise((resolve, reject) => {
+            resolve();
         });
     }
 }

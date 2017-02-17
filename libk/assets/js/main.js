@@ -302,8 +302,24 @@ DocsApp.initNavTree = function () {
         apiTree     = DocsApp.apiTree || {},
         guidesTree  = DocsApp.guidesTree || {},
         navTrees    = ExtL.assign({}, apiTree, guidesTree),
-        // the tree object for the current page
-        navTree     = navTrees[navTreeName];
+        navTree, guideKeys, apiKeys;
+
+    // the product home page likely will not have passed a navTreeName to determine which 
+    // nav tree to display so we'll grab the first guides or the first api name we find
+    if (DocsApp.meta.pageType === 'home' && !navTreeName) {
+        guideKeys = ExtL.keys(guidesTree);
+        apiKeys   = ExtL.keys(apiTree);
+        if (guideKeys.length) {
+            navTreeName = DocsApp.meta.navTreeName = guideKeys[0];
+        } else if (apiKeys.length) {
+            navTreeName = DocsApp.meta.navTreeName = apiKeys[0];
+        } else {
+            // TODO thrown an error
+        }
+    }
+
+    // the tree object for the current page
+    navTree = navTrees[navTreeName];
 
     // if a navigation tree is found for the current page
     if (navTree) {
@@ -313,9 +329,12 @@ DocsApp.initNavTree = function () {
         // create the tree
         DocsApp.buildNavTree(navTree);
         // select the node for the current page
-        DocsApp.navTree.select(id)
-            // and expand the tree to the selected node
-            .expandTo(id);
+
+        if (id) {
+            DocsApp.navTree.select(id)
+                // and expand the tree to the selected node
+                .expandTo(id);
+        }
 
         // next we gather up the tabs to be created at the top of the nav tree
         if (guidesTree) {
@@ -344,7 +363,7 @@ DocsApp.buildTreeNodeHref = function (node) {
     var href;
 
     if (node.href || node.link) {
-        href = node.link || (DocsApp.meta.rootPath + '/' + node.href);
+        href = node.link || (DocsApp.meta.rootPath  + node.href);
     }
 
     return href;
@@ -1003,7 +1022,9 @@ DocsApp.toggleExamples = function(collapse) {
         ExtL[action](ex, 'example-collapsed');
     });
 
-    symbText.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Examples');
+    if (symbText) {
+        symbText.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Examples');
+    }
 };
 
 /**
@@ -2189,7 +2210,7 @@ DocsApp.loadApiSearchPage = function(page) {
 
             href = rec.classObj.n + '.html';
             //href = homePath + (rec.classObj.t || 'api') + '/' + href;
-            href = DocsApp.meta.rootPath + '/' + (rec.classObj.t || 'api') + '/' + href;
+            href = DocsApp.meta.rootPath + (rec.classObj.t || 'api') + '/' + href;
 
             if (rec.byClassMember) {
                 if (rec.searchMatch[0] === 'z') {
@@ -2267,10 +2288,10 @@ DocsApp.loadGuideSearchPage = function(page) {
 
             if (item.prod === 'cmd') {
                 //href = homePath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
-                href = DocsApp.meta.rootPath  + '/../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
+                href = DocsApp.meta.rootPath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
             } else {
                 //href = homePath + 'guides/' + item.searchUrls[item.r] + '.html';
-                href = DocsApp.meta.rootPath + '/guides/' + item.searchUrls[item.r] + '.html';
+                href = DocsApp.meta.rootPath + 'guides/' + item.searchUrls[item.r] + '.html';
             }
 
             guideCt.appendChild(ExtL.createElement({

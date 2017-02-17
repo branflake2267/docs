@@ -1315,7 +1315,7 @@ class SourceApi extends Base {
                     j             = 0,
                     namesLength   = altClassNames.length;
                 
-                searchIndex[key].g = classNames;
+                searchIndex[key].g = altClassNames;
 
                 for (; j < namesLength; j++) {
                     let altName = altClassNames[j];

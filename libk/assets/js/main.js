@@ -2139,7 +2139,7 @@ DocsApp.loadApiSearchPage = function(page) {
     ExtL.removeChildNodes(apiCt);
 
     apiCt.appendChild(ExtL.createElement({
-        "class": 'search-results-nav-header',
+        "class": 'search-results-nav-header dn',
         cn: [{
             "class": 'active-tab',
             html: 'API Docs'
@@ -2149,7 +2149,7 @@ DocsApp.loadApiSearchPage = function(page) {
     }));
 
     apiCt.appendChild(ExtL.createElement({
-        "class": 'search-results-header',
+        "class": 'search-results-header tc pa2 bb b--silver ttu b bg-light-gray black-70 tracked f6',
         html: 'API Docs'
     }));
 
@@ -2188,7 +2188,8 @@ DocsApp.loadApiSearchPage = function(page) {
             });
 
             href = rec.classObj.n + '.html';
-            href = homePath + (rec.classObj.t || 'api') + '/' + href;
+            //href = homePath + (rec.classObj.t || 'api') + '/' + href;
+            href = DocsApp.meta.rootPath + '/' + (rec.classObj.t || 'api') + '/' + href;
 
             if (rec.byClassMember) {
                 if (rec.searchMatch[0] === 'z') {
@@ -2265,9 +2266,11 @@ DocsApp.loadGuideSearchPage = function(page) {
             }
 
             if (item.prod === 'cmd') {
-                href = homePath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
+                //href = homePath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
+                href = DocsApp.meta.rootPath  + '/../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
             } else {
-                href = homePath + 'guides/' + item.searchUrls[item.r] + '.html';
+                //href = homePath + 'guides/' + item.searchUrls[item.r] + '.html';
+                href = DocsApp.meta.rootPath + '/guides/' + item.searchUrls[item.r] + '.html';
             }
 
             guideCt.appendChild(ExtL.createElement({
@@ -2475,6 +2478,7 @@ DocsApp.getSearchList = function() {
 
     if (!list) {
         list = '';
+        
         ExtL.each(DocsApp.apiSearch, function (i, cls) {  // iterate over each class object
             var missingAccessors = [],              // collect up any missing auto-generated accessors to be added to the class object
                 composite;
@@ -2561,7 +2565,7 @@ DocsApp.searchFilter = function(e) {
         filterModern  = ExtL.hasCls(mButton, 'active');
     }
 
-    e = e || window.event;
+    e = DocsApp.getEvent(e);
 
     if (e && e.type === 'keydown' && value.length) {
         keyCode = e.keyCode || e.which;
@@ -3616,8 +3620,6 @@ DocsApp.prepareApiSearchRecords = function(results) {
         }
     });
 
-    console.log(results);
-
     return DocsApp.sortSearchItems(results);
 };
 
@@ -3647,9 +3649,10 @@ DocsApp.sortSearchItems = function(items) {
  * @method getSearchResultsCt
  */
 DocsApp.getSearchResultsCt = function() {
-    var ct       = ExtL.get('search-results-ct'),
-        hasApi   = DocsApp.meta.hasApi,
-        hasGuide = DocsApp.meta.hasGuides,
+    var ct            = ExtL.get('search-results-ct'),
+        hasApi        = DocsApp.meta.hasApi,
+        hasGuide      = DocsApp.meta.hasGuides,
+        resultsDivCls = 'bl bb bt b--blue bg-white fl relative',
         cn;
 
     if (!ct) {
@@ -3658,19 +3661,21 @@ DocsApp.getSearchResultsCt = function() {
         }
         if (hasGuide) {
             cn.push({
-                id: 'guide-search-results',
-                "class": 'isHidden'
+                id      : 'guide-search-results',
+                "class" : resultsDivCls + 'isHidden'
             });
         }
         if (hasApi) {
             cn.push({
-                id: 'api-search-results'
+                id      : 'api-search-results',
+                "class" : resultsDivCls
             });
         }
         ct = ExtL.createElement({
-            tag: 'span',
-            id: 'search-results-ct',
-            cn: cn
+            tag     : 'span',
+            id      : 'search-results-ct',
+            "class" : 'fixed dn z-3 shadow-4',
+            cn      : cn
         });
         document.body.appendChild(ct);
     }

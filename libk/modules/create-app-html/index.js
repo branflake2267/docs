@@ -292,7 +292,7 @@ class HtmlApp extends AppBase {
      */
     processHierarchy (cls) {
         let name = cls.name,
-            elementCls  = 'hierarchy pl3',
+            elementCls  = 'hierarchy pl2',
             list = this.splitInline(
                 Utils.processCommaLists(cls.extended, false, true, true),
                 `<div class="${elementCls}">`

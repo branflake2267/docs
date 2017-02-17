@@ -84,7 +84,7 @@ class AppBase extends SourceGuides {
         // TODO process the output HTML files here in the create-app-html class (maybe by overriding the output method in source-api)
         //console.log('PROCESS ALL OF THE SOURCE FILES TO ');
         let dt = new Date();
-        this.runApi()
+        return this.runApi()
         .then(this.outputApiSearch.bind(this))
         .then(this.processGuides.bind(this))
         .then(() => {

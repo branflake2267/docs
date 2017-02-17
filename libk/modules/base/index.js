@@ -1,24 +1,25 @@
 /* jshint node: true */
 'use strict';
 
-const EventEmitter = require('events'),
-      Debug        = require('../../Debug'),
-      Worker       = require('tiny-worker'),
-      Os           = require('os'),
-      Path         = require('path'),
-      CpuCount     = Os.cpus().length,
-      Utils        = require('../shared/Utils'),
-      Ora          = require('ora'),
-      Chalk        = require('chalk'),
-      Shell        = require('shelljs'),
-      Play         = require('play'),
-      Fs           = require('fs-extra'),
-      Mkdirp       = require('mkdirp'),
-      marked       = require('sencha-marked'),
-      safeLinkRe   = /(\[]|\.\.\.)/g,
-      idRe         = /[^\w]+/g,
-      Git          = require('git-state'),
-      Handlebars   = require('handlebars');
+const EventEmitter    = require('events'),
+      Debug           = require('../../Debug'),
+      Worker          = require('tiny-worker'),
+      Os              = require('os'),
+      Path            = require('path'),
+      CompareVersions = require('compare-versions'),
+      CpuCount        = Os.cpus().length,
+      Utils           = require('../shared/Utils'),
+      Ora             = require('ora'),
+      Chalk           = require('chalk'),
+      Shell           = require('shelljs'),
+      Play            = require('play'),
+      Fs              = require('fs-extra'),
+      Mkdirp          = require('mkdirp'),
+      marked          = require('sencha-marked'),
+      Git             = require('git-state'),
+      Handlebars      = require('handlebars'),
+      safeLinkRe      = /(\[]|\.\.\.)/g,
+      idRe            = /[^\w]+/g;
 
 // TODO add this.log() stuff throughout all classes: `log` for general messaging, `info`
 // for warnings, and `error` for serious / fatal errors
@@ -178,6 +179,20 @@ class Base {
     }
 
     /**
+     * Prepares common data attributes
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processCommonDataObject (data) {
+        let options = this.options;
+
+        //data.myMeta  = this.getApiMetaData(data);
+        data.title   = options.prodVerMeta.prodObj.title;
+        data.product = this.getProduct(options.product);
+        data.version = options.version;
+    }
+
+    /**
      * Filters out any system files (i.e. .DS_Store)
      * @param {String[]} files Array of file names
      * @return [String[]] Array of file names minus system files
@@ -233,7 +248,56 @@ class Base {
      * @return {String} The normalized product name or `null` if not found
      */
     getProduct (prod) {
+        prod = prod || this.options.product;
         return this.options.normalizedProductList[prod];
+    }
+
+    /**
+     * Gets the matching file using the passed version or the file with the closest version to the passed version without going over.
+     * 
+     * So, if the files from the path location were 
+     * ['config-1.0.0.json', 'config-2.0.0.json'] and you passed in the version of 
+     * '1.5.0' then the file returned would be 'config-1.0.0.json'.
+     * 
+     * **Note:** If there is only one file in the given path then that is what is 
+     * returned (we're assuming there is either only one version or there are not 
+     * versioned files in the directory)
+     * @param {String} path The path for all files to compare with
+     * @param {String} version The version to match the files against
+     * @param {String} [delimiter] An optional delimiter to split the file name by when 
+     * looking for the version within the filename.  Defaults to '-'.
+     * @return {String} The filename most closely matching the passed version
+     */
+    getFileByVersion (path, version, delimiter) {
+        delimiter = delimiter || '-';
+
+        let files        = this.getFiles(path),
+            len          = files.length,
+            delimiterLen = delimiter.length,
+            matchingFile;
+        
+        // if there is only one file just return it
+        if (len === 1) {
+            matchingFile = files[0];
+        } else {
+            // else we'll loop over the files to find the one that is closest to the 
+            // passed version without going over
+            let i      = 0,
+                cfgVer = '0';
+
+            for (; i < len; i++) {
+                let file = files[i],
+                    name = Path.parse(files[i]).name,
+                    v    = name.substring(name.indexOf('-') + delimiterLen);
+
+                if (CompareVersions(v, version) <= 0 && CompareVersions(v, cfgVer) > 0) {
+                    cfgVer       = v;
+                    matchingFile = file;
+                }
+            }
+        }
+
+        return matchingFile;
     }
 
     /**
@@ -244,7 +308,11 @@ class Base {
         let tpl = this._guideTpl;
 
         if (!tpl) {
-            tpl = this._guideTpl = Handlebars.compile(Fs.readFileSync(Path.join(this.options._myRoot, 'templates/html-main.hbs'), 'utf-8'));
+            let path = Path.join(this.options._myRoot, 'templates/html-main.hbs');
+
+            tpl = this._guideTpl = Handlebars.compile(
+                Fs.readFileSync(path, 'utf-8')
+            );
         }
 
         return tpl;
@@ -262,11 +330,22 @@ class Base {
         for (; i < len; i++) {
             let fileName = files[i],
                 partialPath = Path.join(templateDir, fileName),
-                partialName = Path.parse(partialPath).name,
-                template = Fs.readFileSync(partialPath, 'utf8');
-            
-            Handlebars.registerPartial(partialName, template);
+                partialName = Path.parse(partialPath).name;
+
+            this.registerPartial(partialName, partialPath);
         }
+    }
+
+    /**
+     * Registers the handlebars partial using the passed name and path
+     * @param {String} partialName The name to register the partial with
+     * @param {String} partialPath The path of the handlebars file to register as a 
+     * partial template
+     */
+    registerPartial (partialName, partialPath) {
+        let template = Fs.readFileSync(partialPath, 'utf8');
+
+        Handlebars.registerPartial(partialName, template);
     }
 
     /**
@@ -277,6 +356,41 @@ class Base {
         // pass a hash of information directly to a handlebars template.
         Handlebars.registerHelper('json', function(context) {
             return JSON.stringify(context);
+        });
+
+        // The 'bubbleWrap' helper is used by the home template partial.  With the home 
+        // template there are n number of items and every two (and any trailing odd one) 
+        // need to be wrapped by an element in the template.  This helper will decorate 
+        // each item saying whether it should have the wrapping element begun, ended, or 
+        // both
+        Handlebars.registerHelper("bubbleWrap", function(arr, options) {
+            if (arr && arr.length) {
+                let buffer = "",
+                    i = 0,
+                    len = arr.length;
+                
+                // loop over all items
+                for (; i < len; i++) {
+                    var item = arr[i],
+                        even = i % 2 === 0;
+
+                    // indicate whether the item is even or not and if so then start the 
+                    // wrapping
+                    // **Note:** this works as the initial index is 0 and therefor even
+                    if (even) {
+                        item.startWrap = true;
+                    }
+                    // if it's odd or it's the last of the items then end the wrapping
+                    if (!even || i === len - 1) {
+                        item.endWrap = true;
+                    }
+                    
+                    buffer += options.fn(item);
+                }
+            
+                
+                return buffer;
+            }
         });
     }
 
@@ -632,7 +746,7 @@ class Base {
         // TODO see about replacing this with a closeStatus() call instead once we have 
         // the process populated with statuses
         Play.sound('./assets/audio/jobsdone.m4a');
-        process.exit()
+        this.closeStatus();
     }
 
     /**

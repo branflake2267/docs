@@ -17,14 +17,14 @@
 const AppBase     = require('../create-app-base'),
       Path        = require('path'),
       Utils       = require('../shared/Utils'),
-      Handlebars  = require('handlebars'),
-      Fs          = require('fs-extra'),
-      UglifyJS    = require("uglify-js"),
-      CleanCSS    = require('clean-css'),
-      Swag        = require('swag'),
-      LinkRe      = /['`]*\{\s*@link(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
-      ImgRe       = /{\s*@img(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
-      HashStartRe = /^#/;
+      Handlebars      = require('handlebars'),
+      Fs              = require('fs-extra'),
+      UglifyJS        = require("uglify-js"),
+      CleanCSS        = require('clean-css'),
+      Swag            = require('swag'),
+      LinkRe          = /['`]*\{\s*@link(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
+      ImgRe           = /{\s*@img(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
+      HashStartRe     = /^#/;
 
 class HtmlApp extends AppBase {
     constructor (options) {
@@ -38,7 +38,12 @@ class HtmlApp extends AppBase {
      * Default entry point for this module
      */
     run () {
-        super.run();
+        /*super.run()
+        .then(this.outputProductHomePage.bind(this))
+        .catch(this.error.bind(this));*/
+
+        this.outputProductHomePage()
+        .catch(this.error.bind(this));
 
         // TODO create a product home page
         // TODO create a Landing page class (if a CLI param is passed - or can be called directly, of course)
@@ -66,6 +71,26 @@ class HtmlApp extends AppBase {
         }
 
         return dir;
+    }
+
+    /**
+     * Returns common metadata needed by app API pages
+     * @param {Object} data Current data hash to be applied to the page template
+     * @return {Object} Hash of common current page metadata
+     */
+    getHomeMetaData (data) {
+        let meta = super.getCommonMetaData();
+
+        if (data) {
+            Object.assign(meta, {
+                //navTreeName : 'API',
+                //myId        : data.cls.name,
+                rootPath    : '..',
+                pageType    : 'home'
+            });
+        }
+
+        return meta;
     }
 
     /**
@@ -323,6 +348,24 @@ class HtmlApp extends AppBase {
     }
 
     /**
+     * Prepares additional api data processing prior to handing the data over to the api 
+     * template for final output
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processHomeDataObject (data) {
+        let apiDir   = this.apiDir,
+            outputProductDir = this.outputProductDir;
+
+        data.cssPath    = Path.relative(outputProductDir, this.cssDir);
+        data.jsPath     = Path.relative(outputProductDir, this.jsDir);
+        data.imagesPath = Path.relative(outputProductDir, this.imagesDir);
+        data.myMeta     = this.getHomeMetaData(data);
+        data.isHome     = true;
+        this.processCommonDataObject(data);
+    }
+
+    /**
      * Outputs the processed doxi file to an HTML file  
      * @param {String} className The name of the class to be output
      * @param {Object} data The prepared Doxi object to be output
@@ -337,11 +380,57 @@ class HtmlApp extends AppBase {
             html = this.processApiHtml(html);
 
             Fs.writeFile(fileName, html, 'utf8', (err) => {
-                if (err) this.log(err, 'error');
+                if (err) reject();
                 delete this.classMap[className];
                 // resolve after a timeout to let garbage collection catch up
                 setTimeout(resolve, 100);
             });
+        });
+    }
+
+    /**
+     * Outputs the product home page
+     */
+    outputProductHomePage () {
+        return new Promise((resolve, reject) => {
+            let options = this.options,
+                root = options._myRoot,
+                prodTplPath = Path.join(
+                    root,
+                    'configs',
+                    'product-home',
+                    this.getProduct()
+                ),
+                version = options.version,
+                homeConfig = this.getFileByVersion(prodTplPath, version),
+                homePath = Path.join(prodTplPath, homeConfig),
+                //partialName = '_product-home',
+                dest = Path.join(this.outputProductDir, 'index.html');
+
+            let data = Fs.readJsonSync(homePath);
+            data     = Object.assign(data, options);
+            data     = Object.assign(data, options.prodVerMeta);
+
+            data.rootPath = '..';
+            data.contentPartial = '_product-home';
+
+            this.processHomeDataObject(data);
+            //this.registerPartial(partialName, partialPath);
+
+            let html = this.mainTemplate(data);
+
+            Fs.writeFile(dest, html, 'utf8', (err) => {
+                if (err) reject();
+                
+                resolve();
+            });
+
+            /*Handlebars.compile(
+                Fs.readFileSync(
+                    Path.join(this.options._myRoot, 'templates/html-main.hbs'),
+                    'utf-8'
+                )
+            );*/
         });
     }
 }

@@ -821,10 +821,11 @@ class SourceGuides extends SourceApi {
         data.cssPath    = Path.relative(data.rootPath, this.cssDir);
         data.jsPath     = Path.relative(data.rootPath, this.jsDir);
         data.imagesPath = Path.relative(data.rootPath, this.imagesDir);
-        data.title      = data.prodObj.title;
+        //data.title      = data.prodObj.title;
         data.toc        = this.buildTOC(data.content, data.id);
         data.myMeta     = this.getGuideMetaData(data);
         data.isGuide    = true;
+        this.processCommonDataObject(data);
     }
 
     /**

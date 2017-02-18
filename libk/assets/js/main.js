@@ -88,7 +88,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 tag            : 'a',
                 id             : node.id,
                 parentTreeNode : parentId || null,
-                "class"        : 'truncate hover-bg-black-10 db f6 black-80 tree-depth-' + depth
+                "class"        : 'treeNode tree-depth-' + depth
             };
 
         // if the node is not a leaf node and has its own child nodes then process 
@@ -104,14 +104,15 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             cfg.cn = [{
                 tag     : 'span',
                 html    : '▸',
-                "class" : 'tree-expando tree-expando-collapsed w1 dib f4 mr1 tc system-sans-serif'
+                "class" : 'tree-expando tree-expando-collapsed '
             }, {
                 tag     : 'span',
                 html    : '▿',
-                "class" : 'tree-expando tree-expando-expanded w1 dib f4 mr1 tc system-sans-serif'
+                "class" : 'tree-expando tree-expando-expanded '
             }, {
                 tag     : 'i',
-                "class" : node.iconCls || ''
+                "class" : 'fa fa-folder-o ' || ''
+                //"class" : node.iconCls || ''
             }, {
                 tag  : 'span',
                 html : node.text
@@ -126,19 +127,26 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             });
         } else {
             // decorate this node as a leaf node
+            var icons = [];
+
+            icons['class']     = 'fa fa-cube light-blue';
+            icons['singleton'] = 'fa fa-cube pink';
+            icons['component'] = 'fa fa-gear gray';
+
             cfg.leaf = true;
+
             cfg.href = DocsApp.buildTreeNodeHref(node);
-            cfg["class"] += ' pa1 link underline-hover';
+            cfg["class"] += ' tree-leaf';
             // add the leaf node's icon, text, and a star if it's indicated as "new"
             cfg.cn = [{
                 tag     : 'i',
-                "class" : node.iconCls || ''
+                "class" : icons[node.iconCls] || ''
             }, {
                 tag  : 'span',
                 html : node.text
             }, {
                 tag     : 'i',
-                "class" : node.displayNew ? 'fa fa-star gold ml2' : ''
+                "class" : node.displayNew ? 'fa fa-star new ' : ''
             }];
             cfgs.push(cfg);
         }
@@ -256,7 +264,7 @@ Tree.prototype.getParentNodes = function () {
 Tree.prototype.select = function (node) {
     var el = ExtL.get(node);
 
-    ExtL.addCls(el, 'bg-black-10 b');
+    ExtL.addCls(el, 'selected-tree-node');
     return this;
 };
 
@@ -276,6 +284,7 @@ DocsApp.appMeta = {
     masterSearchList : '',
     searchHistory    : [],
     pos              : {},
+    treeType         : DocsApp.meta.navTreeName.replace(" ", "-").toLowerCase() + '-tree',
     firefox          : (navigator.userAgent.indexOf("firefox") !== -1),
     ios              : (navigator.userAgent.indexOf("Macintosh") !== -1 && navigator.userAgent.indexOf("WebKit") !== -1)
 };
@@ -286,7 +295,10 @@ DocsApp.appMeta = {
  * {@link #initNavTree}).  The navigation tree instance is cached on DocsApp.navTree.
  */
 DocsApp.buildNavTree = function (navTree) {
-    DocsApp.navTree = new Tree(navTree, 'tree');
+    var treeType = DocsApp.appMeta.treeType;
+
+    ExtL.get('tree').id = treeType;
+    DocsApp.navTree = new Tree(navTree, treeType);
 };
 
 /**
@@ -1044,7 +1056,7 @@ DocsApp.onFilterClassCheckboxToggle = function() {
 DocsApp.filterClassTreeByAccess = function() {
     var privateCheckbox = ExtL.get('private-class-toggle'),
         privateCls      = 'show-private',
-        treeMembersCt   = ExtL.get('tree');
+        treeMembersCt   = ExtL.get(DocsApp.appMeta.treeType);
 
     ExtL.toggleCls(treeMembersCt, privateCls, privateCheckbox.checked === true);
 };
@@ -1432,21 +1444,21 @@ DocsApp.initNavTreeTabs = function (tabs) {
         // the default config for all tabs
         cfg = {
             tag : isActive ? 'div' : 'a',
-            "class" : 'nav-tab dib black-70 br1 br--top f6',
+            "class" : 'nav-tab ',
             html: tab,
             id: tabId
         };
 
         // if this is the active tab decorate it as active
         if (isActive) {
-            cfg["class"] += ' active-tab bg-near-white ba b--black-10 ' + tabCls;
+            cfg["class"] += 'toolbarHeaderButton active-tab ' + tabCls;
         // else it's decorated as an inactive tab and given a link to that tab's landing 
         // page
         } else {
             cfg.href = DocsApp.getNodeHref(
                 navTrees[tab][0]
             );
-            cfg["class"] += ' link bg-white bl bt br b--transparent hover-bg-black-10 ' + tabCls;
+            cfg["class"] += 'toolbarHeaderButton ' + tabCls;
         }
 
         // append the tab to the tree header element
@@ -3062,7 +3074,7 @@ DocsApp.hideProductMenu = function() {
     var productTreeCt = ExtL.get('product-tree-ct');
 
     ExtL.addCls(productTreeCt, 'hide');
-}
+};
 
 /**
  * @method resizeHandler

@@ -77,7 +77,8 @@ class Base {
      * @return {String} The navigation tree's folder node class
      */
     get folderNodeCls () {
-        return 'fa fa-folder-o dib w1 mr1 ml1';
+        //return 'fa fa-folder-o dib w1 mr1 ml1';
+        //return 'fa fa-folder-o dib w1 mr1 ml1';
     }
 
     /**

@@ -691,9 +691,9 @@ class SourceGuides extends SourceApi {
                 children    = node.children,
                 slug        = node.slug,
                 iconClasses = {
-                    universal : 'fa fa-file-text-o blue dib w1 mr1 ml3',
-                    classic   : 'classic-guide dib w1 mr1 ml3',
-                    modern    : 'modern-guide dib w1 mr1 ml3'
+                    universal : 'fa fa-file-text-o',
+                    classic   : 'classic-guide',
+                    modern    : 'modern-guide'
                 };
 
             node.navTreeName = navTreeName;

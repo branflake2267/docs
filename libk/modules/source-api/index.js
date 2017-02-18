@@ -542,7 +542,8 @@ class SourceApi extends Base {
                 //create the leaf node configuration
                 newNode = Object.assign(baseNode, {
                     href    : `${apiDirName}/${id}.html`,
-                    iconCls : `${icon} ${folderNodeCls}`
+                    //iconCls : `${icon} ${folderNodeCls}`
+                    iconCls : `${icon}`
                 });
             }
 

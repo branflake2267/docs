@@ -286,7 +286,8 @@ DocsApp.appMeta = {
     pos              : {},
     treeType         : DocsApp.meta.navTreeName.replace(" ", "-").toLowerCase() + '-tree',
     firefox          : (navigator.userAgent.indexOf("firefox") !== -1),
-    ios              : (navigator.userAgent.indexOf("Macintosh") !== -1 && navigator.userAgent.indexOf("WebKit") !== -1)
+    ios              : (navigator.userAgent.indexOf("Macintosh") !== -1 && navigator.userAgent.indexOf("WebKit") !== -1),
+    apiSearchRecords : null
 };
 
 /**
@@ -581,9 +582,7 @@ DocsApp.onRunFiddleClick = function(e) {
  * @param e
  */
 DocsApp.onCodeFiddleClick = function(e) {
-    e = e || window.event;
-
-    var code = e.target || e.srcElement,
+    var code = DocsApp.getEventTarget(e),
         wrap = ExtL.up(code, '.da-inline-code-wrap'),
         isActive = ExtL.hasCls(code, 'da-inline-fiddle-nav-active');
 
@@ -597,8 +596,7 @@ DocsApp.onCodeFiddleClick = function(e) {
  * @param e
  */
 DocsApp.onBeautifyClick = function(e) {
-    e = e || window.event;
-    var code       = e.target || e.srcElement,
+    var code       = DocsApp.getEventTarget(e),
         wrap       = ExtL.up(code, '.da-inline-code-wrap'),
         editor     = ace.edit(wrap.querySelector('.ace-ct').id),
         beautified = js_beautify(editor.getValue());
@@ -1192,7 +1190,7 @@ DocsApp.onToggleAllClick = function() {
         symbText    = ExtL.get('toggleAll'),
         indicator   = ExtL.get('toggle-members-indicator'),
         collapsed   = ExtL.hasCls(indicator, 'fa-minus'),
-        itemAction  = collapsed ? 'addCls' : 'removeCls';
+        itemAction  = collapsed ? 'removeCls' : 'addCls';
 
     ExtL.each(memberList, function (item) {
         ExtL[itemAction](item, 'member-expanded');
@@ -1243,7 +1241,7 @@ DocsApp.saveState = function() {
         pageType             = DocsApp.getPageType(),
         product              = DocsApp.meta.prodObj.title,
         pversion             = DocsApp.meta.version,
-        text                 = DocsApp.meta.myId,
+        text                 = DocsApp.meta.pageName,
         title                = text,
         activeNavTab;
 
@@ -1810,9 +1808,8 @@ DocsApp.hideMemberTypeMenu = function() {
  * @method showMemberTypeMenu
  */
 DocsApp.showMemberTypeMenu = function(e) {
-    e = e || window.event;
     var menu        = DocsApp.getMemberTypeMenu(),
-        target      = e.target || e.srcElement,
+        target      = DocsApp.getEventTarget(e),
         membersBox  = ExtL.get('class-body-wrap').getBoundingClientRect(),
         height      = (membersBox.bottom - membersBox.top) - 4,
         maxWidth    = (membersBox.right - membersBox.left) - 4,
@@ -2156,10 +2153,11 @@ DocsApp.onMemberTypeMenuClick = function(e) {
  * @param page
  */
 DocsApp.loadApiSearchPage = function(page) {
-    var i     = 0,
+    var i = 0,
         pageSize = DocsApp.appMeta.pageSize,
         start = page * pageSize - pageSize,
-        ct    = DocsApp.getSearchResultsCt(),
+        apiSearchRecords = DocsApp.appMeta.apiSearchRecords,
+        ct = DocsApp.getSearchResultsCt(),
         apiCt = ExtL.get('api-search-results'),
         value = ExtL.get('searchtext').value,
         rec, access, el, cn, re, matchEl, href, meta;
@@ -2172,7 +2170,7 @@ DocsApp.loadApiSearchPage = function(page) {
     ExtL.removeChildNodes(apiCt);
 
     apiCt.appendChild(ExtL.createElement({
-        "class": 'search-results-nav-header dn',
+        "class": 'search-results-nav-header',
         cn: [{
             "class": 'active-tab',
             html: 'API Docs'
@@ -2182,7 +2180,7 @@ DocsApp.loadApiSearchPage = function(page) {
     }));
 
     apiCt.appendChild(ExtL.createElement({
-        "class": 'search-results-header tc pa2 bb b--silver ttu b bg-light-gray black-70 tracked f6',
+        "class": 'search-results-header',
         html: 'API Docs'
     }));
 
@@ -2221,7 +2219,6 @@ DocsApp.loadApiSearchPage = function(page) {
             });
 
             href = rec.classObj.n + '.html';
-            //href = homePath + (rec.classObj.t || 'api') + '/' + href;
             href = DocsApp.meta.rootPath + (rec.classObj.t || 'api') + '/' + href;
 
             if (rec.byClassMember) {
@@ -2243,6 +2240,22 @@ DocsApp.loadApiSearchPage = function(page) {
             });
 
             apiCt.appendChild(el);
+        }
+    }
+
+    DocsApp.addSearchPagingToolbar(apiCt, apiSearchRecords, page);
+
+    re = new RegExp('(' + value.replace('$', '\\$').replace(/"/g, '') + ')', 'ig');
+
+    for (i = 0; i < apiCt.childNodes.length; i++) {
+        matchEl = apiCt.childNodes.item(i).querySelector('.search-match');
+        matchSrc = apiCt.childNodes.item(i).querySelector('.search-source');
+
+        if (matchEl) {
+            matchEl.innerHTML = (matchEl.textContent || matchEl.innerText).replace(re, '<strong>$1</strong>');
+        }
+        if (matchSrc) {
+            matchSrc.innerHTML = (matchSrc.textContent || matchSrc.innerText).replace(re, '<strong>$1</strong>');
         }
     }
 };
@@ -2300,10 +2313,13 @@ DocsApp.loadGuideSearchPage = function(page) {
 
             if (item.prod === 'cmd') {
                 //href = homePath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
-                href = DocsApp.meta.rootPath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
+                if (!item.searchUrls[item.r]) {
+                    console.log(item);
+                }
+                href = DocsApp.meta.rootPath  + '../../' + item.prod + '/' + item.searchUrls[item.r];
             } else {
                 //href = homePath + 'guides/' + item.searchUrls[item.r] + '.html';
-                href = DocsApp.meta.rootPath + 'guides/' + item.searchUrls[item.r] + '.html';
+                href = DocsApp.meta.rootPath + item.searchUrls[item.r];
             }
 
             guideCt.appendChild(ExtL.createElement({
@@ -2336,8 +2352,13 @@ DocsApp.loadGuideSearchPage = function(page) {
  * @param page
  */
 DocsApp.addSearchPagingToolbar = function(ct, records, page) {
-    var isApi    = DocsApp.getPageType() === 'api',
-        rowCount = ct.querySelectorAll(isApi ? '.search-item' : '.guide-search-item').length;
+    var isApi    = ct.id === 'api-search-results',
+        rowCount = ct.querySelectorAll(isApi ? '.search-item' : '.guide-search-item').length,
+        pageSize = DocsApp.appMeta.pageSize,
+        recordCount = records.length,
+        pageEnd  = (pageSize * page),
+        useCount = pageEnd > recordCount,
+        endCount = useCount ? recordCount : pageEnd;
 
     if (rowCount) {
         // check to see if we have more results than we can display with the results
@@ -2345,7 +2366,7 @@ DocsApp.addSearchPagingToolbar = function(ct, records, page) {
         if (records.length > pageSize) {
             ct.appendChild(ExtL.createElement({
                 "class": 'search-results-nav',
-                html: (pageSize * page - pageSize + 1) + ' - ' + (pageSize * page) + ' of ' + records.length,
+                html: (pageEnd - pageSize + 1) + ' - ' + endCount + ' of ' + recordCount,
                 cn: [{
                     "class": 'search-nav-first' + ((page === 1) ? ' disabled' : ''),
                     html: '«'
@@ -2353,18 +2374,18 @@ DocsApp.addSearchPagingToolbar = function(ct, records, page) {
                     "class": 'search-nav-back' + ((page === 1) ? ' disabled' : ''),
                     html: '◄'
                 }, {
-                    "class": 'search-nav-forward' + ((records.length <= page * pageSize) ? ' disabled' : ''),
+                    "class": 'search-nav-forward' + ((recordCount <= pageEnd) ? ' disabled' : ''),
                     html: '►'
                 }, {
-                    "class": 'search-nav-last' + ((records.length <= page * pageSize) ? ' disabled' : ''),
+                    "class": 'search-nav-last' + ((recordCount <= pageEnd) ? ' disabled' : ''),
                     html: '»'
                 }]
             }));
         }
         if (isApi) {
-            DocsApp.currentApiPage = page;
+            DocsApp.appMeta.currentApiPage = page;
         } else {
-            DocsApp.currentGuidePage = page;
+            DocsApp.appMeta.currentGuidePage = page;
         }
     } else {
         ct.appendChild(ExtL.createElement({
@@ -2474,9 +2495,9 @@ DocsApp.hideMobileSearch = function() {
 };
 
 DocsApp.showSearchHistory = function(e) {
-    e = e || window.event;
-    var target = e.target || e.srcElement,
+    var target = DocsApp.getEventTarget(e),
     value = target.value,
+    searchHistory = DocsApp.appMeta.searchHistory,
     panel, field, fieldBox;
 
     if (target !== document && !value.length && searchHistory && searchHistory.length) {
@@ -2663,10 +2684,10 @@ DocsApp.searchFilter = function(e) {
             }
         }
 
-        apiSearchRecords = DocsApp.prepareApiSearchRecords(results);    // save this up so it can be used ad hoc
+        DocsApp.appMeta.apiSearchRecords = DocsApp.prepareApiSearchRecords(results);    // save this up so it can be used ad hoc
 
         // Strip out any duplicate entries from the search results
-        ExtL.each(apiSearchRecords, function (rec) {
+        ExtL.each(DocsApp.appMeta.apiSearchRecords, function (rec) {
             var name = rec.classObj.n,
                 type = rec.memberType,
                 member = rec.sortValue,
@@ -2693,7 +2714,7 @@ DocsApp.searchFilter = function(e) {
             }
         });
 
-        apiSearchRecords = unique;
+        DocsApp.appMeta.apiSearchRecords = unique;
     }
 
     // NEXT WE'LL FOCUS ON THE GUIDE SEARCH STUFF
@@ -2738,8 +2759,7 @@ DocsApp.hideHistoryConfigPanel = function() {
  * @method showMultiSrcPanel
  */
 DocsApp.showMultiSrcPanel = function(e) {
-    e = e || window.event;
-    var target    = e.target || e.srcElement,
+    var target    = DocsApp.getEventTarget(e),
         picker    = ExtL.get('multi-src-picker'),
         targetBox = target.getBoundingClientRect();
 
@@ -2767,7 +2787,7 @@ DocsApp.hideMultiSrcPanel = function() {
  * @method showHistoryConfigPanel
  */
 DocsApp.showHistoryConfigPanel = function(e) {
-    e = e || window.event;
+    e = DocsApp.getEvent(e);
 
     var panel = ExtL.get('historyConfigPanel'),
         btn = ExtL.get('history-config'),
@@ -2836,9 +2856,9 @@ DocsApp.clearHistory = function() {
  * @param e
  */
 DocsApp.onSearchHistoryClick = function(e) {
-    e = e || window.event;
+    e = DocsApp.getEvent(e);
 
-    var target = e.target || e.srcElement,
+    var target = DocsApp.getEventTarget(e),
         field = ExtL.get('searchtext');
 
     if (target) {
@@ -3005,8 +3025,7 @@ DocsApp.onBodyClick = function(e) {
  * @param e
  */
 DocsApp.onProductMenuItemClick = function(e) {
-    e = e || window.event;
-    var target = e.target || e.srcElement,
+    var target = DocsApp.getEventTarget(e),
         ct = ExtL.up(target, '#product-tree-ct'),
         prodId = target.id.substr("product-menu-".length),
         items = ExtL.fromNodeList(ct.querySelectorAll('.product-name-item')),
@@ -3029,7 +3048,7 @@ DocsApp.showProductMenu = function(e) {
     var productTreeCt = ExtL.get('product-tree-ct');
 
     if (ExtL.hasCls(productTreeCt, 'hide')) {
-        stopEvent(e);
+        DocsApp.stopEvent(e);
     }
 
     ExtL.removeCls(productTreeCt, 'hide');
@@ -3111,7 +3130,7 @@ DocsApp.doLogSearchValue = function(val) {
         temp  = [],
         limit = 10;
 
-    ExtL.each(DocsApp.searchHistory, function (item) {
+    ExtL.each(DocsApp.appMeta.searchHistory, function (item) {
         if (item.toLowerCase() !== value.toLowerCase()) {
             temp.push(item);
         }
@@ -3123,7 +3142,7 @@ DocsApp.doLogSearchValue = function(val) {
         temp.reverse();
     }
 
-    DocsApp.searchHistory = temp;
+    DocsApp.appMeta.searchHistory = temp;
     DocsApp.saveState();
 };
 
@@ -3140,8 +3159,7 @@ DocsApp.isMobile = function() {
  * @param e
  */
 DocsApp.onClassTreeCtClick = function(e) {
-    e = e || window.event;
-    var target = e.target || e.srcElement,
+    var target = DocsApp.getEventTarget(e),
         href = target.href;
 
     if (href && DocsApp.isMobile()) {
@@ -3208,9 +3226,12 @@ DocsApp.onSearchTab = function() {
  * @param e
  */
 DocsApp.onResultsCtClick = function(e) {
-    var target, counter, item;
-        e = e || window.event;
-        target  = e.target || e.srcElement;
+    var apiSearchRecords = DocsApp.appMeta.apiSearchRecords,
+        pageSize = DocsApp.appMeta.pageSize,
+        target, counter, item;
+
+        e = DocsApp.getEvent(e);
+        target  = DocsApp.getEventTarget(e);
         counter = ExtL.up(target, '#api-search-results') ? DocsApp.appMeta.currentApiPage : DocsApp.appMeta.currentGuidePage;
         item    = ExtL.up(target, '.search-item');
 
@@ -3261,17 +3282,9 @@ DocsApp.onResultsCtClick = function(e) {
  * @param e
  */
 DocsApp.toggleSearchTabs = function(e) {
-    e = e || window.event;
-
     var apiResults   = ExtL.get('api-search-results'),
         guideResults = ExtL.get('guide-search-results'),
-        elem;
-
-    if (e.srcElement) {
-        elem = e.srcElement;
-    }  else if (e.target) {
-        elem = e.target;
-    }
+        elem = DocsApp.getEventTarget(e);
 
     if (ExtL.hasCls(elem, 'active-tab')) {
         return;
@@ -4130,16 +4143,13 @@ ExtL.bindReady(function () {
         DocsApp.copyRelatedClasses();
 
         memberFilterField.oninput = function (e) {
-            e = e || window.event;
-            filter(e, e.target || e.srcElement);
+            filter(DocsApp.getEvent(e), DocsApp.getEventTarget(e));
         };
         memberFilterField.onkeyup = function (e) {
-            e = e || window.event;
-            filter(e, e.target || e.srcElement);
+            filter(DocsApp.getEvent(e), DocsApp.getEventTarget(e));
         };
         memberFilterField.onchange = function (e) {
-            e = e || window.event;
-            filter(e, e.target || e.srcElement);
+            filter(DocsApp.getEvent(e), DocsApp.getEventTarget(e));
         };
     }
 
@@ -4167,7 +4177,7 @@ ExtL.bindReady(function () {
 
     if (eventsEl) {
         ExtL.on(eventsEl, 'keyup', function (e) {
-            e = e || window.event;
+            e = DocsApp.getEvent(e);
             keyCode = e.keyCode || e.which;
 
             if (keyCode === 27) {
@@ -4178,7 +4188,7 @@ ExtL.bindReady(function () {
             }
         });
         ExtL.on(eventsEl, 'keydown', function (e) {
-            e = e || window.event;
+            e = DocsApp.getEvent(e);
             keyCode = e.keyCode || e.which;
 
             if (keyCode === 27) {
@@ -4194,7 +4204,7 @@ ExtL.bindReady(function () {
     eventsEl = ExtL.get('mobile-input');
 
     ExtL.on(eventsEl, 'keyup', function (e) {
-        e = e || window.event;
+        e = DocsApp.getEvent(e);
         keyCode = e.keyCode || e.which;
 
         if (keyCode === 27) {
@@ -4206,7 +4216,7 @@ ExtL.bindReady(function () {
     });
 
     ExtL.on(eventsEl, 'keydown', function (e) {
-        e = e || window.event;
+        e = DocsApp.getEvent(e);
         keyCode = e.keyCode || e.which;
 
         if (keyCode === 27) {

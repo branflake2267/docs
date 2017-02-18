@@ -288,11 +288,14 @@ class SourceApi extends Base {
         let meta = super.getCommonMetaData();
 
         if (data) {
+            let name = data.cls.name;
+
             Object.assign(meta, {
                 navTreeName : 'API',
-                myId        : data.cls.name,
+                myId        : name,
                 rootPath    : '../',
-                pageType    : 'api'
+                pageType    : 'api',
+                pageName    : name
             });
         }
 

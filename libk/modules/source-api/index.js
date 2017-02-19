@@ -851,13 +851,13 @@ class SourceApi extends Base {
         // class
         if (cls.extended && cls.extended.includes('Ext.Component')) {
             cls.clsSpec     = 'title-decoration component fa fa-gear';
-            cls.clsSpecIcon = 'component';
+            cls.clsSpecIcon = 'component-type fa fa-cog';
         } else if (cls.singleton === true) {
             cls.clsSpec     = 'title-decoration singleton fa fa-cube';
-            cls.clsSpecIcon = 'singleton';
+            cls.clsSpecIcon = 'singleton-type';
         } else {
             cls.clsSpec     = 'title-decoration class fa fa-cube';
-            cls.clsSpecIcon = 'class';
+            cls.clsSpecIcon = 'class-type';
         }
 
         let i                = 0,

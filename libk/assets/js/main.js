@@ -88,7 +88,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 tag            : 'a',
                 id             : node.id,
                 parentTreeNode : parentId || null,
-                "class"        : 'treeNode tree-depth-' + depth
+                "class"        : 'tree-node tree-depth-' + depth
             };
 
         // if the node is not a leaf node and has its own child nodes then process 
@@ -111,8 +111,8 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 "class" : 'tree-expando tree-expando-expanded '
             }, {
                 tag     : 'i',
-                "class" : 'fa fa-folder-o ' || ''
-                //"class" : node.iconCls || ''
+                //"class" : 'fa fa-folder-o ' || ''
+                "class" : (node.iconCls || '') + ' tree-node-icon'
             }, {
                 tag  : 'span',
                 html : node.text
@@ -127,11 +127,11 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             });
         } else {
             // decorate this node as a leaf node
-            var icons = [];
+            /*var icons = [];
 
             icons['class']     = 'fa fa-cube light-blue';
             icons['singleton'] = 'fa fa-cube pink';
-            icons['component'] = 'fa fa-gear gray';
+            icons['component'] = 'fa fa-gear gray';*/
 
             cfg.leaf = true;
 
@@ -140,7 +140,8 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             // add the leaf node's icon, text, and a star if it's indicated as "new"
             cfg.cn = [{
                 tag     : 'i',
-                "class" : icons[node.iconCls] || ''
+                //"class" : icons[node.iconCls] || ''
+                "class" : (node.iconCls || '') + ' tree-node-icon'
             }, {
                 tag  : 'span',
                 html : node.text
@@ -284,7 +285,7 @@ DocsApp.appMeta = {
     masterSearchList : '',
     searchHistory    : [],
     pos              : {},
-    treeType         : DocsApp.meta.navTreeName.replace(" ", "-").toLowerCase() + '-tree',
+    //treeType         : DocsApp.meta.navTreeName.replace(" ", "-").toLowerCase() + '-tree',
     firefox          : (navigator.userAgent.indexOf("firefox") !== -1),
     ios              : (navigator.userAgent.indexOf("Macintosh") !== -1 && navigator.userAgent.indexOf("WebKit") !== -1),
     apiSearchRecords : null
@@ -296,10 +297,11 @@ DocsApp.appMeta = {
  * {@link #initNavTree}).  The navigation tree instance is cached on DocsApp.navTree.
  */
 DocsApp.buildNavTree = function (navTree) {
-    var treeType = DocsApp.appMeta.treeType;
+    /*var treeType = DocsApp.appMeta.treeType;
 
     ExtL.get('tree').id = treeType;
-    DocsApp.navTree = new Tree(navTree, treeType);
+    DocsApp.navTree = new Tree(navTree, treeType);*/
+    DocsApp.navTree = new Tree(navTree, 'tree');
 };
 
 /**

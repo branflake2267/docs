@@ -24,6 +24,8 @@ const HtmlApp    = require('../create-app-html'),
 class RextHtmlApp extends HtmlApp {
     constructor (options) {
         super(options);
+
+        this.options.prodVerMeta.toolkit = 'modern';
     }
 
     /**
@@ -76,9 +78,8 @@ class RextHtmlApp extends HtmlApp {
      */
     get doxiCfgFileName () {
         let options = this.options,
-            product = 'extjs',
             version = this.apiVersion,
-            toolkit = options.toolkit || product;
+            toolkit = 'modern';
 
         return version + '-' + toolkit + '.doxi.json';
     }

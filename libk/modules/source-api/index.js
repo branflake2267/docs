@@ -267,7 +267,7 @@ class SourceApi extends Base {
     get apiSourceDir () {
         let options = this.options,
             cfg     = Object.assign({}, options, {
-                repo: options.products[options.product].repo || null
+                repo: options.products[this.apiProduct].repo || null
             });
 
         return Path.resolve(
@@ -328,7 +328,7 @@ class SourceApi extends Base {
         // missing then run doxi
         if (this.options.forceDoxi || this.doxiInputFolderIsEmpty) {
             this.syncRemote(
-                this.options.product,
+                this.apiProduct,
                 this.apiSourceDir
             );
 
@@ -1260,7 +1260,7 @@ class SourceApi extends Base {
             classNames  = Object.keys(map),
             i           = 0,
             len         = classNames.length,
-            toolkit     = this.options.toolkit,
+            toolkit     = this.options.prodVerMeta.toolkit,
             searchIndex = this.apiSearchIndex,
             // suffix allows us to combine toolkits in one search
             suffix = toolkit.charAt(0) || '',

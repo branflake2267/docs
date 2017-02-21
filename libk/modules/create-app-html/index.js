@@ -394,24 +394,24 @@ class HtmlApp extends AppBase {
      */
     outputProductHomePage () {
         return new Promise((resolve, reject) => {
-            let options = this.options,
-                root = options._myRoot,
+            let options     = this.options,
+                root        = options._myRoot,
                 prodTplPath = Path.join(
                     root,
                     'configs',
                     'product-home',
-                    this.getProduct()
+                    this.apiProduct
                 ),
-                version = options.version,
-                homeConfig = this.getFileByVersion(prodTplPath, version),
-                homePath = Path.join(prodTplPath, homeConfig),
-                dest = Path.join(this.outputProductDir, 'index.html');
+                version     = options.version,
+                homeConfig  = this.getFileByVersion(prodTplPath, version),
+                homePath    = Path.join(prodTplPath, homeConfig),
+                dest        = Path.join(this.outputProductDir, 'index.html');
 
             let data = Fs.readJsonSync(homePath);
             data     = Object.assign(data, options);
             data     = Object.assign(data, options.prodVerMeta);
 
-            data.rootPath = '..';
+            data.rootPath       = '..';
             data.contentPartial = '_product-home';
 
             this.processHomeDataObject(data);

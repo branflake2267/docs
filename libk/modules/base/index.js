@@ -990,7 +990,9 @@ class Base {
         if (options.syncRemote || !Fs.existsSync(sourceDir)) {
             let path      = Shell.pwd(),
                 version   = options.version,
-                wToolkit  = version + '-' + (options.toolkit || product),
+                product   = this.apiProduct,
+                toolkit   = options.prodVerMeta.toolkit,
+                wToolkit  = version + '-' + (toolkit || product),
                 prodCfg   = options.products[product],
                 remotes   = prodCfg.remotes,
                 verInfo   = remotes && remotes[version],
@@ -1013,7 +1015,7 @@ class Base {
             if (!Fs.existsSync(sourceDir)) {
                 // create the repos directory if it doesn't exist already
                 Mkdirp.sync(reposPath);
-
+console.log(sourceDir);
                 Shell.cd(reposPath);
                 remoteUrl = Utils.format(remoteUrl, prodCfg);
 

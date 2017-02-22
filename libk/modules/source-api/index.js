@@ -1443,7 +1443,9 @@ class SourceApi extends Base {
                     API: sortedTree
                 }, null, 4),
                 wrap       = `DocsApp.apiTree = ${apiTree}`,
-                dest       = Path.join(this.jsDir, 'apiTree.js');
+                product    = this.getProduct(),
+                version    = this.options.version,
+                dest       = Path.join(this.jsDir, `${product}-${version}-apiTree.js`);
 
             Fs.writeFile(dest, wrap, 'utf8', (err) => {
                 if (err) {

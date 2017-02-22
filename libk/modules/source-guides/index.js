@@ -438,9 +438,10 @@ class SourceGuides extends SourceApi {
                     content = guide.content,
                     href    = guide.href;
 
+                searchObj.searchRef.push(name);
+                searchObj.searchUrls.push(href);
+
                 if (content && !_.includes(blacklist, name)) {
-                    searchObj.searchRef.push(name);
-                    searchObj.searchUrls.push(href);
                     searchObj.searchWordsIndex = i;
                     this.parseSearchWords(searchObj, name, content);
                 }
@@ -861,7 +862,9 @@ class SourceGuides extends SourceApi {
         return new Promise((resolve, reject) => {
             let trees = JSON.stringify(this.guidesTree, null, 4),
                 wrap  = `DocsApp.guidesTree = ${trees}`,
-                dest  = Path.join(this.jsDir, 'guidesTree.js');
+                product    = this.getProduct(),
+                version    = this.options.version,
+                dest  = Path.join(this.jsDir, `${product}-${version}-guidesTree.js`);
 
             Fs.writeFile(dest, wrap, 'utf8', (err) => {
                 if (err) {

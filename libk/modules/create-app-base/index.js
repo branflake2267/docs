@@ -222,7 +222,10 @@ class AppBase extends SourceGuides {
                             </span>
                             Run
                         </span>
-                        <span class="fiddle-code-beautify tooltip tooltip-tr-br fa fa-indent bg-blue white relative dib br2 pointer pa1 ml3" data-beautify="Beautify Code"><div class="callout callout-b"></div></span>
+                        <span class="icon-btn fiddle-code-beautify tooltip tooltip-tr-br bg-blue white relative dib br2 pointer pa1 ml3" data-beautify="Beautify Code">
+                            <i class="fa fa-indent"></i>
+                            <div class="callout callout-b"></div>
+                        </span>
                     </div>
                     <div id="{3}" class="ace-ct ba b--black-20 z-0">{0}</div>
                 </div>`,

@@ -1015,7 +1015,7 @@ class Base {
             if (!Fs.existsSync(sourceDir)) {
                 // create the repos directory if it doesn't exist already
                 Mkdirp.sync(reposPath);
-console.log(sourceDir);
+
                 Shell.cd(reposPath);
                 remoteUrl = Utils.format(remoteUrl, prodCfg);
 

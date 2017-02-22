@@ -101,7 +101,6 @@ class SourceApi extends Base {
      */
     getDoxiCfgPath (fromDir) {
         let dir = fromDir || __dirname;
-
         return Path.resolve(
             dir,
             Path.join(
@@ -112,7 +111,7 @@ class SourceApi extends Base {
                 Utils.format(
                     this.options.parserConfigPath,
                     {
-                        product: this.apiProduct
+                        product: this.getProduct()
                     }
                 )
             )
@@ -268,6 +267,7 @@ class SourceApi extends Base {
         let options = this.options,
             cfg     = Object.assign({}, options, {
                 repo: options.products[this.apiProduct].repo || null
+                //repo: options.products[this.product].repo || null
             });
 
         return Path.resolve(
@@ -328,7 +328,7 @@ class SourceApi extends Base {
         // missing then run doxi
         if (this.options.forceDoxi || this.doxiInputFolderIsEmpty) {
             this.syncRemote(
-                this.apiProduct,
+                this.product,
                 this.apiSourceDir
             );
 

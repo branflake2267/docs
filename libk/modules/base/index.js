@@ -989,9 +989,9 @@ class Base {
         // only sync to a remote if syncRemote is true
         if (options.syncRemote || !Fs.existsSync(sourceDir)) {
             let path      = Shell.pwd(),
-                version   = options.version,
+                version   = this.apiVersion,
                 product   = this.apiProduct,
-                toolkit   = options.prodVerMeta.toolkit,
+                toolkit   = options.toolkit,
                 wToolkit  = version + '-' + (toolkit || product),
                 prodCfg   = options.products[product],
                 remotes   = prodCfg.remotes,
@@ -1015,7 +1015,6 @@ class Base {
             if (!Fs.existsSync(sourceDir)) {
                 // create the repos directory if it doesn't exist already
                 Mkdirp.sync(reposPath);
-console.log(sourceDir);
                 Shell.cd(reposPath);
                 remoteUrl = Utils.format(remoteUrl, prodCfg);
 
@@ -1038,6 +1037,7 @@ console.log(sourceDir);
             // check out the branch used for this product / version
             this.log(`Checkout out main branch: ${branch}`);
             Shell.exec(`git checkout ${branch}`);
+
             // and pull latest
             // TODO is this step necessary?  Maybe when switching between versions on different runs of "read-source"?
             Shell.exec('git pull');

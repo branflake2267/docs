@@ -39,9 +39,9 @@ class RextHtmlApp extends HtmlApp {
     }
 
     /**
-     * Returns the Ext JS version associated with the RextJS version currently being 
+     * Returns the Ext JS version associated with the Reactor version currently being
      * built
-     * @return {String} The Ext JS version number for the current Rext JS build
+     * @return {String} The Ext JS version number for the current Reactor build
      */
     get apiVersion () {
         let ver = this._apiVer;
@@ -76,13 +76,13 @@ class RextHtmlApp extends HtmlApp {
      * Rext JS (from the projectDefaults.json file), and toolkit currently being acted on.
      * @return {String} The doxi config file name
      */
-    get doxiCfgFileName () {
+    /*get doxiCfgFileName () {
         let options = this.options,
             version = this.apiVersion,
             toolkit = 'modern';
 
         return version + '-' + toolkit + '.doxi.json';
-    }
+    }*/
 }
 
 module.exports = RextHtmlApp;

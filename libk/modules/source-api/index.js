@@ -57,11 +57,13 @@ class SourceApi extends Base {
             )
         );
 
+        this.apiTrees = {};
+
         /**
          * @property apiTree
          * The tree of API classes (used to build the tree nav in the UI)
          */
-        this.apiTree = [];
+        //this.apiTree = [];
 
         /**
          * @private
@@ -288,10 +290,13 @@ class SourceApi extends Base {
         let meta = super.getCommonMetaData();
 
         if (data) {
-            let name = data.cls.name;
+            let name       = data.cls.name,
+                apiDirName = this.apiDirName;
 
             Object.assign(meta, {
-                navTreeName : 'API',
+                //navTreeName : 'API',
+                //navTreeName : apiDirName === 'api' ? 'API' : apiDirName,
+                navTreeName : apiDirName === 'api' ? 'API' : `API.${apiDirName}`,
                 myId        : name,
                 rootPath    : '../',
                 pageType    : 'api',
@@ -532,11 +537,13 @@ class SourceApi extends Base {
                 },
                 target        = this.getExistingNode(nodes, id),
                 folderNodeCls = this.folderNodeCls,
+                mapped        = this.classMap[id],
+                isSingleton   = mapped && mapped.prepared.singleton,
                 newNode;
 
             if (!leaf) {
                 newNode  = Object.assign(baseNode, {
-                    iconCls  : folderNodeCls,
+                    iconCls  : isSingleton ? icon : folderNodeCls,
                     children : []
                 });
                 // else we're processing a leaf node (note, this could be a node / namespace 
@@ -544,10 +551,13 @@ class SourceApi extends Base {
             } else {
                 //create the leaf node configuration
                 newNode = Object.assign(baseNode, {
-                    href    : `${apiDirName}/${id}.html`,
+                    //href    : `${apiDirName}/${id}.html`,
                     //iconCls : `${icon} ${folderNodeCls}`
                     iconCls : `${icon}`
                 });
+            }
+            if (this.classMap[id]) {
+                newNode.href = `${apiDirName}/${id}.html`;
             }
 
             if (!target) {
@@ -569,11 +579,15 @@ class SourceApi extends Base {
      */
     sortNodes (nodes) {
         return nodes.sort((a, b) => {
-            if (a.children === b.children) {
+            if ((a.name === 'sparkline' && b.name === 'viewport') || (b.name === 'sparkline' && a.name === 'viewport')) {
+                console.log(a);
+                console.log(b);
+            }
+            if (a.children && b.children) {
                 if (a.name > b.name) {
                     return 1;
                 }
-                if (b.name > a.name) {
+                if (a.name < b.name) {
                     return -1;
                 }
                 return 0;
@@ -697,7 +711,8 @@ class SourceApi extends Base {
 
         // reset the apiTree property on each processApiFiles run since this module 
         // instance is reused between toolkits
-        this.apiTree = [];
+        //this.apiTree = [];
+        this.apiTree = this.apiTrees[this.apiDirName] = [];
 
         // loops through all class names from the classMap
         for (; i < len; i++) {
@@ -850,14 +865,14 @@ class SourceApi extends Base {
         // indicates whether the class is of type component, singleton, or some other 
         // class
         if (cls.extended && cls.extended.includes('Ext.Component')) {
-            cls.clsSpec     = 'title-decoration component fa fa-gear';
+            cls.clsSpec     = 'title-decoration component';
             cls.clsSpecIcon = 'component-type fa fa-cog';
         } else if (cls.singleton === true) {
-            cls.clsSpec     = 'title-decoration singleton fa fa-cube';
-            cls.clsSpecIcon = 'singleton-type';
+            cls.clsSpec     = 'title-decoration singleton';
+            cls.clsSpecIcon = 'singleton-type fa fa-cube';
         } else {
-            cls.clsSpec     = 'title-decoration class fa fa-cube';
-            cls.clsSpecIcon = 'class-type';
+            cls.clsSpec     = 'title-decoration class';
+            cls.clsSpecIcon = 'class-type fa fa-cube';
         }
 
         let i                = 0,
@@ -1438,11 +1453,41 @@ class SourceApi extends Base {
      */
     outputApiTree () {
         return new Promise((resolve, reject) => {
-            let sortedTree = this.sortTree(this.apiTree),
+            let apiTrees = this.apiTrees,
+                treeKeys = Object.keys(apiTrees),
+                len = treeKeys.length,
+                apiTree;
+
+            if (len === 1) {
+                apiTree = {
+                    API : this.sortTree(apiTrees[treeKeys[0]])
+                };
+            } else {
+                let i = 0;
+
+                apiTree = {
+                    API : {}
+                };
+
+                for (; i < len; i++) {
+                    let key = treeKeys[i];
+
+                    apiTree.API[key] = this.sortTree(apiTrees[key]);
+                }
+            }
+
+            /*let sortedTree = this.sortTree(this.apiTree),
                 apiTree    = JSON.stringify({
                     API: sortedTree
                 }, null, 4),
                 wrap       = `DocsApp.apiTree = ${apiTree}`,
+                product    = this.getProduct(),
+                version    = this.options.version,
+                dest       = Path.join(this.jsDir, `${product}-${version}-apiTree.js`);*/
+
+            apiTree = JSON.stringify(apiTree, null, 4);
+
+            let wrap       = `DocsApp.apiTree = ${apiTree}`,
                 product    = this.getProduct(),
                 version    = this.options.version,
                 dest       = Path.join(this.jsDir, `${product}-${version}-apiTree.js`);

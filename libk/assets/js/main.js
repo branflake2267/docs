@@ -46,7 +46,8 @@ function Tree (data, renderTo) {
         e = DocsApp.getEvent(e);
         var el = DocsApp.getEventTarget(e);
         // walk up the tree until we find a LI item
-        while (el && el.tagName !== 'A') {
+        //while (el && el.tagName !== 'A') {
+        while (el && !ExtL.hasCls(el, 'tree-node')) {
            el = el.parentNode;
         }
         // if a node was clicked (-vs- clicking on the tree body)
@@ -74,23 +75,30 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
 
     var i    = 0,
         len  = data.length,
-        cfgs =  [];
+        cfgs =  [],
+        node, accessCls, cfg, href, textTag;
 
     // the node depth is used to style the tree with extra padding per tree level
     depth = depth || 0;
 
     // loop over all passed nodes
     for (; i < len; i++) {
-        var node      = data[i], // the current node
-            accessCls = node.access + '-tree-node',
-            // the default config to use for this node when processed to the DOM by 
-            // ExtL.createElement
-            cfg = {
-                tag            : 'a',
-                id             : node.id,
-                parentTreeNode : parentId || null,
-                "class"        : accessCls + ' tree-node tree-depth-' + depth
-            };
+        node      = data[i]; // the current node
+        accessCls = node.access + '-tree-node';
+        // the default config to use for this node when processed to the DOM by 
+        // ExtL.createElement
+        cfg = {
+            //tag            : 'div',
+            id             : node.id,
+            parentTreeNode : parentId || null,
+            "class"        : accessCls + ' tree-node tree-depth-' + depth
+        };
+
+        if (node.href || node.link) {
+            //cfg.href = DocsApp.buildTreeNodeHref(node);
+            href = DocsApp.buildTreeNodeHref(node);
+        }
+        textTag = href ? 'a' : 'span';
 
         // if the node is not a leaf node and has its own child nodes then process 
         // decorate the node accordingly and pass the children back into this method 
@@ -115,8 +123,9 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 //"class" : 'fa fa-folder-o ' || ''
                 "class" : (node.iconCls || '') + ' tree-node-icon'
             }, {
-                tag  : 'span',
-                html : node.text
+                tag  : textTag,
+                html : node.text,
+                href : href
             }];
             cfgs.push(cfg);
 
@@ -135,8 +144,8 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             icons['component'] = 'fa fa-gear gray';*/
 
             cfg.leaf = true;
-
-            cfg.href = DocsApp.buildTreeNodeHref(node);
+            cfg.tag  = textTag;
+            cfg.href = href;
             cfg["class"] += ' tree-leaf';
             // add the leaf node's icon, text, and a star if it's indicated as "new"
             cfg.cn = [{
@@ -320,14 +329,32 @@ DocsApp.initNavTree = function () {
     var navTreeName = DocsApp.meta.navTreeName,
         apiTree     = DocsApp.apiTree || {},
         guidesTree  = DocsApp.guidesTree || {},
-        navTrees    = ExtL.assign({}, apiTree, guidesTree),
-        navTree, guideKeys, apiKeys;
+        //apiKeys     = ExtL.keys(apiTree),
+        //apiRoot     = apiTree[apiKeys[0]],
+        //hasSubTrees = ExtL.isObject(apiRoot),
+        //apiTarget   = hasSubTrees ? apiRoot : apiTree,
+        navTrees, navTree, guideKeys;
+
+    /*if (ExtL.isObject(apiRoot)) {
+        apiTree = apiRoot;
+    }*/
+
+    // collect all trees into a single object
+    //navTrees = ExtL.assign({}, apiTarget, guidesTree);
+    navTrees = ExtL.assign({}, apiTree, guidesTree);
 
     // the product home page likely will not have passed a navTreeName to determine which 
     // nav tree to display so we'll grab the first guides or the first api name we find
     if (DocsApp.meta.pageType === 'home' && !navTreeName) {
         guideKeys = ExtL.keys(guidesTree);
+        //apiKeys   = ExtL.keys(apiTarget);
         apiKeys   = ExtL.keys(apiTree);
+        //apiRoot   = apiTree[apiKeys[0]];
+
+        /*if (ExtL.isObject(apiRoot)) {
+            apiKeys = ExtL.keys(apiRoot);
+        }*/
+
         if (guideKeys.length) {
             navTreeName = DocsApp.meta.navTreeName = guideKeys[0];
         } else if (apiKeys.length) {
@@ -337,8 +364,11 @@ DocsApp.initNavTree = function () {
         }
     }
 
+
+
     // the tree object for the current page
-    navTree = navTrees[navTreeName];
+    //navTree = navTrees[navTreeName];
+    navTree = ExtL.valueFromPath(navTrees, navTreeName);
 
     // if a navigation tree is found for the current page
     if (navTree) {
@@ -347,72 +377,103 @@ DocsApp.initNavTree = function () {
 
         // create the tree
         DocsApp.buildNavTree(navTree);
-        // select the node for the current page
 
+        // select the node for the current page
         if (id) {
             DocsApp.navTree.select(id)
                 // and expand the tree to the selected node
                 .expandTo(id);
         }
 
-        // next we gather up the tabs to be created at the top of the nav tree
-        if (guidesTree) {
-            tabs = tabs.concat(ExtL.keys(guidesTree));
-        }
-        if (apiTree) {
-            tabs = tabs.concat(ExtL.keys(apiTree));
-        }
-
-        // if tabs were found create the tab elements on the page
-        if (tabs.length) {
-            DocsApp.initNavTreeTabs(tabs);
-        }
+        DocsApp.initNavTreeTabs();
     }
 };
 
 /**
  * @method initNavTreeTabs
  * Creates the navigation tabs for the navigation panel using the passed tab names
- * @param {String[]} tabs The names of the tabs to create
  */
-DocsApp.initNavTreeTabs = function (tabs) {
-    // this is the name of the tree the current page belongs to.  It should match one of 
-    // the tab names so that we know which tab is active
-    var navTreeName = DocsApp.meta.navTreeName,
+DocsApp.initNavTreeTabs = function () {
+    var navTreeName      = DocsApp.meta.navTreeName,
         // the tree header container for all tabs
-        treeHeader  = ExtL.get('tree-header'),
-        apiTree     = DocsApp.apiTree || {},
-        guidesTree  = DocsApp.guidesTree || {},
-        navTrees    = ExtL.assign({}, apiTree, guidesTree),
-        i           = 0,
-        len         = tabs.length,
-        tab, tabId, tabCls, isActive, cfg;
+        treeHeader       = ExtL.get('tree-header'),
+        treeSubHeader    = ExtL.get('tree-sub-header'),
+        apiTree          = DocsApp.apiTree    || {},
+        guidesTree       = DocsApp.guidesTree || {},
+        navTrees         = ExtL.assign({}, guidesTree, apiTree),
+        navTreeTabs      = ExtL.keys(navTrees),
+        navTreeNameSplit = navTreeName.split('.'),
+        navTreeNameRoot  = navTreeNameSplit[0],
+        navTreeNameChild = navTreeNameSplit[1],
+        i                = 0,
+        len              = navTreeTabs.length,
+        tab, tabId, tabCls, isActive, activeCls, cfg, navTree, hasChildren,
+        childTabs, j, childLen, childTab, childTabId, childTabCls, childCfg, childNavTree;
 
-    // loop over the tab names and create each tab for the nav tree header
+    // loop through the keys from the guides and api trees (the top tab names)
     for (; i < len; i++) {
-        tab      = tabs[i];
-        tabId    = tabCls = tab.replace(/\s+/g, '-').toLowerCase() + '-tab';
+        tab       = navTreeTabs[i];
+        tabId     = tabCls = tab.replace(/\s+/g, '-').toLowerCase() + '-tab';
         // the active tab is the one that matches tha tree name of the current page
-        isActive = tab === navTreeName;
-        
+        isActive  = tab === navTreeNameRoot;
+        activeCls = isActive ? ' active-tab' : '';
+
         // the default config for all tabs
         cfg = {
             tag     : isActive ? 'div' : 'a',
-            "class" : 'nav-tab ',
+            "class" : 'nav-tab toolbarHeaderButton ' + tabCls,
             html    : tab,
             id      : tabId
         };
 
-        // if this is the active tab decorate it as active
-        if (isActive) {
-            cfg["class"] += 'toolbarHeaderButton active-tab ' + tabCls;
-        // else it's decorated as an inactive tab and given a link to that tab's landing 
-        // page
+        navTree     = navTrees[tab];
+        hasChildren = ExtL.isObject(navTree);
+            
+        // if there are child trees fetch the first available child
+        if (hasChildren) {
+            navTree = navTree[ExtL.keys(navTree)[0]];
+        }
+
+        // if this tab is not the currently active tab set the href for its anchor tag
+        if (!isActive) {
+            cfg.href = DocsApp.getNodeHref(navTree[0]);
         } else {
-            cfg.href = DocsApp.getNodeHref(
-                navTrees[tab][0]
-            );
-            cfg["class"] += 'toolbarHeaderButton ' + tabCls;
+            // else this is the active main tab so add the active tab class
+            cfg["class"] += activeCls;
+
+            // if this active tab's tree has children then there are sub tabs to process
+            if (hasChildren) {
+                childTabs = ExtL.keys(navTrees[tab]);
+                j         = 0;
+                childLen  = childTabs.length;
+
+                // loop over the sub-tab names
+                for (; j < childLen; j++) {
+                    childTab     = childTabs[j];
+                    childTabId   = childTabCls = childTab.replace(/\s+/g, '-').toLowerCase() + '-tab';
+                    isActive     = navTreeNameChild === childTab;
+                    
+                    // the default config for all child tabs
+                    childCfg = {
+                        tag     : isActive ? 'div' : 'a',
+                        "class" : 'sub-tab ' + childTabCls,
+                        html    : childTab,
+                        id      : childTabId
+                    };
+
+                    // decorate the active sub-tab
+                    if (isActive) {
+                        childCfg["class"] += activeCls;
+                    // and otherwise make the tab a link
+                    } else {
+                        childNavTree = ExtL.valueFromPath(navTrees, tab + '.' + childTab);
+                        childCfg.href = DocsApp.getNodeHref(childNavTree[0]);
+                    }
+
+                    // append the tab to the tree sub-header element
+                    treeSubHeader.appendChild(ExtL.createElement(childCfg));
+                }
+            }
         }
 
         // append the tab to the tree header element

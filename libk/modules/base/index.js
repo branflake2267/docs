@@ -982,7 +982,7 @@ class Base {
 
         // if the api source directory exists and is not a git repo then skip syncing
         if (Fs.existsSync(sourceDir) && !Git.isGitSync(sourceDir)) {
-            this.log('Cannot perform remote Git sync: API source directory is not a Git repo', 'info');
+            this.log(`Cannot perform remote Git sync: API source directory is not a Git repo: ${sourceDir}`, 'info');
             return;
         }
 

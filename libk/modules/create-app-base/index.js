@@ -36,7 +36,7 @@ class AppBase extends SourceGuides {
             prodObj     : prodObj,
             hasApi      : prodObj.hasApi,
             hasVersions : prodObj.hasVersions,
-            hasToolkits : !!(toolkits && toolkits.length),
+            hasToolkits : !!(toolkits && toolkits.length > 1),
             toolkits    : toolkits,
             toolkit     : toolkit,
             hasGuides   : prodObj.hasGuides !== false,

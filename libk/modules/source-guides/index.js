@@ -840,18 +840,6 @@ class SourceGuides extends SourceApi {
     processGuideHtml (html, data) {
         html = this.markup(html, data.id);
         html = this.decorateExamples(html);
-        html = this.addCls(html, {
-            h1 : [
-                'truncated',
-                'fw4',
-                'dark-blue'
-            ],
-            a: [
-                'link',
-                'underline-hover',
-                'blue'
-            ]
-        });
         return html;
     }
 

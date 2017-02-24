@@ -539,6 +539,7 @@ class SourceApi extends Base {
                 folderNodeCls = this.folderNodeCls,
                 mapped        = this.classMap[id],
                 isSingleton   = mapped && mapped.prepared.singleton,
+                access        = mapped && mapped.prepared.access,
                 newNode;
 
             if (!leaf) {
@@ -551,8 +552,7 @@ class SourceApi extends Base {
             } else {
                 //create the leaf node configuration
                 newNode = Object.assign(baseNode, {
-                    //href    : `${apiDirName}/${id}.html`,
-                    //iconCls : `${icon} ${folderNodeCls}`
+                    access  : access || 'public',
                     iconCls : `${icon}`
                 });
             }
@@ -579,10 +579,6 @@ class SourceApi extends Base {
      */
     sortNodes (nodes) {
         return nodes.sort((a, b) => {
-            if ((a.name === 'sparkline' && b.name === 'viewport') || (b.name === 'sparkline' && a.name === 'viewport')) {
-                console.log(a);
-                console.log(b);
-            }
             if (a.children && b.children) {
                 if (a.name > b.name) {
                     return 1;

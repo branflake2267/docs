@@ -205,6 +205,7 @@ class AppBase extends SourceGuides {
      * @return {String} The decorated guide body HTML
      */
     decorateExamples (html) {
+        //return html;
         let fiddleWrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{2}" data-fiddle-meta='{1}'>
                     <div class="da-inline-fiddle-nav relative bg-near-white ba b--black-05">
                         <div class="code-controls dib bg-transparent ma0 near-black pt2 b relative overflow-visible">

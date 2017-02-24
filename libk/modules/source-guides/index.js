@@ -700,6 +700,7 @@ class SourceGuides extends SourceApi {
 
             node.navTreeName = navTreeName;
             node.text        = node.name;
+            node.idx         = (i + 1);
 
             // if a rootPath was passed in create a directory in the output folder
             if (rootPath) {

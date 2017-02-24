@@ -73,10 +73,12 @@ function Tree (data, renderTo) {
 Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     data = ExtL.from(data);
 
-    var i    = 0,
-        len  = data.length,
-        cfgs =  [],
-        node, accessCls, cfg, href, textTag;
+    var i          = 0,
+        len        = data.length,
+        cfgs       = [],
+        isIndexed  =  this.isIndexed(),
+        indexedCls = isIndexed ? ' tree-node-indexed' : '',
+        node, accessCls, cfg, href, textTag, leafIcon;
 
     // the node depth is used to style the tree with extra padding per tree level
     depth = depth || 0;
@@ -88,10 +90,9 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         // the default config to use for this node when processed to the DOM by 
         // ExtL.createElement
         cfg = {
-            //tag            : 'div',
             id             : node.id,
             parentTreeNode : parentId || null,
-            "class"        : accessCls + ' tree-node tree-depth-' + depth
+            "class"        : accessCls + ' tree-node tree-depth-' + depth + indexedCls
         };
 
         if (node.href || node.link) {
@@ -119,9 +120,9 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 html    : '▿',
                 "class" : 'tree-expando tree-expando-expanded '
             }, {
-                tag     : 'i',
-                //"class" : 'fa fa-folder-o ' || ''
-                "class" : (node.iconCls || '') + ' tree-node-icon'
+                tag        : 'i',
+                "class"    : (node.iconCls || '') + ' tree-node-icon',
+                "data-idx" : node.idx
             }, {
                 tag  : textTag,
                 html : node.text,
@@ -137,21 +138,18 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             });
         } else {
             // decorate this node as a leaf node
-            /*var icons = [];
-
-            icons['class']     = 'fa fa-cube light-blue';
-            icons['singleton'] = 'fa fa-cube pink';
-            icons['component'] = 'fa fa-gear gray';*/
-
             cfg.leaf = true;
             cfg.tag  = textTag;
             cfg.href = href;
             cfg["class"] += ' tree-leaf';
+
+            leafIcon = isIndexed ? '' : (node.iconCls || '');
+
             // add the leaf node's icon, text, and a star if it's indicated as "new"
             cfg.cn = [{
-                tag     : 'i',
-                //"class" : icons[node.iconCls] || ''
-                "class" : (node.iconCls || '') + ' tree-node-icon'
+                tag        : 'i',
+                "class"    : leafIcon + ' tree-node-icon',
+                "data-idx" : node.idx
             }, {
                 tag  : 'span',
                 html : node.text
@@ -164,6 +162,14 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     }
 
     return cfgs;
+};
+
+/**
+ * Returns `true` if the nav tree is to display index numbers
+ * @return {Boolean} `true` if the tree nodes are to display as indexed
+ */
+Tree.prototype.isIndexed = function () {
+    return DocsApp.meta.navTreeName === 'Quick Start';
 };
 
 /**
@@ -296,7 +302,6 @@ DocsApp.appMeta = {
     masterSearchList   : '',
     searchHistory      : [],
     pos                : {},
-    //treeType         : DocsApp.meta.navTreeName.replace(" ", "-").toLowerCase() + '-tree',
     isFirefox          : (navigator.userAgent.indexOf("firefox") !== -1),
     //ios              : (navigator.userAgent.indexOf("Macintosh") !== -1 && navigator.userAgent.indexOf("WebKit") !== -1),
     apiSearchRecords   : null,
@@ -329,15 +334,7 @@ DocsApp.initNavTree = function () {
     var navTreeName = DocsApp.meta.navTreeName,
         apiTree     = DocsApp.apiTree || {},
         guidesTree  = DocsApp.guidesTree || {},
-        //apiKeys     = ExtL.keys(apiTree),
-        //apiRoot     = apiTree[apiKeys[0]],
-        //hasSubTrees = ExtL.isObject(apiRoot),
-        //apiTarget   = hasSubTrees ? apiRoot : apiTree,
         navTrees, navTree, guideKeys;
-
-    /*if (ExtL.isObject(apiRoot)) {
-        apiTree = apiRoot;
-    }*/
 
     // collect all trees into a single object
     //navTrees = ExtL.assign({}, apiTarget, guidesTree);
@@ -347,13 +344,7 @@ DocsApp.initNavTree = function () {
     // nav tree to display so we'll grab the first guides or the first api name we find
     if (DocsApp.meta.pageType === 'home' && !navTreeName) {
         guideKeys = ExtL.keys(guidesTree);
-        //apiKeys   = ExtL.keys(apiTarget);
         apiKeys   = ExtL.keys(apiTree);
-        //apiRoot   = apiTree[apiKeys[0]];
-
-        /*if (ExtL.isObject(apiRoot)) {
-            apiKeys = ExtL.keys(apiRoot);
-        }*/
 
         if (guideKeys.length) {
             navTreeName = DocsApp.meta.navTreeName = guideKeys[0];

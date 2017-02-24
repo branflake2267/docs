@@ -55,6 +55,10 @@ function Tree (data, renderTo) {
             me.toggleCollapse(el);
         }
     });
+
+    setTimeout(function () {
+        DocsApp.treeAfterRender();
+    }, 1);
 }
 
 /**
@@ -96,7 +100,6 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         };
 
         if (node.href || node.link) {
-            //cfg.href = DocsApp.buildTreeNodeHref(node);
             href = DocsApp.buildTreeNodeHref(node);
         }
         textTag = href ? 'a' : 'span';
@@ -131,11 +134,28 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             cfgs.push(cfg);
 
             // the child node wrap (for expand / collapse control)
-            cfgs.push({
+            var ctCfg = {
                 tag     : 'div',
                 "class" : 'child-nodes-ct',
                 cn      : this.createNodeCfgs(node.children, node.id, depth + 1)
-            });
+            };
+            var j = 0,
+                children = ctCfg.cn,
+                cnLen = children.length,
+                privateCt = 0;
+
+            for (; j < cnLen; j++) {
+                var child = children[j],
+                    private = child.class.indexOf('private-tree-node') > -1;
+                
+                if (private) {
+                    privateCt++;
+                }
+            }
+            if (privateCt > 0 && privateCt === cnLen) {
+                cfg.class += ' private-child-nodes-parent';
+            }
+            cfgs.push(ctCfg);
         } else {
             // decorate this node as a leaf node
             cfg.leaf = true;
@@ -513,6 +533,13 @@ DocsApp.getNodeHref = function (node) {
     return href;
 };
 
+/**
+ * Applies any post-processing to the nav tree after it's created and rendered
+ */
+DocsApp.treeAfterRender = function () {
+    DocsApp.filterClassTreeByAccess();
+};
+
 
 /**
  * @method getEvent
@@ -645,10 +672,11 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.filterClassTreeByAccess = function () {
         var privateCheckbox = ExtL.get('private-class-toggle'),
+            checked         = privateCheckbox && privateCheckbox.checked === true,
             privateCls      = 'show-private',
             treeMembersCt   = ExtL.get('tree');
 
-        ExtL.toggleCls(treeMembersCt, privateCls, privateCheckbox.checked === true);
+        ExtL.toggleCls(treeMembersCt, privateCls, checked);
     };
 
     /**
@@ -665,133 +693,6 @@ DocsApp.getEventTarget = function (e) {
             });
         }
     };
-
-    /**
-     * Toggle the active navigation tab between the api docs and guide tabs
-     * @param {String} tab The id of the tab to set active: apiTab or guideTab
-     */
-    /*DocsApp.toggleNavTab = function (tab) {
-        if (this !== window && ExtL.hasCls(this, 'active-tab')) {
-            return;
-        }
-
-        var apiTab = ExtL.get('apiTab'),
-            guideTab = ExtL.get('guideTab'),
-            quickStartTab = ExtL.get('quickStartTab'),
-            classicTab = ExtL.get('classicTab'),
-            modernTab = ExtL.get('modernTab'),
-            toSave = true,
-            tree = ExtL.get('tree'),
-            guideTree = ExtL.get('guide-tree'),
-            quickStartTree = ExtL.get('quick-start-tree'),
-            classicTree = ExtL.get('classicTree'),
-            modernTree = ExtL.get('modernTree');
-
-        if (!ExtL.isString(tab)) {
-            tab = tab || window.event;
-            tab = tab.target || tab.srcElement;
-            tab = tab.id;
-        }
-        tab = ExtL.get(tab);
-
-        if (!tab) {
-            return;
-        }
-
-        // deactivate all the tabs
-        ExtL.each(ExtL.fromNodeList(tab.parentNode.querySelectorAll('.active-tab')), function (t) {
-            ExtL.removeCls(t, 'active-tab');
-        });
-        ExtL.addCls(tab, 'active-tab');
-
-        if (tree) {
-            ExtL.toggleCls(tree, 'hide', !ExtL.hasCls(apiTab, 'active-tab'));
-        }
-        if (guideTree) {
-            ExtL.toggleCls(guideTree, 'hide', !ExtL.hasCls(guideTab, 'active-tab'));
-        }
-        if (quickStartTree) {
-            ExtL.toggleCls(quickStartTree, 'hide', !ExtL.hasCls(quickStartTab, 'active-tab'));
-        }
-        if (classicTree) {
-            ExtL.toggleCls(classicTree, 'hide', !ExtL.hasCls(classicTab, 'active-tab'));
-        }
-        if (modernTree) {
-            ExtL.toggleCls(modernTree, 'hide', !ExtL.hasCls(modernTab, 'active-tab'));
-        }
-
-        if (toSave) {
-            DocsApp.saveState();
-        }
-    }*/
-
-    /**
-     *
-     */
-    /*DocsApp.onGuideTabClick = function (e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-
-        if (!ExtL.hasCls(target, 'active-tab')) {
-            window.location.href = homePath + 'index.html';
-        }
-    }*/
-
-    /**
-     *
-     */
-    /*DocsApp.onApiTabClick = function (e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-
-        if (!ExtL.hasCls(target, 'active-tab')) {
-            if (DocsApp.meta.toolkit) {
-                window.location.href = homePath + 'modern/Ext.html';
-            } else {
-                window.location.href = homePath + 'api/' + (DocsApp.meta.product === 'test' ? 'ST.html' : 'Ext.html');
-            }
-        }
-    }*/
-
-    /**
-     *
-     */
-    /*DocsApp.onClassicTabClick = function (e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement,
-            match;
-
-        if (!ExtL.hasCls(target, 'active-tab')) {
-            match = ExtL.get('classicTree').querySelector('#node-classic-' + pageName.replace(/\./g, '-').toLowerCase());
-            window.location.href = homePath + 'classic/' + (match ? pageName : 'Ext') + '.html';
-        }
-    }*/
-
-    /**
-     *
-     */
-    /*DocsApp.onModernTabClick = function (e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement,
-            match;
-
-        if (!ExtL.hasCls(target, 'active-tab')) {
-            match = ExtL.get('modernTree').querySelector('#node-modern-' + pageName.replace(/\./g, '-').toLowerCase());
-            window.location.href = homePath + 'modern/' + (match ? pageName : 'Ext') + '.html';
-        }
-    }*/
-
-    /**
-     *
-     */
-    /*DocsApp.onQuickStartTabClick = function (e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement;
-
-        if (!ExtL.hasCls(target, 'active-tab')) {
-            window.location.href = ExtL.get('quick-start-tree').querySelector('a').href;
-        }
-    }*/
 
     /**
      *
@@ -3235,106 +3136,10 @@ DocsApp.getEventTarget = function (e) {
             document.querySelector('.guide-body-wrap').onscroll = DocsApp.handleScroll;
         }
 
-        /*if (!DocsApp.meta.hasApi) {
-            ExtL.addCls(ExtL.get('apiTab'), 'hide');
-        }
-        if (!DocsApp.meta.hasGuides) {
-            ExtL.addCls(ExtL.get('guideTab'), 'hide');
-        }*/
-
-        /*treeCt = ExtL.get('tree');
-
-        if (treeCt && treeCt.querySelector('div') && ExtL.hasCls(treeCt.querySelector('div'), 'tree-member')) {
-            tree = new TreeView(null, 'tree', homePath);
-            treeCt.myTree = tree;
-            tree.expandTo(pageName, singleton ? 'singleton' : 'node');
-            branches = treeCt.querySelectorAll('.isNotLeaf');
-            if (branches.length) {
-                ExtL.removeCls(treeCt.querySelector('.toggle-tree'), 'hide');
-            }
-            if (singleton) {
-                tree.expand('singleton' + '-' + pageName.toLowerCase().replace(/\./g, '-'), null, true);
-            }
-        } else {
-            if (!treeCt.querySelector('#modernTree')) {
-                ExtL.addCls(ExtL.get('apiTab'), 'hidden');
-            }
-        }*/
-
-        /*treeCt = ExtL.get('classicTree');
-
-        if (treeCt && treeCt.querySelector('div') && ExtL.hasCls(treeCt.querySelector('div'), 'tree-member')) {
-            tree = new TreeView(null, 'tree', homePath);
-            treeCt.myTree = tree;
-            tree.expandTo(myToolkit + '-' + pageName, singleton ? 'singleton' : 'node');
-            branches = treeCt.querySelectorAll('.isNotLeaf');
-            if (branches.length) {
-                ExtL.removeCls(ExtL.up(treeCt, '#tree').querySelector('.toggle-tree'), 'hide');
-            }
-            if (singleton) {
-                tree.expand('singleton' + '-' + pageName.toLowerCase().replace(/\./g, '-'), null, true);
-            }
-        }*/
-
-        /*treeCt = ExtL.get('modernTree');
-
-        if (treeCt && treeCt.querySelector('div') && ExtL.hasCls(treeCt.querySelector('div'), 'tree-member')) {
-            tree = new TreeView(null, 'tree', homePath);
-            treeCt.myTree = tree;
-            tree.expandTo(myToolkit + '-' + pageName, singleton ? 'singleton' : 'node');
-            branches = treeCt.querySelectorAll('.isNotLeaf');
-            if (branches.length) {
-                ExtL.removeCls(ExtL.up(treeCt, '#tree').querySelector('.toggle-tree'), 'hide');
-            }
-            if (singleton) {
-                tree.expand('singleton' + '-' + pageName.toLowerCase().replace(/\./g, '-'), null, true);
-            }
-        }*/
-
-        /*treeCt = ExtL.get('guide-tree');
-        if (treeCt && treeCt.firstChild) {
-            guideTree = new TreeView(null, 'guide-tree', homePath + 'guides/');
-            treeCt.myTree = guideTree;
-            guideTree.expandTo(specificId);
-            branches = treeCt.querySelectorAll('.isNotLeaf');
-            if (branches.length) {
-                ExtL.removeCls(treeCt.querySelector('.toggle-tree'), 'hide');
-            }
-        } else {
-            ExtL.addCls(ExtL.get('guideTab'), 'hidden');
-        }*/
-
-        /*treeCt = ExtL.get('quick-start-tree');
-        if (treeCt && treeCt.firstChild) {
-            quickStartTree = new TreeView(null, 'quick-start-tree', homePath + 'guides/');
-            treeCt.myTree = quickStartTree;
-            quickStartTree.expandTo(specificId);
-        } else {
-            if (ExtL.get('quickStartTab')) {
-                ExtL.addCls(ExtL.get('quickStartTab'), 'hidden');
-            }
-        }*/
-
         eventsEl = ExtL.get('guideTab');
         if (eventsEl) {
             ExtL.on(eventsEl, 'click', DocsApp.onGuideTabClick);
         }
-        /*eventsEl = ExtL.get('apiTab');
-        if (eventsEl) {
-            ExtL.on(eventsEl, 'click', DocsApp.onApiTabClick);
-        }*/
-        /*eventsEl = ExtL.get('quickStartTab');
-        if (eventsEl) {
-            ExtL.on(eventsEl, 'click', DocsApp.onQuickStartTabClick);
-        }*/
-        /*eventsEl = ExtL.get('classicTab');
-        if (eventsEl) {
-            ExtL.on(eventsEl, 'click', DocsApp.onClassicTabClick);
-        }*/
-        /*eventsEl = ExtL.get('modernTab');
-        if (eventsEl) {
-            ExtL.on(eventsEl, 'click', DocsApp.onModernTabClick);
-        }*/
         eventsEl = ExtL.get('filterTab');
         if (eventsEl) {
             ExtL.on(eventsEl, 'click', DocsApp.toggleContextTab);
@@ -3445,29 +3250,6 @@ DocsApp.getEventTarget = function (e) {
      * Handles expand all click
      */
     DocsApp.onToggleAllClick = function (e) {
-        /*var memberList  = ExtL.fromNodeList(document.querySelectorAll('.classmembers')),
-            symbText    = ExtL.get('toggleAll'),
-            isCollapsed = ExtL.hasCls(symbText, 'fa-plus'),
-            itemAction  = isCollapsed ? 'addCls' : 'removeCls';
-
-        ExtL.each(memberList, function (item) {
-            ExtL[itemAction](item, 'member-expanded');
-        });
-
-        ExtL.removeCls(symbText, isCollapsed ? 'fa-plus' : 'fa-minus');
-        ExtL.addCls(symbText, isCollapsed ? 'fa-minus' : 'fa-plus');*/
-
-        /*var me        = this,
-            navTree   = DocsApp.navTree,
-            indicator = ExtL.get('toggle-indicator'),
-            collapsed = ExtL.hasCls(indicator, 'fa-minus');
-
-        navTree.toggleCollapseAll(collapsed);
-
-        me.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Classes');
-
-        ExtL.toggleCls(indicator, 'fa-minus');
-        ExtL.toggleCls(indicator, 'fa-plus');*/
         var memberList = ExtL.fromNodeList(document.querySelectorAll('.classmembers')),
             btn        = ExtL.get('toggleAll'),
             indicator  = btn.querySelector('i'),
@@ -3545,29 +3327,6 @@ DocsApp.getEventTarget = function (e) {
         DocsApp.toggleTreeVisibility();
     };
 
-    /**
-     *
-     */
-    /*DocsApp.toggleTreeExpand = function (e) {
-        e = e || window.event;
-        var target = e.target || e.srcElement,
-            treeCt = ExtL.up(target, '.is-tree');
-
-        if (DocsApp.meta.toolkit && treeCt.id === 'tree') {
-            var modernTree = treeCt.querySelector('#modernTree');
-            treeCt = ExtL.hasCls(modernTree, 'hide') ? treeCt.querySelector('#classicTree') : modernTree;
-        }
-
-        var branches = ExtL.fromNodeList(treeCt.querySelectorAll('.isNotLeaf')),
-            tree = treeCt.myTree,
-            isExpanded = ExtL.hasCls(treeCt, 'is-expanded');
-
-        ExtL.each(branches, function (node) {
-            tree[isExpanded ? 'collapse' : 'expand'](node);
-        });
-
-        ExtL.toggleCls(treeCt, 'is-expanded');
-    }*/
     /**
      * @method toggleTreeNodes
      */
@@ -4120,18 +3879,6 @@ DocsApp.getEventTarget = function (e) {
         // globally handle body click events
         document.body.onclick = DocsApp.onBodyClick;
 
-        /*if (document.getElementsByClassName('toolkit-switch')[0]) {
-
-            var link = document.getElementsByClassName('toolkit-switch')[0],
-                href = link.href,
-                name = href.substring(href.lastIndexOf('/')+1),
-                curl = window.location.href,
-                rel  = (curl.indexOf('guides') > -1) ? DocsApp.getRelativePath(curl) : '';
-            
-            link.href = null;
-            link.href = '../' + rel + name;
-        }*/
-
         if (DocsApp.meta.pageType === 'api') {
             // show / hide the class tree panel when clicking the show / hide buttons
 
@@ -4243,16 +3990,6 @@ DocsApp.getEventTarget = function (e) {
             pageTitle            = meta.title,
             activeNavTab;
 
-        /*if (apiTab && ExtL.hasCls(apiTab, 'active-tab')) {
-            activeNavTab = 'apiTab';
-        }*/
-        /*if (guideTab && ExtL.hasCls(guideTab, 'active-tab')) {
-            activeNavTab = 'guideTab';
-        }*/
-        /*if (quickStartTab && ExtL.hasCls(quickStartTab, 'active-tab')) {
-            activeNavTab = 'quickStartTab';
-        }*/
-
         state.showTree = !ExtL.hasCls(body, 'tree-hidden');
         if (publicCheckbox) {
             state.publicCheckbox = publicCheckbox.checked;
@@ -4354,18 +4091,6 @@ DocsApp.getEventTarget = function (e) {
         state = ExtL.decodeValue(saved) || {
             showTree: null
         };
-
-        /*if (DocsApp.meta.isHome || DocsApp.meta.isGuide) {
-            DocsApp.toggleNavTab('guideTab');
-        } else if (DocsApp.meta.isApi) {
-            if (myToolkit) {
-                DocsApp.toggleNavTab(myToolkit + 'Tab');
-            } else {
-                DocsApp.toggleNavTab('apiTab');
-            }
-        } else if (isQuickStart) {
-            DocsApp.toggleNavTab('quickStartTab');
-        }*/
 
         if (returnOnly) {
             return state;

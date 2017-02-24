@@ -646,7 +646,7 @@ class Base {
             html = html.replace(re, (match, p1, p2, p3, p4) => {
                 let pre      = p1 || p3,
                     post     = p2 || p4,
-                    classStr = p1 ? ` class="${cls}"` : ` ${cls}`;
+                    classStr = p1 ? ` class="${cls}"` : ` ${cls} `;
 
                 return `${pre}${classStr}${post}`;
             });
@@ -903,7 +903,7 @@ class Base {
 
         return marked(text, {
             addHeaderId: !cls ? false : function (text, level, raw) {
-                return me.makeID(cls, raw)
+                return me.makeID(cls, raw);
             },
             appendLink: true,
             decorateExternal: true

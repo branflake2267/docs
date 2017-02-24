@@ -239,6 +239,10 @@ window.ExtL = window.ExtL || {};
             el = ExtL.get(el);
         }
 
+        if (!el) {
+            return false;
+        }
+
         if (this.isEmpty(state)) {
             state = !this.hasCls(el, cls);
         } else {

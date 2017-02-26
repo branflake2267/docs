@@ -974,7 +974,7 @@ class Base {
         let path;
 
         if (Fs.existsSync('../../sencha-cmd')) {
-            path = '../../../../../sencha-cmd/sencha';
+            path = '../../sencha-cmd/sencha';
         } else {
             'sencha';
         }

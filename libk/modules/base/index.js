@@ -1007,7 +1007,8 @@ class Base {
             // TODO can these paths be improved to be less static?
             this.log("Checking for Sencha Cmd");
             if (Fs.existsSync('../../sencha-cmd')) {
-                cmd = '../../../../../sencha-cmd/sencha';
+                console.log('Looks like we are on a TC agent');
+                cmd = '../../sencha-cmd/sencha';
             }
 
             // if the api source directory doesn't exist (may or may not be within the
@@ -1025,10 +1026,10 @@ class Base {
             // cd into the repo directory and fetch all + tags
             Shell.cd(sourceDir);
 
-            // find out if there are dirty or untracked files and if so skip syncing
+            // find out if there are dirty or un-tracked files and if so skip syncing
             let status = Git.checkSync(sourceDir);
             if (status.dirty || status.untracked) {
-                this.log('API source directory has modified / untracked changes - skipping remote sync', 'info');
+                this.log('API source directory has modified / un-tracked changes - skipping remote sync', 'info');
                 return;
             }
 

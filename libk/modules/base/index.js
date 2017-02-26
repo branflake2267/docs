@@ -968,6 +968,21 @@ class Base {
     }
 
     /**
+     * Return Cmd path to use
+     */
+    getCmdPath () {
+        let path;
+
+        if (Fs.existsSync('../../sencha-cmd')) {
+            path = '../../../../../sencha-cmd/sencha';
+        } else {
+            'sencha';
+        }
+
+        return path;
+    }
+
+    /**
      * Sync a remote git repo locally so you don't have to have a copy of every
      * applicable branch locally sourced.  The product name is passed in and the git
      * particulars are collected from the projectDefaults config file (cached in `this`'s
@@ -1000,22 +1015,7 @@ class Base {
                 tag       = verInfo && verInfo.tag,
                 repo      = prodCfg.repo,
                 remoteUrl = prodCfg.remoteUrl,
-                reposPath = options.localReposDir,
-                cmd       = 'sencha';
-
-            // This is to determine if we're local or on TeamCity
-            // TODO can these paths be improved to be less static?
-            this.log("Checking for Sencha Cmd");
-            if (Fs.existsSync('../../sencha-cmd')) {
-                console.log('Looks like we are on a TC agent');
-                cmd = '../../sencha-cmd/sencha';
-            }
-
-            this.log("Sencha Cmd Determined");
-            this.log(cmd);
-
-            this.log("Where am I?");
-            Shell.exec('ls -al');
+                reposPath = options.localReposDir;
 
             // if the api source directory doesn't exist (may or may not be within the
             // repos directory) then create the repos directory and clone the remote
@@ -1031,9 +1031,6 @@ class Base {
 
             // cd into the repo directory and fetch all + tags
             Shell.cd(sourceDir);
-
-            this.log("Moved to the repo directory");
-            Shell.exec('ls -al');
 
             // find out if there are dirty or un-tracked files and if so skip syncing
             let status = Git.checkSync(sourceDir);
@@ -1058,9 +1055,6 @@ class Base {
                 this.log(`Checking out tagged version: ${tag}`);
                 Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
             }
-
-            this.log("We will return to our path");
-            Shell.exec('ls -al');
 
             // get back to the original working directory
             Shell.cd(path);

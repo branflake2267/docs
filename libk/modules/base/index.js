@@ -1011,6 +1011,12 @@ class Base {
                 cmd = '../../sencha-cmd/sencha';
             }
 
+            this.log("Sencha Cmd Determined");
+            this.log(cmd);
+
+            this.log("Where am I?");
+            Shell.exec('ls -al');
+
             // if the api source directory doesn't exist (may or may not be within the
             // repos directory) then create the repos directory and clone the remote
             if (!Fs.existsSync(sourceDir)) {
@@ -1025,6 +1031,9 @@ class Base {
 
             // cd into the repo directory and fetch all + tags
             Shell.cd(sourceDir);
+
+            this.log("Moved to the repo directory");
+            Shell.exec('ls -al');
 
             // find out if there are dirty or un-tracked files and if so skip syncing
             let status = Git.checkSync(sourceDir);
@@ -1049,6 +1058,9 @@ class Base {
                 this.log(`Checking out tagged version: ${tag}`);
                 Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
             }
+
+            this.log("We will return to our path");
+            Shell.exec('ls -al');
 
             // get back to the original working directory
             Shell.cd(path);

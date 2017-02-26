@@ -327,7 +327,8 @@ class SourceApi extends Base {
      * (HTML docs or Ext app)
      */
     runDoxi () {
-        let options = this.options;
+        let options = this.options,
+            cmd     = this.getCmdPath();
 
         // if the `forceDoxi` options is passed or the doxi input directory is empty /
         // missing then run doxi
@@ -337,8 +338,7 @@ class SourceApi extends Base {
                 this.apiSourceDir
             );
 
-            let path = Shell.pwd(),
-                cmd  = 'sencha';
+            let path = Shell.pwd();
 
             Shell.cd(this.tempDir);
             Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json combo-nosrc`);

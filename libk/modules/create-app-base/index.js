@@ -120,7 +120,8 @@ class AppBase extends SourceGuides {
                 this.options.toolkit = tk;
                 return this.prepareApiSource();
             });
-        }, Promise.resolve());
+        }, Promise.resolve())
+        .catch(this.error.bind(this));
     }
 
     /**

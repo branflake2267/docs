@@ -969,18 +969,28 @@ class Base {
 
     /**
      * Return Cmd path to use
+     * @return {String} The command or path/command used to run Sencha Cmd
      */
     getCmdPath () {
-        let path;
+        let path = 'sencha';
 
-        if (Fs.existsSync('../../sencha-cmd')) {
-            path = '../../../sencha-cmd/sencha';
-              console.log('yes, that directory is found.  we are tc');
-        } else {
-            'sencha';
+        if (!Shell.which('sencha')) {
+            path = Shell.pwd().toString();
+
+            let pathArr = path.split('/'),
+                cmdDir  = 'sencha-cmd',
+                len     = pathArr.length,
+                loc     = pathArr.indexOf(cmdDir),
+                up      = '../';
+
+            if (loc > -1) {
+                path = Path.join(up.repeat((len - 1) - loc), cmdDir, 'sencha');
+            } else {
+                throw 'Sencha Cmd not found.  Please install Sencha Cmd.';
+            }
         }
 
-        return path;
+        return 'sencha';
     }
 
     /**

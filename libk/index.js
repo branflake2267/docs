@@ -58,6 +58,12 @@ const args = require('yargs')
             default     : false,
             description : 'Skips the creation of the source HTML files for API docs',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --skipSourceFiles'
+        },
+        'audioAlert' : {
+            type        : 'boolean',
+            default     : true,
+            description : 'Skips the audio alert at the end of a build',
+            example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --audioAlert=false'
         }
     })
     .command('command', 'Module to run', { alias: 'command' })

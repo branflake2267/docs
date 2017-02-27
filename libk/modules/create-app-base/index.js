@@ -15,7 +15,8 @@
  */
 
 const SourceGuides = require('../source-guides'),
-      Utils        = require('../shared/Utils');
+      Utils        = require('../shared/Utils'),
+      Beautify     = require('js-beautify').js_beautify;
 
 class AppBase extends SourceGuides {
     constructor (options) {
@@ -255,7 +256,7 @@ class AppBase extends SourceGuides {
         // decorates @example blocks as inline fiddles
         out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
             meta = meta.trim();
-            code = code.trim();
+            code = Beautify(code.trim());
 
             if (meta && meta.length) {
                 fidMeta = Object.assign({}, fidMeta);
@@ -293,6 +294,7 @@ class AppBase extends SourceGuides {
         });
 
         out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, code) => {
+            code = Beautify(code);
             return `<pre><code class="language-javascript">${code}</code></pre>`;
         });
 

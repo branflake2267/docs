@@ -995,7 +995,7 @@ class Base {
         }*/
 
         if (options.production) {
-            path = '../../../sencha-cmd/sencha';
+            path = '../../sencha-cmd/sencha';
         }
 
         return path;

@@ -323,6 +323,8 @@ DocsApp.appMeta = {
     searchHistory      : [],
     pos                : {},
     isFirefox          : (navigator.userAgent.indexOf("firefox") !== -1),
+    isMacWebkit        : (navigator.userAgent.indexOf("Macintosh") !== -1 &&
+                         navigator.userAgent.indexOf("WebKit") !== -1),
     //ios              : (navigator.userAgent.indexOf("Macintosh") !== -1 && navigator.userAgent.indexOf("WebKit") !== -1),
     apiSearchRecords   : null,
     addHighlight       : null,
@@ -3739,7 +3741,7 @@ DocsApp.getEventTarget = function (e) {
             // On Macs, however, the mousewheels seem to be velocity-sensitive and
             // the delta values are often larger multiples of 120, at
             // least with the Apple Mouse. Use browser-testing to defeat this.
-            if (isMacWebkit) {
+            if (DocsApp.appMeta.isMacWebkit) {
                 deltaX /= 30;
                 deltaY /= 30;
             }

@@ -976,27 +976,22 @@ class Base {
      * @return {String} The command or path/command used to run Sencha Cmd
      */
     getCmdPath () {
-        let path = 'sencha';
+        let keyword = 'sencha',
+            path = this.options.cmdPath;
 
-        if (!Shell.which('sencha')) {
-            path = Shell.pwd().toString();
-
-            let pathArr = path.split('/'),
-                cmdDir  = 'sencha-cmd',
-                len     = pathArr.length,
-                loc     = pathArr.indexOf(cmdDir),
-                up      = '../';
-
-            if (loc > -1) {
-                path = Path.join(up.repeat((len - 1) - loc), cmdDir, 'sencha');
+        // if the cmd path is not passed in then look for it on the path.
+        if (!path) {
+            // if 'sencha' is on the PATH use that
+            if (Shell.which(keyword)) {
+                path = keyword;
             } else {
+                // else thrown an error
                 throw 'Sencha Cmd not found.  Please install Sencha Cmd.';
             }
+        } else {
+            // join the 'sencha' keyword with teh passed path
+            path = Path.join(path, keyword);
         }
-
-        /*if (options.production) {
-            path = '../../sencha-cmd/sencha';
-        }*/
 
         return path;
     }

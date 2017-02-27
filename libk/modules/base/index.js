@@ -990,7 +990,7 @@ class Base {
             }
         }
 
-        return 'sencha';
+        return path;
     }
 
     /**

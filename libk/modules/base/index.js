@@ -754,9 +754,13 @@ class Base {
      * Performs and cleanup / status as the build concludes
      */
     concludeBuild () {
+        let options = this.options;
+
         // TODO see about replacing this with a closeStatus() call instead once we have 
         // the process populated with statuses
-        Play.sound('./assets/audio/jobsdone.m4a');
+        if (!options.production && options.audioAlert === true) {
+            Play.sound('./assets/audio/jobsdone.m4a');
+        }
         this.closeStatus();
     }
 

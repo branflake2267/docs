@@ -64,6 +64,11 @@ const args = require('yargs')
             default     : true,
             description : 'Skips the audio alert at the end of a build',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --audioAlert=false'
+        },
+        'cmdPath' : {
+            type        : 'string',
+            description : 'Stipulates the sencha directory -vs- using what\'s on PATH',
+            example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --cmdPath=../../sencha_cmd/sencha'
         }
     })
     .command('command', 'Module to run', { alias: 'command' })

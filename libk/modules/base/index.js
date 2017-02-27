@@ -978,7 +978,7 @@ class Base {
     getCmdPath () {
         let path = 'sencha';
 
-        if (!Shell.which('sencha')) {
+        /*if (!Shell.which('sencha')) {
             path = Shell.pwd().toString();
 
             let pathArr = path.split('/'),
@@ -992,7 +992,7 @@ class Base {
             } else {
                 throw 'Sencha Cmd not found.  Please install Sencha Cmd.';
             }
-        }
+        }*/
 
         if (options.production) {
             path = '../../../sencha-cmd/sencha';

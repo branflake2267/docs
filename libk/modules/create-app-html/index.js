@@ -103,6 +103,8 @@ class HtmlApp extends AppBase {
             root      = options._myRoot,
             assetsSrc = Path.join(root, 'assets');
 
+        Fs.ensureDirSync(this.assetsDir);
+
         this.copyCss();
         this.copyJs();
 

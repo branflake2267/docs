@@ -334,7 +334,7 @@ class SourceApi extends Base {
         // missing then run doxi
         if (this.options.forceDoxi || this.doxiInputFolderIsEmpty) {
             this.syncRemote(
-                this.product,
+                this.apiProduct,
                 this.apiSourceDir
             );
 

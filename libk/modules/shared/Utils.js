@@ -298,7 +298,7 @@ class Utils {
      * @param {Boolean} reverse (optional) Reverse the iteration order (loop from the end
      * to the beginning).
      */
-     static arrEach (array, fn, scope, reverse) {
+     arrEach (array, fn, scope, reverse) {
         array = this.from(array);
 
         var i,
@@ -333,7 +333,7 @@ class Utils {
      * @param {Object} scope (optional) The scope (this reference) in which the specified
      * function is executed.
      */
-     static objEach (object, fn, scope) {
+     objEach (object, fn, scope) {
         var i, property;
 
         if (object) {

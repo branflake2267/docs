@@ -589,7 +589,6 @@ class SourceApi extends Base {
     sortNodes (nodes) {
         this.log(`Begin 'SourceApi.sortNodes'`, 'info');
         return nodes.sort((a, b) => {
-            //if (a.children && b.children) {
             if ((a.children && b.children) || (!a.children && !b.children)) {
                 if (a.name > b.name) {
                     return 1;

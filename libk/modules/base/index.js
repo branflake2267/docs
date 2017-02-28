@@ -1019,7 +1019,7 @@ class Base {
         if (options.syncRemote || !Fs.existsSync(sourceDir)) {
             let path      = Shell.pwd(),
                 version   = this.apiVersion,
-                product   = this.apiProduct,
+                //product   = this.apiProduct,
                 toolkit   = options.toolkit,
                 wToolkit  = version + '-' + (toolkit || product),
                 prodCfg   = options.products[product],

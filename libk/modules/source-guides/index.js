@@ -368,7 +368,8 @@ class SourceGuides extends SourceApi {
             }
         }
 
-        return Promise.all(actionArr);
+        return Promise.all(actionArr)
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -448,7 +449,8 @@ class SourceGuides extends SourceApi {
             }
 
             resolve(searchObj);
-        });
+        })
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -545,7 +547,8 @@ class SourceGuides extends SourceApi {
                     resolve();
                 }
             });
-        });
+        })
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -594,7 +597,8 @@ class SourceGuides extends SourceApi {
             }
         }
 
-        return Promise.all(writeArr);
+        return Promise.all(writeArr)
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -643,7 +647,8 @@ class SourceGuides extends SourceApi {
             }));
         });
 
-        return Promise.all(promises);
+        return Promise.all(promises)
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -671,8 +676,8 @@ class SourceGuides extends SourceApi {
             }
 
             resolve(toReadArr);
-        });
-
+        })
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -763,7 +768,8 @@ class SourceGuides extends SourceApi {
      * @return {Object} Promise
      */
     readGuides (toReadArr) {
-        return Promise.all(toReadArr);
+        return Promise.all(toReadArr)
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -783,7 +789,8 @@ class SourceGuides extends SourceApi {
                 node.content = content;
                 resolve();
             });
-        });
+        })
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -857,11 +864,12 @@ class SourceGuides extends SourceApi {
 
             Fs.writeFile(dest, wrap, 'utf8', (err) => {
                 if (err) {
-                    reject(Error(err));
+                    reject(err);
                 }
                 resolve();
             });
-        });
+        })
+        .catch(this.error.bind(this));
     }
 }
 

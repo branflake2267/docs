@@ -34,6 +34,8 @@ class Base {
             ),
             appDefaults = Fs.readJsonSync(Path.join(root, 'configs/app.json'));
 
+        this.log(`Create 'Base' instance`, 'info');
+
         // merge in the project defaults, then the app defaults, then finally the CLI 
         // args
         options = Object.assign({}, projectDefaults, appDefaults, options);
@@ -333,6 +335,7 @@ class Base {
      * Register all handlebars partials from the templates directory
      */
     registerHandlebarsPartials () {
+        this.log(`Begin 'Base.registerHandlebarsPartials'`, 'info');
         let templateDir = Path.join(this.options._myRoot, 'templates'),
             files       = this.getPartials(this.getFiles(templateDir)),
             len         = files.length,
@@ -363,6 +366,7 @@ class Base {
      * Register all handlebars helpers
      */
     registerHandlebarsHelpers () {
+        this.log(`Begin 'Base.registerHandlebarsHelpers'`, 'info');
         // The `json` helper stringifies a Javascript object.  Helpful when you want to 
         // pass a hash of information directly to a handlebars template.
         Handlebars.registerHelper('json', function(context) {
@@ -423,6 +427,7 @@ class Base {
      *     enableLogging(['error', 'info']);
      */
     enableLogging (level) {
+        this.log(`Begin 'Base.enableLogging'`, 'info');
         level = Utils.from(level);
         let all, log, info, error;
 
@@ -754,6 +759,7 @@ class Base {
      * Performs and cleanup / status as the build concludes
      */
     concludeBuild () {
+        this.log(`Begin 'Base.concludeBuild'`, 'info');
         let options = this.options;
 
         // TODO see about replacing this with a closeStatus() call instead once we have 
@@ -1007,6 +1013,7 @@ class Base {
      * @param {String} sourceDir The source directory of the local repo
      */
     syncRemote (product, sourceDir) {
+        this.log(`Begin 'Base.syncRemote'`, 'info');
         let options = this.options;
 
         // if the api source directory exists and is not a git repo then skip syncing

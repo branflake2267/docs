@@ -381,12 +381,13 @@ class HtmlApp extends AppBase {
             html = this.processApiHtml(html);
 
             Fs.writeFile(fileName, html, 'utf8', (err) => {
-                if (err) reject();
+                if (err) reject(err);
                 delete this.classMap[className];
                 // resolve after a timeout to let garbage collection catch up
                 setTimeout(resolve, 100);
             });
-        });
+        })
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -419,11 +420,12 @@ class HtmlApp extends AppBase {
             let html = this.mainTemplate(data);
 
             Fs.writeFile(dest, html, 'utf8', (err) => {
-                if (err) reject();
+                if (err) reject(err);
                 
                 resolve();
             });
-        });
+        })
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -432,7 +434,8 @@ class HtmlApp extends AppBase {
     outputMainLandingPage () {
         return new Promise((resolve, reject) => {
             resolve();
-        });
+        })
+        .catch(this.error.bind(this));
     }
 }
 

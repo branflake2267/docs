@@ -21,6 +21,7 @@ const SourceGuides = require('../source-guides'),
 class AppBase extends SourceGuides {
     constructor (options) {
         super(options);
+        this.log(`Create 'AppBase' instance`, 'info');
 
         let o = this.options,
             product    = o.product,
@@ -81,10 +82,8 @@ class AppBase extends SourceGuides {
     /**
      * Default entry point for this module
      */
-    // TODO wire up promises instead of events for app flow control
     run () {
-        // TODO process the output HTML files here in the create-app-html class (maybe by overriding the output method in source-api)
-        //console.log('PROCESS ALL OF THE SOURCE FILES TO ');
+        this.log(`Begin 'AppBase.run'`, 'info');
         let dt = new Date();
         return this.runApi()
         .then(this.outputApiSearch.bind(this))
@@ -102,6 +101,7 @@ class AppBase extends SourceGuides {
      */
     // TODO remove events in favor of promises
     runApi () {
+        this.log(`Begin 'AppBase.runApi'`, 'info');
         let options     = this.options,
             meta        = this.options.prodVerMeta,
             hasApi      = meta.hasApi,
@@ -128,6 +128,7 @@ class AppBase extends SourceGuides {
      * Run the guide processor (if the product has guides)
      */
     runGuides () {
+        this.log(`Begin 'AppBase.runGuides'`, 'info');
         return this.processGuides()
         .then(() => {
             this.concludeBuild();
@@ -207,7 +208,6 @@ class AppBase extends SourceGuides {
      * @return {String} The decorated guide body HTML
      */
     decorateExamples (html) {
-        //return html;
         let fiddleWrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{2}" data-fiddle-meta='{1}'>
                     <div class="da-inline-fiddle-nav relative bg-near-white ba b--black-05">
                         <div class="code-controls dib bg-transparent ma0 near-black pt2 b relative overflow-visible">

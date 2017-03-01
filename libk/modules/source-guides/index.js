@@ -579,9 +579,10 @@ class SourceGuides extends SourceApi {
                         data     = Object.assign(data, this.options.prodVerMeta);
 
                         // prepare the data object to be passed to the guide template
-                        data.rootPath = rootPathDir;
-                        data.content  = this.processGuideHtml(content, data);
-                        data = this.processGuideDataObject(data);
+                        data.rootPath       = rootPathDir;
+                        data.prodVerPath    = Path.relative(rootPathDir, this.outputProductDir) + '/';
+                        data.content        = this.processGuideHtml(content, data);
+                        data                = this.processGuideDataObject(data);
                         data.contentPartial = '_html-guideBody';
                         
                         Fs.writeFile(filePath, this.mainTemplate(data), 'utf8', (err) => {

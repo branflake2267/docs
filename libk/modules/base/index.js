@@ -767,6 +767,7 @@ class Base {
         if (!options.production && options.audioAlert === true) {
             Play.sound('./assets/audio/jobsdone.m4a');
         }
+
         this.closeStatus();
     }
 
@@ -1055,6 +1056,7 @@ class Base {
 
             // find out if there are dirty or un-tracked files and if so skip syncing
             let status = Git.checkSync(sourceDir);
+            
             if (status.dirty || status.untracked) {
                 this.log('API source directory has modified / un-tracked changes - skipping remote sync', 'info');
                 return;

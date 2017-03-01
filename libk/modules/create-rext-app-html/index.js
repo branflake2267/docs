@@ -21,7 +21,7 @@ const HtmlApp    = require('../create-app-html'),
       UglifyJS   = require("uglify-js"),
       CleanCSS   = require('clean-css');
 
-class RextHtmlApp extends HtmlApp {
+class ExtReactHtmlApp extends HtmlApp {
     constructor (options) {
         super(options);
 
@@ -50,7 +50,7 @@ class RextHtmlApp extends HtmlApp {
             let options = this.options,
                 rextVersion = options.version || options.currentVersion;
 
-            ver = this._apiVer = options.products.rextjs.extjsVer[rextVersion];
+            ver = this._apiVer = options.products.extreact.extjsVer[rextVersion];
         }
 
         return ver;
@@ -85,4 +85,4 @@ class RextHtmlApp extends HtmlApp {
     }*/
 }
 
-module.exports = RextHtmlApp;
+module.exports = ExtReactHtmlApp;

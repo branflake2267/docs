@@ -16,7 +16,9 @@
 
 const SourceGuides = require('../source-guides'),
       Utils        = require('../shared/Utils'),
-      Beautify     = require('js-beautify').js_beautify;
+      Beautify     = require('js-beautify').js_beautify,
+      Fs           = require('fs-extra'),
+      Path         = require('path');
 
 class AppBase extends SourceGuides {
     constructor (options) {
@@ -88,6 +90,7 @@ class AppBase extends SourceGuides {
         return this.runApi()
         .then(this.outputApiSearch.bind(this))
         .then(this.processGuides.bind(this))
+        .then(this.outputProductMenu.bind(this))
         .then(() => {
             console.log('ALL TOLD:', this.getElapsed(dt));
             this.concludeBuild();
@@ -134,6 +137,89 @@ class AppBase extends SourceGuides {
             this.concludeBuild();
         })
         .catch(this.error.bind(this));
+    }
+
+    /**
+     * Creates the product menu from the 
+     */
+    getProductMenu () {
+        let options          = this.options,
+            // this is an array of keys found on the array of product defaults in the 
+            // config file in the order the products should be displayed in the UI
+            includedProducts = options.productMenu || [],
+            products         = options.products,
+            len              = includedProducts.length,
+            i                = 0,
+            prodTree         = [];
+
+        // loop over the product names and add each product as a node in the prodTree 
+        // array with each version added as child nodes
+        for (; i < len; i++) {
+            let name    = includedProducts[i],
+                product = products[name],
+                title   = product.title,
+                menu    = product.productMenu;
+
+            // if the specified product has a productMenu value
+            if (menu) {
+                // create the product node
+                let node = {
+                    text     : title,
+                    product  : name,
+                    children : []
+                };
+
+                // now add child items to it
+                // starting with the product name itself if the value of productMenu is 
+                // just `true` -vs- a list of version numbers
+                if (menu === true) {
+                    node.children.push({
+                        text : title
+                    });
+                } else {
+                    // else we'll loop over the list of product versions to include in 
+                    // the product menu
+                    let verLength = menu.length,
+                        j         = 0;
+
+                    for (; j < verLength; j++) {
+                        let ver         = menu[j],
+                            verIsObject = Utils.isObject(ver);
+
+                        // the version could be a string or could be an object with a 
+                        // text property as the text to display
+                        node.children.push({
+                            text : verIsObject ? ver.text : ver,
+                            // optionally, a static link may be included in the object 
+                            // form
+                            link : ver.link
+                        });
+                    }
+                }
+
+                prodTree.push(node);
+            }
+        }
+
+        return prodTree;
+    }
+
+    /**
+     * Writes out the JSON needed for the product menu
+     */
+    outputProductMenu () {
+        return new Promise((resolve, reject) => {
+            let path        = Path.join(this.jsDir, 'productMenu.js'),
+                productMenu = JSON.stringify(this.getProductMenu()),
+                output      = `DocsApp.productMenu = ${productMenu};`;
+
+            Fs.writeFile(path, output, 'utf8', (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            });
+        });
     }
 
     /**

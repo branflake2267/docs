@@ -226,7 +226,7 @@ class SourceApi extends Base {
             JSON.stringify(cfg, null, 4),
             'utf8',
             (err) => {
-                if (err) console.log('createTempDoxiFile error');
+                if (err) this.log('createTempDoxiFile error', 'error');
         });
     }
 
@@ -811,13 +811,12 @@ class SourceApi extends Base {
         this.log(`Begin 'SourceApi.processApiDataObject'`, 'info');
         let apiDir   = this.apiDir;
 
-        data.cssPath    = Path.relative(apiDir, this.cssDir);
-        data.jsPath     = Path.relative(apiDir, this.jsDir);
-        data.imagesPath = Path.relative(apiDir, this.imagesDir);
-        //data.product    = this.getProduct(options.product);
-        //data.version    = options.version;
-        data.myMeta     = this.getApiMetaData(data);
-        data.isApi      = true;
+        data.prodVerPath = '../';
+        data.cssPath     = Path.relative(apiDir, this.cssDir);
+        data.jsPath      = Path.relative(apiDir, this.jsDir);
+        data.imagesPath  = Path.relative(apiDir, this.imagesDir);
+        data.myMeta      = this.getApiMetaData(data);
+        data.isApi       = true;
         this.processCommonDataObject(data);
     }
 
@@ -1188,11 +1187,15 @@ class SourceApi extends Base {
 
         for (; i < configsLen; i++) {
             let config      = configs[i],
-                name        = config.name,
+                name        = config.name || '',
                 capitalName = Utils.capitalize(name),
                 // edge cases like 'ui' and 'setUI'
                 upperName   = name.toUpperCase(),
                 accessor    = config.accessor;
+
+            if (!config.name) {
+                this.log('Missing config name: ' + JSON.stringify(config, null, 4), 'error');
+            }
 
             // set the capitalized name on the config for use by the template
             config.capitalName = capitalName;
@@ -1263,9 +1266,6 @@ class SourceApi extends Base {
                     if (instanceMethods) {
                         instanceMethods.push(setterCfg);
                     }
-                }
-                if (data.name === 'Ext.panel.Panel' && config.name === 'header') {
-                    console.log(s, accessor);
                 }
                 config.hasSetter = true;
             }

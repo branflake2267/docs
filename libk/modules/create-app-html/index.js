@@ -14,9 +14,9 @@
  * Create the product / version landing page
  */
 
-const AppBase     = require('../create-app-base'),
-      Path        = require('path'),
-      Utils       = require('../shared/Utils'),
+const AppBase         = require('../create-app-base'),
+      Path            = require('path'),
+      Utils           = require('../shared/Utils'),
       Handlebars      = require('handlebars'),
       Fs              = require('fs-extra'),
       UglifyJS        = require("uglify-js"),

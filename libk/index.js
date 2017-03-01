@@ -98,7 +98,18 @@ if (canRun) {
 
     // create the designated module
     let cls = require('./modules/' + targetMod);
-    new cls(options)[method]();
+    cls     = new cls(options);
+
+    // if the module instance doesn't have the passed method then throw an error
+    if (!cls[method]) {
+        console.log(`
+            ERROR: ${targetMod} does not have the method: '${method}'
+        `);
+        process.exit();
+    } else {
+        // else, run the method
+        cls[method]();
+    }
 } else {
     console.log('INVALID MODULE:', targetMod);
     console.log('VALID MODULES INCLUDE:', targets.join(', '));

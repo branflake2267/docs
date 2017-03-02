@@ -321,6 +321,7 @@ class AppBase extends SourceGuides {
                 </div>`,
             out         = html,
             options     = this.options,
+            production  = options.production,
             prodObj     = this.options.prodVerMeta.prodObj,
             hasApi      = prodObj.hasApi,
             hasVersions = prodObj.hasVersions,
@@ -343,7 +344,10 @@ class AppBase extends SourceGuides {
         // decorates @example blocks as inline fiddles
         out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
             meta = meta.trim();
-            code = Beautify(code.trim());
+            code = code.trim();
+            if (production) {
+                code = Beautify(code);
+            }
 
             if (meta && meta.length) {
                 fidMeta = Object.assign({}, fidMeta);
@@ -381,7 +385,9 @@ class AppBase extends SourceGuides {
         });
 
         out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, code) => {
-            code = Beautify(code);
+            if (production) {
+                code = Beautify(code);
+            }
             return `<pre><code class="language-javascript">${code}</code></pre>`;
         });
 

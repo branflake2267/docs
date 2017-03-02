@@ -42,7 +42,7 @@ const Base       = require('../base'),
 class SourceApi extends Base {
     constructor (options) {
         super(options);
-        this.log(`Create 'SourceApi' instance`, 'info');
+        //this.log(`Create 'SourceApi' instance`, 'info');
 
         let opts = this.options;
 
@@ -81,7 +81,7 @@ class SourceApi extends Base {
      * Default entry point for this module
      */
     run () {
-        this.log(`Begin 'SourceApi run'`, 'info');
+        //this.log(`Begin 'SourceApi run'`, 'info');
         this.prepareApiSource();
     }
 
@@ -187,7 +187,7 @@ class SourceApi extends Base {
      * app.json, CLI)
      */
     createTempDoxiFile () {
-        this.log(`Begin 'SourceApi.createTempDoxiFile'`, 'info');
+        //this.log(`Begin 'SourceApi.createTempDoxiFile'`, 'info');
         let options     = this.options,
             cfg         = this.doxiCfg,
             sources     = cfg.sources,
@@ -326,17 +326,9 @@ class SourceApi extends Base {
             srcFilePath;
 
         if (srcObj) {
-            // skip any removed or deprecated items
-            let skip = srcObj.deprecatedMessage || 
-                       srcObj.deprecatedVersion || 
-                       srcObj.removedMessage || 
-                       srcObj.removedVersion;
+            let target = srcObj.inheritdoc || srcObj.text || srcObj.name || srcObj.constructor;
 
-            if (!skip) {
-                let target = srcObj.inheritdoc || srcObj.text || srcObj.name || srcObj.constructor;
-                if (!target) {
-                    console.log(obj);
-                }
+            if (target) {
                 let srcArr  = target.split(','),
                     srcIdx  = srcArr[0];
 
@@ -354,7 +346,7 @@ class SourceApi extends Base {
      * Ext app).  Is called by the {@link #run} method.
      */
     prepareApiSource () {
-        this.log(`Begin 'SourceApi.prepareApiSource'`, 'info');
+        //this.log(`Begin 'SourceApi.prepareApiSource'`, 'info');
         // create the file Doxi will use to parse the SDK
         this.createTempDoxiFile();
 
@@ -368,7 +360,7 @@ class SourceApi extends Base {
      * (HTML docs or Ext app)
      */
     runDoxi () {
-        this.log(`Begin 'SourceApi.runDoxi'`, 'info');
+        //this.log(`Begin 'SourceApi.runDoxi'`, 'info');
         let options = this.options,
             cmd     = this.getCmdPath();
 
@@ -395,7 +387,7 @@ class SourceApi extends Base {
      * @param {Array/String} files A file or array of files to be added to the map
      */
     mapSrcFiles (files) {
-        this.log(`Begin 'SourceApi.outputApiSearch'`, 'info');
+        //this.log(`Begin 'SourceApi.outputApiSearch'`, 'info');
         files = Utils.from(files);
 
         let i   = 0,
@@ -417,7 +409,7 @@ class SourceApi extends Base {
      * @return {Object} Promise
      */
     createSrcFileMap () {
-        this.log(`Begin 'SourceApi.createSrcFileMap'`, 'info');
+        //this.log(`Begin 'SourceApi.createSrcFileMap'`, 'info');
         let inputDir = this.doxiInputDir,
             map      = this.srcFileMap = {},
             classMap = this.classMap = {};
@@ -551,7 +543,7 @@ class SourceApi extends Base {
      *  - class
      */
     addToApiTree (className, icon) {
-        this.log(`Begin 'SourceApi.addToApiTree'`, 'info');
+        //this.log(`Begin 'SourceApi.addToApiTree'`, 'info');
         let nameArray   = className.split('.'),
             elementsLen = nameArray.length,
             apiDirName  = this.apiDirName;
@@ -624,7 +616,7 @@ class SourceApi extends Base {
      * @return {Object[]} The sorted array
      */
     sortNodes (nodes) {
-        this.log(`Begin 'SourceApi.sortNodes'`, 'info');
+        //this.log(`Begin 'SourceApi.sortNodes'`, 'info');
         return nodes.sort((a, b) => {
             if ((a.children && b.children) || (!a.children && !b.children)) {
                 if (a.name > b.name) {
@@ -648,7 +640,7 @@ class SourceApi extends Base {
      * @return {Object[]} The sorted tree
      */
     sortTree (tree) {
-        this.log(`Begin 'SourceApi.sortTree'`, 'info');
+        //this.log(`Begin 'SourceApi.sortTree'`, 'info');
         let len = tree.length,
             i   = 0;
 
@@ -679,7 +671,7 @@ class SourceApi extends Base {
      * 
      */
     getNodeId (className, currentIndex) {
-        this.log(`Begin 'SourceApi.getNodeId'`, 'log');
+        //this.log(`Begin 'SourceApi.getNodeId'`, 'log');
         let nameArr = className.split('.'),
             id      = [],
             i       = 0;
@@ -701,7 +693,7 @@ class SourceApi extends Base {
      * @return {Object} The existing node or false if an existing node was not found
      */
     getExistingNode (nodes, name) {
-        this.log(`Begin 'SourceApi.getExistingNode'`, 'log');
+        //this.log(`Begin 'SourceApi.getExistingNode'`, 'log');
         let len    = nodes.length,
             i      = 0,
             target = false;
@@ -726,7 +718,7 @@ class SourceApi extends Base {
      * app
      */
     readDoxiFiles () {
-        this.log(`Begin 'SourceApi.readDoxiFiles'`, 'info');
+        //this.log(`Begin 'SourceApi.readDoxiFiles'`, 'info');
         let dt = new Date();
         return this.createSrcFileMap()
         //.then(this.ensureResourcesDir.bind(this))
@@ -751,7 +743,7 @@ class SourceApi extends Base {
      * `outputApiFile`
      */
     processApiFiles () {
-        this.log(`Begin 'SourceApi.processApiFiles'`, 'info');
+        //this.log(`Begin 'SourceApi.processApiFiles'`, 'info');
         let classMap = this.classMap,
             classNames = Object.keys(classMap),
             i = 0,
@@ -782,7 +774,7 @@ class SourceApi extends Base {
      * @return {Object} Promise
      */
     outputApiFiles () {
-        this.log(`Begin 'SourceApi.outputApiFiles'`, 'info');
+        //this.log(`Begin 'SourceApi.outputApiFiles'`, 'info');
         let classMap   = this.classMap,
             classNames = Object.keys(classMap),
             i          = 0,
@@ -845,7 +837,7 @@ class SourceApi extends Base {
      * supplying it to the template
      */
     processApiDataObject (data) {
-        this.log(`Begin 'SourceApi.processApiDataObject'`, 'info');
+        //this.log(`Begin 'SourceApi.processApiDataObject'`, 'info');
         let apiDir   = this.apiDir;
 
         data.prodVerPath = '../';
@@ -867,7 +859,7 @@ class SourceApi extends Base {
      * @param {String} className The name of the class to be processed
      */
     decorateClass (className) {
-        this.log(`Begin 'SourceApi.decorateClass'`, 'log');
+        //this.log(`Begin 'SourceApi.decorateClass'`, 'log');
         let options  = this.options,
             classMap = this.classMap,
             raw      = classMap[className].raw,
@@ -1014,7 +1006,7 @@ class SourceApi extends Base {
      * @return {Object} The prepared object
      */
     splitMemberGroups (type, data, strA, strB) {
-        this.log(`Begin 'SourceApi.splitMemberGroups'`, 'log');
+        //this.log(`Begin 'SourceApi.splitMemberGroups'`, 'log');
         let obj = {},
             a = data[strA],
             b = data[strB];
@@ -1035,7 +1027,7 @@ class SourceApi extends Base {
      * @return {Object[]} Array of processed member objects
      */
     processMembers (className, type, items) {
-        this.log(`Begin 'SourceApi.processMembers'`, 'log');
+        //this.log(`Begin 'SourceApi.processMembers'`, 'log');
         let prepared        = this.classMap[className].prepared,
             i               = 0,
             len             = items.length,
@@ -1096,11 +1088,6 @@ class SourceApi extends Base {
                         pathText : sanitizedPath,
                         path     : filename
                     };
-
-                if (filename.includes('Toolbar')) {
-                    console.log(type);
-                    console.log(member);
-                }
 
                 prepared.srcFiles.push(srcFileObj);
             }
@@ -1388,7 +1375,7 @@ class SourceApi extends Base {
      * combining multiple search results together.
      */
     getApiSearch () {
-        this.log(`Begin 'SourceApi.getApiSearch'`, 'info');
+        //this.log(`Begin 'SourceApi.getApiSearch'`, 'info');
         let map         = this.classMap,
             classNames  = Object.keys(map),
             i           = 0,
@@ -1498,7 +1485,7 @@ class SourceApi extends Base {
      * cached on until it's output
      */
     processMemberSearch (member, key, cls, type, searchIndex) {
-        this.log(`Begin 'SourceApi.processMemberSearch'`, 'log');
+        //this.log(`Begin 'SourceApi.processMemberSearch'`, 'log');
         if (!member.hide && !member.from) {
             let acc = member.access === 'private' ? 'i' : (member.access === 'protected' ? 'o' : 'p'),
                 extras;
@@ -1556,7 +1543,7 @@ class SourceApi extends Base {
         output = `DocsApp.apiSearch =${output};`;
 
         return new Promise((resolve, reject) => {
-            this.log(`Begin 'SourceApi.outputApiSearch'`, 'info');
+            //this.log(`Begin 'SourceApi.outputApiSearch'`, 'info');
             Fs.writeFile(Path.join(this.jsDir, `${product}-${version}-apiSearch.js`), output, 'utf8', err => {
                 if (err) {
                     reject(err);
@@ -1573,7 +1560,7 @@ class SourceApi extends Base {
      */
     outputApiTree () {
         return new Promise((resolve, reject) => {
-            this.log(`Begin 'SourceApi.outputApiTree'`, 'info');
+            //this.log(`Begin 'SourceApi.outputApiTree'`, 'info');
             let apiTrees = this.apiTrees,
                 treeKeys = Object.keys(apiTrees),
                 len = treeKeys.length,
@@ -1633,7 +1620,7 @@ class SourceApi extends Base {
         }
 
         return new Promise((resolve, reject) => {
-            this.log(`Begin 'SourceApi.createSrcFiles'`, 'info');
+            //this.log(`Begin 'SourceApi.createSrcFiles'`, 'info');
             console.log('CREATE SOURCE FILES !!!');
             let i         = 0,
                 map       = this.srcFileMap,
@@ -1680,7 +1667,7 @@ class SourceApi extends Base {
      */
     outputSrcFiles (contents) {
         return new Promise((resolve, reject) => {
-            this.log(`Begin 'SourceApi.outputSrcFiles'`, 'info');
+            //this.log(`Begin 'SourceApi.outputSrcFiles'`, 'info');
             console.log('OUTPUT SOURCE FILES');
             let i       = 0,
                 len     = contents.length,
@@ -1743,7 +1730,7 @@ class SourceApi extends Base {
      * @return {Array} The location coordinates of the src
      */
     getLocArray (item) {
-        this.log(`Begin 'SourceApi.getLocArray'`, 'log');
+        //this.log(`Begin 'SourceApi.getLocArray'`, 'log');
         let src = item.src.text || item.src.name;
 
         return src ? (src).split(',').map(function (item) {
@@ -1759,7 +1746,7 @@ class SourceApi extends Base {
      * @return {Object} The source path and processed HTML
      */
     addAnchorsAll (items) {
-        this.log(`Begin 'SourceApi.addAnchorsAll'`, 'info');
+        //this.log(`Begin 'SourceApi.addAnchorsAll'`, 'info');
         let i        = 0,
             len      = items.length,
             anchored = [];
@@ -1788,7 +1775,7 @@ class SourceApi extends Base {
      * @return {String} The source HTML with anchors added
      */
     addAnchors (html, srcPath) {
-        this.log(`Begin 'SourceApi.addAnchors'`, 'log');
+        //this.log(`Begin 'SourceApi.addAnchors'`, 'log');
         let src    = this.srcFileMap[srcPath],
             clsSrc = src.input;
 

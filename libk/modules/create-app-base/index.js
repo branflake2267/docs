@@ -23,7 +23,7 @@ const SourceGuides = require('../source-guides'),
 class AppBase extends SourceGuides {
     constructor (options) {
         super(options);
-        this.log(`Create 'AppBase' instance`, 'info');
+        //this.log(`Create 'AppBase' instance`, 'info');
 
         let o = this.options,
             product    = o.product,
@@ -85,7 +85,7 @@ class AppBase extends SourceGuides {
      * Default entry point for this module
      */
     run () {
-        this.log(`Begin 'AppBase.run'`, 'info');
+        //this.log(`Begin 'AppBase.run'`, 'info');
         let dt = new Date();
         return this.runApi()
         .then(this.outputApiSearch.bind(this))
@@ -104,7 +104,7 @@ class AppBase extends SourceGuides {
      */
     // TODO remove events in favor of promises
     runApi () {
-        this.log(`Begin 'AppBase.runApi'`, 'info');
+        //this.log(`Begin 'AppBase.runApi'`, 'info');
         let options     = this.options,
             meta        = this.options.prodVerMeta,
             hasApi      = meta.hasApi,
@@ -131,7 +131,7 @@ class AppBase extends SourceGuides {
      * Run the guide processor (if the product has guides)
      */
     runGuides () {
-        this.log(`Begin 'AppBase.runGuides'`, 'info');
+        //this.log(`Begin 'AppBase.runGuides'`, 'info');
         return this.processGuides()
         .then(() => {
             this.concludeBuild();

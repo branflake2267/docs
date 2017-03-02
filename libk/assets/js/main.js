@@ -3379,12 +3379,55 @@ DocsApp.getEventTarget = function (e) {
         }
     };
 
+    DocsApp.getMultiSrcPanel = function () {
+        var pickerId = 'multi-src-picker',
+            picker = ExtL.get(pickerId);
+
+        if (!picker) {
+            var srcFiles = DocsApp.meta.srcFiles,
+                len      = srcFiles.length,
+                i        = 0,
+                pickerCt = {
+                    id : pickerId,
+                    cn : []
+                },
+                divided;
+
+            for (; i < len; i++) {
+                var srcObj = srcFiles[i],
+                    text   = srcObj.pathText,
+                    href   = srcObj.path;
+
+                if (!divided && text.indexOf('.scss') > -1) {
+                    pickerCt.cn.push({
+                        tag : 'hr'
+                    });
+                    divided = true;
+                }
+
+                pickerCt.cn.push({
+                    tag    : 'a',
+                    target : '_blank',
+                    href   : './src/' + href,
+                    html   : text
+                });
+            }
+
+            picker = document.body.appendChild(
+                ExtL.createElement(pickerCt)
+            );
+        }
+
+        return picker;
+    };
+
     /**
      *
      */
     DocsApp.showMultiSrcPanel = function (e) {
         var target    = DocsApp.getEventTarget(e),
-            picker    = ExtL.get('multi-src-picker'),
+            //picker    = ExtL.get('multi-src-picker'),
+            picker    = DocsApp.getMultiSrcPanel(),
             targetBox = target.getBoundingClientRect();
 
         if (picker) {
@@ -3400,7 +3443,8 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.hideMultiSrcPanel = function () {
-        var picker = ExtL.get('multi-src-picker');
+        //var picker = ExtL.get('multi-src-picker');
+        var picker = DocsApp.getMultiSrcPanel();
 
         if (picker) {
             ExtL.removeCls(picker, 'show-multi');

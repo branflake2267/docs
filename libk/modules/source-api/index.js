@@ -34,7 +34,9 @@ const Base       = require('../base'),
       Handlebars = require('handlebars'),
       Fs         = require('fs-extra'),
       Shell      = require('shelljs'),
+      // TODO - is Mkdirp being used in any module or it's all Fs-extra now?  Might be able to remove its require statements if it can be purged via Fs-extra
       Mkdirp     = require('mkdirp'),
+      _          = require('lodash'),
       WidgetRe   = /widget\./g;
 
 class SourceApi extends Base {
@@ -308,6 +310,41 @@ class SourceApi extends Base {
         }
 
         return meta;
+    }
+
+    /**
+     * @private
+     * Returns the source file for a given class / member
+     * @param {Object} obj The class or class member object from the Doxi output to get 
+     * the class file from
+     * @param {Object} raw The raw doxi output (that has the source files array)
+     * @return {String} The path to the source file for the passed class / member
+     */
+    getSourceFilePath (obj, raw) {
+        let srcObj = obj.src,
+            files  = raw.files,
+            srcFilePath;
+
+        if (srcObj) {
+            // skip any removed or deprecated items
+            let skip = srcObj.deprecatedMessage || 
+                       srcObj.deprecatedVersion || 
+                       srcObj.removedMessage || 
+                       srcObj.removedVersion;
+
+            if (!skip) {
+                let target = srcObj.inheritdoc || srcObj.text || srcObj.name || srcObj.constructor;
+                if (!target) {
+                    console.log(obj);
+                }
+                let srcArr  = target.split(','),
+                    srcIdx  = srcArr[0];
+
+                srcFilePath = files[srcIdx];
+            }
+        }
+
+        return srcFilePath;
     }
 
     /**
@@ -891,6 +928,23 @@ class SourceApi extends Base {
             cls.clsSpecIcon = 'class-type fa fa-cube';
         }
 
+        // start keeping track of the class source files
+        data.srcFiles = [];
+        
+        // get the source file path for the class
+        let srcFilePath = this.getSourceFilePath(cls, raw),
+            // and subsequently the source filename of the output source HTML
+            filename      = this.srcFileMap[srcFilePath].filename + '.html',
+            relPath       = Path.relative(this.options._myRoot, this.apiSourceDir) + '/',
+            sanitizedPath = srcFilePath.replace(relPath, '').replace(/(\.\.\/)/g, ''),
+            srcFileObj    = {
+                pathText : sanitizedPath,
+                path     : filename
+            };
+
+        // add the class source file info to the srcFiles array
+        data.srcFiles.push(srcFileObj);
+
         let i                = 0,
             memberTypeGroups = cls.items || [],
             len              = memberTypeGroups.length;
@@ -935,6 +989,17 @@ class SourceApi extends Base {
                 'instanceMethods',
                 'staticMethods'
             );
+        }
+
+        // now that we have all source files for this class from the class itself and all 
+        // of its members remove duplicates and indicate the source file / files in the 
+        // class as well as whether there are one or more source files
+        data.srcFiles = _.uniqBy(data.srcFiles, 'pathText');
+        if (data.srcFiles.length === 1) {
+            cls.srcLink = data.srcFiles[0].path;
+        } else {
+            data.myMeta.srcFiles = data.srcFiles;
+            cls.multiSrc = true;
         }
     }
 
@@ -1002,12 +1067,44 @@ class SourceApi extends Base {
      * @param {Object} member The member object to process
      */
     processMember (className, type, member) {
-        let classMap = this.classMap,
-            raw      = classMap[className].raw,
-            prepared = classMap[className].prepared,
-            rawRoot  = raw.global.items[0],
-            clsName  = rawRoot.name,
-            name     = member.name;
+        let classMap   = this.classMap,
+            raw        = classMap[className].raw,
+            prepared   = classMap[className].prepared,
+            srcFileMap = this.srcFileMap,
+            rawRoot    = raw.global.items[0],
+            clsName    = rawRoot.name,
+            name       = member.name;
+        
+        // get the source file path for the class member
+        //
+        // .. we'll exclude the check if type was not passed (params being processed) or 
+        // if there is a from property since that means the member came from some 
+        // ancestor class, not the class currently being processed
+        if (type && !member.from) {
+            let srcFilePath = this.getSourceFilePath(member, raw);
+
+            // add the member source file info to the srcFiles array
+            // 
+            // .. wrapped in a conditional since some members don't have an explicit src 
+            // object like evented events that are inferred by their class / mixins
+            if (srcFilePath) {
+                // get the source filename of the output source HTML
+                let filename      = this.srcFileMap[srcFilePath].filename + '.html',
+                    relPath       = Path.relative(this.options._myRoot, this.apiSourceDir) + '/',
+                    sanitizedPath = srcFilePath.replace(relPath, '').replace(/(\.\.\/)/g, ''),
+                    srcFileObj    = {
+                        pathText : sanitizedPath,
+                        path     : filename
+                    };
+
+                if (filename.includes('Toolbar')) {
+                    console.log(type);
+                    console.log(member);
+                }
+
+                prepared.srcFiles.push(srcFileObj);
+            }
+        }
 
         // set the type to what the template is expecting for the SASS sections
         if (type === 'vars') {
@@ -1056,7 +1153,8 @@ class SourceApi extends Base {
 
                 // process any sub-items that this param / property may have
                 if (item.items) {
-                    this.processMembers(className, type, item.items);
+                    //this.processMembers(className, type, item.items);
+                    this.processMember(className, null, item.items);
                 }
             }
 

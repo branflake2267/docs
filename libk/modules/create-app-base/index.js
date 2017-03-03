@@ -49,6 +49,15 @@ class AppBase extends SourceGuides {
     }
 
     /**
+     * Returns an array of this module's file name along with the file names of all 
+     * ancestor modules
+     * @return {String[]} This module's file name preceded by its ancestors'.
+     */
+    get parentChain () {
+        return super.parentChain.concat([Path.parse(__dirname).base]);
+    }
+
+    /**
      * Returns the version passed by the CLI build command or the `currentVersion` from 
      * the config file if there was no version passed initially
      * @return {String} The version number for the current product

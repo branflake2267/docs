@@ -41,6 +41,15 @@ class SourceGuides extends SourceApi {
     }
 
     /**
+     * Returns an array of this module's file name along with the file names of all 
+     * ancestor modules
+     * @return {String[]} This module's file name preceded by its ancestors'.
+     */
+    get parentChain () {
+        return super.parentChain.concat([Path.parse(__dirname).base]);
+    }
+
+    /**
      * Returns the guides source directory used the source-guides module.  By default the
      * guides' repo (if configured in the projectDefaults or app.json) will be appended
      * to the guides source directory.

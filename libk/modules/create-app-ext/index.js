@@ -21,6 +21,15 @@ class ExtApp extends AppBase {
     }
 
     /**
+     * Returns an array of this module's file name along with the file names of all 
+     * ancestor modules
+     * @return {String[]} This module's file name preceded by its ancestors'.
+     */
+    get parentChain () {
+        return super.parentChain.concat([Path.parse(__dirname).base]);
+    }
+
+    /**
      * Process API links using the passed product, version, class name, etc.
      * @param {String} product The product name
      * @param {String} version The version stipulated in the [[link]] or null if not

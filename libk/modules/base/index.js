@@ -75,6 +75,14 @@ class Base {
     }
 
     /**
+     * Initializes the parent chain array of all module ancestry by file name
+     * @return {String[]} This module's file name (in an array).
+     */
+    get parentChain () {
+        return [Path.parse(__dirname).base];
+    }
+
+    /**
      * Returns the folder node class used for tree navigation
      * @return {String} The navigation tree's folder node class
      */
@@ -1015,7 +1023,19 @@ class Base {
      */
     syncRemote (product, sourceDir) {
         //this.log(`Begin 'Base.syncRemote'`, 'info');
-        let options = this.options;
+        let options = this.options,
+            path      = Shell.pwd(),
+            version   = this.apiVersion,
+            toolkit   = options.toolkit,
+            wToolkit  = version + '-' + (toolkit || product),
+            prodCfg   = options.products[product],
+            remotes   = prodCfg.remotes,
+            verInfo   = remotes && remotes[version],
+            branch    = verInfo && verInfo.branch || 'master',
+            tag       = verInfo && verInfo.tag,
+            repo      = prodCfg.repo,
+            remoteUrl = prodCfg.remoteUrl,
+            reposPath = options.localReposDir;;
 
         // if the api source directory exists and is not a git repo then skip syncing
         if (Fs.existsSync(sourceDir) && !Git.isGitSync(sourceDir)) {
@@ -1024,21 +1044,7 @@ class Base {
         }
 
         // only sync to a remote if syncRemote is true
-        if (options.syncRemote || !Fs.existsSync(sourceDir)) {
-            let path      = Shell.pwd(),
-                version   = this.apiVersion,
-                //product   = this.apiProduct,
-                toolkit   = options.toolkit,
-                wToolkit  = version + '-' + (toolkit || product),
-                prodCfg   = options.products[product],
-                remotes   = prodCfg.remotes,
-                verInfo   = remotes && remotes[version],
-                branch    = verInfo && verInfo.branch || 'master',
-                tag       = verInfo && verInfo.tag,
-                repo      = prodCfg.repo,
-                remoteUrl = prodCfg.remoteUrl,
-                reposPath = options.localReposDir;
-
+        if (options.syncRemote || !Fs.existsSync(sourceDir) || (branch && branch !== Git.branchSync(sourceDir))) {
             // if the api source directory doesn't exist (may or may not be within the
             // repos directory) then create the repos directory and clone the remote
             if (!Fs.existsSync(sourceDir)) {

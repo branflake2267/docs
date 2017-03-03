@@ -51,6 +51,15 @@ class HtmlApp extends AppBase {
     }
 
     /**
+     * Returns an array of this module's file name along with the file names of all 
+     * ancestor modules
+     * @return {String[]} This module's file name preceded by its ancestors'.
+     */
+    get parentChain () {
+        return super.parentChain.concat([Path.parse(__dirname).base]);
+    }
+
+    /**
      * @property
      * Get the guides output directory where all guides / guide directories will be 
      * output (creating it if it does not already exist)
@@ -95,6 +104,38 @@ class HtmlApp extends AppBase {
     }
 
     /**
+     * Collects any file paths in the assets folders (js, css, other) using the passed 
+     * file name and the folder name of all ancestor module file names in the project.  
+     * This mechanism allows for each module to supply files overriding the logic, 
+     * styles, etc. from the module before it in the class hierarchy.
+     * @param {String} folder The folder within the assets directory to mine files from. 
+     * i.e. 'js', 'css', etc.
+     * @param {String} fileName The file name to look for
+     * @return {String[]} Array of file paths to the override files in order of most to 
+     * least Base in the class hierarchy.  Else an empty array if no files match.
+     */
+    getAncestorFiles (folder, fileName) {
+        let options       = this.options,
+            root          = options._myRoot,
+            assetsSrc     = Path.join(root, 'assets', folder),
+            parentChain   = this.parentChain,
+            len           = parentChain.length,
+            i             = 0,
+            ancestorFiles = [];
+
+        for (; i < len; i++) {
+            let ancestorName = parentChain[i],
+                filePath     = Path.join(assetsSrc, ancestorName, fileName);
+
+            if (Fs.existsSync(filePath)) {
+                ancestorFiles.push(filePath);
+            }
+        }
+
+        return ancestorFiles;
+    }
+
+    /**
      * Copy supporting assets to the output folder.  
      * i.e. app.js, app.css, ace editor assets, etc.
      */
@@ -112,16 +153,18 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Copy the CSS needed for the docs / guides
+     * Copy project 'css' files over from the project assets directory to the output 
+     * directory
      */
     copyCss () {
         let options     = this.options,
             production  = options.production,
             root        = options._myRoot,
-            assetsSrc   = Path.join(root, 'assets'),
-            mainCss     = Path.join(assetsSrc, 'css/main.css'),
-            //tachyonsCss = Path.join(root, 'node_modules/tachyons/css/tachyons.css'),
-            faCss       = Path.join(assetsSrc, 'css/docs-fonts.css'),
+            assetType   = 'css',
+            mainName    = 'main.css',
+            assetsSrc   = Path.join(root, 'assets', assetType),
+            mainCss     = Path.join(assetsSrc, mainName),
+            faCss       = Path.join(assetsSrc, 'docs-fonts.css'),
             css         = new CleanCSS({
                 compatibility : 'ie9',
                 level         : production ? 2 : 0,
@@ -150,48 +193,59 @@ class HtmlApp extends AppBase {
                 faCss,       // font awesome styles
                 //tachyonsCss, // the tachyons CSS base
                 mainCss      // app-specific styling / overrides
-            ]);
+            ].concat(this.getAncestorFiles(
+                assetType,
+                mainName
+            )));
 
         Fs.ensureDirSync(this.cssDir);
         Fs.writeFileSync(Path.join(this.cssDir, 'app.css'), css.styles, 'utf8');
     }
 
     /**
-     * 
+     * Copy project 'js' files over from the project assets directory to the output 
+     * directory
      */
     copyJs () {
-        let options    = this.options,
-            production = options.production,
-            jsDir      = this.jsDir,
-            root       = options._myRoot,
-            assetsSrc  = Path.join(root, 'assets'),
-            extl       = Path.join(assetsSrc, 'js/ExtL.js'),
-            main       = Path.join(assetsSrc, 'js/main.js'),
-            beautify   = Path.join(assetsSrc, 'js/beautify.js'),
-            aceFolder  = Path.join(root, 'node_modules/ace-builds/src-min-noconflict'),
-            //ace        = Path.join(aceFolder, 'ace.js'),
-            //modeJs     = Path.join(aceFolder, 'mode-javascript.js'),
-            //worker     = Path.join(aceFolder, 'worker-javascript.js'),
-            //theme      = Path.join(aceFolder, 'theme-chrome.js'),
-            jsMinified = UglifyJS.minify([
+        let options     = this.options,
+            production  = options.production,
+            jsDir       = this.jsDir,
+            root        = options._myRoot,
+            assetType   = 'js',
+            mainName    = 'main.js',
+            assetsSrc   = Path.join(root, 'assets', assetType),
+            extl        = Path.join(assetsSrc, 'ExtL.js'),
+            main        = Path.join(assetsSrc, mainName),
+            beautify    = Path.join(assetsSrc, 'beautify.js'),
+            aceFolder   = Path.join(root, 'node_modules/ace-builds/src-min-noconflict'),
+            jsFileArr   = [
                 extl,
-                //ace,
-                //worker,
-                //modeJs,
-                //theme,
                 beautify,
                 main
-            ], {
-                compress : production,
-                mangle   : production,
-                output   : {
-                    beautify : !production
+            ],
+            jsMinified = UglifyJS.minify(
+                jsFileArr.concat(
+                    this.getAncestorFiles(
+                        assetType,
+                        mainName
+                    )
+                ),
+                {
+                    compress : production,
+                    mangle   : production,
+                    output   : {
+                        beautify : !production
+                    }
                 }
-            });
+            );
 
         Fs.ensureDirSync(jsDir);
-        Fs.writeFileSync(Path.join(jsDir, 'app.js'), jsMinified.code.toString(), 'utf8');
-        Fs.copySync(aceFolder, jsDir)
+        Fs.writeFileSync(
+            Path.join(jsDir, 'app.js'),
+            jsMinified.code.toString(),
+            'utf8'
+        );
+        Fs.copySync(aceFolder, jsDir);
     }
 
     /**

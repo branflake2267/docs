@@ -39,6 +39,15 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * Returns an array of this module's file name along with the file names of all 
+     * ancestor modules
+     * @return {String[]} This module's file name preceded by its ancestors'.
+     */
+    get parentChain () {
+        return super.parentChain.concat([Path.parse(__dirname).base]);
+    }
+
+    /**
      * Returns the Ext JS version associated with the Reactor version currently being
      * built
      * @return {String} The Ext JS version number for the current Reactor build

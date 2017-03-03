@@ -19,7 +19,8 @@ const HtmlApp    = require('../create-app-html'),
       Handlebars = require('handlebars'),
       Fs         = require('fs-extra'),
       UglifyJS   = require("uglify-js"),
-      CleanCSS   = require('clean-css');
+      CleanCSS   = require('clean-css'),
+      Utils      = require('../shared/Utils');
 
 class ExtReactHtmlApp extends HtmlApp {
     constructor (options) {
@@ -45,6 +46,22 @@ class ExtReactHtmlApp extends HtmlApp {
      */
     get parentChain () {
         return super.parentChain.concat([Path.parse(__dirname).base]);
+    }
+
+    /**
+     * 
+     */
+    get componentList () {
+        let list = this._componentList;
+
+        if (!list) {
+            let path = Path.join(__dirname, 'configs', 'components.json'),
+                file = Fs.readJsonSync(path);
+
+            list = this._componentList = file.components;
+        }
+
+        return list;
     }
 
     /**
@@ -77,6 +94,27 @@ class ExtReactHtmlApp extends HtmlApp {
         }
 
         return prod;
+    }
+
+    /**
+     * Returns the api tree (later to be output in the {@link #outputApiTree} method).  
+     * A class name may optionally be passed in order to drive the tree name to be added 
+     * to `this.apiTrees`
+     * @param {String} [className] The classname being processed.  Can be used in an 
+     * override of this method to derive which tree to return;
+     * @return {Array} The api tree
+     */
+    getApiTree (className) {
+        let componentList = this.componentList,
+            inList        = componentList.includes(className),
+            treeName      = inList ? 'Components' : this.apiDirName.toUpperCase(),
+            apiTree       = this.apiTrees[treeName];
+
+        if (!apiTree) {
+            apiTree = this.apiTrees[treeName] = [];
+        }
+
+        return apiTree;
     }
 
     /**

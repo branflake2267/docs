@@ -295,6 +295,24 @@ class SourceApi extends Base {
     }
 
     /**
+     * Returns the api tree (later to be output in the {@link #outputApiTree} method).  
+     * A class name may optionally be passed in order to drive the tree name to be added 
+     * to `this.apiTrees`
+     * @param {String} [className] The classname being processed.  Can be used in an 
+     * override of this method to derive which tree to return;
+     * @return {Array} The api tree
+     */
+    getApiTree (className) {
+        let apiTree = this.apiTrees[this.apiDirName];
+
+        if (!apiTree) {
+            apiTree = this.apiTrees[this.apiDirName] = [];
+        }
+
+        return apiTree;
+    }
+
+    /**
      * Returns common metadata needed by app API pages
      * @param {Object} data Current data hash to be applied to the page template
      * @return {Object} Hash of common current page metadata
@@ -611,7 +629,7 @@ class SourceApi extends Base {
             }
             target = target || newNode;
             return target.children;
-        }, this.apiTree);   // initially we pass in the apiTree property itself
+        }, this.getApiTree(className));   // initially we pass in the apiTree property itself
     }
 
     /**
@@ -759,8 +777,7 @@ class SourceApi extends Base {
 
         // reset the apiTree property on each processApiFiles run since this module 
         // instance is reused between toolkits
-        //this.apiTree = [];
-        this.apiTree = this.apiTrees[this.apiDirName] = [];
+        //this.apiTree = this.apiTrees[this.apiDirName] = [];
 
         // loops through all class names from the classMap
         for (; i < len; i++) {
@@ -1542,10 +1559,10 @@ class SourceApi extends Base {
      */
     outputApiSearch () {
         let apiSearch = this.apiSearchIndex,
-            output = JSON.stringify(apiSearch),
-            options = this.options,
-            product = options.product,
-            version = options.version;
+            output    = JSON.stringify(apiSearch),
+            options   = this.options,
+            product   = options.product,
+            version   = options.version;
 
         version = options.prodVerMeta.hasVersions ? `${version}` : '';
         output = `DocsApp.apiSearch =${output};`;
@@ -1571,7 +1588,7 @@ class SourceApi extends Base {
             //this.log(`Begin 'SourceApi.outputApiTree'`, 'info');
             let apiTrees = this.apiTrees,
                 treeKeys = Object.keys(apiTrees),
-                len = treeKeys.length,
+                len      = treeKeys.length,
                 apiTree;
 
             if (len === 1) {
@@ -1591,15 +1608,6 @@ class SourceApi extends Base {
                     apiTree.API[key] = this.sortTree(apiTrees[key]);
                 }
             }
-
-            /*let sortedTree = this.sortTree(this.apiTree),
-                apiTree    = JSON.stringify({
-                    API: sortedTree
-                }, null, 4),
-                wrap       = `DocsApp.apiTree = ${apiTree}`,
-                product    = this.getProduct(),
-                version    = this.options.version,
-                dest       = Path.join(this.jsDir, `${product}-${version}-apiTree.js`);*/
 
             apiTree = JSON.stringify(apiTree, null, 4);
 

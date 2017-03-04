@@ -13,7 +13,9 @@ window.DocsApp = window.DocsApp || {};
  * @param {String} renderTo The ID of the element to render the tree to
  */
 function Tree (data, renderTo) {
-    var me = this;
+    var me = this,
+        // get the element we'll render the tree to
+        target   = document.getElementById(renderTo);
 
     // the class to apply to a node when it and its children are collapsed
     me.collapseCls = 'tree-node-collapsed';
@@ -21,14 +23,14 @@ function Tree (data, renderTo) {
     // cache the parent nodes - used by the collapseAll / expandAll methods
     me._parentNodes = [];
 
+    me.target = target;
+
     // first we'll loop over all of the tree nodes and create the tree node elements to 
     // render to the page.  This will create the parent node, child node, and the 
     // wrapping element around the child nodes used to collapse / hide child nodes
     var nodeCfgs = me.createNodeCfgs(data),
         i        = 0,
-        len      = nodeCfgs.length,
-        // get the element we'll render the tree to
-        target   = document.getElementById(renderTo);
+        len      = nodeCfgs.length;
 
     // now that we have the configs used to create each tree node (and its children) 
     // using ExtL.createElement we'll append each node (and its children) to the target 
@@ -94,7 +96,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         // the default config to use for this node when processed to the DOM by 
         // ExtL.createElement
         cfg = {
-            id             : node.id,
+            //id             : node.id,
             parentTreeNode : parentId || null,
             "class"        : accessCls + ' tree-node tree-depth-' + depth + indexedCls
         };
@@ -109,8 +111,9 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         // recursively for their own processing
         if (node.children) {
             // since this node is a parent node add it to the _parentNodes property
-            this._parentNodes.push(node.id);
             cfg["class"] += ' tree-parent-node pointer ' + this.collapseCls;
+            cfg.id = this.target.id + '-' + node.id;
+            this._parentNodes.push(cfg.id);
             // add the expand / collapse icons, any passed iconCls for the node, the node 
             // text, and finally a wrapping container for all child nodes (used to 
             // collapse children in the UI)
@@ -134,10 +137,11 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             cfgs.push(cfg);
 
             // the child node wrap (for expand / collapse control)
+            //console.log(cfg.id);
             var ctCfg = {
                 tag     : 'div',
                 "class" : 'child-nodes-ct',
-                cn      : this.createNodeCfgs(node.children, node.id, depth + 1)
+                cn      : this.createNodeCfgs(node.children, cfg.id, depth + 1)
             };
             var j = 0,
                 children = ctCfg.cn,
@@ -159,6 +163,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         } else {
             // decorate this node as a leaf node
             cfg.leaf = true;
+            cfg.id   = node.id;
             cfg.tag  = textTag;
             cfg.href = href;
             cfg["class"] += ' tree-leaf';
@@ -190,6 +195,166 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
  */
 Tree.prototype.isIndexed = function () {
     return DocsApp.meta.navTreeName === 'Quick Start';
+};
+
+/**
+ * 
+ */
+Tree.prototype.filter = ExtL.createBuffered(function (value) {
+    /*var leaves      = ExtL.fromNodeList(this.target.querySelectorAll('.tree-leaf')),
+        len         = leaves.length,
+        i           = 0,
+        filtered    = [],
+        show        = [],
+        hide        = [],
+        filteredCls = 'tree-node-filtered',
+        re          = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
+        leaf, id, parentNode,
+        children, childLen, j, child, visible,
+        parentNodes, parentsLen, hideLen, showLen;
+
+    for (;i < len; i++) {
+        leaf = leaves[i];
+        text = leaf.innerText.toLowerCase();
+
+        //ExtL.removeCls(leaf, filteredCls);
+        if (value.length === 0 || text.indexOf(value.toLowerCase()) > -1) {
+            this.expandTo(leaf.id);
+            filtered.push(leaf);
+            show.push(leaf);
+            leaf.innerHTML = (leaf.textContent || leaf.innerText).replace(re, '<strong>$1</strong>');
+        } else {
+            //ExtL.addCls(leaf, filteredCls);
+            hide.push(leaf);
+        }
+
+        parentNode = ExtL.get(leaf.getAttribute('parenttreenode'));
+
+        while (parentNode) {
+            children = ExtL.fromNodeList(parentNode.nextSibling.childNodes);
+            childLen = children.length;
+            j        = 0;
+            visible  = false;
+            
+            for (; j < childLen; j++) {
+                child = children[j];
+                if (ExtL.hasCls(child, 'tree-node') && !ExtL.hasCls(child, filteredCls)) {
+                //if (ExtL.hasCls(child, 'tree-node') && show.indexOf(child) > -1) {
+                    visible = true;
+                }
+            }
+
+            ExtL.removeCls(parentNode, filteredCls);
+            ExtL[visible ? 'removeCls' : 'addCls'](parentNode, filteredCls);
+            //[visible ? 'show' : 'hide'].push(parentNode);
+            parentNode = ExtL.get(parentNode.getAttribute('parenttreenode'));
+        }
+    }
+
+    parentNodes = this.getParentNodes();
+    parentsLen  = parentNodes.length;
+    i           = 0;
+
+    for (; i < parentsLen; i++) {
+        //parentNodes[i].filtered = false;
+    }
+
+    hideLen = hide.length;
+    i       = 0;
+
+    for (; i < hideLen; i++) {
+        leaf = hide[i];
+        ExtL.addCls(leaf, filteredCls);
+    }
+
+    showLen = show.length;
+    i       = 0;
+
+    for (; i < showLen; i++) {
+        ExtL.removeCls(show[i], filteredCls);
+    }
+
+    return {
+        leaves        : leaves,
+        leafCount     : leaves.length,
+        filtered      : filtered,
+        filteredCount : filtered.length
+    };*/
+    var parentNodes = this.getParentNodes(),
+        filteredCls = 'tree-node-filtered',
+        re          = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
+        parentsLen  = parentNodes.length,
+        i = 0,
+        visibleFolders = [],
+        parentNode, childNodes, childLen, j, child, text, match,
+        visiblesLen, visibleFolder, folderParent;
+
+    for (; i < parentsLen; i++) {
+        parentNode = parentNodes[i];
+        ExtL.get(parentNode).visible = false;
+        childNodes = this.getChildNodes(parentNode);
+        childLen   = childNodes.length;
+        j          = 0;
+        match      = false;
+
+        for (; j < childLen; j++) {
+            child = childNodes[j];
+            text  = child.innerText.toLowerCase();
+
+            if (value.length === 0 || text.indexOf(value.toLowerCase()) > -1) {
+                ExtL.removeCls(child, filteredCls);
+                this.expandTo(child.id);
+                child.innerHTML = (child.textContent || child.innerText).replace(re, '<strong>$1</strong>');
+                match = true;
+            } else {
+                ExtL.addCls(child, filteredCls);
+            }
+        }
+
+        if (match) {
+            visibleFolders.push(parentNode);
+        }
+    }
+
+    visiblesLen = visibleFolders.length;
+    i = 0;
+    for (; i < visiblesLen; i++) {
+        visibleFolder = ExtL.get(visibleFolders[i]);
+        folderParent = ExtL.get(visibleFolder.getAttribute('parenttreenode'));
+
+        while (folderParent) {
+            folderParent.visible = true;
+            folderParent = ExtL.get(folderParent.getAttribute('parenttreenode'));
+        }
+    }
+
+    i = 0;
+    for (; i < parentsLen; i++) {
+        parentNode = ExtL.get(parentNodes[i]);
+        ExtL[parentNode.visible ? 'removeCls' : 'addCls'](parentNode, filteredCls);
+    }
+}, 50);
+
+/**
+ * 
+ */
+Tree.prototype.getChildNodes = function (parentNodeId) {
+    var parentNode = ExtL.get(parentNodeId),
+        children   = [],
+        childNodes = ExtL.fromNodeList(parentNode.nextSibling.childNodes),
+        childLen   = childNodes.length,
+        i          = 0,
+        child;
+
+    for (; i < childLen; i++) {
+        child = childNodes[i];
+
+        if (ExtL.hasCls(child, 'tree-leaf')) {
+            children.push(child);
+        }
+    }
+
+    return children;
 };
 
 /**
@@ -340,8 +505,8 @@ DocsApp.appMeta = {
  * Builds the navigation tree using the passed tree object (determined in 
  * {@link #initNavTree}).  The navigation tree instance is cached on DocsApp.navTree.
  */
-DocsApp.buildNavTree = function (navTree) {
-    DocsApp.navTree = new Tree(navTree, 'tree');
+DocsApp.buildNavTree = function (navTree, ct) {
+    DocsApp.navTree = new Tree(navTree, ct || 'tree');
 };
 
 /**
@@ -3383,7 +3548,7 @@ DocsApp.getEventTarget = function (e) {
         var pickerId = 'multi-src-picker',
             picker = ExtL.get(pickerId);
 
-        if (!picker) {
+        if (!picker && DocsApp.meta.srcFiles) {
             var srcFiles = DocsApp.meta.srcFiles,
                 len      = srcFiles.length,
                 i        = 0,

@@ -208,9 +208,10 @@ class Base {
         let options = this.options;
 
         //data.myMeta  = this.getApiMetaData(data);
-        data.title   = options.prodVerMeta.prodObj.title;
-        data.product = this.getProduct(options.product);
-        data.version = options.version;
+        data.title      = options.prodVerMeta.prodObj.title;
+        data.product    = this.getProduct(options.product);
+        data.version    = options.version;
+        data.moduleName = this.moduleName;
     }
 
     /**

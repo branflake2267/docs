@@ -60,6 +60,13 @@ class HtmlApp extends AppBase {
     }
 
     /**
+     * Returns this module's name
+     */
+    get moduleName () {
+        return Path.parse(__dirname).base;
+    }
+
+    /**
      * @property
      * Get the guides output directory where all guides / guide directories will be 
      * output (creating it if it does not already exist)

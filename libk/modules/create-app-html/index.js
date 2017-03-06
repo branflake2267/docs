@@ -56,7 +56,7 @@ class HtmlApp extends AppBase {
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
     get parentChain () {
-        return super.parentChain.concat([Path.parse(__dirname).base]);
+        return super.parentChain.concat([this.moduleName]);
     }
 
     /**
@@ -206,7 +206,7 @@ class HtmlApp extends AppBase {
             )));
 
         Fs.ensureDirSync(this.cssDir);
-        Fs.writeFileSync(Path.join(this.cssDir, 'app.css'), css.styles, 'utf8');
+        Fs.writeFileSync(Path.join(this.cssDir, `${this.moduleName}-app.css`), css.styles, 'utf8');
     }
 
     /**
@@ -248,7 +248,7 @@ class HtmlApp extends AppBase {
 
         Fs.ensureDirSync(jsDir);
         Fs.writeFileSync(
-            Path.join(jsDir, 'app.js'),
+            Path.join(jsDir, `${this.moduleName}-app.js`),
             jsMinified.code.toString(),
             'utf8'
         );
@@ -426,6 +426,7 @@ class HtmlApp extends AppBase {
         data.imagesPath = Path.relative(outputProductDir, this.imagesDir);
         data.myMeta     = this.getHomeMetaData(data);
         data.isHome     = true;
+        data.toolkit    = null;
         this.processCommonDataObject(data);
     }
 

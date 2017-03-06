@@ -97,7 +97,8 @@ DocsApp.initNavTree = function () {
 };
 
 /**
- * 
+ * Create the nav tree filter and set up event listeners used to filter the navigation 
+ * trees
  */
 DocsApp.initNavTreeFilter = function () {
     var header = ExtL.get('tree-header'),
@@ -114,16 +115,17 @@ DocsApp.initNavTreeFilter = function () {
 };
 
 /**
- * 
+ * A buffered change handler for the navigation tree search field that filters all 
+ * navigation trees on each change
  */
-DocsApp.filterNavTrees = function () {
+DocsApp.filterNavTrees = ExtL.createBuffered(function () {
     var navSearch = ExtL.get('nav-search'),
         value     = navSearch.value;
 
     DocsApp.componentsNavTree.filter(value);
     DocsApp.guidesNavTree.filter(value);
-    //DocsApp.apiNavTree.filter(value);
-};
+    DocsApp.apiNavTree.filter(value);
+}, 50);
 
 /**
  * @method buildNavTree
@@ -176,10 +178,15 @@ DocsApp.toggleNavHeaders = function (e) {
         target       = DocsApp.getEventTarget(e),
         len          = navHeaders.length,
         i            = 0,
+        headerCls    = 'sub-nav-header',
         collapsedCls = 'sub-nav-ct-collapsed',
         header, action;
     
     if (target) {
+        if (!ExtL.hasCls(target, headerCls)) {
+            console.log(target);
+            target = ExtL.up(target, '.' + headerCls);
+        }
         if (ExtL.hasCls(target, collapsedCls)) {
             for (; i < len; i++) {
                 header = navHeaders[i];

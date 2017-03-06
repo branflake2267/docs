@@ -20,8 +20,11 @@ function Tree (data, renderTo) {
     // the class to apply to a node when it and its children are collapsed
     me.collapseCls = 'tree-node-collapsed';
 
-    // cache the parent nodes - used by the collapseAll / expandAll methods
+    // cache the parent node ids - used by the collapseAll / expandAll methods and filter
     me._parentNodes = [];
+
+    // cache the leaf node ids - used by filtering
+    me._leafNodes = [];
 
     me.target = target;
 
@@ -168,6 +171,8 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             cfg.href = href;
             cfg["class"] += ' tree-leaf';
 
+            this._leafNodes.push(cfg.id);
+
             leafIcon = isIndexed ? '' : (node.iconCls || '');
 
             // add the leaf node's icon, text, and a star if it's indicated as "new"
@@ -198,142 +203,87 @@ Tree.prototype.isIndexed = function () {
 };
 
 /**
+ * Filters the tree leaf nodes by their text value (normalized to all lower case) and 
+ * shows the matching nodes along with their ancestor parent nodes
+ * @param {String} value The value to filter the leaf nodes by
+ * @return {Object} An object with the following keys / values
  * 
+ *  - total: An array of all leaf nodes
+ *  - totalCount: The count of all leaf nodes
+ *  - filtered: An array of all leaf nodes matching against the passed value
+ *  - filteredCount: The count of all leaf nodes matched by the filter
  */
-Tree.prototype.filter = ExtL.createBuffered(function (value) {
-    /*var leaves      = ExtL.fromNodeList(this.target.querySelectorAll('.tree-leaf')),
-        len         = leaves.length,
-        i           = 0,
-        filtered    = [],
-        show        = [],
-        hide        = [],
-        filteredCls = 'tree-node-filtered',
-        re          = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
-        leaf, id, parentNode,
-        children, childLen, j, child, visible,
-        parentNodes, parentsLen, hideLen, showLen;
+Tree.prototype.filter = function (value) {
+    var hasValue       = value.length,
+        leaves         = this.getLeafNodes(),
+        leavesLen      = leaves.length,
+        i              = 0,
+        parentNodes    = this.getParentNodes(),
+        parentsLen     = parentNodes.length,
+        filteredCls    = 'tree-node-filtered',
+        re             = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
+        visibleParents = [],
+        filtered       = [],
+        parentNode, leaf, text, parent, visiblesLen;
 
-    for (;i < len; i++) {
-        leaf = leaves[i];
+    // loop over all parent nodes and hide them if there is a value passed in; else show 
+    // the node
+    for (; i < parentsLen; i++) {
+        parentNode         = ExtL.get(parentNodes[i]);
+        ExtL[hasValue ? 'addCls' : 'removeCls'](parentNode, filteredCls);
+    }
+
+    i = 0;
+
+    // loop over all leaves.  If the leaf text matches the value then show it, highlight 
+    // the matching text, expand the tree to that node, and add the node's parent (if it 
+    // has one) to the array of parent nodes to show in the following loop
+    for (; i < leavesLen; i++) {
+        leaf = ExtL.get(leaves[i]);
         text = leaf.innerText.toLowerCase();
 
-        //ExtL.removeCls(leaf, filteredCls);
-        if (value.length === 0 || text.indexOf(value.toLowerCase()) > -1) {
+        // if there is no value or the value matches the leaf text then show it
+        if (!hasValue || (hasValue && text.indexOf(value.toLowerCase()) > -1)) {
+            ExtL.removeCls(leaf, filteredCls);
             this.expandTo(leaf.id);
             filtered.push(leaf);
-            show.push(leaf);
             leaf.innerHTML = (leaf.textContent || leaf.innerText).replace(re, '<strong>$1</strong>');
-        } else {
-            //ExtL.addCls(leaf, filteredCls);
-            hide.push(leaf);
-        }
-
-        parentNode = ExtL.get(leaf.getAttribute('parenttreenode'));
-
-        while (parentNode) {
-            children = ExtL.fromNodeList(parentNode.nextSibling.childNodes);
-            childLen = children.length;
-            j        = 0;
-            visible  = false;
-            
-            for (; j < childLen; j++) {
-                child = children[j];
-                if (ExtL.hasCls(child, 'tree-node') && !ExtL.hasCls(child, filteredCls)) {
-                //if (ExtL.hasCls(child, 'tree-node') && show.indexOf(child) > -1) {
-                    visible = true;
-                }
+            parent         = ExtL.get(leaf.getAttribute('parenttreenode'));
+            if (parent) {
+                visibleParents.push(parent);
             }
-
-            ExtL.removeCls(parentNode, filteredCls);
-            ExtL[visible ? 'removeCls' : 'addCls'](parentNode, filteredCls);
-            //[visible ? 'show' : 'hide'].push(parentNode);
-            parentNode = ExtL.get(parentNode.getAttribute('parenttreenode'));
+        } else {
+            // else hide it and un-highlight it
+            leaf.innerHTML = leaf.textContent || leaf.innerText;
+            ExtL.addCls(leaf, filteredCls);
         }
     }
 
-    parentNodes = this.getParentNodes();
-    parentsLen  = parentNodes.length;
-    i           = 0;
+    // if there was a value passed in loop over the visible parent nodes as discovered in 
+    // the preceding loop and show them and their ancestor nodes
+    if (hasValue) {
+        visiblesLen = visibleParents.length;
+        i           = 0;
 
-    for (; i < parentsLen; i++) {
-        //parentNodes[i].filtered = false;
+        for (; i < visiblesLen; i++) {
+            parent = visibleParents[i];
+
+            while (parent) {
+                ExtL.removeCls(parent, filteredCls);
+                parent = ExtL.get(parent.getAttribute('parenttreenode'));
+            }
+        }
     }
 
-    hideLen = hide.length;
-    i       = 0;
-
-    for (; i < hideLen; i++) {
-        leaf = hide[i];
-        ExtL.addCls(leaf, filteredCls);
-    }
-
-    showLen = show.length;
-    i       = 0;
-
-    for (; i < showLen; i++) {
-        ExtL.removeCls(show[i], filteredCls);
-    }
-
+    // return an object showing the total nodes, their count, the filtered nodes, and 
+    // their count
     return {
-        leaves        : leaves,
-        leafCount     : leaves.length,
+        total         : leaves,
+        totalCount    : leaves.length,
         filtered      : filtered,
         filteredCount : filtered.length
-    };*/
-    var parentNodes = this.getParentNodes(),
-        filteredCls = 'tree-node-filtered',
-        re          = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
-        parentsLen  = parentNodes.length,
-        i = 0,
-        visibleFolders = [],
-        parentNode, childNodes, childLen, j, child, text, match,
-        visiblesLen, visibleFolder, folderParent;
-
-    for (; i < parentsLen; i++) {
-        parentNode = parentNodes[i];
-        ExtL.get(parentNode).visible = false;
-        childNodes = this.getChildNodes(parentNode);
-        childLen   = childNodes.length;
-        j          = 0;
-        match      = false;
-
-        for (; j < childLen; j++) {
-            child = childNodes[j];
-            text  = child.innerText.toLowerCase();
-
-            if (value.length === 0 || text.indexOf(value.toLowerCase()) > -1) {
-                ExtL.removeCls(child, filteredCls);
-                this.expandTo(child.id);
-                child.innerHTML = (child.textContent || child.innerText).replace(re, '<strong>$1</strong>');
-                match = true;
-            } else {
-                ExtL.addCls(child, filteredCls);
-            }
-        }
-
-        if (match) {
-            visibleFolders.push(parentNode);
-        }
-    }
-
-    visiblesLen = visibleFolders.length;
-    i = 0;
-    for (; i < visiblesLen; i++) {
-        visibleFolder = ExtL.get(visibleFolders[i]);
-        folderParent = ExtL.get(visibleFolder.getAttribute('parenttreenode'));
-
-        while (folderParent) {
-            folderParent.visible = true;
-            folderParent = ExtL.get(folderParent.getAttribute('parenttreenode'));
-        }
-    }
-
-    i = 0;
-    for (; i < parentsLen; i++) {
-        parentNode = ExtL.get(parentNodes[i]);
-        ExtL[parentNode.visible ? 'removeCls' : 'addCls'](parentNode, filteredCls);
-    }
-}, 50);
+    };
+};
 
 /**
  * 
@@ -448,13 +398,20 @@ Tree.prototype.collapseAll = function () {
 
 /**
  * @method getParentNodes
- * @private
  * Returns all parent node IDs in the tree.  Used by {@link #collapseAll} and 
- * {@link #expandAll}
+ * {@link #expandAll} and {@link #filter}
  * @return {String[]} Array of the IDs of all parent nodes in the tree
  */
 Tree.prototype.getParentNodes = function () {
     return this._parentNodes;
+};
+
+/**
+ * Returns all leaf node IDs in the tree.  Used by {@link #filter}
+ * @return {String[]} Array of the IDs of all leaf nodes in the tree
+ */
+Tree.prototype.getLeafNodes = function () {
+    return this._leafNodes;
 };
 
 /**

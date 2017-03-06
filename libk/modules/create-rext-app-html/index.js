@@ -45,7 +45,7 @@ class ExtReactHtmlApp extends HtmlApp {
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
     get parentChain () {
-        return super.parentChain.concat([Path.parse(__dirname).base]);
+        return super.parentChain.concat([this.moduleName]);
     }
 
     /**

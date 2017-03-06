@@ -45,7 +45,14 @@ class ExtReactHtmlApp extends HtmlApp {
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
     get parentChain () {
-        return super.parentChain.concat([Path.parse(__dirname).base]);
+        return super.parentChain.concat([this.moduleName]);
+    }
+
+    /**
+     * Returns this module's name
+     */
+    get moduleName () {
+        return Path.parse(__dirname).base;
     }
 
     /**
@@ -98,10 +105,9 @@ class ExtReactHtmlApp extends HtmlApp {
 
     /**
      * Returns the api tree (later to be output in the {@link #outputApiTree} method).  
-     * A class name may optionally be passed in order to drive the tree name to be added 
-     * to `this.apiTrees`
-     * @param {String} [className] The classname being processed.  Can be used in an 
-     * override of this method to derive which tree to return;
+     * The class name is searched for in the component list and if found is added to the 
+     * component tree.  Else the class will be added to the API tree.
+     * @param {String} [className] The classname being processed.
      * @return {Array} The api tree
      */
     getApiTree (className) {

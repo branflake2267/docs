@@ -26,7 +26,14 @@ class ExtApp extends AppBase {
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
     get parentChain () {
-        return super.parentChain.concat([Path.parse(__dirname).base]);
+        return super.parentChain.concat([this.moduleName]);
+    }
+
+    /**
+     * Returns this module's name
+     */
+    get moduleName () {
+        return Path.parse(__dirname).base;
     }
 
     /**

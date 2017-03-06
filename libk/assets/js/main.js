@@ -13,22 +13,27 @@ window.DocsApp = window.DocsApp || {};
  * @param {String} renderTo The ID of the element to render the tree to
  */
 function Tree (data, renderTo) {
-    var me = this;
+    var me = this,
+        // get the element we'll render the tree to
+        target   = document.getElementById(renderTo);
 
     // the class to apply to a node when it and its children are collapsed
     me.collapseCls = 'tree-node-collapsed';
 
-    // cache the parent nodes - used by the collapseAll / expandAll methods
+    // cache the parent node ids - used by the collapseAll / expandAll methods and filter
     me._parentNodes = [];
+
+    // cache the leaf node ids - used by filtering
+    me._leafNodes = [];
+
+    me.target = target;
 
     // first we'll loop over all of the tree nodes and create the tree node elements to 
     // render to the page.  This will create the parent node, child node, and the 
     // wrapping element around the child nodes used to collapse / hide child nodes
     var nodeCfgs = me.createNodeCfgs(data),
         i        = 0,
-        len      = nodeCfgs.length,
-        // get the element we'll render the tree to
-        target   = document.getElementById(renderTo);
+        len      = nodeCfgs.length;
 
     // now that we have the configs used to create each tree node (and its children) 
     // using ExtL.createElement we'll append each node (and its children) to the target 
@@ -94,7 +99,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         // the default config to use for this node when processed to the DOM by 
         // ExtL.createElement
         cfg = {
-            id             : node.id,
+            //id             : node.id,
             parentTreeNode : parentId || null,
             "class"        : accessCls + ' tree-node tree-depth-' + depth + indexedCls
         };
@@ -109,8 +114,9 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         // recursively for their own processing
         if (node.children) {
             // since this node is a parent node add it to the _parentNodes property
-            this._parentNodes.push(node.id);
             cfg["class"] += ' tree-parent-node pointer ' + this.collapseCls;
+            cfg.id = this.target.id + '-' + node.id;
+            this._parentNodes.push(cfg.id);
             // add the expand / collapse icons, any passed iconCls for the node, the node 
             // text, and finally a wrapping container for all child nodes (used to 
             // collapse children in the UI)
@@ -134,10 +140,11 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             cfgs.push(cfg);
 
             // the child node wrap (for expand / collapse control)
+            //console.log(cfg.id);
             var ctCfg = {
                 tag     : 'div',
                 "class" : 'child-nodes-ct',
-                cn      : this.createNodeCfgs(node.children, node.id, depth + 1)
+                cn      : this.createNodeCfgs(node.children, cfg.id, depth + 1)
             };
             var j = 0,
                 children = ctCfg.cn,
@@ -159,9 +166,12 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         } else {
             // decorate this node as a leaf node
             cfg.leaf = true;
+            cfg.id   = node.id;
             cfg.tag  = textTag;
             cfg.href = href;
             cfg["class"] += ' tree-leaf';
+
+            this._leafNodes.push(cfg.id);
 
             leafIcon = isIndexed ? '' : (node.iconCls || '');
 
@@ -190,6 +200,111 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
  */
 Tree.prototype.isIndexed = function () {
     return DocsApp.meta.navTreeName === 'Quick Start';
+};
+
+/**
+ * Filters the tree leaf nodes by their text value (normalized to all lower case) and 
+ * shows the matching nodes along with their ancestor parent nodes
+ * @param {String} value The value to filter the leaf nodes by
+ * @return {Object} An object with the following keys / values
+ * 
+ *  - total: An array of all leaf nodes
+ *  - totalCount: The count of all leaf nodes
+ *  - filtered: An array of all leaf nodes matching against the passed value
+ *  - filteredCount: The count of all leaf nodes matched by the filter
+ */
+Tree.prototype.filter = function (value) {
+    var hasValue       = value.length,
+        leaves         = this.getLeafNodes(),
+        leavesLen      = leaves.length,
+        i              = 0,
+        parentNodes    = this.getParentNodes(),
+        parentsLen     = parentNodes.length,
+        filteredCls    = 'tree-node-filtered',
+        re             = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
+        visibleParents = [],
+        filtered       = [],
+        parentNode, leaf, text, parent, visiblesLen;
+
+    // loop over all parent nodes and hide them if there is a value passed in; else show 
+    // the node
+    for (; i < parentsLen; i++) {
+        parentNode         = ExtL.get(parentNodes[i]);
+        ExtL[hasValue ? 'addCls' : 'removeCls'](parentNode, filteredCls);
+    }
+
+    i = 0;
+
+    // loop over all leaves.  If the leaf text matches the value then show it, highlight 
+    // the matching text, expand the tree to that node, and add the node's parent (if it 
+    // has one) to the array of parent nodes to show in the following loop
+    for (; i < leavesLen; i++) {
+        leaf = ExtL.get(leaves[i]);
+        text = leaf.innerText.toLowerCase();
+
+        // if there is no value or the value matches the leaf text then show it
+        if (!hasValue || (hasValue && text.indexOf(value.toLowerCase()) > -1)) {
+            ExtL.removeCls(leaf, filteredCls);
+            this.expandTo(leaf.id);
+            filtered.push(leaf);
+            leaf.innerHTML = (leaf.textContent || leaf.innerText).replace(re, '<strong>$1</strong>');
+            parent         = ExtL.get(leaf.getAttribute('parenttreenode'));
+            if (parent) {
+                visibleParents.push(parent);
+            }
+        } else {
+            // else hide it and un-highlight it
+            leaf.innerHTML = leaf.textContent || leaf.innerText;
+            ExtL.addCls(leaf, filteredCls);
+        }
+    }
+
+    // if there was a value passed in loop over the visible parent nodes as discovered in 
+    // the preceding loop and show them and their ancestor nodes
+    if (hasValue) {
+        visiblesLen = visibleParents.length;
+        i           = 0;
+
+        for (; i < visiblesLen; i++) {
+            parent = visibleParents[i];
+
+            while (parent) {
+                ExtL.removeCls(parent, filteredCls);
+                parent = ExtL.get(parent.getAttribute('parenttreenode'));
+            }
+        }
+    }
+
+    // return an object showing the total nodes, their count, the filtered nodes, and 
+    // their count
+    return {
+        total         : leaves,
+        totalCount    : leaves.length,
+        filtered      : filtered,
+        filteredCount : filtered.length
+    };
+};
+
+/**
+ * 
+ */
+Tree.prototype.getChildNodes = function (parentNodeId) {
+    var parentNode = ExtL.get(parentNodeId),
+        children   = [],
+        childNodes = ExtL.fromNodeList(parentNode.nextSibling.childNodes),
+        childLen   = childNodes.length,
+        i          = 0,
+        child;
+
+    for (; i < childLen; i++) {
+        child = childNodes[i];
+
+        if (ExtL.hasCls(child, 'tree-leaf')) {
+            children.push(child);
+        }
+    }
+
+    return children;
 };
 
 /**
@@ -283,13 +398,20 @@ Tree.prototype.collapseAll = function () {
 
 /**
  * @method getParentNodes
- * @private
  * Returns all parent node IDs in the tree.  Used by {@link #collapseAll} and 
- * {@link #expandAll}
+ * {@link #expandAll} and {@link #filter}
  * @return {String[]} Array of the IDs of all parent nodes in the tree
  */
 Tree.prototype.getParentNodes = function () {
     return this._parentNodes;
+};
+
+/**
+ * Returns all leaf node IDs in the tree.  Used by {@link #filter}
+ * @return {String[]} Array of the IDs of all leaf nodes in the tree
+ */
+Tree.prototype.getLeafNodes = function () {
+    return this._leafNodes;
 };
 
 /**
@@ -340,8 +462,8 @@ DocsApp.appMeta = {
  * Builds the navigation tree using the passed tree object (determined in 
  * {@link #initNavTree}).  The navigation tree instance is cached on DocsApp.navTree.
  */
-DocsApp.buildNavTree = function (navTree) {
-    DocsApp.navTree = new Tree(navTree, 'tree');
+DocsApp.buildNavTree = function (navTree, ct) {
+    DocsApp.navTree = new Tree(navTree, ct || 'tree');
 };
 
 /**
@@ -3383,7 +3505,7 @@ DocsApp.getEventTarget = function (e) {
         var pickerId = 'multi-src-picker',
             picker = ExtL.get(pickerId);
 
-        if (!picker) {
+        if (!picker && DocsApp.meta.srcFiles) {
             var srcFiles = DocsApp.meta.srcFiles,
                 len      = srcFiles.length,
                 i        = 0,

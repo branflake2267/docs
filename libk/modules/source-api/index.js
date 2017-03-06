@@ -320,7 +320,7 @@ class SourceApi extends Base {
     getApiMetaData (data) {
         let meta = super.getCommonMetaData();
 
-        if (data) {
+        if (data && data.cls) {
             let name       = data.cls.name,
                 apiDirName = this.apiDirName;
 
@@ -929,8 +929,11 @@ class SourceApi extends Base {
 
         // TODO there's a lot of overlap here with guides - should see how we can 
         // reconcile some of this into some sort of applyContext(data) method
-        data = Object.assign(data, options);
         data = Object.assign(data, options.prodVerMeta);
+        data = Object.assign(data, options);
+        if (cls.name === 'Ext.button.Button') {
+            console.log(data.toolkit, options.toolkit);
+        }
 
         // indicates whether the class is of type component, singleton, or some other 
         // class
@@ -1691,7 +1694,7 @@ class SourceApi extends Base {
                 options = this.options,
                 // TODO = this should be set globally probably in the base constructor
                 //outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
-                outDir = Path.join(this.apiDir, 'src');
+                outDir  = Path.join(this.apiDir, 'src');
 
             // create the output directory
             Fs.ensureDir(outDir, () => {
@@ -1707,14 +1710,16 @@ class SourceApi extends Base {
                             filename = map[content.path].filename, // the filename to write out
                             // the data object to apply to the source HTML handlebars template
                             data     = {
-                                content : content.html,
-                                name    : filename,
-                                title   : options.prodVerMeta.prodObj.title,
-                                version : options.version,
+                                content    : content.html,
+                                name       : filename,
+                                title      : options.prodVerMeta.prodObj.title,
+                                version    : options.version,
                                 // TODO figure out what numVer is in production today
-                                numVer  : '...',
+                                numVer     : '...',
                                 // TODO this should be output more thoughtfully than just using options.toolkit
-                                meta    : options.toolkit
+                                meta       : options.toolkit,
+                                moduleName : this.moduleName,
+                                cssPath    : Path.relative(outDir, this.cssDir)
                             };
 
                         // write out the current source file

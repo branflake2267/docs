@@ -245,7 +245,8 @@ class AppBase extends SourceGuides {
      * @param {String} html The HTML blob to mine for api links
      * @return {String} The HTML blob with the pseudo-links replaced with actual links
      */
-    parseApiLinks (html, data) {
+    //parseApiLinks (html, data) {
+    parseGuideLinks (html, data) {
         html = html.replace(/\[{2}([a-z0-9.]+):([a-z0-9._\-#]+)\s?([a-z$\/'.()[\]\\_-\s]*)\]{2}/gim, (match, productVer, link, text) => {
             let options       = this.options,
                 prodVerMeta   = options.prodVerMeta,
@@ -291,7 +292,13 @@ class AppBase extends SourceGuides {
                 memberName = hash;
             }
 
-            return this.createApiLink(product, version, toolkit, className, memberName, text, data);
+            if (match === '[[modern:Ext.tab.Panel tabpanel]]') {
+                //console.log(match, productVer, link, text);
+                //console.log(product, version, toolkit, text);
+                //console.log(product, version, toolkit, className, memberName, text, data);
+            }
+
+            return this.createGuideLink(product, version, toolkit, className, memberName, text, data);
         });
 
         return html;

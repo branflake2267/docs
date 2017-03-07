@@ -56,7 +56,7 @@ class HtmlApp extends AppBase {
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
     get parentChain () {
-        return super.parentChain.concat([this.moduleName]);
+        return super.parentChain.concat([Path.parse(__dirname).base]);
     }
 
     /**

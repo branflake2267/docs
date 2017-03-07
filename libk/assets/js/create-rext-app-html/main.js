@@ -6,53 +6,6 @@
  * tabs.
  */
 DocsApp.initNavTree = function () {
-    /*var navTreeName = DocsApp.meta.navTreeName,
-        apiTree     = DocsApp.apiTree || {},
-        guidesTree  = DocsApp.guidesTree || {},
-        navTrees, navTree, guideKeys;
-
-    // collect all trees into a single object
-    //navTrees = ExtL.assign({}, apiTarget, guidesTree);
-    navTrees = ExtL.assign({}, apiTree, guidesTree);
-
-    // the product home page likely will not have passed a navTreeName to determine which 
-    // nav tree to display so we'll grab the first guides or the first api name we find
-    if (DocsApp.meta.pageType === 'home' && !navTreeName) {
-        guideKeys = ExtL.keys(guidesTree);
-        apiKeys   = ExtL.keys(apiTree);
-
-        if (guideKeys.length) {
-            navTreeName = DocsApp.meta.navTreeName = guideKeys[0];
-        } else if (apiKeys.length) {
-            navTreeName = DocsApp.meta.navTreeName = apiKeys[0];
-        } else {
-            // TODO thrown an error
-        }
-    }
-
-
-
-    // the tree object for the current page
-    //navTree = navTrees[navTreeName];
-    navTree = ExtL.valueFromPath(navTrees, navTreeName);
-
-    // if a navigation tree is found for the current page
-    if (navTree) {
-        var id   = DocsApp.meta.myId,
-            tabs = [];
-
-        // create the tree
-        DocsApp.buildNavTree(navTree);
-
-        // select the node for the current page
-        if (id) {
-            DocsApp.navTree.select(id)
-                // and expand the tree to the selected node
-                .expandTo(id);
-        }
-
-        DocsApp.initNavTreeTabs();
-    }*/
     var DA             = DocsApp,
         apiTree        = DA.apiTree,
         componentsTree = apiTree.API.Components[0].children,

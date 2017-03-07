@@ -286,7 +286,8 @@ class HtmlApp extends AppBase {
 
         // TODO finish with the guide HTML: decorate @examples, process links, etc.
 
-        html = this.parseApiLinks(html, data);
+        //html = this.parseApiLinks(html, data);
+        html = this.parseGuideLinks(html, data);
 
         return html;
     }
@@ -319,7 +320,40 @@ class HtmlApp extends AppBase {
      * @param {String} text The text to display for the link
      * @return {String} The link markup
      */
+    //return this.createApiLink(product, version, toolkit, className, memberName, text, data);
     createApiLink(href, text) {
+        return `<a href="${href}">${text}</a>`;
+    }
+
+    /**
+     * Process API links using the passed product, version, class name, etc.
+     * @param {String} product The product name
+     * @param {String} version The version stipulated in the [[link]] or null if not
+     * specified
+     * @param {String} toolkit The specified toolkit or 'api'
+     * @param {String} className The name of the SDK class
+     * @param {String} memberName The name of the member (or member group potentially) or
+     * undefined if no member was specified in the link
+     * @param {String} text The text to display in the link if specified
+     * @param {Object} data The data object to be applied to the template for the current 
+     * doc / guide page
+     * @return {String} The link markup
+     */
+    // TODO process the api links for HTML guides
+    createGuideLink(product, version, toolkit, className, memberName, text, data) {
+        let rootPath   = data.rootPath,
+            outputDir  = this.options.outputDir,
+            relPath    = Path.relative(rootPath, outputDir),
+            href       = Path.join(relPath, product, version, toolkit, `${className}.html`);
+        
+        if (memberName) {
+            href += `#${memberName}`;
+        }
+
+        //console.log('href:', product, version, toolkit, className, memberName);
+        //console.log(Path.join(rootPath, product, version, toolkit, `${className}.html`));
+        //console.log(relPath);
+
         return `<a href="${href}" class="link underline-hover blue">${text}</a>`;
     }
 

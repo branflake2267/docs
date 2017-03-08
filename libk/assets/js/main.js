@@ -224,7 +224,7 @@ Tree.prototype.filter = function (value) {
         re             = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
         visibleParents = [],
         filtered       = [],
-        parentNode, leaf, text, parent, visiblesLen;
+        parentNode, leaf, text, textNode, parent, visiblesLen;
 
     // loop over all parent nodes and hide them if there is a value passed in; else show 
     // the node
@@ -239,22 +239,23 @@ Tree.prototype.filter = function (value) {
     // the matching text, expand the tree to that node, and add the node's parent (if it 
     // has one) to the array of parent nodes to show in the following loop
     for (; i < leavesLen; i++) {
-        leaf = ExtL.get(leaves[i]);
-        text = leaf.innerText.toLowerCase();
+        leaf     = ExtL.get(leaves[i]);
+        text     = leaf.innerText.toLowerCase();
+        textNode = leaf.querySelector('span');
 
         // if there is no value or the value matches the leaf text then show it
         if (!hasValue || (hasValue && text.indexOf(value.toLowerCase()) > -1)) {
             ExtL.removeCls(leaf, filteredCls);
             this.expandTo(leaf.id);
             filtered.push(leaf);
-            leaf.innerHTML = (leaf.textContent || leaf.innerText).replace(re, '<strong>$1</strong>');
-            parent         = ExtL.get(leaf.getAttribute('parenttreenode'));
+            textNode.innerHTML = (textNode.textContent || textNode.innerText).replace(re, '<strong>$1</strong>');
+            parent             = ExtL.get(leaf.getAttribute('parenttreenode'));
             if (parent) {
                 visibleParents.push(parent);
             }
         } else {
             // else hide it and un-highlight it
-            leaf.innerHTML = leaf.textContent || leaf.innerText;
+            textNode.innerHTML = textNode.textContent || textNode.innerText;
             ExtL.addCls(leaf, filteredCls);
         }
     }

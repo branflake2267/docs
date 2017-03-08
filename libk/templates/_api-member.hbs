@@ -11,24 +11,36 @@
         </div>
         <h2 class="member-header">
             <a href="#{{$type}}-{{name}}" class="member-name-link"><span data-ref="{{$type}}-{{name}}" class="member-name">{{{name}}}</span></a>
-            {{#if listParams}}<span class="params-list"> (
-                {{#is $type "css_mixin"}}
-                    ...list...
-                {{else}}
-                    {{#params}}
-                        {{#unless @first}}, {{/unless}}
-                        {{#if optional}}[{{/if}}{{{name}}}{{#if optional}}]{{/if}}
-                        {{#if @last}}
-                            {{#is ../$type "event"}}, eOpts{{/is}}
-                        {{/if}}
-                    {{/params}}
-                {{/is}}
+            {{#if listParams}}
+                <span class="params-list">
+                    {{#if paramsPrefix}}
+                        {{paramsPrefix}}
+                    {{/if}}
+                    (
+                    {{#is $type "css_mixin"}}
+                        ...list...
+                    {{else}}
+                        {{#params}}
+                            {{#unless @first}}, {{/unless}}
+                            {{#if optional}}[{{/if}}{{{name}}}{{#if optional}}]{{/if}}
+                            {{#if @last}}
+                                {{#is ../$type "event"}}, eOpts{{/is}}
+                            {{/if}}
+                        {{/params}}
+                    {{/is}}
 
-                )</span>
+                    )
+                    {{#if listReturn}}
+                        {{#if returnPrefix}}
+                            {{returnPrefix}}
+                        {{else}}
+                            :
+                        {{/if}}
+                    {{/if}}
+                </span>
             {{/if}}
 
             {{#if listReturn}}
-                :
                 {{#returns}}
                     <span class="memberType">{{{type}}}</span>
                 {{/returns}}

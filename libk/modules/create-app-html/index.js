@@ -22,9 +22,9 @@ const AppBase         = require('../create-app-base'),
       UglifyJS        = require("uglify-js"),
       CleanCSS        = require('clean-css'),
       Swag            = require('swag'),
-      LinkRe          = /['`]*\{\s*@link(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
-      ImgRe           = /{\s*@img(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
-      HashStartRe     = /^#/;
+      //LinkRe          = /['`]*\{\s*@link(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
+      ImgRe           = /{\s*@img(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g;
+      //HashStartRe     = /^#/;
 
 class HtmlApp extends AppBase {
     constructor (options) {
@@ -51,7 +51,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Returns an array of this module's file name along with the file names of all 
+     * Returns an array of this module's file name along with the file names of all
      * ancestor modules
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
@@ -67,8 +67,32 @@ class HtmlApp extends AppBase {
     }
 
     /**
+     * Returns the link regular expression used when parsing API links
+     * @return {Object} The API link regex instance
+     */
+    get linkRe () {
+        if (!this._linkRe) {
+            this._linkRe = /['`]*\{\s*@link(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g;
+        }
+
+        return this._linkRe;
+    }
+
+    /**
+     * Regex test to see if the string starts with `#`
+     * @return {Object} The hash regex instance
+     */
+    get hashStartRe () {
+        if (!this._hashStartRe) {
+            this._hashStartRe = /^#/;
+        }
+
+        return this._hashStartRe;
+    }
+
+    /**
      * @property
-     * Get the guides output directory where all guides / guide directories will be 
+     * Get the guides output directory where all guides / guide directories will be
      * output (creating it if it does not already exist)
      * @return {String} The full path to the guides output directory
      */
@@ -111,14 +135,14 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Collects any file paths in the assets folders (js, css, other) using the passed 
-     * file name and the folder name of all ancestor module file names in the project.  
-     * This mechanism allows for each module to supply files overriding the logic, 
+     * Collects any file paths in the assets folders (js, css, other) using the passed
+     * file name and the folder name of all ancestor module file names in the project.
+     * This mechanism allows for each module to supply files overriding the logic,
      * styles, etc. from the module before it in the class hierarchy.
-     * @param {String} folder The folder within the assets directory to mine files from. 
+     * @param {String} folder The folder within the assets directory to mine files from.
      * i.e. 'js', 'css', etc.
      * @param {String} fileName The file name to look for
-     * @return {String[]} Array of file paths to the override files in order of most to 
+     * @return {String[]} Array of file paths to the override files in order of most to
      * least Base in the class hierarchy.  Else an empty array if no files match.
      */
     getAncestorFiles (folder, fileName) {
@@ -143,7 +167,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Copy supporting assets to the output folder.  
+     * Copy supporting assets to the output folder.
      * i.e. app.js, app.css, ace editor assets, etc.
      */
     copyAssets () {
@@ -160,7 +184,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Copy project 'css' files over from the project assets directory to the output 
+     * Copy project 'css' files over from the project assets directory to the output
      * directory
      */
     copyCss () {
@@ -176,25 +200,25 @@ class HtmlApp extends AppBase {
                 compatibility : 'ie9',
                 level         : production ? 2 : 0,
                 format: {
-                    breaks: { // controls where to insert breaks 
-                        afterAtRule: !production, // controls if a line break comes after an at-rule; e.g. `@charset`; defaults to `false` 
-                        afterBlockBegins: !production, // controls if a line break comes after a block begins; e.g. `@media`; defaults to `false` 
-                        afterBlockEnds: !production, // controls if a line break comes after a block ends, defaults to `false` 
-                        afterComment: !production, // controls if a line break comes after a comment; defaults to `false` 
-                        afterProperty: !production, // controls if a line break comes after a property; defaults to `false` 
-                        afterRuleBegins: !production, // controls if a line break comes after a rule begins; defaults to `false` 
-                        afterRuleEnds: !production, // controls if a line break comes after a rule ends; defaults to `false` 
-                        beforeBlockEnds: !production, // controls if a line break comes before a block ends; defaults to `false` 
-                        betweenSelectors: !production // controls if a line break comes between selectors; defaults to `false` 
+                    breaks: { // controls where to insert breaks
+                        afterAtRule: !production, // controls if a line break comes after an at-rule; e.g. `@charset`; defaults to `false`
+                        afterBlockBegins: !production, // controls if a line break comes after a block begins; e.g. `@media`; defaults to `false`
+                        afterBlockEnds: !production, // controls if a line break comes after a block ends, defaults to `false`
+                        afterComment: !production, // controls if a line break comes after a comment; defaults to `false`
+                        afterProperty: !production, // controls if a line break comes after a property; defaults to `false`
+                        afterRuleBegins: !production, // controls if a line break comes after a rule begins; defaults to `false`
+                        afterRuleEnds: !production, // controls if a line break comes after a rule ends; defaults to `false`
+                        beforeBlockEnds: !production, // controls if a line break comes before a block ends; defaults to `false`
+                        betweenSelectors: !production // controls if a line break comes between selectors; defaults to `false`
                     },
-                    indentBy: production ? 0 : 4, // controls number of characters to indent with; defaults to `0` 
-                    indentWith: 'space', // controls a character to indent with, can be `'space'` or `'tab'`; defaults to `'space'` 
-                    spaces: { // controls where to insert spaces 
-                        aroundSelectorRelation: !production, // controls if spaces come around selector relations; e.g. `div > a`; defaults to `false` 
-                        beforeBlockBegins: !production, // controls if a space comes before a block begins; e.g. `.block {`; defaults to `false` 
-                        beforeValue: !production // controls if a space comes before a value; e.g. `width: 1rem`; defaults to `false` 
+                    indentBy: production ? 0 : 4, // controls number of characters to indent with; defaults to `0`
+                    indentWith: 'space', // controls a character to indent with, can be `'space'` or `'tab'`; defaults to `'space'`
+                    spaces: { // controls where to insert spaces
+                        aroundSelectorRelation: !production, // controls if spaces come around selector relations; e.g. `div > a`; defaults to `false`
+                        beforeBlockBegins: !production, // controls if a space comes before a block begins; e.g. `.block {`; defaults to `false`
+                        beforeValue: !production // controls if a space comes before a value; e.g. `width: 1rem`; defaults to `false`
                     },
-                    wrapAt: false // controls maximum line length; defaults to `false` 
+                    wrapAt: false // controls maximum line length; defaults to `false`
                 }
             }).minify([
                 faCss,       // font awesome styles
@@ -210,7 +234,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Copy project 'js' files over from the project assets directory to the output 
+     * Copy project 'js' files over from the project assets directory to the output
      * directory
      */
     copyJs () {
@@ -264,7 +288,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Assemble the guide file's path for writing to disk  
+     * Assemble the guide file's path for writing to disk
      * May be overridden in the post processor module
      * @param {String} rootPath The path of the guide file
      * @param {String} name The guide file name
@@ -293,7 +317,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Additional guide data processing prior to handing the data over to the guide 
+     * Additional guide data processing prior to handing the data over to the guide
      * template for final output
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
@@ -335,7 +359,7 @@ class HtmlApp extends AppBase {
      * @param {String} memberName The name of the member (or member group potentially) or
      * undefined if no member was specified in the link
      * @param {String} text The text to display in the link if specified
-     * @param {Object} data The data object to be applied to the template for the current 
+     * @param {Object} data The data object to be applied to the template for the current
      * doc / guide page
      * @return {String} The link markup
      */
@@ -345,7 +369,7 @@ class HtmlApp extends AppBase {
             outputDir  = this.options.outputDir,
             relPath    = Path.relative(rootPath, outputDir),
             href       = Path.join(relPath, product, version, toolkit, `${className}.html`);
-        
+
         if (memberName) {
             href += `#${memberName}`;
         }
@@ -374,11 +398,14 @@ class HtmlApp extends AppBase {
      * @return {String} The original HTML string with all links processed
      */
     parseApiLinks (html) {
-        return html.replace(LinkRe, (match, link, text) => {
+        return html.replace(this.linkRe, (match, link, text) => {
             link = link.replace('!','-');
-            text = text || link;
 
-            return this.createApiLink(link, text.replace(HashStartRe, ''));
+            let memberName = link.substring(link.indexOf('-') + 1);
+
+            text = text || memberName;
+
+            return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });
     }
 
@@ -405,7 +432,7 @@ class HtmlApp extends AppBase {
 
     /**
      * @private
-     * Private method to process the contents of the related classes for HTML output.  
+     * Private method to process the contents of the related classes for HTML output.
      * Separates each class name / link with a line break.
      */
     splitRelatedClasses (classes) {
@@ -414,7 +441,7 @@ class HtmlApp extends AppBase {
         }
         return '';
     }
-     
+
     /**
      * Processes the API object's related classes for HTML output
      * @param {Object} cls The original class object
@@ -446,7 +473,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Prepares additional api data processing prior to handing the data over to the api 
+     * Prepares additional api data processing prior to handing the data over to the api
      * template for final output
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
@@ -465,10 +492,10 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Outputs the processed doxi file to an HTML file  
+     * Outputs the processed doxi file to an HTML file
      * @param {String} className The name of the class to be output
      * @param {Object} data The prepared Doxi object to be output
-     * @return {Object} A promise the resolves once the api file is written to the output 
+     * @return {Object} A promise the resolves once the api file is written to the output
      * directory
      */
     outputApiFile (className, data) {
@@ -519,7 +546,7 @@ class HtmlApp extends AppBase {
 
             Fs.writeFile(dest, html, 'utf8', (err) => {
                 if (err) reject(err);
-                
+
                 resolve();
             });
         })
@@ -527,7 +554,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * 
+     *
      */
     outputMainLandingPage () {
         return new Promise((resolve, reject) => {

@@ -8,12 +8,16 @@
 
         <h1 class='{{cls.$type}}'>
             {{#if cls.multiSrc}}
-                <span class="multi-src-btn">{{{name}}}</span>
+                <span class="multi-src-btn">{{{cls.name}}}</span>
             {{else}}
-                <a href="src/{{cls.srcLink}}" target="_blank">{{{name}}}</a>
+                <a href="src/{{cls.srcLink}}" target="_blank">{{{cls.name}}}</a>
             {{/if}}
             {{#cls.alias}}
-                <span class='alias f6'>{{../cls.aliasPrefix}}: {{../cls.aliasName}}</span>
+                <span class='alias f6'>
+                    {{#if ../cls.aliasPrefix}}
+                        {{../cls.aliasPrefix}}: 
+                    {{/if}}
+                    {{../cls.aliasName}}</span>
             {{/cls.alias}}
             {{#cls.access}}
                 <span class="member-tags"><span class="{{.}} full-flag">{{.}}</span></span>
@@ -94,7 +98,7 @@
                     <a href="#configs" id="configs-button-link">
                         <div id="configs-nav-btn" class="toolbarButton disabled">
                         <i class="fa fa-cubes"></i>
-                        <span class="member-type-btn-text">configs</span>
+                        <span class="member-type-btn-text">{{configs.name}}</span>
                         <div id="configs-count" class="nav-btn-count"></div>
                         <div class="nav-btn-mask"></div>
                     </div></a>
@@ -102,7 +106,7 @@
                 {{#if hasProperties}}
                     <a href="#properties" id="properties-button-link"><div id="properties-nav-btn" class="toolbarButton disabled">
                         <i class="fa fa-book"></i>
-                        <span class="member-type-btn-text">properties</span>
+                        <span class="member-type-btn-text">{{properties.name}}</span>
                         <div id="properties-count" class="nav-btn-count"></div>
                         <div class="nav-btn-mask"></div>
                     </div></a>
@@ -217,7 +221,7 @@
                 {{{classText}}}
             {{/if}}
             {{#if isEnum}}
-                <div class="enum-msg">ENUM: This enumeration defines a set of String values. It exists primarily for documentation purposes - in code use the actual string values like '{{enumProperty}}', don't reference them through this class {{name}}.{{enumProperty}}.</div>
+                <div class="enum-msg">ENUM: This enumeration defines a set of String values. It exists primarily for documentation purposes - in code use the actual string values like '{{enumProperty}}', don't reference them through this class {{cls.name}}.{{enumProperty}}.</div>
             {{/if}}
         </div>
         <div class="no-visible-members-warning">No members found using the current filters</div>
@@ -228,7 +232,7 @@
                     <a class="link underline-hover blue" name="configs"></a>
                     {{#if configs.hasRequiredConfigs}}
                         <div id="required-configs-ct">
-                            <div class="type-sub-category-title">Required Configs</div>
+                            <div class="type-sub-category-title">Required {{capitalizeFirst configs.name}}</div>
                             {{#configs.requiredConfigs}}
                                 {{> _api-member}}
                             {{/configs.requiredConfigs}}
@@ -237,7 +241,7 @@
 
                     {{#if configs.hasOptionalConfigs}}
                         <div id="optional-configs-ct">
-                            <div class="type-sub-category-title">Optional Configs</div>
+                            <div class="type-sub-category-title">Optional {{capitalizeFirst configs.name}}</div>
                             {{#configs.optionalConfigs}}
                                 {{> _api-member}}
                             {{/configs.optionalConfigs}}

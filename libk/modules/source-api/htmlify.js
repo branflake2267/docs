@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 // Worker module that turns a source SDK file into an HTML version of that file allowing
@@ -21,7 +22,7 @@ onmessage = function (ev) {
     highlighter.highlight({
         filePath: Path.resolve(__dirname, path)
     }, function (err, html) {
-        if (err) throw err;
+        if (err) throw new Error(err);
 
         // posts back the HTML-ified source + the source path
         postMessage({

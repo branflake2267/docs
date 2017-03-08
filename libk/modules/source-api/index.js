@@ -694,7 +694,7 @@ class SourceApi extends Base {
      * @param {String} className The full class name for the current node
      * @param {Number} currentIndex The index for the current node's processing - 
      * essentially the depth this node is in the tree when the ID is requested
-     * 
+     * @return {String} The id for the current node being processed
      */
     getNodeId (className, currentIndex) {
         //this.log(`Begin 'SourceApi.getNodeId'`, 'log');

@@ -1,4 +1,12 @@
 /**
+ * Fetches the navigation header elements
+ * @return {Array} The array of navigation headers
+ */
+DocsApp.getNavHeaders = function () {
+    return ExtL.fromNodeList(document.getElementsByClassName('sub-nav-header'));
+};
+
+/**
  * @method initNavTree
  * Once the dom is ready the navigation tree for the current page (and the navigation 
  * panel's tabs) are created.  The apiTree object and the guidesTree object are both used 
@@ -90,7 +98,12 @@ DocsApp.buildNavTree = function (navTree, ct) {
 };
 
 /**
- * 
+ * Helper method to {@link #initNavTree} that creates the structure for each navigation 
+ * section of the nav panel
+ * @param {String} id The string to apply to the id's of each element in the returned 
+ * element config
+ * @param {String} headerText The text to display on the header of the navigation section
+ * @return {Object} The markup for the navigation section
  */
 DocsApp.createSubNavCt = function (id, headerText) {
     return ExtL.createElement({
@@ -117,14 +130,8 @@ DocsApp.createSubNavCt = function (id, headerText) {
 };
 
 /**
- * 
- */
-DocsApp.getNavHeaders = function () {
-    return ExtL.fromNodeList(document.getElementsByClassName('sub-nav-header'));
-};
-
-/**
- * 
+ * Toggles the navigation sections (on-click)
+ * @param {Object} e The click event
  */
 DocsApp.toggleNavHeaders = function (e) {
     var navHeaders   = DocsApp.getNavHeaders(),
@@ -152,7 +159,7 @@ DocsApp.toggleNavHeaders = function (e) {
 };
 
 /**
- * 
+ * Initialize the header-click listeners to expand / collapse the nav sections
  */
 DocsApp.initNavTreeEventListeners = function () {
     var navHeaders = DocsApp.getNavHeaders(),

@@ -528,8 +528,12 @@ class ExtReactHtmlApp extends HtmlApp {
             }
 
             // set the config and property names to match what React users would expect
-            prepared.configs.name    = 'props';
-            prepared.properties.name = 'fields';
+            if (prepared.configs) {
+                prepared.configs.name    = 'props';
+            }
+            if (prepared.properties) {
+                prepared.properties.name = 'fields';
+            }
 
             // if there are events on the class camelize them and prefix with 'on' to
             // match React event name convention

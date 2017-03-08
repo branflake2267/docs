@@ -8,7 +8,7 @@
 DocsApp.initNavTree = function () {
     var DA             = DocsApp,
         apiTree        = DA.apiTree,
-        componentsTree = apiTree.API.Components[0].children,
+        componentsTree = apiTree.API.Components,
         classesTree    = apiTree.API.API,
         guidesTree     = DA.guidesTree.Guides,
         treeCt         = ExtL.get('tree'),
@@ -137,7 +137,6 @@ DocsApp.toggleNavHeaders = function (e) {
     
     if (target) {
         if (!ExtL.hasCls(target, headerCls)) {
-            console.log(target);
             target = ExtL.up(target, '.' + headerCls);
         }
         if (ExtL.hasCls(target, collapsedCls)) {

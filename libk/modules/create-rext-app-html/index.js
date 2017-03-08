@@ -20,7 +20,8 @@ const HtmlApp    = require('../create-app-html'),
       Fs         = require('fs-extra'),
       UglifyJS   = require("uglify-js"),
       CleanCSS   = require('clean-css'),
-      Utils      = require('../shared/Utils');
+      Utils      = require('../shared/Utils'),
+      _          = require('lodash');
 
 class ExtReactHtmlApp extends HtmlApp {
     constructor (options) {
@@ -56,7 +57,8 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
-     * 
+     * Fetches the component class list object from disk
+     * @return {Object} The object of component class names : component tree location
      */
     get componentList () {
         let list = this._componentList;
@@ -69,6 +71,36 @@ class ExtReactHtmlApp extends HtmlApp {
         }
 
         return list;
+    }
+
+    /**
+     * Gets the array of component class names
+     * @return {String[]} The array of component names
+     */
+    get componentClassNames () {
+        let names = this._componentClassNames;
+
+        if (!names) {
+            let list = this.componentList;
+            names = this._componentClassNames = Object.keys(list);
+        }
+
+        return names;
+    }
+
+    /**
+     * Gets the array of component class names
+     * @return {String[]} The array of component names
+     */
+    get componentMenuNames () {
+        let names = this._componentMenuNames;
+
+        if (!names) {
+            let list = this.componentList;
+            names = this._componentMenuNames = _.values(list);
+        }
+
+        return names;
     }
 
     /**
@@ -111,8 +143,9 @@ class ExtReactHtmlApp extends HtmlApp {
      * @return {Array} The api tree
      */
     getApiTree (className) {
-        let componentList = this.componentList,
-            inList        = componentList.includes(className),
+        let names         = this.componentClassNames,
+            menuNames     = this.componentMenuNames,
+            inList        = names.includes(className) || menuNames.includes(className),
             treeName      = inList ? 'Components' : this.apiDirName.toUpperCase(),
             apiTree       = this.apiTrees[treeName];
 
@@ -124,18 +157,137 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
-     * Returns the name of the doxi config file name to use when parsing the SDK.  Uses
-     * the product of 'extjs', version associated with the currently building version of 
-     * Rext JS (from the projectDefaults.json file), and toolkit currently being acted on.
-     * @return {String} The doxi config file name
+     * 
      */
-    /*get doxiCfgFileName () {
-        let options = this.options,
-            version = this.apiVersion,
-            toolkit = 'modern';
+    addToApiTree (className, icon) {
+        let names  = this.componentClassNames,
+            inList = names.includes(className);
 
-        return version + '-' + toolkit + '.doxi.json';
-    }*/
+        if (!inList) {
+            super.addToApiTree(className, icon);
+        } else {
+            let componentsList = this.componentList,
+                treeCfg = componentsList[className];
+            
+            super.addToApiTree(treeCfg, icon);
+        }
+    }
+
+    /**
+     * @private
+     * Sorter method that sorts an array of api tree nodes alphabetically.
+     * 
+     * Supports {@link #sortTree}
+     * @param {Object[]} nodes An array of api tree nodes to sort
+     * @return {Object[]} The sorted array
+     */
+    simpleSortNodes (nodes) {
+        //this.log(`Begin 'SourceApi.sortNodes'`, 'info');
+        return nodes.sort((a, b) => {
+            if (a.name > b.name) {
+                return 1;
+            }
+            if (a.name < b.name) {
+                return -1;
+            }
+            return 0;
+        });
+    }
+
+    /**
+     * Sorts the tree in alphabetical order including folder and leaf nodes
+     * @param {Object[]} tree The tree nodes to sort
+     * @return {Object[]} The sorted tree
+     */
+    sortTree (tree) {
+        let len = tree.length,
+            i   = 0;
+
+        for (; i < len; i++) {
+            let node     = tree[i],
+                children = node.children;
+
+            if (children) {
+                this.sortTree(children);
+                node.children = this.simpleSortNodes(children);
+            }
+        }
+
+        return this.simpleSortNodes(tree);
+    }
+
+    /**
+     * Sort the API trees
+     * @return {Object} The sorted API tree
+     */
+    sortTrees (apiTrees) {
+        /*let len      = apiTrees.length,
+            treeKeys = Object.keys(apiTrees),
+            apiTree;
+
+        if (len === 1) {
+            apiTree = {
+                API : this.sortTree(apiTrees[treeKeys[0]])
+            };
+        } else {
+            let i = 0;
+
+            apiTree = {
+                API : {}
+            };
+
+            for (; i < len; i++) {
+                let key = treeKeys[i];
+
+                apiTree.API[key] = this.sortTree(apiTrees[key]);
+            }
+        }
+
+        return apiTree;*/
+
+        let apiTree        = apiTrees.API,
+            componentsTree = apiTrees.Components,
+            treeObj        = {
+                API : {
+                    API        : super.sortTree(apiTree),
+                    Components : this.sortTree(componentsTree)
+                }
+            };
+
+        return treeObj;
+    }
+
+    /**
+     * 
+     */
+    getClassByMenuName (menuValue) {
+        let components = this.componentList,
+            names      = this.componentClassNames,
+            len        = names.length,
+            i          = 0,
+            className;
+
+        for (; i < len; i++) {
+            let name = names[i];
+            
+            if (components[name] === menuValue) {
+                className = name;
+                break;
+            }
+        }
+
+        return className;
+    }
+
+    /**
+     * 
+     */
+    getNodeId (className, currentIndex) {
+        let names              = this.componentMenuNames,
+            inList             = names.includes(className);
+
+        return inList ? this.getClassByMenuName(className) : super.getNodeId(className, currentIndex);
+    }
 }
 
 module.exports = ExtReactHtmlApp;

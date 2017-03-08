@@ -1583,6 +1583,36 @@ class SourceApi extends Base {
     }
 
     /**
+     * Sort the API trees
+     * @return {Object} The sorted API tree
+     */
+    sortTrees (apiTrees) {
+        let len      = apiTrees.length,
+            treeKeys = Object.keys(apiTrees),
+            apiTree;
+
+        if (len === 1) {
+            apiTree = {
+                API : this.sortTree(apiTrees[treeKeys[0]])
+            };
+        } else {
+            let i = 0;
+
+            apiTree = {
+                API : {}
+            };
+
+            for (; i < len; i++) {
+                let key = treeKeys[i];
+
+                apiTree.API[key] = this.sortTree(apiTrees[key]);
+            }
+        }
+
+        return apiTree;
+    }
+
+    /**
      * Output the api tree for UI nav once all classes are processed
      * @return Promise wrapping the writing of the api tree file
      */
@@ -1590,11 +1620,11 @@ class SourceApi extends Base {
         return new Promise((resolve, reject) => {
             //this.log(`Begin 'SourceApi.outputApiTree'`, 'info');
             let apiTrees = this.apiTrees,
-                treeKeys = Object.keys(apiTrees),
-                len      = treeKeys.length,
-                apiTree;
+                //treeKeys = Object.keys(apiTrees),
+                //len      = treeKeys.length,
+                apiTree  = this.sortTrees(apiTrees);
 
-            if (len === 1) {
+            /*if (len === 1) {
                 apiTree = {
                     API : this.sortTree(apiTrees[treeKeys[0]])
                 };
@@ -1610,7 +1640,7 @@ class SourceApi extends Base {
 
                     apiTree.API[key] = this.sortTree(apiTrees[key]);
                 }
-            }
+            }*/
 
             apiTree = JSON.stringify(apiTree, null, 4);
 

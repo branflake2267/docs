@@ -105,13 +105,12 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         };
 
         href = null;
-        console.log(node.id, node.href, node.link, href);
+        
         if (node.href || node.link) {
-            console.log('FOUND:', node.id, node.href, node.link);
             href = DocsApp.buildTreeNodeHref(node);
         }
         textTag = href ? 'a' : 'span';
-        console.log(node.id, href, textTag);
+        
         // if the node is not a leaf node and has its own child nodes then process 
         // decorate the node accordingly and pass the children back into this method 
         // recursively for their own processing
@@ -143,7 +142,6 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             cfgs.push(cfg);
 
             // the child node wrap (for expand / collapse control)
-            //console.log(cfg.id);
             var ctCfg = {
                 tag     : 'div',
                 "class" : 'child-nodes-ct',
@@ -1227,7 +1225,7 @@ DocsApp.getEventTarget = function (e) {
                 if (!forceExact || (forceExact && value.replace(/"/g, '').toLowerCase() === matchStr.toLowerCase())) {
                     // if the product has toolkits check against the toolkit filter before
                     // returning the result
-                    if (DocsApp.meta.toolkit) {
+                    if (DocsApp.meta.hasToolkits && DocsApp.meta.toolkit) {
                         if ((classObj.t === 'modern' && filterModern) || (classObj.t === 'classic' && filterClassic)) {
                             results.push(item);
                         }

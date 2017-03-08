@@ -146,22 +146,14 @@ class ExtReactHtmlApp extends HtmlApp {
         let names  = this.componentMenuNames,
             inList = names.includes(className);
 
-        console.log('original className:', className, currentIndex);
         if (inList) {
             if (className.split('.').length === (currentIndex + 1)) {
-                console.log(className.split('.').length, currentIndex + 1, this.getClassByMenuName(className));
-                //className = this.getClassByMenuName(className);
                 return this.getClassByMenuName(className);
             } else {
-                return 'ParentNode-' + super.getNodeId(className, currentIndex);
+                return super.getNodeId(className, currentIndex);
             }
-            //className = this.getClassByMenuName(className);
         }
-
-        //console.log(className, inList ? this.getClassByMenuName(className) : super.getNodeId(className, currentIndex));
-        //console.log(className, currentIndex, super.getNodeId(className, currentIndex));
-        //return inList ? this.getClassByMenuName(className) : super.getNodeId(className, currentIndex);
-        console.log(className, super.getNodeId(className, currentIndex));
+        
         return super.getNodeId(className, currentIndex);
     }
 
@@ -254,30 +246,6 @@ class ExtReactHtmlApp extends HtmlApp {
      * @return {Object} The sorted API tree
      */
     sortTrees (apiTrees) {
-        /*let len      = apiTrees.length,
-            treeKeys = Object.keys(apiTrees),
-            apiTree;
-
-        if (len === 1) {
-            apiTree = {
-                API : this.sortTree(apiTrees[treeKeys[0]])
-            };
-        } else {
-            let i = 0;
-
-            apiTree = {
-                API : {}
-            };
-
-            for (; i < len; i++) {
-                let key = treeKeys[i];
-
-                apiTree.API[key] = this.sortTree(apiTrees[key]);
-            }
-        }
-
-        return apiTree;*/
-
         let apiTree        = apiTrees.API,
             componentsTree = apiTrees.Components,
             treeObj        = {
@@ -291,25 +259,26 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * Returns the key from {@link #componentList} using the passed value
      * 
+     * .e.g.
+     * If componentList has the following pair:
+     * 
+     *     {
+     *         "Ext.Button"" : "Button"
+     *     }
+     * 
+     * calling getClassByMenuName('Button) will return `Ext.Button`
+     * 
+     * @param {String} menuValue The menu value to display in the Components navigation 
+     * tree used to find the key it's paired with
+     * @return {String} The key paired with the passed menu string or undefined if not 
+     * found
      */
     getClassByMenuName (menuValue) {
-        let components = this.componentList,
-            names      = this.componentClassNames,
-            len        = names.length,
-            i          = 0,
-            className;
-
-        for (; i < len; i++) {
-            let name = names[i];
-            
-            if (components[name] === menuValue) {
-                className = name;
-                break;
-            }
-        }
-        return className;
-        //console.log(menuValue, _.findKey(this.componentList, menuValue))
+        return _.findKey(this.componentList, (val) => {
+            return menuValue === val;
+        });
     }
 }
 

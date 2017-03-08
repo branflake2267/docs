@@ -104,11 +104,14 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             "class"        : accessCls + ' tree-node tree-depth-' + depth + indexedCls
         };
 
+        href = null;
+        console.log(node.id, node.href, node.link, href);
         if (node.href || node.link) {
+            console.log('FOUND:', node.id, node.href, node.link);
             href = DocsApp.buildTreeNodeHref(node);
         }
         textTag = href ? 'a' : 'span';
-
+        console.log(node.id, href, textTag);
         // if the node is not a leaf node and has its own child nodes then process 
         // decorate the node accordingly and pass the children back into this method 
         // recursively for their own processing

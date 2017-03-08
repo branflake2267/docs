@@ -136,6 +136,36 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * Returns the id to use on the navigation node for the passed class name
+     * @param {String} className The classname being processed in the navigation tree
+     * @param {Number} currentIndex The index for the current node's processing - 
+     * essentially the depth this node is in the tree when the ID is requested
+     * @return {String} The id for the current node being processed
+     */
+    getNodeId (className, currentIndex) {
+        let names  = this.componentMenuNames,
+            inList = names.includes(className);
+
+        console.log('original className:', className, currentIndex);
+        if (inList) {
+            if (className.split('.').length === (currentIndex + 1)) {
+                console.log(className.split('.').length, currentIndex + 1, this.getClassByMenuName(className));
+                //className = this.getClassByMenuName(className);
+                return this.getClassByMenuName(className);
+            } else {
+                return 'ParentNode-' + super.getNodeId(className, currentIndex);
+            }
+            //className = this.getClassByMenuName(className);
+        }
+
+        //console.log(className, inList ? this.getClassByMenuName(className) : super.getNodeId(className, currentIndex));
+        //console.log(className, currentIndex, super.getNodeId(className, currentIndex));
+        //return inList ? this.getClassByMenuName(className) : super.getNodeId(className, currentIndex);
+        console.log(className, super.getNodeId(className, currentIndex));
+        return super.getNodeId(className, currentIndex);
+    }
+
+    /**
      * Returns the api tree (later to be output in the {@link #outputApiTree} method).  
      * The class name is searched for in the component list and if found is added to the 
      * component tree.  Else the class will be added to the API tree.
@@ -157,7 +187,10 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
-     * 
+     * Adds the class to either the API tree or the "Components" tree depending on 
+     * whether the class name being processed is in the Components list or not
+     * @param {String} className The class name being added to the navigation tree
+     * @param {String} icon The icon to use for this class in the tree
      */
     addToApiTree (className, icon) {
         let names  = this.componentClassNames,
@@ -275,18 +308,8 @@ class ExtReactHtmlApp extends HtmlApp {
                 break;
             }
         }
-
         return className;
-    }
-
-    /**
-     * 
-     */
-    getNodeId (className, currentIndex) {
-        let names              = this.componentMenuNames,
-            inList             = names.includes(className);
-
-        return inList ? this.getClassByMenuName(className) : super.getNodeId(className, currentIndex);
+        //console.log(menuValue, _.findKey(this.componentList, menuValue))
     }
 }
 

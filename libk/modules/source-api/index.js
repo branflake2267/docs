@@ -787,8 +787,6 @@ class SourceApi extends Base {
                 prepared = classMap[className].prepared;
 
             this.decorateClass(className);
-            // delete the cached Doxi object to free memory
-            //delete classMap[className].raw;
 
             this.addToApiTree(className, prepared.cls.clsSpecIcon);
         }
@@ -931,9 +929,6 @@ class SourceApi extends Base {
         // reconcile some of this into some sort of applyContext(data) method
         data = Object.assign(data, options.prodVerMeta);
         data = Object.assign(data, options);
-        if (cls.name === 'Ext.button.Button') {
-            console.log(data.toolkit, options.toolkit);
-        }
 
         // indicates whether the class is of type component, singleton, or some other 
         // class
@@ -975,7 +970,7 @@ class SourceApi extends Base {
                 members = group.items;
 
             if (members && members.length) {
-                data[type] = this.processMembers(className, type, members);
+                data[type]      = this.processMembers(className, type, members);
             }
         }
 
@@ -987,6 +982,7 @@ class SourceApi extends Base {
                 'requiredConfigs',
                 'optionalConfigs'
             );
+            data.configs.name = 'configs';
 
             this.postProcessConfigs(data);
         }
@@ -999,6 +995,7 @@ class SourceApi extends Base {
                 'instanceProperties',
                 'staticProperties'
             );
+            data.properties.name = 'properties';
         }
 
         // process methods

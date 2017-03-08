@@ -23,6 +23,208 @@ const HtmlApp    = require('../create-app-html'),
       Utils      = require('../shared/Utils'),
       _          = require('lodash');
 
+const words = [
+    'split',
+    'button',
+    'calendar',
+    'view',
+    'field',
+    'data',
+    'table',
+    'color',
+    'picker',
+    'slider',
+    'tree',
+    'grid',
+    'cell',
+    'column',
+    'value',
+    'record',
+    'manager',
+    'edit',
+    'header',
+    'map',
+    'tab',
+    'iframe',
+    'panel',
+    'bar',
+    'tip',
+    'spacer',
+    'text',
+    'widget',
+    'selector',
+    'separator',
+    'list',
+    'menu',
+    'progress',
+    'pivot',
+    'pie',
+    'box',
+    'bullet',
+    'item',
+    'fill',
+    'saturation',
+    'select',
+    'hue',
+    'alpha',
+    'line',
+    'discrete',
+    'heat',
+    'area',
+    'upload',
+    'component',
+    'check',
+    'item',
+    'container',
+    'config',
+    'row',
+    'cell',
+    'range',
+    'group',
+    'title',
+    'slot',
+    'tool',
+    'trigger',
+    'native',
+    'toolbar',
+    'tristate',
+    'preview',
+    'up',
+    'add',
+    'end',
+    'click',
+    'front',
+    'hide',
+    'hidden',
+    'max',
+    'min',
+    'show',
+    'scrollable',
+    'top',
+    'left',
+    'right',
+    'bottom',
+    'width',
+    'height',
+    'item',
+    'active',
+    'disabled',
+    'docked',
+    'centered',
+    'expand',
+    'collapse',
+    'pick',
+    'tap',
+    'node',
+    'update',
+    'direction',
+    'total',
+    'cell',
+    'double',
+    'hold',
+    'sort',
+    'remove',
+    'touch',
+    'start',
+    'submit',
+    'move',
+    'insert',
+    'complete',
+    'dbl',
+    'store',
+    'built',
+    'model',
+    'exception',
+    'done',
+    'leave',
+    'enter',
+    'mouse',
+    'key',
+    'down',
+    'body',
+    'exit',
+    'resize',
+    'action',
+    'success',
+    'failed',
+    'validity',
+    'error',
+    'sync',
+    'sort',
+    'load',
+    'drag',
+    'drop',
+    'over',
+    'setup',
+    'event',
+    'ready',
+    'key',
+    'query',
+    'cls',
+    'layout',
+    'activate',
+    'animation',
+    'cancel',
+    'swipe',
+    'single',
+    'pressed',
+    'request',
+    'before',
+    'after',
+    'property',
+    'long',
+    'create',
+    'push',
+    'prefetch',
+    'sprite',
+    'group',
+    'extender',
+    'change',
+    'stop',
+    'remove',
+    'context',
+    'reconfigure',
+    'deselect',
+    'arrow',
+    'center',
+    'render',
+    'group',
+    'restore',
+    'save',
+    'out',
+    'toggle',
+    'state',
+    'destroy',
+    'icon',
+    'refresh',
+    'close',
+    'open',
+    'legend',
+    'deactivate',
+    'indicator',
+    'numberer',
+    'orientation',
+    'disclose',
+    'disclosure',
+    'interaction',
+    'build',
+    'rebuild',
+    'reload',
+    'sheet'
+].sort((a, b) => a.length - b.length);
+
+const replacements = [
+    { find: /^ux/i, replace: 'UX' },
+    { find: /^tb/i, replace: 'TB' },
+    { find: /d3/gi, replace: 'D3' },
+    { find: /mz/gi, replace: 'MZ' },
+    { find: /svg/gi, replace: 'SVG' },
+    { find: /^url/gi, replace: 'URL' },
+    { find: /itemappend/gi, replace: 'ItemAppend' },
+    { find: /tofront/gi, replace: 'ToFront' },
+    { find: /beforestore/gi, replace: 'BeforeStore' }
+];
+
 class ExtReactHtmlApp extends HtmlApp {
     constructor (options) {
         super(options);
@@ -41,7 +243,7 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
-     * Returns an array of this module's file name along with the file names of all 
+     * Returns an array of this module's file name along with the file names of all
      * ancestor modules
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
@@ -138,7 +340,7 @@ class ExtReactHtmlApp extends HtmlApp {
     /**
      * Returns the id to use on the navigation node for the passed class name
      * @param {String} className The classname being processed in the navigation tree
-     * @param {Number} currentIndex The index for the current node's processing - 
+     * @param {Number} currentIndex The index for the current node's processing -
      * essentially the depth this node is in the tree when the ID is requested
      * @return {String} The id for the current node being processed
      */
@@ -153,13 +355,13 @@ class ExtReactHtmlApp extends HtmlApp {
                 return super.getNodeId(className, currentIndex);
             }
         }
-        
+
         return super.getNodeId(className, currentIndex);
     }
 
     /**
-     * Returns the api tree (later to be output in the {@link #outputApiTree} method).  
-     * The class name is searched for in the component list and if found is added to the 
+     * Returns the api tree (later to be output in the {@link #outputApiTree} method).
+     * The class name is searched for in the component list and if found is added to the
      * component tree.  Else the class will be added to the API tree.
      * @param {String} [className] The classname being processed.
      * @return {Array} The api tree
@@ -179,7 +381,25 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
-     * Adds the class to either the API tree or the "Components" tree depending on 
+     * Upper CamelCases strings in order to display split words such as
+     * @param {String} str The string to camelize
+     * @return {String} The upper camelcased string
+     */
+    camelize(str) {
+        str = str.split(/-/).map(_.capitalize).join('_');
+
+        for (let word of words) {
+            str = str.replace(new RegExp(word, 'gi'), _.capitalize(word));
+        }
+
+        for (let replacement of replacements) {
+            str = str.replace(replacement.find, replacement.replace);
+        }
+        return str;
+    }
+
+    /**
+     * Adds the class to either the API tree or the "Components" tree depending on
      * whether the class name being processed is in the Components list or not
      * @param {String} className The class name being added to the navigation tree
      * @param {String} icon The icon to use for this class in the tree
@@ -193,7 +413,7 @@ class ExtReactHtmlApp extends HtmlApp {
         } else {
             let componentsList = this.componentList,
                 treeCfg = componentsList[className];
-            
+
             super.addToApiTree(treeCfg, icon);
         }
     }
@@ -201,7 +421,7 @@ class ExtReactHtmlApp extends HtmlApp {
     /**
      * @private
      * Sorter method that sorts an array of api tree nodes alphabetically.
-     * 
+     *
      * Supports {@link #sortTree}
      * @param {Object[]} nodes An array of api tree nodes to sort
      * @return {Object[]} The sorted array
@@ -260,24 +480,97 @@ class ExtReactHtmlApp extends HtmlApp {
 
     /**
      * Returns the key from {@link #componentList} using the passed value
-     * 
+     *
      * .e.g.
      * If componentList has the following pair:
-     * 
+     *
      *     {
      *         "Ext.Button"" : "Button"
      *     }
-     * 
+     *
      * calling getClassByMenuName('Button) will return `Ext.Button`
-     * 
-     * @param {String} menuValue The menu value to display in the Components navigation 
+     *
+     * @param {String} menuValue The menu value to display in the Components navigation
      * tree used to find the key it's paired with
-     * @return {String} The key paired with the passed menu string or undefined if not 
+     * @return {String} The key paired with the passed menu string or undefined if not
      * found
      */
     getClassByMenuName (menuValue) {
         return _.findKey(this.componentList, (val) => {
             return menuValue === val;
+        });
+    }
+
+    /**
+     * Post-processes the prepared class object after the super class decoration of the
+     * class object is complete
+     * @param {String} className The class name to process
+     */
+    decorateClass (className) {
+        super.decorateClass(className);
+
+        let classMap = this.classMap,
+            prepared = classMap[className].prepared,
+            cls      = prepared.cls,
+            names    = this.componentClassNames;
+
+        if (names.includes(className)) {
+            let alias  = cls.aliasName,
+                name   = cls.name,
+                events = prepared.events;
+
+            // if the class has an alias then we'll use a camelized version of the alias
+            // as the class 'name' and the class name will display as an alias
+            if (alias) {
+                cls.name      = this.camelize(alias);
+                cls.aliasName = name;
+                delete cls.aliasPrefix;
+            }
+
+            // set the config and property names to match what React users would expect
+            prepared.configs.name    = 'props';
+            prepared.properties.name = 'fields';
+
+            // if there are events on the class camelize them and prefix with 'on' to
+            // match React event name convention
+            if (events) {
+                let len = events.length;
+
+                while (len--) {
+                    let event          = events[len];
+
+                    event.name         = `on${this.camelize(event.name)}`;
+                    event.returnPrefix = ' => ';
+                    event.paramsPrefix = ': function'
+                }
+            }
+        }
+    }
+
+    /**
+     * Turns all `{@link}` instances into API links within the passed HTML string.  Any
+     * event links found are adjusted using {@link #camelize} and prefixed with 'on' to
+     * match the event name convention in React
+     * @param {String} html The HTML markup whose links require processing
+     * @return {String} The original HTML string with all links processed
+     */
+    parseApiLinks (html) {
+        return html.replace(this.linkRe, (match, link, text) => {
+            link = link.replace('!','-');
+
+            let eventLink  = '#event-',
+                memberName = link.substring(link.indexOf('-') + 1);
+
+            if (link.includes(eventLink)) {
+                memberName = this.camelize(
+                    memberName
+                );
+                link = `${eventLink}on${memberName}`;
+            }
+
+            text = text || memberName;
+
+            return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });
     }
 }

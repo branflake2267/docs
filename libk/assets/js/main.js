@@ -28,15 +28,15 @@ function Tree (data, renderTo) {
 
     me.target = target;
 
-    // first we'll loop over all of the tree nodes and create the tree node elements to 
-    // render to the page.  This will create the parent node, child node, and the 
+    // first we'll loop over all of the tree nodes and create the tree node elements to
+    // render to the page.  This will create the parent node, child node, and the
     // wrapping element around the child nodes used to collapse / hide child nodes
     var nodeCfgs = me.createNodeCfgs(data),
         i        = 0,
         len      = nodeCfgs.length;
 
-    // now that we have the configs used to create each tree node (and its children) 
-    // using ExtL.createElement we'll append each node (and its children) to the target 
+    // now that we have the configs used to create each tree node (and its children)
+    // using ExtL.createElement we'll append each node (and its children) to the target
     // element one after the other
     for (; i < len; i++) {
         var cfg = nodeCfgs[i];
@@ -68,15 +68,15 @@ function Tree (data, renderTo) {
 
 /**
  * @method createNodeCfgs
- * Return a config object used by ExtL.createElement to create each tree node (and its 
+ * Return a config object used by ExtL.createElement to create each tree node (and its
  * child nodes if it has any)
- * @param {Object/Object[]} data The tree node or array of nodes to turn be rendered to 
+ * @param {Object/Object[]} data The tree node or array of nodes to turn be rendered to
  * the tree on the page
- * @param {String} parentId The id of the parent node (used when finding the ancestor 
+ * @param {String} parentId The id of the parent node (used when finding the ancestor
  * chain to expand / collapse)
- * @param {Number} depth The depth of the current node.  Used to decorate a class on 
+ * @param {Number} depth The depth of the current node.  Used to decorate a class on
  * child nodes so that they can be styled as indented in the final output
- * @return {Object[]} The array of configs to pass to ExtL.createElement to create the 
+ * @return {Object[]} The array of configs to pass to ExtL.createElement to create the
  * actual tree nodes on the page
  */
 Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
@@ -96,7 +96,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     for (; i < len; i++) {
         node      = data[i]; // the current node
         accessCls = node.access + '-tree-node';
-        // the default config to use for this node when processed to the DOM by 
+        // the default config to use for this node when processed to the DOM by
         // ExtL.createElement
         cfg = {
             //id             : node.id,
@@ -105,22 +105,22 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         };
 
         href = null;
-        
+
         if (node.href || node.link) {
             href = DocsApp.buildTreeNodeHref(node);
         }
         textTag = href ? 'a' : 'span';
-        
-        // if the node is not a leaf node and has its own child nodes then process 
-        // decorate the node accordingly and pass the children back into this method 
+
+        // if the node is not a leaf node and has its own child nodes then process
+        // decorate the node accordingly and pass the children back into this method
         // recursively for their own processing
         if (node.children) {
             // since this node is a parent node add it to the _parentNodes property
             cfg["class"] += ' tree-parent-node pointer ' + this.collapseCls;
             cfg.id = this.target.id + '-' + node.id;
             this._parentNodes.push(cfg.id);
-            // add the expand / collapse icons, any passed iconCls for the node, the node 
-            // text, and finally a wrapping container for all child nodes (used to 
+            // add the expand / collapse icons, any passed iconCls for the node, the node
+            // text, and finally a wrapping container for all child nodes (used to
             // collapse children in the UI)
             cfg.cn = [{
                 tag     : 'span',
@@ -155,7 +155,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             for (; j < cnLen; j++) {
                 var child = children[j],
                     private = child.class.indexOf('private-tree-node') > -1;
-                
+
                 if (private) {
                     privateCt++;
                 }
@@ -204,11 +204,11 @@ Tree.prototype.isIndexed = function () {
 };
 
 /**
- * Filters the tree leaf nodes by their text value (normalized to all lower case) and 
+ * Filters the tree leaf nodes by their text value (normalized to all lower case) and
  * shows the matching nodes along with their ancestor parent nodes
  * @param {String} value The value to filter the leaf nodes by
  * @return {Object} An object with the following keys / values
- * 
+ *
  *  - total: An array of all leaf nodes
  *  - totalCount: The count of all leaf nodes
  *  - filtered: An array of all leaf nodes matching against the passed value
@@ -227,7 +227,7 @@ Tree.prototype.filter = function (value) {
         filtered       = [],
         parentNode, leaf, text, textNode, parent, visiblesLen;
 
-    // loop over all parent nodes and hide them if there is a value passed in; else show 
+    // loop over all parent nodes and hide them if there is a value passed in; else show
     // the node
     for (; i < parentsLen; i++) {
         parentNode         = ExtL.get(parentNodes[i]);
@@ -236,8 +236,8 @@ Tree.prototype.filter = function (value) {
 
     i = 0;
 
-    // loop over all leaves.  If the leaf text matches the value then show it, highlight 
-    // the matching text, expand the tree to that node, and add the node's parent (if it 
+    // loop over all leaves.  If the leaf text matches the value then show it, highlight
+    // the matching text, expand the tree to that node, and add the node's parent (if it
     // has one) to the array of parent nodes to show in the following loop
     for (; i < leavesLen; i++) {
         leaf     = ExtL.get(leaves[i]);
@@ -261,7 +261,7 @@ Tree.prototype.filter = function (value) {
         }
     }
 
-    // if there was a value passed in loop over the visible parent nodes as discovered in 
+    // if there was a value passed in loop over the visible parent nodes as discovered in
     // the preceding loop and show them and their ancestor nodes
     if (hasValue) {
         visiblesLen = visibleParents.length;
@@ -277,7 +277,7 @@ Tree.prototype.filter = function (value) {
         }
     }
 
-    // return an object showing the total nodes, their count, the filtered nodes, and 
+    // return an object showing the total nodes, their count, the filtered nodes, and
     // their count
     return {
         total         : leaves,
@@ -288,7 +288,7 @@ Tree.prototype.filter = function (value) {
 };
 
 /**
- * 
+ *
  */
 Tree.prototype.getChildNodes = function (parentNodeId) {
     var parentNode = ExtL.get(parentNodeId),
@@ -313,7 +313,7 @@ Tree.prototype.getChildNodes = function (parentNodeId) {
  * @method toggleCollapse
  * Toggles the collapse state of the tree node
  * @param {String/Element} el The HTML element or ID of the tree node to toggle
- * @param {Boolean} collapse Pass `true` or `false` to force the toggle to collapse or 
+ * @param {Boolean} collapse Pass `true` or `false` to force the toggle to collapse or
  * expand.  Passing `true` will force collapse while `false` will force expand.
  * @return {Object} The tree instance
  */
@@ -352,7 +352,7 @@ Tree.prototype.collapse = function (node) {
  */
 Tree.prototype.expandTo = function (node) {
     var el = ExtL.get(node);
-    
+
     while (el) {
         el = ExtL.get(el.getAttribute('parentTreeNode'));
         this.expand(el);
@@ -364,7 +364,7 @@ Tree.prototype.expandTo = function (node) {
 /**
  * @method toggleCollapseAll
  * Toggles the collapse state of all parent tree nodes
- * @param {Boolean} collapse Pass `true` or `false` to force the toggle to collapse or 
+ * @param {Boolean} collapse Pass `true` or `false` to force the toggle to collapse or
  * expand.  Passing `true` will force collapse while `false` will force expand.
  * @return {Object} The tree instance
  */
@@ -400,7 +400,7 @@ Tree.prototype.collapseAll = function () {
 
 /**
  * @method getParentNodes
- * Returns all parent node IDs in the tree.  Used by {@link #collapseAll} and 
+ * Returns all parent node IDs in the tree.  Used by {@link #collapseAll} and
  * {@link #expandAll} and {@link #filter}
  * @return {String[]} Array of the IDs of all parent nodes in the tree
  */
@@ -461,7 +461,7 @@ DocsApp.appMeta = {
 
 /**
  * @method buildNavTree
- * Builds the navigation tree using the passed tree object (determined in 
+ * Builds the navigation tree using the passed tree object (determined in
  * {@link #initNavTree}).  The navigation tree instance is cached on DocsApp.navTree.
  */
 DocsApp.buildNavTree = function (navTree, ct) {
@@ -470,9 +470,9 @@ DocsApp.buildNavTree = function (navTree, ct) {
 
 /**
  * @method initNavTree
- * Once the dom is ready the navigation tree for the current page (and the navigation 
- * panel's tabs) are created.  The apiTree object and the guidesTree object are both used 
- * (as applicable as some products are guides-only) to create the navigation tree and its 
+ * Once the dom is ready the navigation tree for the current page (and the navigation
+ * panel's tabs) are created.  The apiTree object and the guidesTree object are both used
+ * (as applicable as some products are guides-only) to create the navigation tree and its
  * tabs.
  */
 DocsApp.initNavTree = function () {
@@ -486,7 +486,7 @@ DocsApp.initNavTree = function () {
     //navTrees = ExtL.assign({}, apiTarget, guidesTree);
     navTrees = ExtL.assign({}, apiTree, guidesTree);
 
-    // the product home page likely will not have passed a navTreeName to determine which 
+    // the product home page likely will not have passed a navTreeName to determine which
     // nav tree to display so we'll grab the first guides or the first api name we find
     if (DocsApp.meta.pageType === 'home' && !navTreeName) {
         guideKeys = ExtL.keys(guidesTree);
@@ -500,8 +500,6 @@ DocsApp.initNavTree = function () {
             // TODO thrown an error
         }
     }
-
-
 
     // the tree object for the current page
     //navTree = navTrees[navTreeName];
@@ -565,7 +563,7 @@ DocsApp.initNavTreeTabs = function () {
 
         navTree     = navTrees[tab];
         hasChildren = ExtL.isObject(navTree);
-            
+
         // if there are child trees fetch the first available child
         if (hasChildren) {
             navTree = navTree[ExtL.keys(navTree)[0]];
@@ -589,7 +587,7 @@ DocsApp.initNavTreeTabs = function () {
                     childTab     = childTabs[j];
                     childTabId   = childTabCls = childTab.replace(/\s+/g, '-').toLowerCase() + '-tab';
                     isActive     = navTreeNameChild === childTab;
-                    
+
                     // the default config for all child tabs
                     childCfg = {
                         tag     : isActive ? 'div' : 'a',
@@ -621,7 +619,7 @@ DocsApp.initNavTreeTabs = function () {
 /**
  * @method buildTreeNodeHref
  * @private
- * Returns the link or constructed href (using the page's relative path to the docs 
+ * Returns the link or constructed href (using the page's relative path to the docs
  * output root).  Returns `undefined` if the node passed in has neither a link or href.
  * @param {Object} node The tree node to evaluate for link / href
  * @return {String} The href for this node or `undefined` if none are found
@@ -639,8 +637,8 @@ DocsApp.buildTreeNodeHref = function (node) {
 /**
  * @method getNodeHref
  * @private
- * Returns the first nav tree link / href.  Used by {@link #initNavTreeTabs} when 
- * building the tabs in the nav tree header.  Tabs that are not for the active nav tree 
+ * Returns the first nav tree link / href.  Used by {@link #initNavTreeTabs} when
+ * building the tabs in the nav tree header.  Tabs that are not for the active nav tree
  * are links to another page relating to that tab.
  * @param {Object} node The node to evaluate for href / link
  * @return {String} The href to set on the tab's anchor element
@@ -655,7 +653,7 @@ DocsApp.getNodeHref = function (node) {
             node = node.children[0];
         }
     }
-    
+
     return href;
 };
 
@@ -664,6 +662,35 @@ DocsApp.getNodeHref = function (node) {
  */
 DocsApp.treeAfterRender = function () {
     DocsApp.filterClassTreeByAccess();
+};
+
+/**
+ *
+ */
+DocsApp.initProductMenu = function () {
+    var menuCt = ExtL.get('product-tree-ct'),
+        menuData = DocsApp.productMenu,
+        menuLen = menuData.length,
+        i = 0,
+        parent, node;
+
+    for (; i < menuLen; i++) {
+        parent = menuData[i];
+
+        node = ExtL.createElement({
+            html : parent.text,
+            "class" : 'product-name-item',
+            id : 'product-menu-' + parent.product,
+            "data-name" : parent.product,
+            cn : [{
+                tag : 'i',
+                "class" : 'fa fa-caret-right'
+            }]
+        });
+        node.myParentNode = parent;
+
+        menuCt.appendChild(node);
+    }
 };
 
 
@@ -3231,6 +3258,7 @@ DocsApp.getEventTarget = function (e) {
         var branches, treeCt;
 
         DocsApp.initNavTree();
+        DocsApp.initProductMenu();
         DocsApp.resizeHandler();
 
         //wrapSubCategories();
@@ -3494,6 +3522,118 @@ DocsApp.getEventTarget = function (e) {
     /**
      *
      */
+    DocsApp.showProductVersionMenu = function (e) {
+        var target             = DocsApp.getEventTarget(e),
+            productItemCls     = 'product-name-item',
+            versionMenuCt      = ExtL.get('product-version-tree-ct'),
+            productsWithHeader = ['extjs'],
+            selectedCls        = 'selected-product',
+            productMenuCt      = ExtL.get('product-tree-ct'),
+            products           = productMenuCt.childNodes,
+            productsLen        = products.length,
+            productNode, product, parent, children, childrenLen, i, child, node,
+            myVersion, majorVersion, hasHeaders;
+
+        if (!ExtL.hasCls(target, productItemCls)) {
+            target = ExtL.up(target, '.' + productItemCls);
+        }
+
+        product = target.getAttribute('data-name');
+
+        if (versionMenuCt.product !== product) {
+            while (productsLen--) {
+                ExtL.removeCls(products[productsLen], selectedCls);
+            }
+            ExtL.addCls(target, selectedCls);
+
+            ExtL.removeChildNodes(versionMenuCt);
+
+            versionMenuCt.product = product;
+            parentNode            = target.myParentNode;
+            children              = parentNode.children;
+            childrenLen           = children.length;
+            i                     = 0;
+            hasHeaders            = productsWithHeader.indexOf(product) > -1;
+            majorVersion          = null;
+
+            versionMenuCt.appendChild(
+                ExtL.createElement({
+                    tag  : 'h1',
+                    html : parentNode.text
+                })
+            );
+
+            for (; i < childrenLen; i++) {
+                child = children[i];
+                node  = ExtL.createElement({
+                    cn : [{
+                        tag  : 'a',
+                        href : DocsApp.meta.docsRootPath + child.path + '/index.html',
+                        html : child.text
+                    }, {
+                        tag  : 'a',
+                        href : '#',
+                        html : '(offline docs)'
+                    }]
+                });
+
+                versionMenuCt.appendChild(node);
+
+                if (hasHeaders) {
+                    myVersion = child.text[0];
+                    if (myVersion !== majorVersion) {
+                        majorVersion = myVersion;
+                        versionMenuCt.insertBefore(ExtL.createElement({
+                            tag  : 'h2',
+                            html : myVersion + '.x'
+                        }), node);
+                    }
+                }
+            }
+        }
+
+        setTimeout(function () {
+            DocsApp.positionProductVersionMenu(target);
+        }, 1);
+        ExtL.removeCls(versionMenuCt, 'hide');
+    };
+
+    /**
+     *
+     */
+    DocsApp.hideProductVersionMenu = function (e) {
+        var versionMenuCt = ExtL.get('product-version-tree-ct');
+
+        ExtL.addCls(versionMenuCt, 'hide');
+    };
+
+    /**
+     *
+     */
+    DocsApp.positionProductVersionMenu = function (target) {
+        var productTreeCt    = ExtL.get('product-tree-ct'),
+            parentCtBox      = productTreeCt.getBoundingClientRect(),
+            parentBox        = target.getBoundingClientRect(),
+            parentWidth      = ExtL.getWidth(productTreeCt),
+            versionMenuCt    = ExtL.get('product-version-tree-ct'),
+            versionMenuWidth = ExtL.getWidth(versionMenuCt),
+            vpSize           = DocsApp.getViewportSize(),
+            vpWidth          = vpSize.width,
+            defaultLeft      = parentWidth - 2,
+            btn, btnBox, heightAvail, height, totalVersionWidth, isLeftOverflow;
+
+        totalVersionWidth = parentBox.left + defaultLeft + versionMenuWidth;
+        isLeftOverflow    = totalVersionWidth > vpWidth;
+
+        ExtL.applyStyles(versionMenuCt, {
+            top  : parentBox.top - parentCtBox.top + 'px',
+            left : (isLeftOverflow ? defaultLeft - (totalVersionWidth - vpWidth) : defaultLeft) + 'px'
+        });
+    };
+
+    /**
+     *
+     */
     DocsApp.onClassTreeCtClick = function (e) {
         var target = DocsApp.getEventTarget(e),
             href   = target.href;
@@ -3689,23 +3829,23 @@ DocsApp.getEventTarget = function (e) {
         var productTreeCt = ExtL.get('product-tree-ct'),
             btns          = ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn')),
             vpSize        = DocsApp.getViewportSize(),
-            defaultHeight = 450,
-            btn, btnBox, heightAvail, height, vpOffset;
+            menuWidth     = ExtL.getWidth(productTreeCt),
+            btn, btnBox, heightAvail, height, leftOverflow;
 
         ExtL.each(btns, function (el) {
             btn = el.offsetHeight ? el : btn;
         });
 
         if (btn) {
-            btnBox      = btn.getBoundingClientRect();
-            heightAvail = vpSize.height - btnBox.bottom;
-            height      = heightAvail < defaultHeight ? heightAvail - 10 : defaultHeight;
-            vpOffset    = (btnBox.left + ExtL.getWidth(productTreeCt)) - vpSize.width;
+            btnBox       = btn.getBoundingClientRect();
+            heightAvail  = vpSize.height - btnBox.bottom;
+            height       = heightAvail < ExtL.getHeight(productTreeCt) ? heightAvail - 10 : null;
+            leftOverflow = (menuWidth + btnBox.left) > (vpSize.width - btnBox.left);
 
             ExtL.applyStyles(productTreeCt, {
                 top    : btnBox.bottom + 'px',
-                height : height + 'px',
-                left   : ((vpOffset > 0) ? (btnBox.left - vpOffset) : btnBox.left) + 'px'
+                height : height ? height + 'px' : height,
+                left   : leftOverflow ? 0 : btnBox.left + 'px'
             });
         } else {
             DocsApp.hideProductMenu();
@@ -3713,12 +3853,13 @@ DocsApp.getEventTarget = function (e) {
     };
 
     /**
-     * Hides the product menu
+     * Hides the product menu (and the version sub-menu)
      */
     DocsApp.hideProductMenu = function () {
         var productTreeCt = ExtL.get('product-tree-ct');
 
         ExtL.addCls(productTreeCt, 'hide');
+        DocsApp.hideProductVersionMenu();
     };
 
     /**
@@ -4013,8 +4154,11 @@ DocsApp.getEventTarget = function (e) {
         }
         // Set up the product menu nav
         ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.product-name-item')), function (item) {
-            ExtL.on(item, 'click', DocsApp.onProductMenuItemClick);
-            ExtL.on(item, 'mouseenter', DocsApp.onProductMenuItemClick);
+            /*ExtL.on(item, 'click', DocsApp.onProductMenuItemClick);
+            ExtL.on(item, 'mouseenter', DocsApp.onProductMenuItemClick);*/
+            //ExtL.monitorMouseLeave(item, 250, DocsApp.hideProductVersionMenu);
+            ExtL.monitorMouseEnter(item, 150, DocsApp.showProductVersionMenu);
+            ExtL.on(item, 'click', DocsApp.showProductVersionMenu);
         });
         // Set up class tree ct click listener
         if (ExtL.get('class-tree-ct')) {
@@ -4197,7 +4341,7 @@ DocsApp.getEventTarget = function (e) {
                     item.product === product &&
                     item.version === version &&
                     item.toolkit === toolkit &&
-                    item.text    === pageName && 
+                    item.text    === pageName &&
                     item.path    === path
                 ) {
                     historyRemoves.push(i);
@@ -4311,8 +4455,8 @@ DocsApp.getEventTarget = function (e) {
         }
     };
 
-    // we call this immediately so that there is less flashing as positional things are 
-    // set.  We'll call this again in the bindReady logic because there are a number of 
+    // we call this immediately so that there is less flashing as positional things are
+    // set.  We'll call this again in the bindReady logic because there are a number of
     // things in the statefulness that require the DOM be fully rendered
     DocsApp.fetchState(true);
 

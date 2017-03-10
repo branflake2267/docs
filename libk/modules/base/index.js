@@ -36,7 +36,7 @@ class Base {
 
         //this.log(`Create 'Base' instance`, 'info');
 
-        // merge in the project defaults, then the app defaults, then finally the CLI 
+        // merge in the project defaults, then the app defaults, then finally the CLI
         // args
         options = Object.assign({}, projectDefaults, appDefaults, options);
 
@@ -100,7 +100,7 @@ class Base {
     }
 
     /**
-     * The directory where assets like images, js, and CSS files should be copied to in a 
+     * The directory where assets like images, js, and CSS files should be copied to in a
      * build
      * @return {String} The full path to the output assets directory
      */
@@ -111,10 +111,10 @@ class Base {
             let options   = this.options,
                 assetsDir = options.assetsDir,
                 formatted = Utils.format(assetsDir, options);
-            
+
             dir = this._assetsDir = options.assetsDir = Path.join(options._myRoot, formatted);
         }
-        
+
         return dir;
     }
 
@@ -173,7 +173,7 @@ class Base {
     }
 
     /**
-     * 
+     *
      */
     get uniqueId () {
         if (!this._rollingId) {
@@ -250,7 +250,7 @@ class Base {
     }
 
     /**
-     * Filter out only the handlebars partial files from a list of files (those that have 
+     * Filter out only the handlebars partial files from a list of files (those that have
      * a file name that starts with an underscore)
      * @param {String[]} files Array of file names to filter
      * @return {String[]} The array of filtered file names
@@ -276,17 +276,17 @@ class Base {
 
     /**
      * Gets the matching file using the passed version or the file with the closest version to the passed version without going over.
-     * 
-     * So, if the files from the path location were 
-     * ['config-1.0.0.json', 'config-2.0.0.json'] and you passed in the version of 
+     *
+     * So, if the files from the path location were
+     * ['config-1.0.0.json', 'config-2.0.0.json'] and you passed in the version of
      * '1.5.0' then the file returned would be 'config-1.0.0.json'.
-     * 
-     * **Note:** If there is only one file in the given path then that is what is 
-     * returned (we're assuming there is either only one version or there are not 
+     *
+     * **Note:** If there is only one file in the given path then that is what is
+     * returned (we're assuming there is either only one version or there are not
      * versioned files in the directory)
      * @param {String} path The path for all files to compare with
      * @param {String} version The version to match the files against
-     * @param {String} [delimiter] An optional delimiter to split the file name by when 
+     * @param {String} [delimiter] An optional delimiter to split the file name by when
      * looking for the version within the filename.  Defaults to '-'.
      * @return {String} The filename most closely matching the passed version
      */
@@ -297,12 +297,12 @@ class Base {
             len          = files.length,
             delimiterLen = delimiter.length,
             matchingFile;
-        
+
         // if there is only one file just return it
         if (len === 1) {
             matchingFile = files[0];
         } else {
-            // else we'll loop over the files to find the one that is closest to the 
+            // else we'll loop over the files to find the one that is closest to the
             // passed version without going over
             let i      = 0,
                 cfgVer = '0';
@@ -362,7 +362,7 @@ class Base {
     /**
      * Registers the handlebars partial using the passed name and path
      * @param {String} partialName The name to register the partial with
-     * @param {String} partialPath The path of the handlebars file to register as a 
+     * @param {String} partialPath The path of the handlebars file to register as a
      * partial template
      */
     registerPartial (partialName, partialPath) {
@@ -376,29 +376,29 @@ class Base {
      */
     registerHandlebarsHelpers () {
         //this.log(`Begin 'Base.registerHandlebarsHelpers'`, 'info');
-        // The `json` helper stringifies a Javascript object.  Helpful when you want to 
+        // The `json` helper stringifies a Javascript object.  Helpful when you want to
         // pass a hash of information directly to a handlebars template.
         Handlebars.registerHelper('json', function(context) {
             return JSON.stringify(context);
         });
 
-        // The 'bubbleWrap' helper is used by the home template partial.  With the home 
-        // template there are n number of items and every two (and any trailing odd one) 
-        // need to be wrapped by an element in the template.  This helper will decorate 
-        // each item saying whether it should have the wrapping element begun, ended, or 
+        // The 'bubbleWrap' helper is used by the home template partial.  With the home
+        // template there are n number of items and every two (and any trailing odd one)
+        // need to be wrapped by an element in the template.  This helper will decorate
+        // each item saying whether it should have the wrapping element begun, ended, or
         // both
         Handlebars.registerHelper("bubbleWrap", function(arr, options) {
             if (arr && arr.length) {
                 let buffer = "",
                     i = 0,
                     len = arr.length;
-                
+
                 // loop over all items
                 for (; i < len; i++) {
                     var item = arr[i],
                         even = i % 2 === 0;
 
-                    // indicate whether the item is even or not and if so then start the 
+                    // indicate whether the item is even or not and if so then start the
                     // wrapping
                     // **Note:** this works as the initial index is 0 and therefor even
                     if (even) {
@@ -408,11 +408,11 @@ class Base {
                     if (!even || i === len - 1) {
                         item.endWrap = true;
                     }
-                    
+
                     buffer += options.fn(item);
                 }
-            
-                
+
+
                 return buffer;
             }
         });
@@ -550,7 +550,7 @@ class Base {
 
     /**
      * Convenience error logging method
-     * @param {String/Object} err The error instance or error string to wrap as an error 
+     * @param {String/Object} err The error instance or error string to wrap as an error
      * instance
      */
     error (err) {
@@ -595,30 +595,30 @@ class Base {
     }
 
     /**
-     * Adds a class (or classes) to all HTML elements of a given type (or array of types) 
-     * within a blob of HTML.  
-     * 
+     * Adds a class (or classes) to all HTML elements of a given type (or array of types)
+     * within a blob of HTML.
+     *
      * Example adding a single class to one tag type:
-     * 
+     *
      *     this.addCls('html, 'a', 'foo');
-     * 
+     *
      * Example adding multiple classes to multiple tags:
-     * 
+     *
      *     this.addCls('html', ['a', 'code'], ['foo', 'bar']);
-     * 
+     *
      * Example adding different classes to different tags:
-     * 
+     *
      *     this.addCls('html', {
      *         a    : 'foo',
      *         code : 'bar'
      *     });
-     * 
-     * @param {String} html The HTML block containing the elements receiving the added 
+     *
+     * @param {String} html The HTML block containing the elements receiving the added
      * classes
-     * @param {String/String[]/Object} tags An element tag name, or array of tag names, 
-     * to search for an add the specified CSS class.  A hash of tag names: classes may 
+     * @param {String/String[]/Object} tags An element tag name, or array of tag names,
+     * to search for an add the specified CSS class.  A hash of tag names: classes may
      * also be passed.
-     * @param {String/String[]} [cls] The class or classes to add to the specified tag / 
+     * @param {String/String[]} [cls] The class or classes to add to the specified tag /
      * tags.
      * @return {String} The HTML blob with the classes added.
      */
@@ -652,7 +652,7 @@ class Base {
                 //reString = `(<${tag}(?!.*class)[^>]*?)(>[\\s\\S]*?<\/${tag}>)|(<${tag}.*?class=["']?.*?)(["']?[^>]*?>[\\s\\S]*?<\/${tag}>)`,
                 reString = `(<${tag}(?![^>]*class)[^>]*?)(>)|(<${tag}[^>]*?class=["']?.*?)(["']?[^>]*?>)`,
                 re       = new RegExp(reString, 'gim');
-            
+
             cls = tags[tag];
             // create a string from an array of class strings is possible
             cls  = cls && Array.isArray(cls) ? cls.join(' ') : cls;
@@ -771,7 +771,7 @@ class Base {
         //this.log(`Begin 'Base.concludeBuild'`, 'info');
         let options = this.options;
 
-        // TODO see about replacing this with a closeStatus() call instead once we have 
+        // TODO see about replacing this with a closeStatus() call instead once we have
         // the process populated with statuses
         if (!options.production && options.audioAlert === true) {
             Play.sound('./assets/audio/jobsdone.m4a');
@@ -852,6 +852,7 @@ class Base {
         if (hasVersions) {
             outPath = Path.join(outPath, options.version);
         }
+
         return Path.resolve(
             __dirname,
             Path.join(
@@ -1036,7 +1037,7 @@ class Base {
             tag       = verInfo && verInfo.tag,
             repo      = prodCfg.repo,
             remoteUrl = prodCfg.remoteUrl,
-            reposPath = options.localReposDir;;
+            reposPath = options.localReposDir;
 
         // if the api source directory exists and is not a git repo then skip syncing
         if (Fs.existsSync(sourceDir) && !Git.isGitSync(sourceDir)) {
@@ -1063,7 +1064,7 @@ class Base {
 
             // find out if there are dirty or un-tracked files and if so skip syncing
             let status = Git.checkSync(sourceDir);
-            
+
             if (status.dirty || status.untracked) {
                 this.log('API source directory has modified / un-tracked changes - skipping remote sync', 'info');
                 return;

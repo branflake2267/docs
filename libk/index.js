@@ -1,6 +1,9 @@
 /* jshint node: true */
 'use strict';
 
+const Chalk            = require('chalk'),
+      StringSimilarity = require('string-similarity');
+
 /**
  * Get all the args
  * create a new instance of the module indicated in the CLI command
@@ -92,7 +95,7 @@ if (canRun) {
         // then merge the CLI params on top of that
         options     = Object.assign(options, args);*/
     let options = args;
-    
+
     options._args   = args;
     options._myRoot = __dirname;
 
@@ -103,7 +106,7 @@ if (canRun) {
     // if the module instance doesn't have the passed method then throw an error
     if (!cls[method]) {
         console.log(`
-            ERROR: ${targetMod} does not have the method: '${method}'
+            ${Chalk.white.bgRed('ERROR :')} ${targetMod} does not have the method: '${method}'
         `);
         process.exit();
     } else {
@@ -111,6 +114,17 @@ if (canRun) {
         cls[method]();
     }
 } else {
-    console.log('INVALID MODULE:', targetMod);
-    console.log('VALID MODULES INCLUDE:', targets.join(', '));
+    //console.log('INVALID MODULE:', targetMod);
+    //console.log('VALID MODULES INCLUDE:', targets.join(', '));
+    let match = StringSimilarity.findBestMatch(
+        targetMod,
+        targets
+    ),
+    proposed = match.bestMatch.target;
+
+    console.log(`
+        ${Chalk.white.bgRed('ERROR :')} '${Chalk.gray(targetMod)}' is not a valid module name'
+        Possible match : ${Chalk.gray(proposed)}
+    `);
+    process.exit();
 }

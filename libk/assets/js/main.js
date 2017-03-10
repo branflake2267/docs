@@ -3827,7 +3827,7 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.positionProductMenu = function () {
         var productTreeCt = ExtL.get('product-tree-ct'),
-            btns          = ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn')),
+            btns          = ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn-wrap')),
             vpSize        = DocsApp.getViewportSize(),
             menuWidth     = ExtL.getWidth(productTreeCt),
             btn, btnBox, heightAvail, height, leftOverflow;
@@ -4132,7 +4132,7 @@ DocsApp.getEventTarget = function (e) {
         });
         // hide the class tree panel
         ExtL.get('hide-class-tree').onclick = DocsApp.onHideClassTreeClick;
-        ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn')), function (btn) {
+        ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn-wrap')), function (btn) {
             btn.onclick = DocsApp.showProductMenu;
         });
 

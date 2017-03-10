@@ -77,7 +77,7 @@ class SourceApi extends Base {
     }
 
     /**
-     * Returns an array of this module's file name along with the file names of all 
+     * Returns an array of this module's file name along with the file names of all
      * ancestor modules
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
@@ -181,7 +181,7 @@ class SourceApi extends Base {
      */
     get rootApiInputDir () {
         let options = this.options;
-        
+
         return Path.join(
             options._myRoot,
             options.apiInputDir
@@ -295,10 +295,10 @@ class SourceApi extends Base {
     }
 
     /**
-     * Returns the api tree (later to be output in the {@link #outputApiTree} method).  
-     * A class name may optionally be passed in order to drive the tree name to be added 
+     * Returns the api tree (later to be output in the {@link #outputApiTree} method).
+     * A class name may optionally be passed in order to drive the tree name to be added
      * to `this.apiTrees`
-     * @param {String} [className] The classname being processed.  Can be used in an 
+     * @param {String} [className] The classname being processed.  Can be used in an
      * override of this method to derive which tree to return;
      * @return {Array} The api tree
      */
@@ -341,7 +341,7 @@ class SourceApi extends Base {
     /**
      * @private
      * Returns the source file for a given class / member
-     * @param {Object} obj The class or class member object from the Doxi output to get 
+     * @param {Object} obj The class or class member object from the Doxi output to get
      * the class file from
      * @param {Object} raw The raw doxi output (that has the source files array)
      * @return {String} The path to the source file for the passed class / member
@@ -563,7 +563,7 @@ class SourceApi extends Base {
      * Add the passed class name to the api tree used for UI nav
      * @param {String} className The full class name to process and add to the API tree
      * @param {String} icon An icon class name to include if passed:
-     * 
+     *
      *  - component
      *  - singleton
      *  - class
@@ -574,20 +574,20 @@ class SourceApi extends Base {
             elementsLen = nameArray.length,
             apiDirName  = this.apiDirName;
 
-        // process all parts of the class name (each string in the .-separated full class 
+        // process all parts of the class name (each string in the .-separated full class
         // name)
         //
-        // node - initially the node is the api tree object itself.  As each element of 
-        // the full class name is processed what is passed back into the reduce callback 
+        // node - initially the node is the api tree object itself.  As each element of
+        // the full class name is processed what is passed back into the reduce callback
         // is the child nodes array that the next element will be added to
         //
         // name - the element of the split className currently being evaluated
         //
         // i - the index in the array at this stage of the reduce action
         nameArray.reduce((nodes, name, i) => {
-            // if the reduce index matches the length (minus 1) of the split className 
-            // then this is a leaf.  Though, root namespace items like "Ext" and "ST" 
-            // will be later have a `children` property added as necessary and be 
+            // if the reduce index matches the length (minus 1) of the split className
+            // then this is a leaf.  Though, root namespace items like "Ext" and "ST"
+            // will be later have a `children` property added as necessary and be
             // "unleafed"
             let leaf     = (i === (elementsLen - 1)),
                 id       = this.getNodeId(className, i),
@@ -611,7 +611,7 @@ class SourceApi extends Base {
                     iconCls  : isSingleton ? icon : folderNodeCls,
                     children : []
                 });
-                // else we're processing a leaf node (note, this could be a node / namespace 
+                // else we're processing a leaf node (note, this could be a node / namespace
                 // like "Ext" or "ST", but we account for that in the processing above)
             } else {
                 //create the leaf node configuration
@@ -634,9 +634,9 @@ class SourceApi extends Base {
 
     /**
      * @private
-     * Sorter method that sorts an array of api tree nodes with parent nodes on top and 
-     * leaf nodes on bottom and each of those groups ordered by their node name.  
-     * 
+     * Sorter method that sorts an array of api tree nodes with parent nodes on top and
+     * leaf nodes on bottom and each of those groups ordered by their node name.
+     *
      * Supports {@link #sortTree}
      * @param {Object[]} nodes An array of api tree nodes to sort
      * @return {Object[]} The sorted array
@@ -659,9 +659,9 @@ class SourceApi extends Base {
     }
 
     /**
-     * Sorts the api tree recursively.  Initially the tree is passed in.  Each node in 
+     * Sorts the api tree recursively.  Initially the tree is passed in.  Each node in
      * the tree that has children then passes those children back through `sortTree`.
-     * @param {Object[]} tree The tree nodes to sort - either the tree root or an array 
+     * @param {Object[]} tree The tree nodes to sort - either the tree root or an array
      * of child nodes
      * @return {Object[]} The sorted tree
      */
@@ -685,14 +685,14 @@ class SourceApi extends Base {
 
     /**
      * @private
-     * Returns the id for a tree node using the full class name and an index to count in 
-     * 'x' number of .'s in the full class name.  For example, if the className of 
-     * "Ext.grid.Panel" was passed in with the currentIndex of 0 then "Ext.grid" would be 
-     * returned.  
-     * 
+     * Returns the id for a tree node using the full class name and an index to count in
+     * 'x' number of .'s in the full class name.  For example, if the className of
+     * "Ext.grid.Panel" was passed in with the currentIndex of 0 then "Ext.grid" would be
+     * returned.
+     *
      * Used by {@link #addToApiTree}
      * @param {String} className The full class name for the current node
-     * @param {Number} currentIndex The index for the current node's processing - 
+     * @param {Number} currentIndex The index for the current node's processing -
      * essentially the depth this node is in the tree when the ID is requested
      * @return {String} The id for the current node being processed
      */
@@ -712,7 +712,7 @@ class SourceApi extends Base {
 
     /**
      * @private
-     * Private method used to find an existing api node in an array of api nodes on the 
+     * Private method used to find an existing api node in an array of api nodes on the
      * api tree
      * @param {Array} nodes Array of api nodes (could be [])
      * @param {String} name The class name element (package name) to look for
@@ -727,8 +727,8 @@ class SourceApi extends Base {
         for (; i < len; i++) {
             let node = nodes[i];
 
-            // if it exists already break out of the loop and indicate which 
-            // child node should be used when processing the next reduce 
+            // if it exists already break out of the loop and indicate which
+            // child node should be used when processing the next reduce
             // iteration
             if (node && node.id === name) {
                 target = node;
@@ -763,9 +763,9 @@ class SourceApi extends Base {
     }
 
     /**
-     * Outputs all class files from the Doxi processing (and any post-processing from 
+     * Outputs all class files from the Doxi processing (and any post-processing from
      * source-api) by passing the classname and class object to {@link #outputApiFile}
-     * @return {Object} A Promise that processes all class files and calls to 
+     * @return {Object} A Promise that processes all class files and calls to
      * `outputApiFile`
      */
     processApiFiles () {
@@ -775,14 +775,14 @@ class SourceApi extends Base {
             i = 0,
             len = classNames.length;
 
-        // reset the apiTree property on each processApiFiles run since this module 
+        // reset the apiTree property on each processApiFiles run since this module
         // instance is reused between toolkits
         //this.apiTree = this.apiTrees[this.apiDirName] = [];
 
         // loops through all class names from the classMap
         for (; i < len; i++) {
             let className = classNames[i],
-                // the prepared object is the one that has been created by 
+                // the prepared object is the one that has been created by
                 // `createSrcFileMap` and will be processed in `decorateClass`
                 prepared = classMap[className].prepared;
 
@@ -809,7 +809,7 @@ class SourceApi extends Base {
         // loops through all class names from the classMap
         for (; i < len; i++) {
             let className = classNames[i],
-                // the prepared object is the one that has been created by 
+                // the prepared object is the one that has been created by
                 // `createSrcFileMap` and will be processed in `decorateClass`
                 prepared  = classMap[className].prepared;
 
@@ -822,13 +822,13 @@ class SourceApi extends Base {
 
     /**
      * Outputs the processed doxi file to a .json file in the resources folder for use by
-     * the Ext app  
-     * 
-     * **Note:** This method is likely to be overridden by any app-processing module 
+     * the Ext app
+     *
+     * **Note:** This method is likely to be overridden by any app-processing module
      * (such as create-app-html) to output an HTML file rather than a JSON file
      * @param {String} className The name of the class to be output
      * @param {Object} data The prepared Doxi object to be output
-     * @return {Object} A promise the resolves once the api file is written to the output 
+     * @return {Object} A promise the resolves once the api file is written to the output
      * directory
      */
     /*outputApiFile (className, data) {
@@ -854,7 +854,7 @@ class SourceApi extends Base {
     processRelatedClasses () {}
 
     /**
-     * Prepares additional api data processing prior to handing the data over to the api 
+     * Prepares additional api data processing prior to handing the data over to the api
      * template for final output
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
@@ -874,11 +874,11 @@ class SourceApi extends Base {
 
     /**
      * Decorate each doxi class file with metadata / member groupings to be used by the
-     * HTML docs or Ext app.  The class name is passed in and looked up in the `classMap` 
-     * which has cached a copy of the raw Doxi output (classMap.raw) and a copy to be 
-     * processed (classMap.processed).  This method evaluates the raw output and adjusts 
-     * / sorts / mutates it as needed for the final output and applies changes to the 
-     * 'processed' object.  
+     * HTML docs or Ext app.  The class name is passed in and looked up in the `classMap`
+     * which has cached a copy of the raw Doxi output (classMap.raw) and a copy to be
+     * processed (classMap.processed).  This method evaluates the raw output and adjusts
+     * / sorts / mutates it as needed for the final output and applies changes to the
+     * 'processed' object.
      * @param {String} className The name of the class to be processed
      */
     decorateClass (className) {
@@ -889,7 +889,7 @@ class SourceApi extends Base {
             data     = classMap[className].prepared,
             cls      = raw.global.items[0],
             alias    = cls.alias;
-            
+
         data.classText = this.markup(data.text);
         // TODO need to decorate the following.  Not sure if this would be done differently for HTML and Ext app output
         this.processRelatedClasses(cls, data);
@@ -920,17 +920,17 @@ class SourceApi extends Base {
         // indicate if the class is removed
         cls.isRemoved    = !!(cls.removedMessage    || cls.removedVersion);
         // indicate if the class is an enum
-        cls.isEnum       = cls.$type === 'enum'
+        cls.isEnum       = cls.$type === 'enum';
         data.cls = cls;
 
         this.processApiDataObject(data);
 
-        // TODO there's a lot of overlap here with guides - should see how we can 
+        // TODO there's a lot of overlap here with guides - should see how we can
         // reconcile some of this into some sort of applyContext(data) method
         data = Object.assign(data, options.prodVerMeta);
         data = Object.assign(data, options);
 
-        // indicates whether the class is of type component, singleton, or some other 
+        // indicates whether the class is of type component, singleton, or some other
         // class
         if (cls.extended && cls.extended.includes('Ext.Component')) {
             cls.clsSpec     = 'title-decoration component';
@@ -945,7 +945,7 @@ class SourceApi extends Base {
 
         // start keeping track of the class source files
         data.srcFiles = [];
-        
+
         // get the source file path for the class
         let srcFilePath = this.getSourceFilePath(cls, raw),
             // and subsequently the source filename of the output source HTML
@@ -1008,8 +1008,8 @@ class SourceApi extends Base {
             );
         }
 
-        // now that we have all source files for this class from the class itself and all 
-        // of its members remove duplicates and indicate the source file / files in the 
+        // now that we have all source files for this class from the class itself and all
+        // of its members remove duplicates and indicate the source file / files in the
         // class as well as whether there are one or more source files
         data.srcFiles = _.uniqBy(data.srcFiles, 'pathText');
         if (data.srcFiles.length === 1) {
@@ -1022,7 +1022,7 @@ class SourceApi extends Base {
 
     /**
      * @private
-     * Used by {@link #decorateClass} to create sub-objects for configs, properties, and 
+     * Used by {@link #decorateClass} to create sub-objects for configs, properties, and
      * methods
      * @param {String} type The member type being processed
      * @param {Object} data The class object to be passed to the template
@@ -1058,7 +1058,7 @@ class SourceApi extends Base {
             len             = items.length,
             capitalizedType = Utils.capitalize(type);
 
-        // loop over the member groups.  Indicate on the class object that each member 
+        // loop over the member groups.  Indicate on the class object that each member
         // type is present and process the member object itself.
         for (; i < len; i++) {
             prepared[`has${capitalizedType}`] = true;
@@ -1091,18 +1091,18 @@ class SourceApi extends Base {
             rawRoot    = raw.global.items[0],
             clsName    = rawRoot.name,
             name       = member.name;
-        
+
         // get the source file path for the class member
         //
-        // .. we'll exclude the check if type was not passed (params being processed) or 
-        // if there is a from property since that means the member came from some 
+        // .. we'll exclude the check if type was not passed (params being processed) or
+        // if there is a from property since that means the member came from some
         // ancestor class, not the class currently being processed
         if (type && !member.from) {
             let srcFilePath = this.getSourceFilePath(member, raw);
 
             // add the member source file info to the srcFiles array
-            // 
-            // .. wrapped in a conditional since some members don't have an explicit src 
+            //
+            // .. wrapped in a conditional since some members don't have an explicit src
             // object like evented events that are inferred by their class / mixins
             if (srcFilePath) {
                 // get the source filename of the output source HTML
@@ -1195,7 +1195,7 @@ class SourceApi extends Base {
         if (type === 'methods') {
             prepared.instanceMethods.push(member);
             // used when creating accessor methods
-            prepared.instanceMethodsObj[name] = member;;
+            prepared.instanceMethodsObj[name] = member;
         }
         if (type === 'static-methods') {
             prepared.staticMethods.push(member);
@@ -1235,7 +1235,7 @@ class SourceApi extends Base {
                          '<a target="_blank" href="src/' +
                             fileLink + '#' + member.srcClass + '-' + member.linkType + '-' + member.name + '">' +
                          'view source</a></div>';*/
-        
+
         //member.srcLink = 'src/'
         //console.log(this.srcFileMap[className].filename);
         let src = member.src,
@@ -1278,8 +1278,8 @@ class SourceApi extends Base {
 
     /**
      * @private
-     * Injects getter and setter methods for config options with `accessor: true`.  
-     * Decorates bindable configs with `bindable: true`.  Used by {@link #decorateClass} 
+     * Injects getter and setter methods for config options with `accessor: true`.
+     * Decorates bindable configs with `bindable: true`.  Used by {@link #decorateClass}
      * after {@link #processMembers} is complete
      * @param {Object} data The class object to be passed to the HTML template
      */
@@ -1316,7 +1316,7 @@ class SourceApi extends Base {
             let s = config.setter = instanceMethodsObj[`set${capitalName}`] ||
                             instanceMethodsObj[`set${upperName}`];
 
-            // if there is a getter or the config is accessor decorate the getter 
+            // if there is a getter or the config is accessor decorate the getter
             // method config
             if (g || accessor === true || accessor === 'r') {
                 let idx = g ? instanceMethods.indexOf(g) : null;
@@ -1337,17 +1337,17 @@ class SourceApi extends Base {
 
                 // if the getter came from the instance methods directly
                 if (idx) {
-                    // we're replacing the getter method in the instance methods with 
+                    // we're replacing the getter method in the instance methods with
                     // the placeholder config
                     instanceMethods[idx] = getterCfg;
                 } else {
                     // else add it
                     if (instanceMethods) {
                         instanceMethods.push(getterCfg);
-                    }            
+                    }
                 }
             }
-            // if there is a setter or the config is accessor decorate the setter 
+            // if there is a setter or the config is accessor decorate the setter
             // method config
             if (s || accessor === true || accessor === 'w') {
                 let idx = s ? instanceMethods.indexOf(s) : null;
@@ -1368,7 +1368,7 @@ class SourceApi extends Base {
 
                 // if the getter came from the instance methods directly
                 if (idx) {
-                    // we're replacing the getter method in the instance methods with 
+                    // we're replacing the getter method in the instance methods with
                     // the placeholder config
                     instanceMethods[idx] = setterCfg;
                 } else {
@@ -1439,7 +1439,7 @@ class SourceApi extends Base {
                 cls       = map[className].prepared,
                 key       = `${i}${suffix}`;
 
-            // caches the member type short names on the class object for use in the 
+            // caches the member type short names on the class object for use in the
             // processMemberSearch method
             cls.typeRef = typeRef;
 
@@ -1463,7 +1463,7 @@ class SourceApi extends Base {
                 let altClassNames = cls.alternateClassNames.split(','),
                     j             = 0,
                     namesLength   = altClassNames.length;
-                
+
                 searchIndex[key].g = altClassNames;
 
                 for (; j < namesLength; j++) {
@@ -1476,7 +1476,7 @@ class SourceApi extends Base {
                     };
                 }
             }
-            
+
             let typesLen = memberTypes.length,
                 k        = 0;
 
@@ -1487,7 +1487,7 @@ class SourceApi extends Base {
                     membersLen = members ? members.length : 0,
                     l          = 0;
 
-                // then over the members for each type to process each member into the 
+                // then over the members for each type to process each member into the
                 // search object
                 for (; l < membersLen; l++) {
                     let member = members[l];
@@ -1506,7 +1506,7 @@ class SourceApi extends Base {
      * @param {String} key The reference key for this class in the searchIndex object
      * @param {Object} cls The original class object
      * @param {String} type The member type
-     * @param {Object} searchIndex The search object that all assembled search is being 
+     * @param {Object} searchIndex The search object that all assembled search is being
      * cached on until it's output
      */
     processMemberSearch (member, key, cls, type, searchIndex) {
@@ -1535,7 +1535,7 @@ class SourceApi extends Base {
                     };
                 });
             }
-            
+
             // record the member access
             searchIndex[key][cls.typeRef[type] + '.' + member.name] = {
                 a : acc
@@ -1759,7 +1759,7 @@ class SourceApi extends Base {
                         });
                     }));
                 }
-                
+
                 console.log('OUTPUT SOURCE FILES IS DONE !!!');
 
                 return Promise.all(writes)

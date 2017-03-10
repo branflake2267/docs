@@ -49,7 +49,7 @@ class AppBase extends SourceGuides {
     }
 
     /**
-     * Returns an array of this module's file name along with the file names of all 
+     * Returns an array of this module's file name along with the file names of all
      * ancestor modules
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
@@ -58,7 +58,7 @@ class AppBase extends SourceGuides {
     }
 
     /**
-     * Returns the version passed by the CLI build command or the `currentVersion` from 
+     * Returns the version passed by the CLI build command or the `currentVersion` from
      * the config file if there was no version passed initially
      * @return {String} The version number for the current product
      */
@@ -108,7 +108,7 @@ class AppBase extends SourceGuides {
     }
 
     /**
-     * Run the api processor (for the toolkit stipulated in the options or against 
+     * Run the api processor (for the toolkit stipulated in the options or against
      * each toolkit - if applicable)
      */
     // TODO remove events in favor of promises
@@ -122,7 +122,7 @@ class AppBase extends SourceGuides {
                     (options.toolkit || meta.toolkits) :
                     false
             );
-        
+
         if (!hasApi) {
             return Promise.resolve();
         }
@@ -149,11 +149,12 @@ class AppBase extends SourceGuides {
     }
 
     /**
-     * Creates the product menu from the 
+     * Creates the product menu from the products config file
+     * @return {Object[]} The product tree array
      */
     getProductMenu () {
         let options          = this.options,
-            // this is an array of keys found on the array of product defaults in the 
+            // this is an array of keys found on the array of product defaults in the
             // config file in the order the products should be displayed in the UI
             includedProducts = options.productMenu || [],
             products         = options.products,
@@ -161,7 +162,7 @@ class AppBase extends SourceGuides {
             i                = 0,
             prodTree         = [];
 
-        // loop over the product names and add each product as a node in the prodTree 
+        // loop over the product names and add each product as a node in the prodTree
         // array with each version added as child nodes
         for (; i < len; i++) {
             let name    = includedProducts[i],
@@ -179,29 +180,32 @@ class AppBase extends SourceGuides {
                 };
 
                 // now add child items to it
-                // starting with the product name itself if the value of productMenu is 
+                // starting with the product name itself if the value of productMenu is
                 // just `true` -vs- a list of version numbers
                 if (menu === true) {
                     node.children.push({
-                        text : title
+                        text : title,
+                        path : name
                     });
                 } else {
-                    // else we'll loop over the list of product versions to include in 
+                    // else we'll loop over the list of product versions to include in
                     // the product menu
                     let verLength = menu.length,
                         j         = 0;
 
                     for (; j < verLength; j++) {
                         let ver         = menu[j],
-                            verIsObject = Utils.isObject(ver);
+                            verIsObject = Utils.isObject(ver),
+                            text        = verIsObject ? ver.text : ver;
 
-                        // the version could be a string or could be an object with a 
+                        // the version could be a string or could be an object with a
                         // text property as the text to display
                         node.children.push({
-                            text : verIsObject ? ver.text : ver,
-                            // optionally, a static link may be included in the object 
+                            text : text,
+                            // optionally, a static link may be included in the object
                             // form
-                            link : ver.link
+                            link : ver.link,
+                            path : `${name}/${text}`
                         });
                     }
                 }
@@ -277,7 +281,7 @@ class AppBase extends SourceGuides {
 
             // warn if the member is ambiguous - doesn't have a type specified
             if (hash) {
-                // get the types and add a dash as that's how the link would be 
+                // get the types and add a dash as that's how the link would be
                 // constructed
                 let types    = this.memberTypes.map((type) => {
                     return `${type}-`;
@@ -290,12 +294,6 @@ class AppBase extends SourceGuides {
                 }
 
                 memberName = hash;
-            }
-
-            if (match === '[[modern:Ext.tab.Panel tabpanel]]') {
-                //console.log(match, productVer, link, text);
-                //console.log(product, version, toolkit, text);
-                //console.log(product, version, toolkit, className, memberName, text, data);
             }
 
             return this.createGuideLink(product, version, toolkit, className, memberName, text, data);
@@ -374,7 +372,7 @@ class AppBase extends SourceGuides {
 
                     meta.forEach(function(option) {
                         let optionMatch = option.match(keyedRe);
-                        
+
                         let key = optionMatch[1],
                             val = optionMatch[2],
                             mapped = frameworkMap[val];

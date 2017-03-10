@@ -545,7 +545,7 @@ class ExtReactHtmlApp extends HtmlApp {
 
                     event.name         = `on${this.camelize(event.name)}`;
                     event.returnPrefix = ' => ';
-                    event.paramsPrefix = ': function'
+                    event.paramsPrefix = ': function';
                 }
             }
         }

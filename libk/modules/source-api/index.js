@@ -322,7 +322,11 @@ class SourceApi extends Base {
 
         if (data && data.cls) {
             let name       = data.cls.name,
-                apiDirName = this.apiDirName;
+                apiDirName = this.apiDirName,
+                docsRelativePath = Path.relative(
+                    this.apiDir,
+                    this.options.outputDir
+                );
 
             Object.assign(meta, {
                 //navTreeName : 'API',
@@ -331,7 +335,8 @@ class SourceApi extends Base {
                 myId        : name,
                 rootPath    : '../',
                 pageType    : 'api',
-                pageName    : name
+                pageName    : name,
+                docsRootPath : `${docsRelativePath}/`
             });
         }
 

@@ -852,6 +852,7 @@ class Base {
         if (hasVersions) {
             outPath = Path.join(outPath, options.version);
         }
+
         return Path.resolve(
             __dirname,
             Path.join(

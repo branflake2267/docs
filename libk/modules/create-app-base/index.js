@@ -14,11 +14,13 @@
  * Create the product / version landing page
  */
 
-const SourceGuides = require('../source-guides'),
-      Utils        = require('../shared/Utils'),
-      Beautify     = require('js-beautify').js_beautify,
-      Fs           = require('fs-extra'),
-      Path         = require('path');
+const SourceGuides     = require('../source-guides'),
+      Utils            = require('../shared/Utils'),
+      Beautify         = require('js-beautify').js_beautify,
+      Fs               = require('fs-extra'),
+      Path             = require('path'),
+      Chalk            = require('chalk'),
+      StringSimilarity = require('string-similarity');
 
 class AppBase extends SourceGuides {
     constructor (options) {
@@ -30,8 +32,23 @@ class AppBase extends SourceGuides {
             version    = o.version,
             //majorVer   = this.apiVersion.charAt(),
             majorVer   = version.charAt(),
-            prodObj    = o.products[product],
-            toolkitObj = prodObj.toolkit && prodObj.toolkit[majorVer],
+            prodObj    = o.products[product];
+
+        if (!prodObj) {
+            let match = StringSimilarity.findBestMatch(
+                product,
+                Object.keys(o.products)
+            ),
+            proposed = `--product=${match.bestMatch.target}`;
+
+            console.log(`
+                ${Chalk.white.bgRed('ERROR :')} '${Chalk.gray('projectDefaults.json')}' does not have the product config for the passed product: '${Chalk.gray(product)}'
+                Possible match : ${Chalk.gray(proposed)}
+            `);
+            process.exit();
+        }
+
+        let toolkitObj = prodObj.toolkit && prodObj.toolkit[majorVer],
             toolkits   = toolkitObj ? toolkitObj.toolkits : false,
             toolkit    = o.toolkit || (toolkitObj && toolkitObj.defaultToolkit) || 'api';
 

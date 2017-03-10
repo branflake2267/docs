@@ -3527,7 +3527,11 @@ DocsApp.getEventTarget = function (e) {
             productItemCls     = 'product-name-item',
             versionMenuCt      = ExtL.get('product-version-tree-ct'),
             productsWithHeader = ['extjs'],
-            product, parent, children, childrenLen, i, child, node,
+            selectedCls        = 'selected-product',
+            productMenuCt      = ExtL.get('product-tree-ct'),
+            products           = productMenuCt.childNodes,
+            productsLen        = products.length,
+            productNode, product, parent, children, childrenLen, i, child, node,
             myVersion, majorVersion, hasHeaders;
 
         if (!ExtL.hasCls(target, productItemCls)) {
@@ -3537,6 +3541,11 @@ DocsApp.getEventTarget = function (e) {
         product = target.getAttribute('data-name');
 
         if (versionMenuCt.product !== product) {
+            while (productsLen--) {
+                ExtL.removeCls(products[productsLen], selectedCls);
+            }
+            ExtL.addCls(target, selectedCls);
+
             ExtL.removeChildNodes(versionMenuCt);
 
             versionMenuCt.product = product;
@@ -3549,7 +3558,7 @@ DocsApp.getEventTarget = function (e) {
 
             versionMenuCt.appendChild(
                 ExtL.createElement({
-                    tag : 'h1',
+                    tag  : 'h1',
                     html : parentNode.text
                 })
             );
@@ -3559,7 +3568,7 @@ DocsApp.getEventTarget = function (e) {
                 node  = ExtL.createElement({
                     cn : [{
                         tag  : 'a',
-                        href : child.path + '/index.html',
+                        href : DocsApp.meta.docsRootPath + child.path + '/index.html',
                         html : child.text
                     }, {
                         tag  : 'a',
@@ -3583,7 +3592,9 @@ DocsApp.getEventTarget = function (e) {
             }
         }
 
-        DocsApp.positionProductVersionMenu(target);
+        setTimeout(function () {
+            DocsApp.positionProductVersionMenu(target);
+        }, 1);
         ExtL.removeCls(versionMenuCt, 'hide');
     };
 
@@ -3600,15 +3611,23 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.positionProductVersionMenu = function (target) {
-        var productTreeCt = ExtL.get('product-tree-ct'),
-            parentCtBox   = productTreeCt.getBoundingClientRect();
-            parentBox     = target.getBoundingClientRect(),
-            versionMenuCt = ExtL.get('product-version-tree-ct');
+        var productTreeCt    = ExtL.get('product-tree-ct'),
+            parentCtBox      = productTreeCt.getBoundingClientRect(),
+            parentBox        = target.getBoundingClientRect(),
+            parentWidth      = ExtL.getWidth(productTreeCt),
+            versionMenuCt    = ExtL.get('product-version-tree-ct'),
+            versionMenuWidth = ExtL.getWidth(versionMenuCt),
+            vpSize           = DocsApp.getViewportSize(),
+            vpWidth          = vpSize.width,
+            defaultLeft      = parentWidth - 2,
+            btn, btnBox, heightAvail, height, totalVersionWidth, isLeftOverflow;
+
+        totalVersionWidth = parentBox.left + defaultLeft + versionMenuWidth;
+        isLeftOverflow    = totalVersionWidth > vpWidth;
 
         ExtL.applyStyles(versionMenuCt, {
-            top    : parentBox.top - parentCtBox.top + 'px'//,
-            //height : height + 'px',
-            //left   : ((vpOffset > 0) ? (btnBox.left - vpOffset) : btnBox.left) + 'px'
+            top  : parentBox.top - parentCtBox.top + 'px',
+            left : (isLeftOverflow ? defaultLeft - (totalVersionWidth - vpWidth) : defaultLeft) + 'px'
         });
     };
 
@@ -3810,23 +3829,23 @@ DocsApp.getEventTarget = function (e) {
         var productTreeCt = ExtL.get('product-tree-ct'),
             btns          = ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn')),
             vpSize        = DocsApp.getViewportSize(),
-            //defaultHeight = 10,
-            btn, btnBox, heightAvail, height, vpOffset;
+            menuWidth     = ExtL.getWidth(productTreeCt),
+            btn, btnBox, heightAvail, height, leftOverflow;
 
         ExtL.each(btns, function (el) {
             btn = el.offsetHeight ? el : btn;
         });
 
         if (btn) {
-            btnBox      = btn.getBoundingClientRect();
-            heightAvail = vpSize.height - btnBox.bottom;
-            //height      = heightAvail < defaultHeight ? heightAvail - 10 : defaultHeight;
-            vpOffset    = (btnBox.left + ExtL.getWidth(productTreeCt)) - vpSize.width;
+            btnBox       = btn.getBoundingClientRect();
+            heightAvail  = vpSize.height - btnBox.bottom;
+            height       = heightAvail < ExtL.getHeight(productTreeCt) ? heightAvail - 10 : null;
+            leftOverflow = (menuWidth + btnBox.left) > (vpSize.width - btnBox.left);
 
             ExtL.applyStyles(productTreeCt, {
                 top    : btnBox.bottom + 'px',
-                //height : height + 'px',
-                left   : ((vpOffset > 0) ? (btnBox.left - vpOffset) : btnBox.left) + 'px'
+                height : height ? height + 'px' : height,
+                left   : leftOverflow ? 0 : btnBox.left + 'px'
             });
         } else {
             DocsApp.hideProductMenu();

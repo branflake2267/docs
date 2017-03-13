@@ -8,9 +8,9 @@ DocsApp.getNavHeaders = function () {
 
 /**
  * @method initNavTree
- * Once the dom is ready the navigation tree for the current page (and the navigation 
- * panel's tabs) are created.  The apiTree object and the guidesTree object are both used 
- * (as applicable as some products are guides-only) to create the navigation tree and its 
+ * Once the dom is ready the navigation tree for the current page (and the navigation
+ * panel's tabs) are created.  The apiTree object and the guidesTree object are both used
+ * (as applicable as some products are guides-only) to create the navigation tree and its
  * tabs.
  */
 DocsApp.initNavTree = function () {
@@ -39,7 +39,7 @@ DocsApp.initNavTree = function () {
     // select the node for the current page
     if (id) {
         var len = navTrees.length,
-        i = 0, 
+        i = 0,
         tree;
 
         for (; i < len; i++) {
@@ -47,18 +47,31 @@ DocsApp.initNavTree = function () {
             tree.select(id);
             // and expand the tree to the selected node
             tree.expandTo(id);
-            
+
             if (tree.target.querySelector('#' + id.replace(/\./g, '\\.'))) {
                 ExtL.removeCls(tree.target.previousSibling, 'sub-nav-ct-collapsed');
             }
         }
     }
 
-    DA.initNavTreeFilter();
+    //DA.initNavTreeFilter();
+    DA.initNavTreeCollapseHeader();
 };
 
 /**
- * Create the nav tree filter and set up event listeners used to filter the navigation 
+ *
+ */
+DocsApp.initNavTreeCollapseHeader = function () {
+    var header = ExtL.get('tree-header');
+
+    header.appendChild(ExtL.createElement({
+        tag  : 'span',
+        html : 'Menu'
+    }));
+};
+
+/**
+ * Create the nav tree filter and set up event listeners used to filter the navigation
  * trees
  */
 DocsApp.initNavTreeFilter = function () {
@@ -76,7 +89,7 @@ DocsApp.initNavTreeFilter = function () {
 };
 
 /**
- * A buffered change handler for the navigation tree search field that filters all 
+ * A buffered change handler for the navigation tree search field that filters all
  * navigation trees on each change
  */
 DocsApp.filterNavTrees = ExtL.createBuffered(function () {
@@ -90,7 +103,7 @@ DocsApp.filterNavTrees = ExtL.createBuffered(function () {
 
 /**
  * @method buildNavTree
- * Builds the navigation tree using the passed tree object (determined in 
+ * Builds the navigation tree using the passed tree object (determined in
  * {@link #initNavTree}).  The navigation tree instance is cached on DocsApp.navTree.
  */
 DocsApp.buildNavTree = function (navTree, ct) {
@@ -98,9 +111,9 @@ DocsApp.buildNavTree = function (navTree, ct) {
 };
 
 /**
- * Helper method to {@link #initNavTree} that creates the structure for each navigation 
+ * Helper method to {@link #initNavTree} that creates the structure for each navigation
  * section of the nav panel
- * @param {String} id The string to apply to the id's of each element in the returned 
+ * @param {String} id The string to apply to the id's of each element in the returned
  * element config
  * @param {String} headerText The text to display on the header of the navigation section
  * @return {Object} The markup for the navigation section
@@ -141,7 +154,7 @@ DocsApp.toggleNavHeaders = function (e) {
         headerCls    = 'sub-nav-header',
         collapsedCls = 'sub-nav-ct-collapsed',
         header, action;
-    
+
     if (target) {
         if (!ExtL.hasCls(target, headerCls)) {
             target = ExtL.up(target, '.' + headerCls);
@@ -174,7 +187,7 @@ DocsApp.initNavTreeEventListeners = function () {
 };
 
 /**
- * 
+ *
  */
 ExtL.bindReady(function () {
     DocsApp.initNavTreeEventListeners();

@@ -1011,6 +1011,11 @@ class SourceApi extends Base {
                 'instanceMethods',
                 'staticMethods'
             );
+
+            data.methods.instanceMethods = _.sortBy(
+                data.methods.instanceMethods,
+                'name'
+            );
         }
 
         // now that we have all source files for this class from the class itself and all

@@ -205,13 +205,13 @@
                     {{/if}}
                 </div>
             </div>
-            {{#isDeprecated}}
+            {{#if cls.isDeprecated}}
                 {{#deprecatedMessage}}
                     <div class="deprecated-dec">This class has been <span class="member-tags"><span class="deprecated">deprecated</span>{{#deprecatedVersion}} since {{.}}{{/deprecatedVersion}}</span>
                         {{{.}}}</div>
                 {{/deprecatedMessage}}
-            {{/isDeprecated}}
-            {{#is classAccess "private"}}
+            {{/if}}
+            {{#is cls.access "private"}}
                 <div class="privatecls-dec">
                     NOTE: This is a private utility class for internal use by the framework. Don't rely on its existence.
                 </div>
@@ -220,7 +220,7 @@
                 <h2>Summary</h2>
                 {{{classText}}}
             {{/if}}
-            {{#if isEnum}}
+            {{#if cls.isEnum}}
                 <div class="enum-msg">ENUM: This enumeration defines a set of String values. It exists primarily for documentation purposes - in code use the actual string values like '{{enumProperty}}', don't reference them through this class {{cls.name}}.{{enumProperty}}.</div>
             {{/if}}
         </div>

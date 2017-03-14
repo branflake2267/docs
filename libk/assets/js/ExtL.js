@@ -58,17 +58,17 @@ if (!Array.prototype.reduce) {
       var o = Object(this);
 
       // 2. Let len be ? ToLength(? Get(O, "length")).
-      var len = o.length >>> 0; 
+      var len = o.length >>> 0;
 
-      // Steps 3, 4, 5, 6, 7      
-      var k = 0; 
+      // Steps 3, 4, 5, 6, 7
+      var k = 0;
       var value;
 
       if (arguments.length == 2) {
         value = arguments[1];
       } else {
         while (k < len && !(k in o)) {
-          k++; 
+          k++;
         }
 
         // 3. If len is 0 and initialValue is not present, throw a TypeError exception.
@@ -89,7 +89,7 @@ if (!Array.prototype.reduce) {
           value = callback(value, o[k], k, o);
         }
 
-        // d. Increase k by 1.      
+        // d. Increase k by 1.
         k++;
       }
 
@@ -296,20 +296,25 @@ window.ExtL = window.ExtL || {};
     };
 
     /**
-     * Return an element by id
-     * @return {Element} The element with the passed id.
+     * Return an element by id.  An element instance may also be passed and will simply
+     * be returned;
+     * @param {String/HTMLElement} id The id of the element to fetch
+     * @return {HTMLElement} The element with the passed id
      */
     ExtL.get = function (id) {
+        if (!ExtL.isString(id)) {
+            return id;
+        }
         return els[id] || (els[id] = document.getElementById(id));
     };
 
     /**
-     * Gets the value at `path` of object (`obj`). If the resolved value is undefined, 
+     * Gets the value at `path` of object (`obj`). If the resolved value is undefined,
      * the `defaultValue` is returned in its place.
      * @param {Object} obj The object to query
      * @param {String} path The path of the property to get
      * @param {Object} [defaultValue] The value for undefined resolved values
-     * @return {Object} The property located within the `obj` at `path` or the 
+     * @return {Object} The property located within the `obj` at `path` or the
      * `defaultValue`
      */
     ExtL.valueFromPath = function (obj, path, defaultValue) {
@@ -394,7 +399,7 @@ window.ExtL = window.ExtL || {};
     };
 
     /**
-     * Copies the values of all enumerable own properties from one or more source objects 
+     * Copies the values of all enumerable own properties from one or more source objects
      * to a target object. It will return the target object.
      * @param {Object} target The object into which all subsequent objects are merged
      * @param {Object...} varArgs Any number of objects to merge into the target
@@ -424,8 +429,8 @@ window.ExtL = window.ExtL || {};
     };
 
     /**
-     * Returns an array of a given object's own enumerable properties, in the same order 
-     * as that provided by a for...in loop (the difference being that a for-in loop 
+     * Returns an array of a given object's own enumerable properties, in the same order
+     * as that provided by a for...in loop (the difference being that a for-in loop
      * enumerates properties in the prototype chain as well)
      * @param {Object} obj The object to return the keys from
      * @return {String[]} Array of keys from the target object
@@ -494,7 +499,7 @@ window.ExtL = window.ExtL || {};
             // IE, the document is not inside a frame
             if (document.documentElement.doScroll && !isFrame ) {
                 function tryScroll(){
-                    if (called) 
+                    if (called)
                         return;
                     try {
                         document.documentElement.doScroll("left");

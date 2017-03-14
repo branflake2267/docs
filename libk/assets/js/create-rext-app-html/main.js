@@ -186,9 +186,95 @@ DocsApp.initNavTreeEventListeners = function () {
     }
 };
 
+DocsApp.animateRipple = function (e, clickTarget, timing) {
+    e = DocsApp.getEvent(e);
+    timing = timing || 0.3;
+
+    var animationTarget = clickTarget.querySelector('use'),
+        tl              = new TimelineMax(),
+        x               = e.offsetX,
+        y               = e.offsetY,
+        w               = e.target.offsetWidth,
+        h               = e.target.offsetHeight,
+        offsetX         = Math.abs((w / 2) - x),
+        offsetY         = Math.abs((h / 2) - y),
+        deltaX          = (w / 2) + offsetX,
+        deltaY          = (h / 2) + offsetY,
+        scale_ratio     = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+    console.log('x is:' + x);
+    console.log('y is:' + y);
+    console.log('offsetX is:' + offsetX);
+    console.log('offsetY is:' + offsetY);
+    console.log('deltaX is:' + deltaX);
+    console.log('deltaY is:' + deltaY);
+    console.log('width is:' + w);
+    console.log('height is:' + h);
+    console.log('scale ratio is:' + scale_ratio);
+    console.log(animationTarget);
+
+    tl.fromTo(animationTarget, timing, {
+        x               : x,
+        y               : y,
+        transformOrigin : '50% 50%',
+        scale           : 0,
+        opacity         : 1,
+        ease            :  Linear.easeIn
+    }, {
+        scale   : scale_ratio,
+        opacity : 0
+    });
+
+    return tl;
+};
+
+DocsApp.initRippleClickListener = function (el) {
+    el = ExtL.get(el);
+
+    ExtL.on(el, 'click',  function (e) {
+        DocsApp.animateRipple(e, el);
+    });
+};
+
+DocsApp.initRipple = function () {
+    var memberTypesCt = ExtL.get('member-types-menu'),
+        btns          = ExtL.fromNodeList(memberTypesCt.querySelectorAll('.toolbarButton')),
+        btnsLen       = btns.length,
+        btn;
+
+    while (btnsLen--) {
+        btn = btns[btnsLen];
+        /*btn.appendChild(ExtL.createElement({
+            tag     : 'svg',
+            "class" : 'ripple-obj',
+            cn      : [{
+                tag           : 'use',
+                height        : '100',
+                width         : '100',
+                "xmlns:xlink" : 'http://www.w3.org/1999/xlink',
+                "xlink:href"  : '#ripply-scott',
+                "class"       : 'js-ripple'
+            }]
+        }));*/
+        var svgns = "http://www.w3.org/2000/svg";
+        var xlinkns = "http://www.w3.org/1999/xlink";
+        var svg = document.createElementNS(svgns, 'svg');
+        svg.setAttribute('class', 'ripple-obj');
+        btn.appendChild(svg);
+        var useEl = document.createElementNS(svgns, 'use');
+        useEl.setAttribute('height', '100');
+        useEl.setAttribute('width', '100');
+        useEl.setAttribute('class', 'js-ripple');
+        useEl.setAttributeNS(xlinkns, 'href', '#ripply-scott');
+        svg.appendChild(useEl);
+        DocsApp.initRippleClickListener(btn);
+    }
+};
+
 /**
  *
  */
 ExtL.bindReady(function () {
     DocsApp.initNavTreeEventListeners();
+    DocsApp.initRipple();
 });

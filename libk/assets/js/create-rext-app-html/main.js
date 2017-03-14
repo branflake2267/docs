@@ -194,8 +194,8 @@ DocsApp.animateRipple = function (e, clickTarget, timing) {
         tl              = new TimelineMax(),
         x               = e.offsetX,
         y               = e.offsetY,
-        w               = e.target.offsetWidth,
-        h               = e.target.offsetHeight,
+        w               = clickTarget.offsetWidth,
+        h               = clickTarget.offsetHeight,
         offsetX         = Math.abs((w / 2) - x),
         offsetY         = Math.abs((h / 2) - y),
         deltaX          = (w / 2) + offsetX,
@@ -211,7 +211,6 @@ DocsApp.animateRipple = function (e, clickTarget, timing) {
     console.log('width is:' + w);
     console.log('height is:' + h);
     console.log('scale ratio is:' + scale_ratio);
-    console.log(animationTarget);
 
     tl.fromTo(animationTarget, timing, {
         x               : x,
@@ -232,7 +231,15 @@ DocsApp.initRippleClickListener = function (el) {
     el = ExtL.get(el);
 
     ExtL.on(el, 'click',  function (e) {
-        DocsApp.animateRipple(e, el);
+        var target = DocsApp.getEventTarget(e);
+        /*if (target !== el) {
+
+        }*/
+
+        while (target !== el) {
+            target = target.parentNode;
+        }
+        DocsApp.animateRipple(e, target);
     });
 };
 

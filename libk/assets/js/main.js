@@ -355,7 +355,9 @@ Tree.prototype.expandTo = function (node) {
 
     while (el) {
         el = ExtL.get(el.getAttribute('parentTreeNode'));
-        this.expand(el);
+        if (el) {
+            this.expand(el);
+        }
     }
 
     return this;

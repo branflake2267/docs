@@ -577,6 +577,22 @@ class ExtReactHtmlApp extends HtmlApp {
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });
     }
+
+    /**
+     * Splits the postprocessing of a class's configs for "ExtReact Component" classes
+     * and others since we don't want setter / getter methods described in the configs
+     * section of "ExtReact Component" classes
+     * @param {Object} data The class object to be passed to the HTML template
+     */
+    postProcessConfigs (data) {
+        let names = this.componentClassNames;
+
+        if (!names.includes(data.cls.name)) {
+            super.postProcessConfigs(data);
+        } else {
+            // TBD
+        }
+    }
 }
 
 module.exports = ExtReactHtmlApp;

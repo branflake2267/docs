@@ -44,12 +44,15 @@ DocsApp.initNavTree = function () {
 
         for (; i < len; i++) {
             tree = navTrees[i];
-            tree.select(id);
-            // and expand the tree to the selected node
-            tree.expandTo(id);
 
             if (tree.target.querySelector('#' + id.replace(/\./g, '\\.'))) {
-                ExtL.removeCls(tree.target.previousSibling, 'sub-nav-ct-collapsed');
+                //ExtL.removeCls(tree.target.previousSibling, 'sub-nav-ct-collapsed');
+                DocsApp.expandSubNav(tree.target.previousSibling);
+                setTimeout(function () {
+                    tree.select(id);
+                    // and expand the tree to the selected node
+                    tree.expandTo(id);
+                }, 1200);
             }
         }
     }
@@ -128,9 +131,9 @@ DocsApp.createSubNavCt = function (id, headerText) {
             cn : [{
                 tag  : 'span',
                 html : headerText
-            }, {
+            /*}, {
                 tag     : 'i',
-                "class" : 'fa fa-chevron-down'
+                "class" : 'fa fa-chevron-down'*/
             }, {
                 tag     : 'i',
                 "class" : 'fa fa-chevron-up'
@@ -140,6 +143,50 @@ DocsApp.createSubNavCt = function (id, headerText) {
             "class" : 'sub-nav-tree'
         }]
     });
+};
+
+DocsApp.expandSubNav = function (header) {
+    var expandedCls = 'sub-nav-header-expanded',
+        content     = header.nextSibling,
+        icon        = header.querySelector('i'),
+        tl          = TweenLite;
+
+    ExtL.addCls(header, expandedCls);
+    tl.set(content, {
+        height  : 'auto',
+        padding : '10px 25px 10px 15px'
+    });
+    tl.from(content, 0.6, {
+        height          : 0,
+        immediateRender : false,
+        ease            : Back.easeOut
+    }, 0);
+    tl.set(icon, {
+        rotation : 180
+    });
+    tl.from(icon, 0.6, {
+        rotation : 0,
+        ease     : Back.easeOut
+    }, 0);
+};
+
+DocsApp.collapseSubNav = function (header) {
+    var expandedCls = 'sub-nav-header-expanded',
+        content     = header.nextSibling,
+        icon        = header.querySelector('i'),
+        tl          = TweenLite;
+
+    ExtL.removeCls(header, expandedCls);
+    tl.to(content, 0.3, {
+        height          : 0,
+        padding         : '0 25px 0 15px',
+        immediateRender : false,
+        ease            : Power1.easeOut
+    }, 0);
+    tl.to(icon, 0.3, {
+        rotation : 0,
+        ease     : Power1.easeOut
+    }, 0);
 };
 
 /**
@@ -152,21 +199,21 @@ DocsApp.toggleNavHeaders = function (e) {
         len          = navHeaders.length,
         i            = 0,
         headerCls    = 'sub-nav-header',
-        collapsedCls = 'sub-nav-ct-collapsed',
-        header, action;
+        expandedCls  = 'sub-nav-header-expanded',
+        header, content;
 
     if (target) {
         if (!ExtL.hasCls(target, headerCls)) {
             target = ExtL.up(target, '.' + headerCls);
         }
-        if (ExtL.hasCls(target, collapsedCls)) {
-            for (; i < len; i++) {
-                header = navHeaders[i];
-                action = (header === target) ? 'removeCls' : 'addCls';
-                ExtL[action](header, collapsedCls);
+
+        for (; i < len; i++) {
+            header  = navHeaders[i];
+            if (header === target && !ExtL.hasCls(header, expandedCls)) {
+                DocsApp.expandSubNav(header);
+            } else {
+                DocsApp.collapseSubNav(header);
             }
-        } else {
-            ExtL.addCls(target, collapsedCls);
         }
     }
 };
@@ -212,14 +259,6 @@ DocsApp.animateRipple = function (e, clickTarget, timing) {
     console.log('height is:' + h);
     console.log('scale ratio is:' + scale_ratio);*/
 
-    /*timing = timing || function () {
-        var dist = deltaX > deltaY ? deltaX : deltaY;
-
-        //return dist / 200;
-        //return 0.4 * (dist / 60);
-        return Math.pow(0.3, (60 / dist));
-    }();*/
-
     tl.fromTo(animationTarget, timing, {
         x               : x,
         y               : y,
@@ -240,9 +279,6 @@ DocsApp.initRippleClickListener = function (el) {
 
     ExtL.on(el, 'click',  function (e) {
         var target = DocsApp.getEventTarget(e);
-        /*if (target !== el) {
-
-        }*/
 
         while (target !== el) {
             target = target.parentNode;
@@ -284,11 +320,19 @@ DocsApp.initRipplesOn = function (elements) {
 DocsApp.initRipple = function () {
     var memberTypesCt = ExtL.get('member-types-menu');
 
-    DocsApp.initRipplesOn(
-        ExtL.fromNodeList(memberTypesCt.querySelectorAll('.toolbarButton'))
-    );
+    if (memberTypesCt) {
+        DocsApp.initRipplesOn(
+            ExtL.fromNodeList(memberTypesCt.querySelectorAll('.toolbarButton'))
+        );
+    }
     DocsApp.initRipplesOn(
         ExtL.fromNodeList(document.querySelectorAll('.sub-nav-header'))
+    );
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(document.querySelectorAll('.tree-parent-node'))
+    );
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(document.querySelectorAll('.collapse-toggle'))
     );
 };
 
@@ -299,3 +343,62 @@ ExtL.bindReady(function () {
     DocsApp.initNavTreeEventListeners();
     DocsApp.initRipple();
 });
+
+/**
+ * @method toggleCollapse
+ * Toggles the collapse state of the tree node
+ * @param {String/Element} el The HTML element or ID of the tree node to toggle
+ * @param {Boolean} collapse Pass `true` or `false` to force the toggle to collapse or
+ * expand.  Passing `true` will force collapse while `false` will force expand.
+ * @return {Object} The tree instance
+ */
+Tree.prototype.toggleCollapse = function (el, collapse) {
+    el = ExtL.get(el);
+
+    ExtL.toggleCls(el, this.collapseCls, collapse);
+
+    if (collapse !== true && collapse !== false) {
+        collapse = ExtL.hasCls(el, this.collapseCls);
+    }
+
+    this[collapse ? 'collapse' : 'expand'](el);
+};
+
+/**
+ * @method expand
+ * Expands the passed parent tree node
+ * @param {String/Element} node The HTML element or ID of the tree node to expand
+ * @return {Object} The tree instance
+ */
+Tree.prototype.expand = function (node) {
+    var content = node.nextSibling,
+        tl      = TweenLite;
+
+    ExtL.removeCls(node, this.collapseCls);
+    tl.set(content, {
+        height  : 'auto'
+    });
+    tl.from(content, 0.6, {
+        height          : 0,
+        immediateRender : false,
+        ease            : Back.easeOut
+    });
+};
+
+/**
+ * @method collapse
+ * Collapses the passed parent tree node
+ * @param {String/Element} node The HTML element or ID of the tree node to collapse
+ * @return {Object} The tree instance
+ */
+Tree.prototype.collapse = function (node) {
+    var content = node.nextSibling,
+        tl      = TweenLite;
+
+    ExtL.addCls(node, this.collapseCls);
+    tl.to(content, 0.3, {
+        height          : 0,
+        immediateRender : false,
+        ease            : Power1.easeOut
+    });
+};

@@ -202,7 +202,7 @@ DocsApp.animateRipple = function (e, clickTarget, timing) {
         deltaY          = (h / 2) + offsetY,
         scale_ratio     = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
-    console.log('x is:' + x);
+    /*console.log('x is:' + x);
     console.log('y is:' + y);
     console.log('offsetX is:' + offsetX);
     console.log('offsetY is:' + offsetY);
@@ -210,7 +210,15 @@ DocsApp.animateRipple = function (e, clickTarget, timing) {
     console.log('deltaY is:' + deltaY);
     console.log('width is:' + w);
     console.log('height is:' + h);
-    console.log('scale ratio is:' + scale_ratio);
+    console.log('scale ratio is:' + scale_ratio);*/
+
+    /*timing = timing || function () {
+        var dist = deltaX > deltaY ? deltaX : deltaY;
+
+        //return dist / 200;
+        //return 0.4 * (dist / 60);
+        return Math.pow(0.3, (60 / dist));
+    }();*/
 
     tl.fromTo(animationTarget, timing, {
         x               : x,
@@ -243,39 +251,45 @@ DocsApp.initRippleClickListener = function (el) {
     });
 };
 
-DocsApp.initRipple = function () {
-    var memberTypesCt = ExtL.get('member-types-menu'),
-        btns          = ExtL.fromNodeList(memberTypesCt.querySelectorAll('.toolbarButton')),
-        btnsLen       = btns.length,
-        btn;
+DocsApp.addRippleEl = function (parentEl) {
+    var svgns   = "http://www.w3.org/2000/svg",
+        xlinkns = "http://www.w3.org/1999/xlink",
+        svg     = document.createElementNS(svgns, 'svg'),
+        useEl;
 
-    while (btnsLen--) {
-        btn = btns[btnsLen];
-        /*btn.appendChild(ExtL.createElement({
-            tag     : 'svg',
-            "class" : 'ripple-obj',
-            cn      : [{
-                tag           : 'use',
-                height        : '100',
-                width         : '100',
-                "xmlns:xlink" : 'http://www.w3.org/1999/xlink',
-                "xlink:href"  : '#ripply-scott',
-                "class"       : 'js-ripple'
-            }]
-        }));*/
-        var svgns = "http://www.w3.org/2000/svg";
-        var xlinkns = "http://www.w3.org/1999/xlink";
-        var svg = document.createElementNS(svgns, 'svg');
-        svg.setAttribute('class', 'ripple-obj');
-        btn.appendChild(svg);
-        var useEl = document.createElementNS(svgns, 'use');
-        useEl.setAttribute('height', '100');
-        useEl.setAttribute('width', '100');
-        useEl.setAttribute('class', 'js-ripple');
-        useEl.setAttributeNS(xlinkns, 'href', '#ripply-scott');
-        svg.appendChild(useEl);
-        DocsApp.initRippleClickListener(btn);
+    svg.setAttribute('class', 'ripple-obj');
+    parentEl.appendChild(svg);
+
+    useEl = document.createElementNS(svgns, 'use');
+    useEl.setAttribute('height', '100');
+    useEl.setAttribute('width', '100');
+    useEl.setAttribute('class', 'js-ripple');
+    useEl.setAttributeNS(xlinkns, 'href', '#ripply-scott');
+    svg.appendChild(useEl);
+};
+
+DocsApp.initRipplesOn = function (elements) {
+    elements = ExtL.from(elements);
+
+    var elementsLen = elements.length,
+        element;
+
+    while (elementsLen--) {
+        element = elements[elementsLen];
+        DocsApp.addRippleEl(element);
+        DocsApp.initRippleClickListener(element);
     }
+};
+
+DocsApp.initRipple = function () {
+    var memberTypesCt = ExtL.get('member-types-menu');
+
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(memberTypesCt.querySelectorAll('.toolbarButton'))
+    );
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(document.querySelectorAll('.sub-nav-header'))
+    );
 };
 
 /**

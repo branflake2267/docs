@@ -186,9 +186,116 @@ DocsApp.initNavTreeEventListeners = function () {
     }
 };
 
+DocsApp.animateRipple = function (e, clickTarget, timing) {
+    e = DocsApp.getEvent(e);
+    timing = timing || 0.3;
+
+    var animationTarget = clickTarget.querySelector('use'),
+        tl              = new TimelineMax(),
+        x               = e.offsetX,
+        y               = e.offsetY,
+        w               = clickTarget.offsetWidth,
+        h               = clickTarget.offsetHeight,
+        offsetX         = Math.abs((w / 2) - x),
+        offsetY         = Math.abs((h / 2) - y),
+        deltaX          = (w / 2) + offsetX,
+        deltaY          = (h / 2) + offsetY,
+        scale_ratio     = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+    /*console.log('x is:' + x);
+    console.log('y is:' + y);
+    console.log('offsetX is:' + offsetX);
+    console.log('offsetY is:' + offsetY);
+    console.log('deltaX is:' + deltaX);
+    console.log('deltaY is:' + deltaY);
+    console.log('width is:' + w);
+    console.log('height is:' + h);
+    console.log('scale ratio is:' + scale_ratio);*/
+
+    /*timing = timing || function () {
+        var dist = deltaX > deltaY ? deltaX : deltaY;
+
+        //return dist / 200;
+        //return 0.4 * (dist / 60);
+        return Math.pow(0.3, (60 / dist));
+    }();*/
+
+    tl.fromTo(animationTarget, timing, {
+        x               : x,
+        y               : y,
+        transformOrigin : '50% 50%',
+        scale           : 0,
+        opacity         : 1,
+        ease            :  Linear.easeIn
+    }, {
+        scale   : scale_ratio,
+        opacity : 0
+    });
+
+    return tl;
+};
+
+DocsApp.initRippleClickListener = function (el) {
+    el = ExtL.get(el);
+
+    ExtL.on(el, 'click',  function (e) {
+        var target = DocsApp.getEventTarget(e);
+        /*if (target !== el) {
+
+        }*/
+
+        while (target !== el) {
+            target = target.parentNode;
+        }
+        DocsApp.animateRipple(e, target);
+    });
+};
+
+DocsApp.addRippleEl = function (parentEl) {
+    var svgns   = "http://www.w3.org/2000/svg",
+        xlinkns = "http://www.w3.org/1999/xlink",
+        svg     = document.createElementNS(svgns, 'svg'),
+        useEl;
+
+    svg.setAttribute('class', 'ripple-obj');
+    parentEl.appendChild(svg);
+
+    useEl = document.createElementNS(svgns, 'use');
+    useEl.setAttribute('height', '100');
+    useEl.setAttribute('width', '100');
+    useEl.setAttribute('class', 'js-ripple');
+    useEl.setAttributeNS(xlinkns, 'href', '#ripply-scott');
+    svg.appendChild(useEl);
+};
+
+DocsApp.initRipplesOn = function (elements) {
+    elements = ExtL.from(elements);
+
+    var elementsLen = elements.length,
+        element;
+
+    while (elementsLen--) {
+        element = elements[elementsLen];
+        DocsApp.addRippleEl(element);
+        DocsApp.initRippleClickListener(element);
+    }
+};
+
+DocsApp.initRipple = function () {
+    var memberTypesCt = ExtL.get('member-types-menu');
+
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(memberTypesCt.querySelectorAll('.toolbarButton'))
+    );
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(document.querySelectorAll('.sub-nav-header'))
+    );
+};
+
 /**
  *
  */
 ExtL.bindReady(function () {
     DocsApp.initNavTreeEventListeners();
+    DocsApp.initRipple();
 });

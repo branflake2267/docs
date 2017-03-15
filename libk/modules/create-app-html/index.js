@@ -248,8 +248,10 @@ class HtmlApp extends AppBase {
             extl        = Path.join(assetsSrc, 'ExtL.js'),
             main        = Path.join(assetsSrc, mainName),
             beautify    = Path.join(assetsSrc, 'beautify.js'),
+            gsap        = Path.join(root, 'node_modules/gsap/src/minified/TweenMax.min.js'),
             aceFolder   = Path.join(root, 'node_modules/ace-builds/src-min-noconflict'),
             jsFileArr   = [
+                gsap,
                 extl,
                 beautify,
                 main

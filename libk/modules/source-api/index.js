@@ -466,7 +466,6 @@ class SourceApi extends Base {
                         if (err) {
                             reject(err);
                         }
-
                         let clsObj  = cls.global.items[0], // the class obj
                             // the index in the files list where the class is primarily sourced
                             srcIdx  = (clsObj.src.text || clsObj.src.name).substring(0, 1),

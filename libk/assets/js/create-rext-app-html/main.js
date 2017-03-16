@@ -145,6 +145,20 @@ DocsApp.createSubNavCt = function (id, headerText) {
     });
 };
 
+DocsApp.OriginalOnToggleAllClick = DocsApp.onToggleAllClick;
+DocsApp.onToggleAllClick = function (e) {
+    setTimeout(function (e) {
+        DocsApp.OriginalOnToggleAllClick(e);
+    }, 300);
+};
+
+DocsApp.OriginalOnHideClassTreeClick = DocsApp.onHideClassTreeClick;
+DocsApp.onHideClassTreeClick = function (e) {
+    setTimeout(function (e) {
+        DocsApp.OriginalOnHideClassTreeClick(e);
+    }, 300);
+};
+
 DocsApp.expandSubNav = function (header) {
     var expandedCls = 'sub-nav-header-expanded',
         content     = header.nextSibling,
@@ -233,11 +247,26 @@ DocsApp.initNavTreeEventListeners = function () {
     }
 };
 
+DocsApp.getElementBorderRadius = function (el) {
+    var bRadBL = window.getComputedStyle(el).getPropertyValue("border-bottom-left-radius"),
+        bRadBR = window.getComputedStyle(el).getPropertyValue("border-bottom-right-radius"),
+        bRadTL = window.getComputedStyle(el).getPropertyValue("border-top-left-radius"),
+        bRadTR = window.getComputedStyle(el).getPropertyValue("border-top-right-radius");
+
+    return {
+        borderTopLeftRadius     : bRadTL,
+        borderBottomLeftRadius  : bRadBL,
+        borderTopRightRadius    : bRadTR,
+        borderBottomRightRadius : bRadBR
+    };
+};
+
 DocsApp.animateRipple = function (e, clickTarget, timing) {
-    e = DocsApp.getEvent(e);
+    e      = DocsApp.getEvent(e);
     timing = timing || 0.3;
 
-    var animationTarget = clickTarget.querySelector('use'),
+    var animationParent = clickTarget.querySelector('svg'),
+        animationTarget = clickTarget.querySelector('use'),
         tl              = new TimelineMax(),
         x               = e.offsetX,
         y               = e.offsetY,
@@ -259,13 +288,14 @@ DocsApp.animateRipple = function (e, clickTarget, timing) {
     console.log('height is:' + h);
     console.log('scale ratio is:' + scale_ratio);*/
 
+    tl.set(animationParent, this.getElementBorderRadius(clickTarget));
     tl.fromTo(animationTarget, timing, {
         x               : x,
         y               : y,
         transformOrigin : '50% 50%',
         scale           : 0,
         opacity         : 1,
-        ease            :  Linear.easeIn
+        ease            : Linear.easeIn
     }, {
         scale   : scale_ratio,
         opacity : 0
@@ -333,6 +363,12 @@ DocsApp.initRipple = function () {
     );
     DocsApp.initRipplesOn(
         ExtL.fromNodeList(document.querySelectorAll('.collapse-toggle'))
+    );
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(document.querySelectorAll('.icon-btn'))
+    );
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn-wrap'))
     );
 };
 

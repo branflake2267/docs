@@ -617,10 +617,8 @@ class ExtReactHtmlApp extends HtmlApp {
                 config.capitalName = capitalName;
 
                 // cache any existing getter / setter instance methods
-                //let g = config.getter = instanceMethodsObj[`get${capitalName}`] ||
                 let g = instanceMethodsObj[`get${capitalName}`] ||
                                 instanceMethodsObj[`get${upperName}`];
-                //let s = config.setter = instanceMethodsObj[`set${capitalName}`] ||
                 let s = instanceMethodsObj[`set${capitalName}`] ||
                                 instanceMethodsObj[`set${upperName}`];
 
@@ -629,27 +627,16 @@ class ExtReactHtmlApp extends HtmlApp {
                 if (g || accessor === true || accessor === 'r') {
                     let idx = g ? instanceMethods.indexOf(g) : null;
 
-                    /*if (g) {
-                        g.isGetter = true;
-                    }*/
-
                     let getterName = g ? g.name : `get${capitalName}`,
                         getterCfg  = {
                             name         : getterName,
-                            //$type        : g ? 'placeholder-simple' : 'placeholder-accessor',
                             $type        : 'method',
-                            //access       : g ? g.access : config.access,
                             access       : config.access,
-                            //text         : 'see: <a href="#method-' + getterName + '">' + config.name + '</a>',
                             text         : `<p>Sets the value of ${name}</p>`,
-                            //isInherited  : g ? g.isInherited : config.isInherited,
                             isInherited  : config.isInherited,
                             type         : config.type,
                             isAutoGetter : !g
                         };
-                        if (config.name === 'allowDepress') {
-                            console.log(config);
-                        }
 
                     // if the getter came from the instance methods directly
                     if (idx) {
@@ -668,20 +655,12 @@ class ExtReactHtmlApp extends HtmlApp {
                 if (s || accessor === true || accessor === 'w') {
                     let idx = s ? instanceMethods.indexOf(s) : null;
 
-                    /*if (s) {
-                        s.isSetter = true;
-                    }*/
-
                     let setterName = s ? s.name : `set${capitalName}`,
                         setterCfg  = {
                             name         : setterName,
-                            //$type        : s ? 'placeholder' : 'placeholder-accessor',
                             $type        : 'method',
-                            //access       : s ? s.access : config.access,
                             access       : config.access,
-                            //text         : 'see: <a href="#method-' + setterName + '">' + config.name + '</a>',
                             text         : `<p>Returns the value of ${name}</p>`,
-                            //isInherited  : s ? s.isInherited : config.isInherited,
                             isInherited  : config.isInherited,
                             isAutoSetter : !s,
                             listParams   : true,
@@ -707,17 +686,8 @@ class ExtReactHtmlApp extends HtmlApp {
                 // decorate the config as `bindable: true` if there is a setter method
                 //if (config.hasSetter && mixesBindable) {
                 if (!(config.hasSetter && mixesBindable)) {
-                    //config.bindable = true;
                     config.immutable = true;
                 }
-
-                // finally, note on any accessor configs when a getter / setter
-                // should be added automatically for accessor configs that don't
-                // have explicitly described getter / setter methods
-                //if (accessor) {
-                    //config.autoGetter = !g;
-                    //config.autoSetter = !s;
-                //}
             }
         }
     }

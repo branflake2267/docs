@@ -52,7 +52,7 @@ function Tree (data, renderTo) {
         var el = DocsApp.getEventTarget(e);
         // walk up the tree until we find a LI item
         //while (el && el.tagName !== 'A') {
-        while (el && !ExtL.hasCls(el, 'tree-node')) {
+        while (el && !ExtL.hasCls(el, 'tree-parent-node')) {
            el = el.parentNode;
         }
         // if a node was clicked (-vs- clicking on the tree body)
@@ -2119,6 +2119,9 @@ DocsApp.getEventTarget = function (e) {
             if (!ExtL.hasCls(target, 'collapse-toggle') && ExtL.hasCls(target.parentNode, 'collapse-toggle')) {
                 target = target.parentNode;
             }
+            if (ExtL.hasCls(target, 'member-name')) {
+                target = ExtL.up(target, '.classmembers').querySelector('.collapse-toggle');
+            }
             DocsApp.onMemberCollapseToggleClick(target);
         }
 
@@ -2409,7 +2412,8 @@ DocsApp.getEventTarget = function (e) {
         for (; i < len; i++) {
             editor = ace.edit(aceTargets[i]);
             editor.setTheme("ace/theme/chrome");
-            editor.getSession().setMode("ace/mode/javascript");
+            //editor.getSession().setMode("ace/mode/javascript");
+            editor.getSession().setMode("ace/mode/jsx");
             if (ExtL.isIE8() || ExtL.isIE9()) {
                 editor.getSession().setOption("useWorker", false);
             }
@@ -2435,7 +2439,9 @@ DocsApp.getEventTarget = function (e) {
         if (ExtL.isIE8()) {
             ExtL.each(ExtL.fromNodeList(aceTargets), function (ct) {
                 var editor     = ace.edit(ct),
-                    beautified = js_beautify(editor.getValue());
+                    beautified = js_beautify(editor.getValue(), {
+                        e4x : true
+                    });
 
                 editor.setValue(beautified.toString(), -1);
             });
@@ -2491,7 +2497,9 @@ DocsApp.getEventTarget = function (e) {
         var code       = DocsApp.getEventTarget(e),
             wrap       = ExtL.up(code, '.da-inline-code-wrap'),
             editor     = ace.edit(wrap.querySelector('.ace-ct').id),
-            beautified = js_beautify(editor.getValue());
+            beautified = js_beautify(editor.getValue(), {
+                e4x : true
+            });
 
         editor.setValue(beautified.toString(), -1);
     };
@@ -3013,6 +3021,13 @@ DocsApp.getEventTarget = function (e) {
                         cn.push({
                             html    : 'bind',
                             "class" : 'bindable member-menu-flag'
+                        });
+                    }
+
+                    if (memberTagsCt.querySelector('.immutable')) {
+                        cn.push({
+                            html    : 'imm',
+                            "class" : 'immutable member-menu-flag'
                         });
                     }
                 }

@@ -20,7 +20,8 @@ const SourceGuides     = require('../source-guides'),
       Fs               = require('fs-extra'),
       Path             = require('path'),
       Chalk            = require('chalk'),
-      StringSimilarity = require('string-similarity');
+      StringSimilarity = require('string-similarity'),
+      _                = require('lodash');
 
 class AppBase extends SourceGuides {
     constructor (options) {
@@ -376,9 +377,13 @@ class AppBase extends SourceGuides {
         out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
             meta = meta.trim();
             code = code.trim();
+
             if (production) {
-                code = Beautify(code);
+                code = Beautify(code, {
+                    e4x : true
+                });
             }
+            code = _.escape(code);
 
             if (meta && meta.length) {
                 fidMeta = Object.assign({}, fidMeta);

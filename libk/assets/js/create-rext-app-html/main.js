@@ -247,6 +247,37 @@ DocsApp.initNavTreeEventListeners = function () {
     }
 };
 
+/**
+ * Handles the expanding / collapsing of members on click
+ * @param {HTMLElement} collapseEl The collapse / expand toggle element
+ */
+DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
+    var member      = ExtL.up(collapseEl, '.classmembers'),
+        expandedCls = 'member-expanded';
+
+    ExtL.toggleCls(member, expandedCls);
+
+    var tl = TweenLite;
+    if (ExtL.hasCls(member, expandedCls)) {
+        tl.set(member, {
+            height  : 'auto'
+        });
+        tl.from(member, 0.6, {
+            height          : 46,
+            immediateRender : false,
+            ease            : Back.easeOut
+            //ease            : Power1.easeOut
+        });
+    } else {
+        tl.to(member, 0.3, {
+            height          : 46,
+            immediateRender : false,
+            ease            : Power1.easeOut
+        });
+    }
+
+};
+
 DocsApp.getElementBorderRadius = function (el) {
     var bRadBL = window.getComputedStyle(el).getPropertyValue("border-bottom-left-radius"),
         bRadBR = window.getComputedStyle(el).getPropertyValue("border-bottom-right-radius"),

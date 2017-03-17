@@ -415,6 +415,12 @@ DocsApp.initRipple = function () {
     DocsApp.initRipplesOn(
         ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn-wrap'))
     );
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(document.querySelectorAll('.da-inline-fiddle-nav-code'))
+    );
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(document.querySelectorAll('.da-inline-fiddle-nav-fiddle'))
+    );
 };
 
 /**

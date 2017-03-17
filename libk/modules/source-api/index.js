@@ -1630,24 +1630,6 @@ class SourceApi extends Base {
                 //len      = treeKeys.length,
                 apiTree  = this.sortTrees(apiTrees);
 
-            /*if (len === 1) {
-                apiTree = {
-                    API : this.sortTree(apiTrees[treeKeys[0]])
-                };
-            } else {
-                let i = 0;
-
-                apiTree = {
-                    API : {}
-                };
-
-                for (; i < len; i++) {
-                    let key = treeKeys[i];
-
-                    apiTree.API[key] = this.sortTree(apiTrees[key]);
-                }
-            }*/
-
             apiTree = JSON.stringify(apiTree, null, 4);
 
             let wrap       = `DocsApp.apiTree = ${apiTree}`,

@@ -370,7 +370,7 @@ class ExtReactHtmlApp extends HtmlApp {
         let names         = this.componentClassNames,
             menuNames     = this.componentMenuNames,
             inList        = names.includes(className) || menuNames.includes(className),
-            treeName      = inList ? 'Components' : this.apiDirName.toUpperCase(),
+            treeName      = inList ? 'Components' : 'API',
             apiTree       = this.apiTrees[treeName];
 
         if (!apiTree) {
@@ -467,8 +467,9 @@ class ExtReactHtmlApp extends HtmlApp {
      */
     sortTrees (apiTrees) {
         let apiTree        = apiTrees.API,
-            componentsTree = apiTrees.Components,
-            treeObj        = {
+            componentsTree = apiTrees.Components;
+
+        let treeObj        = {
                 API : {
                     API        : super.sortTree(apiTree),
                     Components : this.sortTree(componentsTree)
@@ -635,7 +636,9 @@ class ExtReactHtmlApp extends HtmlApp {
                             text         : `<p>Sets the value of ${name}</p>`,
                             isInherited  : config.isInherited,
                             type         : config.type,
-                            isAutoGetter : !g
+                            isAutoGetter : !g,
+                            srcClass     : config.srcClass,
+                            srcLink      : config.srcLink
                         };
 
                     // if the getter came from the instance methods directly
@@ -666,7 +669,9 @@ class ExtReactHtmlApp extends HtmlApp {
                             listParams   : true,
                             params       : [{
                                 name : name
-                            }]
+                            }],
+                            srcClass     : config.srcClass,
+                            srcLink      : config.srcLink
                         };
 
                     // if the getter came from the instance methods directly

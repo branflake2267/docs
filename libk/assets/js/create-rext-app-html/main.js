@@ -170,17 +170,19 @@ DocsApp.expandSubNav = function (header) {
         height  : 'auto',
         padding : '10px 25px 10px 15px'
     });
-    tl.from(content, 0.6, {
+    tl.from(content, 0.4, {
         height          : 0,
         immediateRender : false,
-        ease            : Back.easeOut
+        //ease            : Back.easeOut
+        ease            : Power1.easeOut
     }, 0);
     tl.set(icon, {
         rotation : 180
     });
-    tl.from(icon, 0.6, {
+    tl.from(icon, 0.4, {
         rotation : 0,
-        ease     : Back.easeOut
+        //ease     : Back.easeOut
+        ease     : Power1.easeOut
     }, 0);
 };
 
@@ -253,6 +255,7 @@ DocsApp.initNavTreeEventListeners = function () {
  */
 DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
     var member      = ExtL.up(collapseEl, '.classmembers'),
+        icon        = collapseEl.querySelector('.fa-caret-right'),
         expandedCls = 'member-expanded';
 
     ExtL.toggleCls(member, expandedCls);
@@ -262,18 +265,29 @@ DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
         tl.set(member, {
             height  : 'auto'
         });
-        tl.from(member, 0.6, {
+        tl.from(member, 0.4, {
             height          : 46,
             immediateRender : false,
-            ease            : Back.easeOut
-            //ease            : Power1.easeOut
+            //ease            : Back.easeOut
+            ease            : Power1.easeOut
         });
+        tl.set(icon, {
+            rotation : 90
+        });
+        tl.from(icon, 0.4, {
+            rotation : 0,
+            ease     : Power1.easeOut
+        }, 0);
     } else {
         tl.to(member, 0.3, {
             height          : 46,
             immediateRender : false,
             ease            : Power1.easeOut
         });
+        tl.to(icon, 0.3, {
+            rotation : 0,
+            ease     : Power1.easeOut
+        }, 0);
     }
 
 };
@@ -445,10 +459,11 @@ Tree.prototype.expand = function (node) {
     tl.set(content, {
         height  : 'auto'
     });
-    tl.from(content, 0.6, {
+    tl.from(content, 0.4, {
         height          : 0,
         immediateRender : false,
-        ease            : Back.easeOut
+        //ease            : Back.easeOut
+        ease            : Power1.easeOut
     });
 };
 

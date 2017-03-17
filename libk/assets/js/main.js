@@ -2115,7 +2115,10 @@ DocsApp.getEventTarget = function (e) {
             }
         }
 
-        if (ExtL.hasCls(target, 'member-name') || ExtL.hasCls(target, 'collapse-toggle') || (ExtL.hasCls(e.srcElement, 'collapse-toggle'))) {
+        if (ExtL.hasCls(target, 'member-name') || ExtL.hasCls(target, 'collapse-toggle') || ExtL.hasCls(target.parentNode, 'collapse-toggle')) {
+            if (!ExtL.hasCls(target, 'collapse-toggle') && ExtL.hasCls(target.parentNode, 'collapse-toggle')) {
+                target = target.parentNode;
+            }
             DocsApp.onMemberCollapseToggleClick(target);
         }
 

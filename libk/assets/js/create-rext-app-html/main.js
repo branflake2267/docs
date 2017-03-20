@@ -45,8 +45,7 @@ DocsApp.initNavTree = function () {
         for (; i < len; i++) {
             tree = navTrees[i];
 
-            if (tree.target.querySelector('#' + id.replace(/\./g, '\\.'))) {
-                //ExtL.removeCls(tree.target.previousSibling, 'sub-nav-ct-collapsed');
+            if (tree.target.querySelector('[id="' + id.replace(/\./g, '\\.') + '"]')) {
                 DocsApp.expandSubNav(tree.target.previousSibling);
                 setTimeout(function () {
                     tree.select(id);

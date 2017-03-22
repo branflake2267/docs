@@ -348,7 +348,7 @@ class HtmlApp extends AppBase {
      */
     //return this.createApiLink(product, version, toolkit, className, memberName, text, data);
     createApiLink(href, text) {
-        return `<a href="${href}">${text}</a>`;
+        return `<a href="${href}.html">${text}</a>`;
     }
 
     /**

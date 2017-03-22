@@ -422,7 +422,9 @@ class AppBase extends SourceGuides {
 
         out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, code) => {
             if (production) {
-                code = Beautify(code);
+                code = Beautify(code, {
+                    e4x : true
+                });
             }
             return `<pre><code class="language-javascript">${code}</code></pre>`;
         });

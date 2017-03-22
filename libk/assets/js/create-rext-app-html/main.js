@@ -1,9 +1,13 @@
 /**
  * Fetches the navigation header elements
+ * @param {HTMLElement} accordionCt The container to get nav headers from (or document
+ * if nothing is passed)
  * @return {Array} The array of navigation headers
  */
-DocsApp.getNavHeaders = function () {
-    return ExtL.fromNodeList(document.getElementsByClassName('sub-nav-header'));
+DocsApp.getNavHeaders = function (accordionCt) {
+    var ct = accordionCt || document;
+
+    return ExtL.fromNodeList(ct.getElementsByClassName('sub-nav-header'));
 };
 
 /**
@@ -123,19 +127,19 @@ DocsApp.buildNavTree = function (navTree, ct) {
 DocsApp.createSubNavCt = function (id, headerText) {
     return ExtL.createElement({
         id : id + 'ct',
-        "class" : 'sub-nav-ct',
+        "class" : 'sub-nav-ct navigation-parent-ct',
         cn : [{
             id      : id + 'header',
             "class" : 'sub-nav-header sub-nav-ct-collapsed',
             cn : [{
                 tag  : 'span',
                 html : headerText
-            /*}, {
-                tag     : 'i',
-                "class" : 'fa fa-chevron-down'*/
             }, {
                 tag     : 'i',
-                "class" : 'fa fa-chevron-up'
+                "class" : 'fa fa-chevron-down'
+            /*}, {
+                tag     : 'i',
+                "class" : 'fa fa-chevron-up'*/
             }]
         }, {
             id      : id + 'target',
@@ -160,7 +164,7 @@ DocsApp.onHideClassTreeClick = function (e) {
 
 DocsApp.expandSubNav = function (header) {
     var expandedCls = 'sub-nav-header-expanded',
-        content     = header.nextSibling,
+        content     = header.nextElementSibling,
         icon        = header.querySelector('i'),
         tl          = TweenLite;
 
@@ -187,7 +191,7 @@ DocsApp.expandSubNav = function (header) {
 
 DocsApp.collapseSubNav = function (header) {
     var expandedCls = 'sub-nav-header-expanded',
-        content     = header.nextSibling,
+        content     = header.nextElementSibling,
         icon        = header.querySelector('i'),
         tl          = TweenLite;
 
@@ -209,8 +213,8 @@ DocsApp.collapseSubNav = function (header) {
  * @param {Object} e The click event
  */
 DocsApp.toggleNavHeaders = function (e) {
-    var navHeaders   = DocsApp.getNavHeaders(),
-        target       = DocsApp.getEventTarget(e),
+    var target       = DocsApp.getEventTarget(e),
+        navHeaders   = DocsApp.getNavHeaders(ExtL.up(target, '.navigation-parent-ct')),
         len          = navHeaders.length,
         i            = 0,
         headerCls    = 'sub-nav-header',
@@ -307,7 +311,7 @@ DocsApp.getElementBorderRadius = function (el) {
 
 DocsApp.animateRipple = function (e, clickTarget, timing) {
     e      = DocsApp.getEvent(e);
-    timing = timing || 0.3;
+    timing = timing || 0.5;
 
     var animationParent = clickTarget.querySelector('svg'),
         animationTarget = clickTarget.querySelector('use'),

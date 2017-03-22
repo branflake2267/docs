@@ -338,6 +338,24 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * The classes to apply to guide nodes in the navigation tree by type:
+     *
+     *  - universal
+     *  - modern
+     *  - classic
+     * @return {Object} The hash of toolkit to icon class string
+     */
+    get guideIconClasses () {
+        let cls = 'fa fa-file-text-o';
+
+        return {
+            universal : cls,
+            classic   : cls,
+            modern    : cls
+        };
+    }
+
+    /**
      * Returns the id to use on the navigation node for the passed class name
      * @param {String} className The classname being processed in the navigation tree
      * @param {Number} currentIndex The index for the current node's processing -
@@ -693,6 +711,38 @@ class ExtReactHtmlApp extends HtmlApp {
                 if (!(config.hasSetter && mixesBindable)) {
                     config.immutable = true;
                 }
+            }
+
+            // if the class has properties then mark them as 'read only' and push them
+            // into the optional configs collection and sort the optional configs; also
+            // indicate then that the class has no properties
+            if (data.hasProperties) {
+                // mark the instance properties as readonly
+                let len = data.instanceProperties.length;
+
+                while (len--) {
+                    data.instanceProperties[len].readonly = true;
+                }
+
+                // mark the static properties as readonly
+                len = data.staticProperties.length;
+
+                while (len--) {
+                    data.staticProperties[len].readOnly = true;
+                }
+
+                // push the properties into the configs
+                data.configs.optionalConfigs = data.configs.optionalConfigs.concat(
+                    data.instanceProperties,
+                    data.staticProperties
+                );
+                // sort the newly assembled configs array by member name
+                data.configs.optionalConfigs = _.sortBy(
+                    data.configs.optionalConfigs,
+                    'name'
+                );
+                // finally, indicate that the class does not have properties
+                data.hasProperties = false;
             }
         }
     }

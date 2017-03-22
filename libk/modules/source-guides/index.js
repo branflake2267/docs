@@ -41,7 +41,7 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * Returns an array of this module's file name along with the file names of all 
+     * Returns an array of this module's file name along with the file names of all
      * ancestor modules
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
@@ -62,6 +62,22 @@ class SourceGuides extends SourceApi {
             });
 
         return Path.resolve(options._myRoot, Utils.format(options.guideSourceDir, cfg));
+    }
+
+    /**
+     * The classes to apply to guide nodes in the navigation tree by type:
+     *
+     *  - universal
+     *  - modern
+     *  - classic
+     * @return {Object} The hash of toolkit to icon class string
+     */
+    get guideIconClasses () {
+        return {
+            universal : 'fa fa-file-text-o',
+            classic   : 'classic-guide',
+            modern    : 'modern-guide'
+        };
     }
 
     /**
@@ -105,7 +121,7 @@ class SourceGuides extends SourceApi {
             len     = files.length,
             file;
 
-        // else loop over all config files and compare their version number to the 
+        // else loop over all config files and compare their version number to the
         // version being processed to find the right config file
         for (; i < len; i++) {
             let name = Path.parse(files[i]).name,
@@ -319,9 +335,9 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * Returns a Promise that ultimately outputs the guide search object for the current 
-     * product.  This is uses by {@link assembleSearch} by creating an HTML app module 
-     * instance for a product other than the one being initially built and then calling 
+     * Returns a Promise that ultimately outputs the guide search object for the current
+     * product.  This is uses by {@link assembleSearch} by creating an HTML app module
+     * instance for a product other than the one being initially built and then calling
      * `getSearch`.
      * @return {Object} Promise
      */
@@ -333,13 +349,13 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * Collects the parsed search words for any applicable products; meaning the current 
-     * product whose guides are being output along with any partner product as dictated 
-     * by the 'guideSearchPartners` info in the projectConfigs.  The reason this is done 
-     * is that some products' guides may pair well with the current product's guides.  
-     * For example, when building for Ext JS we also want to see the guides for Cmd since 
+     * Collects the parsed search words for any applicable products; meaning the current
+     * product whose guides are being output along with any partner product as dictated
+     * by the 'guideSearchPartners` info in the projectConfigs.  The reason this is done
+     * is that some products' guides may pair well with the current product's guides.
+     * For example, when building for Ext JS we also want to see the guides for Cmd since
      * Ext JS uses Cmd extensively.
-     * @return {Object} Promise that returns an array of search objects from each 
+     * @return {Object} Promise that returns an array of search objects from each
      * applicable product
      */
     assembleSearch () {
@@ -360,19 +376,19 @@ class SourceGuides extends SourceApi {
                 len        = searchPartners.length,
                 HtmlApp    = require('../create-app-html');
 
-            // loop over all partner products and create its search output to ultimately 
+            // loop over all partner products and create its search output to ultimately
             // be passed on to the outputSearch method
             for (; i < len; i++) {
                 let partnerProduct  = searchPartners[i],
                     partnerInstance = new HtmlApp(
-                        // options._args has the initial set of arguments from the CLI 
+                        // options._args has the initial set of arguments from the CLI
                         // for this product build
                         // - all that is really needed to instantiate a module
                         Object.assign({}, options._args, {
                             product: partnerProduct
                         })
                     );
-                
+
                 actionArr.push(partnerInstance.getGuideSearch());
             }
         }
@@ -382,19 +398,19 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * Flattens the guides tree into a single array of all guide nodes (leaf and parent 
+     * Flattens the guides tree into a single array of all guide nodes (leaf and parent
      * both)
-     * @param {Object/Object[]} nodes Either the tree object or an array of tree nodes.  
-     * Initially the tree object will be passed and then flattenGuides passes each parent 
+     * @param {Object/Object[]} nodes Either the tree object or an array of tree nodes.
+     * Initially the tree object will be passed and then flattenGuides passes each parent
      * node's child nodes back into itself recursively
-     * @param {Array} flattened This doesn't need to be passed in externally.  It's used 
+     * @param {Array} flattened This doesn't need to be passed in externally.  It's used
      * privately for recursive calls when processing child nodes
      * @return {Object[]} The flattened array of all guide nodes
      */
     flattenGuides (nodes, flattened) {
         flattened = flattened || [];
 
-        // if this is the first call to flattenGuides what is passed will be the tree 
+        // if this is the first call to flattenGuides what is passed will be the tree
         // itself, not an array of nodes
         if (Utils.isObject(nodes)) {
             nodes = _.flatten(_.values(nodes));
@@ -419,7 +435,7 @@ class SourceGuides extends SourceApi {
 
     /**
      * Parses the search words from all guides
-     * @return {Object} Promise the returns the search object that will be added to the 
+     * @return {Object} Promise the returns the search object that will be added to the
      * array of possible search objects collected in {@link #assembleSearch}
      */
     getSearchFromGuides () {
@@ -440,7 +456,7 @@ class SourceGuides extends SourceApi {
                 };
 
             // loop over all guide nodes (from flattenGuides) and parse the guide content
-            // and attach the parse pieces onto the `searchObj` to later be output to the 
+            // and attach the parse pieces onto the `searchObj` to later be output to the
             // UI
             for (; i < len; i++) {
                 let guide   = guides[i],
@@ -502,10 +518,10 @@ class SourceGuides extends SourceApi {
      * Private method used by parseSearchWords to add the collected words to the parent
      * search words object
      * @param {Object} obj The search object that the parsing pieces are added to
-     * @param {Array} terms The results of the guide parsing action in 
+     * @param {Array} terms The results of the guide parsing action in
      * {@link #parseSearchWords}
-     * @param {String} type The type of parsing that was done in 
-     * {@link #parseSearchWords}.  This will either be 't' if it was the guide title that 
+     * @param {String} type The type of parsing that was done in
+     * {@link #parseSearchWords}.  This will either be 't' if it was the guide title that
      * was parsed or 'b' if it was the body that was parsed.
      */
     addTerms (obj, terms, type) {
@@ -535,7 +551,7 @@ class SourceGuides extends SourceApi {
 
     /**
      * Writes the parsed search output from all guides to disk for use by the UI
-     * @param {Object[]} searchOutput An array of search objects for all applicable 
+     * @param {Object[]} searchOutput An array of search objects for all applicable
      * products
      * @return {Object} Promise
      */
@@ -544,7 +560,7 @@ class SourceGuides extends SourceApi {
             options = this.options,
             product = options.product,
             version = options.version;
-        
+
         version = options.prodVerMeta.hasVersions ? `${version}` : '';
         output = `DocsApp.guideSearch =${output};`;
 
@@ -593,7 +609,7 @@ class SourceGuides extends SourceApi {
                         data.content        = this.processGuideHtml(content, data);
                         data                = this.processGuideDataObject(data);
                         data.contentPartial = '_html-guideBody';
-                        
+
                         Fs.writeFile(filePath, this.mainTemplate(data), 'utf8', (err) => {
                             if (err) {
                                 reject(err);
@@ -707,11 +723,7 @@ class SourceGuides extends SourceApi {
             let node        = nodes[i],
                 children    = node.children,
                 slug        = node.slug,
-                iconClasses = {
-                    universal : 'fa fa-file-text-o',
-                    classic   : 'classic-guide',
-                    modern    : 'modern-guide'
-                };
+                iconClasses = this.guideIconClasses;
 
             node.navTreeName = navTreeName;
             node.text        = node.name;
@@ -731,7 +743,7 @@ class SourceGuides extends SourceApi {
                 node.iconCls = this.folderNodeCls;
                 this.makeGuideDir(path);
                 this.prepareGuides(children, path, toReadArr, navTreeName);
-                
+
                 // else decorate the node as leaf = true
             } else {
                 node.id      = Path.join(rootPath, slug);
@@ -762,7 +774,7 @@ class SourceGuides extends SourceApi {
     }
 
     /**
-     * Assemble the guide file's path for writing to disk  
+     * Assemble the guide file's path for writing to disk
      * May be overridden in the post processor module
      * @param {String} path The path of the guide file
      * @return {String} The full path for the guide file

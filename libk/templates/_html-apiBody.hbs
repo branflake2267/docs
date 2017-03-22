@@ -45,110 +45,119 @@
 </div>
 <div class="context-menu-ct">
     <div class="context-header">
-        <div id="hide-context-menu" class="fa fa-caret-right"></div>
+        <div id="hide-context-menu" class="fa fa-close"></div>
     </div>
 
     {{> _search}}
-
-    <div class="context-menu-tabs">
-        <div id="filterTab" class="toolbarHeaderButton active-tab">
-            Filters
-        </div>
-        <div id="relatedClassesTab" class="toolbarHeaderButton">
-            Related Classes
-        </div>
-    </div>
-    <div id="filters-ct">
-        <div id="toolbar">
-            <div class="memberFilter fr">
-                <input placeholder="Filter members..." type="search" id="member-filter-field" name="member-filter-field">
-                <div id="toggleExamples" class="icon-btn tooltip tooltip-tr-br" data-toggle="Expand All Examples">
-                    <i id="toggle-examples-indicator" class="fa fa-code"></i>
-                    <div class="callout callout-b"></div>
-                </div>
-                <div id="toggleAll" class="icon-btn tooltip tooltip-tr-br" data-toggle="Expand All Members">
-                    <i id="toggle-members-indicator" class="fa fa-plus"></i>
-                    <div class="callout callout-b"></div>
-                </div>
+    <div class="context-menu-content navigation-parent-ct">
+        <div class="context-menu-tabs">
+            <div id="filterTab" class="toolbarHeaderButton active-tab">
+                Filters
             </div>
-            <div id="member-display">
-                <div class="member-access-display">
-                    <label>
-                        <input class="mr1" id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public
-                    </label>
-                </div>
-                <div class="member-access-display">
-                    <label>
-                        <input class="mr1" id="protectedCheckbox" type="checkbox" value="member-protected" checked=true/>Protected
-                    </label>
-                </div>
-                <div class="member-access-display">
-                    <label>
-                        <input class="mr1" id="privateCheckbox" type="checkbox" value="member-private" checked=true/>Private
-                    </label>
-                </div>
-                <div class="member-access-display">
-                    <label>
-                        <input class="mr1" id="inheritedCheckbox" type="checkbox" value="member-inherited" checked=true/>Inherited
-                    </label>
-                </div>
+            <div id="relatedClassesTab" class="toolbarHeaderButton">
+                Related Classes
             </div>
-            <div id="member-types-menu" class="member-types-menu dib">
-                {{#if hasConfigs}}
-                    <a href="#configs" id="configs-button-link">
-                        <div id="configs-nav-btn" class="toolbarButton disabled">
-                            <i class="fa fa-cubes"></i>
-                            <span class="member-type-btn-text">{{configs.name}}</span>
-                            <div id="configs-count" class="nav-btn-count"></div>
+        </div>
+        <div id="context-menu-filters-header" class="sub-nav-header sub-nav-header-expanded">
+            <span>Filters</span>
+            <i class="fa fa-chevron-down" style="z-index: 0; transform: matrix(-1, 0, 0, -1, 0, 0);"></i>
+        </div>
+        <div id="filters-ct">
+            <div id="toolbar">
+                <div class="memberFilter">
+                    <input placeholder="Filter members..." type="search" id="member-filter-field" name="member-filter-field">
+                    <div id="toggleExamples" class="icon-btn tooltip tooltip-tr-br" data-toggle="Expand All Examples">
+                        <i id="toggle-examples-indicator" class="fa fa-code"></i>
+                        <div class="callout callout-b"></div>
+                    </div>
+                    <div id="toggleAll" class="icon-btn tooltip tooltip-tr-br" data-toggle="Expand All Members">
+                        <i id="toggle-members-indicator" class="fa fa-plus"></i>
+                        <div class="callout callout-b"></div>
+                    </div>
+                </div>
+                <div id="member-display">
+                    <div class="member-access-display">
+                        <label>
+                            <input class="mr1" id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public
+                        </label>
+                    </div>
+                    <div class="member-access-display">
+                        <label>
+                            <input class="mr1" id="protectedCheckbox" type="checkbox" value="member-protected" checked=true/>Protected
+                        </label>
+                    </div>
+                    <div class="member-access-display">
+                        <label>
+                            <input class="mr1" id="privateCheckbox" type="checkbox" value="member-private" checked=true/>Private
+                        </label>
+                    </div>
+                    <div class="member-access-display">
+                        <label>
+                            <input class="mr1" id="inheritedCheckbox" type="checkbox" value="member-inherited" checked=true/>Inherited
+                        </label>
+                    </div>
+                </div>
+                <div id="member-types-menu" class="member-types-menu dib">
+                    {{#if hasConfigs}}
+                        <a href="#configs" id="configs-button-link">
+                            <div id="configs-nav-btn" class="toolbarButton disabled">
+                                <i class="fa fa-cubes"></i>
+                                <span class="member-type-btn-text">{{configs.name}}</span>
+                                <div id="configs-count" class="nav-btn-count"></div>
+                                <div class="nav-btn-mask"></div>
+                            </div>
+                        </a>
+                    {{/if}}
+                    {{#if hasProperties}}
+                        <a href="#properties" id="properties-button-link"><div id="properties-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-book"></i>
+                            <span class="member-type-btn-text">{{properties.name}}</span>
+                            <div id="properties-count" class="nav-btn-count"></div>
                             <div class="nav-btn-mask"></div>
-                        </div>
-                    </a>
-                {{/if}}
-                {{#if hasProperties}}
-                    <a href="#properties" id="properties-button-link"><div id="properties-nav-btn" class="toolbarButton disabled">
-                        <i class="fa fa-book"></i>
-                        <span class="member-type-btn-text">{{properties.name}}</span>
-                        <div id="properties-count" class="nav-btn-count"></div>
-                        <div class="nav-btn-mask"></div>
-                    </div></a>
-                {{/if}}
-                {{#if hasMethods}}
-                    <a href="#methods" id="methods-button-link"><div id="methods-nav-btn" class="toolbarButton disabled">
-                        <i class="fa fa-object-group"></i>
-                        <span class="member-type-btn-text">methods</span>
-                        <div id="methods-count" class="nav-btn-count"></div>
-                        <div class="nav-btn-mask"></div>
-                    </div></a>
-                {{/if}}
-                {{#if hasEvents}}
-                    <a href="#events" id="events-button-link"><div id="events-nav-btn" class="toolbarButton disabled">
-                        <i class="fa fa-bolt"></i>
-                        <span class="member-type-btn-text">events</span>
-                        <div id="events-count" class="nav-btn-count"></div>
-                        <div class="nav-btn-mask"></div>
-                    </div></a>
-                {{/if}}
-                {{#if hasVars}}
-                    <a href="#vars" id="vars-button-link"><div id="vars-nav-btn" class="toolbarButton disabled">
-                        <i class="fa fa-paint-brush"></i>
-                        <span class="member-type-btn-text">theme variables</span>
-                        <div id="vars-count" class="nav-btn-count"></div>
-                        <div class="nav-btn-mask"></div>
-                    </div></a>
-                {{/if}}
-                {{#if hasSass-mixins}}
-                    <a href="#sass-mixins" id="sass-mixins-button-link"><div id="sass-mixins-nav-btn" class="toolbarButton disabled">
-                        <i class="fa fa-tint"></i>
-                        <span class="member-type-btn-text">theme mixins</span>
-                        <div id="sass-mixins-count" class="nav-btn-count"></div>
-                        <div class="nav-btn-mask"></div>
-                    </div></a>
-                {{/if}}
+                        </div></a>
+                    {{/if}}
+                    {{#if hasMethods}}
+                        <a href="#methods" id="methods-button-link"><div id="methods-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-object-group"></i>
+                            <span class="member-type-btn-text">methods</span>
+                            <div id="methods-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div></a>
+                    {{/if}}
+                    {{#if hasEvents}}
+                        <a href="#events" id="events-button-link"><div id="events-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-bolt"></i>
+                            <span class="member-type-btn-text">events</span>
+                            <div id="events-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div></a>
+                    {{/if}}
+                    {{#if hasVars}}
+                        <a href="#vars" id="vars-button-link"><div id="vars-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-paint-brush"></i>
+                            <span class="member-type-btn-text">theme variables</span>
+                            <div id="vars-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div></a>
+                    {{/if}}
+                    {{#if hasSass-mixins}}
+                        <a href="#sass-mixins" id="sass-mixins-button-link"><div id="sass-mixins-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-tint"></i>
+                            <span class="member-type-btn-text">theme mixins</span>
+                            <div id="sass-mixins-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div></a>
+                    {{/if}}
+                </div>
             </div>
         </div>
-    </div>
-    <div id="related-classes-context-ct" class="hide">
-        <!-- We'll programmatically copy in the related classes elements here on page load -->
+        <div id="context-menu-related-header" class="sub-nav-header sub-nav-ct-collapsed">
+            <span>Related Classes</span>
+            <i class="fa fa-chevron-down" style="z-index: 0; transform: matrix(-1, 0, 0, -1, 0, 0);"></i>
+        </div>
+        <div id="related-classes-context-ct" class="hide">
+            <!-- We'll programmatically copy in the related classes elements here on page load -->
+        </div>
     </div>
 </div>
 <div id="class-body-wrap" class="class-body-wrap">

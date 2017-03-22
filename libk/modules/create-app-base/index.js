@@ -361,12 +361,12 @@ class AppBase extends SourceGuides {
             toolkit     = hasApi && options.toolkit;
 
         let fidMeta = {
-                framework: prodObj.title, // either "Ext JS" or "Sencha Touch" as required by Fiddle
-                version: version,
-                toolkit: toolkit,
-                theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
+                framework : this.options.products[this.apiProduct].title, // either "Ext JS" or "Sencha Touch" as required by Fiddle
+                version   : version,
+                toolkit   : toolkit,
+                theme     : toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
             },
-            keyedRe      = /(\w+) = ([\w.]+)/i,
+            keyedRe      = /(\w+)=([\[\w.,\]]+)/i,
             frameworkMap = {
                 extjs : 'Ext JS',
                 ext   : 'Ext JS',
@@ -377,29 +377,22 @@ class AppBase extends SourceGuides {
         out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
             meta = meta.trim();
             code = code.trim();
-
-            if (production) {
-                code = Beautify(code, {
-                    e4x : true
-                });
-            }
-            code = _.escape(code);
-
+            meta = 'packages=[reactor,foo,bar]';
             if (meta && meta.length) {
                 fidMeta = Object.assign({}, fidMeta);
-                if (meta.includes(' ') && meta.includes('=')) {
+                //if (meta.includes(' ') && meta.includes('=')) {
+                if (meta.includes('=')) {
                     // should be formatted with space-separated key=value pairs
                     // e.g.: toolkit=modern
                     meta = meta.split(' ');
 
                     meta.forEach(function(option) {
-                        let optionMatch = option.match(keyedRe);
+                        let optionMatch = option.match(keyedRe),
+                            key         = optionMatch[1],
+                            val         = optionMatch[2],
+                            mapped      = frameworkMap[val];
 
-                        let key = optionMatch[1],
-                            val = optionMatch[2],
-                            mapped = frameworkMap[val];
-
-                        meta[key] = (key === 'framework' && mapped) ? mapped : val;
+                        fidMeta[key] = (key === 'framework' && mapped) ? mapped : val;
                     });
                 } else if (meta.includes('-')) {
                     // should be formatted like: framework-fullVersion-theme-toolkit
@@ -421,11 +414,6 @@ class AppBase extends SourceGuides {
         });
 
         out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, code) => {
-            if (production) {
-                code = Beautify(code, {
-                    e4x : true
-                });
-            }
             return `<pre><code class="language-javascript">${code}</code></pre>`;
         });
 

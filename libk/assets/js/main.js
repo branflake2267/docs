@@ -2563,7 +2563,7 @@ DocsApp.getEventTarget = function (e) {
                 codes     : codes
             },
             form, mask;
-
+        //console.log(meta);
         if (toolkit === 'modern') {
             data.codes.assets[0].code = data.codes.assets[0].code.replace(/(renderTo\s*:\s*(?:Ext\.getBody\(\)|document\.body))/, 'fullscreen: true');
         }

@@ -295,6 +295,56 @@ DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
 
 };
 
+/**
+ * @private
+ * Used by the runFiddleExample method.  Appends a form to the body for use by the
+ * anonymous fiddle examples.
+ * @param {String} target The ID of the target fiddle iframe
+ * @param {Array} params Array of form input fields
+ * @return {Element} The form used the submit the fiddle code to the fiddle server
+ */
+DocsApp.buildForm = function (target, params) {
+    var form = ExtL.createElement({
+        tag    : 'form',
+        role   : 'presentation',
+        action : 'https://fiddle.sencha.com/run?dc=' + new Date().getTime(),
+        method : 'POST',
+        target : target,
+        style  : 'display:none'
+    });
+
+    var assets = params.codes.assets;
+
+    assets[0].name = "App.js";
+    assets.push({
+        type : "js",
+        name : "app.js",
+        code : "import React from 'react';\nimport ReactDOM from 'react-dom';\nimport App from './App'; // app components\nimport { install } from '@extjs/reactor';\n\ninstall({\n    // We set viewport: true because we are using an Ext JS component to manage layouts at the root of our app.\n    // Setting viewport: true adds css rules to make the html, body, and the root react element height: 100% to\n    // allow the root component to expand to fill the full screen. You should omit this option when using\n    // other stylesheets or component libraries to control the layout.\n    viewport: true\n});\n\n// launch the react app once Ext JS is ready\nExt.onReady(() => ReactDOM.render(<App/>, document.getElementById('root')));"
+    });
+    assets.push({
+        type : "html",
+        name : "index.html",
+        code : "<div id=\"root\" style=\"height: 100%\"></div>"
+    });
+
+    ExtL.each(params, function (key, val) {
+        if (ExtL.isArray || ExtL.isObject) {
+            val = JSON.stringify(val);
+        }
+
+        form.appendChild(ExtL.createElement({
+            tag   : 'input',
+            type  : 'hidden',
+            name  : key,
+            value : val
+        }));
+    });
+
+    document.body.appendChild(form);
+
+    return form;
+};
+
 DocsApp.getElementBorderRadius = function (el) {
     var bRadBL = window.getComputedStyle(el).getPropertyValue("border-bottom-left-radius"),
         bRadBR = window.getComputedStyle(el).getPropertyValue("border-bottom-right-radius"),

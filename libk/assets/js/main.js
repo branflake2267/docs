@@ -2537,18 +2537,19 @@ DocsApp.getEventTarget = function (e) {
     DocsApp.runFiddleExample = function (wrap) {
         var editor     = ace.edit(wrap.querySelector('.ace-ct').id),
             meta       = JSON.parse(wrap.getAttribute('data-fiddle-meta')),
-            intro      = "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
-            outro      = "}\n});",
-            iframe     = DocsApp.getIFrame(wrap),
             myMeta     = DocsApp.meta,
+            actualProd = myMeta.product,
+            intro      = actualProd === 'extreact' ? '' : "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
+            outro      = actualProd === 'extreact' ? '' : "}\n});",
+            iframe     = DocsApp.getIFrame(wrap),
             pageName   = myMeta.pageName,
             toolkit    = myMeta.toolkit,
-            version    = myMeta.version,
+            version    = myMeta.apiVersion,
             myVer      = version.split('.'),
             majorVer   = parseInt(myVer[0], 10),
             minorVer   = parseInt(myVer[1], 10),
             canPackage = (majorVer >= 6 && minorVer >= 2),
-            packages   = [],
+            packages   = meta.packages ? ExtL.from(meta.packages) : [],
             codes      = {
                 assets   : [{
                     type  : 'js',
@@ -2563,7 +2564,7 @@ DocsApp.getEventTarget = function (e) {
                 codes     : codes
             },
             form, mask;
-        //console.log(meta);
+        //data.framework.version = '6.5.0.1111';
         if (toolkit === 'modern') {
             data.codes.assets[0].code = data.codes.assets[0].code.replace(/(renderTo\s*:\s*(?:Ext\.getBody\(\)|document\.body))/, 'fullscreen: true');
         }

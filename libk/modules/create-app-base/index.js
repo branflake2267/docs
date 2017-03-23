@@ -354,11 +354,14 @@ class AppBase extends SourceGuides {
             out         = html,
             options     = this.options,
             production  = options.production,
-            prodObj     = this.options.prodVerMeta.prodObj,
-            hasApi      = prodObj.hasApi,
-            hasVersions = prodObj.hasVersions,
-            version     = hasVersions && options.version,
-            toolkit     = hasApi && options.toolkit;
+            prodVerMeta = this.options.prodVerMeta,
+            version     = this.apiVersion,
+            prodObj     = this.options.products[this.apiProduct],
+            //hasApi      = prodObj.hasApi,
+            //hasVersions = prodObj.hasVersions,
+            //version     = hasVersions && options.version,
+            //toolkit     = hasApi && options.toolkit;
+            toolkit     = prodVerMeta.toolkit;
 
         let fidMeta = {
                 framework : this.options.products[this.apiProduct].title, // either "Ext JS" or "Sencha Touch" as required by Fiddle
@@ -372,12 +375,12 @@ class AppBase extends SourceGuides {
                 ext   : 'Ext JS',
                 touch : 'Sencha Touch'
             };
-
+        //console.log(fidMeta, prodObj);
         // decorates @example blocks as inline fiddles
         out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
             meta = meta.trim();
             code = code.trim();
-            meta = 'packages=[reactor,foo,bar]';
+            meta = 'packages=reactor';
             if (meta && meta.length) {
                 fidMeta = Object.assign({}, fidMeta);
                 //if (meta.includes(' ') && meta.includes('=')) {
@@ -392,7 +395,7 @@ class AppBase extends SourceGuides {
                             val         = optionMatch[2],
                             mapped      = frameworkMap[val];
 
-                        fidMeta[key] = (key === 'framework' && mapped) ? mapped : val;
+                        fidMeta[key] = (key === 'framework' && mapped) ? mapped : (val.includes('[') ? _.words(val) : val);
                     });
                 } else if (meta.includes('-')) {
                     // should be formatted like: framework-fullVersion-theme-toolkit

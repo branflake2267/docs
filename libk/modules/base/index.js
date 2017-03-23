@@ -196,6 +196,7 @@ class Base {
             pageType   : 'common',
             product    : product,
             apiProduct : this.apiProduct,
+            apiVersion : this.apiVersion,
             title      : meta.title
         });
     }

@@ -303,7 +303,7 @@ DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
  * @param {Array} params Array of form input fields
  * @return {Element} The form used the submit the fiddle code to the fiddle server
  */
-/*DocsApp.buildForm = function (target, params) {
+DocsApp.buildForm = function (target, params) {
     var form = ExtL.createElement({
         tag    : 'form',
         role   : 'presentation',
@@ -316,16 +316,26 @@ DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
     var assets = params.codes.assets;
 
     assets[0].name = "App.js";
-    assets.push({
+    var wrappingAssets = [{
         name   : "app.js",
-        code   : "import React from 'react';\nimport ReactDOM from 'react-dom';\nimport App from './App'; // app components\nimport { install } from '@extjs/reactor';\n\ninstall({\n    // We set viewport : true because we are using an Ext JS component to manage layouts at the root of our app.\n    // Setting viewport : true adds css rules to make the html, body, and the root react element height : 100% to\n    // allow the root component to expand to fill the full screen. You should omit this option when using\n    // other stylesheets or component libraries to control the layout.\n    viewport : true\n});\n\n// launch the react app once Ext JS is ready\nExt.onReady(() => ReactDOM.render(<App/>, document.getElementById('root')));",
+        code   : "import React from 'react';\nimport ReactDOM from 'react-dom';\nimport App from './App'; // app components\nimport { install } from '@extjs/reactor';\n\ninstall({\n    // We set viewport: true because we are using an Ext JS component to manage layouts at the root of our app.\n    // Setting viewport: true adds css rules to make the html, body, and the root react element height: 100% to\n    // allow the root component to expand to fill the full screen. You should omit this option when using\n    // other stylesheets or component libraries to control the layout.\n    viewport: true\n});\n\n// launch the react app once Ext JS is ready\nExt.onReady(() => ReactDOM.render(<App/>, document.getElementById('root')));",
+        type   : "js"
+    }, {
+        name   : "index.html",
+        code   : "<div id=\"root\" style=\"height: 100%\"></div>",
+        type   : "html"
+    }];
+    params.codes.assets = wrappingAssets.concat(assets);
+    /*assets.push({
+        name   : "app.js",
+        code   : "import React from 'react';\nimport ReactDOM from 'react-dom';\nimport App from './App'; // app components\nimport { install } from '@extjs/reactor';\n\ninstall({\n    // We set viewport: true because we are using an Ext JS component to manage layouts at the root of our app.\n    // Setting viewport: true adds css rules to make the html, body, and the root react element height: 100% to\n    // allow the root component to expand to fill the full screen. You should omit this option when using\n    // other stylesheets or component libraries to control the layout.\n    viewport: true\n});\n\n// launch the react app once Ext JS is ready\nExt.onReady(() => ReactDOM.render(<App/>, document.getElementById('root')));",
         type   : "js"
     });
     assets.push({
         name   : "index.html",
-        code   : "<div id = \"root\" style = \"height : 100%\"></div>",
+        code   : "<div id=\"root\" style=\"height: 100%\"></div>",
         type   : "html"
-    });
+    });*/
 
     ExtL.each(params, function (key, val) {
         if (ExtL.isArray || ExtL.isObject) {
@@ -343,7 +353,7 @@ DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
     document.body.appendChild(form);
 
     return form;
-};*/
+};
 
 DocsApp.getElementBorderRadius = function (el) {
     var bRadBL = window.getComputedStyle(el).getPropertyValue("border-bottom-left-radius"),

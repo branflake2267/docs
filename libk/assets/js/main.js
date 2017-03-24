@@ -2552,9 +2552,9 @@ DocsApp.getEventTarget = function (e) {
             packages   = meta.packages ? ExtL.from(meta.packages) : [],
             codes      = {
                 assets   : [{
-                    type  : 'js',
-                    name  : 'app.js',
-                    code  : intro + editor.getValue() + outro
+                    type   : 'js',
+                    name   : 'app.js',
+                    code   : intro + editor.getValue() + outro,
                 }],
                 mockdata : [],
                 packages : packages
@@ -2564,7 +2564,7 @@ DocsApp.getEventTarget = function (e) {
                 codes     : codes
             },
             form, mask;
-        //data.framework.version = '6.5.0.1111';
+        data.framework.version = '6.5.0.1111';
         if (toolkit === 'modern') {
             data.codes.assets[0].code = data.codes.assets[0].code.replace(/(renderTo\s*:\s*(?:Ext\.getBody\(\)|document\.body))/, 'fullscreen: true');
         }
@@ -2842,6 +2842,7 @@ DocsApp.getEventTarget = function (e) {
             tag    : 'form',
             role   : 'presentation',
             action : 'https://fiddle.sencha.com/run?dc=' + new Date().getTime(),
+            //action : 'https://test-fiddle.sencha.com/run?dc=' + new Date().getTime(),
             method : 'POST',
             target : target,
             style  : 'display:none'

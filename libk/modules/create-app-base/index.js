@@ -375,7 +375,7 @@ class AppBase extends SourceGuides {
                 ext   : 'Ext JS',
                 touch : 'Sencha Touch'
             };
-        //console.log(fidMeta, prodObj);
+
         // decorates @example blocks as inline fiddles
         out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
             meta = meta.trim();

@@ -303,11 +303,11 @@ DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
  * @param {Array} params Array of form input fields
  * @return {Element} The form used the submit the fiddle code to the fiddle server
  */
-DocsApp.buildForm = function (target, params) {
+/*DocsApp.buildForm = function (target, params) {
     var form = ExtL.createElement({
         tag    : 'form',
         role   : 'presentation',
-        action : 'https://fiddle.sencha.com/run?dc=' + new Date().getTime(),
+        action : 'https://test-fiddle.sencha.com/run?dc=' + new Date().getTime(),
         method : 'POST',
         target : target,
         style  : 'display:none'
@@ -317,14 +317,14 @@ DocsApp.buildForm = function (target, params) {
 
     assets[0].name = "App.js";
     assets.push({
-        type : "js",
-        name : "app.js",
-        code : "import React from 'react';\nimport ReactDOM from 'react-dom';\nimport App from './App'; // app components\nimport { install } from '@extjs/reactor';\n\ninstall({\n    // We set viewport: true because we are using an Ext JS component to manage layouts at the root of our app.\n    // Setting viewport: true adds css rules to make the html, body, and the root react element height: 100% to\n    // allow the root component to expand to fill the full screen. You should omit this option when using\n    // other stylesheets or component libraries to control the layout.\n    viewport: true\n});\n\n// launch the react app once Ext JS is ready\nExt.onReady(() => ReactDOM.render(<App/>, document.getElementById('root')));"
+        name   : "app.js",
+        code   : "import React from 'react';\nimport ReactDOM from 'react-dom';\nimport App from './App'; // app components\nimport { install } from '@extjs/reactor';\n\ninstall({\n    // We set viewport : true because we are using an Ext JS component to manage layouts at the root of our app.\n    // Setting viewport : true adds css rules to make the html, body, and the root react element height : 100% to\n    // allow the root component to expand to fill the full screen. You should omit this option when using\n    // other stylesheets or component libraries to control the layout.\n    viewport : true\n});\n\n// launch the react app once Ext JS is ready\nExt.onReady(() => ReactDOM.render(<App/>, document.getElementById('root')));",
+        type   : "js"
     });
     assets.push({
-        type : "html",
-        name : "index.html",
-        code : "<div id=\"root\" style=\"height: 100%\"></div>"
+        name   : "index.html",
+        code   : "<div id = \"root\" style = \"height : 100%\"></div>",
+        type   : "html"
     });
 
     ExtL.each(params, function (key, val) {
@@ -343,7 +343,7 @@ DocsApp.buildForm = function (target, params) {
     document.body.appendChild(form);
 
     return form;
-};
+};*/
 
 DocsApp.getElementBorderRadius = function (el) {
     var bRadBL = window.getComputedStyle(el).getPropertyValue("border-bottom-left-radius"),

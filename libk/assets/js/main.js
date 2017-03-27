@@ -467,7 +467,7 @@ DocsApp.appMeta = {
  * {@link #initNavTree}).  The navigation tree instance is cached on DocsApp.navTree.
  */
 DocsApp.buildNavTree = function (navTree, ct) {
-    DocsApp.navTree = new Tree(navTree, ct || 'tree');
+    return new Tree(navTree, ct || 'tree');
 };
 
 /**
@@ -513,7 +513,8 @@ DocsApp.initNavTree = function () {
             tabs = [];
 
         // create the tree
-        DocsApp.buildNavTree(navTree);
+        DocsApp.navTree = DocsApp.buildNavTree(navTree);
+        DocsApp.addTreeToggleButton(DocsApp.navTree);
 
         // select the node for the current page
         if (id) {
@@ -523,6 +524,30 @@ DocsApp.initNavTree = function () {
         }
 
         DocsApp.initNavTreeTabs();
+    }
+};
+
+/**
+ *
+ */
+DocsApp.addTreeToggleButton = function (tree) {
+    var target = tree.target;
+
+    if (target.querySelector('.tree-parent-node')) {
+        var btn = target.appendChild(ExtL.createElement({
+            "class"       : 'icon-btn toggle-all-tree-nodes-btn tooltip tooltip-tr-br',
+            "data-toggle" : 'Expand All Classes',
+            cn            : [{
+                "class"   : 'callout callout-b'
+            }, {
+                tag       : 'i',
+                "class"   : 'fa fa-plus'
+            }]
+        }));
+
+        ExtL.on(btn, 'click', function (e) {
+            DocsApp.toggleTreeNodes(e, tree);
+        });
     }
 };
 
@@ -3506,16 +3531,17 @@ DocsApp.getEventTarget = function (e) {
     /**
      * @method toggleTreeNodes
      */
-    DocsApp.toggleTreeNodes = function() {
-        var me        = this,
-            navTree   = DocsApp.navTree,
-            //indicator = ExtL.get('toggle-indicator'),
-            indicator = this.querySelector('i'),
+    DocsApp.toggleTreeNodes = function(e, navTree) {
+        navTree = navTree || DocsApp.navTree;
+
+        var target    = DocsApp.getEventTarget(e),
+            btn       = ExtL.hasCls(target, 'icon-btn') ? target : ExtL.up(target, '.icon-btn'),
+            indicator = btn.querySelector('i'),
             collapsed = ExtL.hasCls(indicator, 'fa-minus');
 
         navTree.toggleCollapseAll(collapsed);
 
-        me.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Classes');
+        btn.setAttribute('data-toggle', (collapsed ? 'Expand' : 'Collapse') + ' All Classes');
 
         ExtL.toggleCls(indicator, 'fa-minus');
         ExtL.toggleCls(indicator, 'fa-plus');

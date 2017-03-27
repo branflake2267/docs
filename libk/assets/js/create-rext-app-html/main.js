@@ -30,6 +30,7 @@ DocsApp.initNavTree = function () {
         id             = DA.meta.myId,
         navTrees;
 
+    ExtL.addCls(treeCt, 'navigation-parent-ct');
     treeCt.appendChild(this.createSubNavCt(componentsId, 'Components'));
     treeCt.appendChild(this.createSubNavCt(guidesId,     'Guides'));
     treeCt.appendChild(this.createSubNavCt(classesId,    'API'));
@@ -48,6 +49,7 @@ DocsApp.initNavTree = function () {
 
         for (; i < len; i++) {
             tree = navTrees[i];
+            DocsApp.addTreeToggleButton(tree);
 
             if (tree.target.querySelector('[id="' + id.replace(/\./g, '\\.') + '"]')) {
                 DocsApp.expandSubNav(tree.target.previousSibling);
@@ -127,7 +129,7 @@ DocsApp.buildNavTree = function (navTree, ct) {
 DocsApp.createSubNavCt = function (id, headerText) {
     return ExtL.createElement({
         id : id + 'ct',
-        "class" : 'sub-nav-ct navigation-parent-ct',
+        "class" : 'sub-nav-ct',
         cn : [{
             id      : id + 'header',
             "class" : 'sub-nav-header sub-nav-ct-collapsed',
@@ -376,8 +378,12 @@ DocsApp.animateRipple = function (e, clickTarget, timing) {
     var animationParent = clickTarget.querySelector('svg'),
         animationTarget = clickTarget.querySelector('use'),
         tl              = new TimelineMax(),
-        x               = e.offsetX,
-        y               = e.offsetY,
+        clickTargetBox  = clickTarget.getBoundingClientRect(),
+        eventTargetBox  = DocsApp.getEventTarget(e).getBoundingClientRect(),
+        //x               = e.offsetX,
+        x               = eventTargetBox.left - clickTargetBox.left + e.offsetX,
+        //y               = e.offsetY,
+        y               = eventTargetBox.top - clickTargetBox.top + e.offsetY,
         w               = clickTarget.offsetWidth,
         h               = clickTarget.offsetHeight,
         offsetX         = Math.abs((w / 2) - x),

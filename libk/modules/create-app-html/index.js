@@ -348,7 +348,7 @@ class HtmlApp extends AppBase {
      */
     //return this.createApiLink(product, version, toolkit, className, memberName, text, data);
     createApiLink(href, text) {
-        return `<a href="${href}.html">${text}</a>`;
+        return `<a href="${href}">${text}</a>`;
     }
 
     /**
@@ -406,6 +406,13 @@ class HtmlApp extends AppBase {
             let memberName = link.substring(link.indexOf('-') + 1);
 
             text = text || memberName;
+
+            if (link.includes('#')) {
+                let idx = link.indexOf('#');
+                if (idx !== 0) {
+                    link.replace('#', '.html#');
+                }
+            }
 
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });

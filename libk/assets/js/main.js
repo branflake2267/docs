@@ -2567,7 +2567,7 @@ DocsApp.getEventTarget = function (e) {
             intro      = actualProd === 'extreact' ? '' : "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
             outro      = actualProd === 'extreact' ? '' : "}\n});",
             iframe     = DocsApp.getIFrame(wrap),
-            pageName   = myMeta.pageName,
+            pageName   = myMeta.myId,
             toolkit    = myMeta.toolkit,
             version    = myMeta.apiVersion,
             myVer      = version.split('.'),
@@ -3233,7 +3233,7 @@ DocsApp.getEventTarget = function (e) {
             product  = meta.product,
             version  = meta.version,
             toolkit  = meta.toolkit,
-            pageName = ExtL.htmlDecode(ExtL.htmlDecode(meta.pagName));
+            pageName = ExtL.htmlDecode(ExtL.htmlDecode(meta.pageName));
 
         nav.appendChild(ExtL.createElement({
             tag     : 'span',
@@ -3322,9 +3322,6 @@ DocsApp.getEventTarget = function (e) {
             DocsApp.handleScroll();
             DocsApp.initMemberTypeMouseoverHandlers();
             DocsApp.copyRelatedClasses();
-            if (window.location.hash) {
-                DocsApp.onHashChange(true);
-            }
 
             // handle all window scroll events
             document.querySelector('.class-body-wrap').onscroll = DocsApp.handleScroll;
@@ -3335,6 +3332,9 @@ DocsApp.getEventTarget = function (e) {
         if (DocsApp.meta.pageType === 'guide') {
             DocsApp.copyTOC();
             document.querySelector('.guide-body-wrap').onscroll = DocsApp.handleScroll;
+        }
+        if (window.location.hash) {
+            DocsApp.onHashChange(true);
         }
 
         eventsEl = ExtL.get('guideTab');
@@ -4470,7 +4470,7 @@ DocsApp.getEventTarget = function (e) {
             inheritedCheckbox.checked = state.inheritedCheckbox !== false;
         }
         if (privateClassCheckbox) {
-            privateClassCheckbox.checked = state.privateClassCheckbox !== false;
+            privateClassCheckbox.checked = state.privateClassCheckbox === true;
         }
         if (historyLabelCheckbox) {
             historyLabelCheckbox.checked = state.historyLabels;

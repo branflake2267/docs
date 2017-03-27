@@ -567,6 +567,8 @@ class ExtReactHtmlApp extends HtmlApp {
                     event.paramsPrefix = ': function';
                 }
             }
+
+            prepared.myMeta.pageName = cls.name;
         }
     }
 

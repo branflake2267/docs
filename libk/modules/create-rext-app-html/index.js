@@ -593,6 +593,13 @@ class ExtReactHtmlApp extends HtmlApp {
 
             text = text || memberName;
 
+            if (link.includes('#')) {
+                let idx = link.indexOf('#');
+                if (idx !== 0) {
+                    link.replace('#', '.html#');
+                }
+            }
+
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });
     }

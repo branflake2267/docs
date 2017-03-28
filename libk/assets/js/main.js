@@ -28,6 +28,8 @@ function Tree (data, renderTo) {
 
     me.target = target;
 
+    //this.decoratePrivateNodes(data);
+
     // first we'll loop over all of the tree nodes and create the tree node elements to
     // render to the page.  This will create the parent node, child node, and the
     // wrapping element around the child nodes used to collapse / hide child nodes
@@ -65,6 +67,34 @@ function Tree (data, renderTo) {
         DocsApp.treeAfterRender();
     }, 1);
 }
+
+/**
+ *
+ */
+/*Tree.prototype.decoratePrivateNodes = function (nodes, parent) {
+    var len         = nodes.length,
+        startingLen = len,
+        //privateCt   = 0,
+        node, children;
+
+    if (parent) {
+        parent.access = 'private';
+    }
+
+    while (len--) {
+        node     = nodes[len];
+        children = node.children;
+        if (children) {
+            this.decoratePrivateNodes(children, node);
+        } else {
+            if (node.access !== 'private') {
+                if (parent) {
+                    delete parent.access;
+                }
+            }
+        }
+    }
+};*/
 
 /**
  * @method createNodeCfgs
@@ -147,7 +177,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 "class" : 'child-nodes-ct',
                 cn      : this.createNodeCfgs(node.children, cfg.id, depth + 1)
             };
-            var j = 0,
+            /*var j = 0,
                 children = ctCfg.cn,
                 cnLen = children.length,
                 privateCt = 0;
@@ -162,7 +192,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             }
             if (privateCt > 0 && privateCt === cnLen) {
                 cfg.class += ' private-child-nodes-parent';
-            }
+            }*/
             cfgs.push(ctCfg);
         } else {
             // decorate this node as a leaf node

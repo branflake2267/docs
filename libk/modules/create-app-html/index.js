@@ -120,14 +120,17 @@ class HtmlApp extends AppBase {
      * @return {Object} Hash of common current page metadata
      */
     getHomeMetaData (data) {
-        let meta = super.getCommonMetaData();
+        let meta = super.getCommonMetaData(),
+            docsRelativePath = Path.relative(
+                this.outputProductDir,
+                this.options.outputDir
+            );
 
         if (data) {
             Object.assign(meta, {
-                //navTreeName : 'API',
-                //myId        : data.cls.name,
-                rootPath    : '',
-                pageType    : 'home'
+                rootPath     : '',
+                pageType     : 'home',
+                docsRootPath : `${docsRelativePath}/`
             });
         }
 

@@ -1,6 +1,6 @@
 <div id="help-wrap">
     <div class="help-header">
-        Docs Help
+        ExtReact Docs Help
         <div id="help-close" class="icon-btn">
             <i class="fa fa-close"></i>
         </div>
@@ -8,6 +8,7 @@
     <div class="classText">
         <div class="toc classMeta">
             <h2>Contents</h2>
+            <a class="toc-page-h2" href="#introduction">Introduction</a>
             <a class="toc-page-h2" href="#terms-icons-and-labels">Terms, Icons, and Labels</a>
             <a class="toc-page-h3" href="#access-levels">Access Levels</a>
             <a class="toc-page-h3" href="#member-types">Member Types</a>
@@ -25,11 +26,21 @@
             <a class="toc-page-h3" href="#desktop-vs-mobile-view">Desktop -vs- Mobile View</a>
             <a class="toc-page-h3" href="#viewing-the-class-source">Viewing the Class Source</a>
         </div>
+
+        <h2 id="introduction">Introduction</h2>
+        <p>The documentation for the ExtReact product diverges somewhat from the
+            documentation of other Sencha products.  The sections below describe
+            documentation for all products except where indicated as unique to
+            <code><b>ExtReact</b></code>.</p>
+
         <h2 id="terms-icons-and-labels">Terms, Icons, and Labels</h2>
         <p>Many classes have shortcut names used when creating (instantiating) a class with a
             configuration object.  The shortcut name is referred to as an <code>alias</code> (or <code>xtype</code> if the
             class extends Ext.Component).  The alias/xtype is listed next to the class name of
             applicable classes for quick reference.</p>
+        <p class="ext-react-note">ExtReact component classes list the configurable name
+            prominently at the top of the API class doc followed by the fully-qualified
+            class name.</p>
         <h3 id="access-levels">Access Levels</h3>
         <p>Framework classes or their members may be specified as <code>private</code> or <code>protected</code>.  Else,
             the class / member is <code>public</code>.  <code>Public</code>, <code>protected</code>, and <code>private</code> are access
@@ -50,8 +61,16 @@
         </ul>
         <h3 id="member-types">Member Types</h3>
         <ul>
-            <li><strong>Config</strong> - The configuration options for a class.</li>
-            <li><strong>Property</strong> - Set once a class is instantiated. *See Read Only below.</li>
+            <li><strong>Config</strong> - The configuration options for a class.
+                <p class="ext-react-note">ExtReact component classes display
+                    configuration options as <code>props</code></p>
+            </li>
+            <li><strong>Property</strong> - Set once a class is instantiated. *See Read
+            Only below.
+                <p class="ext-react-note">ExtReact component classes do not list
+                    properties as a dedicated member type, but rather as
+                    <code>read only</code> props</p>
+            </li>
             <li><strong>Method</strong> - Actions that can be performed by a class.  Methods should be read as
                 instance methods and can only be called from a instance of a given class.  Static methods
                 that can be called directly from the class itself will have a <code>static</code> label next to the
@@ -139,7 +158,14 @@
         <ul>
             <li><strong>Required</strong> - Required config when instantiating a class</li>
             <li><strong>Bindable</strong> - The config has a setter which allows this config to be set via ViewModel
-                binding</li>
+                binding
+                <p class="ext-react-note">All ExtReact props are <code>bindable</code>
+                unless decorated as <code>immutable</code></p>
+            </li>
+            <li><strong>Immutable</strong>
+                <p class="ext-react-note">Immutable ExtReact props may not be use as a
+                    configurable prop when instantiating a component</p>
+            </li>
             <li><strong>Read Only</strong> - The property may be read, but cannot be used to configure /
                 re-configure a class instance at runtime</li>
             <li><strong>Singleton</strong> - Singleton classes are instantiated immediately once defined and may not
@@ -169,7 +195,9 @@
         <p><span class="icon-demo display-new"></span> - Indicates that the class, member, or guide
             is new in the currently viewed version</p>
         <h3 id="member-icons">Member Icons</h3>
-        <p><span class="icon-demo fa fa-cubes"></span> - Indicates a class member of type <code>config</code>  </p>
+        <p><span class="icon-demo fa fa-cubes"></span> - Indicates a class member of type <code>config</code></p>
+        <p class="ext-react-note">Or in the case of an ExtReact component class this
+            indicates a member of type <code>prop</code></p>
         <p><span class="icon-demo fa fa-book"></span> - Indicates a class member of type <code>property</code>  </p>
         <p><span class="icon-demo fa fa-object-group"></span> - Indicates a class member of type
             <code>method</code>  </p>
@@ -192,6 +220,9 @@
             methods section as well as in the configs section of both the API doc and the member-type
             menus just beneath the config they work with.  The getter and setter method documentation
             will be found in the config row for easy reference.</p>
+        <p class="ext-react-note">ExtReact component classes do not hoist the getter /
+            setter methods into the prop.  All methods will be described in the
+            <code>Methods</code> section</p>
         <h3 id="history-bar">History Bar</h3>
         <p>Your page history is kept in localstorage and displayed (using the available real estate)
             just below the top title bar.  By default, the only search results shown are the pages
@@ -252,16 +283,16 @@
                     <li>The name of the current product (as a link to the product landing page)</li>
                     <li>The Sencha icon used to navigate back to the documentation home page</li>
                     <li>The product menu drop-down button</li>
-                    <li>Tabs of navigation trees for the API docs and guides</li>
+                    <li>Headers of navigation trees for the API docs and guides</li>
                 </ul>
             </li>
             <li>Current context navigation and tools is located on the right-hand side accessible via
                 the gear icon.  The context menu houses teh following:<ul>
                     <li>The global search input field</li>
-                    <li>(<em>API doc</em>) A "Filters" tab with the member filter, expand / collapse all examples
+                    <li>(<em>API doc</em>) A "Filters" header with the member filter, expand / collapse all examples
                         button, expand / collapse all member rows button, the access level filter checkboxes,
                         and the counts of each member</li>
-                    <li>(<em>API doc</em>) A "Related Classes" tab containing the menu of metadata related to the
+                    <li>(<em>API doc</em>) A "Related Classes" header containing the menu of metadata related to the
                         current class</li>
                     <li>(<em>Guides</em>) The table of contents for the guide</li>
                 </ul>

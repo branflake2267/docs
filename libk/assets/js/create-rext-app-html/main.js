@@ -28,7 +28,7 @@ DocsApp.initNavTree = function () {
         guidesId       = 'react-guides-nav-',
         classesId      = 'react-api-nav-',
         id             = DA.meta.myId,
-        navTrees;
+        navTrees, target, targetId, targetNode;
 
     ExtL.addCls(treeCt, 'navigation-parent-ct');
     treeCt.appendChild(this.createSubNavCt(componentsId, 'Components'));
@@ -44,20 +44,23 @@ DocsApp.initNavTree = function () {
     // select the node for the current page
     if (id) {
         var len = navTrees.length,
-        i = 0,
-        tree;
+            i   = 0,
+            tree;
+
+        id = id.replace(/\./g, '\\.');
 
         for (; i < len; i++) {
             tree = navTrees[i];
             DocsApp.addTreeToggleButton(tree);
+            target       = tree.target;
+            targetId     = target.id + '-';
+            targetNode = target.querySelector('[id="' + id + '"]') || target.querySelector('[id="' + targetId + id + '"]');
 
-            if (tree.target.querySelector('[id="' + id.replace(/\./g, '\\.') + '"]')) {
+            if (targetNode) {
                 DocsApp.expandSubNav(tree.target.previousSibling);
-                setTimeout(function () {
-                    tree.select(id);
-                    // and expand the tree to the selected node
-                    tree.expandTo(id);
-                }, 1200);
+                tree.select(targetNode.id);
+                // and expand the tree to the selected node
+                tree.expandTo(targetNode.id);
             }
         }
     }

@@ -356,6 +356,14 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * The partial to use as the help page content
+     * @return {String} The name of the partial file to use as the docs help content
+     */
+    get helpPartial () {
+        return '_react-help';
+    }
+
+    /**
      * Returns the id to use on the navigation node for the passed class name
      * @param {String} className The classname being processed in the navigation tree
      * @param {Number} currentIndex The index for the current node's processing -
@@ -446,7 +454,7 @@ class ExtReactHtmlApp extends HtmlApp {
      */
     simpleSortNodes (nodes) {
         //this.log(`Begin 'SourceApi.sortNodes'`, 'info');
-        return nodes.sort((a, b) => {
+        /*return nodes.sort((a, b) => {
             if (a.name > b.name) {
                 return 1;
             }
@@ -454,7 +462,8 @@ class ExtReactHtmlApp extends HtmlApp {
                 return -1;
             }
             return 0;
-        });
+        });*/
+        return _.orderBy(nodes, ['name'], ['asc']);
     }
 
     /**
@@ -462,7 +471,7 @@ class ExtReactHtmlApp extends HtmlApp {
      * @param {Object[]} tree The tree nodes to sort
      * @return {Object[]} The sorted tree
      */
-    sortTree (tree) {
+    reactSortTree (tree) {
         let len = tree.length,
             i   = 0;
 
@@ -490,7 +499,7 @@ class ExtReactHtmlApp extends HtmlApp {
         let treeObj        = {
                 API : {
                     API        : super.sortTree(apiTree),
-                    Components : this.sortTree(componentsTree)
+                    Components : this.reactSortTree(componentsTree)
                 }
             };
 
@@ -567,6 +576,8 @@ class ExtReactHtmlApp extends HtmlApp {
                     event.paramsPrefix = ': function';
                 }
             }
+
+            prepared.myMeta.pageName = cls.name;
         }
     }
 

@@ -647,19 +647,9 @@ class SourceApi extends Base {
      */
     sortNodes (nodes) {
         //this.log(`Begin 'SourceApi.sortNodes'`, 'info');
-        return nodes.sort((a, b) => {
-            if ((a.children && b.children) || (!a.children && !b.children)) {
-                if (a.name > b.name) {
-                    return 1;
-                }
-                if (a.name < b.name) {
-                    return -1;
-                }
-                return 0;
-            } else {
-                return a.children ? -1 : 1;
-            }
-        });
+        return _.orderBy(nodes, [node => {
+            return node.children ? 1 : 0;
+        }, 'name'], ['desc', 'asc']);
     }
 
     /**
@@ -1619,6 +1609,33 @@ class SourceApi extends Base {
     }
 
     /**
+     *
+     */
+    decoratePrivateNodes (nodes, parent) {
+        let len         = nodes.length,
+            startingLen = len;
+
+        if (parent) {
+            parent.access = 'private';
+        }
+
+        while (len--) {
+            let node     = nodes[len],
+                children = node.children;
+
+            if (children) {
+                this.decoratePrivateNodes(children, node);
+            } else {
+                if (node.access !== 'private') {
+                    if (parent) {
+                        delete parent.access;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Output the api tree for UI nav once all classes are processed
      * @return Promise wrapping the writing of the api tree file
      */
@@ -1626,9 +1643,9 @@ class SourceApi extends Base {
         return new Promise((resolve, reject) => {
             //this.log(`Begin 'SourceApi.outputApiTree'`, 'info');
             let apiTrees = this.apiTrees,
-                //treeKeys = Object.keys(apiTrees),
-                //len      = treeKeys.length,
                 apiTree  = this.sortTrees(apiTrees);
+
+            this.decoratePrivateNodes(apiTree);
 
             apiTree = JSON.stringify(apiTree, null, 4);
 

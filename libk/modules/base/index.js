@@ -183,6 +183,14 @@ class Base {
     }
 
     /**
+     * The partial to use as the help page content
+     * @return {String} The name of the partial file to use as the docs help content
+     */
+    get helpPartial () {
+        return '_help';
+    }
+
+    /**
      * Returns common metadata needed by app pages
      * @return {Object} Hash of common current page metadata
      */
@@ -209,11 +217,11 @@ class Base {
     processCommonDataObject (data) {
         let options = this.options;
 
-        //data.myMeta  = this.getApiMetaData(data);
-        data.title      = options.prodVerMeta.prodObj.title;
-        data.product    = this.getProduct(options.product);
-        data.version    = options.version;
-        data.moduleName = this.moduleName;
+        data.title       = options.prodVerMeta.prodObj.title;
+        data.product     = this.getProduct(options.product);
+        data.version     = options.version;
+        data.moduleName  = this.moduleName;
+        data.helpPartial = this.helpPartial;
     }
 
     /**

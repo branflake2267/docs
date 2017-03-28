@@ -28,6 +28,8 @@ function Tree (data, renderTo) {
 
     me.target = target;
 
+    //this.decoratePrivateNodes(data);
+
     // first we'll loop over all of the tree nodes and create the tree node elements to
     // render to the page.  This will create the parent node, child node, and the
     // wrapping element around the child nodes used to collapse / hide child nodes
@@ -65,6 +67,34 @@ function Tree (data, renderTo) {
         DocsApp.treeAfterRender();
     }, 1);
 }
+
+/**
+ *
+ */
+/*Tree.prototype.decoratePrivateNodes = function (nodes, parent) {
+    var len         = nodes.length,
+        startingLen = len,
+        //privateCt   = 0,
+        node, children;
+
+    if (parent) {
+        parent.access = 'private';
+    }
+
+    while (len--) {
+        node     = nodes[len];
+        children = node.children;
+        if (children) {
+            this.decoratePrivateNodes(children, node);
+        } else {
+            if (node.access !== 'private') {
+                if (parent) {
+                    delete parent.access;
+                }
+            }
+        }
+    }
+};*/
 
 /**
  * @method createNodeCfgs
@@ -147,7 +177,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
                 "class" : 'child-nodes-ct',
                 cn      : this.createNodeCfgs(node.children, cfg.id, depth + 1)
             };
-            var j = 0,
+            /*var j = 0,
                 children = ctCfg.cn,
                 cnLen = children.length,
                 privateCt = 0;
@@ -162,7 +192,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             }
             if (privateCt > 0 && privateCt === cnLen) {
                 cfg.class += ' private-child-nodes-parent';
-            }
+            }*/
             cfgs.push(ctCfg);
         } else {
             // decorate this node as a leaf node
@@ -2567,7 +2597,7 @@ DocsApp.getEventTarget = function (e) {
             intro      = actualProd === 'extreact' ? '' : "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
             outro      = actualProd === 'extreact' ? '' : "}\n});",
             iframe     = DocsApp.getIFrame(wrap),
-            pageName   = myMeta.pageName,
+            pageName   = myMeta.myId,
             toolkit    = myMeta.toolkit,
             version    = myMeta.apiVersion,
             myVer      = version.split('.'),
@@ -3233,7 +3263,7 @@ DocsApp.getEventTarget = function (e) {
             product  = meta.product,
             version  = meta.version,
             toolkit  = meta.toolkit,
-            pageName = ExtL.htmlDecode(ExtL.htmlDecode(meta.pagName));
+            pageName = ExtL.htmlDecode(ExtL.htmlDecode(meta.pageName));
 
         nav.appendChild(ExtL.createElement({
             tag     : 'span',
@@ -3322,9 +3352,6 @@ DocsApp.getEventTarget = function (e) {
             DocsApp.handleScroll();
             DocsApp.initMemberTypeMouseoverHandlers();
             DocsApp.copyRelatedClasses();
-            if (window.location.hash) {
-                DocsApp.onHashChange(true);
-            }
 
             // handle all window scroll events
             document.querySelector('.class-body-wrap').onscroll = DocsApp.handleScroll;
@@ -3335,6 +3362,9 @@ DocsApp.getEventTarget = function (e) {
         if (DocsApp.meta.pageType === 'guide') {
             DocsApp.copyTOC();
             document.querySelector('.guide-body-wrap').onscroll = DocsApp.handleScroll;
+        }
+        if (window.location.hash) {
+            DocsApp.onHashChange(true);
         }
 
         eventsEl = ExtL.get('guideTab');
@@ -4470,7 +4500,7 @@ DocsApp.getEventTarget = function (e) {
             inheritedCheckbox.checked = state.inheritedCheckbox !== false;
         }
         if (privateClassCheckbox) {
-            privateClassCheckbox.checked = state.privateClassCheckbox !== false;
+            privateClassCheckbox.checked = state.privateClassCheckbox === true;
         }
         if (historyLabelCheckbox) {
             historyLabelCheckbox.checked = state.historyLabels;

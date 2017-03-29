@@ -879,8 +879,8 @@ class Base {
      */
     get apiDirName () {
         // ** NOTE ** Do not cache since the options.toolkit may be changed between builds
-        //return this.options.toolkit || 'api';
-        return this.options.prodVerMeta.toolkit || 'api';
+        return this.options.toolkit || 'api';
+        //return this.options.prodVerMeta.toolkit || 'api';
     }
 
     /**

@@ -540,17 +540,21 @@ DocsApp.initNavTree = function () {
     // if a navigation tree is found for the current page
     if (navTree) {
         var id   = DocsApp.meta.myId,
-            tabs = [];
+            tabs = [], tree;
 
         // create the tree
-        DocsApp.navTree = DocsApp.buildNavTree(navTree);
-        DocsApp.addTreeToggleButton(DocsApp.navTree);
+        tree = DocsApp.navTree = DocsApp.buildNavTree(navTree);
+        DocsApp.addTreeToggleButton(tree);
 
         // select the node for the current page
         if (id) {
-            DocsApp.navTree.select(id)
-                // and expand the tree to the selected node
-                .expandTo(id);
+            var target     = tree.target,
+                targetId   = target.id + '-';
+                targetNode = target.querySelector('[id="' + id + '"]') || target.querySelector('[id="' + targetId + id + '"]');
+
+            tree.select(targetNode.id)
+            // and expand the tree to the selected node
+            .expandTo(targetNode.id);
         }
 
         DocsApp.initNavTreeTabs();

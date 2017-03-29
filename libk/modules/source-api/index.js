@@ -576,7 +576,8 @@ class SourceApi extends Base {
         //this.log(`Begin 'SourceApi.addToApiTree'`, 'info');
         let nameArray   = className.split('.'),
             elementsLen = nameArray.length,
-            apiDirName  = this.apiDirName;
+            apiDirName  = this.apiDirName,
+            apiTree     = this.getApiTree(className);
 
         // process all parts of the class name (each string in the .-separated full class
         // name)
@@ -602,8 +603,16 @@ class SourceApi extends Base {
                     navTreeName : 'api',
                     id          : id,
                     leaf        : leaf,
-                },
-                target        = this.getExistingNode(nodes, id),
+                };
+
+                if (nodes === undefined) {
+                    console.log(nodes);
+                    console.log(apiTree);
+                    console.log(this.apiDirName);
+                    console.log(this.apiTrees);
+                }
+
+            let target        = this.getExistingNode(nodes, id),
                 folderNodeCls = this.folderNodeCls,
                 mapped        = this.classMap[id],
                 isSingleton   = mapped && mapped.prepared.singleton,
@@ -633,7 +642,7 @@ class SourceApi extends Base {
             }
             target = target || newNode;
             return target.children;
-        }, this.getApiTree(className));   // initially we pass in the apiTree property itself
+        }, apiTree);   // initially we pass in the apiTree property itself
     }
 
     /**
@@ -1583,8 +1592,9 @@ class SourceApi extends Base {
      * @return {Object} The sorted API tree
      */
     sortTrees (apiTrees) {
-        let len      = apiTrees.length,
-            treeKeys = Object.keys(apiTrees),
+        //let len      = apiTrees.length,
+        let treeKeys = Object.keys(apiTrees),
+            len      = treeKeys.length,
             apiTree;
 
         if (len === 1) {

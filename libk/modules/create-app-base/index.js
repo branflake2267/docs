@@ -58,7 +58,8 @@ class AppBase extends SourceGuides {
             prodObj     : prodObj,
             hasApi      : prodObj.hasApi,
             hasVersions : prodObj.hasVersions,
-            hasToolkits : !!(toolkits && toolkits.length > 1),
+            //hasToolkits : !!(toolkits && toolkits.length > 1),
+            hasToolkits : (toolkits && toolkits.length),
             toolkits    : toolkits,
             toolkit     : toolkit,
             hasGuides   : prodObj.hasGuides !== false,
@@ -285,7 +286,7 @@ class AppBase extends SourceGuides {
                 toolkit       = (product === 'classic' || product === 'modern') ? product : false,
                 memberName;
 
-            product = this.getProduct(product);
+            product = this.getProduct();
             version = version || this.options.version;
             toolkit = toolkit || prodVerMeta.toolkit || 'api';
             text    = text || className + (hash ? `#${hash}` : '');

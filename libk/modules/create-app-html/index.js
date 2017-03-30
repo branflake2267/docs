@@ -538,7 +538,7 @@ class HtmlApp extends AppBase {
                     root,
                     'configs',
                     'product-home',
-                    this.apiProduct
+                    options.product
                 ),
                 version     = options.version,
                 homeConfig  = this.getFileByVersion(prodTplPath, version),

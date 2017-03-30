@@ -590,6 +590,9 @@ class SourceApi extends Base {
         //
         // i - the index in the array at this stage of the reduce action
         nameArray.reduce((nodes, name, i) => {
+            if (!nodes) {
+                return;
+            }
             // if the reduce index matches the length (minus 1) of the split className
             // then this is a leaf.  Though, root namespace items like "Ext" and "ST"
             // will be later have a `children` property added as necessary and be
@@ -604,13 +607,6 @@ class SourceApi extends Base {
                     id          : id,
                     leaf        : leaf,
                 };
-
-                if (nodes === undefined) {
-                    console.log(nodes);
-                    console.log(apiTree);
-                    console.log(this.apiDirName);
-                    console.log(this.apiTrees);
-                }
 
             let target        = this.getExistingNode(nodes, id),
                 folderNodeCls = this.folderNodeCls,
@@ -641,6 +637,7 @@ class SourceApi extends Base {
                 nodes.push(newNode);
             }
             target = target || newNode;
+
             return target.children;
         }, apiTree);   // initially we pass in the apiTree property itself
     }

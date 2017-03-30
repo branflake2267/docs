@@ -609,6 +609,8 @@ class ExtReactHtmlApp extends HtmlApp {
                 if (idx !== 0) {
                     link.replace('#', '.html#');
                 }
+            } else {
+                link += '.html';
             }
 
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));

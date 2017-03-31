@@ -1209,10 +1209,11 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.doLogSearchValue = function (value) {
+        var field = ExtL.get('searchtext');
+
         value = value || field.value;
 
-        var field = ExtL.get('searchtext'),
-            temp  = [],
+        var temp  = [],
             limit = 10;
 
         ExtL.each(DocsApp.appMeta.searchHistory, function (item) {
@@ -4239,7 +4240,7 @@ DocsApp.getEventTarget = function (e) {
             /*ExtL.on(item, 'click', DocsApp.onProductMenuItemClick);
             ExtL.on(item, 'mouseenter', DocsApp.onProductMenuItemClick);*/
             //ExtL.monitorMouseLeave(item, 250, DocsApp.hideProductVersionMenu);
-            ExtL.monitorMouseEnter(item, 150, DocsApp.showProductVersionMenu);
+            ExtL.monitorMouseEnter(item, 115, DocsApp.showProductVersionMenu);
             ExtL.on(item, 'click', DocsApp.showProductVersionMenu);
         });
         // Set up class tree ct click listener

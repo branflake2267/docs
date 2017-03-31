@@ -606,8 +606,9 @@ class ExtReactHtmlApp extends HtmlApp {
 
             if (link.includes('#')) {
                 let idx = link.indexOf('#');
+
                 if (idx !== 0) {
-                    link.replace('#', '.html#');
+                    link = link.replace('#', '.html#');
                 }
             } else {
                 link += '.html';

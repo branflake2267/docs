@@ -4066,7 +4066,7 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.copyRelatedClasses = function () {
-        var desktopRelated = document.querySelector('.classMeta'),
+        var desktopRelated = document.querySelector('#rightMembers .classMeta'),
             copy           = desktopRelated.cloneNode(true);
 
         if (desktopRelated.children.length > 0) {

@@ -984,7 +984,7 @@ class SourceApi extends Base {
             );
             data.configs.name = 'configs';
             this.postProcessConfigs(data);
-            data.hasConfigs = data.requiredConfigs && data.optionalConfigs;
+            data.hasConfigs = data.requiredConfigs || data.optionalConfigs;
         }
 
         // process properties
@@ -996,7 +996,10 @@ class SourceApi extends Base {
                 'staticProperties'
             );
             data.properties.name = 'properties';
-            data.hasProperties = data.instanceProperties && data.staticProperties;
+            if (data.cls.name === 'Ext.Date') {
+                console.log(data.instanceProperties, data.staticProperties);
+            }
+            data.hasProperties = data.instanceProperties || data.staticProperties;
         }
 
         // process methods
@@ -1012,7 +1015,7 @@ class SourceApi extends Base {
                 data.methods.instanceMethods,
                 'name'
             );
-            data.hasMethods = data.instanceMethods && data.staticMethods;
+            data.hasMethods = data.instanceMethods || data.staticMethods;
         }
 
         // now that we have all source files for this class from the class itself and all

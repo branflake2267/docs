@@ -771,7 +771,7 @@ DocsApp.getEvent = function (e) {
  */
 DocsApp.getEventTarget = function (e) {
     e = DocsApp.getEvent(e);
-    return e ? (e.target || e.srcElement) : false;
+    return e.target || e.srcElement;
 };
 
 
@@ -1237,7 +1237,7 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.logSearchValue = ExtL.createBuffered(DocsApp.doLogSearchValue, 750);
 
-    DocsApp.searchFilter = ExtL.createBuffered(function (e){
+    DocsApp.searchFilter = function (e){
         var results     = [],
             hits        = [],
             //hasApi    = ExtL.get('apiTab').offsetHeight,
@@ -1282,7 +1282,7 @@ DocsApp.getEventTarget = function (e) {
         value = ExtL.trim((searchField).value).toLowerCase();
         value = value.replace('$', '\\$');
 
-        if (!value.length || value.length < 2 || value.slice(-1) === '.') {
+        if (!value.length || (ExtL.isIE8() && value.length < 2) || value.slice(-1) === '.') {
             DocsApp.hideSearchResults();
             DocsApp.showSearchHistory();
             return;
@@ -1386,17 +1386,17 @@ DocsApp.getEventTarget = function (e) {
             DocsApp.appMeta.guideSearchRecords = DocsApp.prepareGuideSearchRecords(hits);  // save this up so it can be used ad hoc
         }
         DocsApp.showSearchResults(1);
-    }, 120);
+    };
 
     /**
      *
      */
     DocsApp.showSearchHistory = function (e) {
         var target = DocsApp.getEventTarget(e),
-            value  = target && target.value,
+            value  = target.value,
             panel, field, fieldBox;
 
-        if (target !== document && value && !value.length && DocsApp.appMeta.searchHistory && DocsApp.appMeta.searchHistory.length) {
+        if (target !== document && !value.length && DocsApp.appMeta.searchHistory && DocsApp.appMeta.searchHistory.length) {
             panel = ExtL.get('search-history-panel');
             ExtL.removeChildNodes(panel);
 
@@ -1592,16 +1592,11 @@ DocsApp.getEventTarget = function (e) {
         //has css vars (private)                4100 -
         //has css mixins (private)              4200 -
 
-        var len = results.length;
-
-        //ExtL.each(results, function (item) {
-        while (len--) {
-            var item = results[len],
-                searchMatch = item.searchMatch,
+        ExtL.each(results, function (item) {
+            var searchMatch = item.searchMatch,
                 searchValue = item.searchValue,
-                valueRegex  = new RegExp(searchValue, 'i'),
-                classObj    = item.classObj,
-                aliases     = item.classObj.x,
+                classObj = item.classObj,
+                aliases = item.classObj.x,
                 i, aliasPre, aliasPost, member, memberType, memberName, access,
                 targetClassName, classSuffix, types, typesDisp, meta;
 
@@ -1638,11 +1633,7 @@ DocsApp.getEventTarget = function (e) {
 
             // prioritize alias/xtype
             if (aliases && aliases.indexOf(searchMatch) > -1) {
-                var aliasesLen = aliases.length;
-
-                while (aliasesLen--) {
-                //ExtL.each(aliases, function (alias) {
-                    var alias = aliases[aliasesLen];
+                ExtL.each(aliases, function (alias) {
                     i         = alias.indexOf('.');
                     aliasPre  = alias.substring(0, i);
                     aliasPost = alias.substr(i + 1);
@@ -1657,10 +1648,10 @@ DocsApp.getEventTarget = function (e) {
                         if (searchValue.toLowerCase() === aliasPost.toLowerCase()) {
                             item.priority = 5;
                         } else {
-                            item.priority = (aliasPost.search(valueRegex) === 0) ? 100 : 1500;
+                            item.priority = (aliasPost.search(new RegExp(searchValue, 'i')) === 0) ? 100 : 1500;
                         }
                     }
-                };
+                });
             }
 
             // prioritize class / alternate class
@@ -1673,7 +1664,7 @@ DocsApp.getEventTarget = function (e) {
                 if (classSuffix.toLowerCase() === searchValue.toLowerCase()) {
                     item.priority = (classObj.a) ? 2805 : 10;
                 }
-                else if (classSuffix.search(valueRegex) === 0) {
+                else if (classSuffix.search(new RegExp(searchValue, 'i')) === 0) {
                     item.priority = (classObj.a) ? 2900 : 200;
                 } else {
                     item.priority = (classObj.a) ? 3600 : 1600;
@@ -1743,7 +1734,7 @@ DocsApp.getEventTarget = function (e) {
                         item.priority = (access === 'p') ? 65 : ((access === 'o') ? 70 : 2835 );
                     }
                 }
-                else if (memberName.search(valueRegex) === 0) {
+                else if (memberName.search(new RegExp(searchValue, 'i')) === 0) {
                     // configs
                     if (memberType === 'c') {
                         item.priority = (access === 'p') ? 300 : ((access === 'o') ? 400 : 3000 );
@@ -1795,7 +1786,7 @@ DocsApp.getEventTarget = function (e) {
                     }
                 }
             }
-        };
+        });
 
         return DocsApp.sortSearchItems(results);
     };

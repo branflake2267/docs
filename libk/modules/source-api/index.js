@@ -983,8 +983,8 @@ class SourceApi extends Base {
                 'optionalConfigs'
             );
             data.configs.name = 'configs';
+
             this.postProcessConfigs(data);
-            data.hasConfigs = data.requiredConfigs && data.optionalConfigs;
         }
 
         // process properties
@@ -996,7 +996,6 @@ class SourceApi extends Base {
                 'staticProperties'
             );
             data.properties.name = 'properties';
-            data.hasProperties = data.instanceProperties && data.staticProperties;
         }
 
         // process methods
@@ -1012,7 +1011,6 @@ class SourceApi extends Base {
                 data.methods.instanceMethods,
                 'name'
             );
-            data.hasMethods = data.instanceMethods && data.staticMethods;
         }
 
         // now that we have all source files for this class from the class itself and all
@@ -1040,12 +1038,8 @@ class SourceApi extends Base {
     splitMemberGroups (type, data, strA, strB) {
         //this.log(`Begin 'SourceApi.splitMemberGroups'`, 'log');
         let obj = {},
-            a = _.filter(data[strA], (obj) => {
-                return !obj.hide;
-            }),
-            b = _.filter(data[strB], (obj) => {
-                return !obj.hide;
-            });
+            a = data[strA],
+            b = data[strB];
 
         obj['has' + Utils.capitalize(strA)] = !!a.length;
         obj['has' + Utils.capitalize(strB)] = !!b.length;
@@ -1075,7 +1069,6 @@ class SourceApi extends Base {
             prepared[`has${capitalizedType}`] = true;
             this.processMember(className, type, items[i]);
         }
-
         // add hasProperties in case there is a class with only static properties
         //  .. the template wants to know if there are ANY properties
         if (prepared['hasStatic-properties']) {
@@ -1417,8 +1410,7 @@ class SourceApi extends Base {
             classNames  = Object.keys(map),
             i           = 0,
             len         = classNames.length,
-            //toolkit     = this.options.prodVerMeta.toolkit,
-            toolkit     = this.options.toolkit,
+            toolkit     = this.options.prodVerMeta.toolkit,
             searchIndex = this.apiSearchIndex,
             // suffix allows us to combine toolkits in one search
             suffix = toolkit.charAt(0) || '',

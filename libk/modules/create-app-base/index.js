@@ -115,7 +115,7 @@ class AppBase extends SourceGuides {
     run () {
         //this.log(`Begin 'AppBase.run'`, 'info');
         let dt = new Date();
-        return this.runApi()
+        return this.doRunApi()
         .then(this.outputApiSearch.bind(this))
         .then(this.processGuides.bind(this))
         .then(this.outputProductMenu.bind(this))
@@ -131,8 +131,8 @@ class AppBase extends SourceGuides {
      * each toolkit - if applicable)
      */
     // TODO remove events in favor of promises
-    runApi () {
-        //this.log(`Begin 'AppBase.runApi'`, 'info');
+    doRunApi () {
+        //this.log(`Begin 'AppBase.doRunApi'`, 'info');
         let options     = this.options,
             meta        = this.options.prodVerMeta,
             hasApi      = meta.hasApi,

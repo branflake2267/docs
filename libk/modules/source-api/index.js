@@ -263,14 +263,9 @@ class SourceApi extends Base {
     get doxiInputFolderIsEmpty () {
         let dir = this.doxiInputDir;
 
-        if (!Fs.existsSync(dir)) {
+        if (!Fs.existsSync(dir) || this.isEmpty(dir)) {
             return true;
         }
-
-        let files = Fs.readdirSync(dir);
-        files = this.getFilteredFiles(files);
-
-        return files.length === 0;
     }
 
     /**
@@ -392,17 +387,24 @@ class SourceApi extends Base {
      */
     runDoxi () {
         //this.log(`Begin 'SourceApi.runDoxi'`, 'info');
-        let options = this.options,
-            cmd     = this.getCmdPath();
+        let options   = this.options,
+            forceDoxi = options.forceDoxi,
+            cmd       = this.getCmdPath();
+
+        this.syncRemote(
+            this.apiProduct,
+            this.apiSourceDir
+        );
+
+        if (forceDoxi === false) {
+            return;
+        }
 
         // if the `forceDoxi` options is passed or the doxi input directory is empty /
         // missing then run doxi
-        if (this.options.forceDoxi || this.doxiInputFolderIsEmpty) {
-            this.syncRemote(
-                this.apiProduct,
-                this.apiSourceDir
-            );
-
+        if (forceDoxi || this.doxiInputFolderIsEmpty || (this.synced && this.synced[this.apiProduct])) {
+            // empty the folder first before running doxi
+            Fs.emptyDirSync(this.doxiInputDir);
             let path = Shell.pwd();
 
             Shell.cd(this.tempDir);
@@ -446,9 +448,9 @@ class SourceApi extends Base {
             classMap = this.classMap = {};
 
         // if the doxi files have not been created run doxi before proceeding
-        if (this.doxiInputFolderIsEmpty) {
+        /*if (this.doxiInputFolderIsEmpty) {
             this.runDoxi();
-        }
+        }*/
 
         let files = this.getFilteredFiles(Fs.readdirSync(inputDir)),
             i     = 0,
@@ -996,9 +998,6 @@ class SourceApi extends Base {
                 'staticProperties'
             );
             data.properties.name = 'properties';
-            if (data.cls.name === 'Ext.Date') {
-                console.log(data.instanceProperties, data.staticProperties);
-            }
             data.hasProperties = data.instanceProperties || data.staticProperties;
         }
 

@@ -599,9 +599,10 @@ class SourceGuides extends SourceApi {
             if (content) {
                 writeArr.push(
                     new Promise((resolve, reject) => {
-                        let data = Object.assign({}, node);
-                        data     = Object.assign(data, this.options);
-                        data     = Object.assign(data, this.options.prodVerMeta);
+                        //let data = Object.assign({}, node);
+                        let data     = Object.assign({}, this.options);
+                        data         = Object.assign(data, this.options.prodVerMeta);
+                        data         = Object.assign(data, node);
 
                         // prepare the data object to be passed to the guide template
                         data.rootPath       = rootPathDir;

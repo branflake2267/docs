@@ -990,9 +990,6 @@ class SourceApi extends Base {
         }
 
         // process properties
-        if (data.cls.name === 'Ext.ActionSheet') {
-            console.log(data);
-        }
         if (data.hasProperties) {
             data.properties = this.splitMemberGroups(
                 'properties',

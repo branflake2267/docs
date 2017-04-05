@@ -4106,7 +4106,7 @@ DocsApp.getEventTarget = function (e) {
 
         target = DocsApp.getEventTarget(e);
 
-        if (ExtL.is(target, 'a')) {
+        if (ExtL.is(target, 'a') || ExtL.up(target, 'a')) {
             // menuCanClose is a closure variable
             DocsApp.appMeta.menuCanClose = true;
             DocsApp.hideMemberTypeMenu();

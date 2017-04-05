@@ -493,6 +493,9 @@ DocsApp.initRipple = function () {
     DocsApp.initRipplesOn(
         ExtL.fromNodeList(document.querySelectorAll('.da-inline-fiddle-nav-fiddle'))
     );
+    DocsApp.initRipplesOn(
+        ExtL.fromNodeList(document.querySelectorAll('#toggleExamples'));
+    );
 };
 
 /**

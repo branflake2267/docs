@@ -70,6 +70,11 @@ class Base {
 
         this.escapeRegexRe = /([-.*+?\^${}()|\[\]\/\\])/g;
 
+        // initialize an object to indicate when a product is synced.  This allows
+        // successive logic to proceed based on a fresh sync (i.e. Doxi will parse files
+        // anew if the product repo was recently synced)
+        this.synced = {};
+
         this.registerHandlebarsPartials();
         this.registerHandlebarsHelpers();
     }
@@ -208,6 +213,19 @@ class Base {
             title      : meta.title
         });
     }
+
+    /**
+     * Checks to see if a directory is empty
+     * @param {String} dir The directory to check
+     * @return {Boolean} True if the directory is empty
+     */
+    isEmpty (dir) {
+        let files = Fs.readdirSync(dir);
+        files = this.getFilteredFiles(files);
+
+        return files.length === 0;
+    }
+
 
     /**
      * Prepares common data attributes
@@ -1036,8 +1054,13 @@ class Base {
      */
     syncRemote (product, sourceDir) {
         //this.log(`Begin 'Base.syncRemote'`, 'info');
-        let options = this.options,
-            path      = Shell.pwd(),
+        let options = this.options;
+
+        if (options.syncRemote === false) {
+            return;
+        }
+
+        let path      = Shell.pwd(),
             version   = this.apiVersion,
             toolkit   = options.toolkit,
             wToolkit  = version + '-' + (toolkit || product),
@@ -1057,7 +1080,10 @@ class Base {
         }
 
         // only sync to a remote if syncRemote is true
-        if (options.syncRemote || !Fs.existsSync(sourceDir) || (branch && branch !== Git.branchSync(sourceDir))) {
+        // or the source dir is missing
+        // or it's empty
+        // or it's not empty, but this product has a target branch and the branch it's currently on doesn't match
+        //if (options.syncRemote || !Fs.existsSync(sourceDir) || this.isEmpty(sourceDir) || (branch && branch !== Git.branchSync(sourceDir))) {
             // if the api source directory doesn't exist (may or may not be within the
             // repos directory) then create the repos directory and clone the remote
             if (!Fs.existsSync(sourceDir)) {
@@ -1087,10 +1113,6 @@ class Base {
             this.log(`Checkout out main branch: ${branch}`);
             Shell.exec(`git checkout ${branch}`);
 
-            // and pull latest
-            // TODO is this step necessary?  Maybe when switching between versions on different runs of "read-source"?
-            Shell.exec('git pull');
-
             // if there is a tag to use for this version then switch off of head over to the
             // tagged branch
             if (tag) {
@@ -1098,9 +1120,17 @@ class Base {
                 Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
             }
 
+            // pull latest
+            let pullResp = Shell.exec('git pull');
+
+            // if pull updated the local repo then indicate that this product was synced
+            if (!pullResp.stdout.includes('Already up-to-date')) {
+                this.synced[product] = true;
+            }
+
             // get back to the original working directory
             Shell.cd(path);
-        }
+        //}
     }
 }
 

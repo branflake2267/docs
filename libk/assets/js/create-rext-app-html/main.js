@@ -494,7 +494,7 @@ DocsApp.initRipple = function () {
         ExtL.fromNodeList(document.querySelectorAll('.da-inline-fiddle-nav-fiddle'))
     );
     DocsApp.initRipplesOn(
-        ExtL.fromNodeList(document.querySelectorAll('#toggleExamples'));
+        ExtL.fromNodeList(document.querySelectorAll('#toggleExamples'))
     );
 };
 

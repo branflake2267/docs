@@ -1599,7 +1599,6 @@ class SourceApi extends Base {
      * @return {Object} The sorted API tree
      */
     sortTrees (apiTrees) {
-        //let len      = apiTrees.length,
         let treeKeys = Object.keys(apiTrees),
             len      = treeKeys.length,
             apiTree;
@@ -1626,29 +1625,55 @@ class SourceApi extends Base {
     }
 
     /**
-     *
+     * Decorates parent nodes as private if all child nodes are private
+     * @param {Array} nodes The array of nodes to process
+     * @param {Object} parent The parent node of the `nodes` array param.  Will be
+     * undefined if the root nodes of the tree are being processed.
      */
     decoratePrivateNodes (nodes, parent) {
-        let len         = nodes.length,
-            startingLen = len;
-
+        // initially we'll mark the parent node as private and later change it to public
+        // if there are public children
         if (parent) {
             parent.access = 'private';
         }
 
+        let len         = nodes.length,
+            startingLen = len;
+
+        // loop over all passed nodes
         while (len--) {
             let node     = nodes[len],
                 children = node.children;
 
+            // cache a reference to the parent node on each node for later use
+            node.parentNode = parent;
+
+            // if the node has children then process them first before proceeding with
+            // the current node
             if (children) {
                 this.decoratePrivateNodes(children, node);
             } else {
-                if (node.access !== 'private') {
-                    if (parent) {
-                        delete parent.access;
+                // if the node has a parent then walk up the tree node's hierarchy and
+                // with each parent node we'll evaluate all of its children and if it has
+                // any public items then we'll mark the current parent node as public
+                if (parent) {
+                    while (parent) {
+                        let access = 'private';
+
+                        parent.children.forEach(child => {
+                            if (child.access !== 'private') {
+                                access = 'public';
+                            }
+                        });
+
+                        parent.access = access;
+                        parent = parent.parentNode;
                     }
                 }
             }
+            // finally, we'll delete the reference to the parent node else JSON.stringify
+            // will fail as it's trying to stringify a circular reference
+            delete node.parentNode;
         }
     }
 
@@ -1662,7 +1687,15 @@ class SourceApi extends Base {
             let apiTrees = this.apiTrees,
                 apiTree  = this.sortTrees(apiTrees);
 
-            this.decoratePrivateNodes(apiTree);
+            // process all trees and indicate parent nodes as private if all child nodes
+            // are
+            if (_.isArray(apiTree.API)) {
+                this.decoratePrivateNodes(apiTree.API);
+            } else {
+                Object.keys(apiTree.API).forEach(key => {
+                    this.decoratePrivateNodes(apiTree.API[key]);
+                });
+            }
 
             apiTree = JSON.stringify(apiTree, null, 4);
 

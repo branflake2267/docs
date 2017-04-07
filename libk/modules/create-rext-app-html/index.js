@@ -30,6 +30,7 @@ const words = [
     'view',
     'field',
     'data',
+    'editable',
     'table',
     'color',
     'picker',
@@ -550,7 +551,13 @@ class ExtReactHtmlApp extends HtmlApp {
             // if the class has an alias then we'll use a camelized version of the alias
             // as the class 'name' and the class name will display as an alias
             if (alias) {
-                cls.name      = this.camelize(alias);
+                alias = alias.split(',')[0];
+                if (cls.aliasPrefix === 'xtype') {
+                    cls.name = this.camelize(alias);
+                } else {
+                    alias = alias.split('.');
+                    cls.name = this.camelize(alias[alias.length - 1]);
+                }
                 cls.aliasName = name;
                 delete cls.aliasPrefix;
             }

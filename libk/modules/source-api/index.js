@@ -573,13 +573,14 @@ class SourceApi extends Base {
      *  - component
      *  - singleton
      *  - class
+     * @param {Object} apiTree The tree to add the classname / node to
+     * @param {String} [idSuffix] An optional suffix to add to the node id
      */
-    addToApiTree (className, icon) {
+    addToApiTree (className, icon, apiTree, idSuffix='') {
         //this.log(`Begin 'SourceApi.addToApiTree'`, 'info');
         let nameArray   = className.split('.'),
             elementsLen = nameArray.length,
-            apiDirName  = this.apiDirName,
-            apiTree     = this.getApiTree(className);
+            apiDirName  = this.apiDirName;
 
         // process all parts of the class name (each string in the .-separated full class
         // name)
@@ -606,7 +607,7 @@ class SourceApi extends Base {
                     name        : name,
                     text        : name,
                     navTreeName : 'api',
-                    id          : id,
+                    id          : id + idSuffix,
                     leaf        : leaf,
                 };
 
@@ -786,11 +787,12 @@ class SourceApi extends Base {
             let className = classNames[i],
                 // the prepared object is the one that has been created by
                 // `createSrcFileMap` and will be processed in `decorateClass`
-                prepared = classMap[className].prepared;
+                prepared = classMap[className].prepared,
+                apiTree  = this.getApiTree(className);
 
             this.decorateClass(className);
 
-            this.addToApiTree(className, prepared.cls.clsSpecIcon);
+            this.addToApiTree(className, prepared.cls.clsSpecIcon, apiTree);
         }
     }
 

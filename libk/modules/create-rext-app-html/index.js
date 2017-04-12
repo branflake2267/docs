@@ -609,6 +609,30 @@ class ExtReactHtmlApp extends HtmlApp {
             }
 
             prepared.myMeta.pageName = cls.name;
+
+            // remove select properties for the ExtReact output
+            let configs = prepared.configs;
+
+            if (configs) {
+                let blacklist = [
+                    'items',
+                    'defaultType',
+                    'control',
+                    'renderTo',
+                    'weighted'
+                ];
+
+                if (configs.hasOptionalConfigs) {
+                    _.remove(configs.optionalConfigs, item => {
+                        return blacklist.includes(item.name);
+                    });
+                }
+                if (configs.hasRequiredConfigs) {
+                    _.remove(configs.requiredConfigs, item => {
+                        return blacklist.includes(item.name);
+                    });
+                }
+            }
         }
     }
 

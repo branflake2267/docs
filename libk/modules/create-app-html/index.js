@@ -383,7 +383,7 @@ class HtmlApp extends AppBase {
         //console.log(Path.join(rootPath, product, version, toolkit, `${className}.html`));
         //console.log(relPath);
 
-        return `<a href="${href}" class="link underline-hover blue">${text}</a>`;
+        return `<a href="${href}">${text}</a>`;
     }
 
     /**

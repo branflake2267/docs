@@ -231,6 +231,8 @@ class ExtReactHtmlApp extends HtmlApp {
         super(options);
 
         this.options.prodVerMeta.toolkit = 'modern';
+
+        this.componentNameMap = {};
     }
 
     /**
@@ -426,6 +428,125 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * Populates the componentNameMap property with the full class name and component
+     * name pairings.  The map is used to replace the displayed names of ExtReact class
+     * names with their simplified names
+     */
+    createComponentNameMap () {
+        let classMap   = this.classMap,
+            classNames = Object.keys(classMap),
+            //i          = 0,
+            len        = classNames.length,
+            names      = this.componentClassNames,
+            map        = this.componentNameMap;
+
+        while (len--) {
+            let className = classNames[len];
+
+            if (names.includes(className)) {
+                let prepared = classMap[className].prepared,
+                    alias    = prepared.alias;
+
+                if (alias) {
+                    let aliases   = alias.split(','),
+                        len       = aliases.length,
+                        i         = 0,
+                        aliasList = [];
+
+                    // if the class has an alias then we'll use a camelized version of
+                    // the alias as the class 'name' and the class name will display as
+                    // an alias
+                    for (; i < len; i++) {
+                        let fullAlias     = aliases[i],
+                            separatorIdx  = fullAlias.indexOf('.'),
+                            prefix        = fullAlias.substring(0, separatorIdx),
+                            name          = fullAlias.substring(separatorIdx + 1);
+
+                        if (prefix === 'widget' || prefix === 'widget') {
+                            name = this.camelize(name);
+                        } else {
+                            name = fullAlias.split('.');
+                            name = this.camelize(name[name.length - 1]);
+                        }
+                        aliasList.push({
+                            prefix : prefix,
+                            name   : name
+                        });
+                    }
+
+                    map[className] = aliasList;
+                }
+
+                /*let alias  = cls.aliasName,
+                    name   = cls.name,
+                    events = prepared.events;
+
+                // if the class has an alias then we'll use a camelized version of the alias
+                // as the class 'name' and the class name will display as an alias
+                if (alias) {
+                    alias = alias.split(',')[0];
+                    if (cls.aliasPrefix === 'xtype') {
+                        cls.name = this.camelize(alias);
+                    } else {
+                        alias = alias.split('.');
+                        cls.name = this.camelize(alias[alias.length - 1]);
+                    }
+                    cls.aliasName = name;
+                    delete cls.aliasPrefix;
+                }
+
+                // set the config and property names to match what React users would expect
+                if (prepared.configs) {
+                    prepared.configs.name    = 'props';
+                }
+                if (prepared.properties) {
+                    prepared.properties.name = 'fields';
+                }
+
+                // if there are events on the class camelize them and prefix with 'on' to
+                // match React event name convention
+                if (events) {
+                    let len = events.length;
+
+                    while (len--) {
+                        let event          = events[len];
+
+                        event.name         = `on${this.camelize(event.name)}`;
+                        event.returnPrefix = ' => ';
+                        event.paramsPrefix = ': function';
+                    }
+                }
+
+                prepared.myMeta.pageName = cls.name;
+
+                // remove select properties for the ExtReact output
+                let configs = prepared.configs;
+
+                if (configs) {
+                    let blacklist = [
+                        'items',
+                        'defaultType',
+                        'control',
+                        'renderTo',
+                        'weighted'
+                    ];
+
+                    if (configs.hasOptionalConfigs) {
+                        _.remove(configs.optionalConfigs, item => {
+                            return blacklist.includes(item.name);
+                        });
+                    }
+                    if (configs.hasRequiredConfigs) {
+                        _.remove(configs.requiredConfigs, item => {
+                            return blacklist.includes(item.name);
+                        });
+                    }
+                }*/
+            }
+        }
+    }
+
+    /**
      * Outputs all class files from the Doxi processing (and any post-processing from
      * source-api) by passing the classname and class object to {@link #outputApiFile}
      * @return {Object} A Promise that processes all class files and calls to
@@ -433,7 +554,6 @@ class ExtReactHtmlApp extends HtmlApp {
      */
     processApiFiles () {
         //this.log(`Begin 'SourceApi.processApiFiles'`, 'info');
-        //super.processApiFiles();
 
         let classMap   = this.classMap,
             classNames = Object.keys(classMap),
@@ -441,9 +561,8 @@ class ExtReactHtmlApp extends HtmlApp {
             len        = classNames.length,
             names      = this.componentClassNames;
 
-        // reset the apiTree property on each processApiFiles run since this module
-        // instance is reused between toolkits
-        //this.apiTree = this.apiTrees[this.apiDirName] = [];
+        //create the component name / class name map
+        this.createComponentNameMap();
 
         // loops through all class names from the classMap
         for (; i < len; i++) {
@@ -568,13 +687,14 @@ class ExtReactHtmlApp extends HtmlApp {
             names    = this.componentClassNames;
 
         if (names.includes(className)) {
-            let alias  = cls.aliasName,
+            //let alias  = cls.aliasName,
+            let alias  = this.componentNameMap[className],
                 name   = cls.name,
                 events = prepared.events;
 
             // if the class has an alias then we'll use a camelized version of the alias
             // as the class 'name' and the class name will display as an alias
-            if (alias) {
+            /*if (alias) {
                 alias = alias.split(',')[0];
                 if (cls.aliasPrefix === 'xtype') {
                     cls.name = this.camelize(alias);
@@ -582,6 +702,18 @@ class ExtReactHtmlApp extends HtmlApp {
                     alias = alias.split('.');
                     cls.name = this.camelize(alias[alias.length - 1]);
                 }
+                cls.aliasName = name;
+                delete cls.aliasPrefix;
+            }*/
+            if (alias && alias.length) {
+                /*alias = alias.split(',')[0];
+                if (cls.aliasPrefix === 'xtype') {
+                    cls.name = this.camelize(alias);
+                } else {
+                    alias = alias.split('.');
+                    cls.name = this.camelize(alias[alias.length - 1]);
+                }*/
+                cls.name = alias[0].name;
                 cls.aliasName = name;
                 delete cls.aliasPrefix;
             }
@@ -669,8 +801,70 @@ class ExtReactHtmlApp extends HtmlApp {
                 link += '.html';
             }
 
+            // replace canonical class names with ExtReact names
+            text = this.replaceWithComponentName(text);
+
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });
+    }
+
+    /**
+     * Replaces the passed string with an ExtReact component name from the
+     * componentNameMap property if a match is found
+     * @param {String} str The string to match with
+     * @return {String} The ExtReact component name if a match is found in the
+     * componentNameMap or the original string param if not
+     */
+    replaceWithComponentName (str) {
+        let map = this.componentNameMap,
+            ref = map.hasOwnProperty(str) && map[str];
+
+        if (ref && ref.length) {
+            str = ref[0].name;
+        }
+        return str;
+    }
+
+    /**
+     * @method createLink
+     * @param href
+     * @param text
+     */
+    createLink (href, text) {
+        text = this.replaceWithComponentName(text);
+        return super.createLink(href, text);
+    }
+
+    /**
+     * @param {String} suffix A suffix to append to the search key.  Helpful when you are
+     * combining multiple search results together.
+     */
+    getApiSearch () {
+        let search = super.getApiSearch(),
+            keys   = Object.keys(search),
+            len    = keys.length,
+            map    = this.componentNameMap;
+
+        while (len--) {
+            let searchObj = search[keys[len]],
+                clsName   = searchObj.n,
+                ref       = map.hasOwnProperty(clsName) && map[clsName];
+
+            if (ref && ref.length) {
+                let aliases = [],
+                    refLen  = ref.length;
+
+                while (refLen--) {
+                    let aliasObj = ref[refLen];
+
+                    aliases.push(`${aliasObj.prefix}.${aliasObj.name}`);
+                }
+
+                searchObj.x = aliases;
+            }
+        }
+
+        return search;
     }
 
     /**

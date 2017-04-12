@@ -426,22 +426,46 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
-     * Adds the class to either the API tree or the "Components" tree depending on
-     * whether the class name being processed is in the Components list or not
-     * @param {String} className The class name being added to the navigation tree
-     * @param {String} icon The icon to use for this class in the tree
+     * Outputs all class files from the Doxi processing (and any post-processing from
+     * source-api) by passing the classname and class object to {@link #outputApiFile}
+     * @return {Object} A Promise that processes all class files and calls to
+     * `outputApiFile`
      */
-    addToApiTree (className, icon) {
-        let names  = this.componentClassNames,
-            inList = names.includes(className);
+    processApiFiles () {
+        //this.log(`Begin 'SourceApi.processApiFiles'`, 'info');
+        //super.processApiFiles();
 
-        if (!inList) {
-            super.addToApiTree(className, icon);
-        } else {
-            let componentsList = this.componentList,
-                treeCfg = componentsList[className];
+        let classMap   = this.classMap,
+            classNames = Object.keys(classMap),
+            i          = 0,
+            len        = classNames.length,
+            names      = this.componentClassNames;
 
-            super.addToApiTree(treeCfg, icon);
+        // reset the apiTree property on each processApiFiles run since this module
+        // instance is reused between toolkits
+        //this.apiTree = this.apiTrees[this.apiDirName] = [];
+
+        // loops through all class names from the classMap
+        for (; i < len; i++) {
+            let className = classNames[i],
+                // the prepared object is the one that has been created by
+                // `createSrcFileMap` and will be processed in `decorateClass`
+                prepared  = classMap[className].prepared,
+                apiTree   = this.getApiTree(className),
+                inList    = names.includes(className);
+
+            this.decorateClass(className);
+            let icon = prepared.cls.clsSpecIcon;
+
+            if (!inList) {
+                this.addToApiTree(className, icon, apiTree);
+            } else {
+                let componentsList = this.componentList,
+                    treeCfg = componentsList[className];
+
+                this.addToApiTree(treeCfg, icon, apiTree);
+                this.addToApiTree(className, icon, this.apiTrees.API, '-placeholder');
+            }
         }
     }
 

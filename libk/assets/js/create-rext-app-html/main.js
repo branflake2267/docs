@@ -243,6 +243,32 @@ DocsApp.toggleNavHeaders = function (e) {
 };
 
 /**
+ * // override
+ */
+DocsApp.showMultiSrcPanel = function (e) {
+    // Normally a class with multiple sources would show a menu of source files when the
+    // class name / view source is clicked.  However, if the class is an ExtReact
+    // component then we want to suppress showing the source menu as the source is just
+    // comments.
+    if (ExtL.hasCls(document.body, 'extreact-component')) {
+        return;
+    }
+
+    var target    = DocsApp.getEventTarget(e),
+        //picker    = ExtL.get('multi-src-picker'),
+        picker    = DocsApp.getMultiSrcPanel(),
+        targetBox = target.getBoundingClientRect();
+
+    if (picker) {
+        ExtL.applyStyles(picker, {
+            top  : targetBox.bottom + 'px',
+            left : targetBox.left + 'px'
+        });
+        ExtL.addCls(picker, 'show-multi');
+    }
+};
+
+/**
  * Initialize the header-click listeners to expand / collapse the nav sections
  */
 DocsApp.initNavTreeEventListeners = function () {

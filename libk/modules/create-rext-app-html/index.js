@@ -775,7 +775,22 @@ class ExtReactHtmlApp extends HtmlApp {
                     });
                 }
             }
+
+            prepared.addlBodyCls  = 'extreact-component';
+            prepared.cls.multiSrc = true;
         }
+    }
+
+    /**
+     * // override
+     * Process the raw class member object from Doxi for consumption by the HTML docs or
+     * @param {String} className The name of the class that the members belong to
+     * @param {String} type The type of member being processed
+     * @param {Object} member The member object to process
+     */
+    processMember (className, type, member) {
+        super.processMember(className, type, member);
+        member.srcClassText = this.replaceWithComponentName(member.srcClassText);
     }
 
     /**

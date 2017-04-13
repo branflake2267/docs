@@ -468,12 +468,14 @@ class SourceApi extends Base {
                         if (err) {
                             reject(err);
                         }
-                        let clsObj  = cls.global.items[0], // the class obj
+                        let clsObj    = cls.global.items[0], // the class obj
+                            type      = clsObj.$type,        // the class type (class or enum)
+                            validType = type === 'class' || type === 'enum',
                             // the index in the files list where the class is primarily sourced
-                            srcIdx  = (clsObj.src.text || clsObj.src.name).substring(0, 1),
+                            srcIdx    = (clsObj.src.text || clsObj.src.name).substring(0, 1),
                             // the path of the class source from the SDK
                             // TODO this is a crutch for now - need doxi to give us the source class (classes)
-                            srcPath = cls.files[srcIdx];
+                            srcPath   = cls.files[srcIdx];
 
                         // add all source files for this class to the master source file map
                         this.mapSrcFiles(cls.files || []);
@@ -481,11 +483,11 @@ class SourceApi extends Base {
                         // if the current file is a "class" file then cache the contents in the
                         // source file hash
                         // Supports #addAnchors
-                        if (clsObj.$type === 'class') {
+                        if (validType) {
                             map[srcPath].input = cls;
                         }
 
-                        if (clsObj.$type === 'class') {
+                        if (validType) {
                             let prepared = Object.assign({}, clsObj);
                             delete prepared.items;
 
@@ -792,7 +794,14 @@ class SourceApi extends Base {
 
             this.decorateClass(className);
 
-            this.addToApiTree(className, prepared.cls.clsSpecIcon, apiTree);
+            // the class could be marked as skip=true if it's not something we wish to
+            // process after running it through decorateClass.  i.e. an enums class with
+            // no properties is empty so is skipped
+            if (classMap[className].skip) {
+                delete classMap[className];
+            } else {
+                this.addToApiTree(className, prepared.cls.clsSpecIcon, apiTree);
+            }
         }
     }
 
@@ -1017,6 +1026,19 @@ class SourceApi extends Base {
                 'name'
             );
             data.hasMethods = !!data.instanceMethods || !!data.staticMethods;
+        }
+
+        // processes any enum type classes
+        if (cls.$type === 'enum') {
+            // if the class has properties find the first one for use in the template output
+            if (data.hasProperties) {
+                let propertiesObj = data.properties,
+                    properties    = propertiesObj.hasInstanceProperties ? propertiesObj.instanceProperties : propertiesObj.staticProperties;
+
+                data.enumProperty = properties[0].name;
+            } else { // else mark this class as one to skip further processing on
+                classMap[className].skip = true;
+            }
         }
 
         // now that we have all source files for this class from the class itself and all
@@ -1744,6 +1766,9 @@ class SourceApi extends Base {
             // time stamp and log status
             //this.openStatus('Create source HTML files');
 
+            _.remove(keys, item => {
+                return item.path.includes('/enums/');
+            });
 
             // loop over the source file paths and HTML-ify them
             this.processQueue(keys, __dirname + '/htmlify.js', (items) => {

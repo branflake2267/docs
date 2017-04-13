@@ -574,16 +574,21 @@ class ExtReactHtmlApp extends HtmlApp {
                 inList    = names.includes(className);
 
             this.decorateClass(className);
-            let icon = prepared.cls.clsSpecIcon;
 
-            if (!inList) {
-                this.addToApiTree(className, icon, apiTree);
+            if (classMap[className].skip) {
+                delete classMap[className];
             } else {
-                let componentsList = this.componentList,
-                    treeCfg = componentsList[className];
+                let icon = prepared.cls.clsSpecIcon;
 
-                this.addToApiTree(treeCfg, icon, apiTree);
-                this.addToApiTree(className, icon, this.apiTrees.API, '-placeholder');
+                if (!inList) {
+                    this.addToApiTree(className, icon, apiTree);
+                } else {
+                    let componentsList = this.componentList,
+                        treeCfg = componentsList[className];
+
+                    this.addToApiTree(treeCfg, icon, apiTree);
+                    this.addToApiTree(className, icon, this.apiTrees.API, '-placeholder');
+                }
             }
         }
     }

@@ -3356,7 +3356,7 @@ DocsApp.getEventTarget = function (e) {
 
         ExtL.removeCls(ExtL.get('tree-header'), 'pre-load');
 
-        //DocsApp.fetchState(true);
+        DocsApp.fetchState(true);
 
         if (DocsApp.meta.pageType === 'api') {
             // force a scroll response at load for browsers that don't fire the scroll
@@ -3453,7 +3453,7 @@ DocsApp.getEventTarget = function (e) {
         DocsApp.getSearchResultsCt().onclick = DocsApp.onResultsCtClick;
 
         DocsApp.initEventHandlers();
-        DocsApp.fetchState(true);
+        //DocsApp.fetchState(true);
 
         DocsApp.appMeta.allowSave = true;
 

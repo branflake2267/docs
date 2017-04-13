@@ -1257,11 +1257,12 @@ class SourceApi extends Base {
         }
 
         // find the source class and note whether the member comes from an ancestor class
-        member.srcClass = member.from || clsName;
-        member.isInherited = member.srcClass !== clsName;
-        member.hide = member.fromObject = member.from === 'Object';
+        member.srcClass     = member.from || clsName;
+        member.srcClassText = member.srcClass;
+        member.isInherited  = member.srcClass !== clsName;
+        member.hide         = member.fromObject = member.from === 'Object';
         // TODO is this necessary if all of the $types are correct by the time we get here?
-        member.linkType = member.$type;
+        member.linkType     = member.$type;
 
         // TODO is this necessary if all of the $types are correct by this time?
         if (member.static) {
@@ -1290,24 +1291,6 @@ class SourceApi extends Base {
 
         member.access = member.access || 'public';
         member.accessMini = member.access.substr(0, 3);
-
-        // TODO - is this needed?  In the original I'm not sure where this is being used.  Thought it was for search, but now I'm not sure
-        /*if (!member.from) {
-            let extras;
-
-            if (member.removedVersion) {
-                extras = 'r';
-            } else if (member.deprecatedVersion) {
-                extras = 'd';
-            } else if (member.static) {
-                extras = 's';
-            } else if (member.readonly) {
-                extras = 'ro';
-            }
-
-            // cache the shortcut name for the member access level
-            acc = member.access === 'private' ? 'i' : (member.access === 'protected' ? 'o' : 'p');
-        }*/
 
         if (member.static === true) {
             member.$type = 'static-' + member.$type;

@@ -794,6 +794,9 @@ class SourceApi extends Base {
 
             this.decorateClass(className);
 
+            // the class could be marked as skip=true if it's not something we wish to
+            // process after running it through decorateClass.  i.e. an enums class with
+            // no properties is empty so is skipped
             if (classMap[className].skip) {
                 delete classMap[className];
             } else {
@@ -1025,14 +1028,15 @@ class SourceApi extends Base {
             data.hasMethods = !!data.instanceMethods || !!data.staticMethods;
         }
 
+        // processes any enum type classes
         if (cls.$type === 'enum') {
+            // if the class has properties find the first one for use in the template output
             if (data.hasProperties) {
                 let propertiesObj = data.properties,
                     properties    = propertiesObj.hasInstanceProperties ? propertiesObj.instanceProperties : propertiesObj.staticProperties;
 
                 data.enumProperty = properties[0].name;
-            }
-            if (!data.enumProperty) {
+            } else { // else mark this class as one to skip further processing on
                 classMap[className].skip = true;
             }
         }

@@ -575,6 +575,9 @@ class ExtReactHtmlApp extends HtmlApp {
 
             this.decorateClass(className);
 
+            // the class could be marked as skip=true if it's not something we wish to
+            // process after running it through decorateClass.  i.e. an enums class with
+            // no properties is empty so is skipped
             if (classMap[className].skip) {
                 delete classMap[className];
             } else {

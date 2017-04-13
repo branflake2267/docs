@@ -286,8 +286,20 @@ class ExtReactHtmlApp extends HtmlApp {
         let names = this._componentClassNames;
 
         if (!names) {
-            let list = this.componentList;
+            let list        = this.componentList,
+                map         = this.classMap,
+                classNames  = Object.keys(map),
+                len;
+
             names = this._componentClassNames = Object.keys(list);
+
+            len = names.length;
+
+            while (len--) {
+                if (!classNames.includes(names[len])) {
+                    this.log(names[len] + " appears in components.json, but does not exist", 'info');
+                }
+            }
         }
 
         return names;
@@ -605,16 +617,6 @@ class ExtReactHtmlApp extends HtmlApp {
      * @return {Object[]} The sorted array
      */
     simpleSortNodes (nodes) {
-        //this.log(`Begin 'SourceApi.sortNodes'`, 'info');
-        /*return nodes.sort((a, b) => {
-            if (a.name > b.name) {
-                return 1;
-            }
-            if (a.name < b.name) {
-                return -1;
-            }
-            return 0;
-        });*/
         return _.orderBy(nodes, ['name'], ['asc']);
     }
 

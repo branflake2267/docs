@@ -3701,7 +3701,7 @@ DocsApp.getEventTarget = function (e) {
                         html : child.text
                     }, {
                         tag  : 'a',
-                        href : '#',
+                        href : DocsApp.meta.docsRootPath + 'downloads/' + child.path.replace(/\//g, '-').replace(/\./g, '') + '-docs.zip',
                         html : '(offline docs)'
                     }]
                 });

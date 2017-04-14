@@ -1353,7 +1353,10 @@ class SourceApi extends Base {
                         access       : g ? g.access : config.access,
                         text         : 'see: <a href="#method-' + getterName + '">' + config.name + '</a>',
                         isInherited  : g ? g.isInherited : config.isInherited,
-                        isAutoGetter : !g
+                        isAutoGetter : !g,
+                        srcLink      : config.srcLink,
+                        srcClass     : config.srcClass,
+                        srcClassText : config.srcClassText
                     };
 
                 // if the getter came from the instance methods directly
@@ -1384,7 +1387,10 @@ class SourceApi extends Base {
                         access       : s ? s.access : config.access,
                         text         : 'see: <a href="#method-' + setterName + '">' + config.name + '</a>',
                         isInherited  : s ? s.isInherited : config.isInherited,
-                        isAutoSetter : !s
+                        isAutoSetter : !s,
+                        srcLink      : config.srcLink,
+                        srcClass     : config.srcClass,
+                        srcClassText : config.srcClassText
                     };
 
                 // if the getter came from the instance methods directly

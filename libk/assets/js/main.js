@@ -849,7 +849,7 @@ DocsApp.getEventTarget = function (e) {
      * combination is checked.
      */
     DocsApp.filterByAccess = function () {
-        var publicCheckbox    = ExtL.get('publicCheckbox'),
+        /*var publicCheckbox    = ExtL.get('publicCheckbox'),
             protectedCheckbox = ExtL.get('protectedCheckbox'),
             privateCheckbox   = ExtL.get('privateCheckbox'),
             inheritedCheckbox = ExtL.get('inheritedCheckbox'),
@@ -865,6 +865,42 @@ DocsApp.getEventTarget = function (e) {
         ExtL.toggleCls(membersCt, protectedCls, protectedCheckbox.checked === true);
         ExtL.toggleCls(membersCt, privateCls, privateCheckbox.checked === true);
         ExtL.toggleCls(membersCt, inheritedCls, inheritedCheckbox.checked === true);
+
+        DocsApp.setTypeNavAndHeaderVisibility();
+        DocsApp.highlightTypeMenuItem();*/
+        var publicCheckbox    = ExtL.get('publicCheckbox'),
+            publicChecked     = publicCheckbox && publicCheckbox.checked,
+            protectedCheckbox = ExtL.get('protectedCheckbox'),
+            protectedChecked  = protectedCheckbox && protectedCheckbox.checked,
+            privateCheckbox   = ExtL.get('privateCheckbox'),
+            privateChecked    = privateCheckbox && privateCheckbox.checked,
+            inheritedCheckbox = ExtL.get('inheritedCheckbox'),
+            inheritedChecked  = inheritedCheckbox && inheritedCheckbox.checked,
+            readonlyCheckbox  = ExtL.get('readonlyCheckbox'),
+            readonlyChecked   = readonlyCheckbox && readonlyCheckbox.checked,
+            membersCt         = ExtL.get('rightMembers'),
+            rows              = ExtL.fromNodeList(membersCt.querySelectorAll('.classmembers')),
+            rowsLen           = rows.length,
+            row, isPublic, isPrivate, isProtected,
+            isInherited, hasReadOnly, isReadOnly;
+
+        DocsApp.resetTempShownMembers();
+
+        while (rowsLen--) {
+            row         = rows[rowsLen];
+            isPublic    = publicChecked    && ExtL.hasCls(row, 'member-public');
+            isProtected = protectedChecked && ExtL.hasCls(row, 'member-protected');
+            isPrivate   = privateChecked   && ExtL.hasCls(row, 'member-private');
+            isInherited = ExtL.hasCls(row, 'is-not-inherited') || inheritedChecked === ExtL.hasCls(row, 'isInherited');
+            hasReadOnly = !!row.querySelector('.readonly')
+            isReadOnly  = !hasReadOnly || readonlyChecked  === hasReadOnly;
+
+            if ((isPublic || isProtected || isPrivate) && isInherited && isReadOnly) {
+                ExtL.removeCls(row, 'hide');
+            } else {
+                ExtL.addCls(row, 'hide');
+            }
+        }
 
         DocsApp.setTypeNavAndHeaderVisibility();
         DocsApp.highlightTypeMenuItem();
@@ -4293,10 +4329,11 @@ DocsApp.getEventTarget = function (e) {
             // expand / collapse the related classes
 
             // show / hide public, protected, and private members
-            ExtL.get('publicCheckbox').onclick= DocsApp.onAccessCheckboxClick;
-            ExtL.get('protectedCheckbox').onclick= DocsApp.onAccessCheckboxClick;
-            ExtL.get('privateCheckbox').onclick= DocsApp.onAccessCheckboxClick;
-            ExtL.get('inheritedCheckbox').onclick= DocsApp.onAccessCheckboxClick;
+            ExtL.get('publicCheckbox').onclick    = DocsApp.onAccessCheckboxClick;
+            ExtL.get('protectedCheckbox').onclick = DocsApp.onAccessCheckboxClick;
+            ExtL.get('privateCheckbox').onclick   = DocsApp.onAccessCheckboxClick;
+            ExtL.get('inheritedCheckbox').onclick = DocsApp.onAccessCheckboxClick;
+            ExtL.get('readonlyCheckbox').onclick  = DocsApp.onAccessCheckboxClick;
 
             // show / hide private classes
             ExtL.get('private-class-toggle').onclick = DocsApp.onFilterClassCheckboxToggle;
@@ -4380,6 +4417,7 @@ DocsApp.getEventTarget = function (e) {
             protectedCheckbox    = ExtL.get('protectedCheckbox'),
             privateCheckbox      = ExtL.get('privateCheckbox'),
             inheritedCheckbox    = ExtL.get('inheritedCheckbox'),
+            readonlyCheckbox     = ExtL.get('readonlyCheckbox'),
             privateClassCheckbox = ExtL.get('private-class-toggle'),
             historyType          = ExtL.get('historyTypeCurrent'),
             historyLabelCheckbox = ExtL.get('history-all-labels'),
@@ -4411,6 +4449,10 @@ DocsApp.getEventTarget = function (e) {
 
         if (inheritedCheckbox) {
             state.inheritedCheckbox = inheritedCheckbox.checked;
+        }
+
+        if (readonlyCheckbox) {
+            state.readonlyCheckbox = readonlyCheckbox.checked;
         }
 
         if (privateClassCheckbox) {
@@ -4482,6 +4524,7 @@ DocsApp.getEventTarget = function (e) {
             protectedCheckbox    = ExtL.get('protectedCheckbox'),
             privateCheckbox      = ExtL.get('privateCheckbox'),
             inheritedCheckbox    = ExtL.get('inheritedCheckbox'),
+            readonlyCheckbox     = ExtL.get('readonlyCheckbox'),
             privateClassCheckbox = ExtL.get('private-class-toggle'),
             historyTypeCurrent   = ExtL.get('historyTypeCurrent'),
             historyTypeAll       = ExtL.get('historyTypeAll'),
@@ -4512,6 +4555,9 @@ DocsApp.getEventTarget = function (e) {
         }
         if (inheritedCheckbox) {
             inheritedCheckbox.checked = state.inheritedCheckbox !== false;
+        }
+        if (readonlyCheckbox) {
+            readonlyCheckbox.checked = state.readonlyCheckbox !== false;
         }
         if (privateClassCheckbox) {
             privateClassCheckbox.checked = state.privateClassCheckbox === true;

@@ -946,11 +946,12 @@ class ExtReactHtmlApp extends HtmlApp {
                             name         : getterName,
                             $type        : 'method',
                             access       : config.access,
-                            text         : `<p>Sets the value of ${name}</p>`,
+                            text         : `<p>Sets the value of <a href="#cfg-${name}">${name}</a></p>`,
                             isInherited  : config.isInherited,
                             type         : config.type,
                             isAutoGetter : !g,
                             srcClass     : config.srcClass,
+                            srcClassText : config.srcClassText,
                             srcLink      : config.srcLink
                         };
 
@@ -976,7 +977,7 @@ class ExtReactHtmlApp extends HtmlApp {
                             name         : setterName,
                             $type        : 'method',
                             access       : config.access,
-                            text         : `<p>Returns the value of ${name}</p>`,
+                            text         : `<p>Returns the value of <a href="#cfg-${name}">${name}</a></p>`,
                             isInherited  : config.isInherited,
                             isAutoSetter : !s,
                             listParams   : true,
@@ -984,6 +985,7 @@ class ExtReactHtmlApp extends HtmlApp {
                                 name : name
                             }],
                             srcClass     : config.srcClass,
+                            srcClassText : config.srcClassText,
                             srcLink      : config.srcLink
                         };
 

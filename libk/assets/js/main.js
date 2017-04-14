@@ -881,21 +881,22 @@ DocsApp.getEventTarget = function (e) {
             membersCt         = ExtL.get('rightMembers'),
             rows              = ExtL.fromNodeList(membersCt.querySelectorAll('.classmembers')),
             rowsLen           = rows.length,
-            row, isPublic, isPrivate, isProtected,
+            row, isAutoAccessor, isPublic, isPrivate, isProtected,
             isInherited, hasReadOnly, isReadOnly;
 
         DocsApp.resetTempShownMembers();
 
         while (rowsLen--) {
-            row         = rows[rowsLen];
-            isPublic    = publicChecked    && ExtL.hasCls(row, 'member-public');
-            isProtected = protectedChecked && ExtL.hasCls(row, 'member-protected');
-            isPrivate   = privateChecked   && ExtL.hasCls(row, 'member-private');
-            isInherited = ExtL.hasCls(row, 'is-not-inherited') || inheritedChecked === ExtL.hasCls(row, 'isInherited');
-            hasReadOnly = !!row.querySelector('.readonly')
-            isReadOnly  = !hasReadOnly || readonlyChecked  === hasReadOnly;
+            row            = rows[rowsLen];
+            isAutoAccessor = ExtL.hasCls(row, 'auto-accessor-method');
+            isPublic       = publicChecked    && ExtL.hasCls(row, 'member-public');
+            isProtected    = protectedChecked && ExtL.hasCls(row, 'member-protected');
+            isPrivate      = privateChecked   && ExtL.hasCls(row, 'member-private');
+            isInherited    = ExtL.hasCls(row, 'is-not-inherited') || inheritedChecked === ExtL.hasCls(row, 'isInherited');
+            hasReadOnly    = !!row.querySelector('.readonly')
+            isReadOnly     = !hasReadOnly || readonlyChecked  === hasReadOnly;
 
-            if ((isPublic || isProtected || isPrivate) && isInherited && isReadOnly) {
+            if (isAutoAccessor || ((isPublic || isProtected || isPrivate) && isInherited && isReadOnly)) {
                 ExtL.removeCls(row, 'hide');
             } else {
                 ExtL.addCls(row, 'hide');

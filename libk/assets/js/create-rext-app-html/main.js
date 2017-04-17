@@ -353,12 +353,11 @@ DocsApp.buildForm = function (target, params) {
     assets[0].name = "App.js";
     var wrappingAssets = [{
         name   : "app.js",
-        //code   : "import React from 'react';\nimport App from './App';\nimport { launch } from '@extjs/reactor';\nlaunch(<App/>);",
-        code   : "import React from 'react';\nimport ReactDOM from 'react-dom';\nimport App from './App'; // app components\nimport { install } from '@extjs/reactor';\n\ninstall({\n    // We set viewport: true because we are using an Ext JS component to manage layouts at the root of our app.\n    // Setting viewport: true adds css rules to make the html, body, and the root react element height: 100% to\n    // allow the root component to expand to fill the full screen. You should omit this option when using\n    // other stylesheets or component libraries to control the layout.\n    viewport: true\n});\n\n// launch the react app once Ext JS is ready\nExt.onReady(() => ReactDOM.render(<App/>, document.getElementById('root')));",
+        code   : 'import React from \'react\';\nimport App from \'./App\';\nimport { launch } from \'@extjs/reactor\';\nlaunch(<App\/>);',
         type   : "js"
     }, {
         name   : "index.html",
-        code   : "<div id='root' style='height: 100%'></div>",
+        code   : "",
         type   : "html"
     }];
     params.codes.assets = wrappingAssets.concat(assets);

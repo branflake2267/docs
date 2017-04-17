@@ -865,6 +865,16 @@ class Base {
     }
 
     /**
+     * Returns the downloads / offline docs dir
+     */
+    get offlineDocsDir () {
+        let options    = this.options,
+            offlineDir = Utils.format(options.offlineDocsDir, options);
+
+        return Path.resolve(options._myRoot, offlineDir);
+    }
+
+    /**
      * Returns the full path of the output directory + the product name (and version if
      * applicable).
      * @return {String} The full output directory path

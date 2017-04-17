@@ -21,7 +21,8 @@ const SourceGuides     = require('../source-guides'),
       Path             = require('path'),
       Chalk            = require('chalk'),
       StringSimilarity = require('string-similarity'),
-      _                = require('lodash');
+      _                = require('lodash'),
+      Zipdir           = require('zip-dir');
 
 class AppBase extends SourceGuides {
     constructor (options) {
@@ -119,6 +120,7 @@ class AppBase extends SourceGuides {
         .then(this.outputApiSearch.bind(this))
         .then(this.processGuides.bind(this))
         .then(this.outputProductMenu.bind(this))
+        .then(this.outputOfflineDocs.bind(this))
         .then(() => {
             console.log('ALL TOLD:', this.getElapsed(dt));
             this.concludeBuild();
@@ -319,6 +321,79 @@ class AppBase extends SourceGuides {
         });
 
         return html;
+    }
+
+    /**
+     * Standalone method to output the offline docs
+     * @return {Promise} Chainable promise
+     */
+    runOutputOfflineDocs () {
+        let outputDir = this.outputProductDir,
+            prep;
+
+        if (this.isEmpty(outputDir)) {
+            prep = this.doRunApi();
+        } else {
+            prep = Promise.resolve();
+        }
+
+        //prep.then(this.outputOfflineDocs.bind(this))
+        //.catch(this.error.bind(this));
+
+        return prep
+        .then(this.doOutputOfflineDocs.bind(this))
+        .then(() => {
+            this.concludeBuild();
+        })
+        .catch(this.error.bind(this));
+    }
+
+    /**
+     * Checks to see if options.outputOffline is true and if so run doOutputOfflineDocs.
+     * Alternative, a method may call doOutputOfflineDocs directly.  See
+     * {@link #runOutputOfflineDocs}.
+     * @return {Promise} Chainable promise
+     */
+    outputOfflineDocs () {
+        let options = this.options;
+
+        if (options.outputOffline) {
+            return this.doOutputOfflineDocs();
+        } else {
+            return Promise.resolve();
+        }
+    }
+
+    /**
+     * Create a zip file of the docs output as downloadable offline docs
+     * @return {Promise} Chainable promise
+     */
+    doOutputOfflineDocs () {
+        let options = this.options,
+            product = options.product,
+            version = options.version ? `-${options.version.replace(/\./g, '')}` : '',
+            file = `${product}${version}-docs.zip`,
+            offlineDocsDir = this.offlineDocsDir,
+            outputPath = Path.join(offlineDocsDir, file);
+
+        return new Promise((resolve, reject) => {
+            Fs.ensureDir(offlineDocsDir, err => {
+                if (err) {
+                    reject(err);
+                } else {
+                    Zipdir(this.outputProductDir, {
+                        saveTo: outputPath
+                    },
+                    (err, buffer) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+                }
+            });
+        });
     }
 
     /**

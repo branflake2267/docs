@@ -349,7 +349,7 @@ DocsApp.buildForm = function (target, params) {
     assets[0].name = "App.js";
     var wrappingAssets = [{
         name   : "app.js",
-        code   : "import React from 'react';\nimport App from './App';\nimport { launch } from '@extjs/reactor';\n;",
+        code   : 'import React from \'react\';\nimport App from \'./App\';\nimport { launch } from \'@extjs/reactor\';\nlaunch(<App\/>);',
         type   : "js"
     }, {
         name   : "index.html",

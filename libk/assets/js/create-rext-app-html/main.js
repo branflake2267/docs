@@ -41,17 +41,21 @@ DocsApp.initNavTree = function () {
         DA.apiNavTree        = DA.buildNavTree(classesTree,    classesId    + 'target')
     ];
 
-    // select the node for the current page
+    var len = navTrees.length,
+        i   = 0,
+        tree;
+
     if (id) {
-        var len = navTrees.length,
-            i   = 0,
-            tree;
-
         id = id.replace(/\./g, '\\.');
+    }
 
-        for (; i < len; i++) {
-            tree = navTrees[i];
-            DocsApp.addTreeToggleButton(tree);
+    // select the node for the current page
+    for (; i < len; i++) {
+        tree = navTrees[i];
+        // add the expand-all button for each tree
+        DocsApp.addTreeToggleButton(tree);
+
+        if (id) {
             target       = tree.target;
             targetId     = target.id + '-';
             targetNode = target.querySelector('[id="' + id + '"]') || target.querySelector('[id="' + targetId + id + '"]');

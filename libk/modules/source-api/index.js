@@ -102,9 +102,17 @@ class SourceApi extends Base {
         let options = this.options,
             product = options.product,
             version = options.version,
-            toolkit = options.toolkit || product;
+            toolkit = options.toolkit || 'config',
+            path    = this.getDoxiCfgPath(),
+            // find the nearest matching config file based on version
+            file    = this.getFileByVersion(path, version);
 
-        return version + '-' + toolkit + '.doxi.json';
+        // strip the leading string
+        file = file.substring(file.indexOf('-'));
+
+        // and replace it with what is evaluated to be 'toolkit'
+        // -- either the currently processed toolkit or 'config'
+        return toolkit + file;
     }
 
     /**
@@ -217,15 +225,16 @@ class SourceApi extends Base {
             }
         }
 
-        outputs['combo-nosrc'].dir         = Utils.format(outputs['combo-nosrc'].dir, {
-            apiInputDir: apiInputDir
-        });
-        outputs['all-classes'].dir         = Utils.format(outputs['all-classes'].dir, {
-            apiInputDir: apiInputDir
-        });
-        outputs['all-classes-flatten'].dir = Utils.format(outputs['all-classes-flatten'].dir, {
-            apiInputDir: apiInputDir
-        });
+        let inputObj = {
+            apiInputDir : apiInputDir,
+            product     : options.product,
+            version     : options.version,
+            toolkit     : options.toolkit || ''
+        };
+
+        outputs['combo-nosrc'].dir         = Utils.format(outputs['combo-nosrc'].dir, inputObj);
+        outputs['all-classes'].dir         = Utils.format(outputs['all-classes'].dir, inputObj);
+        outputs['all-classes-flatten'].dir = Utils.format(outputs['all-classes-flatten'].dir, inputObj);
 
         Fs.ensureDirSync(this.tempDir);
         Fs.writeFileSync(

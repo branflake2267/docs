@@ -23,13 +23,13 @@
                     {{#is $type "css_mixin"}}
                         ...list...
                     {{else}}
-                        {{#params}}
-                            {{#unless @first}}, {{/unless}}
-                            {{#if optional}}[{{/if}}{{{name}}}{{#if optional}}]{{/if}}
-                            {{#if @last}}
-                                {{#is ../$type "event"}}, eOpts{{/is}}
+                        {{~#params~}}
+                            {{~#unless @first~}}, {{/unless~}}
+                            {{~#if optional~}}[{{~/if~}}{{~name~}}{{~#if optional}}]{{~/if~}}
+                            {{~#if @last~}}
+                                {{~#is ../$type "event"~}}, eOpts{{/is}}
                             {{/if}}
-                        {{/params}}
+                        {{~/params~}}
                     {{/is}}
 
                     )
@@ -202,7 +202,12 @@
                     <a data-ref="method-get{{capitalName}}" href="#method-get{{capitalName}}" class="member-name">
                         get{{capitalName}}
                     </a>
-                    <span class="memberType">{{{type}}}</span>
+                    {{#if type}}
+                        :
+                        {{#type}}
+                            <span class="memberType">{{{.}}}</span>
+                        {{/type}}
+                    {{/if}}
                 </h2>
                 <p>Returns the value of {{name}}</p>
                 <h3 class="detail-header">Returns</h3>

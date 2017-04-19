@@ -100,44 +100,13 @@ class SourceGuides extends SourceApi {
      * @return {Object} The guide config object
      */
     get guideConfig () {
-        let path        = this.guideConfigPath,
-            options     = this.options,
-            hasVersions = options.prodVerMeta.hasVersions;
+        let path = this.guideConfigPath,
+            version = this.options.version;
 
-        // if there are not multiple versions just read config.json
-        if (!hasVersions) {
-            return Fs.readJsonSync(
-                Path.join(
-                    path,
-                    'config.json'
-                )
-            );
-        }
-
-        let files   = this.getFiles(path),
-            version = options.version,
-            cfgVer  = '0',
-            i       = 0,
-            len     = files.length,
-            file;
-
-        // else loop over all config files and compare their version number to the
-        // version being processed to find the right config file
-        for (; i < len; i++) {
-            let name = Path.parse(files[i]).name,
-                v    = name.substring(name.indexOf('-') + 1);
-
-            if (CompareVersions(v, version) <= 0 && CompareVersions(v, cfgVer) > 0) {
-                cfgVer = v;
-                file   = name;
-            }
-        }
-
-        // and then read the contents of the config file
-        return Fs.readJsonSync(
+        return Fs.readJSONSync(
             Path.join(
                 path,
-                `${file}.json`
+                this.getFileByVersion(path, version)
             )
         );
     }

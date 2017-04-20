@@ -567,11 +567,12 @@ class ExtReactHtmlApp extends HtmlApp {
     processApiFiles () {
         //this.log(`Begin 'SourceApi.processApiFiles'`, 'info');
 
-        let classMap   = this.classMap,
-            classNames = Object.keys(classMap),
-            i          = 0,
-            len        = classNames.length,
-            names      = this.componentClassNames;
+        /*let classMap     = this.classMap,
+            classNames   = Object.keys(classMap),
+            i            = 0,
+            len          = classNames.length,
+            names        = this.componentClassNames,
+            modifiedOnly = this.options.modifiedOnly;
 
         //create the component name / class name map
         this.createComponentNameMap();
@@ -581,16 +582,20 @@ class ExtReactHtmlApp extends HtmlApp {
             let className = classNames[i],
                 // the prepared object is the one that has been created by
                 // `createSrcFileMap` and will be processed in `decorateClass`
-                prepared  = classMap[className].prepared,
-                apiTree   = this.getApiTree(className),
-                inList    = names.includes(className);
+                prepared   = classMap[className].prepared,
+                apiTree    = this.getApiTree(className),
+                inList     = names.includes(className),
+                isModified = classMap[className].modified,
+                modified   = !modifiedOnly || (modifiedOnly && isModified);
 
-            this.decorateClass(className);
+            if (modified) {
+                this.decorateClass(className);
+            }
 
             // the class could be marked as skip=true if it's not something we wish to
             // process after running it through decorateClass.  i.e. an enums class with
             // no properties is empty so is skipped
-            if (classMap[className].skip) {
+            if (classMap[className].skip || !modified) {
                 delete classMap[className];
             } else {
                 let icon = prepared.cls.clsSpecIcon;
@@ -605,6 +610,37 @@ class ExtReactHtmlApp extends HtmlApp {
                     this.addToApiTree(className, icon, this.apiTrees.API, '-placeholder');
                 }
             }
+        }*/
+
+        //create the component name / class name map
+        this.createComponentNameMap();
+        super.processApiFiles();
+    }
+
+    /**
+     * // override source-api
+     * Add the passed class name to the api tree used for UI nav
+     * @param {String} className The full class name to process and add to the API tree
+     * @param {String} icon An icon class name to include if passed:
+     *
+     *  - component
+     *  - singleton
+     *  - class
+     * @param {Object} apiTree The tree to add the classname / node to
+     * @param {String} [idSuffix] An optional suffix to add to the node id
+     */
+    addToApiTree (className, icon, apiTree, idSuffix='') {
+        let names  = this.componentClassNames,
+            inList = names.includes(className);
+
+        if (!inList) {
+            super.addToApiTree(className, icon, apiTree);
+        } else {
+            let componentsList = this.componentList,
+                treeCfg        = componentsList[className];
+
+            super.addToApiTree(treeCfg, icon, apiTree);
+            super.addToApiTree(className, icon, this.apiTrees.API, '-placeholder');
         }
     }
 

@@ -283,6 +283,11 @@ class SourceGuides extends SourceApi {
      * @return {Object} Promise
      */
     processGuides () {
+        if (this.options.skipGuides === true) {
+            this.log('Skipping guides: --skipGuides');
+            return Promise.resolve();
+        }
+
         let dt = new Date();
 
         console.log('PROCESSING GUIDES');

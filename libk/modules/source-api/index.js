@@ -385,6 +385,9 @@ class SourceApi extends Base {
         // create the file Doxi will use to parse the SDK
         this.createTempDoxiFile();
 
+        this.classMap   = {};
+        this.srcFileMap = {};
+
         this.runDoxi();
         return this.readDoxiFiles();
 
@@ -396,9 +399,11 @@ class SourceApi extends Base {
      */
     runDoxi () {
         //this.log(`Begin 'SourceApi.runDoxi'`, 'info');
-        let options   = this.options,
-            forceDoxi = options.forceDoxi,
-            cmd       = this.getCmdPath();
+        let options     = this.options,
+            forceDoxi   = options.forceDoxi,
+            cmd         = this.getCmdPath(),
+            triggerDoxi = this.triggerDoxi,
+            doxiEmpty   = this.doxiInputFolderIsEmpty;
 
         this.syncRemote(
             this.apiProduct,
@@ -411,7 +416,7 @@ class SourceApi extends Base {
 
         // if the `forceDoxi` options is passed or the doxi input directory is empty /
         // missing then run doxi
-        if (forceDoxi || this.doxiInputFolderIsEmpty || (this.synced && this.synced[this.apiProduct])) {
+        if (forceDoxi || doxiEmpty || (triggerDoxi && triggerDoxi[this.apiProduct])) {
             // empty the folder first before running doxi
             Fs.emptyDirSync(this.doxiInputDir);
             let path = Shell.pwd();
@@ -452,21 +457,18 @@ class SourceApi extends Base {
      */
     createSrcFileMap () {
         //this.log(`Begin 'SourceApi.createSrcFileMap'`, 'info');
-        let inputDir = this.doxiInputDir,
-            map      = this.srcFileMap = {},
-            classMap = this.classMap = {};
+        let inputDir     = this.doxiInputDir,
+            //map          = this.srcFileMap = {},
+            map          = this.srcFileMap,
+            //classMap     = this.classMap = {},
+            classMap     = this.classMap,
+            files        = this.getFilteredFiles(Fs.readdirSync(inputDir)),
+            i            = 0,
+            len          = files.length,
+            ops          = [],
+            modifiedList = this.modifiedList;
 
-        // if the doxi files have not been created run doxi before proceeding
-        /*if (this.doxiInputFolderIsEmpty) {
-            this.runDoxi();
-        }*/
-
-        let files = this.getFilteredFiles(Fs.readdirSync(inputDir)),
-            i     = 0,
-            len   = files.length,
-            ops   = [];
-
-        this.log('Processing the parsed SDK source files');
+        this.log('Processing the parsed SDK source files', 'info');
 
         for (; i < len; i++) {
             ops.push(
@@ -477,20 +479,35 @@ class SourceApi extends Base {
                         if (err) {
                             reject(err);
                         }
-                        let clsObj    = cls.global.items[0], // the class obj
-                            type      = clsObj.$type,        // the class type (class or enum)
-                            validType = type === 'class' || type === 'enum',
+
+                        let clsObj     = cls.global.items[0], // the class obj
+                            type       = clsObj.$type,        // the class type (class or enum)
+                            validType  = type === 'class' || type === 'enum',
                             // the index in the files list where the class is primarily sourced
-                            srcIdx    = (clsObj.src.text || clsObj.src.name).substring(0, 1),
+                            srcIdx     = (clsObj.src.text || clsObj.src.name).substring(0, 1),
+                            srcFiles   = cls.files, // ths list of class source files
+                            primarySrc = srcFiles[0] || '',
                             // the path of the class source from the SDK
-                            // TODO this is a crutch for now - need doxi to give us the source class (classes)
-                            srcPath   = cls.files[srcIdx];
+                            srcPath    = srcFiles[srcIdx],
+                            modifiedList  = this.modifiedList,
+                            modifiedMatch = [];
 
-                        // add all source files for this class to the master source file map
-                        this.mapSrcFiles(cls.files || []);
+                        // if there is are modified files in the SDK source then see if
+                        // the primary source file for the current class is in the
+                        // modified list.  If so, we'll mark the class as modified in the
+                        // classMap
+                        if (modifiedList && modifiedList.length) {
+                            modifiedMatch = _.filter(modifiedList, item => {
+                                return _.endsWith(primarySrc, item);
+                            });
+                        }
 
-                        // if the current file is a "class" file then cache the contents in the
-                        // source file hash
+                        // add all source files for this class to the master source file
+                        // map
+                        this.mapSrcFiles(srcFiles || []);
+
+                        // if the current file is a "class" file then cache the contents
+                        // in the source file hash
                         // Supports #addAnchors
                         if (validType) {
                             map[srcPath].input = cls;
@@ -501,8 +518,9 @@ class SourceApi extends Base {
                             delete prepared.items;
 
                             classMap[clsObj.name] = {
-                                raw: cls,
-                                prepared: prepared
+                                raw      : cls,
+                                prepared : prepared,
+                                modified : !!modifiedMatch.length
                             };
                         }
 
@@ -784,29 +802,31 @@ class SourceApi extends Base {
      */
     processApiFiles () {
         //this.log(`Begin 'SourceApi.processApiFiles'`, 'info');
-        let classMap = this.classMap,
-            classNames = Object.keys(classMap),
-            i = 0,
-            len = classNames.length;
-
-        // reset the apiTree property on each processApiFiles run since this module
-        // instance is reused between toolkits
-        //this.apiTree = this.apiTrees[this.apiDirName] = [];
+        let classMap     = this.classMap,
+            classNames   = Object.keys(classMap),
+            i            = 0,
+            len          = classNames.length,
+            modifiedOnly = this.options.modifiedOnly;
 
         // loops through all class names from the classMap
         for (; i < len; i++) {
-            let className = classNames[i],
+            let className  = classNames[i],
+                classObj   = classMap[className],
                 // the prepared object is the one that has been created by
                 // `createSrcFileMap` and will be processed in `decorateClass`
-                prepared = classMap[className].prepared,
-                apiTree  = this.getApiTree(className);
+                prepared   = classMap[className].prepared,
+                apiTree    = this.getApiTree(className),
+                isModified = classMap[className].modified,
+                modified   = !modifiedOnly || (modifiedOnly && isModified);
 
-            this.decorateClass(className);
+            if (modified) {
+                this.decorateClass(className);
+            }
 
             // the class could be marked as skip=true if it's not something we wish to
             // process after running it through decorateClass.  i.e. an enums class with
             // no properties is empty so is skipped
-            if (classMap[className].skip) {
+            if (classObj.skip || (modifiedOnly && !modified)) {
                 delete classMap[className];
             } else {
                 this.addToApiTree(className, prepared.cls.clsSpecIcon, apiTree);

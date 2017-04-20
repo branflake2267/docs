@@ -64,6 +64,12 @@ const args = require('yargs')
             description : 'Skips the creation of the source HTML files for API docs',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --skipSourceFiles'
         },
+        'skipGuides' : {
+            type        : 'boolean',
+            default     : false,
+            description : 'Skips the creation of guides',
+            example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --skipGuides'
+        },
         'audioAlert' : {
             type        : 'boolean',
             default     : true,
@@ -74,6 +80,12 @@ const args = require('yargs')
             type        : 'string',
             description : 'Stipulates the sencha directory -vs- using what\'s on PATH',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --cmdPath=../../sencha_cmd/sencha'
+        },
+        'modifiedOnly' : {
+            type        : 'boolean',
+            default     : false,
+            description : 'Outputs only classes whose file is modified',
+            example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --modifiedOnly'
         }
     })
     .command('command', 'Module to run', { alias: 'command' })

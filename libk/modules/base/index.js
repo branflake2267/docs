@@ -19,7 +19,8 @@ const EventEmitter    = require('events'),
       Git             = require('git-state'),
       Handlebars      = require('handlebars'),
       safeLinkRe      = /(\[]|\.\.\.)/g,
-      idRe            = /[^\w]+/g;
+      idRe            = /[^\w]+/g,
+      _               = require('lodash');
 
 // TODO add this.log() stuff throughout all classes: `log` for general messaging, `info`
 // for warnings, and `error` for serious / fatal errors
@@ -70,10 +71,16 @@ class Base {
 
         this.escapeRegexRe = /([-.*+?\^${}()|\[\]\/\\])/g;
 
-        // initialize an object to indicate when a product is synced.  This allows
-        // successive logic to proceed based on a fresh sync (i.e. Doxi will parse files
-        // anew if the product repo was recently synced)
-        this.synced = {};
+        // initialize an object to indicate when a product is synced or otherwise should
+        //have doxi run (has dirty files).  This allows successive logic to proceed based
+        // on a fresh sync (i.e. Doxi will parse files anew if the product repo was
+        // recently synced)
+        this.triggerDoxi = {};
+
+        // the modifiedList is populated if there are modified / new files discovered in
+        // the syncRemote method.  The modified list can be used to process only the
+        // files edited / added instead of all files
+        this.modifiedList = [];
 
         this.registerHandlebarsPartials();
         this.registerHandlebarsHelpers();
@@ -1070,6 +1077,8 @@ class Base {
             return;
         }
 
+        this.modifiedList = [];
+
         let path      = Shell.pwd(),
             version   = this.apiVersion,
             toolkit   = options.toolkit,
@@ -1113,6 +1122,19 @@ class Base {
             let status = Git.checkSync(sourceDir);
 
             if (status.dirty || status.untracked) {
+                let modified = Shell.exec('git ls-files --m --o --exclude-standard', {
+                    silent : true
+                }).stdout;
+
+                // the files list is separated by \n as well as suffixed with \n so the
+                // filter drops any empty / zero-length items
+                modified = _.filter(modified.split('\n'), item => {
+                    return item.length;
+                });
+                this.modifiedList = this.modifiedList.concat(modified);
+
+                this.triggerDoxi[product] = true;
+                Shell.cd(path);
                 this.log('API source directory has modified / un-tracked changes - skipping remote sync', 'info');
                 return;
             }
@@ -1135,7 +1157,7 @@ class Base {
 
             // if pull updated the local repo then indicate that this product was synced
             if (!pullResp.stdout.includes('Already up-to-date')) {
-                this.synced[product] = true;
+                this.triggerDoxi[product] = true;
             }
 
             // get back to the original working directory

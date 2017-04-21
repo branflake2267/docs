@@ -240,13 +240,15 @@ class Base {
      * supplying it to the template
      */
     processCommonDataObject (data) {
-        let options = this.options;
+        let options = this.options,
+            dt      = new Date();
 
         data.title       = options.prodVerMeta.prodObj.title;
         data.product     = this.getProduct(options.product);
         data.version     = options.version;
         data.moduleName  = this.moduleName;
         data.helpPartial = this.helpPartial;
+        data.date = dt.toLocaleString("en-us",{month:"long"}) + ", " + dt.getDate() + " " + dt.getFullYear() + " at " + dt.getHours() + ":" + dt.getMinutes();
     }
 
     /**

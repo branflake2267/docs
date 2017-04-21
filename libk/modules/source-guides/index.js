@@ -824,14 +824,18 @@ class SourceGuides extends SourceApi {
      * supplying it to the template
      */
     processGuideDataObject (data) {
+        let toolkit = data.toolkit;
+
         // can be extended in the app post-processor subclasses
-        data.cssPath    = Path.relative(data.rootPath, this.cssDir);
-        data.jsPath     = Path.relative(data.rootPath, this.jsDir);
-        data.imagesPath = Path.relative(data.rootPath, this.imagesDir);
-        //data.title      = data.prodObj.title;
-        data.toc        = this.buildTOC(data.content, data.id);
-        data.myMeta     = this.getGuideMetaData(data);
-        data.isGuide    = true;
+        data.cssPath     = Path.relative(data.rootPath, this.cssDir);
+        data.jsPath      = Path.relative(data.rootPath, this.jsDir);
+        data.imagesPath  = Path.relative(data.rootPath, this.imagesDir);
+        //data.title     = data.prodObj.title;
+        data.toc         = this.buildTOC(data.content, data.id);
+        data.myMeta      = this.getGuideMetaData(data);
+        data.isGuide     = true;
+        data.toolkit     = toolkit === 'universal' ? null : toolkit;
+        data.description = Utils.striphtml(data.content);
         this.processCommonDataObject(data);
     }
 

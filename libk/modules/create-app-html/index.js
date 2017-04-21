@@ -503,6 +503,7 @@ class HtmlApp extends AppBase {
         data.myMeta     = this.getHomeMetaData(data);
         data.isHome     = true;
         data.toolkit    = null;
+        data.description = `${data.title} API documentation from Sencha`;
         this.processCommonDataObject(data);
     }
 

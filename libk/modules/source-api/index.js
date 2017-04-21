@@ -911,6 +911,7 @@ class SourceApi extends Base {
         data.imagesPath  = Path.relative(apiDir, this.imagesDir);
         data.myMeta      = this.getApiMetaData(data);
         data.isApi       = true;
+        data.description = Utils.striphtml(this.parseApiLinks(data.classText));
         this.processCommonDataObject(data);
     }
 

@@ -115,7 +115,7 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     * Returns common metadata needed by app API pages
+     * Returns common metadata needed by app product home pages
      * @param {Object} data Current data hash to be applied to the page template
      * @return {Object} Hash of common current page metadata
      */
@@ -131,6 +131,23 @@ class HtmlApp extends AppBase {
                 rootPath     : '',
                 pageType     : 'home',
                 docsRootPath : `${docsRelativePath}/`
+            });
+        }
+
+        return meta;
+    }
+
+    /**
+     * Returns common metadata needed by the landing page
+     * @param {Object} data Current data hash to be applied to the page template
+     * @return {Object} Hash of common current page metadata
+     */
+    getLandingMetaData (data) {
+        let meta = super.getCommonMetaData();
+
+        if (data) {
+            Object.assign(meta, {
+                pageType     : 'landing'
             });
         }
 
@@ -494,7 +511,7 @@ class HtmlApp extends AppBase {
      * supplying it to the template
      */
     processHomeDataObject (data) {
-        let apiDir   = this.apiDir,
+        let apiDir           = this.apiDir,
             outputProductDir = this.outputProductDir;
 
         data.cssPath    = Path.relative(outputProductDir, this.cssDir);
@@ -505,6 +522,34 @@ class HtmlApp extends AppBase {
         data.toolkit    = null;
         data.description = `${data.title} API documentation from Sencha`;
         this.processCommonDataObject(data);
+    }
+
+    /**
+     * Prepares additional api data processing prior to handing the data over to the api
+     * template for final output
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processLandingDataObject (data) {
+        let apiDir           = this.apiDir,
+            outputDir = this.options.outputDir;
+
+        data.cssPath     = Path.relative(outputDir, this.cssDir);
+        data.jsPath      = Path.relative(outputDir, this.jsDir);
+        data.imagesPath  = Path.relative(outputDir, this.imagesDir);
+        data.myMeta      = this.getLandingMetaData(data);
+
+        let myMeta       = data.myMeta;
+        myMeta.product   = null;
+        myMeta.version   = null;
+
+        data.isLanding   = true;
+        data.toolkit     = null;
+        data.description = 'API documentation from Sencha';
+        this.processCommonDataObject(data);
+        data.product     = '';
+        data.title       = 'Sencha Documentation';
+        data.version     = null;
     }
 
     /**
@@ -533,6 +578,7 @@ class HtmlApp extends AppBase {
 
     /**
      * Outputs the product home page
+     * @return {Promise}
      */
     outputProductHomePage () {
         return new Promise((resolve, reject) => {
@@ -550,10 +596,10 @@ class HtmlApp extends AppBase {
                 dest        = Path.join(this.outputProductDir, 'index.html');
 
             let data = Fs.readJsonSync(homePath);
-            data     = Object.assign(data, options);
-            data     = Object.assign(data, options.prodVerMeta);
+            //data     = Object.assign(data, options);
+            //data     = Object.assign(data, options.prodVerMeta);
 
-            data.rootPath       = '..';
+            //data.rootPath       = '..';
             data.contentPartial = '_product-home';
 
             this.processHomeDataObject(data);
@@ -570,11 +616,58 @@ class HtmlApp extends AppBase {
     }
 
     /**
-     *
+     * Outputs the product home page
+     * @return {Promise}
      */
     outputMainLandingPage () {
-        return new Promise((resolve, reject) => {
+        /*return new Promise((resolve, reject) => {
             resolve();
+        })
+        .catch(this.error.bind(this));*/
+        return new Promise((resolve, reject) => {
+            let options     = this.options,
+                root        = options._myRoot,
+                tplPath = Path.join(
+                    root,
+                    'configs',
+                    'landing',
+                    'config.json'
+                ),
+                //version     = options.version,
+                //homeConfig  = this.getFileByVersion(prodTplPath, version),
+                //homePath    = Path.join(prodTplPath, homeConfig),
+                //dest        = Path.join(this.outputProductDir, 'index.html');
+                dest        = Path.join(options.outputDir, 'index.html');
+
+            let data = Fs.readJsonSync(tplPath);
+            data     = Object.assign(data, options);
+            data     = Object.assign(data, options.prodVerMeta);
+
+            data.rootPath       = '..';
+            data.contentPartial = '_product-home';
+
+            this.processLandingDataObject(data);
+
+            //console.log(this.options.products);
+            let len         = data.homeItems.length,
+                productsObj = options.products;
+
+            while (len--) {
+                let homeItem = data.homeItems[len];
+
+                homeItem.header = Utils.format(
+                    homeItem.header,
+                    productsObj[homeItem.product]
+                );
+            }
+
+            let html = this.mainTemplate(data);
+
+            Fs.writeFile(dest, html, 'utf8', (err) => {
+                if (err) reject(err);
+
+                resolve();
+            });
         })
         .catch(this.error.bind(this));
     }

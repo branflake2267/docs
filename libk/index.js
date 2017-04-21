@@ -18,6 +18,7 @@ const args = require('yargs')
     .option({
         'log': {
             alias       : 'l',
+            default     : 'error',
             description : 'The level of logging output allowed.  Possible options are: log, info, and error.',
             example     : 'node index read-source -log=true',
             array       : true

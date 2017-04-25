@@ -147,7 +147,11 @@ class HtmlApp extends AppBase {
 
         if (data) {
             Object.assign(meta, {
-                pageType     : 'landing'
+                rootPath     : '',
+                pageType     : 'landing',
+                docsRootPath : '',
+                hasApi       : false,
+                hasGuides    : false
             });
         }
 
@@ -193,7 +197,8 @@ class HtmlApp extends AppBase {
     copyAssets () {
         let options   = this.options,
             root      = options._myRoot,
-            assetsSrc = Path.join(root, 'assets');
+            assetsSrc = Path.join(root, 'assets'),
+            accessFile = '.htaccess';
 
         Fs.ensureDirSync(this.assetsDir);
 
@@ -201,6 +206,10 @@ class HtmlApp extends AppBase {
         this.copyJs();
 
         Fs.copySync(assetsSrc, this.assetsDir);
+        Fs.copySync(
+            Path.join(assetsSrc, accessFile),
+            Path.join(options.outputDir, accessFile)
+        );
     }
 
     /**
@@ -390,7 +399,7 @@ class HtmlApp extends AppBase {
         let rootPath   = data.rootPath,
             outputDir  = this.options.outputDir,
             relPath    = Path.relative(rootPath, outputDir),
-            href       = Path.join(relPath, product, version, toolkit, `${className}.html`);
+            href       = Path.join(relPath, product, (version || ''), toolkit, `${className}.html`);
 
         if (memberName) {
             href += `#${memberName}`;
@@ -550,6 +559,8 @@ class HtmlApp extends AppBase {
         data.product     = '';
         data.title       = 'Sencha Documentation';
         data.version     = null;
+        data.hasApi      = false;
+        data.hasGuides   = false;
     }
 
     /**
@@ -596,10 +607,7 @@ class HtmlApp extends AppBase {
                 dest        = Path.join(this.outputProductDir, 'index.html');
 
             let data = Fs.readJsonSync(homePath);
-            //data     = Object.assign(data, options);
-            //data     = Object.assign(data, options.prodVerMeta);
 
-            //data.rootPath       = '..';
             data.contentPartial = '_product-home';
 
             this.processHomeDataObject(data);

@@ -147,7 +147,6 @@ class SourceApi extends Base {
      */
     get doxiCfg () {
         // TODO cache this and other getters
-
         return Fs.readJsonSync(
             Path.join(
                 this.getDoxiCfgPath(),
@@ -234,7 +233,9 @@ class SourceApi extends Base {
 
         outputs['combo-nosrc'].dir         = Utils.format(outputs['combo-nosrc'].dir, inputObj);
         outputs['all-classes'].dir         = Utils.format(outputs['all-classes'].dir, inputObj);
-        outputs['all-classes-flatten'].dir = Utils.format(outputs['all-classes-flatten'].dir, inputObj);
+        if (outputs['all-classes-flatten']) {
+            outputs['all-classes-flatten'].dir = Utils.format(outputs['all-classes-flatten'].dir, inputObj);
+        }
 
         Fs.ensureDirSync(this.tempDir);
         Fs.writeFileSync(
@@ -1466,7 +1467,7 @@ class SourceApi extends Base {
             toolkit     = this.options.toolkit,
             searchIndex = this.apiSearchIndex,
             // suffix allows us to combine toolkits in one search
-            suffix = toolkit.charAt(0) || '',
+            suffix      = (toolkit && toolkit.charAt(0)) || '',
             typeRef     = {
                 optionalConfigs     : 'c',
                 requiredConfigs     : 'c',

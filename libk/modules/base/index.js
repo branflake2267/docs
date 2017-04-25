@@ -207,9 +207,10 @@ class Base {
      * @return {Object} Hash of common current page metadata
      */
     getCommonMetaData () {
-        let options = this.options,
-            meta    = Object.assign({}, options.prodVerMeta),
-            product = this.getProduct(options.product);
+        let options     = this.options,
+            prodVerMeta = options.prodVerMeta,
+            meta        = Object.assign({}, options.prodVerMeta),
+            product     = this.getProduct(options.product);
 
         return Object.assign(meta, {
             version    : options.version,
@@ -217,7 +218,8 @@ class Base {
             product    : product,
             apiProduct : this.apiProduct,
             apiVersion : this.apiVersion,
-            title      : meta.title
+            title      : meta.title,
+            toolkit    : prodVerMeta.hasToolkits && options.toolkit
         });
     }
 
@@ -240,11 +242,14 @@ class Base {
      * supplying it to the template
      */
     processCommonDataObject (data) {
-        let options = this.options,
-            dt      = new Date();
+        let options     = this.options,
+            prodVerMeta = options.prodVerMeta,
+            dt          = new Date();
 
-        data.title       = options.prodVerMeta.prodObj.title;
+        data.title       = prodVerMeta.prodObj.title;
         data.product     = this.getProduct(options.product);
+        data.hasGuides   = prodVerMeta.hasGuides;
+        data.hasApi      = prodVerMeta.hasApi;
         data.version     = options.version;
         data.moduleName  = this.moduleName;
         data.helpPartial = this.helpPartial;
@@ -281,7 +286,7 @@ class Base {
      * @return {String[]} Array of directory names
      */
     getDirs (path) {
-        return Fs.readdirSync(path).filter(function(item) {
+        return this.getFilteredFiles(Fs.readdirSync(path)).filter(function(item) {
             return Fs.statSync(Path.join(path, item)).isDirectory();
         });
     }

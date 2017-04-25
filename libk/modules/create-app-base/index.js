@@ -33,7 +33,7 @@ class AppBase extends SourceGuides {
             product    = o.product,
             version    = o.version,
             //majorVer   = this.apiVersion.charAt(),
-            majorVer   = version.charAt(),
+            majorVer   = version && version.charAt(),
             prodObj    = o.products[product];
 
         if (!prodObj) {
@@ -57,7 +57,7 @@ class AppBase extends SourceGuides {
         o.prodVerMeta   = {
             majorVer    : majorVer,
             prodObj     : prodObj,
-            hasApi      : prodObj.hasApi,
+            hasApi      : !!prodObj.hasApi,
             hasVersions : prodObj.hasVersions,
             //hasToolkits : !!(toolkits && toolkits.length > 1),
             hasToolkits : (toolkits && toolkits.length),

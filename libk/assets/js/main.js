@@ -726,7 +726,7 @@ DocsApp.treeAfterRender = function () {
 };
 
 /**
- *
+ * Creates the product / version selection hover menu
  */
 DocsApp.initProductMenu = function () {
     var menuCt = ExtL.get('product-tree-ct'),
@@ -1974,11 +1974,9 @@ DocsApp.getEventTarget = function (e) {
                     });
                 }
 
-                if (item.prod === 'cmd') {
-                    //href = homePath  + '../../' + item.prod + '/guides/' + item.searchUrls[item.r] + '.html';
+                if (DocsApp.meta.product !== 'cmd' && item.prod === 'cmd') {
                     href = DocsApp.meta.rootPath  + '../../' + item.prod + '/' + item.searchUrls[item.r];
                 } else {
-                    //href = homePath + 'guides/' + item.searchUrls[item.r] + '.html';
                     href = DocsApp.meta.rootPath + item.searchUrls[item.r];
                 }
 

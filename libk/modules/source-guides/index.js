@@ -126,7 +126,9 @@ class SourceGuides extends SourceApi {
      */
     get guideDirPaths () {
         let me      = this,
-            version = me.options.version,
+            // the version is set to 1000 in instances where there is no version
+            // connected to the build, but there are actually versioned folders in guides
+            version = me.options.version || '1000',
             dirs    = me.getDirs(me.guidePath),
             i       = 0,
             len     = dirs.length,
@@ -860,7 +862,7 @@ class SourceGuides extends SourceApi {
             let trees = JSON.stringify(this.guidesTree, null, 4),
                 wrap  = `DocsApp.guidesTree = ${trees}`,
                 product    = this.getProduct(),
-                version    = this.options.version,
+                version    = this.options.version || '',
                 dest  = Path.join(this.jsDir, `${product}-${version}-guidesTree.js`);
 
             Fs.writeFile(dest, wrap, 'utf8', (err) => {

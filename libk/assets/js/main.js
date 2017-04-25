@@ -3385,7 +3385,7 @@ DocsApp.getEventTarget = function (e) {
     ExtL.bindReady(function () {
         var branches, treeCt;
 
-        if (!DocsApp.meta.pageType === 'landing') {
+        if (DocsApp.meta.pageType !== 'landing') {
             DocsApp.initNavTree();
         }
         DocsApp.initProductMenu();

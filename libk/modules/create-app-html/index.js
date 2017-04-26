@@ -197,8 +197,7 @@ class HtmlApp extends AppBase {
     copyAssets () {
         let options   = this.options,
             root      = options._myRoot,
-            assetsSrc = Path.join(root, 'assets'),
-            accessFile = '.htaccess';
+            assetsSrc = Path.join(root, 'assets');
 
         Fs.ensureDirSync(this.assetsDir);
 
@@ -206,6 +205,17 @@ class HtmlApp extends AppBase {
         this.copyJs();
 
         Fs.copySync(assetsSrc, this.assetsDir);
+    }
+
+    /**
+     * Copy .htaccess file from the assets folder to the output folder
+     */
+    runCopyHtaccess () {
+        let options   = this.options,
+            root      = options._myRoot,
+            assetsSrc = Path.join(root, 'assets'),
+            accessFile = '.htaccess';
+
         Fs.copySync(
             Path.join(assetsSrc, accessFile),
             Path.join(options.outputDir, accessFile)
@@ -404,10 +414,6 @@ class HtmlApp extends AppBase {
         if (memberName) {
             href += `#${memberName}`;
         }
-
-        //console.log('href:', product, version, toolkit, className, memberName);
-        //console.log(Path.join(rootPath, product, version, toolkit, `${className}.html`));
-        //console.log(relPath);
 
         return `<a href="${href}">${text}</a>`;
     }
@@ -656,7 +662,6 @@ class HtmlApp extends AppBase {
 
             this.processLandingDataObject(data);
 
-            //console.log(this.options.products);
             let len         = data.homeItems.length,
                 productsObj = options.products;
 

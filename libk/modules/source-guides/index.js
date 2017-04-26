@@ -157,7 +157,7 @@ class SourceGuides extends SourceApi {
             map = this._guidePathMap = {};
 
             // get all applicable guide directories
-            let verDirs = this.guideDirPaths.reverse(),
+            let verDirs = this.guideDirPaths,
                 i       = 0,
                 len     = verDirs.length;
 
@@ -221,12 +221,18 @@ class SourceGuides extends SourceApi {
         let meta = super.getCommonMetaData();
 
         if (data) {
+            /*let docsRelativePath = Path.relative(
+                this.guidesOutputDir,
+                this.options.outputDir
+            );*/
+
             Object.assign(meta, {
-                navTreeName : data.navTreeName,
-                myId        : data.id,
-                rootPath    : Path.relative(data.rootPath, this.outputProductDir) + '/',
-                pageType    : 'guide',
-                pageName    : data.text
+                navTreeName  : data.navTreeName,
+                myId         : data.id,
+                rootPath     : Path.relative(data.rootPath, this.outputProductDir) + '/',
+                pageType     : 'guide',
+                pageName     : data.text//,
+                //docsRootPath : `${docsRelativePath}/`
             });
         }
 
@@ -557,7 +563,8 @@ class SourceGuides extends SourceApi {
      * @return Promise
      */
     outputGuides () {
-        let guidesTree = this.guidesTree,
+        let options    = this.options,
+            guidesTree = this.guidesTree,
             flattened  = this.flattenGuides(guidesTree),
             writeArr   = [],
             i          = 0,
@@ -565,19 +572,20 @@ class SourceGuides extends SourceApi {
 
         // loop over all guide nodes
         for (; i < len; i++) {
-            let node        = flattened[i],
-                content     = node.content,
-                path        = node.id,
-                filePath    = this.getGuideFilePath(path),
-                rootPathDir = Path.parse(filePath).dir;
+            let node              = flattened[i],
+                content           = node.content,
+                path              = node.id,
+                filePath          = this.getGuideFilePath(path),
+                rootPathDir       = Path.parse(filePath).dir,
+                guideRelativePath = Path.relative(rootPathDir, options.outputDir);
 
             // if the node has content then output the guide file for this node
             if (content) {
                 writeArr.push(
                     new Promise((resolve, reject) => {
                         //let data = Object.assign({}, node);
-                        let data     = Object.assign({}, this.options);
-                        data         = Object.assign(data, this.options.prodVerMeta);
+                        let data     = Object.assign({}, options);
+                        data         = Object.assign(data, options.prodVerMeta);
                         data         = Object.assign(data, node);
 
                         // prepare the data object to be passed to the guide template
@@ -585,6 +593,7 @@ class SourceGuides extends SourceApi {
                         data.prodVerPath    = Path.relative(rootPathDir, this.outputProductDir) + '/';
                         data.content        = this.processGuideHtml(content, data);
                         data                = this.processGuideDataObject(data);
+                        data.myMeta.docsRootPath = `${guideRelativePath}/`;
                         data.contentPartial = '_html-guideBody';
 
                         Fs.writeFile(filePath, this.mainTemplate(data), 'utf8', (err) => {

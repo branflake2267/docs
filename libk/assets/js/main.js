@@ -4127,7 +4127,7 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.copyTOC = function () {
-        var desktopToc = document.querySelector('.toc'),
+        var desktopToc = document.querySelector('#rightMembers .toc'),
             copy       = (desktopToc) ? desktopToc.cloneNode(true) : null;
 
         if (copy !== null) {

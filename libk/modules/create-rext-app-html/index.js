@@ -488,72 +488,6 @@ class ExtReactHtmlApp extends HtmlApp {
 
                     map[className] = aliasList;
                 }
-
-                /*let alias  = cls.aliasName,
-                    name   = cls.name,
-                    events = prepared.events;
-
-                // if the class has an alias then we'll use a camelized version of the alias
-                // as the class 'name' and the class name will display as an alias
-                if (alias) {
-                    alias = alias.split(',')[0];
-                    if (cls.aliasPrefix === 'xtype') {
-                        cls.name = this.camelize(alias);
-                    } else {
-                        alias = alias.split('.');
-                        cls.name = this.camelize(alias[alias.length - 1]);
-                    }
-                    cls.aliasName = name;
-                    delete cls.aliasPrefix;
-                }
-
-                // set the config and property names to match what React users would expect
-                if (prepared.configs) {
-                    prepared.configs.name    = 'props';
-                }
-                if (prepared.properties) {
-                    prepared.properties.name = 'fields';
-                }
-
-                // if there are events on the class camelize them and prefix with 'on' to
-                // match React event name convention
-                if (events) {
-                    let len = events.length;
-
-                    while (len--) {
-                        let event          = events[len];
-
-                        event.name         = `on${this.camelize(event.name)}`;
-                        event.returnPrefix = ' => ';
-                        event.paramsPrefix = ': function';
-                    }
-                }
-
-                prepared.myMeta.pageName = cls.name;
-
-                // remove select properties for the ExtReact output
-                let configs = prepared.configs;
-
-                if (configs) {
-                    let blacklist = [
-                        'items',
-                        'defaultType',
-                        'control',
-                        'renderTo',
-                        'weighted'
-                    ];
-
-                    if (configs.hasOptionalConfigs) {
-                        _.remove(configs.optionalConfigs, item => {
-                            return blacklist.includes(item.name);
-                        });
-                    }
-                    if (configs.hasRequiredConfigs) {
-                        _.remove(configs.requiredConfigs, item => {
-                            return blacklist.includes(item.name);
-                        });
-                    }
-                }*/
             }
         }
     }
@@ -565,53 +499,6 @@ class ExtReactHtmlApp extends HtmlApp {
      * `outputApiFile`
      */
     processApiFiles () {
-        //this.log(`Begin 'SourceApi.processApiFiles'`, 'info');
-
-        /*let classMap     = this.classMap,
-            classNames   = Object.keys(classMap),
-            i            = 0,
-            len          = classNames.length,
-            names        = this.componentClassNames,
-            modifiedOnly = this.options.modifiedOnly;
-
-        //create the component name / class name map
-        this.createComponentNameMap();
-
-        // loops through all class names from the classMap
-        for (; i < len; i++) {
-            let className = classNames[i],
-                // the prepared object is the one that has been created by
-                // `createSrcFileMap` and will be processed in `decorateClass`
-                prepared   = classMap[className].prepared,
-                apiTree    = this.getApiTree(className),
-                inList     = names.includes(className),
-                isModified = classMap[className].modified,
-                modified   = !modifiedOnly || (modifiedOnly && isModified);
-
-            if (modified) {
-                this.decorateClass(className);
-            }
-
-            // the class could be marked as skip=true if it's not something we wish to
-            // process after running it through decorateClass.  i.e. an enums class with
-            // no properties is empty so is skipped
-            if (classMap[className].skip || !modified) {
-                delete classMap[className];
-            } else {
-                let icon = prepared.cls.clsSpecIcon;
-
-                if (!inList) {
-                    this.addToApiTree(className, icon, apiTree);
-                } else {
-                    let componentsList = this.componentList,
-                        treeCfg = componentsList[className];
-
-                    this.addToApiTree(treeCfg, icon, apiTree);
-                    this.addToApiTree(className, icon, this.apiTrees.API, '-placeholder');
-                }
-            }
-        }*/
-
         //create the component name / class name map
         this.createComponentNameMap();
         super.processApiFiles();
@@ -740,25 +627,7 @@ class ExtReactHtmlApp extends HtmlApp {
 
             // if the class has an alias then we'll use a camelized version of the alias
             // as the class 'name' and the class name will display as an alias
-            /*if (alias) {
-                alias = alias.split(',')[0];
-                if (cls.aliasPrefix === 'xtype') {
-                    cls.name = this.camelize(alias);
-                } else {
-                    alias = alias.split('.');
-                    cls.name = this.camelize(alias[alias.length - 1]);
-                }
-                cls.aliasName = name;
-                delete cls.aliasPrefix;
-            }*/
             if (alias && alias.length) {
-                /*alias = alias.split(',')[0];
-                if (cls.aliasPrefix === 'xtype') {
-                    cls.name = this.camelize(alias);
-                } else {
-                    alias = alias.split('.');
-                    cls.name = this.camelize(alias[alias.length - 1]);
-                }*/
                 cls.name = alias[0].name;
                 cls.aliasName = name;
                 delete cls.aliasPrefix;
@@ -929,6 +798,17 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * Prepares additional api data processing prior to handing the data over to the api
+     * template for final output
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processApiDataObject (data) {
+        super.processApiDataObject(data);
+        data.hasToolkits = false;
+    }
+
+    /**
      * Splits the postprocessing of a class's configs for "ExtReact Component" classes
      * and others since we don't want setter / getter methods described in the configs
      * section of "ExtReact Component" classes
@@ -1044,6 +924,26 @@ class ExtReactHtmlApp extends HtmlApp {
                 if (!(config.hasSetter && mixesBindable)) {
                     config.immutable = true;
                 }
+
+                if (config['react-child']) {
+                    data.hasChildItems = true;
+                }
+            }
+
+            if (data.hasChildItems) {
+                let children = [];
+                if (requiredConfigs) {
+                    children = children.concat(_.remove(requiredConfigs, config => {
+                        return config['react-child'];
+                    }));
+                }
+                if (optionalConfigs) {
+                    children = children.concat(_.remove(optionalConfigs, config => {
+                        return config['react-child'];
+                    }));
+                }
+                data['child-items'] = children;
+                //console.log(children);
             }
 
             // if the class has properties then mark them as 'read only' and push them

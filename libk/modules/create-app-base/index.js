@@ -450,10 +450,6 @@ class AppBase extends SourceGuides {
             prodVerMeta = this.options.prodVerMeta,
             version     = this.apiVersion,
             prodObj     = this.options.products[this.apiProduct],
-            //hasApi      = prodObj.hasApi,
-            //hasVersions = prodObj.hasVersions,
-            //version     = hasVersions && options.version,
-            //toolkit     = hasApi && options.toolkit;
             toolkit     = prodVerMeta.toolkit;
 
         let fidMeta = {

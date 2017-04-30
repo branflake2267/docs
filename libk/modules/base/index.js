@@ -219,7 +219,8 @@ class Base {
             apiProduct : this.apiProduct,
             apiVersion : this.apiVersion,
             title      : meta.title,
-            toolkit    : prodVerMeta.hasToolkits && options.toolkit
+            toolkit    : prodVerMeta.hasToolkits && options.toolkit,
+            exceptions : options.buildExceptions
         });
     }
 

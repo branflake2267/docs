@@ -555,6 +555,8 @@ DocsApp.initNavTree = function () {
             tree.select(targetNode.id)
             // and expand the tree to the selected node
             .expandTo(targetNode.id);
+            console.log(document.getElementById(targetNode.id));
+            document.getElementById(targetNode.id).scrollIntoView(true);
         }
 
         DocsApp.initNavTreeTabs();
@@ -965,7 +967,7 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.setTypeNavAndHeaderVisibility = function () {
         var headers    = [],
-            types      = ['configs', 'properties', 'methods', 'events', 'vars', 'sass-mixins'],
+            types      = ['child-items', 'configs', 'properties', 'methods', 'events', 'vars', 'sass-mixins'],
             typeLen    = types.length,
             i          = 0,
             totalCount = 0,
@@ -3660,8 +3662,10 @@ DocsApp.getEventTarget = function (e) {
             productMenuCt      = ExtL.get('product-tree-ct'),
             products           = productMenuCt.childNodes,
             productsLen        = products.length,
+            meta               = DocsApp.meta,
+            exceptions         = meta.exceptions,
             productNode, product, parent, children, childrenLen, i, child, node,
-            myVersion, majorVersion, hasHeaders;
+            myVersion, majorVersion, hasHeaders, cn, childPath, exception;
 
         if (!ExtL.hasCls(target, productItemCls)) {
             target = ExtL.up(target, '.' + productItemCls);
@@ -3694,16 +3698,32 @@ DocsApp.getEventTarget = function (e) {
 
             for (; i < childrenLen; i++) {
                 child = children[i];
-                node  = ExtL.createElement({
-                    cn : [{
-                        tag  : 'a',
-                        href : DocsApp.meta.docsRootPath + child.path + '/index.html',
-                        html : child.text
-                    }, {
+                childPath = child.path.split('/');
+
+                if (childPath[0] && exceptions[childPath[0]]) {
+                    if (exceptions[childPath[0]] === true) {
+                        exception = true;
+                    } else if (childPath[1] && exceptions[childPath[0]].includes(childPath[1])) {
+                        exception = true;
+                    }
+                }
+
+                cn    = [{
+                    tag  : 'a',
+                    href : meta.docsRootPath + child.path + (exception ? '/' : '/index.html'),
+                    html : child.text
+                }];
+
+                if (!exception) {
+                    cn.push({
                         tag  : 'a',
                         href : DocsApp.meta.docsRootPath + 'downloads/' + child.path.replace(/\//g, '-').replace(/\./g, '') + '-docs.zip',
                         html : '(offline docs)'
-                    }]
+                    });
+                }
+
+                node  = ExtL.createElement({
+                    cn : cn
                 });
 
                 versionMenuCt.appendChild(node);

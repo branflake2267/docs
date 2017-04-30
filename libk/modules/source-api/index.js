@@ -967,12 +967,12 @@ class SourceApi extends Base {
         cls.isEnum       = cls.$type === 'enum';
         data.cls = cls;
 
-        this.processApiDataObject(data);
-
         // TODO there's a lot of overlap here with guides - should see how we can
         // reconcile some of this into some sort of applyContext(data) method
         data = Object.assign(data, options.prodVerMeta);
         data = Object.assign(data, options);
+
+        this.processApiDataObject(data);
 
         // indicates whether the class is of type component, singleton, or some other
         // class

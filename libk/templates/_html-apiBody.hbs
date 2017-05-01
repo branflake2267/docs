@@ -106,22 +106,22 @@
                     </div>
                 </div>
                 <div id="member-types-menu" class="member-types-menu dib">
-                    {{#if hasChildItems}}
-                        <a href="#child-items" id="child-items-button-link">
-                            <div id="child-items-nav-btn" class="toolbarButton disabled">
-                                <i class="fa fa-dot-circle-o"></i>
-                                <span class="member-type-btn-text">children</span>
-                                <div id="child-items-count" class="nav-btn-count"></div>
-                                <div class="nav-btn-mask"></div>
-                            </div>
-                        </a>
-                    {{/if}}
                     {{#if hasConfigs}}
                         <a href="#configs" id="configs-button-link">
                             <div id="configs-nav-btn" class="toolbarButton disabled">
                                 <i class="fa fa-cubes"></i>
                                 <span class="member-type-btn-text">{{configs.name}}</span>
                                 <div id="configs-count" class="nav-btn-count"></div>
+                                <div class="nav-btn-mask"></div>
+                            </div>
+                        </a>
+                    {{/if}}
+                    {{#if hasChildItems}}
+                        <a href="#child-items" id="child-items-button-link">
+                            <div id="child-items-nav-btn" class="toolbarButton disabled">
+                                <i class="fa fa-dot-circle-o"></i>
+                                <span class="member-type-btn-text">children</span>
+                                <div id="child-items-count" class="nav-btn-count"></div>
                                 <div class="nav-btn-mask"></div>
                             </div>
                         </a>
@@ -254,16 +254,6 @@
         </div>
         <div class="no-visible-members-warning">No members found using the current filters</div>
         <div class="members">
-            {{#if hasChildItems}}
-                <div id="child-items-ct">
-                    <h2 id="child-items" class="type">children</h2>
-                    <a name="child-items"></a>
-                    {{#child-items}}
-{{> _api-member}}
-                    {{/child-items}}
-                </div>
-            {{/if}}
-
             {{#if hasConfigs}}
                 <div id="configs-ct">
                     <h2 id="configs" class="type">{{configs.name}}</h2>
@@ -285,6 +275,16 @@
                             {{/configs.optionalConfigs}}
                         </div>
                     {{/if}}
+                </div>
+            {{/if}}
+
+            {{#if hasChildItems}}
+                <div id="child-items-ct">
+                    <h2 id="child-items" class="type">children</h2>
+                    <a name="child-items"></a>
+                    {{#child-items}}
+{{> _api-member}}
+                    {{/child-items}}
                 </div>
             {{/if}}
 

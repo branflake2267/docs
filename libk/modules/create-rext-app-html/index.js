@@ -925,25 +925,32 @@ class ExtReactHtmlApp extends HtmlApp {
                     config.immutable = true;
                 }
 
+                // if any of the configs has the "react-child" flag then we'll process
+                // child items below
                 if (config['react-child']) {
+                    config.name = this.camelize(config.name);
                     data.hasChildItems = true;
                 }
             }
 
+            // if any of the configs were child items
             if (data.hasChildItems) {
                 let children = [];
+
+                // remove the child items from the required configs array
                 if (requiredConfigs) {
                     children = children.concat(_.remove(requiredConfigs, config => {
                         return config['react-child'];
                     }));
                 }
+                // and the optional configs array
                 if (optionalConfigs) {
                     children = children.concat(_.remove(optionalConfigs, config => {
                         return config['react-child'];
                     }));
                 }
+                // and add them to the 'children' array
                 data['child-items'] = children;
-                //console.log(children);
             }
 
             // if the class has properties then mark them as 'read only' and push them

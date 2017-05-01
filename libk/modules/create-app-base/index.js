@@ -469,7 +469,7 @@ class AppBase extends SourceGuides {
         out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
             meta = meta.trim();
             code = code.trim();
-            meta = 'packages=reactor';
+            //meta = 'packages=reactor';
             if (meta && meta.length) {
                 fidMeta = Object.assign({}, fidMeta);
                 //if (meta.includes(' ') && meta.includes('=')) {

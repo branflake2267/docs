@@ -3418,6 +3418,10 @@ DocsApp.getEventTarget = function (e) {
         }
         if (window.location.hash) {
             DocsApp.onHashChange(true);
+            // re-check header visibility since the onHashChange might have set
+            // temp-show on a class member and we'll then need its header / group to be
+            // visible
+            DocsApp.setTypeNavAndHeaderVisibility();
         }
 
         eventsEl = ExtL.get('guideTab');

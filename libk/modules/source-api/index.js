@@ -1187,6 +1187,10 @@ class SourceApi extends Base {
             }
         }
 
+        if (member.value) {
+            member.value = `<pre class="defaults-to-dec">${_.escape(member.value)}</pre>`;
+        }
+
         // set the type to what the template is expecting for the SASS sections
         if (type === 'vars') {
             member.$type = 'css_var-S';

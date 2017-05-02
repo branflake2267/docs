@@ -466,7 +466,7 @@ class AppBase extends SourceGuides {
             };
 
         // decorates @example blocks as inline fiddles
-        out = html.replace(/(?:<pre><code>(?:@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
+        out = html.replace(/(?:<pre><code>(?:\s*@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
             meta = meta.trim();
             code = code.trim();
             //meta = 'packages=reactor';

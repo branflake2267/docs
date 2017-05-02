@@ -555,7 +555,7 @@ DocsApp.initNavTree = function () {
             tree.select(targetNode.id)
             // and expand the tree to the selected node
             .expandTo(targetNode.id);
-            // console.log(document.getElementById(targetNode.id));
+            //console.log(document.getElementById(targetNode.id));
             document.getElementById(targetNode.id).scrollIntoView(true);
         }
 
@@ -4228,6 +4228,7 @@ DocsApp.getEventTarget = function (e) {
         var hash            = location.hash,
             rightMembers    = ExtL.get('rightMembers'),
             contextMenuOpen = ExtL.hasCls(rightMembers, 'show-context-menu'),
+            filterInput     = document.getElementById("member-filter-field"),
             target, parent, isAccessor;
 
         if (!hash) {
@@ -4252,6 +4253,14 @@ DocsApp.getEventTarget = function (e) {
             }
             if (contextMenuOpen) {
                 DocsApp.toggleContextMenu();
+            }
+
+            if (filterInput) {
+                filterInput.value = '';
+                filterInput.dispatchEvent(new Event('change'));
+                setTimeout(function(){
+                    target.scrollIntoView(true);
+                }, 250);
             }
         }
     };

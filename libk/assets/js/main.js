@@ -555,7 +555,7 @@ DocsApp.initNavTree = function () {
             tree.select(targetNode.id)
             // and expand the tree to the selected node
             .expandTo(targetNode.id);
-            console.log(document.getElementById(targetNode.id));
+            // console.log(document.getElementById(targetNode.id));
             document.getElementById(targetNode.id).scrollIntoView(true);
         }
 

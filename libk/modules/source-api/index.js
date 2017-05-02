@@ -1374,6 +1374,12 @@ class SourceApi extends Base {
 
             // if there is a getter or the config is accessor decorate the getter
             // method config
+
+            /*if (name === 'minValue') {
+                console.log('g', g);
+                console.log('accessor', accessor);
+                console.log(data.cls.name);
+            }*/
             if (g || accessor === true || accessor === 'r') {
                 let idx = g ? instanceMethods.indexOf(g) : null;
 
@@ -1450,8 +1456,10 @@ class SourceApi extends Base {
             // finally, note on any accessor configs when a getter / setter
             // should be added automatically for accessor configs that don't
             // have explicitly described getter / setter methods
-            if (accessor) {
+            if (accessor === true || accessor === 'r') {
                 config.autoGetter = !g;
+            }
+            if (accessor === true || accessor === 'w') {
                 config.autoSetter = !s;
             }
         }

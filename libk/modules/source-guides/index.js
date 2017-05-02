@@ -362,12 +362,14 @@ class SourceGuides extends SourceApi {
             // be passed on to the outputSearch method
             for (; i < len; i++) {
                 let partnerProduct  = searchPartners[i],
+                    version         = products[partnerProduct].hasVersions ? options.version : null,
                     partnerInstance = new HtmlApp(
                         // options._args has the initial set of arguments from the CLI
                         // for this product build
                         // - all that is really needed to instantiate a module
                         Object.assign({}, options._args, {
-                            product: partnerProduct
+                            product : partnerProduct,
+                            version : version
                         })
                     );
 
@@ -736,6 +738,7 @@ class SourceGuides extends SourceApi {
                 node.leaf    = true;
                 node.iconCls = iconClasses[node.toolkit] || iconClasses.universal;
                 // if the node isn't simply a link itself then output its guide
+
                 if (!node.link) {
                     //nodesArr.push(this.outputGuide(node, rootPath));
                     node.href = Path.join('guides', rootPath, `${slug}.html`);

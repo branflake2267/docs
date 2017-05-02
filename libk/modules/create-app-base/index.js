@@ -450,7 +450,7 @@ class AppBase extends SourceGuides {
             prodVerMeta = this.options.prodVerMeta,
             version     = this.apiVersion,
             prodObj     = this.options.products[this.apiProduct],
-            toolkit     = prodVerMeta.toolkit;
+            toolkit     = options.toolkit;
 
         let fidMeta = {
                 framework : this.options.products[this.apiProduct].title, // either "Ext JS" or "Sencha Touch" as required by Fiddle

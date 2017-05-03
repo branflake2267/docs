@@ -928,8 +928,8 @@ class ExtReactHtmlApp extends HtmlApp {
                 // if any of the configs has the "react-child" flag then we'll process
                 // child items below
                 if (config['react-child']) {
-                    config.name = this.camelize(config.name);
-                    data.hasChildItems = true;
+                    //config.name = this.camelize(config.name);
+                    //data.hasChildItems = true;
                 }
             }
 

@@ -798,6 +798,20 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * Processes the API object's related classes for HTML output.  And for React we want
+     * to also display the source NPM package if applicable
+     * @param {Object} cls The original class object
+     * @param {Object} data The recipient of the processed related classes
+     */
+    processRelatedClasses (cls, data) {
+        super.processRelatedClasses(cls, data);
+
+        if (cls.npmPackage) {
+            data.npmPackage = `<div>@${cls.npmPackage}</div>`;
+        }
+    }
+
+    /**
      * Prepares additional api data processing prior to handing the data over to the api
      * template for final output
      * @param {Object} data The object to be processed / changed / added to before

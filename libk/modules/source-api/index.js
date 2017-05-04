@@ -637,8 +637,10 @@ class SourceApi extends Base {
                     name        : name,
                     text        : name,
                     navTreeName : 'api',
-                    id          : id + idSuffix,
+                    //id          : id + idSuffix,
+                    id          : id,
                     leaf        : leaf,
+                    idSuffix    : idSuffix
                 };
 
             let target        = this.getExistingNode(nodes, id),

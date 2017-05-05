@@ -131,7 +131,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         cfg = {
             //id             : node.id,
             parentTreeNode : parentId || null,
-            "class"        : accessCls + ' tree-node tree-depth-' + depth + indexedCls
+            "class"        : (accessCls || '') + ' tree-node tree-depth-' + depth + indexedCls
         };
 
         href = null;
@@ -147,7 +147,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         if (node.children) {
             // since this node is a parent node add it to the _parentNodes property
             cfg["class"] += ' tree-parent-node pointer ' + this.collapseCls;
-            cfg.id = this.target.id + '-' + node.id + node.idSuffix;
+            cfg.id = this.target.id + '-' + node.id + (node.idSuffix || '');
             this._parentNodes.push(cfg.id);
             // add the expand / collapse icons, any passed iconCls for the node, the node
             // text, and finally a wrapping container for all child nodes (used to
@@ -197,7 +197,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         } else {
             // decorate this node as a leaf node
             cfg.leaf = true;
-            cfg.id   = node.id + node.idSuffix;
+            cfg.id   = node.id + (node.idSuffix || '');
             cfg.tag  = textTag;
             cfg.href = href;
             cfg["class"] += ' tree-leaf';

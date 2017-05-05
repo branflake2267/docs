@@ -487,7 +487,8 @@ class ExtReactHtmlApp extends HtmlApp {
                             name = this.camelize(name);
                         } else {
                             name = fullAlias.split('.');
-                            name = this.camelize(name[name.length - 1]);
+                            //name = this.camelize(name[name.length - 1]);
+                            name = name[name.length - 1];
                         }
                         aliasList.push({
                             prefix : prefix,

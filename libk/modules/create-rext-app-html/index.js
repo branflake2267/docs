@@ -313,8 +313,17 @@ class ExtReactHtmlApp extends HtmlApp {
         let names = this._componentMenuNames;
 
         if (!names) {
-            let list = this.componentList;
-            names = this._componentMenuNames = _.values(list);
+            this._componentMenuNames = names = [];
+
+            let list       = this.componentList,
+                components = this.componentClassNames,
+                len        = components.length;
+
+            while (len--) {
+                let name = components[len];
+
+                names.push(list[name].menuText || list[name]);
+            }
         }
 
         return names;
@@ -524,7 +533,7 @@ class ExtReactHtmlApp extends HtmlApp {
             super.addToApiTree(className, icon, apiTree);
         } else {
             let componentsList = this.componentList,
-                treeCfg        = componentsList[className];
+                treeCfg        = componentsList[className].menuText || componentsList[className];
 
             super.addToApiTree(treeCfg, icon, apiTree);
             super.addToApiTree(className, icon, this.apiTrees.API, '-placeholder');
@@ -628,7 +637,7 @@ class ExtReactHtmlApp extends HtmlApp {
             // if the class has an alias then we'll use a camelized version of the alias
             // as the class 'name' and the class name will display as an alias
             if (alias && alias.length) {
-                cls.name = alias[0].name;
+                cls.name = this.componentList[name].preferredAlias || alias[0].name;
                 cls.aliasName = name;
                 delete cls.aliasPrefix;
             }

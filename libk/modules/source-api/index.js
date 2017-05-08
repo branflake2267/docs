@@ -752,6 +752,93 @@ class SourceApi extends Base {
     }
 
     /**
+     * Logs out a list of classes with no examples in the description
+     */
+    listMissingExamples () {
+        this.bulkClassReportedUtil('doListMissingExamples');
+    }
+
+    /**
+     * Logs out a list of component classes with no examples in the description
+     */
+    listMissingComponentExamples () {
+        this.bulkClassReportedUtil('doListMissingExamples', true);
+    }
+
+    /**
+     * See {@link #listMissingComponentExamples}
+     * @param {Object} prepared The prepared class object
+     * @param {Boolean} [componentsOnly] True to list only component classes missing an
+     * example
+     */
+    doListMissingExamples (prepared, componentsOnly) {
+        let text        = prepared.text,
+            extendsList = prepared.extends;
+
+        if (text && !text.includes('@example')) {
+            if (!componentsOnly || (componentsOnly && extendsList && extendsList.split(',')[0].includes('Ext.Component'))) {
+                console.log('MISSING EXAMPLE', prepared.name);
+            }
+        }
+    }
+
+    /**
+     * Logs out a list of classes with no description or a description less than 80
+     * characters
+     */
+    listLackingDescription () {
+        this.bulkClassReportedUtil('doListLackingDescription');
+    }
+
+    /**
+     * See {@link #listLackingDescription}
+     * @param {Object} prepared The prepared class object
+     */
+    doListLackingDescription (prepared) {
+        let text = prepared.text;
+
+        if (!text || text.length < 80) {
+            console.log('LACKING DESCRIPTION', prepared.name, text.length);
+        }
+    }
+
+    /**
+     * @private
+     * Helper class used to support util classes like {@link #listMissingExamples}
+     * @param {String} methodName The name of the method to call passing both the
+     * prepared class object from {@link #createSrcFileMap} and any passed `param`
+     * @param {Object} [param] An optional param used by the specified `methodName`
+     * method
+     * @return {Promise}
+     */
+    bulkClassReportedUtil (methodName, param) {
+        this.classMap   = {};
+        this.srcFileMap = {};
+
+        return this.createSrcFileMap()
+        .then(() => {
+            let classMap     = this.classMap,
+                classNames   = Object.keys(classMap),
+                i            = 0,
+                len          = classNames.length,
+                modifiedOnly = this.options.modifiedOnly;
+
+            // loops through all class names from the classMap
+            for (; i < len; i++) {
+                let className  = classNames[i],
+                    classObj   = classMap[className],
+                    prepared   = classMap[className].prepared;
+
+                this[methodName](prepared, param);
+            }
+        })
+        .then(() => {
+            this.concludeBuild();
+        })
+        .catch(this.error.bind(this));
+    }
+
+    /**
      * Entry method to process the doxi files into files for use by the HTML docs or Ext
      * app
      */
@@ -759,7 +846,6 @@ class SourceApi extends Base {
         //this.log(`Begin 'SourceApi.readDoxiFiles'`, 'info');
         let dt = new Date();
         return this.createSrcFileMap()
-        //.then(this.ensureResourcesDir.bind(this))
         .then(() => {
             this.ensureDir(this.apiDir);
         })

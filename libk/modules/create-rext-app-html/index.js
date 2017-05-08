@@ -612,7 +612,7 @@ class ExtReactHtmlApp extends HtmlApp {
      */
     getClassByMenuName (menuValue) {
         return _.findKey(this.componentList, (val) => {
-            return menuValue === val;
+            return val.menuText === menuValue || menuValue === val;
         });
     }
 

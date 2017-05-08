@@ -364,11 +364,13 @@ class SourceApi extends Base {
         if (srcObj) {
             let target = srcObj.inheritdoc || srcObj.text || srcObj.name || srcObj.constructor;
 
-            if (target) {
+            if (target && target.split) {
                 let srcArr  = target.split(','),
                     srcIdx  = srcArr[0];
 
                 srcFilePath = files[srcIdx];
+            } else {
+                this.log('Source file could not be found', 'info');
             }
         }
 
@@ -572,30 +574,6 @@ class SourceApi extends Base {
     }
 
     /**
-     * Create the resources directory if not already created
-     * @return {Object} Promise
-     */
-    /*ensureResourcesDir () {
-        return new Promise((resolve, reject) => {
-            let path = Path.resolve(
-                __dirname,
-                Path.join(
-                    this.resourcesDir,
-                    this.apiDirName
-                )
-            );
-
-            Fs.ensureDir(path, (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    }*/
-
-    /**
      * Add the passed class name to the api tree used for UI nav
      * @param {String} className The full class name to process and add to the API tree
      * @param {String} icon An icon class name to include if passed:
@@ -637,7 +615,6 @@ class SourceApi extends Base {
                     name        : name,
                     text        : name,
                     navTreeName : 'api',
-                    //id          : id + idSuffix,
                     id          : id,
                     leaf        : leaf,
                     idSuffix    : idSuffix

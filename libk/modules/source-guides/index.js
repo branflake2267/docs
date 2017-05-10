@@ -594,7 +594,7 @@ class SourceGuides extends SourceApi {
                         data.rootPath       = rootPathDir;
                         data.prodVerPath    = Path.relative(rootPathDir, this.outputProductDir) + '/';
                         data.content        = this.processGuideHtml(content, data);
-                        data                = this.processGuideDataObject(data);
+                        this.processGuideDataObject(data);
                         data.myMeta.docsRootPath = `${guideRelativePath}/`;
                         data.contentPartial = '_html-guideBody';
 

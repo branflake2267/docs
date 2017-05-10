@@ -833,6 +833,17 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * Template method to allow for additional guide data processing prior to handing the
+     * data over to the guide template for final output
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processGuideDataObject (data) {
+        super.processGuideDataObject(data);
+        data.hasToolkits = false;
+    }
+
+    /**
      * Splits the postprocessing of a class's configs for "ExtReact Component" classes
      * and others since we don't want setter / getter methods described in the configs
      * section of "ExtReact Component" classes

@@ -431,6 +431,17 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * Returns common metadata needed by app pages
+     * @return {Object} Hash of common current page metadata
+     */
+    getCommonMetaData () {
+        let meta = super.getCommonMetaData();
+
+        meta.componentClassNameMap = this.componentList;
+        return meta;
+    }
+
+    /**
      * Upper CamelCases strings in order to display split words such as
      * @param {String} str The string to camelize
      * @return {String} The upper camelcased string
@@ -818,6 +829,12 @@ class ExtReactHtmlApp extends HtmlApp {
 
         if (cls.npmPackage) {
             data.npmPackage = `<div>@${cls.npmPackage}</div>`;
+        }
+
+        if (data.extends) {
+            data.extends = data.extends.replace(/(.*<div class="hierarchy pl2">)(.*?)(<\/div>.*)/gi, (match, p1, p2, p3) => {
+                return p1 + this.replaceWithComponentName(p2) + p3;
+            });
         }
     }
 

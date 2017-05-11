@@ -323,7 +323,7 @@ class SourceApi extends Base {
      * @return {Object} Hash of common current page metadata
      */
     getApiMetaData (data) {
-        let meta = super.getCommonMetaData();
+        let meta = this.getCommonMetaData();
 
         if (data && data.cls) {
             let name       = data.cls.name,

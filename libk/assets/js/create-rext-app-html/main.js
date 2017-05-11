@@ -331,6 +331,44 @@ DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
 };
 
 /**
+ *
+ */
+DocsApp.typesDisplay = {
+    c  : 'prop',
+    p  : 'prop',
+    sp : 'property',
+    m  : 'method',
+    sm : 'method',
+    e  : 'event',
+    v  : 'css var',
+    x  : 'css mixin',
+    z  : 'mixin param'
+};
+
+/**
+ *
+ */
+DocsApp.getSearchClassName = function (rec) {
+    var map = DocsApp.meta.componentClassNameMap,
+        className = rec.classObj.n,
+        aliases = rec.classObj.x,
+        ref = map[className],
+        preferredAlias;
+
+    if (ref) {
+        preferredAlias = ref.preferredAlias;
+
+        if (preferredAlias) {
+            className = preferredAlias;
+        } else if (aliases) {
+            className = aliases[0].substring(aliases[0].indexOf('.') + 1);
+        }
+    }
+
+    return className;
+};
+
+/**
  * @private
  * Used by the runFiddleExample method.  Appends a form to the body for use by the
  * anonymous fiddle examples.

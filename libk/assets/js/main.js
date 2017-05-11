@@ -1559,6 +1559,18 @@ DocsApp.getEventTarget = function (e) {
         return hits;
     };
 
+    DocsApp.typesDisplay = {
+        c  : 'config',
+        p  : 'property',
+        sp : 'property',
+        m  : 'method',
+        sm : 'method',
+        e  : 'event',
+        v  : 'css var',
+        x  : 'css mixin',
+        z  : 'mixin param'
+    };
+
     DocsApp.prepareApiSearchRecords = function (results) {
         // BELOW IS THE SORTING ORDER
 
@@ -1641,8 +1653,9 @@ DocsApp.getEventTarget = function (e) {
                 valueRegex  = new RegExp(searchValue, 'i'),
                 classObj    = item.classObj,
                 aliases     = item.classObj.x,
+                typesDisp   = DocsApp.typesDisplay,
                 i, aliasPre, aliasPost, member, memberType, memberName, access,
-                targetClassName, classSuffix, types, typesDisp, meta;
+                targetClassName, classSuffix, types, meta;
 
             types = {
                 c  : 'cfg',
@@ -1656,7 +1669,7 @@ DocsApp.getEventTarget = function (e) {
                 z  : 'css_mixin'
             };
 
-            typesDisp = {
+            /*typesDisp = {
                 c  : 'config',
                 p  : 'property',
                 sp : 'property',
@@ -1666,7 +1679,7 @@ DocsApp.getEventTarget = function (e) {
                 v  : 'css var',
                 x  : 'css mixin',
                 z  : 'mixin param'
-            };
+            };*/
 
             meta = {
                 r  : 'removed',
@@ -2021,6 +2034,13 @@ DocsApp.getEventTarget = function (e) {
         return rel;
     };
 
+    /**
+     *
+     */
+    DocsApp.getSearchClassName = function (rec) {
+        return rec.classObj.n;
+    };
+
     DocsApp.loadApiSearchPage = function(page) {
         var i                = 0,
             pageSize         = DocsApp.appMeta.pageSize,
@@ -2062,7 +2082,8 @@ DocsApp.getEventTarget = function (e) {
                     html    : rec.sortValue
                 }, {
                     "class" : 'search-source',
-                    html    : rec.classObj.n + (rec.byClassMember ? ('.' + rec.sortValue) : '')
+                    //html    : rec.classObj.n + (rec.byClassMember ? ('.' + rec.sortValue) : '')
+                    html    : DocsApp.getSearchClassName(rec) + (rec.byClassMember ? ('.' + rec.sortValue) : '')
                 }];
 
                 access = rec.access;

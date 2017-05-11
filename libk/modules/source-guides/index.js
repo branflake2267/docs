@@ -218,7 +218,7 @@ class SourceGuides extends SourceApi {
      * @return {Object} Hash of common current page metadata
      */
     getGuideMetaData (data) {
-        let meta = super.getCommonMetaData();
+        let meta = this.getCommonMetaData();
 
         if (data) {
             /*let docsRelativePath = Path.relative(

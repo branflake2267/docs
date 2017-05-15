@@ -1073,7 +1073,9 @@ class ExtReactHtmlApp extends HtmlApp {
 
                         if (links.length) {
                             data.classText = data.classText || '';
-                            data.classText += '<h2>Children</h2>';
+                            data.classText += `<h2>Children</h2>
+                                The following Components (and their sub-classes) may be
+                                included as children of ${data.name}:<br>`;
                             data.classText += links.join('<br>');
                         }
                     }

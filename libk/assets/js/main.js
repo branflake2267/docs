@@ -1435,7 +1435,7 @@ DocsApp.getEventTarget = function (e) {
             value  = target && target.value,
             panel, field, fieldBox;
 
-        if (target !== document && value && !value.length && DocsApp.appMeta.searchHistory && DocsApp.appMeta.searchHistory.length) {
+        if (target && target !== document && !value.length && DocsApp.appMeta.searchHistory && DocsApp.appMeta.searchHistory.length) {
             panel = ExtL.get('search-history-panel');
             ExtL.removeChildNodes(panel);
 

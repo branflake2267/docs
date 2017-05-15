@@ -1044,6 +1044,40 @@ class ExtReactHtmlApp extends HtmlApp {
                 }
                 // and add them to the 'children' array
                 data['child-items'] = children;
+
+                // Links to the eligible child components are added to the class
+                // description using the types from the config
+                let len   = children.length;
+
+                while (len--) {
+                    let child = children[len],
+                        type  = child.type;
+
+                    if (type) {
+                        let types    = type.split(' / '),
+                            typesLen = types.length,
+                            i        = 0,
+                            hrefTest = /href=(?:"|')(.*?)(?:"|')/g,
+                            links = [],
+                            matchingArr;
+
+                        for (; i < typesLen; i++) {
+                            while((matchingArr = hrefTest.exec(types[i])) !== null){
+                                let linkName = matchingArr[1].replace('.html', '');
+
+                                if (names.includes(linkName)) {
+                                    links.push(matchingArr.input);
+                                }
+                            }
+                        }
+
+                        if (links.length) {
+                            data.classText = data.classText || '';
+                            data.classText += '<h2>Children</h2>';
+                            data.classText += links.join('<br>');
+                        }
+                    }
+                }
             }
 
             // if the class has properties then mark them as 'read only' and push them

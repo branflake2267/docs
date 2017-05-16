@@ -218,7 +218,7 @@ class SourceGuides extends SourceApi {
      * @return {Object} Hash of common current page metadata
      */
     getGuideMetaData (data) {
-        let meta = super.getCommonMetaData();
+        let meta = this.getCommonMetaData();
 
         if (data) {
             /*let docsRelativePath = Path.relative(
@@ -594,7 +594,7 @@ class SourceGuides extends SourceApi {
                         data.rootPath       = rootPathDir;
                         data.prodVerPath    = Path.relative(rootPathDir, this.outputProductDir) + '/';
                         data.content        = this.processGuideHtml(content, data);
-                        data                = this.processGuideDataObject(data);
+                        this.processGuideDataObject(data);
                         data.myMeta.docsRootPath = `${guideRelativePath}/`;
                         data.contentPartial = '_html-guideBody';
 

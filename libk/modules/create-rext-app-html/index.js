@@ -431,6 +431,17 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
+     * Returns common metadata needed by app pages
+     * @return {Object} Hash of common current page metadata
+     */
+    getCommonMetaData () {
+        let meta = super.getCommonMetaData();
+
+        meta.componentClassNameMap = this.componentList;
+        return meta;
+    }
+
+    /**
      * Upper CamelCases strings in order to display split words such as
      * @param {String} str The string to camelize
      * @return {String} The upper camelcased string
@@ -614,6 +625,35 @@ class ExtReactHtmlApp extends HtmlApp {
         return _.findKey(this.componentList, (val) => {
             return val.menuText === menuValue || menuValue === val;
         });
+    }
+
+    /**
+     * Logs out a list of classes with that have xtypes, but are not represented in the
+     * components list
+     */
+    listRemainingComponentClasses () {
+        this.bulkClassReportedUtil('doListRemainingComponentClasses');
+    }
+
+    /**
+     * See {@link #listRemainingComponentClasses}
+     * @param {Object} prepared The prepared class object
+     * example
+     */
+    doListRemainingComponentClasses (prepared) {
+        let name  = prepared.name,
+            alias = prepared.alias,
+            names = this.componentClassNames;
+
+        if (alias) {
+            alias = alias.split(',');
+
+            if (alias[0].indexOf('widget.') === 0) {
+                if (!names.includes(name)) {
+                    console.log(name);
+                }
+            }
+        }
     }
 
     /**
@@ -817,7 +857,13 @@ class ExtReactHtmlApp extends HtmlApp {
         super.processRelatedClasses(cls, data);
 
         if (cls.npmPackage) {
-            data.npmPackage = `<div>@${cls.npmPackage}</div>`;
+            data.npmPackage = `<div>${cls.npmPackage}</div>`;
+        }
+
+        if (data.extends) {
+            data.extends = data.extends.replace(/(.*<div class="hierarchy pl2">)(.*?)(<\/div>.*)/gi, (match, p1, p2, p3) => {
+                return p1 + this.replaceWithComponentName(p2) + p3;
+            });
         }
     }
 
@@ -828,7 +874,30 @@ class ExtReactHtmlApp extends HtmlApp {
      * supplying it to the template
      */
     processApiDataObject (data) {
+        let names = this.componentClassNames,
+            name  = data.cls.name;
+
         super.processApiDataObject(data);
+        data.hasToolkits = false;
+
+        // if this class is a component class list its Component Name as the page title
+        if (names.includes(name)) {
+            let alias = this.componentNameMap[name];
+
+            if (alias && alias.length) {
+                data.name = this.componentList[name].preferredAlias || alias[0].name;
+            }
+        }
+    }
+
+    /**
+     * Template method to allow for additional guide data processing prior to handing the
+     * data over to the guide template for final output
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processGuideDataObject (data) {
+        super.processGuideDataObject(data);
         data.hasToolkits = false;
     }
 
@@ -952,8 +1021,8 @@ class ExtReactHtmlApp extends HtmlApp {
                 // if any of the configs has the "react-child" flag then we'll process
                 // child items below
                 if (config['react-child']) {
-                    //config.name = this.camelize(config.name);
-                    //data.hasChildItems = true;
+                    config.name = this.camelize(config.name);
+                    data.hasChildItems = true;
                 }
             }
 
@@ -975,6 +1044,42 @@ class ExtReactHtmlApp extends HtmlApp {
                 }
                 // and add them to the 'children' array
                 data['child-items'] = children;
+
+                // Links to the eligible child components are added to the class
+                // description using the types from the config
+                let len   = children.length;
+
+                while (len--) {
+                    let child = children[len],
+                        type  = child.type;
+
+                    if (type) {
+                        let types    = type.split(' / '),
+                            typesLen = types.length,
+                            i        = 0,
+                            hrefTest = /href=(?:"|')(.*?)(?:"|')/g,
+                            links = [],
+                            matchingArr;
+
+                        for (; i < typesLen; i++) {
+                            while((matchingArr = hrefTest.exec(types[i])) !== null){
+                                let linkName = matchingArr[1].replace('.html', '');
+
+                                if (names.includes(linkName)) {
+                                    links.push(matchingArr.input);
+                                }
+                            }
+                        }
+
+                        if (links.length) {
+                            data.classText = data.classText || '';
+                            data.classText += `<h2>Children</h2>
+                                The following Components (and their sub-classes) may be
+                                included as children of ${data.name}:<br>`;
+                            data.classText += links.join('<br>');
+                        }
+                    }
+                }
             }
 
             // if the class has properties then mark them as 'read only' and push them

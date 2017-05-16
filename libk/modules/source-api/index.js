@@ -323,7 +323,7 @@ class SourceApi extends Base {
      * @return {Object} Hash of common current page metadata
      */
     getApiMetaData (data) {
-        let meta = super.getCommonMetaData();
+        let meta = this.getCommonMetaData();
 
         if (data && data.cls) {
             let name       = data.cls.name,
@@ -1030,6 +1030,7 @@ class SourceApi extends Base {
         cls.isRemoved    = !!(cls.removedMessage    || cls.removedVersion);
         // indicate if the class is an enum
         cls.isEnum       = cls.$type === 'enum';
+        cls.originalName = cls.name;
         data.cls = cls;
 
         // TODO there's a lot of overlap here with guides - should see how we can
@@ -1581,8 +1582,9 @@ class SourceApi extends Base {
 
             // record the class name and toolkit
             searchIndex[key] = {
-                n : cls.name,
-                t : toolkit ? toolkit : null
+                n  : cls.name,
+                on : cls.cls.originalName,
+                t  : toolkit ? toolkit : null
             };
 
             // record the class access level

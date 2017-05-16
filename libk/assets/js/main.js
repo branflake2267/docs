@@ -2108,7 +2108,11 @@ DocsApp.getEventTarget = function (e) {
                     cn      : meta
                 });
 
-                href = rec.classObj.n + '.html';
+                //href = rec.classObj.n + '.html';
+                //if (rec.classObj.n === 'Ext.Button' || rec.classObj.n === 'Button') {
+                    //console.log(rec);
+                //}
+                href = rec.classObj.on + '.html';
                 href = DocsApp.meta.rootPath + (rec.classObj.t || 'api') + '/' + href;
 
                 if (rec.byClassMember) {

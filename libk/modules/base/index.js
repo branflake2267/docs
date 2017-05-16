@@ -1149,15 +1149,17 @@ class Base {
 
             Shell.exec('git fetch --tags');
 
-            // check out the branch used for this product / version
-            this.log(`Checkout out main branch: ${branch}`);
-            Shell.exec(`git checkout ${branch}`);
+            if (options.syncRemote !== false) {
+                // check out the branch used for this product / version
+                this.log(`Checkout out main branch: ${branch}`);
+                Shell.exec(`git checkout ${branch}`);
 
-            // if there is a tag to use for this version then switch off of head over to the
-            // tagged branch
-            if (tag) {
-                this.log(`Checking out tagged version: ${tag}`);
-                Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
+                // if there is a tag to use for this version then switch off of head over to the
+                // tagged branch
+                if (tag) {
+                    this.log(`Checking out tagged version: ${tag}`);
+                    Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
+                }
             }
 
             // pull latest

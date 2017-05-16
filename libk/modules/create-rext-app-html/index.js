@@ -1047,7 +1047,8 @@ class ExtReactHtmlApp extends HtmlApp {
 
                 // Links to the eligible child components are added to the class
                 // description using the types from the config
-                let len   = children.length;
+                let len   = children.length,
+                    links = [];
 
                 while (len--) {
                     let child = children[len],
@@ -1058,27 +1059,27 @@ class ExtReactHtmlApp extends HtmlApp {
                             typesLen = types.length,
                             i        = 0,
                             hrefTest = /href=(?:"|')(.*?)(?:"|')/g,
-                            links = [],
+                            //links = [],
                             matchingArr;
 
                         for (; i < typesLen; i++) {
                             while((matchingArr = hrefTest.exec(types[i])) !== null){
                                 let linkName = matchingArr[1].replace('.html', '');
 
-                                if (names.includes(linkName)) {
+                                //if (names.includes(linkName)) {
                                     links.push(matchingArr.input);
-                                }
+                                //}
                             }
                         }
-
-                        if (links.length) {
-                            data.classText = data.classText || '';
-                            data.classText += `<h2>Children</h2>
-                                The following Components (and their sub-classes) may be
-                                included as children of ${data.name}:<br>`;
-                            data.classText += links.join('<br>');
-                        }
                     }
+                }
+                
+                if (links.length) {
+                    data.classText = data.classText || '';
+                    data.classText += `<h2>Children</h2>
+                        The following Components (and their sub-components) may be
+                        included as children of ${data.name}:<br>`;
+                    data.classText += links.join('<br>');
                 }
             }
 

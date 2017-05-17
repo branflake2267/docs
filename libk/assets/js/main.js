@@ -1202,6 +1202,11 @@ DocsApp.getEventTarget = function (e) {
 
                     if (key === 'n') {                  // this is the class name
                         list += ExtL.format(itemTpl, i, obj);
+                    } else if (key === 'd') {           // this is any displayed class name
+                        // skip for now unless some future product requires this somehow
+                        /*ExtL.each(obj, function (x) {
+                            list += ExtL.format(itemTpl, i, obj);
+                        });*/
                     } else if (key === 'g') {           // this is any alternate class names
                         ExtL.each(obj, function (x) {
                             list += ExtL.format(itemTpl, i, obj);
@@ -2083,7 +2088,8 @@ DocsApp.getEventTarget = function (e) {
                 }, {
                     "class" : 'search-source',
                     //html    : rec.classObj.n + (rec.byClassMember ? ('.' + rec.sortValue) : '')
-                    html    : DocsApp.getSearchClassName(rec) + (rec.byClassMember ? ('.' + rec.sortValue) : '')
+                    //html    : DocsApp.getSearchClassName(rec) + (rec.byClassMember ? ('.' + rec.sortValue) : '')
+                    html    : rec.classObj.d + (rec.byClassMember ? ('.' + rec.sortValue) : '')
                 }];
 
                 access = rec.access;
@@ -2108,11 +2114,8 @@ DocsApp.getEventTarget = function (e) {
                     cn      : meta
                 });
 
-                //href = rec.classObj.n + '.html';
-                //if (rec.classObj.n === 'Ext.Button' || rec.classObj.n === 'Button') {
-                    //console.log(rec);
-                //}
-                href = rec.classObj.on + '.html';
+                href = rec.classObj.n + '.html';
+                //href = rec.classObj.on + '.html';
                 href = DocsApp.meta.rootPath + (rec.classObj.t || 'api') + '/' + href;
 
                 if (rec.byClassMember) {

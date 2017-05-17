@@ -1541,7 +1541,6 @@ class SourceApi extends Base {
             classNames  = Object.keys(map),
             i           = 0,
             len         = classNames.length,
-            //toolkit     = this.options.prodVerMeta.toolkit,
             toolkit     = this.options.toolkit,
             searchIndex = this.apiSearchIndex,
             // suffix allows us to combine toolkits in one search
@@ -1649,7 +1648,69 @@ class SourceApi extends Base {
      */
     processMemberSearch (member, key, cls, type, searchIndex) {
         //this.log(`Begin 'SourceApi.processMemberSearch'`, 'log');
-        if (!member.hide && !member.from) {
+        // initially we'll check to see see if the member belongs to the current class.  
+        // If so, then we'll process it. 
+        let hidden        = member.hide,
+            processMember = !member.from;
+        
+        // if the member is not hidden and if it's not from the current class then check 
+        // to see if the member is found on the parent class.  If it exists on the 
+        // current class and not on the parent class then we'll want to add it to the 
+        // search output
+        if (!hidden && !processMember) {
+            let classMap     = this.classMap,
+                prepared     = classMap[cls.cls.originalName].prepared,
+                ancestorList = prepared.extended;
+                
+            // if the current class has a parent then get a reference to the parent class 
+            // object
+            /*if (ancestorList) {
+                let parent         = ancestorList.split(',')[0],
+                    parentPrepared = classMap[parent].prepared,
+                    parentType     = parentPrepared[type];
+                
+                // and see if it has member of the type currently being evaluated
+                if (parentType) {
+                    // if there is not a member of the same type matching the name of the 
+                    // current member being evaluated then we'll mark processMember as 
+                    // true for the next step in member processing
+                    processMember = !(_.find(parentType, mem => {
+                        return mem.name === member.name;
+                    }));
+                }
+            }*/
+            
+            // if the current class has a parent then get a reference to the parent class 
+            // object
+            if (ancestorList) {
+                let ancestors         = ancestorList.split(','),
+                    ancestorsLen = ancestors.length;
+                    
+                processMember = true;
+                
+                // loop over any ancestor classes
+                while (ancestorsLen--) {
+                    let ancestor = ancestors[ancestorsLen],
+                        ancestorPrepared = classMap[ancestor].prepared,
+                        ancestorTypeCollection = ancestorPrepared[type];
+                        
+                    // and see if it has member of the type currently being evaluated
+                    if (ancestorTypeCollection) {
+                        let nameExists = _.find(ancestorTypeCollection, ancestorMember => {
+                            return ancestorMember.name === member.name;
+                        });
+                        // if there is not a member of the same type matching the name of 
+                        // the current member being evaluated then we'll mark 
+                        // processMember as true for the next step in member processing
+                        if (nameExists) {
+                            processMember = false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (!hidden && processMember) {
             let acc = member.access === 'private' ? 'i' : (member.access === 'protected' ? 'o' : 'p'),
                 extras;
 

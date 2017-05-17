@@ -561,7 +561,7 @@ class ExtReactHtmlApp extends HtmlApp {
      * @return {Object[]} The sorted array
      */
     simpleSortNodes (nodes) {
-        return _.orderBy(nodes, ['name'], ['asc']);
+        return _.orderBy(nodes, [name => name.name.toLowerCase()], ['asc']);
     }
 
     /**

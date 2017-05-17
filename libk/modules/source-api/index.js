@@ -1582,9 +1582,9 @@ class SourceApi extends Base {
 
             // record the class name and toolkit
             searchIndex[key] = {
-                n  : cls.name,
-                on : cls.cls.originalName,
-                t  : toolkit ? toolkit : null
+                d : cls.name,
+                n : cls.cls.originalName,
+                t : toolkit ? toolkit : null
             };
 
             // record the class access level

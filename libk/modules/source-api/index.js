@@ -408,10 +408,8 @@ class SourceApi extends Base {
             forceDoxi     = options.forceDoxi,
             cmd           = this.getCmdPath(),
             triggerDoxi   = this.triggerDoxi,
-            build         = options.build,
+            doxiBuild     = options.doxiBuild,
             defaultBuild  = "combo-nosrc",
-            toolkitString = options.toolkit || "json",
-            doxiDir       = path.join(options.apiInputDir,options.product,options.version,toolkitString),
             doxiEmpty     = this.doxiInputFolderIsEmpty;
 
         this.syncRemote(
@@ -432,11 +430,8 @@ class SourceApi extends Base {
 
             Shell.cd(this.tempDir);
 
-            if (build && build != defaultBuild) {
-                Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${build}`);
-                Shell.cd(path);
-                Shell.cd(doxiDir);
-                Shell.exec(`mv _${build}.json ../_${build}.json`);
+            if (doxiBuild && doxiBuild != defaultBuild) {
+                Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
 
                 this.concludeBuild();
                 process.exit(1);

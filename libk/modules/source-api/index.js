@@ -34,6 +34,7 @@ const Base       = require('../base'),
       Handlebars = require('handlebars'),
       Fs         = require('fs-extra'),
       Shell      = require('shelljs'),
+      path       = require('path'),
       // TODO - is Mkdirp being used in any module or it's all Fs-extra now?  Might be able to remove its require statements if it can be purged via Fs-extra
       Mkdirp     = require('mkdirp'),
       _          = require('lodash'),
@@ -402,11 +403,16 @@ class SourceApi extends Base {
      */
     runDoxi () {
         //this.log(`Begin 'SourceApi.runDoxi'`, 'info');
-        let options     = this.options,
-            forceDoxi   = options.forceDoxi,
-            cmd         = this.getCmdPath(),
-            triggerDoxi = this.triggerDoxi,
-            doxiEmpty   = this.doxiInputFolderIsEmpty;
+
+        let options       = this.options,
+            forceDoxi     = options.forceDoxi,
+            cmd           = this.getCmdPath(),
+            triggerDoxi   = this.triggerDoxi,
+            build         = options.build,
+            defaultBuild  = "combo-nosrc",
+            toolkitString = options.toolkit || "json",
+            doxiDir       = path.join(options.apiInputDir,options.product,options.version,toolkitString),
+            doxiEmpty     = this.doxiInputFolderIsEmpty;
 
         this.syncRemote(
             this.apiProduct,
@@ -425,7 +431,19 @@ class SourceApi extends Base {
             let path = Shell.pwd();
 
             Shell.cd(this.tempDir);
-            Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json combo-nosrc`);
+
+            if (build && build != defaultBuild) {
+                Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${build}`);
+                Shell.cd(path);
+                Shell.cd(doxiDir);
+                Shell.exec(`mv _${build}.json ../_${build}.json`);
+
+                this.concludeBuild();
+                process.exit(1);
+            }
+
+            Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${defaultBuild}`);
+
             Shell.cd(path);
         }
     }
@@ -797,8 +815,8 @@ class SourceApi extends Base {
     doListLackingDescription (prepared) {
         let text = prepared.text;
 
-        if (!text || text.length < 80) {
-            console.log('LACKING DESCRIPTION', prepared.name, text.length);
+        if (!text || (text && text.length < 80)) {
+            console.log('LACKING DESCRIPTION', prepared.name);
         }
     }
 

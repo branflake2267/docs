@@ -1,7 +1,8 @@
 'use strict';
 
-const Utils  = require('../shared/Utils'),
-      debug  = require('../../Debug');
+const Base   = require('../../base'),
+      Utils  = require('../../shared/Utils'),
+      debug  = require('../../../Debug');
 
 const tests = [
     'access',
@@ -22,21 +23,20 @@ const tests = [
     'value'
 ];
 
-class Parser {
-    constructor (config) {
+class Parser extends Base {
+    constructor (options) {
+        super(options);
         let me = this;
 
-        Utils.apply(me, config);
-
         me.totalCount = 0;
- 
+
         me.flagFns = {
             private    : 'isPrivateAccess',
             deprecated : 'isDeprecated',
             class      : 'isClass'
-        };       
+        };
 
-        me.categories.forEach(function(category) {
+        options.categories.forEach(function(category) {
             me.initCount(category.name)
         });
     }
@@ -46,7 +46,7 @@ class Parser {
 
         this[type + 'Count'] = {};
 
-        this.countTypes.forEach(function(key) {
+        this.options.countTypes.forEach(function(key) {
             me[type + 'Count'][key] = {
                 added    : 0,
                 modified : 0,
@@ -59,7 +59,7 @@ class Parser {
     addChangeCount (type, action, member) {
         let me = this,
             obj = this[type + 'Count'],
-            key = this.countMasterKey,
+            key = this.options.countMasterKey,
             flagFn;
 
         ++this.totalCount;
@@ -67,7 +67,7 @@ class Parser {
         ++obj[key][action];
 
         if (member) {
-            this.countTypes.forEach(function(countType) {
+            me.options.countTypes.forEach(function(countType) {
                 flagFn = me.flagFns[countType];
 
                 if (countType===key || !flagFn) {
@@ -84,10 +84,10 @@ class Parser {
     exec () {
         let me      = this,
             changes = {
-                name : me.newData.name
+                name : me.options.newData.name
             };
 
-        me.categories.forEach(function(category) {
+        me.options.categories.forEach(function(category) {
             me.execMember(category.name, changes);
         });
         // fold class properties into changes
@@ -101,14 +101,14 @@ class Parser {
             changes = {},
             oldValue, newValue, obj;
 
-        me.classProps.forEach(function(prop) {
-            oldValue = me.oldData[prop.name];
-            newValue = me.newData[prop.name];
+        me.options.classProps.forEach(function(prop) {
+            oldValue = me.options.oldData[prop.name];
+            newValue = me.options.newData[prop.name];
 
             if (newValue) {
 
                 if (oldValue && newValue !== oldValue) {
-                    obj = me.createChange('modified', me.newData);
+                    obj = me.createChange('modified', me.options.newData);
 
                     if (!changes.modified) {
                         changes['modified'] = [];
@@ -116,7 +116,7 @@ class Parser {
 
                     changes.modified.push(obj);
                 } else if (!oldValue ) {
-                    obj = me.createChange('added', me.newData);
+                    obj = me.createChange('added', me.options.newData);
 
                     if (!changes.added) {
                         changes.added = [];
@@ -132,7 +132,7 @@ class Parser {
                 obj.oldValue = oldValue; 
             }
             else if (oldValue) {
-                obj = me.createChange('removed', me.oldData);
+                obj = me.createChange('removed', me.options.oldData);
                 obj.key = prop.name;
                 obj.oldValue = oldValue;
 
@@ -193,17 +193,15 @@ class Parser {
 
     getItems (type) {
         return {
-            newMatches : Utils.getMatch('$type', type, this.newData.items),
-            oldMatches : Utils.getMatch('$type', type, this.oldData.items)
+            newMatches : Utils.getMatch('$type', type, this.options.newData.items),
+            oldMatches : Utils.getMatch('$type', type, this.options.oldData.items)
         };
     }
 
     getChanges (type) {
         let me          = this,
             info        = this.getItems(type),
-            num         = 0,
-            typeChanges = {},
-            dupMap      = {},
+            num         = 0, typeChanges = {}, dupMap      = {},
             newItems    = info.newMatches && info.newMatches.items,
             oldItems    = info.oldMatches && info.oldMatches.items;
 
@@ -212,7 +210,7 @@ class Parser {
                 me.addChangeCount(type, 'total');
 
                 if (newMatch.ignore) {
-                    debug.info('ignoring member', me.newData.name, newMatch.name);
+                    debug.info('ignoring member', me.options.newData.name, newMatch.name);
                     debug.log(newMatch);
 
                     me.addChangeCount(type, 'ignore');
@@ -220,7 +218,7 @@ class Parser {
                     let dup = dupMap[newMatch.name];
 
                     if (dup && typeof dup !== 'function') {
-                        debug.error('duplicate found', me.newData.name, newMatch.name);
+                        debug.error('duplicate found', me.options.newData.name, newMatch.name);
                         debug.log(dup);
                         debug.log(newMatch);
 

@@ -5,8 +5,8 @@ const path   = require('path');
 const mkdirp = require('mkdirp');
 const debug  = require('../../Debug');
 
-const Parser = require('./Parser');
-const Output = require('./Output');
+const Parser = require('./parser');
+const Output = require('./output');
 const Utils  = require('../shared/Utils');
 const Base   = require('../base');
 
@@ -102,26 +102,6 @@ class Diff extends Base {
             deprecated  : options['include-deprecated'],
             class       : options['include-class-details']
         };
-    }
-
-    get defaultOptions () {
-        return {
-            destination : {
-                type  : 'path',
-                value : __dirname + '/../../output/'
-            },
-            'include-private'       : true,
-            'include-deprecated'    : true,
-            'include-debug-output'  : false,
-            'include-class-details' : true,
-            'verbose-summary'       : false
-        };
-    }
-
-    checkArgs () {
-        let options = this.options;
-
-        return options.new && options.old && this.targets.length === 2;
     }
 
     formatChange (title, arr, totalOutput) {
@@ -309,7 +289,8 @@ class Diff extends Base {
             me.addClassCount('total');
 
             if (oldCls) {
-                parser = new Parser({
+
+                parser = new Parser(Object.assign(this.options, {
                     newData         : newCls,
                     oldData         : oldCls,
                     outputOptions   : this.outputOptions,
@@ -317,7 +298,7 @@ class Diff extends Base {
                     countMasterKey  : this.countMasterKey,
                     categories      : categories,
                     classProps      : classProps
-                });
+                }));
 
                 diff = parser.exec();
 

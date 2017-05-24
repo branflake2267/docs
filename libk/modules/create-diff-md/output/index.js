@@ -1,6 +1,6 @@
 'use strict';
 
-const Utils  = require('../shared/Utils');
+const Utils  = require('../../shared/Utils');
 
 const indentInc = 3;
 

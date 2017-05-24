@@ -408,7 +408,7 @@ class SourceApi extends Base {
             forceDoxi     = options.forceDoxi,
             cmd           = this.getCmdPath(),
             triggerDoxi   = this.triggerDoxi,
-            build         = options.doxiBuild,
+            doxiBuild     = options.doxiBuild,
             defaultBuild  = "combo-nosrc",
             doxiEmpty     = this.doxiInputFolderIsEmpty;
 

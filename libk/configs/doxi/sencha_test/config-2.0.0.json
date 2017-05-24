@@ -40,11 +40,11 @@
   "outputs": {
     "all": {
       "default": true,
-      "depends": [ "combo-nosrc", "all-classes" ]
+      "depends": [ "combo-nosrc", "all-classes", "all-classes-flatten" ]
     },
     "all-classes": {
       "type": "json",
-      "dir": "{apiInputDir}/{product}/{version}/{toolkit}-json",
+      "dir": "{apiInputDir}/{product}/{version}/json",
       "file": "_all-classes.json",
       "includeSrc": true,
       "links": true,
@@ -62,10 +62,29 @@
     },
     "combo-nosrc": {
       "type": "json",
-      "dir": "{apiInputDir}/{product}/{version}/{toolkit}-json",
+      "dir": "{apiInputDir}/{product}/{version}/json",
       "includeSrc": true,
       "links": true,
       "flatten": true,
+      "autoLinks": [
+        "text",
+        "deprecatedMessage",
+        "removedMessage"
+      ],
+      "renames": {
+        "number"  : "Number",
+        "boolean" : "Boolean",
+        "string"  : "String"
+      }
+    },
+    "all-classes-flatten": {
+      "type": "json",
+      "dir": "{apiInputDir}/{product}/{version}/json",
+      "file": "_all-classes-flatten.json",
+      "includeSrc": true,
+      "links": true,
+      "flatten": true,
+      "pretty": false,
       "autoLinks": [
         "text",
         "deprecatedMessage",

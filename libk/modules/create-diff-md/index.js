@@ -3,7 +3,7 @@
 const fs     = require('fs');
 const path   = require('path');
 const mkdirp = require('mkdirp');
-const debug  = require('./Debug');
+const debug  = require('../../Debug');
 
 const Parser = require('./Parser');
 const Output = require('./Output');

@@ -265,7 +265,7 @@ class Parser extends Base {
                             num++;
                         }
                     } else {
-                        debug.info('no name found', me.newData.name);
+                        debug.info('no name found', me.options.newData.name);
                         debug.log(newMatch);
                     }
                 }

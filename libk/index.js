@@ -12,7 +12,6 @@ const Chalk            = require('chalk'),
  *  // commonly this will be create-something-app's run()
  */
 
-
 // set up the arguments handler
 const args = require('yargs')
     .option({
@@ -87,6 +86,67 @@ const args = require('yargs')
             default     : false,
             description : 'Outputs only classes whose file is modified',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --modifiedOnly'
+        },
+        'new' : {
+            type        : 'string',
+            default     : null,
+            description : 'Provides the new version of the framework from which to execute a diff',
+            example     : 'node --max-old-space-size=4076 index create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
+        },
+        'old' : {
+            type        : 'string',
+            default     : null,
+            description : 'Provides the old version of the framework from which to execute a diff',
+            example     : 'node --max-old-space-size=4076 index create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
+        },
+        'newFile' : {
+            type        : 'string',
+            default     : null,
+            description : 'Provides the new "all file" of the framework from which to execute a diff',
+            example     : 'node --max-old-space-size=4076 index create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
+        },
+        'oldFile' : {
+            type        : 'string',
+            default     : null,
+            description : 'Provides the old "all file" of the framework from which to execute a diff',
+            example     : 'node --max-old-space-size=4076 index create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
+        },
+        'destination' : {
+            type        : 'string',
+            default     : null,
+            description : 'Provides the old version of the framework from which to execute a diff',
+            example     : 'node --max-old-space-size=4076 index create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json --destination=~/Desktop'
+        },
+        'verbose-summary' : {
+            type        : 'boolean',
+            default     : false,
+            description : 'True to include verbose summary details, false to keep it simple. Defaults to false'
+        },
+        'include-class-details' : {
+            type        : 'boolean',
+            default     : true,
+            description : 'True to include class detail changes in the output, false to exclude it. Defaults to true'
+        },
+        'include-debug-output' : {
+            type        : 'boolean',
+            default     : false,
+            description : 'True to include debug output, false to exclude it. Defaults to false'
+        },
+        'include-deprecated' : {
+            type        : 'boolean',
+            default     : false,
+            description : 'True to include deprecated changes, false to exclude theme. Defaults to true'
+        },
+        'include-private' : {
+            type        : 'boolean',
+            default     : true,
+            description : 'True to include private changes, false to exclude theme. Defaults to true'
+        },
+        'doxiBuild' : {
+            type        : 'string',
+            default     : false,
+            description : 'Setting doxiBuild tells the parser to export a particular build target and then stop',
+            example     : 'node --max-old-space-size=4076 index create-app-html --product=extjs --version=6.2.1 --doxiBuild=all-classes-flatten'
         }
     })
     .command('command', 'Module to run', { alias: 'command' })
@@ -95,7 +155,8 @@ const args = require('yargs')
     .wrap()
     .argv;
 
-const targets   = ['create-app-html', 'create-rext-app-html', 'create-app-ext', 'source-api', 'source-guides', 'landing'],
+const targets   = ['create-app-html', 'create-rext-app-html', 'create-app-ext', 'source-api',
+                   'source-guides', 'landing', 'create-diff-md'],
       targetMod = args._[0], // the target module to run
       method    = args._[1] || 'run',
       canRun    = targets.indexOf(targetMod) > -1;
@@ -105,10 +166,6 @@ const targets   = ['create-app-html', 'create-rext-app-html', 'create-app-ext', 
 if (canRun) {
     // get the default project options and merge them with the app config
     // TODO see if the 'productIndex' of projectDefaults is even needed after we're all done
-    /*let options = require('./configs/projectDefaults');
-        options     = Object.assign(options, require('./configs/app'));
-        // then merge the CLI params on top of that
-        options     = Object.assign(options, args);*/
     let options = args;
 
     options._args   = args;
@@ -130,8 +187,6 @@ if (canRun) {
         cls[method]();
     }
 } else {
-    //console.log('INVALID MODULE:', targetMod);
-    //console.log('VALID MODULES INCLUDE:', targets.join(', '));
     let match = StringSimilarity.findBestMatch(
         targetMod,
         targets

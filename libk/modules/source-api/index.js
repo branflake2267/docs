@@ -433,8 +433,8 @@ class SourceApi extends Base {
             if (doxiBuild && doxiBuild != defaultBuild) {
                 Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
 
-                this.concludeBuild();
-                process.exit(1);
+                //this.concludeBuild();
+                //process.exit(1);
             }
 
             Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${defaultBuild}`);

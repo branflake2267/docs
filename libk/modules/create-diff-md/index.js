@@ -75,18 +75,16 @@ debug.disable('log');
 /**
  * Diff class to check API differences between two different versions.
  *
- * @cfg {Array} targets An array of two target JSON files to read APIs from. There
- * **must** be two targets provided, first is the new API and the second is the old API.
- * @cfg {Object} options An object of command line options. Options are:
- *
- *  - --new/-n          required The version of the new API.
- *  - --old/-o          required The version of the old API.
- *  - --destination/-d  required The location the generated markdown will be placed.
+ *  - --product       required The product that you are diffing
+ *  - --new           required The version of the new API.
+ *  - --old           required The version of the old API.
+ *  - --oldFile       required The Doxi "all" file of the new version.
+ *  - --oldFile       required The Doxi "all" file of the old version.
+ *  - --destination   (optional) The location the generated markdown will be placed.
  *
  * Sample commands to invoke this class:
  *
- *     node index diff -n 6.0.1 -o 6.0.0 -d ./output ./json/current/classic-all-classes.json ./json/old/classic-all-classes.json
- *     node index diff --new=6.0.1 --old=6.0.0 --destination=./output ./json/current/classic-all-classes.json ./json/old/classic-all-classes.json
+ *     node --max-old-space-size=4076 index create-diff-md --product=extjs --new=6.2.1 --old=6.2.0 --newFile=../difflib/input/621modern_all-classes.json --oldFile=../difflib/input/620modern_all-classes.json
  */
 class Diff extends Base {
     constructor (options) {
@@ -268,8 +266,8 @@ class Diff extends Base {
     run () {
         let me             = this,
             options        = me.options,
-            newAllClasses  = JSON.parse(fs.readFileSync(options.oldFile, 'utf8')).global.items,
-            oldAllClasses  = JSON.parse(fs.readFileSync(options.newFile, 'utf8')).global.items,
+            newAllClasses  = JSON.parse(fs.readFileSync(options.newFile, 'utf8')).global.items,
+            oldAllClasses  = JSON.parse(fs.readFileSync(options.oldFile, 'utf8')).global.items,
             newVersion     = options.new,
             oldVersion     = options.old,
             outputDir      = options.destination || './output',

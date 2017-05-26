@@ -435,7 +435,7 @@ class HtmlApp extends AppBase {
      * @return {String} The original HTML string with all links processed
      */
     parseApiLinks (html) {
-        return html.replace(this.linkRe, (match, link, text) => {
+        html = html.replace(this.linkRe, (match, link, text) => {
             link = link.replace('!','-');
 
             let memberName = link.substring(link.indexOf('-') + 1);
@@ -454,6 +454,12 @@ class HtmlApp extends AppBase {
 
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });
+        
+        /*html = html.replace(/\[.*?\]\(.*?\)/g, (match, text, link) => {
+            return this.createApiLink(link, text);
+        });*/
+        
+        return html;
     }
 
     /**

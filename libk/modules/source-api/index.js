@@ -1300,32 +1300,36 @@ class SourceApi extends Base {
                 len = member.items.length;
 
             for (; i < len; i++) {
-                let item = member.items[i];
+                let item = member.items[i],
+                    {text, $type, type, items} = item;
 
                 // prepare the param and return text
-                if (item.text && (item.$type === 'param' || item.$type === 'return' || item.$type === 'property')) {
-                    item.text = this.markup(item.text);
+                if (text && ($type === 'param' || $type === 'return' || $type === 'property')) {
+                    text = this.markup(text);
                 }
                 // linkify the return types
-                if (item.$type === 'return' || item.$type === 'param') {
-                    item.type = this.splitInline(item.type,  ' / ');
+                if ($type === 'return' || $type === 'param') {
+                    type = this.splitInline(type,  ' / ');
                 }
-                if (item.$type === 'return') {
+                if ($type === 'return') {
                     member.returns.push(item);
                     member.hasReturn = true;
                 }
-                if (item.$type === 'param') {
+                if ($type === 'param') {
                     member.params.push(item);
                 }
-                if (item.$type === 'property') {
+                if ($type === 'property') {
                     member.properties.push(item);
                     member.hasProperties = true;
                 }
 
                 // process any sub-items that this param / property may have
-                if (item.items) {
-                    //this.processMembers(className, type, item.items);
-                    this.processMember(className, null, item.items);
+                if (items) {
+                    let itemsLen = items.length;
+                        
+                    while (itemsLen--) {
+                        this.processMember(className, null, items[itemsLen]);
+                    }
                 }
             }
 
@@ -1381,7 +1385,8 @@ class SourceApi extends Base {
         member.srcClass     = member.from || clsName;
         member.srcClassText = member.srcClass;
         member.isInherited  = member.srcClass !== clsName;
-        member.hide         = member.fromObject = member.from === 'Object';
+        member.fromObject   = member.from === 'Object';
+        member.hide         = member.hide || member.fromObject;
         // TODO is this necessary if all of the $types are correct by the time we get here?
         member.linkType     = member.$type;
 

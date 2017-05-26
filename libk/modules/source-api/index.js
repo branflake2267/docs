@@ -496,15 +496,18 @@ class SourceApi extends Base {
                             reject(err);
                         }
 
-                        let clsObj     = cls.global.items[0], // the class obj
-                            type       = clsObj.$type,        // the class type (class or enum)
-                            validType  = type === 'class' || type === 'enum',
+                        let clsObj        = cls.global.items[0], // the class obj
+                            type          = clsObj.$type,        // the class type (class or enum)
+                            validType     = type === 'class' || type === 'enum',
                             // the index in the files list where the class is primarily sourced
-                            srcIdx     = (clsObj.src.text || clsObj.src.name).substring(0, 1),
-                            srcFiles   = cls.files, // ths list of class source files
-                            primarySrc = srcFiles[0] || '',
+                            srcIdx        = (clsObj.src.text || clsObj.src.name).substring(0, 1),
+                            srcFiles      = cls.files, // ths list of class source files
+                            primarySrc    = srcFiles[0] || '',
                             // the path of the class source from the SDK
-                            srcPath    = srcFiles[srcIdx],
+                            srcPath       = srcFiles[srcIdx],
+                            hasOverride   = clsObj.src.override,
+                            overrideIdx   = hasOverride && hasOverride.split(',')[0],
+                            overridePath  = overrideIdx && srcFiles[overrideIdx],
                             modifiedList  = this.modifiedList,
                             modifiedMatch = [];
 
@@ -527,6 +530,10 @@ class SourceApi extends Base {
                         // Supports #addAnchors
                         if (validType) {
                             map[srcPath].input = cls;
+                            if (overridePath) {
+                                map[overridePath].input = cls;
+                            }
+                            //console.log(clsObj.name, (clsObj.src.text || clsObj.src.name));
                         }
 
                         if (validType) {
@@ -1674,24 +1681,6 @@ class SourceApi extends Base {
             let classMap     = this.classMap,
                 prepared     = classMap[cls.cls.originalName].prepared,
                 ancestorList = prepared.extended;
-                
-            // if the current class has a parent then get a reference to the parent class 
-            // object
-            /*if (ancestorList) {
-                let parent         = ancestorList.split(',')[0],
-                    parentPrepared = classMap[parent].prepared,
-                    parentType     = parentPrepared[type];
-                
-                // and see if it has member of the type currently being evaluated
-                if (parentType) {
-                    // if there is not a member of the same type matching the name of the 
-                    // current member being evaluated then we'll mark processMember as 
-                    // true for the next step in member processing
-                    processMember = !(_.find(parentType, mem => {
-                        return mem.name === member.name;
-                    }));
-                }
-            }*/
             
             // if the current class has a parent then get a reference to the parent class 
             // object
@@ -1703,8 +1692,8 @@ class SourceApi extends Base {
                 
                 // loop over any ancestor classes
                 while (ancestorsLen--) {
-                    let ancestor = ancestors[ancestorsLen],
-                        ancestorPrepared = classMap[ancestor].prepared,
+                    let ancestor               = ancestors[ancestorsLen],
+                        ancestorPrepared       = classMap[ancestor].prepared,
                         ancestorTypeCollection = ancestorPrepared[type];
                         
                     // and see if it has member of the type currently being evaluated
@@ -1950,7 +1939,6 @@ class SourceApi extends Base {
                 let anchored = this.addAnchorsAll(items);
 
                 // conclude 'Create source HTML files' status
-                //this.closeStatus();
 
                 // output all of the source HTML files
                 this.outputSrcFiles(anchored)
@@ -2053,12 +2041,23 @@ class SourceApi extends Base {
      */
     addAnchorsAll (items) {
         //this.log(`Begin 'SourceApi.addAnchorsAll'`, 'info');
-        let i        = 0,
-            len      = items.length,
+        let len      = items.length,
             anchored = [];
 
-        for (; i < len; i++) {
-            let item = items[i],
+        // collect up the positions in each source file where anchors should be added
+        // allowing linking directly to where each class / member is documented in the 
+        // source files
+        while (len--) {
+            let item = items[len],
+                path = item.path;
+
+            this.catalogAnchors(path);
+        }
+
+        // then add the anchor tags to the source files
+        len = items.length;
+        while (len--) {
+            let item = items[len],
                 html = item.html,
                 path = item.path;
 
@@ -2072,33 +2071,38 @@ class SourceApi extends Base {
     }
 
     /**
-     * Adds anchor tags to the HTML source denoting where each class and class member
-     * documentation is located.  Additionally adds line number anchors to each line.
-     * Supports {@link #addAnchorsAll} + {@link #createSrcFiles}
-     * @param {String} html The un-anchored HTML representing the framework class source
-     * js file
+     * Identifies where in the HTML source all class and class member documentation is 
+     * located.  The position and class name / class name + member name are added to the 
+     * srcFileMap for use in the {@link #addAnchors} method.
+     * Supports {@link #addAnchorsAll} + {@link #addAnchors} + {@link #createSrcFiles}
      * @param {String} srcPath The path of the source class file
-     * @return {String} The source HTML with anchors added
      */
-    addAnchors (html, srcPath) {
+    catalogAnchors (srcPath) {
         //this.log(`Begin 'SourceApi.addAnchors'`, 'log');
-        let src    = this.srcFileMap[srcPath],
-            clsSrc = src.input;
+        let src      = this.srcFileMap[srcPath],
+            clsSrc   = src.input,   // the doxi output for this class at srcPath
+            clsFiles = clsSrc && clsSrc.files; // array of all source files
 
+        // reference / create the anchorLocs map on the `src` object for use in the
+        // `addAnchors` method
+        src.anchorLocs = src.anchorLocs || {};
+
+        // if the srcPath has a class object associated with it
         if (clsSrc) {
             let cls         = clsSrc.global.items[0], // the class object
                 clsName     = cls.name,               // class name
                 memberTypes = cls.items,              // array of member type groups
-                // split out all each line in the HTML
-                lines       = html.split('<div class="line">'),
-                loc;
+                loc, clsFileNum, clsLineNum;
 
-            // if the class itself has documentation add the anchor for it
+            // if the class itself has documentation log the position for it
             if (cls.src) {
                 // find the location within the file where the class is described
                 loc = this.getLocArray(cls);
-                // and prepend an anchor tag with the name of the class
-                lines[loc[1]] = `<a name="${clsName}">` + lines[loc[1]];
+                // and log the position with the name of the class
+                if (loc) {
+                    [ clsFileNum, clsLineNum ] = loc;
+                    src.anchorLocs[clsLineNum] = `${clsName}`;
+                }
             }
 
             // if there are any class members (an array of class member types)
@@ -2115,55 +2119,96 @@ class SourceApi extends Base {
 
                     // if there are members in this group
                     if (members && membersLen) {
-                        let group = memberTypes[i],
-                            type = this.memberTypesMap[group.$type],
-                            // get the class + member type info to prefix to the
-                            // following members as they're processed
-                            name  = `${clsName}-${type}-`,
-                            j     = 0;
+                        let type = this.memberTypesMap[group.$type],
+                            j    = 0;
 
                         // loop over all members in this type group
                         for (; j < membersLen; ++j) {
-                            let member = members[j],
-                                memloc;
+                            let member   = members[j],
+                                // get the source class + member type info to prefix to 
+                                // the following members as they're processed
+                                fromName = member.from || clsName,
+                                name     = `${fromName}-${type}-`,
+                                memloc, memFileNum, memLineNum;
 
                             // if the member has description in this class
                             if (member.src) {
                                 // get the location where it's described
                                 memloc = this.getLocArray(member);
+                                if (memloc) {
+                                    [ memFileNum, memLineNum ] = memloc;
+                                }
                             }
 
                             // back the pointer up one so it's pointing to the top of
-                            // the description
-                            if (memloc && memloc[1]) {
-                                memloc[1] = memloc[1] - 1;
+                            // the description block
+                            if (memloc && memLineNum) {
+                                memLineNum -= 1;
                             }
 
-                            // inject the class and member type and member name
-                            if (memloc && memloc[0] === loc[0]) {
+                            // log the class and member type and member name
+                            if (memloc) {
                                 let memberName = member.name;
 
-                                lines[memloc[1]] = `<a name="${name}${memberName}">` + lines[memloc[1]];
+                                if (clsFiles) {
+                                    // we look up the source class here as it may or may 
+                                    // not be the same as `clsSrc` looked up above
+                                    let memSrc = this.srcFileMap[clsFiles[memFileNum]];
+                                    
+                                    if (memSrc) {
+                                        memSrc.anchorLocs = memSrc.anchorLocs || {};
+                                        memSrc.anchorLocs[memLineNum] = `${name}${memberName}`;
+                                    }
+                                }
+                                
                             }
                         }
                     }
                 }
             }
-
-            let i = 0,
-                len = lines.length;
-
-            // loop over all of the lines and add an anchor for line number linking
-            for (; i < len; i++) {
-                if (i !== 0) {
-                    lines[i] = `<a name="line${i}">` + lines[i];
-                }
+        }
+    }
+    
+    /**
+     * Adds anchor tags to the source files.  Used when you link to the source of a class 
+     * or member description within the source files.  Each anchor will include a name 
+     * attribute with either the class name (for the class description) or class name + 
+     * member name (for member descriptions).  Additionally adds line number anchors to 
+     * each line.
+     * @param {String} html The HTML of the class source file that anchor tags will be 
+     * injected into
+     * @param {String} srcPath The path to the file being decorated with anchors.  Used 
+     * to fetch the anchor positions from the srcFileMap hash (anchor positions collected 
+     * in the {@link #catalogAnchors} method).
+     * @return {String} The html string for the class source file including the injected 
+     * anchor tags
+     */
+    addAnchors (html, srcPath) {
+        let src        = this.srcFileMap[srcPath],
+            anchorLocs = src.anchorLocs;
+        
+        if (anchorLocs) {
+            // split out all each line in the HTML
+            let lines = html.split('<div class="line">'),
+                locs  = Object.keys(anchorLocs),
+                len   = locs.length;
+                
+            while (len--) {
+                let loc  = locs[len],
+                    name = anchorLocs[loc];
+                
+                lines[loc] = `<a name="${name}">` + lines[loc];
             }
-
-            // re-assemble all of the split lines into an HTML string
+            
+            let linesLen = lines.length;
+            
+            while (linesLen--) {
+                lines[linesLen] = `<a name="line${linesLen}">` + lines[linesLen];
+            }
+            
             html = lines.join('<div class="line">');
         }
-
+        
         return html;
     }
 }

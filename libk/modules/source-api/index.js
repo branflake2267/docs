@@ -483,15 +483,18 @@ class SourceApi extends Base {
                             reject(err);
                         }
 
-                        let clsObj     = cls.global.items[0], // the class obj
-                            type       = clsObj.$type,        // the class type (class or enum)
-                            validType  = type === 'class' || type === 'enum',
+                        let clsObj        = cls.global.items[0], // the class obj
+                            type          = clsObj.$type,        // the class type (class or enum)
+                            validType     = type === 'class' || type === 'enum',
                             // the index in the files list where the class is primarily sourced
-                            srcIdx     = (clsObj.src.text || clsObj.src.name).substring(0, 1),
-                            srcFiles   = cls.files, // ths list of class source files
-                            primarySrc = srcFiles[0] || '',
+                            srcIdx        = (clsObj.src.text || clsObj.src.name).substring(0, 1),
+                            srcFiles      = cls.files, // ths list of class source files
+                            primarySrc    = srcFiles[0] || '',
                             // the path of the class source from the SDK
-                            srcPath    = srcFiles[srcIdx],
+                            srcPath       = srcFiles[srcIdx],
+                            hasOverride   = clsObj.src.override,
+                            overrideIdx   = hasOverride && hasOverride.split(',')[0],
+                            overridePath  = overrideIdx && srcFiles[overrideIdx],
                             modifiedList  = this.modifiedList,
                             modifiedMatch = [];
 
@@ -514,6 +517,10 @@ class SourceApi extends Base {
                         // Supports #addAnchors
                         if (validType) {
                             map[srcPath].input = cls;
+                            if (overridePath) {
+                                map[overridePath].input = cls;
+                            }
+                            //console.log(clsObj.name, (clsObj.src.text || clsObj.src.name));
                         }
 
                         if (validType) {
@@ -1661,24 +1668,6 @@ class SourceApi extends Base {
             let classMap     = this.classMap,
                 prepared     = classMap[cls.cls.originalName].prepared,
                 ancestorList = prepared.extended;
-                
-            // if the current class has a parent then get a reference to the parent class 
-            // object
-            /*if (ancestorList) {
-                let parent         = ancestorList.split(',')[0],
-                    parentPrepared = classMap[parent].prepared,
-                    parentType     = parentPrepared[type];
-                
-                // and see if it has member of the type currently being evaluated
-                if (parentType) {
-                    // if there is not a member of the same type matching the name of the 
-                    // current member being evaluated then we'll mark processMember as 
-                    // true for the next step in member processing
-                    processMember = !(_.find(parentType, mem => {
-                        return mem.name === member.name;
-                    }));
-                }
-            }*/
             
             // if the current class has a parent then get a reference to the parent class 
             // object
@@ -1690,8 +1679,8 @@ class SourceApi extends Base {
                 
                 // loop over any ancestor classes
                 while (ancestorsLen--) {
-                    let ancestor = ancestors[ancestorsLen],
-                        ancestorPrepared = classMap[ancestor].prepared,
+                    let ancestor               = ancestors[ancestorsLen],
+                        ancestorPrepared       = classMap[ancestor].prepared,
                         ancestorTypeCollection = ancestorPrepared[type];
                         
                     // and see if it has member of the type currently being evaluated
@@ -1937,7 +1926,6 @@ class SourceApi extends Base {
                 let anchored = this.addAnchorsAll(items);
 
                 // conclude 'Create source HTML files' status
-                //this.closeStatus();
 
                 // output all of the source HTML files
                 this.outputSrcFiles(anchored)
@@ -2043,6 +2031,20 @@ class SourceApi extends Base {
         let i        = 0,
             len      = items.length,
             anchored = [];
+//console.log(this.srcFileMap['../../../../../localRepos/SDK/ext/modern/modern/src/SegmentedButton.js'].input.files);
+        for (; i < len; i++) {
+            let item = items[i],
+                html = item.html,
+                path = item.path;
+
+            /*anchored.push({
+                html : this.addAnchors(html, path),
+                path : path
+            });*/
+            this.catalogAnchors(path);
+        }
+
+        i = 0;
 
         for (; i < len; i++) {
             let item = items[i],
@@ -2067,25 +2069,33 @@ class SourceApi extends Base {
      * @param {String} srcPath The path of the source class file
      * @return {String} The source HTML with anchors added
      */
-    addAnchors (html, srcPath) {
+    //addAnchors (html, srcPath) {
+    catalogAnchors (srcPath) {
         //this.log(`Begin 'SourceApi.addAnchors'`, 'log');
-        let src    = this.srcFileMap[srcPath],
-            clsSrc = src.input;
+        let src      = this.srcFileMap[srcPath],
+            clsSrc   = src.input,
+            clsFiles = clsSrc && clsSrc.files;
+
+        src.anchorLocs = src.anchorLocs || {};
 
         if (clsSrc) {
             let cls         = clsSrc.global.items[0], // the class object
                 clsName     = cls.name,               // class name
                 memberTypes = cls.items,              // array of member type groups
                 // split out all each line in the HTML
-                lines       = html.split('<div class="line">'),
-                loc;
+                //lines       = html.split('<div class="line">'),
+                loc, clsFileNum, clsLineNum;
 
             // if the class itself has documentation add the anchor for it
             if (cls.src) {
                 // find the location within the file where the class is described
                 loc = this.getLocArray(cls);
                 // and prepend an anchor tag with the name of the class
-                lines[loc[1]] = `<a name="${clsName}">` + lines[loc[1]];
+                //lines[loc[1]] = `<a name="${clsName}">` + lines[loc[1]];
+                if (loc) {
+                    [ clsFileNum, clsLineNum ] = loc;
+                    src.anchorLocs[clsLineNum] = `${clsName}`;
+                }
             }
 
             // if there are any class members (an array of class member types)
@@ -2102,42 +2112,93 @@ class SourceApi extends Base {
 
                     // if there are members in this group
                     if (members && membersLen) {
-                        let group = memberTypes[i],
-                            type = this.memberTypesMap[group.$type],
+                        let type     = this.memberTypesMap[group.$type],
                             // get the class + member type info to prefix to the
                             // following members as they're processed
-                            name  = `${clsName}-${type}-`,
-                            j     = 0;
+                            //fromName = member.from || clsName,
+                            //name     = `${fromName}-${type}-`,
+                            j        = 0;
 
                         // loop over all members in this type group
                         for (; j < membersLen; ++j) {
                             let member = members[j],
-                                memloc;
+                                fromName = member.from || clsName,
+                                name     = `${fromName}-${type}-`,
+                                memloc, memFileNum, memLineNum;
 
                             // if the member has description in this class
                             if (member.src) {
                                 // get the location where it's described
                                 memloc = this.getLocArray(member);
+                                if (memloc) {
+                                    [ memFileNum, memLineNum ] = memloc;
+                                }
                             }
 
                             // back the pointer up one so it's pointing to the top of
                             // the description
-                            if (memloc && memloc[1]) {
-                                memloc[1] = memloc[1] - 1;
+                            if (memloc && memLineNum) {
+                                //memLineNum = memLineNum - 1;
+                                memLineNum -= 1;
                             }
 
                             // inject the class and member type and member name
-                            if (memloc && memloc[0] === loc[0]) {
+                            if (clsName === 'Ext.picker.Picker' && member.name === 'floated') {
+                                /*console.log(memloc[0], loc[0]);
+                                console.log(clsSrc.files[memFileNum], clsSrc.files[clsFileNum]);
+                                console.log(srcPath);
+                                console.log(this.srcFileMap[memFileNum], this.srcFileMap[clsFileNum]);*/
+                            }
+                            /*if (memloc && memloc[0] === loc[0]) {
                                 let memberName = member.name;
 
                                 lines[memloc[1]] = `<a name="${name}${memberName}">` + lines[memloc[1]];
+                            }*/
+                            if (memloc) {
+                                let memberName = member.name;
+
+                                //lines[memloc[1]] = `<a name="${name}${memberName}">` + lines[memloc[1]];
+                                //src.anchorLocs[memloc[1]] = `${name}${memberName}`;
+                                
+                                //src     = this.srcFileMap[clsSrc.files[memloc[0]]];
+                                /*if (clsSrc && clsSrc.files) {
+                                    if (src) {
+                                        clsSrc  = src.input;
+                                        clsName = cls.name;
+                                        if (member.name === 'floated') {
+                                            //console.log(memloc[0], loc[0]);
+                                            //console.log(clsSrc.files[memloc[0]], clsSrc.files[loc[0]]);
+                                            //console.log(srcPath);
+                                            //console.log(this.srcFileMap[memloc[0]], this.srcFileMap[loc[0]]);
+                                        }
+                                        src.anchorLocs = src.anchorLocs || {};
+                                        src.anchorLocs[memLineNum] = `${name}${memberName}`;
+                                    }
+                                }*/
+                                if (clsFiles) {
+                                    let memSrc = this.srcFileMap[clsFiles[memFileNum]];
+                                    
+                                    if (memSrc) {
+                                        if (member.name === 'floated') {
+                                            //console.log(memloc[0], loc[0]);
+                                            //console.log(clsSrc.files[memloc[0]], clsSrc.files[loc[0]]);
+                                            //console.log(srcPath);
+                                            //console.log(this.srcFileMap[memloc[0]], this.srcFileMap[loc[0]]);
+                                            console.log(name);
+                                        }
+                                        
+                                        memSrc.anchorLocs = memSrc.anchorLocs || {};
+                                        memSrc.anchorLocs[memLineNum] = `${name}${memberName}`;
+                                    }
+                                }
+                                
                             }
                         }
                     }
                 }
             }
 
-            let i = 0,
+            /*let i = 0,
                 len = lines.length;
 
             // loop over all of the lines and add an anchor for line number linking
@@ -2148,9 +2209,49 @@ class SourceApi extends Base {
             }
 
             // re-assemble all of the split lines into an HTML string
-            html = lines.join('<div class="line">');
+            html = lines.join('<div class="line">');*/
         }
 
+        //return html;
+    }
+    
+    addAnchors (html, srcPath) {
+        let src        = this.srcFileMap[srcPath],
+            anchorLocs = src.anchorLocs;
+        
+        if (anchorLocs) {
+            //console.log(srcPath);
+            if (srcPath === '../../../../../localRepos/SDK/ext/modern/modern/overrides/Widget.js') {
+                console.log(anchorLocs);
+            }
+            let lines = html.split('<div class="line">'),
+                locs  = Object.keys(anchorLocs),
+                len   = locs.length;
+                
+            while (len--) {
+                let loc  = locs[len],
+                    name = anchorLocs[loc];
+                
+                if (srcPath === '../../../../../localRepos/SDK/ext/modern/modern/overrides/Widget.js') {
+                    //console.log(loc, lines[loc]);
+                }
+                
+                lines[loc] = `<a name="${name}">` + lines[loc];
+                
+                if (srcPath === '../../../../../localRepos/SDK/ext/modern/modern/overrides/Widget.js') {
+                    //console.log(loc, lines[loc]);
+                }
+            }
+            
+            let linesLen = lines.length;
+            
+            while (linesLen--) {
+                lines[linesLen] = `<a name="line${linesLen}">` + lines[linesLen];
+            }
+            
+            html = lines.join('<div class="line">');
+        }
+        
         return html;
     }
 }

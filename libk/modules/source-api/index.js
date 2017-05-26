@@ -1698,8 +1698,8 @@ class SourceApi extends Base {
                 // loop over any ancestor classes
                 while (ancestorsLen--) {
                     let ancestor               = ancestors[ancestorsLen],
-                        ancestorPrepared       = classMap[ancestor].prepared,
-                        ancestorTypeCollection = ancestorPrepared[type];
+                        ancestorPrepared       = classMap[ancestor] && classMap[ancestor].prepared,
+                        ancestorTypeCollection = ancestorPrepared && ancestorPrepared[type];
                         
                     // and see if it has member of the type currently being evaluated
                     if (ancestorTypeCollection) {

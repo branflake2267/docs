@@ -133,7 +133,7 @@ class AppBase extends SourceGuides {
      * each toolkit - if applicable)
      */
     // TODO remove events in favor of promises
-    doRunApi () {
+    doRunApi (action = 'prepareApiSource') {
         //this.log(`Begin 'AppBase.doRunApi'`, 'info');
         let options     = this.options,
             meta        = this.options.prodVerMeta,
@@ -151,7 +151,7 @@ class AppBase extends SourceGuides {
         return toolkitList.reduce((sequence, tk) => {
             return sequence.then(() => {
                 this.options.toolkit = tk;
-                return this.prepareApiSource();
+                return this[action]();
             });
         }, Promise.resolve())
         .catch(this.error.bind(this));

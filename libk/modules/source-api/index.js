@@ -423,7 +423,7 @@ class SourceApi extends Base {
 
         // if the `forceDoxi` options is passed or the doxi input directory is empty /
         // missing then run doxi
-        if (forceDoxi || doxiEmpty || (triggerDoxi && triggerDoxi[this.apiProduct])) {
+        if (forceDoxi || doxiBuild || doxiEmpty || (triggerDoxi && triggerDoxi[this.apiProduct])) {
             // empty the folder first before running doxi
             Fs.emptyDirSync(this.doxiInputDir);
             let path = Shell.pwd();
@@ -431,7 +431,7 @@ class SourceApi extends Base {
             Shell.cd(this.tempDir);
 
             if (doxiBuild && doxiBuild != defaultBuild) {
-                Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
+                Shell.exec(`${cmd} --quiet doxi build -p tempDoxiCfg.json ${doxiBuild}`);
 
                 //this.concludeBuild();
                 process.exit(0);
@@ -1100,7 +1100,7 @@ class SourceApi extends Base {
                 members = group.items;
 
             if (members && members.length) {
-                data[type]      = this.processMembers(className, type, members);
+                data[type] = this.processMembers(className, type, members);
             }
         }
 
@@ -1272,7 +1272,7 @@ class SourceApi extends Base {
                 prepared.srcFiles.push(srcFileObj);
             }
         }
-
+        
         if (member.value) {
             member.value = `<pre class="defaults-to-dec">${_.escape(member.value)}</pre>`;
         }
@@ -1465,12 +1465,6 @@ class SourceApi extends Base {
 
             // if there is a getter or the config is accessor decorate the getter
             // method config
-
-            /*if (name === 'minValue') {
-                console.log('g', g);
-                console.log('accessor', accessor);
-                console.log(data.cls.name);
-            }*/
             if (g || accessor === true || accessor === 'r') {
                 let idx = g ? instanceMethods.indexOf(g) : null;
 

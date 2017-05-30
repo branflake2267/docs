@@ -790,16 +790,23 @@ class SourceGuides extends SourceApi {
      */
     readGuide (node) {
         return new Promise ((resolve, reject) => {
-            let path = this.guidePathMap[node.id];
+            let path = this.guidePathMap[node.id],
+                name = node.name,
+                slug = node.slug;
+            
+            if (path) {
+                Fs.readFile(path, 'utf-8', (err, content) => {
+                    if (err) {
+                        reject(err);
+                    }
 
-            Fs.readFile(path, 'utf-8', (err, content) => {
-                if (err) {
-                    reject(err);
-                }
-
-                node.content = content;
+                    node.content = content;
+                    resolve();
+                });
+            } else {
+                this.log(`Cannot locate the guide / folder with name: ${name} at ${slug}`, 'info');
                 resolve();
-            });
+            }
         })
         .catch(this.error.bind(this));
     }

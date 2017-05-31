@@ -120,7 +120,7 @@ class HtmlApp extends AppBase {
      * @return {Object} Hash of common current page metadata
      */
     getHomeMetaData (data) {
-        let meta = this.getCommonMetaData(),
+        let meta = this.commonMetaData,
             docsRelativePath = Path.relative(
                 this.outputProductDir,
                 this.options.outputDir
@@ -143,7 +143,7 @@ class HtmlApp extends AppBase {
      * @return {Object} Hash of common current page metadata
      */
     getLandingMetaData (data) {
-        let meta = this.getCommonMetaData();
+        let meta = this.commonMetaData;
 
         if (data) {
             Object.assign(meta, {

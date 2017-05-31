@@ -218,21 +218,15 @@ class SourceGuides extends SourceApi {
      * @return {Object} Hash of common current page metadata
      */
     getGuideMetaData (data) {
-        let meta = this.getCommonMetaData();
+        let meta = this.commonMetaData;
 
         if (data) {
-            /*let docsRelativePath = Path.relative(
-                this.guidesOutputDir,
-                this.options.outputDir
-            );*/
-
             Object.assign(meta, {
                 navTreeName  : data.navTreeName,
                 myId         : data.id,
                 rootPath     : Path.relative(data.rootPath, this.outputProductDir) + '/',
                 pageType     : 'guide',
-                pageName     : data.text//,
-                //docsRootPath : `${docsRelativePath}/`
+                pageName     : data.text
             });
         }
 

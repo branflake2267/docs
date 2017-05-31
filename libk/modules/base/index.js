@@ -314,23 +314,6 @@ class Base {
     }
 
     /**
-     * Get, or create if not yet created, the status instance
-     * @return {Object} The status instance used by the app
-     */
-    get status () {
-        let status = this._status;
-
-        if (!status) {
-            status = this._status = Ora({
-                spinner: 'star'
-            });
-            status.start();
-        }
-
-        return status;
-    }
-
-    /**
      * Generates a unique ID for an element
      * @return {String} The unique ID
      */
@@ -664,10 +647,6 @@ class Base {
     log (msg, type) {
         type = type || 'log';
 
-        if (this.status.active) {
-            this.statusStopAndPersist();
-        }
-
         Debug[type](msg);
     }
 
@@ -823,97 +802,15 @@ class Base {
     }
 
     /**
-     * Set or append the current status text
-     * @param {String} msg The status text to show (or append)
-     * @param {Boolean} append `true` to append the passed `msg` to the current status
-     * text
-     * @return {Object} Returns the status instance
-     */
-    setStatus (msg, append) {
-        let status = this.status,
-            text   = status.text;
-
-        status.text = append ? (text += msg) : msg;
-        status.render();
-        status.active = true;
-        return status;
-    }
-
-    /**
-     * Concludes the current active status line by checkmarking it
-     * @param {String} msg The status text to show (or append)
-     * @param {Boolean} append `true` to append the passed `msg` to the current status
-     * text
-     */
-    statusSuccess (msg, append) {
-        if (msg) {
-            this.setStatus(msg, append);
-        }
-        this.status.succeed();
-        // sets active to false for use by {@link #log}
-        this.status.active = false;
-    }
-
-    /**
-     * Concludes the current active status line with an "x" preceding the status
-     * @param {String} msg The status text to show (or append)
-     * @param {Boolean} append `true` to append the passed `msg` to the current status
-     * text
-     */
-    statusFail (msg, append) {
-        if (msg) {
-            this.setStatus(msg, append);
-        }
-        this.status.fail();
-        // sets active to false for use by {@link #log}
-        this.status.active = false;
-    }
-
-    /**
-     * Concludes the current active status and removed the spinner (wait indicator)
-     */
-    statusStopAndPersist () {
-        this.status.stopAndPersist();
-        // sets active to false for use by {@link #log}
-        this.status.active = false;
-    }
-
-    /**
-     * Sets the current status to the passed `msg` text.  A time stamp is recorded in
-     * order for {@link #closeStatus} to be able to display the elapsed time
-     * @param {String} msg The status text to show
-     */
-    openStatus (msg) {
-        this._statusStamp = new Date();
-        this.setStatus(msg);
-    }
-
-    /**
-     * Concluded the active status with {@link #statusSuccess} or {@link #statusFail} and
-     * appends the elapsed time since {@link #openStatus} was called
-     * @param {Boolean} success `false` to call statusFail.  Defaults to `true`.
-     */
-    closeStatus (success) {
-        let elapsed = this.getElapsed(this._statusStamp, new Date()),
-            action  = success === false ? 'statusFail' : 'statusSuccess';
-
-        this[action]('    ' + Chalk.gray(elapsed), true);
-    }
-
-    /**
-     * Performs and cleanup / status as the build concludes
+     * Performs and cleanup as the build concludes
      */
     concludeBuild () {
         //this.log(`Begin 'Base.concludeBuild'`, 'info');
         let options = this.options;
 
-        // TODO see about replacing this with a closeStatus() call instead once we have
-        // the process populated with statuses
         if (!options.production && options.audioAlert === true) {
             Play.sound('./assets/audio/jobsdone.m4a');
         }
-
-        this.closeStatus();
     }
 
     /**
@@ -981,7 +878,7 @@ class Base {
      * for id use.
      * @param {String} id The element id to normalize
      * @param {String} name The element text node
-     * @returns {String} The modified id
+     * @return {String} The modified id
      */
     makeID (id, name) {
         return id.replace("/", "-_-") + "_-_" + name.replace(/[^\w]+/g, "_").toLowerCase();
@@ -990,7 +887,7 @@ class Base {
     /**
      * Converts the passed in markdown text to HTML markup
      * @param {String} text The markdown string to convert to HTML
-     * @param {String} cls The API class being marked up (if applicable)
+     * @param {String} [cls] The API class being marked up (if applicable)
      * @return {String} The converted HTML text
      */
     markup (text, cls) {

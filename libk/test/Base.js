@@ -73,4 +73,10 @@ describe("Base", function() {
     it("should return resources dir", function() {
         expect(moduleNoToolkit.resourcesDir).to.be(Path.join(root,"output",product,version,"resources"));
     });
+
+    it("should not break if html is found in markdown", function() {
+        let markdown = "+ **Bold** - _italic_";
+
+        expect(moduleToolkit.markup(markdown)).to.be("<ul>\n<li><strong>Bold</strong> - <em>italic</em></li>\n</ul>\n");
+    });
 });

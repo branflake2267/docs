@@ -545,7 +545,6 @@ class Base {
      * Register all handlebars helpers
      */
     registerHandlebarsHelpers () {
-        //this.log(`Begin 'Base.registerHandlebarsHelpers'`, 'info');
         // The `json` helper stringifies a Javascript object.  Helpful when you want to
         // pass a hash of information directly to a handlebars template.
         Handlebars.registerHelper('json', function(context) {
@@ -634,6 +633,18 @@ class Base {
     }
 
     /**
+     * Convenience error logging method
+     * @param {String/Object} err The error instance or error string to wrap as an error
+     * instance
+     */
+    error (err) {
+        if (!(err instanceof Error)) {
+            err = new Error(err);
+        }
+        this.log(err, 'error');
+    }
+
+    /**
      * Console logs the passed message using the type passed in the second param
      * @param {String} msg The message to log
      * @param {String} type The type of logging to do: `error`, `log`, `info`.  Defaults
@@ -715,18 +726,6 @@ class Base {
     }
 
     /**
-     * Convenience error logging method
-     * @param {String/Object} err The error instance or error string to wrap as an error
-     * instance
-     */
-    error (err) {
-        if (!(err instanceof Error)) {
-            err = new Error(err);
-        }
-        this.log(err, 'error');
-    }
-
-    /**
      * Adds a class (or classes) to all HTML elements of a given type (or array of types)
      * within a blob of HTML.
      *
@@ -756,7 +755,6 @@ class Base {
      */
     addCls (html, tags, cls) {
         // create a string from an array of class strings is possible
-        //cls  = cls && Array.isArray(cls) ? cls.join(' ') : cls;
         // if tags is a string then wrap it in an array
         tags = Utils.isString(tags) ? Utils.from(tags) : tags;
 
@@ -781,7 +779,6 @@ class Base {
         // loop over all of the tags and add the specified class / classes to them
         for (; i < len; i++) {
             let tag      = tagNames[i],
-                //reString = `(<${tag}(?!.*class)[^>]*?)(>[\\s\\S]*?<\/${tag}>)|(<${tag}.*?class=["']?.*?)(["']?[^>]*?>[\\s\\S]*?<\/${tag}>)`,
                 reString = `(<${tag}(?![^>]*class)[^>]*?)(>)|(<${tag}[^>]*?class=["']?.*?)(["']?[^>]*?>)`,
                 re       = new RegExp(reString, 'gim');
 
@@ -849,8 +846,6 @@ class Base {
         }
 
         if (!href.includes('sencha.com') && (href.includes('http:')) || href.includes('https:')) {
-            //TODO external-link is being concated with blue, to make blueexternal-link
-            //Need to not do that, and have blue external-link instead.
             openExternal = "class='external-link' target='_blank' ";
         }
 
@@ -873,6 +868,17 @@ class Base {
     }
 
     /**
+     * @method replaceSpaces
+     * Replaces spaces with the passed replacement character
+     * @param {String} str Text string with spaces to replace
+     * @param {String} replacement character with which to replace space
+     * @return {String} The string with replaced spaces
+     */
+    replaceSpaces (str, replacement) {
+        return str.replace(/\s+/g, replacement);
+    }
+
+    /**
      * @method makeID
      * Returns a string that has spaces, special characters, and slashes replaced
      * for id use.
@@ -881,7 +887,9 @@ class Base {
      * @return {String} The modified id
      */
     makeID (id, name) {
-        return id.replace("/", "-_-") + "_-_" + name.replace(/[^\w]+/g, "_").toLowerCase();
+        id   = this.replaceSpaces(id, "_").replace("/", "-_-");
+        name = this.replaceSpaces(name, "_").replace(/[^\w]+/g, "_").toLowerCase();
+        return id + "_-_" + name;
     }
 
     /**
@@ -931,7 +939,6 @@ class Base {
             joinWith  = joinStr || delimiter;
 
         // create links to the associated class (if found) from each item in the `text`
-        // TODO not sure if the if > else is required here, but don't want to remove this before I can test with real output
         if (text && text.includes(delimiter)) {
             text = text.split(delimiter);
 
@@ -939,28 +946,29 @@ class Base {
                 let item = text[i],
                     link = item.replace(safeLinkRe, '');
 
-                // if the string is a class name in the classMap create a link from it
-                if (this.classMap[link]) {
-                    str.push(this.createLink(link + '.html', item));
-                // else just return the string back
-                } else {
-                    str.push(item);
-                }
+                str.push(this.generateSplitString(link, item));
             }
         } else {
             let link = text.replace(safeLinkRe, '');
 
-            // if the string is a class name in the classMap create a link from it
-            if (this.classMap[link]) {
-                str.push(this.createLink(link + '.html', text));
-            // else just return the string back
-            } else{
-                str.push(text);
-            }
+            str.push(this.generateSplitString(link, text));
         }
 
         // return the string of <a> links separated by the `joinWith` delimiter
         return str.join(joinWith);
+    }
+
+    generateSplitString (link, item) {
+        let str ="";
+        // if the string is a class name in the classMap create a link from it
+        if (this.classMap && this.classMap[link]) {
+            str = this.createLink(link + '.html', item);
+            // else just return the string back
+        } else {
+            str = item;
+        }
+
+        return str;
     }
 
     /**

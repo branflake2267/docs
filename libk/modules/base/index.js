@@ -86,29 +86,28 @@ class Base {
         this.registerHandlebarsHelpers();
     }
 
+    /*=============================================
+     =             Begin Getter Properties        =
+     =============================================*/
+
     /**
-     * Initializes the parent chain array of all module ancestry by file name
-     * @return {String[]} This module's file name (in an array).
+     *  Returns the full path of the output directory + product (+ version if applicable)
+     * + api directory name
+     * @return {String} The api files' output path
      */
-    get parentChain () {
-        return [Path.parse(__dirname).base];
+    get apiDir () {
+        // ** NOTE ** Do not cache since the apiDirName may be changed between toolkits
+        return Path.join(this.outputProductDir, this.apiDirName);
     }
 
     /**
-     * Returns the folder node class used for tree navigation
-     * @return {String} The navigation tree's folder node class
+     * Returns the directory name for the api docs output.  Will be the toolkit set on
+     * the 'options' object if it exists else "api".
+     * @return {String} The directory for API output
      */
-    get folderNodeCls () {
-        //return 'fa fa-folder-o dib w1 mr1 ml1';
-        return 'fa fa-folder-o';
-    }
-
-    /**
-     * Returns the resources directory used to house resource files for the apps
-     * @return {String} the common resources directory (full) path
-     */
-    get resourcesDir () {
-        return Path.join(this.outputProductDir, this.options.resourcesDir);
+    get apiDirName () {
+        // ** NOTE ** Do not cache since the options.toolkit may be changed between builds
+        return this.options.toolkit || 'api';
     }
 
     /**
@@ -131,82 +130,35 @@ class Base {
     }
 
     /**
-     * The directory where CSS assets should be copied to in a build
-     * @return {String} The full path to the output CSS directory
+     * Return Cmd path to use
+     * @return {String} The command or path/command used to run Sencha Cmd
      */
-    get cssDir () {
-        let dir = this._cssDir;
+    get cmdPath () {
+        let keyword = 'sencha',
+            path = this.options.cmdPath;
 
-        if (!dir) {
-            let assetsDir = this.assetsDir,
-                options   = this.options,
-                cssDir    = Utils.format(options.cssDir, options);
-
-            dir = this._cssDir = options.cssDir = Path.resolve(options._myRoot, cssDir);
+        // if the cmd path is not passed in then look for it on the path.
+        if (!path) {
+            // if 'sencha' is on the PATH use that
+            if (Shell.which(keyword)) {
+                path = keyword;
+            } else {
+                // else thrown an error
+                throw 'Sencha Cmd not found.  Please install Sencha Cmd.';
+            }
+        } else {
+            // join the 'sencha' keyword with the passed path
+            path = Path.join(path, keyword);
         }
 
-        return dir;
-    }
-
-    /**
-     * The directory where JS assets should be copied to in a build
-     * @return {String} The full path to the output JS directory
-     */
-    get jsDir () {
-        let dir = this._jsDir;
-
-        if (!dir) {
-            let assetsDir = this.assetsDir,
-                options   = this.options,
-                jsDir    = Utils.format(options.jsDir, options);
-
-            dir = this._jsDir = options.jsDir = Path.resolve(options._myRoot, jsDir);
-        }
-
-        return dir;
-    }
-
-    /**
-     * The directory where image assets should be copied to in a build
-     * @return {String} The full path to the output images directory
-     */
-    get imagesDir () {
-        let dir = this._imagesDir;
-
-        if (!dir) {
-            let assetsDir = this.assetsDir,
-                options   = this.options,
-                imagesDir    = Utils.format(options.imagesDir, options);
-
-            dir = this._imagesDir = options.imagesDir = Path.resolve(options._myRoot, imagesDir);
-        }
-
-        return dir;
-    }
-
-    /**
-     *
-     */
-    get uniqueId () {
-        if (!this._rollingId) {
-            this._rollingId = 0;
-        }
-        return `s-${this._rollingId++}`;
-    }
-
-    /**
-     * The partial to use as the help page content
-     * @return {String} The name of the partial file to use as the docs help content
-     */
-    get helpPartial () {
-        return '_help';
+        return path;
     }
 
     /**
      * Returns common metadata needed by app pages
      * @return {Object} Hash of common current page metadata
      */
-    getCommonMetaData () {
+    get commonMetaData () {
         let options     = this.options,
             prodVerMeta = options.prodVerMeta,
             meta        = Object.assign({}, options.prodVerMeta),
@@ -225,59 +177,177 @@ class Base {
     }
 
     /**
-     * Checks to see if a directory is empty
-     * @param {String} dir The directory to check
-     * @return {Boolean} True if the directory is empty
+     * The directory where CSS assets should be copied to in a build
+     * @return {String} The full path to the output CSS directory
      */
-    isEmpty (dir) {
-        let files = Fs.readdirSync(dir);
-        files = this.getFilteredFiles(files);
+    get cssDir () {
+        let dir = this._cssDir;
 
-        return files.length === 0;
+        if (!dir) {
+            let options   = this.options,
+            cssDir    = Utils.format(options.cssDir, options);
+
+            dir = this._cssDir = options.cssDir = Path.resolve(options._myRoot, cssDir);
+        }
+
+        return dir;
     }
 
+    /**
+     * Returns the folder node class used for tree navigation
+     * @return {String} The navigation tree's folder node class
+     */
+    get folderNodeCls () {
+        return 'fa fa-folder-o';
+    }
 
     /**
-     * Prepares common data attributes
-     * @param {Object} data The object to be processed / changed / added to before
-     * supplying it to the template
+     * The partial to use as the help page content
+     * @return {String} The name of the partial file to use as the docs help content
      */
-    processCommonDataObject (data) {
+    get helpPartial () {
+        return '_help';
+    }
+
+    /**
+     * The directory where image assets should be copied to in a build
+     * @return {String} The full path to the output images directory
+     */
+    get imagesDir () {
+        let dir = this._imagesDir;
+
+        if (!dir) {
+            let options   = this.options,
+                imagesDir = Utils.format(options.imagesDir, options);
+
+            dir = this._imagesDir = options.imagesDir = Path.resolve(options._myRoot, imagesDir);
+        }
+
+        return dir;
+    }
+
+    /**
+     * The directory where JS assets should be copied to in a build
+     * @return {String} The full path to the output JS directory
+     */
+    get jsDir () {
+        let dir = this._jsDir;
+
+        if (!dir) {
+            let options = this.options,
+                jsDir   = Utils.format(options.jsDir, options);
+
+            dir = this._jsDir = options.jsDir = Path.resolve(options._myRoot, jsDir);
+        }
+
+        return dir;
+    }
+
+    /**
+     * The handlebars template for HTML output
+     * @return {Object} The compiled handlebars template
+     */
+    get mainTemplate () {
+        let tpl = this._guideTpl;
+
+        if (!tpl) {
+            let path = Path.join(this.options._myRoot, 'templates/html-main.hbs');
+
+            tpl = this._guideTpl = Handlebars.compile(
+                Fs.readFileSync(path, 'utf-8')
+            );
+        }
+
+        return tpl;
+    }
+
+    /**
+     * Returns the downloads / offline docs dir
+     */
+    get offlineDocsDir () {
+        let options    = this.options,
+            offlineDir = Utils.format(options.offlineDocsDir, options);
+
+        return Path.resolve(options._myRoot, offlineDir);
+    }
+
+    /**
+     * Returns the full path of the output directory + the product name (and version if
+     * applicable).
+     * @return {String} The full output directory path
+     */
+    get outputProductDir () {
+        // TODO cache this and all the other applicable static getters
         let options     = this.options,
-            prodVerMeta = options.prodVerMeta,
-            dt          = new Date();
+            product     = options.product,
+            outPath     = Utils.format(options.outputProductDir, options),
+            hasVersions = options.products[product].hasVersions,
+            relPrefix   = Path.relative(__dirname, options._myRoot);
 
-        data.title       = prodVerMeta.prodObj.title;
-        data.product     = this.getProduct(options.product);
-        data.hasGuides   = prodVerMeta.hasGuides;
-        data.hasApi      = prodVerMeta.hasApi;
-        data.version     = options.version;
-        data.moduleName  = this.moduleName;
-        data.helpPartial = this.helpPartial;
-        data.date = dt.toLocaleString("en-us",{month:"long"}) + ", " + dt.getDate() + " " + dt.getFullYear() + " at " + dt.getHours() + ":" + dt.getMinutes();
+        if (hasVersions) {
+            outPath = Path.join(outPath, options.version);
+        }
+
+        return Path.resolve(
+            __dirname,
+            Path.join(
+                relPrefix,
+                outPath
+            )
+        );
     }
 
     /**
-     * Filters out any system files (i.e. .DS_Store)
-     * @param {String[]} files Array of file names
-     * @return [String[]] Array of file names minus system files
+     * Initializes the parent chain array of all module ancestry by file name
+     * @return {String[]} This module's file name (in an array).
      */
-    getFilteredFiles (files) {
-        return files.filter(item => !(/(^|\/)\.[^\/\.]/g).test(item));
+    get parentChain () {
+        return [Path.parse(__dirname).base];
     }
 
     /**
-     * Get all files from the passed directory / path
-     * @param {String} path The path of the directory that all files should be returned
-     * from
-     * @return {String[]} Array of file names from the source directory
+     * Returns the resources directory used to house resource files for the apps
+     * @return {String} the common resources directory (full) path
      */
-    getFiles (path) {
-        // filter out system files and only return files (filter out directories)
-        return this.getFilteredFiles(Fs.readdirSync(path)).filter(function(file) {
-            return Fs.statSync(Path.join(path, file)).isFile();
-        });
+    get resourcesDir () {
+        return Path.join(this.outputProductDir, this.options.resourcesDir);
     }
+
+    /**
+     * Get, or create if not yet created, the status instance
+     * @return {Object} The status instance used by the app
+     */
+    get status () {
+        let status = this._status;
+
+        if (!status) {
+            status = this._status = Ora({
+                spinner: 'star'
+            });
+            status.start();
+        }
+
+        return status;
+    }
+
+    /**
+     * Generates a unique ID for an element
+     * @return {String} The unique ID
+     */
+    get uniqueId () {
+        if (!this._rollingId) {
+            this._rollingId = 0;
+        }
+        return `s-${this._rollingId++}`;
+    }
+
+    /*=============================================
+     =             End Getter Properties          =
+     =============================================*/
+
+    /*=============================================
+     =             Begin Getter Methods           =
+     =============================================*/
 
     /**
      * Returns all directories from a path / directory (system files will be filtered
@@ -293,28 +363,37 @@ class Base {
     }
 
     /**
-     * Filter out only the handlebars partial files from a list of files (those that have
-     * a file name that starts with an underscore)
-     * @param {String[]} files Array of file names to filter
-     * @return {String[]} The array of filtered file names
-     */
-    getPartials (files) {
-        return files.filter((file) => {
-            return file.charAt(0) === '_';
-        });
-    }
-
-    /**
-     * Returns the normalized product name.
-     * i.e. some links have the product name of ext, but most everywhere in the docs we're referring to Ext JS as 'extjs'
+     * Return a formatted elapsed time using the provided start and end time in minutes,
+     * seconds, and milliseconds.  If any aspect is missing (0) then it's omitted in the
+     * output
      *
-     *     console.log(this.getProduct('ext')); // returns 'extjs'
-     * @param {String} prod The product name to normalized
-     * @return {String} The normalized product name or `null` if not found
+     *     i.e. an elapsed time of 1000ms would output as 1s
+     *     61000 = 1m 1s
+     *     61100 = 1m 1s 100ms
+     *
+     * @param {Date} startTime The starting time
+     * @param {Date} endTime the ending time
+     * @return {String} a human-readable elapsed time
      */
-    getProduct (prod) {
-        prod = prod || this.options.product;
-        return this.options.normalizedProductList[prod];
+    getElapsed (startTime, endTime) {
+        endTime     = endTime || new Date();
+        let elapsed = new Date(endTime - startTime),
+        minutes = elapsed.getMinutes(),
+        seconds = elapsed.getSeconds(),
+        ms      = elapsed.getMilliseconds(),
+        ret     = [];
+
+        if (minutes) {
+            ret.push(minutes + 'm');
+        }
+        if (seconds) {
+            ret.push(seconds + 's');
+        }
+        if (ms) {
+            ret.push(ms + 'ms');
+        }
+
+        return ret.join(' ');
     }
 
     /**
@@ -348,12 +427,12 @@ class Base {
             // else we'll loop over the files to find the one that is closest to the
             // passed version without going over
             let i      = 0,
-                cfgVer = '0';
+            cfgVer = '0';
 
             for (; i < len; i++) {
                 let file = files[i],
-                    name = Path.parse(files[i]).name,
-                    v    = name.substring(name.indexOf('-') + delimiterLen);
+                name = Path.parse(files[i]).name,
+                v    = name.substring(name.indexOf('-') + delimiterLen);
 
                 if (CompareVersions(v, version) <= 0 && CompareVersions(v, cfgVer) > 0) {
                     cfgVer       = v;
@@ -366,22 +445,55 @@ class Base {
     }
 
     /**
-     * The handlebars template for HTML output
-     * @return {Object} The compiled handlebars template
+     * Get all files from the passed directory / path
+     * @param {String} path The path of the directory that all files should be returned
+     * from
+     * @return {String[]} Array of file names from the source directory
      */
-    get mainTemplate () {
-        let tpl = this._guideTpl;
-
-        if (!tpl) {
-            let path = Path.join(this.options._myRoot, 'templates/html-main.hbs');
-
-            tpl = this._guideTpl = Handlebars.compile(
-                Fs.readFileSync(path, 'utf-8')
-            );
-        }
-
-        return tpl;
+    getFiles (path) {
+        // filter out system files and only return files (filter out directories)
+        return this.getFilteredFiles(Fs.readdirSync(path)).filter(function(file) {
+            return Fs.statSync(Path.join(path, file)).isFile();
+        });
     }
+
+    /**
+     * Filters out any system files (i.e. .DS_Store)
+     * @param {String[]} files Array of file names
+     * @return [String[]] Array of file names minus system files
+     */
+    getFilteredFiles (files) {
+        return files.filter(item => !(/(^|\/)\.[^\/\.]/g).test(item));
+    }
+
+    /**
+     * Filter out only the handlebars partial files from a list of files (those that have
+     * a file name that starts with an underscore)
+     * @param {String[]} files Array of file names to filter
+     * @return {String[]} The array of filtered file names
+     */
+    getPartials (files) {
+        return files.filter((file) => {
+            return file.charAt(0) === '_';
+        });
+    }
+
+    /**
+     * Returns the normalized product name.
+     * i.e. some links have the product name of ext, but most everywhere in the docs we're referring to Ext JS as 'extjs'
+     *
+     *     console.log(this.getProduct('ext')); // returns 'extjs'
+     * @param {String} prod The product name to normalized
+     * @return {String} The normalized product name or `null` if not found
+     */
+    getProduct (prod) {
+        prod = prod || this.options.product;
+        return this.options.normalizedProductList[prod];
+    }
+
+    /*=============================================
+     =             End Getter Methods             =
+     =============================================*/
 
     /**
      * Register all handlebars partials from the templates directory
@@ -400,6 +512,38 @@ class Base {
 
             this.registerPartial(partialName, partialPath);
         }
+    }
+
+    /**
+     * Checks to see if a directory is empty
+     * @param {String} dir The directory to check
+     * @return {Boolean} True if the directory is empty
+     */
+    isEmpty (dir) {
+        let files = Fs.readdirSync(dir);
+        files = this.getFilteredFiles(files);
+
+        return files.length === 0;
+    }
+
+    /**
+     * Prepares common data attributes
+     * @param {Object} data The object to be processed / changed / added to before
+     * supplying it to the template
+     */
+    processCommonDataObject (data) {
+        let options     = this.options,
+            prodVerMeta = options.prodVerMeta,
+            dt          = new Date();
+
+        data.title       = prodVerMeta.prodObj.title;
+        data.product     = this.getProduct(options.product);
+        data.hasGuides   = prodVerMeta.hasGuides;
+        data.hasApi      = prodVerMeta.hasApi;
+        data.version     = options.version;
+        data.moduleName  = this.moduleName;
+        data.helpPartial = this.helpPartial;
+        data.date = dt.toLocaleString("en-us",{month:"long"}) + ", " + dt.getDate() + " " + dt.getFullYear() + " at " + dt.getHours() + ":" + dt.getMinutes();
     }
 
     /**
@@ -604,40 +748,6 @@ class Base {
     }
 
     /**
-     * Return a formatted elapsed time using the provided start and end time in minutes,
-     * seconds, and milliseconds.  If any aspect is missing (0) then it's omitted in the
-     * output
-     *
-     *     i.e. an elapsed time of 1000ms would output as 1s
-     *     61000 = 1m 1s
-     *     61100 = 1m 1s 100ms
-     *
-     * @param {Date} startTime The starting time
-     * @param {Date} endTime the ending time
-     * @return {String} a human-readable elapsed time
-     */
-    getElapsed (startTime, endTime) {
-        endTime     = endTime || new Date();
-        let elapsed = new Date(endTime - startTime),
-            minutes = elapsed.getMinutes(),
-            seconds = elapsed.getSeconds(),
-            ms      = elapsed.getMilliseconds(),
-            ret     = [];
-
-        if (minutes) {
-            ret.push(minutes + 'm');
-        }
-        if (seconds) {
-            ret.push(seconds + 's');
-        }
-        if (ms) {
-            ret.push(ms + 'ms');
-        }
-
-        return ret.join(' ');
-    }
-
-    /**
      * Adds a class (or classes) to all HTML elements of a given type (or array of types)
      * within a blob of HTML.
      *
@@ -710,23 +820,6 @@ class Base {
         }
 
         return html;
-    }
-
-    /**
-     * Get, or create if not yet created, the status instance
-     * @return {Object} The status instance used by the app
-     */
-    get status () {
-        let status = this._status;
-
-        if (!status) {
-            status = this._status = Ora({
-                spinner: 'star'
-            });
-            status.start();
-        }
-
-        return status;
     }
 
     /**
@@ -829,8 +922,6 @@ class Base {
      * @param text
      */
     createLink (href, text) {
-        // TODO not sure what link map does for us, yet.  Might have to re-add it later.
-        //let linkmap = this.linkmap,
         let openExternal = '',
             hash, split;
 
@@ -843,16 +934,6 @@ class Base {
         if (!text) {
             text = href;
         }
-
-        // TODO This is probably in here for a reason, but for now I can't figure out
-        // TODO what linkmap does for us.  Might have to test on it at some point
-        /*for (var i = 0; i < linkmap.length; i++) {
-            var item = linkmap[i];
-
-            if (href === item['c']) {
-                href = item['f'];
-            }
-        }*/
 
         if (!href.includes('.html') && href.charAt(0) != '#') {
             href += '.html';
@@ -877,63 +958,6 @@ class Base {
         }
 
         return "<a " + openExternal + "href='" + href + "'>" + text + "</a>";
-    }
-
-    /**
-     * Returns the downloads / offline docs dir
-     */
-    get offlineDocsDir () {
-        let options    = this.options,
-            offlineDir = Utils.format(options.offlineDocsDir, options);
-
-        return Path.resolve(options._myRoot, offlineDir);
-    }
-
-    /**
-     * Returns the full path of the output directory + the product name (and version if
-     * applicable).
-     * @return {String} The full output directory path
-     */
-    get outputProductDir () {
-        // TODO cache this and all the other applicable static getters
-        let options     = this.options,
-            product     = options.product,
-            outPath     = Utils.format(options.outputProductDir, options),
-            hasVersions = options.products[product].hasVersions,
-            relPrefix   = Path.relative(__dirname, options._myRoot);
-
-        if (hasVersions) {
-            outPath = Path.join(outPath, options.version);
-        }
-
-        return Path.resolve(
-            __dirname,
-            Path.join(
-                relPrefix,
-                outPath
-            )
-        );
-    }
-
-    /**
-     * Returns the directory name for the api docs output.  Will be the toolkit set on
-     * the 'options' object if it exists else "api".
-     * @return {String} The directory for API output
-     */
-    get apiDirName () {
-        // ** NOTE ** Do not cache since the options.toolkit may be changed between builds
-        return this.options.toolkit || 'api';
-        //return this.options.prodVerMeta.toolkit || 'api';
-    }
-
-    /**
-     *  Returns the full path of the output directory + product (+ version if applicable)
-     * + api directory name
-     * @return {String} The api files' output path
-     */
-    get apiDir () {
-        // ** NOTE ** Do not cache since the apiDirName may be changed between toolkits
-        return Path.join(this.outputProductDir, this.apiDirName);
     }
 
     /**
@@ -1043,31 +1067,6 @@ class Base {
     }
 
     /**
-     * Return Cmd path to use
-     * @return {String} The command or path/command used to run Sencha Cmd
-     */
-    getCmdPath () {
-        let keyword = 'sencha',
-            path = this.options.cmdPath;
-
-        // if the cmd path is not passed in then look for it on the path.
-        if (!path) {
-            // if 'sencha' is on the PATH use that
-            if (Shell.which(keyword)) {
-                path = keyword;
-            } else {
-                // else thrown an error
-                throw 'Sencha Cmd not found.  Please install Sencha Cmd.';
-            }
-        } else {
-            // join the 'sencha' keyword with teh passed path
-            path = Path.join(path, keyword);
-        }
-
-        return path;
-    }
-
-    /**
      * Sync a remote git repo locally so you don't have to have a copy of every
      * applicable branch locally sourced.  The product name is passed in and the git
      * particulars are collected from the projectDefaults config file (cached in `this`'s
@@ -1078,7 +1077,6 @@ class Base {
      * @param {String} sourceDir The source directory of the local repo
      */
     syncRemote (product, sourceDir) {
-        //this.log(`Begin 'Base.syncRemote'`, 'info');
         let options = this.options;
 
         if (options.syncRemote === false) {
@@ -1111,68 +1109,67 @@ class Base {
         // or it's empty
         // or it's not empty, but this product has a target branch and the branch it's currently on doesn't match
         //if (options.syncRemote || !Fs.existsSync(sourceDir) || this.isEmpty(sourceDir) || (branch && branch !== Git.branchSync(sourceDir))) {
-            // if the api source directory doesn't exist (may or may not be within the
-            // repos directory) then create the repos directory and clone the remote
-            if (!Fs.existsSync(sourceDir)) {
-                // create the repos directory if it doesn't exist already
-                Mkdirp.sync(reposPath);
-                Shell.cd(reposPath);
-                remoteUrl = Utils.format(remoteUrl, prodCfg);
+        // if the api source directory doesn't exist (may or may not be within the
+        // repos directory) then create the repos directory and clone the remote
+        if (!Fs.existsSync(sourceDir)) {
+            // create the repos directory if it doesn't exist already
+            Mkdirp.sync(reposPath);
+            Shell.cd(reposPath);
+            remoteUrl = Utils.format(remoteUrl, prodCfg);
 
-                this.log('Repo not found.  Cloning repo: ' + repo);
-                Shell.exec(`git clone ${remoteUrl}`);
-            }
+            this.log('Repo not found.  Cloning repo: ' + repo);
+            Shell.exec(`git clone ${remoteUrl}`);
+        }
 
-            // cd into the repo directory and fetch all + tags
-            Shell.cd(sourceDir);
+        // cd into the repo directory and fetch all + tags
+        Shell.cd(sourceDir);
 
-            // find out if there are dirty or un-tracked files and if so skip syncing
-            let status = Git.checkSync(sourceDir);
+        // find out if there are dirty or un-tracked files and if so skip syncing
+        let status = Git.checkSync(sourceDir);
 
-            if (status.dirty || status.untracked) {
-                let modified = Shell.exec('git ls-files --m --o --exclude-standard', {
-                    silent : true
-                }).stdout;
+        if (status.dirty || status.untracked) {
+            let modified = Shell.exec('git ls-files --m --o --exclude-standard', {
+                silent : true
+            }).stdout;
 
-                // the files list is separated by \n as well as suffixed with \n so the
-                // filter drops any empty / zero-length items
-                modified = _.filter(modified.split('\n'), item => {
-                    return item.length;
-                });
-                this.modifiedList = this.modifiedList.concat(modified);
+            // the files list is separated by \n as well as suffixed with \n so the
+            // filter drops any empty / zero-length items
+            modified = _.filter(modified.split('\n'), item => {
+                return item.length;
+            });
+            this.modifiedList = this.modifiedList.concat(modified);
 
-                this.triggerDoxi[product] = true;
-                Shell.cd(path);
-                this.log('API source directory has modified / un-tracked changes - skipping remote sync', 'info');
-                return;
-            }
-
-            Shell.exec('git fetch --tags');
-
-            if (options.syncRemote !== false) {
-                // check out the branch used for this product / version
-                this.log(`Checkout out main branch: ${branch}`);
-                Shell.exec(`git checkout ${branch}`);
-
-                // if there is a tag to use for this version then switch off of head over to the
-                // tagged branch
-                if (tag) {
-                    this.log(`Checking out tagged version: ${tag}`);
-                    Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
-                }
-            }
-
-            // pull latest
-            let pullResp = Shell.exec('git pull');
-
-            // if pull updated the local repo then indicate that this product was synced
-            if (!pullResp.stdout.includes('Already up-to-date')) {
-                this.triggerDoxi[product] = true;
-            }
-
-            // get back to the original working directory
+            this.triggerDoxi[product] = true;
             Shell.cd(path);
-        //}
+            this.log('API source directory has modified / un-tracked changes - skipping remote sync', 'info');
+            return;
+        }
+
+        Shell.exec('git fetch --tags');
+
+        if (options.syncRemote !== false) {
+            // check out the branch used for this product / version
+            this.log(`Checkout out main branch: ${branch}`);
+            Shell.exec(`git checkout ${branch}`);
+
+            // if there is a tag to use for this version then switch off of head over to the
+            // tagged branch
+            if (tag) {
+                this.log(`Checking out tagged version: ${tag}`);
+                Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
+            }
+        }
+
+        // pull latest
+        let pullResp = Shell.exec('git pull');
+
+        // if pull updated the local repo then indicate that this product was synced
+        if (!pullResp.stdout.includes('Already up-to-date')) {
+            this.triggerDoxi[product] = true;
+        }
+
+        // get back to the original working directory
+        Shell.cd(path);
     }
 }
 

@@ -174,7 +174,7 @@ if (canRun) {
     // create the designated module
     let cls = require('./modules/' + targetMod);
 
-    cls     = new cls(options);
+    cls = new cls(options);
 
     // if the module instance doesn't have the passed method then throw an error
     if (!cls[method]) {

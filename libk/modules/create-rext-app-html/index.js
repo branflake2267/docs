@@ -434,8 +434,8 @@ class ExtReactHtmlApp extends HtmlApp {
      * Returns common metadata needed by app pages
      * @return {Object} Hash of common current page metadata
      */
-    getCommonMetaData () {
-        let meta = super.getCommonMetaData();
+    get commonMetaData () {
+        let meta = super.commonMetaData;
 
         meta.componentClassNameMap = this.componentList;
         return meta;

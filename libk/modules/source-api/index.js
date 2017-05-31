@@ -324,7 +324,7 @@ class SourceApi extends Base {
      * @return {Object} Hash of common current page metadata
      */
     getApiMetaData (data) {
-        let meta = this.getCommonMetaData();
+        let meta = this.commonMetaData;
 
         if (data && data.cls) {
             let name       = data.cls.name,
@@ -406,7 +406,7 @@ class SourceApi extends Base {
 
         let options       = this.options,
             forceDoxi     = options.forceDoxi,
-            cmd           = this.getCmdPath(),
+            cmd           = this.cmdPath,
             triggerDoxi   = this.triggerDoxi,
             doxiBuild     = options.doxiBuild,
             defaultBuild  = "combo-nosrc",

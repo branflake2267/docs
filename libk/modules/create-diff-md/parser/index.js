@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 const Base   = require('../../base'),
@@ -26,28 +27,25 @@ const tests = [
 class Parser extends Base {
     constructor (options) {
         super(options);
-        let me = this;
 
-        me.totalCount = 0;
+        this.totalCount = 0;
 
-        me.flagFns = {
+        this.flagFns = {
             private    : 'isPrivateAccess',
             deprecated : 'isDeprecated',
             class      : 'isClass'
         };
 
-        options.categories.forEach(function(category) {
-            me.initCount(category.name)
+        options.categories.forEach((category) => {
+            this.initCount(category.name)
         });
     }
 
     initCount (type) {
-        var me = this;
-
         this[type + 'Count'] = {};
 
-        this.options.countTypes.forEach(function(key) {
-            me[type + 'Count'][key] = {
+        this.options.countTypes.forEach((key) => {
+            this[type + 'Count'][key] = {
                 added    : 0,
                 modified : 0,
                 removed  : 0,
@@ -57,8 +55,7 @@ class Parser extends Base {
     }
 
     addChangeCount (type, action, member) {
-        let me = this,
-            obj = this[type + 'Count'],
+        let obj = this[type + 'Count'],
             key = this.options.countMasterKey,
             flagFn;
 
@@ -67,14 +64,14 @@ class Parser extends Base {
         ++obj[key][action];
 
         if (member) {
-            me.options.countTypes.forEach(function(countType) {
-                flagFn = me.flagFns[countType];
+            this.options.countTypes.forEach((countType) => {
+                flagFn = this.flagFns[countType];
 
                 if (countType===key || !flagFn) {
                     return;
                 }
 
-                if (me[flagFn](member)) {
+                if (this[flagFn](member)) {
                     ++obj[countType][action];
                 }                
             });
@@ -82,41 +79,39 @@ class Parser extends Base {
     }
 
     exec () {
-        let me      = this,
-            changes = {
-                name : me.options.newData.name
+        let changes = {
+                name : this.options.newData.name
             };
 
-        me.options.categories.forEach(function(category) {
-            me.execMember(category.name, changes);
+        this.options.categories.forEach((category) => {
+            this.execMember(category.name, changes);
         });
         // fold class properties into changes
-        me.execMember('classProps', changes, true);
+        this.execMember('classProps', changes, true);
 
         return changes;
     }
 
     getPropertyChanges () {
-        let me = this,
-            changes = {},
+        let changes = {},
             oldValue, newValue, obj;
 
-        me.options.classProps.forEach(function(prop) {
-            oldValue = me.options.oldData[prop.name];
-            newValue = me.options.newData[prop.name];
+        this.options.classProps.forEach((prop) => {
+            oldValue = this.options.oldData[prop.name];
+            newValue = this.options.newData[prop.name];
 
             if (newValue) {
 
                 if (oldValue && newValue !== oldValue) {
-                    obj = me.createChange('modified', me.options.newData);
+                    obj = this.createChange('modified', this.options.newData);
 
                     if (!changes.modified) {
-                        changes['modified'] = [];
+                        changes.modified = [];
                     }
 
                     changes.modified.push(obj);
                 } else if (!oldValue ) {
-                    obj = me.createChange('added', me.options.newData);
+                    obj = this.createChange('added', this.options.newData);
 
                     if (!changes.added) {
                         changes.added = [];
@@ -132,7 +127,7 @@ class Parser extends Base {
                 obj.oldValue = oldValue; 
             }
             else if (oldValue) {
-                obj = me.createChange('removed', me.options.oldData);
+                obj = this.createChange('removed', this.options.oldData);
                 obj.key = prop.name;
                 obj.oldValue = oldValue;
 
@@ -199,26 +194,28 @@ class Parser extends Base {
     }
 
     getChanges (type) {
-        let me          = this,
-            info        = this.getItems(type),
-            num         = 0, typeChanges = {}, dupMap      = {},
+        let info        = this.getItems(type),
+            num         = 0,
+            typeChanges = {},
+            dupMap      = {},
             newItems    = info.newMatches && info.newMatches.items,
             oldItems    = info.oldMatches && info.oldMatches.items;
 
         if (newItems && oldItems) {
-            newItems.forEach(function(newMatch) {
-                me.addChangeCount(type, 'total');
+            newItems.forEach((newMatch) => {
+                this.addChangeCount(type, 'total');
 
                 if (newMatch.ignore) {
-                    debug.info('ignoring member', me.options.newData.name, newMatch.name);
+                    this.log('ignoring member' + this.options.newData.name + newMatch.name, 'info');
+                    //debug.info('ignoring member', this.options.newData.name, newMatch.name);
                     debug.log(newMatch);
 
-                    me.addChangeCount(type, 'ignore');
+                    this.addChangeCount(type, 'ignore');
                 } else {
                     let dup = dupMap[newMatch.name];
 
                     if (dup && typeof dup !== 'function') {
-                        debug.error('duplicate found', me.options.newData.name, newMatch.name);
+                        debug.error('duplicate found', this.options.newData.name, newMatch.name);
                         debug.log(dup);
                         debug.log(newMatch);
 
@@ -229,20 +226,20 @@ class Parser extends Base {
 
                     if (newMatch.name) {
                         let oldMatch = Utils.getMatch('name', newMatch.name, oldItems),
-                            changes  = me.getItemChanges(newMatch, oldMatch),
+                            changes  = this.getItemChanges(newMatch, oldMatch),
                             arr, obj;
 
                         if (changes) {
                             arr = typeChanges[changes.action];
 
-                            me.addChangeCount(type, changes.action, newMatch);
+                            this.addChangeCount(type, changes.action, newMatch);
 
                             if (!arr) {
                                 arr = typeChanges[changes.action] = [];
                             }
 
                             if (changes.action === 'modified') {
-                                obj = me.createChange(undefined, changes, newMatch);
+                                obj = this.createChange(undefined, changes, newMatch);
 
                                 if (changes.items) {
                                     obj.items = changes.items;
@@ -257,7 +254,7 @@ class Parser extends Base {
                                 arr.push(obj);
                             } else {
                                 
-                                obj = me.createChange(undefined, changes, newMatch);
+                                obj = this.createChange(undefined, changes, newMatch);
 
                                 arr.push(obj);
                             }
@@ -265,26 +262,26 @@ class Parser extends Base {
                             num++;
                         }
                     } else {
-                        debug.info('no name found', me.options.newData.name);
+                        debug.info('no name found', this.options.newData.name);
                         debug.log(newMatch);
                     }
                 }
             });
 
-            oldItems.forEach(function(oldMatch) {
+            oldItems.forEach((oldMatch) => {
                 let newMatch = Utils.getMatch('name', oldMatch.name, newItems),
                     arr, obj;
 
                 if (!oldMatch.ignore && !newMatch) {
                     arr = typeChanges.removed;
 
-                    me.addChangeCount(type, 'removed');
+                    this.addChangeCount(type, 'removed');
 
                     if (!arr) {
                         arr = typeChanges.removed = [];
                     }
 
-                    obj = me.createChange(undefined, oldMatch);
+                    obj = this.createChange(undefined, oldMatch);
 
                     arr.push(obj);
 
@@ -312,16 +309,15 @@ class Parser extends Base {
     }
 
     getItemChanges (newObj, oldObj) {
-        let me = this,
-            info, newVal, oldVal;
+        let info, newVal, oldVal;
 
         if (oldObj) {
-            tests.forEach(function(test) {
+            tests.forEach((test) => {
                 newVal = newObj[test];
                 oldVal = oldObj[test];
 
                 if (!info && newVal !==oldVal) {
-                    info = me.createChange('modified', newObj);
+                    info = this.createChange('modified', newObj);
 
                     info.key      = test;
                     info.newValue = newVal;
@@ -330,49 +326,48 @@ class Parser extends Base {
             });
 
             if (newObj.items) {
-                newObj.items.forEach(function(newItem) {
+                newObj.items.forEach((newItem) => {
                     let oldItem = Utils.getMatch('name', newItem.name, oldObj.items);
 
                     if (oldItem) {
-                        let changes = me.getItemChanges(newItem, oldItem);
+                        let changes = this.getItemChanges(newItem, oldItem);
 
                         if (changes) {
-                            info = me.addChildChanges(info, 'modified', newObj, 'modified', changes);
+                            info = this.addChildChanges(info, 'modified', newObj, 'modified', changes);
                         }
                     } else {
-                        info = me.addChildChanges(info, 'modified', newObj, 'added', [me.createChange('added', newItem)]);
+                        info = this.addChildChanges(info, 'modified', newObj, 'added', [this.createChange('added', newItem)]);
                     }
                 });
             }
 
             if (oldObj.items) {
-                oldObj.items.forEach(function(oldItem) {
+                oldObj.items.forEach((oldItem) => {
                     let newItem = Utils.getMatch('name', oldItem.name, newObj.items);
 
                     if (!newItem) {
-                        info = me.addChildChanges(info, 'modified', newObj, 'removed', [me.createChange('removed', oldItem)]);
+                        info = this.addChildChanges(info, 'modified', newObj, 'removed', [this.createChange('removed', oldItem)]);
                     }
                 });
             }
         } else {
-            info = me.createChange('added', newObj);
+            info = this.createChange('added', newObj);
         }
 
         return info;
     }
 
     createChange (action, member, latest) {
-        let me = this,
-            obj = {
+        let obj = {
                 action       : action,
                 name         : member.name,
                 $type        : member.$type
             },
             key, flagFn;
 
-        for (key in me.flagFns) {
-            flagFn = me.flagFns[key];
-            obj['is' + Utils.capitalize(key)] = me[flagFn](member, latest);
+        for (key in this.flagFns) {
+            flagFn = this.flagFns[key];
+            obj['is' + Utils.capitalize(key)] = this[flagFn](member, latest);
         }
 
         return obj;

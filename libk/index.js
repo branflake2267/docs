@@ -174,7 +174,7 @@ if (canRun) {
     // create the designated module
     let cls = require('./modules/' + targetMod);
 
-    cls    = new cls(options);
+    cls = new cls(options);
 
     // if the module instance doesn't have the passed method then throw an error
     if (!cls[method]) {
@@ -197,5 +197,5 @@ if (canRun) {
         ${Chalk.white.bgRed('ERROR :')} '${Chalk.gray(targetMod)}' is not a valid module name'
         Possible match : ${Chalk.gray(proposed)}
     `);
-    process.exit(1);
+    process.exit();
 }

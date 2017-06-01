@@ -392,24 +392,34 @@ class SourceApi extends Base {
         this.classMap   = {};
         this.srcFileMap = {};
 
-        this.runDoxi();
+        this.doRunDoxi();
         return this.readDoxiFiles();
 
+    }
+    
+    /**
+     * Public method to run Doxi ad hoc
+     */
+    runDoxi () {
+        let force = this.forceDoxi;
+        
+        this.forceDoxi = true;
+        this.runDoxi();
+        this.forceDoxi = force;
     }
 
     /**
      * Runs doxi against the SDK to output class files used by the docs post processors
      * (HTML docs or Ext app)
      */
-    runDoxi () {
+    doRunDoxi (buildName) {
         //this.log(`Begin 'SourceApi.runDoxi'`, 'info');
 
         let options       = this.options,
             forceDoxi     = options.forceDoxi,
             cmd           = this.cmdPath,
             triggerDoxi   = this.triggerDoxi,
-            doxiBuild     = options.doxiBuild,
-            defaultBuild  = "combo-nosrc",
+            doxiBuild     = buildName || options.doxiBuild || 'combo-nosrc',
             doxiEmpty     = this.doxiInputFolderIsEmpty;
 
         this.syncRemote(
@@ -430,14 +440,14 @@ class SourceApi extends Base {
 
             Shell.cd(this.tempDir);
 
-            if (doxiBuild && doxiBuild != defaultBuild) {
+            /*if (doxiBuild && doxiBuild != defaultBuild) {
                 Shell.exec(`${cmd} --quiet doxi build -p tempDoxiCfg.json ${doxiBuild}`);
 
                 //this.concludeBuild();
                 process.exit(0);
-            }
+            }*/
 
-            Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${defaultBuild}`);
+            Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
 
             Shell.cd(path);
         }

@@ -1,15 +1,14 @@
 /* jshint node: true */
 'use strict';
 
-const fs     = require('fs');
-const path   = require('path');
-const mkdirp = require('mkdirp');
-const debug  = require('../../Debug');
-
-const Parser = require('./parser');
-const Output = require('./output');
-const Utils  = require('../shared/Utils');
-const Base   = require('../base');
+const fs     = require('fs-extra'),
+      path   = require('path'),
+      mkdirp = require('mkdirp'),
+      Parser = require('./parser'),
+      Output = require('./output'),
+      Utils  = require('../shared/Utils'),
+      _      = require('lodash'),
+      Base   = require('../base');
 
 const categories = [{
     name  : 'configs',
@@ -69,10 +68,6 @@ const classProps = [{
     label : 'Requires'
 }];
 
-//enable the logger but disable the log level, info and error will still show
-debug.enable();
-debug.disable('log');
-
 /**
  * Diff class to check API differences between two different versions.
  *
@@ -110,39 +105,45 @@ class Diff extends Base {
             }
 
             totalOutput.push('## ' + title);
-
             totalOutput.push(arr.join('\n'));
         }
     }
 
     formatSummary (totalOutput) {
-        let summaryOutput = [
-                '',
-                '## Summary'
-            ];
+        let summaryOutput = ['', '## Summary'],
+            len           = categories.length,
+            i             = 0;
 
         this.formatSummaryType('classes', 'Classes', summaryOutput);
-
-        categories.forEach((category) => {
-            this.formatSummaryType(category.name, category.label, summaryOutput);
-        });
+        
+        for (; i < len; i++) {
+            let category = categories[i],
+                { name, label } = category;
+                
+            this.formatSummaryType(name, label, summaryOutput);
+        }
 
         totalOutput.push(summaryOutput.join('\n'));
     }
 
     getSummaryActionLine (type, action, title, totals) {
         let content = '',
-            subtotals;
+            countTypes = this.countTypes;
 
         if (totals[action]) {
-            content = '   - ' + Utils.formatNumber(totals[action]) + ' ' + Utils.capitalize(action);
+            content = '   - ' + Utils.formatNumber(totals[action]) + ' ' + _.capitalize(action);
 
-            this.countTypes.forEach((countType) => {
-                subtotals = this.getSummaryTotals(type, countType);
+            let len = countTypes.length,
+                i   = 0;
+                
+            for (; i < len; i++) {
+                let countType = countTypes[i],
+                    subtotals = this.getSummaryTotals(type, countType);
+                    
                 if (this.outputOptions[countType] && subtotals[action]) {
-                    content += ' (' + Utils.formatNumber(subtotals[action]) + ' ' + Utils.capitalize(countType) + ')';
+                    content += ' (' + Utils.formatNumber(subtotals[action]) + ' ' + _.capitalize(countType) + ')';
                 }
-            });
+            }
         }
 
         return content;
@@ -150,8 +151,7 @@ class Diff extends Base {
 
     formatSummaryType (type, title, summaryOutput) {
         let keys        = ['added', 'modified', 'removed'],
-            summaryType = this.summary[type],
-            totals, summaryLine;
+            summaryType = this.summary[type];
 
         if (summaryType) {
             if (!summaryOutput) {
@@ -160,22 +160,25 @@ class Diff extends Base {
             }
 
             if (!title) {
-                title = Utils.capitalize(type);
+                title = _.capitalize(type);
             }
 
-            totals = this.getSummaryTotals(type, this.countMasterKey, true);
+            let totals = this.getSummaryTotals(type, this.countMasterKey, true);
 
             if (totals.total) {
                 summaryOutput.push(' - ' + Utils.formatNumber(totals.total) + (type === 'classes' ? ' ' : ' Class ') + title);
 
                 if (this.includeVerboseSummary) {
-                    keys.forEach((key) => {
-                        summaryLine = this.getSummaryActionLine(type, key, title, totals);
+                    let len = keys.length,
+                        i   = 0;
+                    
+                    for (; i < len; i++) {
+                        let summaryLine = this.getSummaryActionLine(type, key, title, totals);
 
                         if (summaryLine) {
                             summaryOutput.push(summaryLine);
                         }
-                    });
+                    }
                 }    
             }        
         }
@@ -187,46 +190,71 @@ class Diff extends Base {
             totals      = {};
 
         if (summaryType && summaryType[bucket]) {
-            keys.forEach((key) => {
+            let keysLen = keys.length,
+                i       = 0;
+                
+            for (; i < keysLen; i++) {
+                let key = keys[i];
+                
                 totals[key] = summaryType[bucket][key];
 
                 if (isMain) {
-                    this.countTypes.forEach((countType) => {
-                        if (countType !== this.countMasterKey && !this.outputOptions[countType]) {
+                    let countTypes     = this.countTypes,
+                        typesLen       = countTypes.length,
+                        j              = 0,
+                        countMasterKey = this.countMasterKey,
+                        outputOptions  = this.outputOptions;
+                    
+                    for (; j < typesLen; j++) {
+                        let countType = countTypes[j];
+                        
+                        if (countType !== countMasterKey && !outputOptions[countType]) {
                             totals[key] -= summaryType[countType][key] || 0;
                         }
-                    });
+                    }
                 }
-            });
+            }
         }
 
         return totals;
     }
 
     addParserCounts (parser) {
-        let summary = this.summary;
-
-        categories.forEach((category) => {
-            let type        = category.name,
+        let summary = this.summary,
+            len     = categories.length,
+            i       = 0;
+        
+        for (; i < len; i++) {
+            let category = categories[i],
+                type        = category.name,
                 keys        = this.countTypes,
-                summaryType = summary[type],
-                name, count, numKey;
-
+                summaryType = summary[type];
+                
             if (!summaryType) {
                 summaryType = summary[type] = keys.reduce((result, key) => {
-                    result[key + 'Changes'] = 0;
+                    result[`${key}Changes`] = 0;
                     return result;
                 }, {});
             }
-
-            keys.forEach((key) => {
-                count = parser[type + 'Count'][key];
-                numKey = key + 'Changes';
-                for (name in count) {
-                    if (summaryType[key] == null) {
+            
+            let keysLen = keys.length,
+                j = 0;
+            
+            for (; j < keysLen; j++) {
+                let key = keys[j],
+                    count = parser[`${type}Count`][key],
+                    numKey = `${key}Changes`,
+                    names = Object.keys(count),
+                    namesLen = names.length,
+                    k = 0;
+                
+                for (; k < namesLen; k++) {
+                    let name = names[k];
+                    
+                    if (summaryType[key] === null) {
                         summaryType[key] = {};
                     }
-                    if (summaryType[key][name] == null) {
+                    if (summaryType[key][name] === null) {
                         summaryType[key][name] = 0;
                     }
 
@@ -236,8 +264,8 @@ class Diff extends Base {
                         summaryType[numKey] += count[name];
                     }
                 }
-            })         
-        });
+            }
+        }
     }
 
     addClassCount (action) {
@@ -260,7 +288,6 @@ class Diff extends Base {
     }
 
     run () {
-        let dt = new Date();
         let options        = this.options,
             newAllClasses  = JSON.parse(fs.readFileSync(options.newFile, 'utf8')).global.items,
             oldAllClasses  = JSON.parse(fs.readFileSync(options.oldFile, 'utf8')).global.items,
@@ -268,13 +295,16 @@ class Diff extends Base {
             oldVersion     = options.old,
             outputDir      = options.destination || './output',
             length         = newAllClasses.length,
-            addedOutput    = [], modifiedOutput = [], removedOutput = [], totalOutput = [],
-            i = 0, newCls, oldCls, parser, diff, output, markdown, filename;
+            addedOutput    = [],
+            modifiedOutput = [],
+            removedOutput  = [],
+            totalOutput    = [],
+            i              = 0;
 
         for (; i < length; i++) {
-            newCls = newAllClasses[i];
-            oldCls = Utils.getMatch('name', newCls.name, oldAllClasses);
-
+            let newCls = newAllClasses[i],
+                oldCls = Utils.getMatch('name', newCls.name, oldAllClasses);
+            
             // skip any ignored classes
             if (newCls.ignore) {
                 continue;
@@ -283,32 +313,30 @@ class Diff extends Base {
             this.addClassCount('total');
 
             if (oldCls) {
-
-                parser = new Parser(Object.assign(this.options, {
-                    newData         : newCls,
-                    oldData         : oldCls,
-                    outputOptions   : this.outputOptions,
-                    countTypes      : this.countTypes,
-                    countMasterKey  : this.countMasterKey,
-                    categories      : categories,
-                    classProps      : classProps
-                }));
-
-                diff = parser.exec();
+                let parser = new Parser(Object.assign(this.options, {
+                        newData         : newCls,
+                        oldData         : oldCls,
+                        outputOptions   : this.outputOptions,
+                        countTypes      : this.countTypes,
+                        countMasterKey  : this.countMasterKey,
+                        categories      : categories,
+                        classProps      : classProps
+                    })),
+                    diff = parser.exec();
 
                 this.addParserCounts(parser);
 
                 if (parser.totalCount) {
-                    output   = new Output({
-                        diff                : diff,
-                        outputOptions       : this.outputOptions,
-                        countTypes          : this.countTypes,
-                        countMasterKey      : this.countMasterKey,
-                        includeDebugOutput  : this.includeDebugOutput,
-                        categories          : categories,
-                        classProps          : classProps
-                    });
-                    markdown = output.markdown();
+                    let output   = new Output({
+                            diff                : diff,
+                            outputOptions       : this.outputOptions,
+                            countTypes          : this.countTypes,
+                            countMasterKey      : this.countMasterKey,
+                            includeDebugOutput  : this.includeDebugOutput,
+                            categories          : categories,
+                            classProps          : classProps
+                        }),
+                        markdown = output.markdown();
 
                     if (markdown) {
                         if (modifiedOutput.length) {
@@ -328,15 +356,14 @@ class Diff extends Base {
         length = oldAllClasses.length;
 
         for (i=0; i < length; i++) {
-            oldCls = oldAllClasses[i];
-            newCls = Utils.getMatch('name', oldCls.name, newAllClasses);
+            let oldCls = oldAllClasses[i],
+                newCls = Utils.getMatch('name', oldCls.name, newAllClasses);
 
             // we only want to count it if the item is a class; we don't care about detached comments
             // also skip any ignored classes
-            if (!newCls && oldCls.$type==='class' && !oldCls.ignore) {
+            if (!newCls && oldCls.$type === 'class' && !oldCls.ignore) {
                 this.addClassCount('removed');
-
-                removedOutput.push(' - ' + oldCls.name);
+                removedOutput.push(` - ${oldCls.name}`);
             }
         }
 
@@ -348,22 +375,23 @@ class Diff extends Base {
             totalOutput.push('No changes found!!!');
         }
 
-        totalOutput.unshift('# Diff between ' + newVersion + ' and ' + oldVersion);
+        totalOutput.unshift(`# Diff between ${newVersion} and ${oldVersion}`);
 
         this.formatSummary(totalOutput);
 
-        mkdirp.sync(outputDir);
+        fs.ensureDirSync(outputDir);
 
-        filename = oldVersion + '_to_' + newVersion + '_changes.md';
+        let filename = `${oldVersion}_to_${newVersion}_changes.md`;
 
         fs.writeFile(path.join(outputDir, filename), totalOutput.join('\n'), 'utf8', (err) => {
             if (err) {
-                return console.log(err);
+                return this.error(err);
             }
-            debug.info('Diff was written to ' + path.join(outputDir, filename));
+            //this.log('Diff was written to ' + path.join(outputDir, filename), 'info');
+            let outPath = path.join(outputDir, filename);
+            
+            this.log(`Diff was written to ${outPath}`, 'info');
         });
-        
-        console.log(`Diffed in: ${this.getElapsed(dt)}`);
     }
 }
 

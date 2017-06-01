@@ -156,7 +156,7 @@ const args = require('yargs')
     .argv;
 
 const targets   = ['create-app-html', 'create-rext-app-html', 'create-app-ext', 'source-api',
-                   'source-guides', 'landing', 'create-diff-md'],
+                   'source-guides', 'landing', 'create-diff-md', 'create-diff'],
       targetMod = args._[0], // the target module to run
       method    = args._[1] || 'run',
       canRun    = targets.indexOf(targetMod) > -1;

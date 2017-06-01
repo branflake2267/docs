@@ -1,7 +1,7 @@
 /* jshint node: true */
 'use strict';
 
-const Utils  = require('../../shared/Utils');
+const _      = require('lodash');
 
 const indentInc = 3;
 
@@ -45,12 +45,8 @@ class Output {
         }
     }
 
-    _capitalize (text) {
-        return text.substr(0, 1).toUpperCase() + text.substr(1);
-    }
-
     output (type, output) {
-        let Type      = this._capitalize(type),
+        let Type      = _.capitalize(type),
             diff      = this.diff,
             obj       = diff[type],
             count     = 0,
@@ -59,6 +55,10 @@ class Output {
             key;
 
         if (obj) {
+            let categories = this.categories,
+                len        = categories.length,
+                i          = 0;
+            
             // normal member entries
             this.categories.forEach((category) => {
                 let order = category.name,
@@ -80,7 +80,7 @@ class Output {
 
                     indention = (indention > 0) ? indention : 0;
 
-                    this.addBullet(Type + ' ' + this._capitalize(order), output, indention);
+                    this.addBullet(Type + ' ' + _.capitalize(order), output, indention);
 
                     members.forEach((member) => {
                         indention += indentInc;
@@ -98,6 +98,8 @@ class Output {
                     indention -= indentInc;
                 }
             });
+            
+            
 
             // process class property changes
             let members = obj.classProps;
@@ -107,9 +109,14 @@ class Output {
 
                 this.addBullet(Type + ' Class Details', output, indention);
 
-                members.forEach((member) => {
+                let membersLen = members.length,
+                    j          = 0;
+                
+                for (; j < membersLen; j++) {
+                    let member = members[j];
+                    
                     this.addObject(member, member.name, null, output, indention, false);
-                });
+                }
 
                 indention -= indentInc;
             }
@@ -119,14 +126,19 @@ class Output {
     }
 
     getMemberCountByFlag (members, flag) {
-        var count = 0,
-            flag = 'is' + Utils.capitalize(flag);
-
-        members.forEach((member) => {
+        flag = `is${_.capitalize(flag)}`;
+        
+        let count = 0,
+            len   = members.length,
+            i     = 0;
+        
+        for (; i < len; i++) {
+            let member = members[i];
+            
             if (typeof member === 'object' && member[flag]) {
                 count++;
             }
-        });
+        }
 
         return count;
     }
@@ -190,7 +202,7 @@ class Output {
             for (action in obj.items) {
                 obj.items[action].forEach((member) => {
                     if (this.canDisplay(member)) {
-                        let display = this._capitalize(action) + ' _' + member.name + '_ ' + member.$type;
+                        let display = _.capitalize(action) + ' _' + member.name + '_ ' + member.$type;
 
                         this.addObject(member, display, null, output, (indention + (indentInc)), true);
                     }
@@ -204,17 +216,23 @@ class Output {
     }
 
     canDisplay (member) {
-        var key, flag;
-
-        for (key in this.outputOptions) {
-            flag = 'is' + Utils.capitalize(key);
-
+        let outputOptions = this.outputOptions,
+            keys          = Object.keys(outputOptions),
+            len           = keys.length,
+            i             = 0,
+            canReturn     = true;
+        
+        for (; i < len; i++) {
+            let key  = keys[i],
+                flag = `is${_.capitalize(key)}`;
+            
             if (!this.outputOptions[key] && member[flag]) {
-                return false;
+                canReturn = false;
+                break;
             }
         }
-
-        return true;
+        
+        return canReturn;
     }
 }
 

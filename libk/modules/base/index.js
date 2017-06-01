@@ -958,6 +958,15 @@ class Base {
         return str.join(joinWith);
     }
 
+    /**
+     * Returns the `item` string passed in unless the `link` is a valid class name in 
+     * which case a link string is passed back using the class name from the `link` param
+     * @param {String} link A string that may be a class name that should be turned into 
+     * a link.  If it's not a valid class name then the `item` string is what is 
+     * returned.
+     * @param {String} item The text item to use in place of a link
+     * @return {String} The original or marked up string
+     */
     generateSplitString (link, item) {
         let str ="";
         // if the string is a class name in the classMap create a link from it

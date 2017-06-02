@@ -84,6 +84,44 @@ class Base {
 
         this.registerHandlebarsPartials();
         this.registerHandlebarsHelpers();
+        
+        // assign current runtime metadata
+        let o = this.options,
+            product    = o.product,
+            version    = o.version,
+            majorVer   = version && version.charAt(),
+            prodObj    = o.products[product];
+
+        if (!prodObj) {
+            let match = StringSimilarity.findBestMatch(
+                product,
+                Object.keys(o.products)
+            ),
+            proposed = `--product=${match.bestMatch.target}`;
+
+            console.log(`
+                ${Chalk.white.bgRed('ERROR :')} '${Chalk.gray('projectDefaults.json')}' does not have the product config for the passed product: '${Chalk.gray(product)}'
+                Possible match : ${Chalk.gray(proposed)}
+            `);
+            process.exit();
+        }
+
+        let toolkitObj = prodObj.toolkit && prodObj.toolkit[majorVer],
+            toolkits   = toolkitObj ? toolkitObj.toolkits : false,
+            toolkit    = o.toolkit || (toolkitObj && toolkitObj.defaultToolkit) || 'api';
+
+        o.prodVerMeta   = {
+            majorVer    : majorVer,
+            prodObj     : prodObj,
+            hasApi      : !!prodObj.hasApi,
+            hasVersions : prodObj.hasVersions,
+            //hasToolkits : !!(toolkits && toolkits.length > 1),
+            hasToolkits : (toolkits && toolkits.length),
+            toolkits    : toolkits,
+            toolkit     : toolkit,
+            hasGuides   : prodObj.hasGuides !== false,
+            title       : prodObj.title
+        };
     }
 
     /*=============================================

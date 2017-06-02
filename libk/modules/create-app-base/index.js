@@ -29,10 +29,9 @@ class AppBase extends SourceGuides {
         super(options);
         //this.log(`Create 'AppBase' instance`, 'info');
 
-        let o = this.options,
+        /*let o = this.options,
             product    = o.product,
             version    = o.version,
-            //majorVer   = this.apiVersion.charAt(),
             majorVer   = version && version.charAt(),
             prodObj    = o.products[product];
 
@@ -65,7 +64,7 @@ class AppBase extends SourceGuides {
             toolkit     : toolkit,
             hasGuides   : prodObj.hasGuides !== false,
             title       : prodObj.title
-        };
+        };*/
     }
 
     /**
@@ -75,39 +74,6 @@ class AppBase extends SourceGuides {
      */
     get parentChain () {
         return super.parentChain.concat([Path.parse(__dirname).base]);
-    }
-
-    /**
-     * Returns the version passed by the CLI build command or the `currentVersion` from
-     * the config file if there was no version passed initially
-     * @return {String} The version number for the current product
-     */
-    get apiVersion () {
-        let ver = this._apiVer;
-
-        if (!ver) {
-            let options = this.options;
-
-            ver = this._apiVer = options.version || options.currentVersion;
-        }
-
-        return ver;
-    }
-
-    /**
-     * Returns the product passed by the CLI build command
-     * @return {String} The product to generate the API output for
-     */
-    get apiProduct () {
-        let prod = this._apiProd;
-
-        if (!prod) {
-            let options = this.options;
-
-            prod = this._apiProd = options.product;
-        }
-
-        return prod;
     }
 
     /**

@@ -134,6 +134,47 @@ class DiffBase extends SourceApi {
     }
     
     /**
+     * Returns the current diff process (needs to be set before the diff logic knows 
+     * which action is happening as doxi is processing files for a given product / 
+     * version)
+     * @return {String} Either 'target' or 'source'
+     */
+    get diffProcess () {
+        return this._diffProcessing;
+    }
+    
+    /**
+     * Sets the current diff process (needs to be set before the diff logic knows which 
+     * action is happening as doxi is processing files for a given product / version)
+     * @param {String} part Must be either 'target' or 'source'
+     */
+    set diffProcess (part) {
+        this._diffProcessing = _.capitalize(part);
+    }
+    
+    /**
+     * Returns the proper product based on whether the target or source diff file is 
+     * being processed
+     * @return {String} The product to generate the API output for
+     */
+    get apiProduct () {
+        let part = this.diffProcess;
+        
+        return this[`diff${part}Product`];
+    }
+    
+    /**
+     * Returns the proper version based on whether the target or source diff file is 
+     * being processed
+     * @return {String} The version number for the current product
+     */
+    get apiVersion () {
+        let part = this.diffProcess;
+        
+        return this[`diff${part}Version`];
+    }
+    
+    /**
      * Iterates over an array of strings and sets the name + label on an object using the
      * lowercase string of each item in the array as the 'name' and a start-cased version 
      * of the name as the 'label'

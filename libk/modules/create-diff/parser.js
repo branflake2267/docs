@@ -3,7 +3,8 @@
 
 const DiffBase = require('./base.js'),
       Path     = require('path'),
-      Fs       = require('fs-extra');
+      Fs       = require('fs-extra'),
+      _        = require('lodash');
 
 class Parser extends DiffBase {
     constructor (options) {
@@ -107,18 +108,125 @@ class Parser extends DiffBase {
     }
     
     /**
+     * Returns a map of target and source classes with each having properties:
+     * 
+     *  - **names**      {Array}  : array of all class names in the API
+     *  - **classes**    {Object} : hash of class names and its class object
+     *  - **altNames**   {Array}  : array of all alternate class names
+     *  - **altClasses** {Object} : hash of all alternate class names and their class 
+     *                              object
+     * 
+     * @return {Object} The class map
+     */
+    get classMap () {
+        if (!this._classMap) {
+            this._classMap = {
+                target : {
+                    names      : [],
+                    classes    : {},
+                    altNames   : [],
+                    altClasses : {}
+                },
+                source : {
+                    names      : [],
+                    classes    : {},
+                    altNames   : [],
+                    altClasses : {}
+                }
+            };
+            
+            let classMap         = this._classMap,
+                {target, source} = classMap,
+                targetFile       = this.targetFile,
+                targetClasses    = targetFile.global.items,
+                sourceFile       = this.sourceFile,
+                sourceClasses    = sourceFile.global.items;
+            
+            this.addClassesToMap(targetClasses, target);
+            this.addClassesToMap(sourceClasses, source);
+        }
+        
+        return this._classMap;
+    }
+    
+    /**
      * Creates the diff object between the target and source files
      * @return {Object} The diff object
      */
     get diff () {
         if (!this._diff) {
-            let {targetFile, sourceFile} = this;
+            //let {targetFile, sourceFile} = this;
+            let diff = this._diff = {},
+                map               = this.classMap,
+                {target, source}  = map,
+                targetNames       = target.names,
+                sourceNames       = source.names,
+                commonNames       = _.intersectionWith(
+                    targetNames,
+                    sourceNames,
+                    _.isEqual),
+                added             = _.differenceWith(
+                    targetNames,
+                    sourceNames,
+                    _.isEqual
+                ),
+                removed           = _.differenceWith(
+                    sourceNames,
+                    targetNames,
+                    _.isEqual
+                );
+
+            if (added.length) {
+                diff.added = added;
+            }
             
-            console.log(targetFile.global.items.length);
-            console.log(sourceFile.global.items.length);
+            if (removed.length) {
+                diff.removed = removed;
+            }
+            
+            console.log(targetNames.length, sourceNames.length, commonNames.length);
+            //console.log(targetNames.indexOf('Ext.Gadget'), sourceNames.indexOf('Ext.Gadget'));
         }
         
         return this._diff;
+    }
+    
+    /**
+     * Used by {@link #classMap} to add all classes from the target API and source API to 
+     * their respective properties in the `classMap`
+     * @param {Object[]} classList Array of all classes in the API
+     * @param {Object} map The object add the class map info to from each class object in 
+     * the `classList`
+     */
+    addClassesToMap (classList, map) {
+        let len = classList.length,
+            i   = 0,
+            {
+                classes,
+                names,
+                altClasses,
+                altNames
+            }   = map;
+        
+        for (; i < len; i++) {
+            let cls          = classList[i],
+                {name, alts} = cls;
+            
+            // don't include ignored or hidden classes to the map
+            if (cls && !cls.ignore && !cls.hide) {
+                classes[name] = cls;
+                names.push(name);
+                
+                if (alts) {
+                    alts = alts.split(',');
+                    altNames = altNames.concat(alts);
+                    
+                    alts.forEach(n => {
+                        altClasses[n] = cls;
+                    });
+                }
+            }
+        }
     }
 }
 

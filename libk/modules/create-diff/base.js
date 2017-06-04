@@ -21,13 +21,20 @@ class DiffBase extends SourceApi {
     }
     
     /**
+     * 
+     */
+    get categories () {
+        return ['configs', 'properties', 'property', 'static-properties', 'methods', 
+        'method', 'static-methods', 'events', 'event', 'vars'];
+    }
+    
+    /**
      * Array of all possible categories and their labels
      * @return {Object[]} Array of objects of all categories and their start-cased labels
      */
-    get categories () {
+    get categoriesLabels () {
         if (!this._categories) {
-            let list = ['configs', 'properties', 'property', 'static-properties', 
-            'methods', 'method', 'static-methods', 'events', 'event', 'vars'];
+            let list = this.categories;
             
             this._categories = this.setNameAndLabel(list);
         }
@@ -36,19 +43,26 @@ class DiffBase extends SourceApi {
     }
     
     /**
+     * 
+     */
+    get classProps () {
+        return ['alias', 'alternateClassNames', 'extends', 'mixins', 'uses', 'singleton',
+         'access', 'requires'];
+    }
+    
+    /**
      * Array of all possible class / member attributes
      * @return {Object[]} Array of objects of all props and their start-cased labels
      */
-    get classProps () {
+    /*get classPropsLabels () {
         if (!this._classProps) {
-            let list = ['alias', 'alternateClassNames', 'extends', 'mixins', 'uses', 
-            'singleton', 'access', 'requires'];
+            let list = this.classProps;
             
             this._categories = this.setNameAndLabel(list);
         }
         
         return this._classProps;
-    }
+    }*/
     
     /**
      * The target (the one that shows that things were added if not in the 
@@ -195,14 +209,14 @@ class DiffBase extends SourceApi {
      * @return {Object[]} The array name / label object pairs for each string item in 
      * `arr`
      */
-    setNameAndLabel (arr) {
+    /*setNameAndLabel (arr) {
         return arr.map(string => {
             return {
                 name  : string,
                 label : _.startCase(string)
             };
         });
-    }
+    }*/
 }
 
 module.exports = DiffBase;

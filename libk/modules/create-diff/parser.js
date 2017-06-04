@@ -161,10 +161,6 @@ class Parser extends DiffBase {
                 {target, source}  = map,
                 targetNames       = target.names,
                 sourceNames       = source.names,
-                commonNames       = _.intersectionWith(
-                    targetNames,
-                    sourceNames,
-                    _.isEqual),
                 added             = _.differenceWith(
                     targetNames,
                     sourceNames,
@@ -184,11 +180,83 @@ class Parser extends DiffBase {
                 diff.removed = removed;
             }
             
-            console.log(targetNames.length, sourceNames.length, commonNames.length);
+            this.diffClasses(diff);
+            
+            //console.log(targetNames.length, sourceNames.length, commonNames.length);
             //console.log(targetNames.indexOf('Ext.Gadget'), sourceNames.indexOf('Ext.Gadget'));
         }
         
         return this._diff;
+    }
+    
+    diffClasses (diff) {
+        let map              = this.classMap,
+            {target, source} = map,
+            targetNames      = target.names,
+            sourceNames      = source.names,
+            commonNames      = _.intersectionWith(
+                targetNames,
+                sourceNames,
+                _.isEqual
+            ),
+            len              = commonNames.length,
+            i                = 0;
+        
+        for (; i < len; i++) {
+            let className = commonNames[i];
+            
+            this.diffClass(className, diff);
+        }
+    }
+    
+    diffClass (className, diff) {
+        let map = this.classMap,
+            {target, source}  = map,
+            targetNames = target.names,
+            targetClasses = target.classes,
+            sourceClasses = source.classes,
+            sourceAltClasses = source.altClasses,
+            targetCls = targetClasses[className],
+            sourceCls = sourceClasses[className];
+            
+        let props = this.classProps,
+            targetClsAttribs = _.pick(targetCls, props),
+            targetClsKeys = Object.keys(targetClsAttribs),
+            sourceClsAttribs = _.pick(sourceCls, props),
+            sourceClsKeys = Object.keys(sourceClsAttribs),
+            commonClsKeys = _.intersectionWith(
+                targetClsKeys,
+                sourceClsKeys,
+                _.isEqual
+            ),
+            commonTargetAttribs = _.pick(targetClsAttribs, commonClsKeys),
+            commonSourceAttribs = _.pick(sourceClsAttribs, commonClsKeys);
+            
+        let added = _.differenceWith(targetClsKeys, sourceClsKeys);
+        
+        if (added.length) {
+            // TODO process the added class attributes onto the diff
+        }
+        
+        let removed = _.differenceWith(sourceClsKeys, targetClsKeys);
+        
+        if (removed.length) {
+            // TODO process the removed class attributes onto the diff
+        }
+        
+        let modified = _.reduce(commonTargetAttribs, function(result, value, key) {
+            let fromValue = commonSourceAttribs[key];
+            
+            return _.isEqual(value, fromValue) ?
+                result : result.concat({
+                    [key] : {
+                        from : fromValue,
+                        to   : value
+                    }
+                });
+        }, []);
+        
+        console.log(modified);
     }
     
     /**

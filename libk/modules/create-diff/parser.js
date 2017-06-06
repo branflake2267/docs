@@ -5,6 +5,24 @@ const DiffBase = require('./base.js'),
       Path     = require('path'),
       Fs       = require('fs-extra'),
       _        = require('lodash');
+      
+const ItemTests = [
+    'access',
+    'alias',
+    'alternateClassNames',
+    'deprecatedVersion',
+    'hide',
+    'inheritdoc',
+    'localDoc',
+    'optional',
+    'preventable',
+    'readonly',
+    'requires',
+    'static',
+    'type',
+    'uses',
+    'value'
+];
 
 class Parser extends DiffBase {
     constructor (options) {
@@ -156,7 +174,18 @@ class Parser extends DiffBase {
     get diff () {
         if (!this._diff) {
             //let {targetFile, sourceFile} = this;
-            let diff = this._diff = {},
+            let diff = this._diff = {
+                    summary : {
+                        classes               : 0,
+                        configs               : 0,
+                        properties            : 0,
+                        ['static-properties'] : 0,
+                        methods               : 0,
+                        ['static-methods']    : 0,
+                        events                : 0,
+                        vars                  : 0
+                    }
+                },
                 map               = this.classMap,
                 {target, source}  = map,
                 targetNames       = target.names,
@@ -166,17 +195,21 @@ class Parser extends DiffBase {
                     sourceNames,
                     _.isEqual
                 ),
+                addedLen          = added.length,
                 removed           = _.differenceWith(
                     sourceNames,
                     targetNames,
                     _.isEqual
-                );
+                ),
+                removedLen        = removed.length;
 
-            if (added.length) {
+            diff.summary.classes =+ addedLen;
+            if (addedLen) {
                 diff.added = added;
             }
             
-            if (removed.length) {
+            diff.summary.classes =+ removedLen;
+            if (removedLen) {
                 diff.removed = removed;
             }
             
@@ -185,6 +218,7 @@ class Parser extends DiffBase {
             //console.log(targetNames.length, sourceNames.length, commonNames.length);
             //console.log(targetNames.indexOf('Ext.Gadget'), sourceNames.indexOf('Ext.Gadget'));
         }
+        console.log(JSON.stringify(this._diff, null, 4));
         
         return this._diff;
     }
@@ -194,14 +228,15 @@ class Parser extends DiffBase {
             {target, source} = map,
             targetNames      = target.names,
             sourceNames      = source.names,
+            sourceAltNames   = source.altNames,
             commonNames      = _.intersectionWith(
                 targetNames,
-                sourceNames,
+                sourceNames.concat(sourceAltNames),
                 _.isEqual
             ),
             len              = commonNames.length,
             i                = 0;
-        
+
         for (; i < len; i++) {
             let className = commonNames[i];
             
@@ -210,21 +245,21 @@ class Parser extends DiffBase {
     }
     
     diffClass (className, diff) {
-        let map = this.classMap,
-            {target, source}  = map,
-            targetNames = target.names,
-            targetClasses = target.classes,
-            sourceClasses = source.classes,
+        let map              = this.classMap,
+            {target, source} = map,
+            targetNames      = target.names,
+            targetClasses    = target.classes,
+            sourceClasses    = source.classes,
             sourceAltClasses = source.altClasses,
-            targetCls = targetClasses[className],
-            sourceCls = sourceClasses[className];
+            targetCls        = targetClasses[className],
+            sourceCls        = sourceClasses[className] || sourceAltClasses[className];
             
         let props = this.classProps,
-            targetClsAttribs = _.pick(targetCls, props),
-            targetClsKeys = Object.keys(targetClsAttribs),
-            sourceClsAttribs = _.pick(sourceCls, props),
-            sourceClsKeys = Object.keys(sourceClsAttribs),
-            commonClsKeys = _.intersectionWith(
+            targetClsAttribs    = _.pick(targetCls, props),
+            targetClsKeys       = Object.keys(targetClsAttribs),
+            sourceClsAttribs    = _.pick(sourceCls, props),
+            sourceClsKeys       = Object.keys(sourceClsAttribs),
+            commonClsKeys       = _.intersectionWith(
                 targetClsKeys,
                 sourceClsKeys,
                 _.isEqual
@@ -232,31 +267,254 @@ class Parser extends DiffBase {
             commonTargetAttribs = _.pick(targetClsAttribs, commonClsKeys),
             commonSourceAttribs = _.pick(sourceClsAttribs, commonClsKeys);
             
-        let added = _.differenceWith(targetClsKeys, sourceClsKeys);
+        let added    = _.differenceWith(targetClsKeys, sourceClsKeys),
+            removed  = _.differenceWith(sourceClsKeys, targetClsKeys),
+            modified = _.toArray(_.reduce(commonTargetAttribs, (result, value, key) => {
+                let fromValue = commonSourceAttribs[key];
+                
+                return _.isEqual(value, fromValue) ?
+                    result : result.concat({
+                        [key] : {
+                            from : fromValue,
+                            to   : value
+                        }
+                    });
+            }, [])),
+            classDiff = {
+                [className] : {}
+            },
+            classDiffProps = {
+                props : {}
+            };
         
+        if (added.length || removed.length || modified.length) {
+            diff.modified = Array.from(diff.modified || []);
+            classDiff[className] = classDiffProps;
+            diff.modified.push(classDiff);
+            //classDiff = classDiff[className].props;
+        }
+        
+        // TODO: do we need to increment summary.classes here?
         if (added.length) {
+            classDiffProps.props.added = added;
             // TODO process the added class attributes onto the diff
         }
         
-        let removed = _.differenceWith(sourceClsKeys, targetClsKeys);
-        
+        // TODO: do we need to increment summary.classes here?
         if (removed.length) {
+            classDiffProps.props.removed = removed;
             // TODO process the removed class attributes onto the diff
         }
         
-        let modified = _.reduce(commonTargetAttribs, function(result, value, key) {
-            let fromValue = commonSourceAttribs[key];
-            
-            return _.isEqual(value, fromValue) ?
-                result : result.concat({
-                    [key] : {
-                        from : fromValue,
-                        to   : value
-                    }
-                });
-        }, []);
+        // TODO: do we need to increment summary.classes here?
+        if (modified.length) {
+            classDiffProps.props.modified = modified;
+        }
         
-        console.log(modified);
+        //this.diffItems(className, diff, targetCls.items, sourceCls.items);
+        this.diffItemTypes(classDiff, targetCls.items, sourceCls.items);
+    }
+    
+    /**
+     * 
+     */
+    diffItemTypes (diffObj, targetItems = [], sourceItems = []) {
+        let targetMap = _.keyBy(targetItems, '$type'),
+            sourceMap = _.keyBy(sourceItems, '$type'),
+            allTypes   = _.uniqWith(
+                _.concat(
+                    _.keys(targetMap),
+                    _.keys(sourceMap)
+                )
+            ),
+            len       = allTypes.length,
+            i         = 0;
+        
+        for (; i < len; i++) {
+            let type   = allTypes[i],
+                target = targetMap[type] || {},
+                source = sourceMap[type] || {};
+            
+            this.diffItems(diffObj, type, target.items, source.items);
+        }
+    }
+    
+    /**
+     * 
+     */
+    diffItems (diffObj, type, targetItems = [], sourceItems = []) {
+        let targetMap   = _.keyBy(targetItems, 'name'),
+            targetNames = _.keys(targetMap),
+            sourceMap   = _.keyBy(sourceItems, 'name'),
+            sourceNames = _.keys(sourceMap),
+            added    = _.differenceWith(targetNames, sourceNames),
+            addedLen = added.length,
+            removed  = _.differenceWith(sourceNames, targetNames),
+            removedLen = removed.length,
+            commonNames = _.intersectionWith(
+                targetNames,
+                sourceNames,
+                _.isEqual
+            ),
+            commonTargetItems = _.pick(targetMap, commonNames),
+            commonSourceItems = _.pick(sourceMap, commonNames),
+            commonNamesLen = commonNames.length,
+            i = 0,
+            /*modified = _.toArray(_.reduce(commonTargetItems, (result, value, key) => {
+                let fromValue = commonSourceItems[key];
+                
+                return _.isEqual(value, fromValue) ?
+                    result : result.concat({
+                        [key] : {
+                            from : fromValue,
+                            to   : value
+                        }
+                    });
+            }, [])),*/
+            
+            modified = [];
+            
+        for (; i < commonNamesLen; i++) {
+            let name   = commonNames[i],
+                target = _.pick(commonTargetItems[name], ItemTests),
+                source = _.pick(commonSourceItems[name], ItemTests);
+            
+            let modifiedItems = _.toArray(
+                _.reduce(target, (result, value, key) => {
+                    let fromValue = source[key];
+                    
+                    return _.isEqual(value, fromValue) ?
+                        result : result.concat({
+                            [key] : {
+                                from : fromValue || 'undefined',
+                                to   : value
+                            }
+                        });
+                }, [])
+            );
+            
+            if (modifiedItems.length) {
+                modifiedItems = {
+                    [name] : modifiedItems
+                };
+            }
+            
+            modified = modified.concat(modifiedItems);
+            
+            //console.log(modifiedItems.length);
+        }
+            
+        let modifiedLen = modified.length;
+        
+        if (addedLen || removedLen || modifiedLen) {
+            diffObj = diffObj.items = {};
+        }
+        
+        if (addedLen) {
+            diffObj.added = {
+                [type] : added
+            };
+        }
+        
+        if (removedLen) {
+            diffObj.removed = {
+                [type] : removed
+            };
+        }
+        
+        if (modifiedLen) {
+            //diffObj.modified = modified;
+            diffObj.modified = {
+                [type] : modified
+            };
+        }
+        
+        /*let example = {
+            added : ['ClassName'],
+            removed : ['ClassName'],
+            modified : [{
+                className : {
+                    props : {
+                        added : ['propName'],
+                        removed : ['propName'],
+                        modified : [{
+                            propName : {
+                                from : 'FromValue',
+                                to : 'ToValue'
+                            }
+                        }],
+                        items : {
+                            added : ['itemName'],
+                            removed : ['itemName'],
+                            modified : [{
+                                propName : {
+                                    type : 'type',
+                                    props : {
+                                        added : ['propName'],
+                                        removed : ['propName'],
+                                        modified : [{
+                                            propName : {
+                                                from : 'FromValue',
+                                                to : 'ToValue'
+                                            }
+                                        }],
+                                    },
+                                    items : {
+                                        added : ['itemName'],
+                                        removed : ['itemName'],
+                                        modified : [{
+                                            itemName : {
+                                                type : 'type',
+                                                props : {
+                                                    added : ['itemName'],
+                                                    removed : ['itemName'],
+                                                    modified : [{
+                                                        itemName : {
+                                                            from : 'FromValue',
+                                                            to : 'ToValue'
+                                                        }
+                                                    }]
+                                                },
+                                                items : {
+                                                    added : ['itemName'],
+                                                    removed : ['itemName'],
+                                                    modified : [{
+                                                        itemName : {
+                                                            type : 'type',
+                                                            props : {
+                                                                added : ['itemName'],
+                                                                removed : ['itemName'],
+                                                                modified : [{
+                                                                    itemName : {
+                                                                        from : 'FromValue',
+                                                                        to : 'ToValue'
+                                                                    }
+                                                                }]
+                                                            }
+                                                        }
+                                                    }]
+                                                }
+                                            }
+                                        }]
+                                    }
+                                }
+                            }
+                        }]
+                    }
+                }
+            }],
+            summary : {
+                classes : 0,
+                configs : 0,
+                properties : 0,
+                ['static-properties'] : 0,
+                methods : 0,
+                ['static-methods'] : 0,
+                events : 0,
+                vars : 0
+            }
+        };*/
+        
     }
     
     /**
@@ -277,20 +535,21 @@ class Parser extends DiffBase {
             }   = map;
         
         for (; i < len; i++) {
-            let cls          = classList[i],
-                {name, alts} = cls;
+            let cls                 = classList[i],
+                {$type, name, alternateClassNames} = cls,
+                isClass             = ($type === 'class');
             
             // don't include ignored or hidden classes to the map
-            if (cls && !cls.ignore && !cls.hide) {
+            if (cls && isClass && !cls.ignore && !cls.hide) {
                 classes[name] = cls;
                 names.push(name);
                 
-                if (alts) {
-                    alts = alts.split(',');
-                    altNames = altNames.concat(alts);
+                if (alternateClassNames) {
+                    alternateClassNames = alternateClassNames.split(',');
+                    map.altNames = map.altNames.concat(alternateClassNames);
                     
-                    alts.forEach(n => {
-                        altClasses[n] = cls;
+                    alternateClassNames.forEach(altClassName => {
+                        altClasses[altClassName] = cls;
                     });
                 }
             }

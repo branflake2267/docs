@@ -23,16 +23,24 @@ class DiffBase extends SourceApi {
     /**
      * 
      */
-    get categories () {
+    get typeCategories () {
+        return ['classes', 'configs', 'properties', 'static-properties', 'methods', 
+        'static-methods', 'events', 'vars'];
+    }
+    
+    /**
+     * 
+     */
+    /*get categories () {
         return ['configs', 'properties', 'property', 'static-properties', 'methods', 
         'method', 'static-methods', 'events', 'event', 'vars'];
-    }
+    }*/
     
     /**
      * Array of all possible categories and their labels
      * @return {Object[]} Array of objects of all categories and their start-cased labels
      */
-    get categoriesLabels () {
+    /*get categoriesLabels () {
         if (!this._categories) {
             let list = this.categories;
             
@@ -40,7 +48,7 @@ class DiffBase extends SourceApi {
         }
         
         return this._categories;
-    }
+    }*/
     
     /**
      * 
@@ -48,6 +56,14 @@ class DiffBase extends SourceApi {
     get classProps () {
         return ['alias', 'alternateClassNames', 'extends', 'mixins', 'uses', 'singleton',
          'access', 'requires'];
+    }
+    
+    /**
+     * 
+     */
+    get memberProps () {
+        return ['optional', 'text', 'type', 'value', 'accessor', 'inheritdoc', 
+        'deprecatedMessage', 'removedMessage'];
     }
     
     /**

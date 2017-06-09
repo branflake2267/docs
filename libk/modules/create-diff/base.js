@@ -62,8 +62,9 @@ class DiffBase extends SourceApi {
      * 
      */
     get memberProps () {
-        return ['optional', 'text', 'type', 'value', 'accessor', 'inheritdoc', 
-        'deprecatedMessage', 'removedMessage'];
+        return ['access', 'optional', 'text', 'value', 'accessor', 'inheritdoc', 
+        'deprecatedMessage', 'removedMessage', 'hide', 'localdoc', 'preventable',
+        'readonly'];
     }
     
     /**

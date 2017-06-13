@@ -7,25 +7,14 @@ const SourceApi = require('../source-api'),
 class DiffBase extends SourceApi {
     constructor (options) {
         super(options);
-
-        /*this.summary                = {};
-        this.includeDebugOutput     = options['include-debug-output'];
-        this.includeVerboseSummary  = options['verbose-summary'];
-        this.countMasterKey         = 'all';
-        this.countTypes             = ['all', 'private', 'deprecated'];
-        this.outputOptions = {
-            private     : options['include-private'],
-            deprecated  : options['include-deprecated'],
-            class       : options['include-class-details']
-        };*/
     }
     
     /**
      * 
      */
     get typeCategories () {
-        return ['classes', 'configs', 'properties', 'static-properties', 'methods', 
-        'static-methods', 'events', 'vars'];
+        return [ 'class', 'configs', 'properties', 'static-properties', 'methods', 
+        'static-methods', 'events', 'vars' ];
     }
     
     /**
@@ -54,17 +43,17 @@ class DiffBase extends SourceApi {
      * 
      */
     get classProps () {
-        return ['alias', 'alternateClassNames', 'extends', 'mixins', 'uses', 'singleton',
-         'access', 'requires'];
+        return [ 'alias', 'alternateClassNames', 'extends', 'mixins', 'uses', 'singleton',
+         'access', 'requires' ];
     }
     
     /**
      * 
      */
     get memberProps () {
-        return ['access', 'optional', 'text', 'value', 'accessor', 'inheritdoc', 
+        return [ 'access', 'optional', 'value', 'accessor', 'inheritdoc', 
         'deprecatedMessage', 'removedMessage', 'hide', 'localdoc', 'preventable',
-        'readonly'];
+        'readonly' ];
     }
     
     /**
@@ -89,7 +78,7 @@ class DiffBase extends SourceApi {
      */
     get diffTargetProduct () {
         if (!this._diffTargetProduct) {
-            let options = this.options;
+            const { options } = this;
             
             this._diffTargetProduct = options.diffTarget || options.product;
         }
@@ -104,7 +93,7 @@ class DiffBase extends SourceApi {
      */
     get diffSourceProduct () {
         if (!this._diffSourceProduct) {
-            let options = this.options;
+            const { options } = this;
             
             this._diffSourceProduct = options.diffSource || options.product;
         }
@@ -121,7 +110,7 @@ class DiffBase extends SourceApi {
      */
     get diffTargetVersion () {
         if (!this._diffTargetVersion) {
-            let options = this.options;
+            const { options } = this;
             
             this._diffTargetVersion = options.diffTargetVersion || options.version;
         }
@@ -136,19 +125,19 @@ class DiffBase extends SourceApi {
      */
     get diffSourceVersion () {
         if (!this._diffSourceVersion) {
-            let options = this.options,
-                sourceVersion = options.diffSourceVersion;
+            const { options }   = this,
+                  sourceVersion = options.diffSourceVersion;
             
             if (sourceVersion) {
                 this._diffSourceVersion = sourceVersion;
             } else {
-                let target        = this.diffTargetProduct,
-                    sourceProduct = options.products[target],
-                    exceptions    = options.buildExceptions[target],
-                    versions      = sourceProduct.productMenu,
-                    targetVersion = this.diffTargetVersion,
-                    idx           = versions && versions.indexOf(targetVersion),
-                    previous      = idx !== -1 && versions[idx + 1];
+                const target        = this.diffTargetProduct,
+                      sourceProduct = options.products[target],
+                      exceptions    = options.buildExceptions[target],
+                      versions      = sourceProduct.productMenu,
+                      targetVersion = this.diffTargetVersion,
+                      idx           = versions && versions.indexOf(targetVersion),
+                      previous      = idx !== -1 && versions[idx + 1];
                 
                 if (previous && exceptions.indexOf(previous) > -1) {
                     this.error(`A version prior to ${targetVersion} could not 
@@ -189,7 +178,7 @@ class DiffBase extends SourceApi {
      * @return {String} The product to generate the API output for
      */
     get apiProduct () {
-        let part = this.diffProcess;
+        const part = this.diffProcess;
         
         return this[`diff${part}Product`];
     }
@@ -200,7 +189,7 @@ class DiffBase extends SourceApi {
      * @return {String} The version number for the current product
      */
     get apiVersion () {
-        let part = this.diffProcess;
+        const part = this.diffProcess;
         
         return this[`diff${part}Version`];
     }

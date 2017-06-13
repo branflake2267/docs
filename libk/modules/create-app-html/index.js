@@ -170,13 +170,13 @@ class HtmlApp extends AppBase {
      * least Base in the class hierarchy.  Else an empty array if no files match.
      */
     getAncestorFiles (folder, fileName) {
-        let options       = this.options,
-            root          = options._myRoot,
-            assetsSrc     = Path.join(root, 'assets', folder),
-            parentChain   = this.parentChain,
-            len           = parentChain.length,
-            i             = 0,
-            ancestorFiles = [];
+        let { options }     = this,
+            root            = options._myRoot,
+            assetsSrc       = Path.join(root, 'assets', folder),
+            { parentChain } = this,
+            len             = parentChain.length,
+            i               = 0,
+            ancestorFiles   = [];
 
         for (; i < len; i++) {
             let ancestorName = parentChain[i],
@@ -195,9 +195,9 @@ class HtmlApp extends AppBase {
      * i.e. app.js, app.css, ace editor assets, etc.
      */
     copyAssets () {
-        let options   = this.options,
-            root      = options._myRoot,
-            assetsSrc = Path.join(root, 'assets');
+        let { options } = this,
+            root        = options._myRoot,
+            assetsSrc   = Path.join(root, 'assets');
 
         Fs.ensureDirSync(this.assetsDir);
 
@@ -211,10 +211,10 @@ class HtmlApp extends AppBase {
      * Copy .htaccess file from the assets folder to the output folder
      */
     runCopyHtaccess () {
-        let options   = this.options,
-            root      = options._myRoot,
-            assetsSrc = Path.join(root, 'assets'),
-            accessFile = '.htaccess';
+        let { options } = this,
+            root        = options._myRoot,
+            assetsSrc   = Path.join(root, 'assets'),
+            accessFile  = '.htaccess';
 
         Fs.copySync(
             Path.join(assetsSrc, accessFile),
@@ -227,37 +227,37 @@ class HtmlApp extends AppBase {
      * directory
      */
     copyCss () {
-        let options     = this.options,
-            production  = options.production,
-            root        = options._myRoot,
-            assetType   = 'css',
-            mainName    = 'main.css',
-            assetsSrc   = Path.join(root, 'assets', assetType),
-            mainCss     = Path.join(assetsSrc, mainName),
-            faCss       = Path.join(assetsSrc, 'docs-fonts.css'),
-            css         = new CleanCSS({
+        let { options }    = this,
+            { production } = options,
+            root           = options._myRoot,
+            assetType      = 'css',
+            mainName       = 'main.css',
+            assetsSrc      = Path.join(root, 'assets', assetType),
+            mainCss        = Path.join(assetsSrc, mainName),
+            faCss          = Path.join(assetsSrc, 'docs-fonts.css'),
+            css            = new CleanCSS({
                 compatibility : 'ie9',
                 level         : production ? 2 : 0,
-                format: {
-                    breaks: { // controls where to insert breaks
-                        afterAtRule: !production, // controls if a line break comes after an at-rule; e.g. `@charset`; defaults to `false`
-                        afterBlockBegins: !production, // controls if a line break comes after a block begins; e.g. `@media`; defaults to `false`
-                        afterBlockEnds: !production, // controls if a line break comes after a block ends, defaults to `false`
-                        afterComment: !production, // controls if a line break comes after a comment; defaults to `false`
-                        afterProperty: !production, // controls if a line break comes after a property; defaults to `false`
-                        afterRuleBegins: !production, // controls if a line break comes after a rule begins; defaults to `false`
-                        afterRuleEnds: !production, // controls if a line break comes after a rule ends; defaults to `false`
-                        beforeBlockEnds: !production, // controls if a line break comes before a block ends; defaults to `false`
-                        betweenSelectors: !production // controls if a line break comes between selectors; defaults to `false`
+                format        : {
+                    breaks : { // controls where to insert breaks
+                        afterAtRule      : !production, // controls if a line break comes after an at-rule; e.g. `@charset`; defaults to `false`
+                        afterBlockBegins : !production, // controls if a line break comes after a block begins; e.g. `@media`; defaults to `false`
+                        afterBlockEnds   : !production, // controls if a line break comes after a block ends, defaults to `false`
+                        afterComment     : !production, // controls if a line break comes after a comment; defaults to `false`
+                        afterProperty    : !production, // controls if a line break comes after a property; defaults to `false`
+                        afterRuleBegins  : !production, // controls if a line break comes after a rule begins; defaults to `false`
+                        afterRuleEnds    : !production, // controls if a line break comes after a rule ends; defaults to `false`
+                        beforeBlockEnds  : !production, // controls if a line break comes before a block ends; defaults to `false`
+                        betweenSelectors : !production // controls if a line break comes between selectors; defaults to `false`
                     },
-                    indentBy: production ? 0 : 4, // controls number of characters to indent with; defaults to `0`
-                    indentWith: 'space', // controls a character to indent with, can be `'space'` or `'tab'`; defaults to `'space'`
-                    spaces: { // controls where to insert spaces
-                        aroundSelectorRelation: !production, // controls if spaces come around selector relations; e.g. `div > a`; defaults to `false`
-                        beforeBlockBegins: !production, // controls if a space comes before a block begins; e.g. `.block {`; defaults to `false`
-                        beforeValue: !production // controls if a space comes before a value; e.g. `width: 1rem`; defaults to `false`
+                    indentBy   : production ? 0 : 4, // controls number of characters to indent with; defaults to `0`
+                    indentWith : 'space', // controls a character to indent with, can be `'space'` or `'tab'`; defaults to `'space'`
+                    spaces     : { // controls where to insert spaces
+                        aroundSelectorRelation : !production, // controls if spaces come around selector relations; e.g. `div > a`; defaults to `false`
+                        beforeBlockBegins      : !production, // controls if a space comes before a block begins; e.g. `.block {`; defaults to `false`
+                        beforeValue            : !production // controls if a space comes before a value; e.g. `width : 1rem`; defaults to `false`
                     },
-                    wrapAt: false // controls maximum line length; defaults to `false`
+                    wrapAt : false // controls maximum line length; defaults to `false`
                 }
             }).minify([
                 faCss,       // font awesome styles
@@ -277,19 +277,19 @@ class HtmlApp extends AppBase {
      * directory
      */
     copyJs () {
-        let options     = this.options,
-            production  = options.production,
-            jsDir       = this.jsDir,
-            root        = options._myRoot,
-            assetType   = 'js',
-            mainName    = 'main.js',
-            assetsSrc   = Path.join(root, 'assets', assetType),
-            extl        = Path.join(assetsSrc, 'ExtL.js'),
-            main        = Path.join(assetsSrc, mainName),
-            beautify    = Path.join(assetsSrc, 'beautify.js'),
-            gsap        = Path.join(root, 'node_modules/gsap/src/minified/TweenMax.min.js'),
-            aceFolder   = Path.join(root, 'node_modules/ace-builds/src-min-noconflict'),
-            jsFileArr   = [
+        let { options }    = this,
+            { production } = options,
+            { jsDir }      = this,
+            root           = options._myRoot,
+            assetType      = 'js',
+            mainName       = 'main.js',
+            assetsSrc      = Path.join(root, 'assets', assetType),
+            extl           = Path.join(assetsSrc, 'ExtL.js'),
+            main           = Path.join(assetsSrc, mainName),
+            beautify       = Path.join(assetsSrc, 'beautify.js'),
+            gsap           = Path.join(root, 'node_modules/gsap/src/minified/TweenMax.min.js'),
+            aceFolder      = Path.join(root, 'node_modules/ace-builds/src-min-noconflict'),
+            jsFileArr      = [
                 gsap,
                 extl,
                 beautify,
@@ -386,7 +386,7 @@ class HtmlApp extends AppBase {
      * @return {String} The link markup
      */
     //return this.createApiLink(product, version, toolkit, className, memberName, text, data);
-    createApiLink(href, text) {
+    createApiLink (href, text) {
         return `<a href="${href}">${text}</a>`;
     }
 
@@ -405,11 +405,11 @@ class HtmlApp extends AppBase {
      * @return {String} The link markup
      */
     // TODO process the api links for HTML guides
-    createGuideLink(product, version, toolkit, className, memberName, text, data) {
-        let rootPath   = data.rootPath,
-            outputDir  = this.options.outputDir,
-            relPath    = Path.relative(rootPath, outputDir),
-            href       = Path.join(relPath, product, (version || ''), toolkit, `${className}.html`);
+    createGuideLink (product, version, toolkit, className, memberName, text, data) {
+        let { rootPath }  = data,
+            { outputDir } = this.options,
+            relPath       = Path.relative(rootPath, outputDir),
+            href          = Path.join(relPath, product, (version || ''), toolkit, `${className}.html`);
 
         if (memberName) {
             href += `#${memberName}`;
@@ -532,8 +532,7 @@ class HtmlApp extends AppBase {
      * supplying it to the template
      */
     processHomeDataObject (data) {
-        let apiDir           = this.apiDir,
-            outputProductDir = this.outputProductDir;
+        let { outputProductDir } = this;
 
         data.cssPath    = Path.relative(outputProductDir, this.cssDir);
         data.jsPath     = Path.relative(outputProductDir, this.jsDir);
@@ -552,15 +551,15 @@ class HtmlApp extends AppBase {
      * supplying it to the template
      */
     processLandingDataObject (data) {
-        let apiDir           = this.apiDir,
-            outputDir = this.options.outputDir;
+        let { outputDir } = this.options.outputDir;
 
         data.cssPath     = Path.relative(outputDir, this.cssDir);
         data.jsPath      = Path.relative(outputDir, this.jsDir);
         data.imagesPath  = Path.relative(outputDir, this.imagesDir);
         data.myMeta      = this.getLandingMetaData(data);
 
-        let myMeta       = data.myMeta;
+        let { myMeta }   = data;
+        
         myMeta.product   = null;
         myMeta.version   = null;
 

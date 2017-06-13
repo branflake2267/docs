@@ -1,26 +1,26 @@
 /* jshint node: true */
 'use strict';
 
-const EventEmitter    = require('events'),
-      Debug           = require('../../Debug'),
-      Worker          = require('tiny-worker'),
-      Os              = require('os'),
-      Path            = require('path'),
-      CompareVersions = require('compare-versions'),
-      CpuCount        = Os.cpus().length,
-      Utils           = require('../shared/Utils'),
-      Ora             = require('ora'),
-      Chalk           = require('chalk'),
-      Shell           = require('shelljs'),
-      Play            = require('play'),
-      Fs              = require('fs-extra'),
-      Mkdirp          = require('mkdirp'),
-      marked          = require('sencha-marked'),
-      Git             = require('git-state'),
-      Handlebars      = require('handlebars'),
-      safeLinkRe      = /(\[]|\.\.\.)/g,
-      idRe            = /[^\w]+/g,
-      _               = require('lodash');
+const EventEmitter     = require('events'),
+      Debug            = require('../../Debug'),
+      Worker           = require('tiny-worker'),
+      Os               = require('os'),
+      Path             = require('path'),
+      CompareVersions  = require('compare-versions'),
+      CpuCount         = Os.cpus().length,
+      Utils            = require('../shared/Utils'),
+      Chalk            = require('chalk'),
+      Shell            = require('shelljs'),
+      Play             = require('play'),
+      Fs               = require('fs-extra'),
+      Mkdirp           = require('mkdirp'),
+      marked           = require('sencha-marked'),
+      Git              = require('git-state'),
+      Handlebars       = require('handlebars'),
+      safeLinkRe       = /(\[]|\.\.\.)/g,
+      StringSimilarity = require('string-similarity'),
+      //idRe             = /[^\w]+/g,
+      _                = require('lodash');
 
 // TODO add this.log() stuff throughout all classes: `log` for general messaging, `info`
 // for warnings, and `error` for serious / fatal errors
@@ -55,19 +55,19 @@ class Base {
         // a map of doxi member type group names to the format expected by the docs
         // post-processors
         this.memberTypesMap = {
-            configs            : "cfg",
-            properties         : "property",
-            methods            : "method",
-            events             : "event",
-            vars               : "var",
-            "sass-mixins"      : "method",
-            "static-methods"   : "static-method",
-            "static-properties": "static-property"
+            configs             : "cfg",
+            properties          : "property",
+            methods             : "method",
+            events              : "event",
+            vars                : "var",
+            "sass-mixins"       : "method",
+            "static-methods"    : "static-method",
+            "static-properties" : "static-property"
         };
 
         // possible member types
-        this.memberTypes = ['cfg', 'property', 'static-property', 'method',
-                            'static-method', 'event', 'css_var-S', 'css_mixin'];
+        this.memberTypes = [ 'cfg', 'property', 'static-property', 'method',
+                            'static-method', 'event', 'css_var-S', 'css_mixin' ];
 
         this.escapeRegexRe = /([-.*+?\^${}()|\[\]\/\\])/g;
 
@@ -87,10 +87,9 @@ class Base {
         
         // assign current runtime metadata
         let o = this.options,
-            product    = o.product,
-            version    = o.version,
-            majorVer   = version && version.charAt(),
-            prodObj    = o.products[product];
+            { product, version } = o,
+            majorVer             = version && version.charAt(),
+            prodObj              = o.products[product];
 
         if (!prodObj) {
             let match = StringSimilarity.findBestMatch(
@@ -157,9 +156,9 @@ class Base {
         let dir = this._assetsDir;
 
         if (!dir) {
-            let options   = this.options,
-                assetsDir = options.assetsDir,
-                formatted = Utils.format(assetsDir, options);
+            let { options }   = this,
+                { assetsDir } = options,
+                formatted     = Utils.format(assetsDir, options);
 
             dir = this._assetsDir = options.assetsDir = Path.join(options._myRoot, formatted);
         }
@@ -197,10 +196,10 @@ class Base {
      * @return {Object} Hash of common current page metadata
      */
     get commonMetaData () {
-        let options     = this.options,
-            prodVerMeta = options.prodVerMeta,
-            meta        = Object.assign({}, options.prodVerMeta),
-            product     = this.getProduct(options.product);
+        let { options }     = this,
+            { prodVerMeta } = options,
+            meta            = Object.assign({}, options.prodVerMeta),
+            product         = this.getProduct(options.product);
 
         return Object.assign(meta, {
             version    : options.version,
@@ -222,8 +221,8 @@ class Base {
         let dir = this._cssDir;
 
         if (!dir) {
-            let options   = this.options,
-            cssDir    = Utils.format(options.cssDir, options);
+            let { options } = this,
+            cssDir          = Utils.format(options.cssDir, options);
 
             dir = this._cssDir = options.cssDir = Path.resolve(options._myRoot, cssDir);
         }
@@ -255,8 +254,8 @@ class Base {
         let dir = this._imagesDir;
 
         if (!dir) {
-            let options   = this.options,
-                imagesDir = Utils.format(options.imagesDir, options);
+            let { options } = this,
+                imagesDir   = Utils.format(options.imagesDir, options);
 
             dir = this._imagesDir = options.imagesDir = Path.resolve(options._myRoot, imagesDir);
         }
@@ -272,8 +271,8 @@ class Base {
         let dir = this._jsDir;
 
         if (!dir) {
-            let options = this.options,
-                jsDir   = Utils.format(options.jsDir, options);
+            let { options } = this,
+                jsDir       = Utils.format(options.jsDir, options);
 
             dir = this._jsDir = options.jsDir = Path.resolve(options._myRoot, jsDir);
         }
@@ -303,8 +302,8 @@ class Base {
      * Returns the downloads / offline docs dir
      */
     get offlineDocsDir () {
-        let options    = this.options,
-            offlineDir = Utils.format(options.offlineDocsDir, options);
+        let { options } = this,
+            offlineDir  = Utils.format(options.offlineDocsDir, options);
 
         return Path.resolve(options._myRoot, offlineDir);
     }
@@ -316,11 +315,11 @@ class Base {
      */
     get outputProductDir () {
         // TODO cache this and all the other applicable static getters
-        let options     = this.options,
-            product     = options.product,
-            outPath     = Utils.format(options.outputProductDir, options),
-            hasVersions = options.products[product].hasVersions,
-            relPrefix   = Path.relative(__dirname, options._myRoot);
+        let { options }     = this,
+            { product }     = options,
+            outPath         = Utils.format(options.outputProductDir, options),
+            { hasVersions } = options.products[product],
+            relPrefix       = Path.relative(__dirname, options._myRoot);
 
         if (hasVersions) {
             outPath = Path.join(outPath, options.version);
@@ -340,7 +339,7 @@ class Base {
      * @return {String[]} This module's file name (in an array).
      */
     get parentChain () {
-        return [Path.parse(__dirname).base];
+        return [ Path.parse(__dirname).base ];
     }
 
     /**
@@ -378,7 +377,7 @@ class Base {
      * @return {String[]} Array of directory names
      */
     getDirs (path) {
-        return this.getFilteredFiles(Fs.readdirSync(path)).filter(function(item) {
+        return this.getFilteredFiles(Fs.readdirSync(path)).filter(item => {
             return Fs.statSync(Path.join(path, item)).isDirectory();
         });
     }
@@ -398,11 +397,12 @@ class Base {
      */
     getElapsed (startTime, endTime) {
         endTime     = endTime || new Date();
+        
         let elapsed = new Date(endTime - startTime),
-        minutes = elapsed.getMinutes(),
-        seconds = elapsed.getSeconds(),
-        ms      = elapsed.getMilliseconds(),
-        ret     = [];
+            minutes = elapsed.getMinutes(),
+            seconds = elapsed.getSeconds(),
+            ms      = elapsed.getMilliseconds(),
+            ret     = [];
 
         if (minutes) {
             ret.push(minutes + 'm');
@@ -443,7 +443,7 @@ class Base {
 
         // if there is only one file just return it
         if (len === 1) {
-            matchingFile = files[0];
+            [ matchingFile ] = files;
         } else {
             // else we'll loop over the files to find the one that is closest to the
             // passed version without going over
@@ -451,9 +451,9 @@ class Base {
             cfgVer = '0';
 
             for (; i < len; i++) {
-                let file = files[i],
-                name = Path.parse(files[i]).name,
-                v    = name.substring(name.indexOf('-') + delimiterLen);
+                let file     = files[i],
+                    { name } = Path.parse(file),
+                    v        = name.substring(name.indexOf('-') + delimiterLen);
 
                 if (CompareVersions(v, version) <= 0 && CompareVersions(v, cfgVer) > 0) {
                     cfgVer       = v;
@@ -553,9 +553,9 @@ class Base {
      * supplying it to the template
      */
     processCommonDataObject (data) {
-        let options     = this.options,
-            prodVerMeta = options.prodVerMeta,
-            dt          = new Date();
+        let { options }     = this,
+            { prodVerMeta } = options,
+            dt              = new Date();
 
         data.title       = prodVerMeta.prodObj.title;
         data.product     = this.getProduct(options.product);
@@ -564,7 +564,7 @@ class Base {
         data.version     = options.version;
         data.moduleName  = this.moduleName;
         data.helpPartial = this.helpPartial;
-        data.date = dt.toLocaleString("en-us",{month:"long"}) + ", " + dt.getDate() + " " + dt.getFullYear() + " at " + dt.getHours() + ":" + dt.getMinutes();
+        data.date = dt.toLocaleString("en-us",{ month : "long" }) + ", " + dt.getDate() + " " + dt.getFullYear() + " at " + dt.getHours() + ":" + dt.getMinutes();
     }
 
     /**
@@ -585,7 +585,7 @@ class Base {
     registerHandlebarsHelpers () {
         // The `json` helper stringifies a Javascript object.  Helpful when you want to
         // pass a hash of information directly to a handlebars template.
-        Handlebars.registerHelper('json', function(context) {
+        Handlebars.registerHelper('json', context => {
             return JSON.stringify(context);
         });
 
@@ -594,7 +594,7 @@ class Base {
         // need to be wrapped by an element in the template.  This helper will decorate
         // each item saying whether it should have the wrapping element begun, ended, or
         // both
-        Handlebars.registerHelper("bubbleWrap", function(arr, options) {
+        Handlebars.registerHelper("bubbleWrap", (arr, options) =>{
             if (arr && arr.length) {
                 let buffer = "",
                     i = 0,
@@ -645,7 +645,7 @@ class Base {
     enableLogging (level) {
         //this.log(`Begin 'Base.enableLogging'`, 'info');
         level = Utils.from(level);
-        let all, log, info, error;
+        let all;
 
         // accounts for --log
         if (level.length === 0) {
@@ -659,7 +659,7 @@ class Base {
 
         // if true then include all options
         if (all === true) {
-            level = ['log', 'info', 'error'];
+            level = [ 'log', 'info', 'error' ];
         }
         let i   = 0,
             len = level.length;
@@ -841,7 +841,7 @@ class Base {
      */
     concludeBuild () {
         //this.log(`Begin 'Base.concludeBuild'`, 'info');
-        let options = this.options;
+        let { options } = this;
 
         if (!options.production && options.audioAlert === true) {
             Play.sound('./assets/audio/jobsdone.m4a');
@@ -858,9 +858,9 @@ class Base {
             hash, split;
 
         if (href.includes('#') && href.charAt(0) != '#') {
-            split = href.split('#');
-            href  = split[0];
-            hash  = '#' + split[1];
+            split    = href.split('#');
+            [ href ] = split;
+            hash     = '#' + split[1];
         }
 
         if (!text) {
@@ -896,7 +896,7 @@ class Base {
      * @return {Object} A Promise that resolves once the directory is found / created
      */
     ensureDir (path) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             Fs.ensureDir(path, (err) => {
                 if (!err) {
                     resolve(true);
@@ -944,11 +944,11 @@ class Base {
         }
 
         return marked(text, {
-            addHeaderId: !cls ? false : function (text, level, raw) {
+            addHeaderId : !cls ? false : function (text, level, raw) {
                 return me.makeID(cls, raw);
             },
-            appendLink: true,
-            decorateExternal: true
+            appendLink       : true,
+            decorateExternal : true
         });
     }
 
@@ -1029,7 +1029,7 @@ class Base {
      * @param {String} sourceDir The source directory of the local repo
      */
     syncRemote (product, sourceDir) {
-        let options = this.options;
+        let { options } = this;
 
         if (options.syncRemote === false) {
             return;
@@ -1037,18 +1037,16 @@ class Base {
 
         this.modifiedList = [];
 
-        let path      = Shell.pwd(),
-            version   = this.apiVersion,
-            toolkit   = options.toolkit,
-            wToolkit  = version + '-' + (toolkit || product),
-            prodCfg   = options.products[product],
-            remotes   = prodCfg.remotes,
-            verInfo   = remotes && remotes[version],
-            branch    = verInfo && verInfo.branch || 'master',
-            tag       = verInfo && verInfo.tag,
-            repo      = prodCfg.repo,
-            remoteUrl = prodCfg.remoteUrl,
-            reposPath = options.localReposDir;
+        let path                         = Shell.pwd(),
+            version                      = this.apiVersion,
+            { toolkit }                  = options,
+            wToolkit                     = version + '-' + (toolkit || product),
+            prodCfg                      = options.products[product],
+            { remotes, repo, remoteUrl } = prodCfg,
+            verInfo                      = remotes && remotes[version],
+            branch                       = verInfo && verInfo.branch || 'master',
+            tag                          = verInfo && verInfo.tag,
+            reposPath                    = options.localReposDir;
 
         // if the api source directory exists and is not a git repo then skip syncing
         if (Fs.existsSync(sourceDir) && !Git.isGitSync(sourceDir)) {

@@ -34,8 +34,8 @@ class Diff extends Parser {
             this.options.toolkit = toolkit;
             const { diff } = this;
             
-            //console.log(this.outputMarkdown(diff));
-            //this.outputMarkdown(diff)
+            console.log(this.outputMarkdown(diff));
+            //this.outputMarkdown(diff);
             //console.log(this.markup(this.outputMarkdown(diff)));
         });
     }
@@ -45,6 +45,7 @@ class Diff extends Parser {
         
         output += this.markdownTitle(diff);
         output += this.markdownItems(diff.items);
+        output += this.markdownSdkTotals(diff.meta.sdkTotals);
         
         return output;
     }
@@ -190,6 +191,24 @@ class Diff extends Parser {
         
         if (items) {
             output += this.markdownItems(items, indent ? indent + 1 : 0, '-');
+        }
+        
+        return output;
+    }
+    
+    markdownSdkTotals (totalsObj) {
+        const categories = _.keys(totalsObj);
+        let   len        = categories.length,
+              i          = 0,
+              output     = '';
+        
+        output += '## SDK Totals\n';
+        for (; i < len; i++) {
+            const name  = categories[i],
+                  dispName = _.startCase(name),
+                  count = Utils.formatNumberWithCommas(totalsObj[name]);
+            
+            output += `- ${count} ${dispName}\n`;
         }
         
         return output;

@@ -274,6 +274,15 @@ class Utils {
             this.objEach.call(this, object, fn, scope);
         }
     }
+    
+    /**
+     * Formats a number with commas inserted as a thousands block separator
+     * @param {Number} number The number to format
+     * @return {String} The formatted number string
+     */
+    static formatNumberWithCommas (number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
     /**
      * Perform a set difference A-B by subtracting all items in array B from array A.

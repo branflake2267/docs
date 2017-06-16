@@ -14,7 +14,7 @@ class DiffBase extends SourceApi {
      */
     get typeCategories () {
         return [ 'class', 'configs', 'properties', 'static-properties', 'methods', 
-        'static-methods', 'events', 'vars' ];
+        'static-methods', 'events', 'vars', 'sass-mixins' ];
     }
     
     /**

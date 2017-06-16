@@ -1,10 +1,11 @@
 /* jshint node: true */
 'use strict';
 
-const DiffBase = require('./base.js'),
-      Path     = require('path'),
-      Fs       = require('fs-extra'),
-      _        = require('lodash');
+const DiffBase  = require('./base.js'),
+      Path      = require('path'),
+      Fs        = require('fs-extra'),
+      _         = require('lodash'),
+      Pluralize = require('pluralize');
 
 class Parser extends DiffBase {
     constructor (options) {
@@ -122,12 +123,7 @@ class Parser extends DiffBase {
                                   version : diffTargetVersion
                               }
                           },
-                          summary : _.zipObject(
-                              summary, _.fill(
-                                  Array(summary.length),
-                                  0
-                              )
-                          )
+                          sdkTotals : this.sdkTotals
                       }
                   };
             
@@ -138,6 +134,52 @@ class Parser extends DiffBase {
         this.cleanObject(this._diff);
         console.log(JSON.stringify(this._diff, null, 4));
         return this._diff;
+    }
+    
+    get sdkTotals () {
+        const categories    = this.typeCategories,
+              categoriesLen = categories.length,
+              targetClasses = this.targetFile.global.items,
+              totalsObj     = _.zipObject(categories, _.fill(Array(categoriesLen), 0));
+        
+        this.getTotalFromItems(targetClasses, totalsObj);
+        return totalsObj;
+    }
+    
+    getTotalFromItems (items, totalsObj, category) {
+        const len = items.length;
+        let   i   = 0;
+            
+        for (; i < len; i++) {
+            const item            = items[i],
+                  { $type, from, items : memberGroups } = item;
+            
+            if ($type === 'class') {
+                totalsObj.class++;
+                
+                if (memberGroups) {
+                    const groupLen = memberGroups.length;
+                    let   j        = 0;
+                    
+                    for (; j < groupLen; j++) {
+                        const group = memberGroups[j],
+                              { $type, items } = group;
+                        
+                        this.getTotalFromItems(items || [], totalsObj, $type);
+                    }
+                }
+            } else if (!category && $type != 'enum') {
+                const categorizedType = Pluralize.plural($type);
+                        
+                if (typeof totalsObj[categorizedType] !== 'undefined') {
+                    totalsObj[categorizedType]++;
+                }
+            } else {
+                if (!from && typeof totalsObj[category] !== 'undefined') {
+                    totalsObj[category]++;
+                }
+            }
+        }
     }
 
     /**

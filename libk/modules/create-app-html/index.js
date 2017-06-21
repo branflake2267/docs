@@ -449,11 +449,11 @@ class HtmlApp extends AppBase {
 
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });
-        
+
         /*html = html.replace(/\[.*?\]\(.*?\)/g, (match, text, link) => {
             return this.createApiLink(link, text);
         });*/
-        
+
         return html;
     }
 

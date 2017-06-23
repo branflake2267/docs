@@ -360,6 +360,25 @@ class Base {
         }
         return `s-${this._rollingId++}`;
     }
+    
+    get sinceMapPath () {
+        const { options } = this,
+              root        = options._myRoot,
+              assetsSrc   = Path.join(root, 'assets');
+              
+        return Path.join(assetsSrc, 'js', 'sinceMap.json');
+    }
+    
+    /**
+     * Returns an object containing classes and all members as keys with the version that
+     * that class / member shows up in the SDK
+     * @return {Object} Map of classes / members and when they were introduced
+     */
+    get sinceMap () {
+        const { sinceMapPath } = this;
+        
+        return Fs.existsSync(sinceMapPath) ? Fs.readJsonSync(sinceMapPath) : {};
+    }
 
     /*=============================================
      =             End Getter Properties          =
@@ -515,6 +534,22 @@ class Base {
     /*=============================================
      =             End Getter Methods             =
      =============================================*/
+
+    /**
+     * Returns the array of toolkits or undefined if the product / version does not have
+     * toolkits
+     * @param {String} product The product to check
+     * @param {String} version The version to check
+     * @return {Array/Undefined} The array of toolkits or undefined if the product /
+     * version does not have toolkits
+     */
+    getToolkits (product, version) {
+        const { products } = this.options,
+              prodObj = products[product],
+              [ majorVer ] = version.split('.');
+              
+        return prodObj.toolkit && prodObj.toolkit[majorVer];
+    }
 
     /**
      * Register all handlebars partials from the templates directory
@@ -846,6 +881,8 @@ class Base {
         if (!options.production && options.audioAlert === true) {
             Play.sound('./assets/audio/jobsdone.m4a');
         }
+        
+        process.exit();
     }
 
     /**
@@ -1120,6 +1157,16 @@ class Base {
 
         // get back to the original working directory
         Shell.cd(path);
+    }
+    
+    /**
+     * Writes the since map to disc (the map of all classes / members and when they were 
+     * introduced to the SDK)
+     */
+    outputSinceMap (sinceMap) {
+        const { sinceMapPath } = this;
+        
+        Fs.outputJsonSync(sinceMapPath, sinceMap);
     }
 }
 

@@ -2,7 +2,8 @@
 'use strict';
 
 const SourceApi = require('../source-api'),
-      _         = require('lodash');
+      _         = require('lodash'),
+      Utils     = require('../shared/Utils');
 
 class DiffBase extends SourceApi {
     constructor (options) {
@@ -10,65 +11,32 @@ class DiffBase extends SourceApi {
     }
     
     /**
-     * 
+     * Returns the categories to be sorted in the diff output
+     * @return {String[]} The array of all class / member category types
      */
     get typeCategories () {
-        return [ 'class', 'configs', 'properties', 'static-properties', 'methods', 
-        'static-methods', 'events', 'vars', 'sass-mixins' ];
+        return this.options.typeCategories;
     }
     
     /**
-     * 
-     */
-    /*get categories () {
-        return ['configs', 'properties', 'property', 'static-properties', 'methods', 
-        'method', 'static-methods', 'events', 'event', 'vars'];
-    }*/
-    
-    /**
-     * Array of all possible categories and their labels
-     * @return {Object[]} Array of objects of all categories and their start-cased labels
-     */
-    /*get categoriesLabels () {
-        if (!this._categories) {
-            let list = this.categories;
-            
-            this._categories = this.setNameAndLabel(list);
-        }
-        
-        return this._categories;
-    }*/
-    
-    /**
-     * 
+     * Returns the properties of a class that should be considered in the diff
+     * @return {String[]} The array of eligible class properties to diff against
      */
     get classProps () {
-        return [ 'alias', 'alternateClassNames', 'extends', 'mixins', 'uses', 'singleton',
-         'access', 'requires' ];
+        const { classProps, skipClassProps } = this.options;
+        
+        return _.differenceWith(classProps, skipClassProps, _.isEqual);
     }
     
     /**
-     * 
+     * Returns the properties of members / params that should be considered in the diff
+     * @return {String[]} The array of eligible member properties to diff against
      */
     get memberProps () {
-        return [ 'access', 'optional', 'value', 'accessor', 'inheritdoc', 
-        'deprecatedMessage', 'removedMessage', 'hide', 'localdoc', 'preventable',
-        'readonly', 'type' ];
-    }
-    
-    /**
-     * Array of all possible class / member attributes
-     * @return {Object[]} Array of objects of all props and their start-cased labels
-     */
-    /*get classPropsLabels () {
-        if (!this._classProps) {
-            let list = this.classProps;
-            
-            this._categories = this.setNameAndLabel(list);
-        }
+        const { memberProps, skipMemberProps } = this.options;
         
-        return this._classProps;
-    }*/
+        return _.differenceWith(memberProps, skipMemberProps, _.isEqual);
+    }
     
     /**
      * The target (the one that shows that things were added if not in the 
@@ -77,13 +45,22 @@ class DiffBase extends SourceApi {
      * @return {String} The product to diff
      */
     get diffTargetProduct () {
-        if (!this._diffTargetProduct) {
+        //if (!this._diffTargetProduct) {
             const { options } = this;
             
-            this._diffTargetProduct = options.diffTarget || options.product;
-        }
+            return options.diffTargetProduct || options.product;
+        //}
         
-        return this._diffTargetProduct;
+        //return this._diffTargetProduct;
+    }
+    
+    /**
+     * Sets the target product to be diffed
+     * @return {String} The target product to diff
+     */
+    set diffTargetProduct (product) {
+        //this._diffTargetProduct = product;
+        this.options.diffTargetProduct = product;
     }
     
     /**
@@ -92,13 +69,22 @@ class DiffBase extends SourceApi {
      * @return {String} The product to diff from
      */
     get diffSourceProduct () {
-        if (!this._diffSourceProduct) {
+        //if (!this._diffSourceProduct) {
             const { options } = this;
             
-            this._diffSourceProduct = options.diffSource || options.product;
-        }
+        return options.diffSourceProduct || this.diffTargetProduct;
+        //}
         
-        return this._diffSourceProduct;
+        //return this._diffSourceProduct;
+    }
+    
+    /**
+     * Sets the source product to be diffed
+     * @return {String} The source product to diff
+     */
+    set diffSourceProduct (product) {
+        //this._diffSourceProduct = product;
+        this.options.diffSourceProduct = product;
     }
     
     /**
@@ -109,13 +95,22 @@ class DiffBase extends SourceApi {
      * @return {String} The product version to diff
      */
     get diffTargetVersion () {
-        if (!this._diffTargetVersion) {
+        //if (!this._diffTargetVersion) {
             const { options } = this;
             
-            this._diffTargetVersion = options.diffTargetVersion || options.version;
-        }
+            return options.diffTargetVersion || options.version;
+        //}
         
-        return this._diffTargetVersion;
+        //return this._diffTargetVersion;
+    }
+    
+    /**
+     * Sets the target product version to be diffed
+     * @return {String} The target version to diff
+     */
+    set diffTargetVersion (version) {
+        //this._diffTargetVersion = version;
+        this.options.diffTargetVersion = version;
     }
     
     /**
@@ -124,12 +119,13 @@ class DiffBase extends SourceApi {
      * @return {String} The product version to diff from
      */
     get diffSourceVersion () {
-        if (!this._diffSourceVersion) {
+        //if (!this._diffSourceVersion) {
             const { options }   = this,
                   sourceVersion = options.diffSourceVersion;
+            let   diff;
             
             if (sourceVersion) {
-                this._diffSourceVersion = sourceVersion;
+                diff = sourceVersion;
             } else {
                 const target        = this.diffTargetProduct,
                       sourceProduct = options.products[target],
@@ -145,12 +141,56 @@ class DiffBase extends SourceApi {
                         using the --diffSourceVersion flag`);
                     process.exit();
                 } else {
-                    this._diffSourceVersion = previous;
+                    diff = previous;
                 }
             }
-        }
+        //}
         
-        return this._diffSourceVersion;
+        return diff;
+    }
+    
+    /**
+     * Sets the target product version to be diffed
+     * @return {String} The target version to diff
+     */
+    set diffSourceVersion (version) {
+        //this._diffSourceVersion = version;
+        this.options.diffSourceVersion = version;
+    }
+    
+    /**
+     * Returns the directory where diffs will be output
+     * @return {String} The diff output directory
+     */
+    get diffOutputDir () {
+        //if (!this._diffOutputPath) {
+            const { options }                   = this,
+                  { diffOutputDir, outputDir } = options,
+                  obj                           = {
+                      outputDir : outputDir,
+                      product   : this.diffTargetProduct
+                  };
+                  
+            return Utils.format(diffOutputDir, obj);
+        //}
+
+        //return this._diffOutputPath;
+    }
+    
+    /**
+     * Returns the diff file name from the target and source products / versions
+     * @return {String} The assembled file name
+     */
+    get diffFileName () {
+        const {
+            diffSourceProduct,
+            diffSourceVersion,
+            diffTargetProduct,
+            diffTargetVersion,
+            apiDirName
+        } = this;
+        
+        return `${diffSourceProduct}-${diffSourceVersion}-to-${diffTargetProduct}-${diffTargetVersion}-${apiDirName}`;
     }
     
     /**
@@ -195,34 +235,17 @@ class DiffBase extends SourceApi {
     }
     
     /**
-     * Iterates over an array of strings and sets the name + label on an object using the
-     * lowercase string of each item in the array as the 'name' and a start-cased version 
-     * of the name as the 'label'
-     * 
-     * i.e. An `arr` of ['configs', 'static-methods'] returns:
-     * 
-     *     [{
-     *         name  : 'configs',
-     *         label : 'Configs'
-     *     }, {
-     *         name  : 'static-methods',
-     *         label : 'Static Methods'
-     *     }]
-     * 
-     * Used by {@link #categories} and {@link #classProps}
-     * 
-     * @param {String[]} arr The array of strings to process
-     * @return {Object[]} The array name / label object pairs for each string item in 
-     * `arr`
+     * Returns the normalized product name.
+     * i.e. some links have the product name of ext, but most everywhere in the docs we're referring to Ext JS as 'extjs'
+     *
+     *     console.log(this.getProduct('ext')); // returns 'extjs'
+     * @param {String} prod The product name to normalized
+     * @return {String} The normalized product name or `null` if not found
      */
-    /*setNameAndLabel (arr) {
-        return arr.map(string => {
-            return {
-                name  : string,
-                label : _.startCase(string)
-            };
-        });
-    }*/
+    getProduct (prod) {
+        prod = prod || this.diffTargetProduct;
+        return this.options.normalizedProductList[prod];
+    }
 }
 
 module.exports = DiffBase;

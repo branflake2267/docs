@@ -15,6 +15,7 @@
  */
 
 const SourceGuides     = require('../source-guides'),
+      Diff             = require('../create-diff'),
       Utils            = require('../shared/Utils'),
       Beautify         = require('js-beautify').js_beautify,
       Fs               = require('fs-extra'),
@@ -22,7 +23,8 @@ const SourceGuides     = require('../source-guides'),
       Chalk            = require('chalk'),
       StringSimilarity = require('string-similarity'),
       _                = require('lodash'),
-      Zipdir           = require('zip-dir');
+      Zipdir           = require('zip-dir'),
+      CompareVersions = require('compare-versions');
 
 class AppBase extends SourceGuides {
     constructor (options) {
@@ -73,7 +75,7 @@ class AppBase extends SourceGuides {
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
     get parentChain () {
-        return super.parentChain.concat([Path.parse(__dirname).base]);
+        return super.parentChain.concat([ Path.parse(__dirname).base ]);
     }
 
     /**
@@ -82,6 +84,11 @@ class AppBase extends SourceGuides {
     run () {
         //this.log(`Begin 'AppBase.run'`, 'info');
         let dt = new Date();
+        
+        if (!this.options.skipCreateDiffs) {
+            this.createDiffs();
+        }
+        
         return this.doRunApi()
         .then(this.outputApiSearch.bind(this))
         .then(this.processGuides.bind(this))
@@ -121,6 +128,46 @@ class AppBase extends SourceGuides {
             });
         }, Promise.resolve())
         .catch(this.error.bind(this));
+    }
+    
+    /**
+     * 
+     */
+    createDiffs () {
+        const { options, apiProduct }                = this,
+              { products, buildExceptions, version } = options,
+              { productMenu                          = [] } = products[apiProduct],
+              versions                               = _.dropRight(
+                  _.differenceWith(productMenu, buildExceptions[apiProduct], _.isEqual)
+              ),
+              len                                    = versions.length;
+        let   i = 0;
+
+        //versions.forEach(ver => {
+        for (; i < len; i++) {
+            const ver = versions[i],
+                  compared = CompareVersions(version, ver);
+            let   args = _.cloneDeep(options._args);
+            
+            // skip versions > the current version of docs being processed
+            if (compared < 0) {
+                continue;
+            }
+            
+            args.diffTargetProduct = apiProduct;
+            args.diffTargetVersion = ver;
+            
+            const myArgs = {
+                diffTargetProduct : apiProduct,
+                diffTargetVersion : ver,
+                _myRoot           : options._myRoot
+            };
+            
+            const diff = new Diff(myArgs);
+            
+            diff.doRun('outputRaw');
+        }
+        //});
     }
 
     /**

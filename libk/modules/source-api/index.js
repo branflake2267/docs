@@ -101,9 +101,9 @@ class SourceApi extends Base {
      */
     get doxiCfgFileName () {
         let options = this.options,
-            product = options.product,
-            version = options.version,
-            toolkit = options.toolkit || 'config',
+            product = this.apiProduct,
+            version = this.apiVersion,
+            toolkit = this.getToolkits(product, version) ? options.toolkit : 'config',
             path    = this.getDoxiCfgPath(),
             // find the nearest matching config file based on version
             file    = this.getFileByVersion(path, version);
@@ -134,7 +134,8 @@ class SourceApi extends Base {
                 Utils.format(
                     this.options.parserConfigPath,
                     {
-                        product: this.getProduct()
+                        //product: this.getProduct()
+                        product : this.apiProduct
                     }
                 )
             )
@@ -486,13 +487,6 @@ class SourceApi extends Base {
             let path = Shell.pwd();
 
             Shell.cd(this.tempDir);
-
-            /*if (doxiBuild && doxiBuild != defaultBuild) {
-                Shell.exec(`${cmd} --quiet doxi build -p tempDoxiCfg.json ${doxiBuild}`);
-
-                //this.concludeBuild();
-                process.exit(0);
-            }*/
 
             Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
 

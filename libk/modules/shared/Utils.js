@@ -157,7 +157,7 @@ class Utils {
      *     alert(s); // '<div class="my-class">Some text</div>'
      *
      * @param {String} string The tokenized string to be formatted.
-     * @param {String.../Object} values First param value to replace token `{0}`, then
+     * @param {...String/Object} values First param value to replace token `{0}`, then
      * next param to replace `{1}` etc.  May also be an object of key / value pairs to
      * replace `{key}` instance in the passed string with the paired key's value.
      * @return {String} The formatted string.

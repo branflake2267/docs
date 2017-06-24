@@ -1,3 +1,4 @@
+/* jshint node: true */
 'use strict';
 
 const path = require('path');
@@ -156,7 +157,7 @@ class Utils {
      *     alert(s); // '<div class="my-class">Some text</div>'
      *
      * @param {String} string The tokenized string to be formatted.
-     * @param {String.../Object} values First param value to replace token `{0}`, then
+     * @param {...String/Object} values First param value to replace token `{0}`, then
      * next param to replace `{1}` etc.  May also be an object of key / value pairs to
      * replace `{key}` instance in the passed string with the paired key's value.
      * @return {String} The formatted string.
@@ -272,6 +273,15 @@ class Utils {
         else {
             this.objEach.call(this, object, fn, scope);
         }
+    }
+    
+    /**
+     * Formats a number with commas inserted as a thousands block separator
+     * @param {Number} number The number to format
+     * @return {String} The formatted number string
+     */
+    static formatNumberWithCommas (number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     /**

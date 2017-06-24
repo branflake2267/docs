@@ -101,9 +101,9 @@ class SourceApi extends Base {
      */
     get doxiCfgFileName () {
         let options = this.options,
-            product = options.product,
-            version = options.version,
-            toolkit = options.toolkit || 'config',
+            product = this.apiProduct,
+            version = this.apiVersion,
+            toolkit = this.getToolkits(product, version) ? options.toolkit : 'config',
             path    = this.getDoxiCfgPath(),
             // find the nearest matching config file based on version
             file    = this.getFileByVersion(path, version);
@@ -134,7 +134,8 @@ class SourceApi extends Base {
                 Utils.format(
                     this.options.parserConfigPath,
                     {
-                        product: this.getProduct()
+                        //product: this.getProduct()
+                        product : this.apiProduct
                     }
                 )
             )
@@ -184,7 +185,7 @@ class SourceApi extends Base {
 
     /**
      * The full path to the directory housing all of the class json files created by
-     * running doxi for all products / versions.  Used by {@link #doxiInputDir}
+     * running doxi for all products / versions.  Used by {@link #getDoxiInputDir}
      * @return {String} The path to the directory of the doxi-processed files
      */
     get rootApiInputDir () {
@@ -194,6 +195,25 @@ class SourceApi extends Base {
             options._myRoot,
             options.apiInputDir
         );
+    }
+    
+    /**
+     * The full path of the doxi output files for the current product / version (/
+     * toolkit potentially)
+     * @param {String} [buildType=combo-nosrc] The doxi build type you want the input 
+     * directory for
+     * @return {String} The path to the doxi files for the current product / version
+     */
+    getDoxiInputDir (buildType) {
+        buildType = buildType || this.options.doxiBuild || 'combo-nosrc';
+        
+        let cfgDir       = this.getDoxiCfgPath(),
+            cfg          = this.tempDoxiCfg,
+            outputDir    = cfg.outputs[buildType].dir,
+            relToDoxiCfg = Path.resolve(__dirname, cfgDir),
+            inputDir     = Path.resolve(relToDoxiCfg, outputDir);
+
+        return inputDir;
     }
 
     /**
@@ -219,16 +239,18 @@ class SourceApi extends Base {
 
             for (; j < jLen; j++) {
                 path[j] = Utils.format(path[j], {
-                    apiSourceDir: this.apiSourceDir,
-                    _myRoot: options._myRoot
+                    apiSourceDir : this.apiSourceDir,
+                    _myRoot      : options._myRoot
                 });
             }
         }
 
         let inputObj = {
             apiInputDir : apiInputDir,
-            product     : options.product,
-            version     : options.version,
+            //product     : options.product,
+            product     : this.apiProduct,
+            //version     : options.version,
+            version     : this.apiVersion,
             toolkit     : options.toolkit || ''
         };
 
@@ -252,27 +274,12 @@ class SourceApi extends Base {
     }
 
     /**
-     * The full path of the doxi output files for the current product / version (/
-     * toolkit potentially)
-     * @return {String} The path to the doxi files for the current product / version
-     */
-    get doxiInputDir () {
-        let cfgDir       = this.getDoxiCfgPath(),
-            cfg          = this.tempDoxiCfg,
-            outputDir    = cfg.outputs['combo-nosrc'].dir,
-            relToDoxiCfg = Path.resolve(__dirname, cfgDir),
-            inputDir     = Path.resolve(relToDoxiCfg, outputDir);
-
-        return inputDir;
-    }
-
-    /**
      * Checks to see if the doxi files folder is missing (not yet created with a previous
      * run of the docs processor) or empty
      * @return {Boolean} True if the folder is missing or empty
      */
     get doxiInputFolderIsEmpty () {
-        let dir = this.doxiInputDir;
+        let dir = this.getDoxiInputDir();
 
         if (!Fs.existsSync(dir) || this.isEmpty(dir)) {
             return true;
@@ -298,6 +305,47 @@ class SourceApi extends Base {
                 cfg
             )
         );
+    }
+    
+    /**
+     * Returns the product passed by the CLI build command
+     * @return {String} The product to generate the API output for
+     */
+    get apiProduct () {
+        let prod = this._apiProd;
+
+        if (!prod) {
+            let options = this.options;
+
+            prod = this._apiProd = options.product;
+        }
+
+        return prod;
+    }
+    
+    /**
+     * Returns the version passed by the CLI build command or the `currentVersion` from
+     * the config file if there was no version passed initially
+     * @return {String} The version number for the current product
+     */
+    get apiVersion () {
+        let ver = this._apiVer;
+
+        if (!ver) {
+            let options = this.options;
+
+            ver = this._apiVer = options.version || options.currentVersion;
+        }
+
+        return ver;
+    }
+    
+    /**
+     * Determines whether doxi should be run or can be skipped
+     * @return {Boolean} Returns `true` if the doxi input folder is empty
+     */
+    get doxiRequired () {
+        return this.doxiInputFolderIsEmpty;
     }
 
     /**
@@ -392,25 +440,35 @@ class SourceApi extends Base {
         this.classMap   = {};
         this.srcFileMap = {};
 
-        this.runDoxi();
+        this.doRunDoxi();
         return this.readDoxiFiles();
 
+    }
+    
+    /**
+     * Public method to run Doxi ad hoc
+     */
+    runDoxi (buildName) {
+        let force = this.forceDoxi;
+        
+        this.forceDoxi = true;
+        this.doRunDoxi(buildName);
+        this.forceDoxi = force;
     }
 
     /**
      * Runs doxi against the SDK to output class files used by the docs post processors
      * (HTML docs or Ext app)
      */
-    runDoxi () {
+    doRunDoxi (buildName) {
         //this.log(`Begin 'SourceApi.runDoxi'`, 'info');
 
         let options       = this.options,
             forceDoxi     = options.forceDoxi,
             cmd           = this.cmdPath,
             triggerDoxi   = this.triggerDoxi,
-            doxiBuild     = options.doxiBuild,
-            defaultBuild  = "combo-nosrc",
-            doxiEmpty     = this.doxiInputFolderIsEmpty;
+            doxiBuild     = buildName || options.doxiBuild || 'combo-nosrc',
+            doxiRequired  = this.doxiRequired;
 
         this.syncRemote(
             this.apiProduct,
@@ -423,21 +481,14 @@ class SourceApi extends Base {
 
         // if the `forceDoxi` options is passed or the doxi input directory is empty /
         // missing then run doxi
-        if (forceDoxi || doxiBuild || doxiEmpty || (triggerDoxi && triggerDoxi[this.apiProduct])) {
+        if (forceDoxi || doxiRequired || (triggerDoxi && triggerDoxi[this.apiProduct])) {
             // empty the folder first before running doxi
-            Fs.emptyDirSync(this.doxiInputDir);
+            Fs.emptyDirSync(this.getDoxiInputDir());
             let path = Shell.pwd();
 
             Shell.cd(this.tempDir);
 
-            if (doxiBuild && doxiBuild != defaultBuild) {
-                Shell.exec(`${cmd} --quiet doxi build -p tempDoxiCfg.json ${doxiBuild}`);
-
-                //this.concludeBuild();
-                process.exit(0);
-            }
-
-            Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${defaultBuild}`);
+            Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
 
             Shell.cd(path);
         }
@@ -473,7 +524,7 @@ class SourceApi extends Base {
      */
     createSrcFileMap () {
         //this.log(`Begin 'SourceApi.createSrcFileMap'`, 'info');
-        let inputDir     = this.doxiInputDir,
+        let inputDir     = this.getDoxiInputDir(),
             //map          = this.srcFileMap = {},
             map          = this.srcFileMap,
             //classMap     = this.classMap = {},
@@ -559,7 +610,7 @@ class SourceApi extends Base {
                 keys      = Object.keys(map),
                 len       = keys.length,
                 names     = {},
-                inputDir = this.doxiInputDir;
+                inputDir = this.getDoxiInputDir();
 
             for (; i < len; i++) {
                 let path = keys[i],
@@ -1915,7 +1966,7 @@ class SourceApi extends Base {
                 map       = this.srcFileMap,
                 keys      = Object.keys(map),
                 len       = keys.length,
-                inputDir = this.doxiInputDir;
+                inputDir = this.getDoxiInputDir();
 
             for (; i < len; i++) {
                 keys[i] = {

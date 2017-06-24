@@ -147,6 +147,54 @@ const args = require('yargs')
             default     : false,
             description : 'Setting doxiBuild tells the parser to export a particular build target and then stop',
             example     : 'node --max-old-space-size=4076 index create-app-html --product=extjs --version=6.2.1 --doxiBuild=all-classes-flatten'
+        },
+        'diffTarget' : {
+            type        : 'string',
+            description : 'The target product (newer) to diff against',
+            example     : 'node --max-old-space-size=4076 index create-diff --diffTarget=extjs --diffTargetVersion=6.2.1 --diffSource=extjs --diffSourceVersion=6.2.0'
+        },
+        'diffTargetVersion' : {
+            type        : 'string',
+            description : 'The target version (newer) to diff against',
+            example     : 'node --max-old-space-size=4076 index create-diff --diffTarget=extjs --diffTargetVersion=6.2.1 --diffSource=extjs --diffSourceVersion=6.2.0'
+        },
+        'diffSource' : {
+            type        : 'string',
+            description : 'The source product (older) to diff against',
+            example     : 'node --max-old-space-size=4076 index create-diff --diffTarget=extjs --diffTargetVersion=6.2.1 --diffSource=extjs --diffSourceVersion=6.2.0'
+        },
+        'diffSourceVersion' : {
+            type        : 'string',
+            description : 'The source version (older) to diff against',
+            example     : 'node --max-old-space-size=4076 index create-diff --diffTarget=extjs --diffTargetVersion=6.2.1 --diffSource=extjs --diffSourceVersion=6.2.0'
+        },
+        'diffTargetPath' : {
+            type        : 'string',
+            description : 'The path to the doxi generated parse of the target (newer) product / version',
+            example     : 'node --max-old-space-size=4076 index create-diff --diffTargetPath=/Applications/htdocs/input/extjs/6.2.1/all-classes-flatten/modern_all-classes-flatten.json --diffSourcePath=/Applications/htdocs/input/extjs/6.2.0/all-classes-flatten/modern_all-classes-flatten.json'
+        },
+        'diffSourcePath' : {
+            type        : 'string',
+            description : 'The path to the doxi generated parse of the source (older) product / version',
+            example     : 'node --max-old-space-size=4076 index create-diff --diffTargetPath=/Applications/htdocs/input/extjs/6.2.1/all-classes-flatten/modern_all-classes-flatten.json --diffSourcePath=/Applications/htdocs/input/extjs/6.2.0/all-classes-flatten/modern_all-classes-flatten.json'
+        },
+        'diffIgnorePrivate' : {
+            type        : 'boolean',
+            default     : false,
+            description : 'True to disregard private classes / members in the diff',
+            example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --diffIgnorePrivate'
+        },
+        'forceDiff' : {
+            type        : 'boolean',
+            default     : false,
+            description : 'True to force a diff to be created -vs- an existing diff beign returned from disc',
+            example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --forceDiff=true'
+        },
+        'skipCreateDiffs' : {
+            type        : 'boolean',
+            default     : false,
+            description : 'True to skip creating diffs for the current and past versions (used to auto-populate the @since tags)',
+            example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --skipCreateDiffs=true'
         }
     })
     .command('command', 'Module to run', { alias: 'command' })

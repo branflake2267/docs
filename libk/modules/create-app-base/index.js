@@ -15,6 +15,7 @@
  */
 
 const SourceGuides     = require('../source-guides'),
+      Diff             = require('../create-diff'),
       Utils            = require('../shared/Utils'),
       Beautify         = require('js-beautify').js_beautify,
       Fs               = require('fs-extra'),
@@ -22,17 +23,17 @@ const SourceGuides     = require('../source-guides'),
       Chalk            = require('chalk'),
       StringSimilarity = require('string-similarity'),
       _                = require('lodash'),
-      Zipdir           = require('zip-dir');
+      Zipdir           = require('zip-dir'),
+      CompareVersions = require('compare-versions');
 
 class AppBase extends SourceGuides {
     constructor (options) {
         super(options);
         //this.log(`Create 'AppBase' instance`, 'info');
 
-        let o = this.options,
+        /*let o = this.options,
             product    = o.product,
             version    = o.version,
-            //majorVer   = this.apiVersion.charAt(),
             majorVer   = version && version.charAt(),
             prodObj    = o.products[product];
 
@@ -65,7 +66,7 @@ class AppBase extends SourceGuides {
             toolkit     : toolkit,
             hasGuides   : prodObj.hasGuides !== false,
             title       : prodObj.title
-        };
+        };*/
     }
 
     /**
@@ -74,40 +75,7 @@ class AppBase extends SourceGuides {
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
     get parentChain () {
-        return super.parentChain.concat([Path.parse(__dirname).base]);
-    }
-
-    /**
-     * Returns the version passed by the CLI build command or the `currentVersion` from
-     * the config file if there was no version passed initially
-     * @return {String} The version number for the current product
-     */
-    get apiVersion () {
-        let ver = this._apiVer;
-
-        if (!ver) {
-            let options = this.options;
-
-            ver = this._apiVer = options.version || options.currentVersion;
-        }
-
-        return ver;
-    }
-
-    /**
-     * Returns the product passed by the CLI build command
-     * @return {String} The product to generate the API output for
-     */
-    get apiProduct () {
-        let prod = this._apiProd;
-
-        if (!prod) {
-            let options = this.options;
-
-            prod = this._apiProd = options.product;
-        }
-
-        return prod;
+        return super.parentChain.concat([ Path.parse(__dirname).base ]);
     }
 
     /**
@@ -116,6 +84,11 @@ class AppBase extends SourceGuides {
     run () {
         //this.log(`Begin 'AppBase.run'`, 'info');
         let dt = new Date();
+        
+        if (!this.options.skipCreateDiffs) {
+            this.createDiffs();
+        }
+        
         return this.doRunApi()
         .then(this.outputApiSearch.bind(this))
         .then(this.processGuides.bind(this))
@@ -155,6 +128,46 @@ class AppBase extends SourceGuides {
             });
         }, Promise.resolve())
         .catch(this.error.bind(this));
+    }
+    
+    /**
+     * 
+     */
+    createDiffs () {
+        const { options, apiProduct }                = this,
+              { products, buildExceptions, version } = options,
+              { productMenu                          = [] } = products[apiProduct],
+              versions                               = _.dropRight(
+                  _.differenceWith(productMenu, buildExceptions[apiProduct], _.isEqual)
+              ),
+              len                                    = versions.length;
+        let   i = 0;
+
+        //versions.forEach(ver => {
+        for (; i < len; i++) {
+            const ver = versions[i],
+                  compared = CompareVersions(version, ver);
+            let   args = _.cloneDeep(options._args);
+            
+            // skip versions > the current version of docs being processed
+            if (compared < 0) {
+                continue;
+            }
+            
+            args.diffTargetProduct = apiProduct;
+            args.diffTargetVersion = ver;
+            
+            const myArgs = {
+                diffTargetProduct : apiProduct,
+                diffTargetVersion : ver,
+                _myRoot           : options._myRoot
+            };
+            
+            const diff = new Diff(myArgs);
+            
+            diff.doRun('outputRaw');
+        }
+        //});
     }
 
     /**

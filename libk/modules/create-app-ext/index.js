@@ -13,7 +13,8 @@
  * ? Create the product / version landing page
  */
 
-const AppBase = require('../create-app-base');
+const AppBase = require('../create-app-base'),
+      Path    = require('path');
 
 class ExtApp extends AppBase {
     constructor (options) {

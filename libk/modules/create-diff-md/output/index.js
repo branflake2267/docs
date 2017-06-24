@@ -1,12 +1,13 @@
+/* jshint node: true */
 'use strict';
 
-const Utils  = require('../../shared/Utils');
+const _      = require('lodash');
 
 const indentInc = 3;
 
 class Output {
     constructor (config) {        
-        Utils.apply(this, config);
+        Object.assign(this, config);
     }
 
     get encoders () {
@@ -44,14 +45,9 @@ class Output {
         }
     }
 
-    _capitalize (text) {
-        return text.substr(0, 1).toUpperCase() + text.substr(1);
-    }
-
     output (type, output) {
-        let me        = this,
-            Type      = me._capitalize(type),
-            diff      = me.diff,
+        let Type      = _.capitalize(type),
+            diff      = this.diff,
             obj       = diff[type],
             count     = 0,
             hideCount = 0,
@@ -59,8 +55,12 @@ class Output {
             key;
 
         if (obj) {
+            let categories = this.categories,
+                len        = categories.length,
+                i          = 0;
+            
             // normal member entries
-            me.categories.forEach(function(category) {
+            this.categories.forEach((category) => {
                 let order = category.name,
                     members = obj[order];
 
@@ -68,9 +68,9 @@ class Output {
                     count = members.length;
                     hideCount = 0;
 
-                    for (key in me.outputOptions) {
-                        if (!me.outputOptions[key]) {
-                            hideCount += me.getMemberCountByFlag(members, key);
+                    for (key in this.outputOptions) {
+                        if (!this.outputOptions[key]) {
+                            hideCount += this.getMemberCountByFlag(members, key);
                         }
                     }
 
@@ -80,16 +80,16 @@ class Output {
 
                     indention = (indention > 0) ? indention : 0;
 
-                    me.addBullet(Type + ' ' + me._capitalize(order), output, indention);
+                    this.addBullet(Type + ' ' + _.capitalize(order), output, indention);
 
-                    members.forEach(function(member) {
+                    members.forEach((member) => {
                         indention += indentInc;
                         if (typeof member === 'object') {
-                            if (me.canDisplay(member)) {
-                                me.addObject(member, member.name, 'method', output, indention);
+                            if (this.canDisplay(member)) {
+                                this.addObject(member, member.name, 'method', output, indention);
                             }
                         } else {
-                            me.addBullet(member, output, indention);
+                            this.addBullet(member, output, indention);
                         }
 
                         indention -= indentInc;
@@ -98,34 +98,47 @@ class Output {
                     indention -= indentInc;
                 }
             });
+            
+            
 
             // process class property changes
-            let members = obj['classProps']
-            if (members && me.outputOptions['class']) {
+            let members = obj.classProps;
+            
+            if (members && this.outputOptions['class']) {
                 indention = (indention > 0) ? indention : 0;
 
-                me.addBullet(Type + ' Class Details', output, indention);
+                this.addBullet(Type + ' Class Details', output, indention);
 
-                members.forEach(function(member) {
-                    me.addObject(member, member.name, null, output, indention, false);
-                });
+                let membersLen = members.length,
+                    j          = 0;
+                
+                for (; j < membersLen; j++) {
+                    let member = members[j];
+                    
+                    this.addObject(member, member.name, null, output, indention, false);
+                }
 
                 indention -= indentInc;
             }
         }
 
-        return me;
+        return this;
     }
 
     getMemberCountByFlag (members, flag) {
-        var count = 0,
-            flag = 'is' + Utils.capitalize(flag);
-
-        members.forEach(function(member) {
+        flag = `is${_.capitalize(flag)}`;
+        
+        let count = 0,
+            len   = members.length,
+            i     = 0;
+        
+        for (; i < len; i++) {
+            let member = members[i];
+            
             if (typeof member === 'object' && member[flag]) {
                 count++;
             }
-        });
+        }
 
         return count;
     }
@@ -135,10 +148,9 @@ class Output {
     }
 
     addObject (obj, display, style, output, indention, skipDebug, skipName) {
-        let me       = this,
-            encoders = me.encoders,
+        let encoders = this.encoders,
             simple   = true,
-            styles   = me.styles,
+            styles   = this.styles,
             styled   = styles[style] ? styles[style](display) : display,
             encoder, newValue, oldValue, action;
 
@@ -151,7 +163,7 @@ class Output {
         }
 
         if (!obj.isClass) {
-            me.addBullet(styled, output, indention);
+            this.addBullet(styled, output, indention);
         }
 
         if (obj.newValue || obj.oldValue) {
@@ -162,23 +174,23 @@ class Output {
             indention += indentInc;
 
             if (simple) {
-                me.addBullet(
+                this.addBullet(
                     '**' + obj.key + '** is ' + newValue + (oldValue ? ' (was ' + oldValue + ')' : ''),
                     output,
                     indention
                 );
             } else {
-                me.addBullet('**' + obj.key + '**', output, indention);
+                this.addBullet('**' + obj.key + '**', output, indention);
 
                 indention += indentInc;
 
-                me.addBullet(
+                this.addBullet(
                     'is ' + (encoder ? encoder(obj.newValue) : obj.newValue),
                     output,
                     indention
                 );
 
-                me.addBullet(
+                this.addBullet(
                     'was ' + (encoder ? encoder(obj.oldValue) : obj.oldValue),
                     output,
                     indention
@@ -188,34 +200,39 @@ class Output {
 
         if (obj.items) {
             for (action in obj.items) {
-                obj.items[action].forEach(function(member) {
-                    if (me.canDisplay(member)) {
-                        let display = me._capitalize(action) + ' _' + member.name + '_ ' + member.$type;
-                        //me.addObject(member, display, null, output, (indention + (indentInc*2)), true);
-                        me.addObject(member, display, null, output, (indention + (indentInc)), true);
+                obj.items[action].forEach((member) => {
+                    if (this.canDisplay(member)) {
+                        let display = _.capitalize(action) + ' _' + member.name + '_ ' + member.$type;
+
+                        this.addObject(member, display, null, output, (indention + (indentInc)), true);
                     }
                 });
             }
         }
 
-        if (me.includeDebugOutput && !skipDebug) {
+        if (this.includeDebugOutput && !skipDebug) {
             output.push('<pre>' + JSON.stringify(obj, null, 4) + '</pre>');
         }
     }
 
     canDisplay (member) {
-        var me = this,
-            key, flag;
-
-        for (key in me.outputOptions) {
-            flag = 'is' + Utils.capitalize(key);
-
-            if (!me.outputOptions[key] && member[flag]) {
-                return false;
+        let outputOptions = this.outputOptions,
+            keys          = Object.keys(outputOptions),
+            len           = keys.length,
+            i             = 0,
+            canReturn     = true;
+        
+        for (; i < len; i++) {
+            let key  = keys[i],
+                flag = `is${_.capitalize(key)}`;
+            
+            if (!this.outputOptions[key] && member[flag]) {
+                canReturn = false;
+                break;
             }
         }
-
-        return true;
+        
+        return canReturn;
     }
 }
 

@@ -624,6 +624,34 @@ class Base {
             return JSON.stringify(context);
         });
 
+        Handlebars.registerHelper("any", function(array, options) {
+            if (array && array.length > 0) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
+            }
+        });
+
+        Handlebars.registerHelper('is', function(value, test, options) {
+            if (value && value === test) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
+            }
+        });
+
+        Handlebars.registerHelper('isnt', function(value, test, options) {
+            if (!value || value !== test) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
+            }
+        });
+
+        Handlebars.registerHelper("capitalizeFirst", function(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        });
+
         // The 'bubbleWrap' helper is used by the home template partial.  With the home
         // template there are n number of items and every two (and any trailing odd one)
         // need to be wrapped by an element in the template.  This helper will decorate

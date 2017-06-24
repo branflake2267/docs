@@ -2,21 +2,26 @@ const assertly = require('assertly'),
       Path     = require('path'),
       expect   = assertly.expect,
       root     = __dirname.split('libk')[0] + 'libk',
-      Base     = require("../modules/base/"),
+      Base     = require("../../../modules/base/"),
       product  = "extjs", version  = "6.5.0", toolkit  = "modern";
 
-describe("Base", function() {
-    const moduleToolkit  = new Base({
-        _myRoot: root,
-        product: product,
-        version: version,
-        toolkit: toolkit
-    });
+const moduleToolkit  = new Base({
+    _myRoot: root,
+    product: product,
+    version: version,
+    toolkit: toolkit
+});
 
-    const moduleNoToolkit  = new Base({
-        _myRoot: root,
-        product: product,
-        version: version
+const moduleNoToolkit  = new Base({
+    _myRoot: root,
+    product: product,
+    version: version
+});
+
+describe("Base", function() {
+
+    beforeAll(function() {
+
     });
 
     it("should exist", function() {

@@ -21,16 +21,11 @@ const AppBase         = require('../create-app-base'),
       Fs              = require('fs-extra'),
       UglifyJS        = require("uglify-js"),
       CleanCSS        = require('clean-css'),
-      Swag            = require('swag'),
-      //LinkRe          = /['`]*\{\s*@link(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g,
       ImgRe           = /{\s*@img(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g;
-      //HashStartRe     = /^#/;
 
 class HtmlApp extends AppBase {
     constructor (options) {
         super(options);
-
-        Swag.registerHelpers(Handlebars);
         this.copyAssets();
     }
 
@@ -454,11 +449,11 @@ class HtmlApp extends AppBase {
 
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });
-        
+
         /*html = html.replace(/\[.*?\]\(.*?\)/g, (match, text, link) => {
             return this.createApiLink(link, text);
         });*/
-        
+
         return html;
     }
 

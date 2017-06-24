@@ -164,15 +164,9 @@ class DiffParser extends DiffBase {
             
             // the diffing is kicked off by passing in the array of all classes from both the
             // target and the source
-            console.log('target count:', targetClasses.length);
-            console.log('source count:', sourceClasses.length);
             this.diffItems(diff, 'class', targetClasses, sourceClasses);
-            //this._diff = diff;
-            //this.cleanObject(this._diff); // remove all of the empty objects and arrays
             this.cleanObject(diff); // remove all of the empty objects and arrays
-            //this.addDiffToSinceMap(this._diff);
             this.addDiffToSinceMap(diff);
-            //return this._diff;
             return diff;
         }
     }
@@ -251,10 +245,13 @@ class DiffParser extends DiffBase {
      */
     addDiffToSinceMap (diff) {
         const { sinceMap, diffTargetProduct, diffTargetVersion, apiDirName } = this;
+        // add the product to the since map
         let prod = sinceMap[diffTargetProduct] = sinceMap[diffTargetProduct] || {};
         
+        // add the toolkit to the since map
         prod = prod[apiDirName] = prod[apiDirName] || {};
 
+        // add added classes to the since map
         if (diff.items && diff.items.added && diff.items.added.class) {
             diff.items.added.class.forEach(name => {
                 prod[name] = prod[name] || {
@@ -262,17 +259,18 @@ class DiffParser extends DiffBase {
                     items : {}
                 };
                 
-                console.log(name, CompareVersions(diffTargetVersion, prod[name].since), diffTargetVersion, prod[name].since);
                 if (CompareVersions(diffTargetVersion, prod[name].since) < 0) {
                     prod[name].since = diffTargetVersion;
                 }
             });
         }
         
+        // add added class members to the since map
         if (diff.items && diff.items.modified && diff.items.modified.class) {
             const modified = diff.items.modified.class,
                   classes = _.keys(modified);
             
+            // loop over the modified classes and add each added member to the since map
             classes.forEach(name => {
                 prod[name] = prod[name] || {
                     since : diffTargetVersion,
@@ -293,7 +291,6 @@ class DiffParser extends DiffBase {
                                     since : diffTargetVersion
                                 };
                             } else {
-                                console.log(member, CompareVersions(diffTargetVersion, memberSince.since), diffTargetVersion, memberSince.since);
                                 if (CompareVersions(diffTargetVersion, memberSince.since) < 0) {
                                     memberSince.since = diffTargetVersion;
                                 }
@@ -304,7 +301,6 @@ class DiffParser extends DiffBase {
             });
         }
         
-        //this.cleanObject(sinceMap);
         this.outputSinceMap(sinceMap);
     }
 

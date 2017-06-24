@@ -361,6 +361,10 @@ class Base {
         return `s-${this._rollingId++}`;
     }
     
+    /**
+     * Returns the path to the since map file
+     * @return {String} The file path
+     */
     get sinceMapPath () {
         const { options } = this,
               root        = options._myRoot,

@@ -77,27 +77,42 @@ class AppBase extends SourceGuides {
     get parentChain () {
         return super.parentChain.concat([ Path.parse(__dirname).base ]);
     }
+    
+    /**
+     * Returns the versions for the current product that are eligible to be diffed; all 
+     * of the versions in the version menu minus the last one one the list and any 
+     * versions in the build exceptions list.
+     * @return {String[]} Array of eligible versions
+     */
+    get diffableVersions () {
+        const { options, apiProduct }                = this,
+              { products, buildExceptions } = options,
+              { productMenu                          = [] } = products[apiProduct];
+        
+        return _.dropRight(
+            _.differenceWith(
+                productMenu,
+                buildExceptions[apiProduct] || [],
+                _.isEqual
+            )
+        );
+    }
 
     /**
      * Default entry point for this module
      */
     run () {
         //this.log(`Begin 'AppBase.run'`, 'info');
-        let dt = new Date();
         
-        if (!this.options.skipCreateDiffs) {
-            this.createDiffs();
-        }
+        // if (!this.options.skipCreateDiffs) {
+        //     this.createDiffs();
+        // }
         
         return this.doRunApi()
         .then(this.outputApiSearch.bind(this))
         .then(this.processGuides.bind(this))
         .then(this.outputProductMenu.bind(this))
         .then(this.outputOfflineDocs.bind(this))
-        .then(() => {
-            console.log('ALL TOLD:', this.getElapsed(dt));
-            this.concludeBuild();
-        })
         .catch(this.error.bind(this));
     }
 
@@ -131,21 +146,17 @@ class AppBase extends SourceGuides {
     }
     
     /**
-     * 
+     * Create the diff files for all eligible versions (see {@link #diffableVersions})
+     * for the current product
      */
     createDiffs () {
-        const { options, apiProduct }                = this,
-              { products, buildExceptions, version } = options,
-              { productMenu                          = [] } = products[apiProduct],
-              versions                               = _.dropRight(
-                  _.differenceWith(productMenu, buildExceptions[apiProduct], _.isEqual)
-              ),
-              len                                    = versions.length;
+        const { options, apiProduct, diffableVersions } = this,
+              { version }                               = options,
+              len                                       = diffableVersions.length;
         let   i = 0;
 
-        //versions.forEach(ver => {
         for (; i < len; i++) {
-            const ver = versions[i],
+            const ver = diffableVersions[i],
                   compared = CompareVersions(version, ver);
             let   args = _.cloneDeep(options._args);
             
@@ -167,7 +178,6 @@ class AppBase extends SourceGuides {
             
             diff.doRun('outputRaw');
         }
-        //});
     }
 
     /**

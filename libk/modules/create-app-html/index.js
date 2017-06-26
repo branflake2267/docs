@@ -33,13 +33,21 @@ class HtmlApp extends AppBase {
      * Default entry point for this module
      */
     run () {
+        const dt = new Date();
+        
         super.run()
         .then(this.outputProductHomePage.bind(this))
         .then(this.outputMainLandingPage.bind(this))
+        .then(() => {
+            console.log('ALL TOLD:', this.getElapsed(dt));
+            this.concludeBuild();
+        })
         .catch(this.error.bind(this));
-
-        /*this.outputProductHomePage()
-        .catch(this.error.bind(this));*/
+        
+        // super.run()
+        // .then(this.outputProductHomePage.bind(this))
+        // .then(this.outputMainLandingPage.bind(this))
+        // .catch(this.error.bind(this));
 
         // TODO create a product home page
         // TODO create a Landing page class (if a CLI param is passed - or can be called directly, of course)
@@ -546,7 +554,7 @@ class HtmlApp extends AppBase {
      * supplying it to the template
      */
     processLandingDataObject (data) {
-        let { outputDir } = this.options.outputDir;
+        let { outputDir } = this.options;
 
         data.cssPath     = Path.relative(outputDir, this.cssDir);
         data.jsPath      = Path.relative(outputDir, this.jsDir);

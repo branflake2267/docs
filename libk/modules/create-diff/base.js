@@ -129,7 +129,7 @@ class DiffBase extends SourceApi {
             } else {
                 const target        = this.diffTargetProduct,
                       sourceProduct = options.products[target],
-                      exceptions    = options.buildExceptions[target],
+                      exceptions    = options.buildExceptions[target] || [],
                       versions      = sourceProduct.productMenu,
                       targetVersion = this.diffTargetVersion,
                       idx           = versions && versions.indexOf(targetVersion),

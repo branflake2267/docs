@@ -34,9 +34,9 @@ const Base       = require('../base'),
       Handlebars = require('handlebars'),
       Fs         = require('fs-extra'),
       Shell      = require('shelljs'),
-      path       = require('path'),
+      //path       = require('path'),
       // TODO - is Mkdirp being used in any module or it's all Fs-extra now?  Might be able to remove its require statements if it can be purged via Fs-extra
-      Mkdirp     = require('mkdirp'),
+      //Mkdirp     = require('mkdirp'),
       _          = require('lodash'),
       WidgetRe   = /widget\./g;
 
@@ -100,13 +100,11 @@ class SourceApi extends Base {
      * @return {String} The doxi config file name
      */
     get doxiCfgFileName () {
-        let options = this.options,
-            product = this.apiProduct,
-            version = this.apiVersion,
-            toolkit = this.getToolkits(product, version) ? options.toolkit : 'config',
-            path    = this.getDoxiCfgPath(),
-            // find the nearest matching config file based on version
-            file    = this.getFileByVersion(path, version);
+        const { options, apiProduct : product, apiVersion : version } = this,
+              toolkit = this.getToolkits(product, version) ? options.toolkit : 'config',
+              path    = this.getDoxiCfgPath();
+        // find the nearest matching config file based on version
+        let   file    = this.getFileByVersion(path, version);
 
         // strip the leading string
         file = file.substring(file.indexOf('-'));
@@ -123,7 +121,8 @@ class SourceApi extends Base {
      * @return {String} The path to the doxi config files
      */
     getDoxiCfgPath (fromDir) {
-        let dir = fromDir || __dirname;
+        const dir = fromDir || __dirname;
+        
         return Path.resolve(
             dir,
             Path.join(
@@ -189,7 +188,7 @@ class SourceApi extends Base {
      * @return {String} The path to the directory of the doxi-processed files
      */
     get rootApiInputDir () {
-        let options = this.options;
+        let { options } = this;
 
         return Path.join(
             options._myRoot,
@@ -224,18 +223,16 @@ class SourceApi extends Base {
      */
     createTempDoxiFile () {
         //this.log(`Begin 'SourceApi.createTempDoxiFile'`, 'info');
-        let options     = this.options,
-            cfg         = this.doxiCfg,
-            sources     = cfg.sources,
-            outputs     = cfg.outputs,
-            i           = 0,
-            len         = sources.length,
-            apiInputDir = this.rootApiInputDir;
+        const { options, doxiCfg : cfg } = this,
+            { sources, outputs }         = cfg,
+            len                          = sources.length,
+            apiInputDir                  = this.rootApiInputDir;
+        let i                            = 0;
 
         for (; i < len; i++) {
-            let j    = 0,
-                path = sources[i].path,
-                jLen = path.length;
+            const { path } = sources[i];
+            let   j        = 0;
+            const jLen     = path.length;
 
             for (; j < jLen; j++) {
                 path[j] = Utils.format(path[j], {
@@ -245,13 +242,13 @@ class SourceApi extends Base {
             }
         }
 
-        let inputObj = {
-            apiInputDir : apiInputDir,
-            //product     : options.product,
-            product     : this.apiProduct,
-            //version     : options.version,
-            version     : this.apiVersion,
-            toolkit     : options.toolkit || ''
+        const inputObj = {
+              apiInputDir : apiInputDir,
+              //product     : options.product,
+              product     : this.apiProduct,
+              //version     : options.version,
+              version     : this.apiVersion,
+              toolkit     : options.toolkit || ''
         };
 
         outputs['combo-nosrc'].dir         = Utils.format(outputs['combo-nosrc'].dir, inputObj);
@@ -279,7 +276,7 @@ class SourceApi extends Base {
      * @return {Boolean} True if the folder is missing or empty
      */
     get doxiInputFolderIsEmpty () {
-        let dir = this.getDoxiInputDir();
+        const dir = this.getDoxiInputDir();
 
         if (!Fs.existsSync(dir) || this.isEmpty(dir)) {
             return true;
@@ -292,11 +289,10 @@ class SourceApi extends Base {
      * app.json) will be appended to the SDK source directory.
      */
     get apiSourceDir () {
-        let options = this.options,
-            cfg     = Object.assign({}, options, {
-                repo: options.products[this.apiProduct].repo || null
-                //repo: options.products[this.product].repo || null
-            });
+        const { options } = this,
+              cfg         = Object.assign({}, options, {
+                  repo : options.products[this.apiProduct].repo || null
+              });
 
         return Path.resolve(
             options._myRoot,
@@ -315,7 +311,7 @@ class SourceApi extends Base {
         let prod = this._apiProd;
 
         if (!prod) {
-            let options = this.options;
+            const { options } = this;
 
             prod = this._apiProd = options.product;
         }
@@ -332,7 +328,7 @@ class SourceApi extends Base {
         let ver = this._apiVer;
 
         if (!ver) {
-            let options = this.options;
+            const { options } = this;
 
             ver = this._apiVer = options.version || options.currentVersion;
         }
@@ -372,15 +368,15 @@ class SourceApi extends Base {
      * @return {Object} Hash of common current page metadata
      */
     getApiMetaData (data) {
-        let meta = this.commonMetaData;
+        const meta = this.commonMetaData;
 
         if (data && data.cls) {
-            let name       = data.cls.name,
-                apiDirName = this.apiDirName,
-                docsRelativePath = Path.relative(
-                    this.apiDir,
-                    this.options.outputDir
-                );
+            const { name }       = data.cls,
+                  { apiDirName } = this,
+                  docsRelativePath = Path.relative(
+                      this.apiDir,
+                      this.options.outputDir
+                  );
 
             Object.assign(meta, {
                 //navTreeName : 'API',
@@ -484,10 +480,11 @@ class SourceApi extends Base {
         if (forceDoxi || doxiRequired || (triggerDoxi && triggerDoxi[this.apiProduct])) {
             // empty the folder first before running doxi
             Fs.emptyDirSync(this.getDoxiInputDir());
-            let path = Shell.pwd();
+            const path = Shell.pwd();
 
             Shell.cd(this.tempDir);
 
+            console.log(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
             Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
 
             Shell.cd(path);
@@ -1040,7 +1037,7 @@ class SourceApi extends Base {
      */
     processApiDataObject (data) {
         //this.log(`Begin 'SourceApi.processApiDataObject'`, 'info');
-        let apiDir   = this.apiDir;
+        let { apiDir } = this;
 
         data.prodVerPath = '../';
         data.cssPath     = Path.relative(apiDir, this.cssDir);
@@ -1063,16 +1060,31 @@ class SourceApi extends Base {
      */
     decorateClass (className) {
         //this.log(`Begin 'SourceApi.decorateClass'`, 'log');
-        let options  = this.options,
-            classMap = this.classMap,
-            raw      = classMap[className].raw,
-            data     = classMap[className].prepared,
-            cls      = raw.global.items[0],
-            alias    = cls.alias;
+        const {
+                  options,
+                  classMap,
+                  sinceMap,
+                  apiProduct,
+                  apiDirName,
+                  diffableVersions
+              }                   = this,
+              { raw }             = classMap[className],
+              [ cls ]             = raw.global.items,
+              { alias, name, since }     = cls,
+              mappedSince = _.get(sinceMap, [ apiProduct, apiDirName, name, 'since' ]);
+        let   { prepared : data } = classMap[className];
 
         data.classText = this.markup(data.text);
         // TODO need to decorate the following.  Not sure if this would be done differently for HTML and Ext app output
         this.processRelatedClasses(cls, data);
+        
+        if (mappedSince) {
+            if (!since) {
+                cls.since = mappedSince;
+            } else if (since && since !== mappedSince && _.includes(diffableVersions, since)) {
+                this.log(`Mismatch between declared @since (${since}) and sinceMap value (${mappedSince})`, 'info');
+            }
+        }
 
         data.requiredConfigs     = [];
         data.optionalConfigs     = [];
@@ -1258,16 +1270,29 @@ class SourceApi extends Base {
      */
     processMembers (className, type, items) {
         //this.log(`Begin 'SourceApi.processMembers'`, 'log');
-        let prepared        = this.classMap[className].prepared,
-            i               = 0,
-            len             = items.length,
-            capitalizedType = Utils.capitalize(type);
+        const { sinceMap, apiProduct, apiDirName, diffableVersions } = this,
+              { prepared }    = this.classMap[className],
+              len             = items.length,
+              capitalizedType = Utils.capitalize(type);
+        let   i               = 0;
 
         // loop over the member groups.  Indicate on the class object that each member
         // type is present and process the member object itself.
         for (; i < len; i++) {
+            const item      = items[i],
+                  { $type, name, since } = item,
+                  mappedSince = _.get(sinceMap, [ apiProduct, apiDirName, className, 'items', `${$type}|${name}`, 'since' ]);
+            
+            if (mappedSince) {
+                if (!since) {
+                    item.since = mappedSince;
+                } else if (since && since !== mappedSince && _.includes(diffableVersions, since)) {
+                    this.log(`Mismatch between declared @since (${since}) and sinceMap value (${mappedSince})`, 'info');
+                }
+            }
+            
             prepared[`has${capitalizedType}`] = true;
-            this.processMember(className, type, items[i]);
+            this.processMember(className, type, item);
         }
 
         // add hasProperties in case there is a class with only static properties

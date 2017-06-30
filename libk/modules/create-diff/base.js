@@ -45,13 +45,9 @@ class DiffBase extends SourceApi {
      * @return {String} The product to diff
      */
     get diffTargetProduct () {
-        //if (!this._diffTargetProduct) {
-            const { options } = this;
-            
-            return options.diffTargetProduct || options.product;
-        //}
+        const { options } = this;
         
-        //return this._diffTargetProduct;
+        return options.diffTargetProduct || options.product;
     }
     
     /**
@@ -59,7 +55,6 @@ class DiffBase extends SourceApi {
      * @return {String} The target product to diff
      */
     set diffTargetProduct (product) {
-        //this._diffTargetProduct = product;
         this.options.diffTargetProduct = product;
     }
     
@@ -69,13 +64,9 @@ class DiffBase extends SourceApi {
      * @return {String} The product to diff from
      */
     get diffSourceProduct () {
-        //if (!this._diffSourceProduct) {
-            const { options } = this;
+        const { options } = this;
             
         return options.diffSourceProduct || this.diffTargetProduct;
-        //}
-        
-        //return this._diffSourceProduct;
     }
     
     /**
@@ -83,7 +74,6 @@ class DiffBase extends SourceApi {
      * @return {String} The source product to diff
      */
     set diffSourceProduct (product) {
-        //this._diffSourceProduct = product;
         this.options.diffSourceProduct = product;
     }
     
@@ -95,13 +85,9 @@ class DiffBase extends SourceApi {
      * @return {String} The product version to diff
      */
     get diffTargetVersion () {
-        //if (!this._diffTargetVersion) {
-            const { options } = this;
-            
-            return options.diffTargetVersion || options.version;
-        //}
+        const { options } = this;
         
-        //return this._diffTargetVersion;
+        return options.diffTargetVersion || options.version;
     }
     
     /**
@@ -109,7 +95,6 @@ class DiffBase extends SourceApi {
      * @return {String} The target version to diff
      */
     set diffTargetVersion (version) {
-        //this._diffTargetVersion = version;
         this.options.diffTargetVersion = version;
     }
     
@@ -119,32 +104,30 @@ class DiffBase extends SourceApi {
      * @return {String} The product version to diff from
      */
     get diffSourceVersion () {
-        //if (!this._diffSourceVersion) {
-            const { options }   = this,
-                  sourceVersion = options.diffSourceVersion;
-            let   diff;
+        const { options }   = this,
+                sourceVersion = options.diffSourceVersion;
+        let   diff;
+        
+        if (sourceVersion) {
+            diff = sourceVersion;
+        } else {
+            const target        = this.diffTargetProduct,
+                    sourceProduct = options.products[target],
+                    exceptions    = options.buildExceptions[target] || [],
+                    versions      = sourceProduct.productMenu,
+                    targetVersion = this.diffTargetVersion,
+                    idx           = versions && versions.indexOf(targetVersion),
+                    previous      = idx !== -1 && versions[idx + 1];
             
-            if (sourceVersion) {
-                diff = sourceVersion;
+            if (previous && exceptions.indexOf(previous) > -1) {
+                this.error(`A version prior to ${targetVersion} could not 
+                    automatically be determined.  Please supply the source version 
+                    using the --diffSourceVersion flag`);
+                process.exit();
             } else {
-                const target        = this.diffTargetProduct,
-                      sourceProduct = options.products[target],
-                      exceptions    = options.buildExceptions[target] || [],
-                      versions      = sourceProduct.productMenu,
-                      targetVersion = this.diffTargetVersion,
-                      idx           = versions && versions.indexOf(targetVersion),
-                      previous      = idx !== -1 && versions[idx + 1];
-                
-                if (previous && exceptions.indexOf(previous) > -1) {
-                    this.error(`A version prior to ${targetVersion} could not 
-                        automatically be determined.  Please supply the source version 
-                        using the --diffSourceVersion flag`);
-                    process.exit();
-                } else {
-                    diff = previous;
-                }
+                diff = previous;
             }
-        //}
+        }
         
         return diff;
     }
@@ -154,7 +137,6 @@ class DiffBase extends SourceApi {
      * @return {String} The target version to diff
      */
     set diffSourceVersion (version) {
-        //this._diffSourceVersion = version;
         this.options.diffSourceVersion = version;
     }
     
@@ -163,18 +145,17 @@ class DiffBase extends SourceApi {
      * @return {String} The diff output directory
      */
     get diffOutputDir () {
-        //if (!this._diffOutputPath) {
-            const { options }                   = this,
-                  { diffOutputDir, outputDir } = options,
-                  obj                           = {
-                      outputDir : outputDir,
-                      product   : this.diffTargetProduct
-                  };
-                  
-            return Utils.format(diffOutputDir, obj);
-        //}
-
-        //return this._diffOutputPath;
+        const { options } = this,
+              {
+                  diffOutputDir,
+                  outputDir
+              }   = options,
+              obj = {
+                  outputDir : outputDir,
+                  product   : this.diffTargetProduct
+              };
+                
+        return Utils.format(diffOutputDir, obj);
     }
     
     /**
@@ -200,7 +181,7 @@ class DiffBase extends SourceApi {
      * @return {String} Either 'target' or 'source'
      */
     get diffProcess () {
-        return this._diffProcessing;
+        return this._diffProcessing || 'Target';
     }
     
     /**
@@ -244,6 +225,7 @@ class DiffBase extends SourceApi {
      */
     getProduct (prod) {
         prod = prod || this.diffTargetProduct;
+        
         return this.options.normalizedProductList[prod];
     }
 }

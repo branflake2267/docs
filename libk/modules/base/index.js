@@ -547,12 +547,14 @@ class Base {
      * @return {Array/Undefined} The array of toolkits or undefined if the product /
      * version does not have toolkits
      */
-    getToolkits (product, version) {
+    getToolkits (product = this.apiProduct, version = this.apiVersion) {
         const { products } = this.options,
               prodObj = products[product],
               [ majorVer ] = version.split('.');
               
-        return prodObj.toolkit && prodObj.toolkit[majorVer];
+        return prodObj.toolkit
+               && prodObj.toolkit[majorVer]
+               && prodObj.toolkit[majorVer].toolkits;
     }
 
     /**
@@ -1097,7 +1099,7 @@ class Base {
      * branch in Git to pull from, etc.
      * @param {String} sourceDir The source directory of the local repo
      */
-    syncRemote (product, sourceDir) {
+    syncRemote (product = this.apiProduct, sourceDir = this.apiSourceDir) {
         let { options } = this;
 
         if (options.syncRemote === false) {

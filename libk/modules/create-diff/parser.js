@@ -69,8 +69,6 @@ class DiffParser extends DiffBase {
         }
         
         return Fs.readJsonSync(targetFile);
-        
-        //return this._targetFile;
     }
     
     /**
@@ -95,8 +93,6 @@ class DiffParser extends DiffBase {
         }
         
         return Fs.readJsonSync(sourceFile);
-        
-        //return this._sourceFile;
     }
     
     /**

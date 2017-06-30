@@ -17,10 +17,12 @@
 const AppBase         = require('../create-app-base'),
       Path            = require('path'),
       Utils           = require('../shared/Utils'),
-      Handlebars      = require('handlebars'),
+      //Handlebars      = require('handlebars'),
       Fs              = require('fs-extra'),
       UglifyJS        = require("uglify-js"),
       CleanCSS        = require('clean-css'),
+      Diff            = require('../create-diff'),
+      _               = require('lodash'),
       ImgRe           = /{\s*@img(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g;
 
 class HtmlApp extends AppBase {
@@ -35,6 +37,8 @@ class HtmlApp extends AppBase {
     run () {
         const dt = new Date();
         
+        //this.testGit();
+        
         super.run()
         .then(this.outputProductHomePage.bind(this))
         .then(this.outputMainLandingPage.bind(this))
@@ -43,15 +47,68 @@ class HtmlApp extends AppBase {
             this.concludeBuild();
         })
         .catch(this.error.bind(this));
-        
-        // super.run()
-        // .then(this.outputProductHomePage.bind(this))
-        // .then(this.outputMainLandingPage.bind(this))
-        // .catch(this.error.bind(this));
 
         // TODO create a product home page
         // TODO create a Landing page class (if a CLI param is passed - or can be called directly, of course)
     }
+    
+    /**
+     * 
+     */
+    // testGit () {
+    //     const {
+    //               apiProduct,
+    //               diffableVersions,
+    //               options
+    //           }                  = this,
+    //           { products } = options,
+    //           prodObj = products[apiProduct];
+        
+    //     diffableVersions.forEach(version => {
+    //         const [ majorVer ] = version.split('.'),
+    //               hasToolkits = prodObj.toolkit && prodObj.toolkit[majorVer],
+    //               toolkits = hasToolkits ? hasToolkits.toolkits : [ 'api' ];
+            
+    //         this.options.version = version;
+    //         toolkits.forEach(toolkit => {
+    //             this.options.toolkit = toolkit;
+    //             this.syncRemote();
+    //             this.createTempDoxiFile();
+    //             this.doRunDoxi('all-classes');
+    //         });
+    //     });
+        
+    //     console.log('TIME TO GET DIFFING!');
+        
+    //     _.dropRight(diffableVersions).forEach(version => {
+    //         const [ majorVer ] = version.split('.'),
+    //               hasToolkits = prodObj.toolkit && prodObj.toolkit[majorVer],
+    //               toolkits = hasToolkits ? hasToolkits.toolkits : [ 'api' ];
+            
+    //         this.options.version = version;
+    //         toolkits.forEach(toolkit => {
+    //             const args = _.cloneDeep(options._args);
+                
+    //             args.diffTargetProduct = apiProduct;
+    //             args.diffTargetVersion = version;
+                
+    //             const myArgs = {
+    //                 diffTargetProduct : apiProduct,
+    //                 diffTargetVersion : version,
+    //                 toolkit           : toolkit,
+    //                 forceDoxi         : false,
+    //                 syncRemote        : false,
+    //                 _myRoot           : options._myRoot
+    //             };
+                
+    //             const diff = new Diff(myArgs);
+                
+    //             diff.doRun('outputRaw');
+    //         });
+    //     });
+        
+    //     this.concludeBuild();
+    // }
 
     /**
      * Returns an array of this module's file name along with the file names of all

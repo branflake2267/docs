@@ -98,39 +98,39 @@ class AppBase extends SourceGuides {
                   diffableVersions,
                   options
               }             = this,
-              memoVersion   = options.version;
+              memoVersion   = options.version,
+              args          = _.cloneDeep(options._args),
+              tempDiff      = new Diff(Object.assign(args, {
+                  product : apiProduct,
+                  _myRoot : options._myRoot
+              }));
         
-        const tempDiff = new Diff({
-            product : apiProduct,
-            _myRoot : options._myRoot
-        });
-        
+        // creates all of the doxi files used in the diff process for each version
         tempDiff.createDoxiFiles();
         
+        // loop over all diffable versions (minus the last version in the list since it 
+        // won't have a previous version to diff against) and create the diff output
         _.dropRight(diffableVersions).forEach(version => {
             const toolkits    = this.getToolkits(apiProduct, version),
                   toolkitList = toolkits || [ 'api' ];
             
             this.options.version = version;
             toolkitList.forEach(toolkit => {
-                const args = _.cloneDeep(options._args);
-                
-                Object.apply(args, {
-                    diffTargetProduct : apiProduct,
-                    diffTargetVersion : version,
-                    toolkit           : toolkit,
-                    forceDoxi         : false,
-                    syncRemote        : false,
-                    _myRoot           : options._myRoot
-                });
-                
-                const diff = new Diff(args);
+                const args = _.cloneDeep(options._args),
+                      diff = new Diff(Object.apply(args, {
+                          diffTargetProduct : apiProduct,
+                          diffTargetVersion : version,
+                          toolkit           : toolkit,
+                          forceDoxi         : false,
+                          syncRemote        : false,
+                          _myRoot           : options._myRoot
+                      }));
                 
                 diff.doRun('outputRaw');
             });
         });
         
-        this.options.version   = memoVersion;
+        this.options.version = memoVersion;
     }
 
     /**

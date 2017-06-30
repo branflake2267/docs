@@ -478,21 +478,13 @@ class SourceApi extends Base {
         // if the `forceDoxi` options is passed or the doxi input directory is empty /
         // missing then run doxi
         if (forceDoxi || doxiRequired || (triggerDoxi && triggerDoxi[this.apiProduct])) {
-            this.log('RUNNING DOXI NOW', 'error');
-            console.log('forceDoxi: ', forceDoxi);
-            console.log('doxiRequired: ', doxiRequired);
-            if (triggerDoxi) {
-                console.log('triggerDoxi: ', triggerDoxi[this.apiProduct]);
-            }
             // empty the folder first before running doxi
             Fs.emptyDirSync(this.getDoxiInputDir());
+            
             const path = Shell.pwd();
 
             Shell.cd(this.tempDir);
-
-            console.log(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
             Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
-
             Shell.cd(path);
         }
     }

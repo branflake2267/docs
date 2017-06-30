@@ -117,7 +117,7 @@ class AppBase extends SourceGuides {
             this.options.version = version;
             toolkitList.forEach(toolkit => {
                 const args = _.cloneDeep(options._args),
-                      diff = new Diff(Object.apply(args, {
+                      diff = new Diff(Object.assign(args, {
                           diffTargetProduct : apiProduct,
                           diffTargetVersion : version,
                           toolkit           : toolkit,

@@ -147,7 +147,6 @@ class SourceApi extends Base {
      * @return {Object} The original doxi config
      */
     get doxiCfg () {
-        // TODO cache this and other getters
         return Fs.readJsonSync(
             Path.join(
                 this.getDoxiCfgPath(),
@@ -244,30 +243,25 @@ class SourceApi extends Base {
 
         const inputObj = {
               apiInputDir : apiInputDir,
-              //product     : options.product,
               product     : this.apiProduct,
-              //version     : options.version,
               version     : this.apiVersion,
               toolkit     : options.toolkit || ''
         };
 
-        outputs['combo-nosrc'].dir         = Utils.format(outputs['combo-nosrc'].dir, inputObj);
-        outputs['all-classes'].dir         = Utils.format(outputs['all-classes'].dir, inputObj);
+        outputs['combo-nosrc'].dir = Utils.format(outputs['combo-nosrc'].dir, inputObj);
+        outputs['all-classes'].dir = Utils.format(outputs['all-classes'].dir, inputObj);
         if (outputs['all-classes-flatten']) {
             outputs['all-classes-flatten'].dir = Utils.format(outputs['all-classes-flatten'].dir, inputObj);
         }
 
         Fs.ensureDirSync(this.tempDir);
-        Fs.writeFileSync(
+        Fs.writeJsonSync(
             Path.join(
                 this.tempDir,
                 'tempDoxiCfg.json'
             ),
-            JSON.stringify(cfg, null, 4),
-            'utf8',
-            (err) => {
-                if (err) this.log('createTempDoxiFile error', 'error');
-        });
+            cfg
+        );
     }
 
     /**
@@ -308,15 +302,9 @@ class SourceApi extends Base {
      * @return {String} The product to generate the API output for
      */
     get apiProduct () {
-        let prod = this._apiProd;
+        const { options } = this;
 
-        if (!prod) {
-            const { options } = this;
-
-            prod = this._apiProd = options.product;
-        }
-
-        return prod;
+        return this._apiProd = options.product;
     }
     
     /**
@@ -325,15 +313,9 @@ class SourceApi extends Base {
      * @return {String} The version number for the current product
      */
     get apiVersion () {
-        let ver = this._apiVer;
+        const { options } = this;
 
-        if (!ver) {
-            const { options } = this;
-
-            ver = this._apiVer = options.version || options.currentVersion;
-        }
-
-        return ver;
+        return options.version || options.currentVersion;
     }
     
     /**
@@ -342,6 +324,24 @@ class SourceApi extends Base {
      */
     get doxiRequired () {
         return this.doxiInputFolderIsEmpty;
+    }
+    
+    /**
+     * Returns the versions for the current product that are eligible to be diffed; all 
+     * of the versions in the version menu minus the last one one the list and any 
+     * versions in the build exceptions list.
+     * @return {String[]} Array of eligible versions
+     */
+    get diffableVersions () {
+        const { options, apiProduct }       = this,
+              { products, buildExceptions } = options,
+              { productMenu = [] }          = products[apiProduct];
+        
+        return _.differenceWith(
+            productMenu,
+            buildExceptions[apiProduct] || [],
+            _.isEqual
+        );
     }
 
     /**
@@ -478,6 +478,12 @@ class SourceApi extends Base {
         // if the `forceDoxi` options is passed or the doxi input directory is empty /
         // missing then run doxi
         if (forceDoxi || doxiRequired || (triggerDoxi && triggerDoxi[this.apiProduct])) {
+            this.log('RUNNING DOXI NOW', 'error');
+            console.log('forceDoxi: ', forceDoxi);
+            console.log('doxiRequired: ', doxiRequired);
+            if (triggerDoxi) {
+                console.log('triggerDoxi: ', triggerDoxi[this.apiProduct]);
+            }
             // empty the folder first before running doxi
             Fs.emptyDirSync(this.getDoxiInputDir());
             const path = Shell.pwd();

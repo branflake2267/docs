@@ -63,6 +63,28 @@ class Diff extends Parser {
     }
     
     /**
+     * Bulk operation to create the doxi files used in diffs for all eligible product /
+     * versions.  Used when creating diffs for all versions when outputting docs so that
+     * the `@since` information can be derived
+     */
+    createDoxiFiles () {
+        const { apiProduct, diffableVersions } = this;
+        
+        diffableVersions.forEach(version => {
+            const toolkits    = this.getToolkits(apiProduct, version),
+                  toolkitList = toolkits || [ 'api' ];
+            
+            this.options.version = version;
+            
+            toolkitList.forEach(toolkit => {
+                this.options.toolkit = toolkit;
+                this.createTempDoxiFile();
+                this.doRunDoxi('all-classes');
+            });
+        });
+    }
+    
+    /**
      * Outputs the diff object as a json object
      * @param {Object} diff The diff object
      */

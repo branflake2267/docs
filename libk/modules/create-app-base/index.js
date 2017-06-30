@@ -15,13 +15,13 @@
  */
 
 const SourceGuides     = require('../source-guides'),
-      Diff             = require('../create-diff'),
       Utils            = require('../shared/Utils'),
       Beautify         = require('js-beautify').js_beautify,
       Fs               = require('fs-extra'),
       Path             = require('path'),
       Chalk            = require('chalk'),
       StringSimilarity = require('string-similarity'),
+      Diff             = require('../create-diff'),
       _                = require('lodash'),
       Zipdir           = require('zip-dir'),
       CompareVersions = require('compare-versions');
@@ -30,43 +30,6 @@ class AppBase extends SourceGuides {
     constructor (options) {
         super(options);
         //this.log(`Create 'AppBase' instance`, 'info');
-
-        /*let o = this.options,
-            product    = o.product,
-            version    = o.version,
-            majorVer   = version && version.charAt(),
-            prodObj    = o.products[product];
-
-        if (!prodObj) {
-            let match = StringSimilarity.findBestMatch(
-                product,
-                Object.keys(o.products)
-            ),
-            proposed = `--product=${match.bestMatch.target}`;
-
-            console.log(`
-                ${Chalk.white.bgRed('ERROR :')} '${Chalk.gray('projectDefaults.json')}' does not have the product config for the passed product: '${Chalk.gray(product)}'
-                Possible match : ${Chalk.gray(proposed)}
-            `);
-            process.exit();
-        }
-
-        let toolkitObj = prodObj.toolkit && prodObj.toolkit[majorVer],
-            toolkits   = toolkitObj ? toolkitObj.toolkits : false,
-            toolkit    = o.toolkit || (toolkitObj && toolkitObj.defaultToolkit) || 'api';
-
-        o.prodVerMeta   = {
-            majorVer    : majorVer,
-            prodObj     : prodObj,
-            hasApi      : !!prodObj.hasApi,
-            hasVersions : prodObj.hasVersions,
-            //hasToolkits : !!(toolkits && toolkits.length > 1),
-            hasToolkits : (toolkits && toolkits.length),
-            toolkits    : toolkits,
-            toolkit     : toolkit,
-            hasGuides   : prodObj.hasGuides !== false,
-            title       : prodObj.title
-        };*/
     }
 
     /**
@@ -77,26 +40,6 @@ class AppBase extends SourceGuides {
     get parentChain () {
         return super.parentChain.concat([ Path.parse(__dirname).base ]);
     }
-    
-    /**
-     * Returns the versions for the current product that are eligible to be diffed; all 
-     * of the versions in the version menu minus the last one one the list and any 
-     * versions in the build exceptions list.
-     * @return {String[]} Array of eligible versions
-     */
-    get diffableVersions () {
-        const { options, apiProduct }                = this,
-              { products, buildExceptions } = options,
-              { productMenu                          = [] } = products[apiProduct];
-        
-        return _.dropRight(
-            _.differenceWith(
-                productMenu,
-                buildExceptions[apiProduct] || [],
-                _.isEqual
-            )
-        );
-    }
 
     /**
      * Default entry point for this module
@@ -104,9 +47,9 @@ class AppBase extends SourceGuides {
     run () {
         //this.log(`Begin 'AppBase.run'`, 'info');
         
-        // if (!this.options.skipCreateDiffs) {
-        //     this.createDiffs();
-        // }
+        if (!this.options.skipCreateDiffs) {
+            this.createDiffs();
+        }
         
         return this.doRunApi()
         .then(this.outputApiSearch.bind(this))
@@ -150,34 +93,47 @@ class AppBase extends SourceGuides {
      * for the current product
      */
     createDiffs () {
-        const { options, apiProduct, diffableVersions } = this,
-              { version }                               = options,
-              len                                       = diffableVersions.length;
-        let   i = 0;
-
-        for (; i < len; i++) {
-            const ver = diffableVersions[i],
-                  compared = CompareVersions(version, ver);
-            let   args = _.cloneDeep(options._args);
+        const {
+                  apiProduct,
+                  diffableVersions,
+                  options
+              }             = this,
+              memoVersion   = options.version;
+        
+        const tempDiff = new Diff({
+            product : apiProduct,
+            _myRoot : options._myRoot
+        });
+        
+        tempDiff.createDoxiFiles();
+        
+        _.dropRight(diffableVersions).forEach(version => {
+            const toolkits    = this.getToolkits(apiProduct, version),
+                  toolkitList = toolkits || [ 'api' ];
             
-            // skip versions > the current version of docs being processed
-            if (compared < 0) {
-                continue;
-            }
-            
-            args.diffTargetProduct = apiProduct;
-            args.diffTargetVersion = ver;
-            
-            const myArgs = {
-                diffTargetProduct : apiProduct,
-                diffTargetVersion : ver,
-                _myRoot           : options._myRoot
-            };
-            
-            const diff = new Diff(myArgs);
-            
-            diff.doRun('outputRaw');
-        }
+            this.options.version = version;
+            toolkitList.forEach(toolkit => {
+                const args = _.cloneDeep(options._args);
+                
+                args.diffTargetProduct = apiProduct;
+                args.diffTargetVersion = version;
+                
+                const myArgs = {
+                    diffTargetProduct : apiProduct,
+                    diffTargetVersion : version,
+                    toolkit           : toolkit,
+                    forceDoxi         : false,
+                    syncRemote        : false,
+                    _myRoot           : options._myRoot
+                };
+                
+                const diff = new Diff(myArgs);
+                
+                diff.doRun('outputRaw');
+            });
+        });
+        
+        this.options.version   = memoVersion;
     }
 
     /**

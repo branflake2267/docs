@@ -115,19 +115,16 @@ class AppBase extends SourceGuides {
             toolkitList.forEach(toolkit => {
                 const args = _.cloneDeep(options._args);
                 
-                args.diffTargetProduct = apiProduct;
-                args.diffTargetVersion = version;
-                
-                const myArgs = {
+                Object.apply(args, {
                     diffTargetProduct : apiProduct,
                     diffTargetVersion : version,
                     toolkit           : toolkit,
                     forceDoxi         : false,
                     syncRemote        : false,
                     _myRoot           : options._myRoot
-                };
+                });
                 
-                const diff = new Diff(myArgs);
+                const diff = new Diff(args);
                 
                 diff.doRun('outputRaw');
             });

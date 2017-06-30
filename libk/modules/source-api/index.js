@@ -485,7 +485,7 @@ class SourceApi extends Base {
 
             Shell.cd(this.tempDir);
             console.log('TEMPDIR:', this.tempDir);
-            console.log('DIRS:', path, __dirname, process.cwd, this.options._myRoot);
+            console.log('DIRS:', path, __dirname, process.cwd(), this.options._myRoot);
             Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
             Shell.cd(path);
         }

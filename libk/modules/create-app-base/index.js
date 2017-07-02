@@ -48,7 +48,7 @@ class AppBase extends SourceGuides {
         //this.log(`Begin 'AppBase.run'`, 'info');
         
         if (!this.options.skipCreateDiffs) {
-            this.createDiffs();
+            //this.createDiffs();
         }
         
         return this.doRunApi()

@@ -251,10 +251,10 @@ class Diff extends Base {
                 for (; k < namesLen; k++) {
                     let name = names[k];
                     
-                    if (summaryType[key] === null) {
+                    if (summaryType[key] === null || summaryType[key] === undefined) {
                         summaryType[key] = {};
                     }
-                    if (summaryType[key][name] === null) {
+                    if (summaryType[key][name] === null || summaryType[key][name] === undefined) {
                         summaryType[key][name] = 0;
                     }
 

@@ -341,7 +341,7 @@ class ExtReactHtmlApp extends HtmlApp {
             let options = this.options,
                 rextVersion = options.version || options.currentVersion;
 
-            ver = this._apiVer = options.products.extreact.extjsVer[rextVersion];
+            ver = this._apiVer = options.products.extreact.sourceVer[rextVersion];
         }
 
         return ver;

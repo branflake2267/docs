@@ -203,11 +203,15 @@ const args = require('yargs')
     .wrap()
     .argv;
 
-const targets   = ['create-app-html', 'create-rext-app-html', 'create-app-ext', 'source-api',
-                   'source-guides', 'landing', 'create-diff-md', 'reports/locale'],
-      targetMod = args._[0], // the target module to run
-      method    = args._[1] || 'run',
-      canRun    = targets.indexOf(targetMod) > -1;
+const targets = [ 'create-app-html', 'create-rext-app-html', 'create-app-ext', 'source-api',
+                   'source-guides', 'landing', 'create-diff-md', 'reports/locale',
+                   'create-diff' ],
+      // the target module to run
+      [
+          targetMod,
+          method = 'run'
+      ]      = args._,
+      canRun = targets.indexOf(targetMod) > -1;
 
 // check to see if a valid module name was passed
 // i.e. "node index read-source"

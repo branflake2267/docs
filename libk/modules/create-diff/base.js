@@ -11,6 +11,14 @@ class DiffBase extends SourceApi {
     }
     
     /**
+     * The command to use when building the doxi files for diffing
+     * @return {String} The doxi build command
+     */
+    get doxiBuildCommand () {
+        return this.options.doxiBuild || 'all-classes';
+    }
+    
+    /**
      * Returns the categories to be sorted in the diff output
      * @return {String[]} The array of all class / member category types
      */
@@ -60,7 +68,8 @@ class DiffBase extends SourceApi {
     
     /**
      * The source product to diff from.  Will be the `product` passed in the CLI options 
-     * unless a param of `--diffSource` is passed
+     * unless a param of `--diffSource` is passed or unless there is a sourceProduct 
+     * configured in the `projectDefaults`
      * @return {String} The product to diff from
      */
     get diffSourceProduct () {
@@ -100,24 +109,44 @@ class DiffBase extends SourceApi {
     
     /**
      * The source product version to diff from.  It will be the version before 
-     * {@link diffTargetVersion} unless the param `--diffSourceVersion` is passed
+     * {@link diffTargetVersion} unless the param `--diffSourceVersion` is passed or 
+     * unless there is a sourceProduct / version configured in the `projectDefaults`
      * @return {String} The product version to diff from
      */
     get diffSourceVersion () {
-        const { options }   = this,
-                sourceVersion = options.diffSourceVersion;
-        let   diff;
+        const {
+                  options,
+                  diffTargetVersion,
+                  //diffSourceProduct
+                  diffTargetProduct
+              }             = this,
+              { products }  = options,
+              { sourceVer } = products[diffTargetProduct];
+        let   sourceVersion = options.diffSourceVersion,
+              diff;
+        
+        // if the config file has a source version map
+        if (sourceVer) {
+            const sourceVerNumber = sourceVer[diffTargetVersion];
+            
+            // if a source version wasn't passed in initially and we have a source 
+            // version mapped against the target version then use that version as the 
+            // source version
+            if (!sourceVersion && sourceVerNumber) {
+                sourceVersion = sourceVerNumber;
+            }
+        }
         
         if (sourceVersion) {
             diff = sourceVersion;
         } else {
             const target        = this.diffTargetProduct,
-                    sourceProduct = options.products[target],
-                    exceptions    = options.buildExceptions[target] || [],
-                    versions      = sourceProduct.productMenu,
-                    targetVersion = this.diffTargetVersion,
-                    idx           = versions && versions.indexOf(targetVersion),
-                    previous      = idx !== -1 && versions[idx + 1];
+                  sourceProduct = options.products[target],
+                  exceptions    = options.buildExceptions[target] || [],
+                  versions      = sourceProduct.productMenu,
+                  targetVersion = this.diffTargetVersion,
+                  idx           = versions && versions.indexOf(targetVersion),
+                  previous      = idx !== -1 && versions[idx + 1];
             
             if (previous && exceptions.indexOf(previous) > -1) {
                 this.error(`A version prior to ${targetVersion} could not 
@@ -195,7 +224,8 @@ class DiffBase extends SourceApi {
     
     /**
      * Returns the proper product based on whether the target or source diff file is 
-     * being processed
+     * being processed (or will return the `sourceProduct` value from the 
+     * `projectDefaults` if configured)
      * @return {String} The product to generate the API output for
      */
     get apiProduct () {

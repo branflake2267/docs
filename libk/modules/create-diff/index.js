@@ -29,6 +29,7 @@ class Diff extends Parser {
         this.doRun('outputMarkdown');
         this.options.forceDiff = false;
         this.doRun('outputRaw');
+        this.concludeBuild();
     }
     
     /**
@@ -330,7 +331,7 @@ class Diff extends Parser {
         // loop over all items and add them to the totals output as bullets
         for (; i < len; i++) {
             const name     = categories[i],
-                  dispName = _.startCase(name),
+                  dispName = Pluralize.plural(_.startCase(name)),
                   count    = Utils.formatNumberWithCommas(totalsObj[name]);
             
             output += `- ${count} ${dispName}\n`;

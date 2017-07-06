@@ -14,15 +14,6 @@ class DiffParser extends DiffBase {
     }
     
     /**
-     * The command to use when building the doxi files for diffing
-     * @return {String} The doxi build command
-     */
-    get doxiBuildCommand () {
-        //return 'all-classes-flatten';
-        return 'all-classes';
-    }
-    
-    /**
      * The path to the doxi-processed file
      * @return {String} The path to the doxi processed file
      */
@@ -347,6 +338,12 @@ class DiffParser extends DiffBase {
             diffObj[categoryName] = diffObj[categoryName] || [];
             diffObj[categoryName].push(name);
         });
+        
+        const categories = _.keys(diffObj);
+        
+        categories.forEach(category => {
+            diffObj[category] = diffObj[category].reverse();
+        });
     }
     
     /**
@@ -380,8 +377,8 @@ class DiffParser extends DiffBase {
         const diffItems = diffObj.items = {};
 
         // first, filter out any unwanted items before processing them
-        targetItems = this.filterItems(targetItems, type);
-        sourceItems = this.filterItems(sourceItems, type);
+        targetItems = this.filterItems(targetItems, type).reverse();
+        sourceItems = this.filterItems(sourceItems, type).reverse();
 
         // create a map of type|name > item so the items can accurately be reviewed to 
         // see what was added or removed

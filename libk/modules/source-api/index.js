@@ -1404,7 +1404,7 @@ class SourceApi extends Base {
 
                 // prepare the param and return text
                 if (text && ($type === 'param' || $type === 'return' || $type === 'property')) {
-                    text = this.markup(text);
+                    member.text = this.markup(text);
                 }
                 // linkify the return types
                 if ($type === 'return' || $type === 'param') {

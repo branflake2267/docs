@@ -239,10 +239,11 @@ class SourceApi extends Base {
     createTempDoxiFile (product = this.apiProduct) {
         //this.log(`Begin 'SourceApi.createTempDoxiFile'`, 'info');
         const { options, doxiCfg : cfg } = this,
-            { sources, outputs }         = cfg,
-            len                          = sources.length,
-            apiInputDir                  = this.rootApiInputDir;
-        let i                            = 0;
+              { doxiProcessLinks }       = options,
+              { sources, outputs }       = cfg,
+              len                        = sources.length,
+              apiInputDir                = this.rootApiInputDir;
+        let   i                          = 0;
 
         for (; i < len; i++) {
             const { path } = sources[i];
@@ -265,9 +266,12 @@ class SourceApi extends Base {
         };
 
         outputs['combo-nosrc'].dir = Utils.format(outputs['combo-nosrc'].dir, inputObj);
+        outputs['combo-nosrc'].links = doxiProcessLinks;
         outputs['all-classes'].dir = Utils.format(outputs['all-classes'].dir, inputObj);
+        outputs['all-classes'].links = doxiProcessLinks;
         if (outputs['all-classes-flatten']) {
             outputs['all-classes-flatten'].dir = Utils.format(outputs['all-classes-flatten'].dir, inputObj);
+            outputs['all-classes-flatten'].links = doxiProcessLinks;
         }
 
         Fs.ensureDirSync(this.tempDir);
@@ -476,12 +480,13 @@ class SourceApi extends Base {
     doRunDoxi (buildName) {
         //this.log(`Begin 'SourceApi.runDoxi'`, 'info');
 
-        let options       = this.options,
-            forceDoxi     = options.forceDoxi,
+        let { options }       = this,
+            { doxiQuiet, forceDoxi } = options,
             cmd           = this.cmdPath,
             triggerDoxi   = this.triggerDoxi,
             doxiBuild     = buildName || options.doxiBuild || 'combo-nosrc',
-            doxiRequired  = this.doxiRequired;
+            doxiRequired  = this.doxiRequired,
+            runQuiet      = doxiQuiet === true ? '--quiet' : '';
 
         this.syncRemote(
             this.apiProduct,
@@ -510,7 +515,7 @@ class SourceApi extends Base {
             const path = Shell.pwd();
 
             Shell.cd(this.tempDir);
-            Shell.exec(`${cmd} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
+            Shell.exec(`${cmd} ${runQuiet} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
             Shell.cd(path);
         }
     }

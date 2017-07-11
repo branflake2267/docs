@@ -130,7 +130,7 @@ class DiffParser extends DiffBase {
                           sdkTotals : this.getSdkTotals(targetClasses)
                       }
                   };
-                
+            
             // ensure either product / version is passed or the diff-specific flags
             if (!diffTargetProduct) {
                 this.error('The target product name is missing: `--diffTargetProduct` (the --product flag may also be used to indicate both diffTargetProduct and diffSourceProduct)');

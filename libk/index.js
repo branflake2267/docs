@@ -15,103 +15,105 @@ const Chalk            = require('chalk'),
 // set up the arguments handler
 const args = require('yargs')
     .option({
-        'log': {
+        log : {
             alias       : 'l',
             default     : 'error',
             description : 'The level of logging output allowed.  Possible options are: log, info, and error.',
             example     : 'node index read-source -log=true',
             array       : true
         },
-        'product' : {
+        product : {
             alias       : 'prod',
             type        : 'string',
             description : 'The product being processed',
             example     : 'node index read-source -product=extjs'
         },
-        'version' : {
+        version : {
             alias       : 'v',
             type        : 'string',
             description : 'The product version being processed',
             example     : 'node index read-source -product=extjs -version=6.2.1'
         },
-        'toolkit' : {
+        toolkit : {
             alias       : 'tk',
             type        : 'string',
             description : 'The product toolkit being processed',
             example     : 'node index read-source -product=extjs -version=6.2.1 -toolkit=classic'
         },
-        'forceDoxi' : {
+        forceDoxi : {
             type        : 'boolean',
             default     : null,
             description : 'Force doxi to parse the SDK source files',
             example     : 'node index read-source -product=extjs -version=6.2.1 -toolkit=classic'
         },
-        'syncRemote' : {
+        syncRemote : {
             type        : 'boolean',
             default     : null,
             description : 'Force a sync between SDK folder and Git',
             example     : 'node index read-source -product=extjs -version=6.2.1 -toolkit=classic'
         },
-        'production' : {
+        production : {
             type        : 'boolean',
             default     : false,
             description : 'Minifies files for production',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --production'
         },
-        'skipSourceFiles' : {
+        skipSourceFiles : {
             type        : 'boolean',
             default     : false,
             description : 'Skips the creation of the source HTML files for API docs',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --skipSourceFiles'
         },
-        'skipGuides' : {
+        skipGuides : {
             type        : 'boolean',
             default     : false,
             description : 'Skips the creation of guides',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --skipGuides'
         },
-        'audioAlert' : {
+        audioAlert : {
             type        : 'boolean',
             default     : true,
             description : 'Skips the audio alert at the end of a build',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --audioAlert=false'
         },
-        'cmdPath' : {
+        cmdPath : {
             type        : 'string',
             description : 'Stipulates the sencha directory -vs- using what\'s on PATH',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --cmdPath=../../sencha_cmd/sencha'
         },
-        'modifiedOnly' : {
+        modifiedOnly : {
             type        : 'boolean',
             default     : false,
             description : 'Outputs only classes whose file is modified',
             example     : 'node --max-old-space-size=4076 index create-app-html runGuides --product=extjs --version=6.2.1 --modifiedOnly'
         },
-        'new' : {
+        
+        
+        new : {
             type        : 'string',
             default     : null,
             description : 'Provides the new version of the framework from which to execute a diff',
             example     : 'node --max-old-space-size=4076 index create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
         },
-        'old' : {
+        old : {
             type        : 'string',
             default     : null,
             description : 'Provides the old version of the framework from which to execute a diff',
             example     : 'node --max-old-space-size=4076 index create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
         },
-        'newFile' : {
+        newFile : {
             type        : 'string',
             default     : null,
             description : 'Provides the new "all file" of the framework from which to execute a diff',
             example     : 'node --max-old-space-size=4076 index create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
         },
-        'oldFile' : {
+        oldFile : {
             type        : 'string',
             default     : null,
             description : 'Provides the old "all file" of the framework from which to execute a diff',
             example     : 'node --max-old-space-size=4076 index create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
         },
-        'destination' : {
+        destination : {
             type        : 'string',
             default     : null,
             description : 'Provides the old version of the framework from which to execute a diff',
@@ -142,62 +144,74 @@ const args = require('yargs')
             default     : true,
             description : 'True to include private changes, false to exclude theme. Defaults to true'
         },
-        'doxiBuild' : {
+        
+        
+        doxiBuild : {
             type        : 'string',
             default     : false,
             description : 'Setting doxiBuild tells the parser to export a particular build target and then stop',
             example     : 'node --max-old-space-size=4076 index create-app-html --product=extjs --version=6.2.1 --doxiBuild=all-classes-flatten'
         },
-        'diffTarget' : {
+        diffTarget : {
             type        : 'string',
             description : 'The target product (newer) to diff against',
             example     : 'node --max-old-space-size=4076 index create-diff --diffTarget=extjs --diffTargetVersion=6.2.1 --diffSource=extjs --diffSourceVersion=6.2.0'
         },
-        'diffTargetVersion' : {
+        diffTargetVersion : {
             type        : 'string',
             description : 'The target version (newer) to diff against',
             example     : 'node --max-old-space-size=4076 index create-diff --diffTarget=extjs --diffTargetVersion=6.2.1 --diffSource=extjs --diffSourceVersion=6.2.0'
         },
-        'diffSource' : {
+        diffSource : {
             type        : 'string',
             description : 'The source product (older) to diff against',
             example     : 'node --max-old-space-size=4076 index create-diff --diffTarget=extjs --diffTargetVersion=6.2.1 --diffSource=extjs --diffSourceVersion=6.2.0'
         },
-        'diffSourceVersion' : {
+        diffSourceVersion : {
             type        : 'string',
             description : 'The source version (older) to diff against',
             example     : 'node --max-old-space-size=4076 index create-diff --diffTarget=extjs --diffTargetVersion=6.2.1 --diffSource=extjs --diffSourceVersion=6.2.0'
         },
-        'diffTargetPath' : {
+        diffTargetPath : {
             type        : 'string',
             description : 'The path to the doxi generated parse of the target (newer) product / version',
             example     : 'node --max-old-space-size=4076 index create-diff --diffTargetPath=/Applications/htdocs/input/extjs/6.2.1/all-classes-flatten/modern_all-classes-flatten.json --diffSourcePath=/Applications/htdocs/input/extjs/6.2.0/all-classes-flatten/modern_all-classes-flatten.json'
         },
-        'diffSourcePath' : {
+        diffSourcePath : {
             type        : 'string',
             description : 'The path to the doxi generated parse of the source (older) product / version',
             example     : 'node --max-old-space-size=4076 index create-diff --diffTargetPath=/Applications/htdocs/input/extjs/6.2.1/all-classes-flatten/modern_all-classes-flatten.json --diffSourcePath=/Applications/htdocs/input/extjs/6.2.0/all-classes-flatten/modern_all-classes-flatten.json'
         },
-        'diffIgnorePrivate' : {
+        diffIgnorePrivate : {
             type        : 'boolean',
             default     : false,
             description : 'True to disregard private classes / members in the diff',
             example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --diffIgnorePrivate'
         },
-        'forceDiff' : {
+        forceDiff : {
             type        : 'boolean',
             default     : false,
             description : 'True to force a diff to be created -vs- an existing diff beign returned from disc',
             example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --forceDiff=true'
         },
-        'skipCreateDiffs' : {
+        skipCreateDiffs : {
             type        : 'boolean',
             default     : false,
             description : 'True to skip creating diffs for the current and past versions (used to auto-populate the @since tags)',
             example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --skipCreateDiffs=true'
+        },
+        diffOutputDir : {
+            type        : 'string',
+            description : 'Optional path to output diff files',
+            example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --diffOutputDir=diff/output/path'
+        },
+        jsonDiffPath : {
+            type        : 'string',
+            description : 'Path to the json diff file used with the `outputDiffToMarkdown` method',
+            example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --jsonDiffFile=diff/output/path'
         }
     })
-    .command('command', 'Module to run', { alias: 'command' })
+    .command('command', 'Module to run', { alias : 'command' })
     .help('h')
     .alias('h', 'help')
     .wrap()

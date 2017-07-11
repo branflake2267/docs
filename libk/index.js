@@ -200,11 +200,6 @@ const args = require('yargs')
             description : 'True to skip creating diffs for the current and past versions (used to auto-populate the @since tags)',
             example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --skipCreateDiffs=true'
         },
-        diffOutputDir : {
-            type        : 'string',
-            description : 'Optional path to output diff files',
-            example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --diffOutputDir=diff/output/path'
-        },
         jsonDiffPath : {
             type        : 'string',
             description : 'Path to the json diff file used with the `outputDiffToMarkdown` method',

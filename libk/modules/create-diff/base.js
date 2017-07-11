@@ -7,6 +7,15 @@ const SourceApi = require('../source-api'),
 
 class DiffBase extends SourceApi {
     constructor (options) {
+        const { product, diffTarget, version, diffTargetVersion } = options;
+        
+        if (!product && diffTarget) {
+            options.product = diffTarget;
+        }
+        if (!version && diffTargetVersion) {
+            options.version = diffTargetVersion;
+        }
+        
         super(options);
     }
     
@@ -117,7 +126,6 @@ class DiffBase extends SourceApi {
         const {
                   options,
                   diffTargetVersion,
-                  //diffSourceProduct
                   diffTargetProduct
               }             = this,
               { products }  = options,

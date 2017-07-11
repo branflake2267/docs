@@ -7,7 +7,8 @@ const Parser    = require('./parser.js'),
       Pluralize = require('pluralize'),
       JsDiff    = require('diff'),
       Path      = require('path'),
-      Fs        = require('fs-extra');
+      Fs        = require('fs-extra'),
+      Chalk     = require('chalk');
 
 /**
  * Outputs the diff of a product and two differing versions 
@@ -96,6 +97,23 @@ class Diff extends Parser {
               );
               
         Fs.outputJsonSync(path, diff);
+    }
+    
+    /**
+     * Converts a json diff file to markdown.
+     * Requires that the `--jsonDiffPath` flag be set to indicate which file to read in
+     */
+    outputDiffToMarkdown () {
+        let diff = this.options.jsonDiffPath;
+        
+        if (!diff) {
+            console.log(`
+            ${Chalk.white.bgRed('ERROR :')} '${Chalk.gray('--jsonDiffPath')}' flag must be set when running '${Chalk.gray('outputDiffToMarkdown')}'
+            `);
+        } else {
+            diff = Fs.readJsonSync(diff);
+            this.outputMarkdown(diff);
+        }
     }
     
     /**

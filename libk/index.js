@@ -204,6 +204,16 @@ const args = require('yargs')
             type        : 'string',
             description : 'Path to the json diff file used with the `outputDiffToMarkdown` method',
             example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --jsonDiffFile=diff/output/path'
+        },
+        diffTitle : {
+            type        : 'string',
+            description : 'The title to be used in the diff output',
+            example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --diffTitle="Example Title"'
+        },
+        diffOutputPath : {
+            type        : 'string',
+            description : 'The full path + file name (minus extension) where the diff is to be output',
+            example     : 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --diffOutputPath=full/diff/output/path'
         }
     })
     .command('command', 'Module to run', { alias : 'command' })

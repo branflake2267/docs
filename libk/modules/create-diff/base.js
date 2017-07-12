@@ -3,7 +3,8 @@
 
 const SourceApi = require('../source-api'),
       _         = require('lodash'),
-      Utils     = require('../shared/Utils');
+      Utils     = require('../shared/Utils'),
+      Path      = require('path');
 
 class DiffBase extends SourceApi {
     constructor (options) {
@@ -205,8 +206,14 @@ class DiffBase extends SourceApi {
             diffSourceVersion,
             diffTargetProduct,
             diffTargetVersion,
-            apiDirName
-        } = this;
+            apiDirName,
+            options
+        }                = this,
+        { diffFileName } = options;
+        
+        if (diffFileName) {
+            return diffFileName;
+        }
         
         return `${diffSourceProduct}-${diffSourceVersion}-to-${diffTargetProduct}-${diffTargetVersion}-${apiDirName}`;
     }
@@ -265,6 +272,28 @@ class DiffBase extends SourceApi {
         prod = prod || this.diffTargetProduct;
         
         return this.options.normalizedProductList[prod];
+    }
+    
+    /**
+     * Returns the output path string passed from the CLI options if available or the
+     * joined `diffOutputDir` and `diffFileName`.  The path will then be suffixed with
+     * the `extension` param.
+     * @param {String} extension The file extension to append.  Defaults to 'md'
+     * @return {String} The full diff output path
+     */
+    getDiffOutputPath (extension = 'md') {
+        const { diffOutputPath } = this.options;
+        
+        if (diffOutputPath) {
+            return `${diffOutputPath}.${extension}`;
+        } else {
+            const { diffOutputDir, diffFileName } = this;
+            
+            return Path.join(
+                diffOutputDir,
+                `${diffFileName}.${extension}`
+            );
+        }
     }
 }
 

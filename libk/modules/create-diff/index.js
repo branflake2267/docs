@@ -23,13 +23,24 @@ class Diff extends Parser {
     
     /**
      * Creates a diff for the current product / products (including all applicable 
-     * toolkits) and outputs the diffs as a markdown file
+     * toolkits) and outputs the diffs as a markdown file as well as a json file
      */
     run () {
         this.options.forceDiff = true;
         this.doRun('outputMarkdown');
         this.options.forceDiff = false;
         this.doRun('outputRaw');
+        this.concludeBuild();
+    }
+    
+    /**
+     * Creates a diff for the current product / products (including all applicable 
+     * toolkits) and outputs the diffs as a markdown file
+     */
+    runOutputMarkdown () {
+        this.options.forceDiff = true;
+        this.doRun('outputMarkdown');
+        this.options.forceDiff = false;
         this.concludeBuild();
     }
     
@@ -91,11 +102,8 @@ class Diff extends Parser {
      * @param {Object} diff The diff object
      */
     outputRaw (diff) {
-        const path = Path.join(
-                  this.diffOutputDir,
-                  `${this.diffFileName}.json`
-              );
-              
+        const path = this.getDiffOutputPath('json');
+        
         Fs.outputJsonSync(path, diff);
     }
     
@@ -133,10 +141,8 @@ class Diff extends Parser {
         
         // finally, get the path and filename to output to and output the diff as a
         // markdown file
-        const path = Path.join(
-                  this.diffOutputDir,
-                  `${this.diffFileName}.md`
-              );
+        const path = this.getDiffOutputPath('md');
+        
         Fs.outputFileSync(path, output);
         
         return output;
@@ -149,6 +155,12 @@ class Diff extends Parser {
      * @return {String} The markdown diff title heading
      */
     markdownTitle (diff) {
+        const { diffTitle } = this.options;
+        
+        if (diffTitle) {
+            return `# ${diffTitle}\n`;
+        }
+        
         const { diffed }         = diff.meta,
               { source, target } = diffed,
               { title : sourceTitle, version : sourceVersion } = source,

@@ -59,7 +59,11 @@ class DiffParser extends DiffBase {
             targetFile = this.flatDoxiFilePath;
         }
         
-        return Fs.readJsonSync(targetFile);
+        const contents = Fs.readJsonSync(targetFile);
+        
+        this.processDoxiSource(contents);
+        
+        return contents;
     }
     
     /**
@@ -83,7 +87,11 @@ class DiffParser extends DiffBase {
             sourceFile = this.flatDoxiFilePath;
         }
         
-        return Fs.readJsonSync(sourceFile);
+        const contents = Fs.readJsonSync(sourceFile);
+        
+        this.processDoxiSource(contents);
+        
+        return contents;
     }
     
     /**
@@ -227,6 +235,40 @@ class DiffParser extends DiffBase {
     }
     
     /**
+     * Add category type as `realType` to all class and member objects (mostly this just
+     * removes the confusion where configs are listed as $type 'property' instead of
+     * 'config')
+     * @param {Object} doxiSource The source Doxi object
+     */
+    processDoxiSource (doxiSource) {
+        const classes = doxiSource.global.items;
+        
+        // add the type of 'class' to all classes
+        classes.forEach(classObj => {
+            classObj.realType = 'class';
+            
+            const { items } = classObj;
+            
+            // loop over the member type groups for the current class
+            if (items) {
+                items.forEach(memberGroup => {
+                    const {
+                        items,
+                        $type: groupType
+                    } = memberGroup;
+                    
+                    // add the group type as the `realType` to all members in the group
+                    if (items) {
+                        items.forEach(member => {
+                            member.realType = groupType;
+                        });
+                    }
+                });
+            }
+        });
+    }
+    
+    /**
      * Add all added classes and members to the sinceMap and output it to disc
      * @param {Object} diff The diff object
      */
@@ -334,7 +376,7 @@ class DiffParser extends DiffBase {
         items.forEach(item => {
             const itemSplit = item.split('|'),
                   [ categoryName, name ] = itemSplit;
-                  
+            
             diffObj[categoryName] = diffObj[categoryName] || [];
             diffObj[categoryName].push(name);
         });
@@ -355,9 +397,9 @@ class DiffParser extends DiffBase {
      * @return {String} The type|name pair
      */
     getMapKey (obj) {
-        const { $type, name } = obj;
+        const { realType, $type, name } = obj;
 
-        return `${$type}|${name}`;
+        return `${realType || $type}|${name}`;
     }
     
     /**
@@ -452,7 +494,7 @@ class DiffParser extends DiffBase {
                   
                   return result;
               }, {});
-        
+              
         // add the hierarchy for the current item to the diff object (diffObj)
         diffObj[type]                   = diffObj[type] || {};
         diffObj[type][dispName]         = diffObj[type][dispName] || {};

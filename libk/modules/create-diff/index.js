@@ -6,7 +6,6 @@ const Parser    = require('./parser.js'),
       _         = require('lodash'),
       Pluralize = require('pluralize'),
       JsDiff    = require('diff'),
-      Path      = require('path'),
       Fs        = require('fs-extra'),
       Chalk     = require('chalk');
 
@@ -165,10 +164,13 @@ class Diff extends Parser {
               { source, target } = diffed,
               { title : sourceTitle, version : sourceVersion } = source,
               { title : targetTitle, version : targetVersion } = target,
-              sourceStr = `${sourceTitle} ${sourceVersion}`,
-              targetStr = `${targetTitle} ${targetVersion}`;
+              sourceStr   = `${sourceTitle} ${sourceVersion}`,
+              targetStr   = `${targetTitle} ${targetVersion}`,
+              toolkits    = this.getToolkits(this.diffTargetProduct),
+              { toolkit } = this.options,
+              toolkitStr  = toolkits && toolkits.length ? `(${toolkit})` : '';
               
-        return `# Diff between ${sourceStr} and ${targetStr}\n`;
+        return `# Diff between ${sourceStr} and ${targetStr} ${toolkitStr}\n`;
     }
     
     /**

@@ -157,7 +157,7 @@ class Diff extends Parser {
         const { diffTitle } = this.options;
         
         if (diffTitle) {
-            return `# ${diffTitle}\n`;
+            return `# ${diffTitle}\n\n`;
         }
         
         const { diffed }         = diff.meta,
@@ -180,10 +180,10 @@ class Diff extends Parser {
      * @param {Object} [diffObj={}] The diff object
      * @param {Number} [indent=0] The amount to indent this item by in the markdown
      * output
-     * @param {*} [prefix="## "] The line prefix for these items
+     * @param {*} [prefix="##"] The line prefix for these items
      * @return {String} The markdown string
      */
-    markdownItems (diffObj = {}, indent = 0, prefix = '## ') {
+    markdownItems (diffObj = {}, indent = 0, prefix = '##') {
         const { added, removed, modified } = diffObj;
         let output = '';
         
@@ -220,7 +220,7 @@ class Diff extends Parser {
             
             // the capitalized type will be added to the diff markdown heading
             type    = _.capitalize(Pluralize.plural(type));
-            output += `${headingPrefix} ${label} ${type}\n`;
+            output += `\n${headingPrefix} ${label} ${type}\n\n`;
             
             // then for each item that is added / removed add it as a bulleted item to
             // the markdown output
@@ -259,7 +259,7 @@ class Diff extends Parser {
                   typeLabel = _.capitalize(Pluralize.plural(type));
             
             // create the modified items' label using the heading prefix and type
-            output += `${headingPrefix} Modified ${typeLabel}\n`;
+            output += `\n${headingPrefix} Modified ${typeLabel}\n\n`;
             
             // loop over all modified items and output a label for them and then pass
             // each item to the `markdownItem` method
@@ -359,7 +359,7 @@ class Diff extends Parser {
               output     = '';
         
         // label the totals section
-        output += '## SDK Totals\n';
+        output += '\n## SDK Totals\n\n';
         // loop over all items and add them to the totals output as bullets
         for (; i < len; i++) {
             const name     = categories[i],

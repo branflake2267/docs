@@ -326,9 +326,9 @@ class Diff extends Parser {
             // to the markdown output
             for (; i < len; i++) {
                 const name            = changeNames[i],
-                      change          = changes[name],
-                      { from, to }    = change,
-                      indentName      = _.repeat('  ', indent),
+                      change          = changes[name];
+                let   { from, to }    = change;
+                const indentName      = _.repeat('  ', indent),
                       indentValueDiff = _.repeat('  ', indent + 1),
                       isCode          = /^(?:\[(?:.*\n|\r+)|{(?:.*\n|\r+)|Ext.(?:.*\n|\r+)|new(?:.*\n|\r+))/i;
                         
@@ -366,6 +366,12 @@ class Diff extends Parser {
                     // add the value diff and close the code/pre tags
                     output += `${indentValueDiff}</code></pre>\n`;
                 } else {
+                    if (to === 'undefined') {
+                        to = 'public';
+                    }
+                    if (from === 'undefined') {
+                        from = 'public';
+                    }
                     const accessLabel = ` (${to} *was ${from}*)`
                     
                     output += `${accessLabel}\n`;

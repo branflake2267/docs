@@ -270,7 +270,7 @@ class Diff extends Parser {
                       itemIndent  = childIndent + (childIndent ? 1 : 0);
                     
                 // create the modified item label
-                output += `${childPrefix} ${item}\n`;
+                output += `\n${childPrefix} ${item}\n\n`;
                 output += this.markdownItem(category[item], indent + itemIndent);
             }
         }

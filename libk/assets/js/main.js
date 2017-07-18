@@ -1995,7 +1995,7 @@ DocsApp.getEventTarget = function (e) {
                 }
 
                 if (DocsApp.meta.product !== 'cmd' && item.prod === 'cmd') {
-                    href = DocsApp.meta.rootPath  + '../../' + item.prod + '/' + item.searchUrls[item.r];
+                    href = DocsApp.meta.rootPath  + '../../' + item.prod + '/' + DocsApp.meta.searchPartnerVersions.cmd[DocsApp.meta.version] + '/' + item.searchUrls[item.r];
                 } else {
                     href = DocsApp.meta.rootPath + item.searchUrls[item.r];
                 }

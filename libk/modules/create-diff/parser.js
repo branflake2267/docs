@@ -372,13 +372,17 @@ class DiffParser extends DiffBase {
      * @param {Array} items The items to add to the diff object
      * @param {String} action The action being logged: 'add' or 'remove'
      */
-    sortItemsByType (diffObj, items) {
+    sortItemsByType (diffObj, items, map) {
         items.forEach(item => {
             const itemSplit = item.split('|'),
                   [ categoryName, name ] = itemSplit;
             
             diffObj[categoryName] = diffObj[categoryName] || [];
-            diffObj[categoryName].push(name);
+            
+            diffObj[categoryName].push({
+                name   : name,
+                access : map[item].access
+            });
         });
         
         const categories = _.keys(diffObj);
@@ -438,10 +442,10 @@ class DiffParser extends DiffBase {
         
         // add all of the added and removed items by category to the `diffObject`
         const addedCt = diffItems.added = {};
-        this.sortItemsByType(addedCt, added);
+        this.sortItemsByType(addedCt, added, targetMap);
         
         const removedCt = diffItems.removed = {};
-        this.sortItemsByType(removedCt, removed);
+        this.sortItemsByType(removedCt, removed, sourceMap);
 
         // loop over all common names between target and source and pass their items to
         // the `diffItem` method
@@ -496,9 +500,12 @@ class DiffParser extends DiffBase {
               }, {});
               
         // add the hierarchy for the current item to the diff object (diffObj)
-        diffObj[type]                   = diffObj[type] || {};
-        diffObj[type][dispName]         = diffObj[type][dispName] || {};
-        diffObj[type][dispName].changes = modified;
+        diffObj[type]                        = diffObj[type] || {};
+        diffObj[type][dispName]              = diffObj[type][dispName] || {};
+        diffObj[type][dispName].changes      = modified;
+        if (_.keys(modified).length) {
+            diffObj[type][dispName].targetAccess = targetMap[name].access;
+        }
         
         if (targetItems) {
             // first look to see if what we're working with is a group of items -vs- a

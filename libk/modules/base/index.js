@@ -196,21 +196,102 @@ class Base {
      * @return {Object} Hash of common current page metadata
      */
     get commonMetaData () {
-        let { options }     = this,
-            { prodVerMeta } = options,
-            meta            = Object.assign({}, options.prodVerMeta),
-            product         = this.getProduct(options.product);
+        const { options }     = this,
+              { prodVerMeta } = options,
+              meta            = Object.assign({}, options.prodVerMeta),
+              product         = this.getProduct(options.product),
+              { searchPartnerVersions } = this;
+            
+        // if (guideSearchPartners) {
+        //     const { productMenu: partnerVersions } = products[guideSearchPartners];
+        // }
 
         return Object.assign(meta, {
-            version    : options.version,
-            pageType   : 'common',
-            product    : product,
-            apiProduct : this.apiProduct,
-            apiVersion : this.apiVersion,
-            title      : meta.title,
-            toolkit    : prodVerMeta.hasToolkits && options.toolkit,
-            exceptions : options.buildExceptions
+            version               : options.version,
+            pageType              : 'common',
+            product               : product,
+            apiProduct            : this.apiProduct,
+            apiVersion            : this.apiVersion,
+            title                 : meta.title,
+            toolkit               : prodVerMeta.hasToolkits && options.toolkit,
+            exceptions            : options.buildExceptions,
+            searchPartnerVersions : searchPartnerVersions
         });
+    }
+    
+    /**
+     * Finds the search partner version that most closely matches the product version
+     * you're currently working with
+     * @return {Object} An object whose keys are the search partner product names and
+     * whose value is an object of productVersion : partnerVersion pairs.  For example:
+     * 
+     *     {
+     *         cmd : {
+     *             '6.5.1': '6.5.1',
+     *             '6.5.0': '6.5.0',
+     *             '6.2.1': '6.5.0',
+     *             '6.2.0': '6.5.0',
+     *             '6.0.2': '6.5.0',
+     *             '6.0.1': '6.5.0',
+     *             '6.0.0': '6.5.0',
+     *             '5.1.4': '6.5.0',
+     *             '5.1.3': '6.5.0',
+     *             '5.1.2': '6.5.0',
+     *             '5.1.1': '6.5.0',
+     *             '5.1.0': '6.5.0',
+     *             '5.0.1': '6.5.0',
+     *             '5.0.0': '6.5.0'
+     *         }
+     *     }
+     */
+    get searchPartnerVersions () {
+        const { options } = this,
+              {
+                  product : currentProduct,
+                  products
+              }       = options,
+              product = this.getProduct(currentProduct),
+              {
+                  guideSearchPartners,
+                  productMenu
+              } = products[product],
+              searchPartnerVersions   = {};
+        
+        if (guideSearchPartners && guideSearchPartners.length) {
+            guideSearchPartners.forEach(partner => {
+                const prodObj         = searchPartnerVersions[partner] = {};
+                let   partnerVersions = _.clone(products[partner].productMenu);
+                
+                if (!partnerVersions || partnerVersions === true) {
+                    partnerVersions = [];
+                }
+                partnerVersions      = partnerVersions.reverse();
+
+                productMenu.forEach(prodVer => {
+                    const [
+                              firstPartner
+                          ]           = partnerVersions,
+                          lastPartner = _.last(partnerVersions),
+                          under       = CompareVersions(prodVer, firstPartner) < 1,
+                          over        = CompareVersions(prodVer, lastPartner) === 1;
+                    
+                    if (under) {
+                        prodObj[prodVer] = firstPartner;
+                    } else if (over) {
+                        prodObj[prodVer] = lastPartner;
+                    } else {
+                        partnerVersions.forEach(partnerVer => {
+                            const compared = CompareVersions(prodVer, partnerVer);
+                            if (compared < 1) {
+                                prodObj[prodVer] = partnerVer;
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        
+        return searchPartnerVersions;
     }
 
     /**

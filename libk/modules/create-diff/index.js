@@ -27,8 +27,18 @@ class Diff extends Parser {
     run () {
         this.options.forceDiff = true;
         this.doRun('outputMarkdown');
-        this.options.forceDiff = false;
         this.doRun('outputRaw');
+        this.options.forceDiff = false;
+        
+        // this.options.forceDiff = true;
+        // const diffs = this.doRun('outputRaw');
+        // this.options.forceDiff = false;
+        
+        // _.forEach(diffs, (toolkit, diff) => {
+        //     this.options.toolkit = toolkit;
+        //     this.outputMarkdown(diff);
+        // });
+        
         this.concludeBuild();
     }
     
@@ -49,6 +59,12 @@ class Diff extends Parser {
      * using the passed output method (`outputMethod`)
      * @param {String} outputMethod The method to output the diffs with (i.e. outputRaw 
      * or outputMarkdown)
+     * @return {Object} The diffs for each toolkit
+     * 
+     *     {
+     *         classic : { .. the classic diff .. },
+     *         modern  : { .. the modern diff  .. }
+     *     }
      */
     doRun (outputMethod) {
         const { options } = this,
@@ -58,7 +74,8 @@ class Diff extends Parser {
                   meta.hasToolkits ?
                       (options.toolkit || meta.toolkits) :
                       false
-              );
+              ),
+              diffObj = {};
 
         // check to see if the product has an api to diff
         if (!hasApi) {
@@ -69,9 +86,13 @@ class Diff extends Parser {
         // create the diff for all eligible toolkits
         toolkitList.forEach(toolkit => {
             this.options.toolkit = toolkit;
-            this[outputMethod](this.diff);
+            const { diff } = this;
+            this[outputMethod](diff);
+            diffObj[toolkit] = diff;
             delete this.options.toolkit;
         });
+        
+        return diffObj;
     }
     
     /**
@@ -157,7 +178,7 @@ class Diff extends Parser {
         const { diffTitle } = this.options;
         
         if (diffTitle) {
-            return `# ${diffTitle}\n\n`;
+            return `# ${diffTitle}\n`;
         }
         
         const { diffed }         = diff.meta,
@@ -216,19 +237,21 @@ class Diff extends Parser {
         
         // loop over all types
         types.forEach(type => {
-            const list = diffObj[type];
+            const list      = diffObj[type],
+                  lineBreak = prefix.includes('#') ? '\n' : '';
             
             // the capitalized type will be added to the diff markdown heading
             type    = _.capitalize(Pluralize.plural(type));
-            output += `\n${headingPrefix} ${label} ${type}\n\n`;
+            output += `${lineBreak}${headingPrefix} ${label} ${type}${lineBreak}\n`;
             
             // then for each item that is added / removed add it as a bulleted item to
             // the markdown output
             list.forEach(item => {
                 const childIndent = prefix.includes('-') ? 1 : 0,
-                      childPrefix = _.repeat('  ', indent + childIndent) + '-';
+                      childPrefix = _.repeat('  ', indent + childIndent) + '-',
+                      access      = item.access ? ` (${item.access})` : '';
 
-                output += `${childPrefix} ${item}\n`;
+                output += `${childPrefix} ${item.name}${access}\n`;
             });
         });
         
@@ -254,12 +277,13 @@ class Diff extends Parser {
             let   type      = types[i];
             const category  = diffObj[type],
                   items     = _.keys(category),
-                  itemsLen  = items.length;
+                  itemsLen  = items.length,
+                  lineBreak = prefix.includes('#') ? '\n' : '';
             let   j         = 0,
                   typeLabel = _.capitalize(Pluralize.plural(type));
-            
+                  
             // create the modified items' label using the heading prefix and type
-            output += `\n${headingPrefix} Modified ${typeLabel}\n\n`;
+            output += `${lineBreak}${headingPrefix} Modified ${typeLabel}${lineBreak}\n`;
             
             // loop over all modified items and output a label for them and then pass
             // each item to the `markdownItem` method
@@ -267,10 +291,11 @@ class Diff extends Parser {
                 const item = items[j],
                       childIndent = prefix.includes('-') ? 1 : 0,
                       childPrefix = childIndent ? _.repeat('  ', indent + 1) + '-' : '###',
+                      lineBreak   = prefix.includes('#') ? '\n' : '',
                       itemIndent  = childIndent + (childIndent ? 1 : 0);
                     
                 // create the modified item label
-                output += `\n${childPrefix} ${item}\n\n`;
+                output += `${lineBreak}${childPrefix} ${item}${lineBreak}`;
                 output += this.markdownItem(category[item], indent + itemIndent);
             }
         }
@@ -306,36 +331,45 @@ class Diff extends Parser {
                       indentName      = _.repeat('  ', indent),
                       indentValueDiff = _.repeat('  ', indent + 1),
                       isCode          = /^(?:\[(?:.*\n|\r+)|{(?:.*\n|\r+)|Ext.(?:.*\n|\r+)|new(?:.*\n|\r+))/i;
-                   
-                // output a label and pre/code tags for displaying the changes 
-                output += `${indentName}- ${name}\n`;
-                output += `${indentValueDiff}<pre><code>`;
-                
-                // create a diff between old and new values
-                const valueDiff = JsDiff.diffLines(_.escape(from), _.escape(to)),
-                      decorated = [];
-                
-                // using the values diff we just created, loop over each item and process
-                // it to show it was either added, removed, or didn't change
-                valueDiff.forEach((part, idx) => {
-                    const { added, removed } = part,
-                          lineIndent = idx ? indentValueDiff : '',
-                          close      = added ? '</ins>' : (removed ? '</del>' : ''),
-                          open       = added ? `${lineIndent}<ins>` : (
-                              removed ? `${lineIndent}<del>` : ''
-                          );
-                    let   { value }  = part;
+                        
+                if (name !== 'access') {
+                    const { targetAccess } = change,
+                          accessLabel      = targetAccess ? ` (${targetAccess})` : '';
                     
-                    value = value.replace(/\n|\r/gm, '\n' + indentValueDiff);
+                    // output a label and pre/code tags for displaying the changes
+                    output += `\n${indentName}- ${name}${accessLabel}\n`;
+                    output += `${indentValueDiff}<pre><code>`;
                     
-                    decorated.push(`${open}${value}${close}`);
-                });
-                
-                // join up the value diff into a string we can add to the markdown
-                output += decorated.join(isCode.test(to) ? '' : '\n');
-                
-                // add the value diff and close the code/pre tags
-                output += `${indentValueDiff}</code></pre>\n`;
+                    // create a diff between old and new values
+                    const valueDiff = JsDiff.diffLines(_.escape(from), _.escape(to)),
+                        decorated = [];
+                    
+                    // using the values diff we just created, loop over each item and process
+                    // it to show it was either added, removed, or didn't change
+                    valueDiff.forEach((part, idx) => {
+                        const { added, removed } = part,
+                            lineIndent = idx ? indentValueDiff : '',
+                            close      = added ? '</ins>' : (removed ? '</del>' : ''),
+                            open       = added ? `${lineIndent}<ins>` : (
+                                removed ? `${lineIndent}<del>` : ''
+                            );
+                        let   { value }  = part;
+                        
+                        value = value.replace(/\n|\r/gm, '\n' + indentValueDiff);
+                        
+                        decorated.push(`${open}${value}${close}`);
+                    });
+                    
+                    // join up the value diff into a string we can add to the markdown
+                    output += decorated.join(isCode.test(to) ? '' : '\n');
+                    
+                    // add the value diff and close the code/pre tags
+                    output += `${indentValueDiff}</code></pre>\n`;
+                } else {
+                    const accessLabel = ` (${to} *was ${from}*)`
+                    
+                    output += `${accessLabel}\n`;
+                }
             }
         }
         
@@ -359,7 +393,7 @@ class Diff extends Parser {
               output     = '';
         
         // label the totals section
-        output += '\n## SDK Totals\n\n';
+        output += '## SDK Totals\n\n';
         // loop over all items and add them to the totals output as bullets
         for (; i < len; i++) {
             const name     = categories[i],

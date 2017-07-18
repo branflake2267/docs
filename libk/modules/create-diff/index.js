@@ -399,7 +399,7 @@ class Diff extends Parser {
               output     = '';
         
         // label the totals section
-        output += '## SDK Totals\n\n';
+        output += '\n## SDK Totals\n\n';
         // loop over all items and add them to the totals output as bullets
         for (; i < len; i++) {
             const name     = categories[i],

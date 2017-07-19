@@ -133,8 +133,8 @@ class SourceApi extends Base {
                 Utils.format(
                     this.options.parserConfigPath,
                     {
-                        //product: this.getProduct()
-                        product : this.apiProduct
+                        product: this.getProduct()
+                        //product : this.apiProduct
                     }
                 )
             )
@@ -236,7 +236,8 @@ class SourceApi extends Base {
      * paths are replaced with values supplied by the passed options (projectDefaults,
      * app.json, CLI)
      */
-    createTempDoxiFile (product = this.apiProduct) {
+    //createTempDoxiFile (product = this.apiProduct) {
+    createTempDoxiFile (product = this.getProduct()) {
         //this.log(`Begin 'SourceApi.createTempDoxiFile'`, 'info');
         const { options, doxiCfg : cfg } = this,
               { doxiProcessLinks }       = options,

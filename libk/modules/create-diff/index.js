@@ -326,7 +326,8 @@ class Diff extends Parser {
             // to the markdown output
             for (; i < len; i++) {
                 const name            = changeNames[i],
-                      change          = changes[name];
+                      change          = changes[name],
+                      itemNewLine     = i === 0 ? '\n' : '';
                 let   { from, to }    = change;
                 const indentName      = _.repeat('  ', indent),
                       indentValueDiff = _.repeat('  ', indent + 1),
@@ -334,37 +335,60 @@ class Diff extends Parser {
                         
                 if (name !== 'access') {
                     const { targetAccess } = change,
-                          accessLabel      = targetAccess ? ` (${targetAccess})` : '';
+                          accessLabel      = targetAccess ? ` (${targetAccess})` : '',
+                          fromWords        = from.toString().length,
+                          toWords          = to.toString().length,
+                          size             = (toWords < 40 && fromWords < 40)  ?
+                                             'small' :
+                                             (toWords < 90 && fromWords < 90) ?
+                                             'medium' :
+                                             'large';
                     
                     // output a label and pre/code tags for displaying the changes
-                    output += `\n${indentName}- ${name}${accessLabel}\n`;
-                    output += `${indentValueDiff}<pre><code>`;
+                    output += `${itemNewLine}${indentName}- ${name}${accessLabel}`;
                     
-                    // create a diff between old and new values
-                    const valueDiff = JsDiff.diffLines(_.escape(from), _.escape(to)),
-                        decorated = [];
+                    if (name === 'optional') {
+                        console.log(from, fromWords);
+                        console.log(to, toWords);
+                        console.log(size)
+                    }
                     
-                    // using the values diff we just created, loop over each item and process
-                    // it to show it was either added, removed, or didn't change
-                    valueDiff.forEach((part, idx) => {
-                        const { added, removed } = part,
-                            lineIndent = idx ? indentValueDiff : '',
-                            close      = added ? '</ins>' : (removed ? '</del>' : ''),
-                            open       = added ? `${lineIndent}<ins>` : (
-                                removed ? `${lineIndent}<del>` : ''
-                            );
-                        let   { value }  = part;
+                    if (size === 'small') {
+                        output += ` is **${to}** (was *${from}*)\n`;
+                    } else if (size === 'medium') {
+                        output += `\n${indentValueDiff}**is**\n`;
+                        output += `${indentValueDiff}**<pre><code>${to}</code></pre>**\n`;
+                        output += `${indentValueDiff}*was*\n`;
+                        output += `${indentValueDiff}*<pre><code>${from}</code></pre>*\n`;
+                    } else {
+                        output += `\n${indentValueDiff}<pre><code>`;
+                    
+                        // create a diff between old and new values
+                        const valueDiff = JsDiff.diffLines(_.escape(from), _.escape(to)),
+                            decorated = [];
                         
-                        value = value.replace(/\n|\r/gm, '\n' + indentValueDiff);
+                        // using the values diff we just created, loop over each item and process
+                        // it to show it was either added, removed, or didn't change
+                        valueDiff.forEach((part, idx) => {
+                            const { added, removed } = part,
+                                lineIndent = idx ? indentValueDiff : '',
+                                close      = added ? '</ins>' : (removed ? '</del>' : ''),
+                                open       = added ? `${lineIndent}<ins>` : (
+                                    removed ? `${lineIndent}<del>` : ''
+                                );
+                            let   { value }  = part;
+                            
+                            value = value.replace(/\n|\r/gm, '\n' + indentValueDiff);
+                            
+                            decorated.push(`${open}${value}${close}`);
+                        });
                         
-                        decorated.push(`${open}${value}${close}`);
-                    });
-                    
-                    // join up the value diff into a string we can add to the markdown
-                    output += decorated.join(isCode.test(to) ? '' : '\n');
-                    
-                    // add the value diff and close the code/pre tags
-                    output += `${indentValueDiff}</code></pre>\n`;
+                        // join up the value diff into a string we can add to the markdown
+                        output += decorated.join(isCode.test(to) ? '' : '\n');
+                        
+                        // add the value diff and close the code/pre tags
+                        output += `${indentValueDiff}</code></pre>\n`;
+                    }
                 } else {
                     if (to === 'undefined') {
                         to = 'public';
@@ -381,6 +405,7 @@ class Diff extends Parser {
         
         // if this item has items of its own pass them to the markdownItems method
         if (items) {
+            output += '\n';
             output += this.markdownItems(items, indent ? indent + 1 : 0, '-');
         }
         

@@ -295,6 +295,15 @@ class DiffBase extends SourceApi {
             );
         }
     }
+    
+    /**
+     * Strips \n instances from the ends of the passed string
+     * @param {String} str The string to trim
+     * @return {String} The trimmed string
+     */
+    trimNewlines (str) {
+        return str.replace(/^(?:\n)+|(?:\n)+$/g, '');
+    }
 }
 
 module.exports = DiffBase;

@@ -338,6 +338,8 @@ class Diff extends Parser {
                           accessLabel      = targetAccess ? ` (${targetAccess})` : '',
                           fromWords        = from.toString().length,
                           toWords          = to.toString().length,
+                          isLast           = (i === (len - 1)),
+                          replaceVal       = isLast ? '' : '\n' + indentValueDiff,
                           size             = (toWords < 40 && fromWords < 40)  ?
                                              'small' :
                                              (toWords < 90 && fromWords < 90) ?
@@ -347,15 +349,15 @@ class Diff extends Parser {
                     // output a label and pre/code tags for displaying the changes
                     output += `${itemNewLine}${indentName}- ${name}${accessLabel}`;
                     
-                    if (name === 'optional') {
-                        console.log(from, fromWords);
-                        console.log(to, toWords);
-                        console.log(size)
-                    }
-                    
                     if (size === 'small') {
                         output += ` is **${to}** (was *${from}*)\n`;
                     } else if (size === 'medium') {
+                        from = this.trimNewlines(from);
+                        to   = this.trimNewlines(to);
+                        
+                        from = from.replace(/(?:\n)+|(?:\r)+/gm, '\n' + indentValueDiff);
+                        to   =   to.replace(/(?:\n)+|(?:\r)+/gm, '\n' + indentValueDiff);
+                        
                         output += `\n${indentValueDiff}**is**\n`;
                         output += `${indentValueDiff}**<pre><code>${to}</code></pre>**\n`;
                         output += `${indentValueDiff}*was*\n`;
@@ -378,7 +380,15 @@ class Diff extends Parser {
                                 );
                             let   { value }  = part;
                             
-                            value = value.replace(/\n|\r/gm, '\n' + indentValueDiff);
+                            //value = value.replace(/\n|\r/gm, '\n' + indentValueDiff);
+                            //value = value.replace(/(?:\n)+|(?:\r)+/gm, '\n' + indentValueDiff);
+                            //value = this.trimNewlines(value);
+                            if (added || removed) {
+                                value = value.replace(/(?:\n)+|(?:\r)+/gm, '');
+                            } else {
+                                //const replaceVal = isLast ? '' : '\n' + indentValueDiff;
+                                value = indentValueDiff + value.replace(/(?:\n)+|(?:\r)+/gm, replaceVal);
+                            }
                             
                             decorated.push(`${open}${value}${close}`);
                         });
@@ -387,7 +397,8 @@ class Diff extends Parser {
                         output += decorated.join(isCode.test(to) ? '' : '\n');
                         
                         // add the value diff and close the code/pre tags
-                        output += `${indentValueDiff}</code></pre>\n`;
+                        //output += `${indentValueDiff}</code></pre>\n`;
+                        output += `</code></pre>\n`;
                     }
                 } else {
                     if (to === 'undefined') {

@@ -446,7 +446,9 @@ class DiffParser extends DiffBase {
         
         const removedCt = diffItems.removed = {};
         this.sortItemsByType(removedCt, removed, sourceMap);
-
+        
+        diffItems.modified = modifiedObj;
+        
         // loop over all common names between target and source and pass their items to
         // the `diffItem` method
         let len = commonNames.length;
@@ -455,9 +457,28 @@ class DiffParser extends DiffBase {
             const name = commonNames[len];
             
             this.diffItem(name, modifiedObj, type, targetMap, sourceMap);
+            
+            // add the access to each item
+            const [ , dispName ] = name.split('|'),
+                  diffObj        = modifiedObj[type][dispName],
+                  {
+                      changes = {},
+                      items   = {}
+                  }                  = diffObj,
+                  { added, removed } = items,
+                  { modified }       = items;
+                  
+            this.cleanObject(diffObj);
+            
+            const hasChanges  = _.size(changes),
+                  hasAdded    = _.size(added),
+                  hasRemoved  = _.size(removed),
+                  hasModified = _.size(modified);
+            
+            if (hasChanges || hasAdded || hasRemoved || hasModified) {
+                modifiedObj[type][dispName].targetAccess = targetMap[name].access;
+            }
         }
-        
-        diffItems.modified = modifiedObj;
     }
     
     /**
@@ -503,9 +524,6 @@ class DiffParser extends DiffBase {
         diffObj[type]                        = diffObj[type] || {};
         diffObj[type][dispName]              = diffObj[type][dispName] || {};
         diffObj[type][dispName].changes      = modified;
-        if (_.keys(modified).length) {
-            diffObj[type][dispName].targetAccess = targetMap[name].access;
-        }
         
         if (targetItems) {
             // first look to see if what we're working with is a group of items -vs- a

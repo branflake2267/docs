@@ -289,14 +289,20 @@ class Diff extends Parser {
             // each item to the `markdownItem` method
             for (; j < itemsLen; j++) {
                 const item = items[j],
-                      childIndent = prefix.includes('-') ? 1 : 0,
-                      childPrefix = childIndent ? _.repeat('  ', indent + 1) + '-' : '###',
-                      lineBreak   = prefix.includes('#') ? '\n' : '',
-                      itemIndent  = childIndent + (childIndent ? 1 : 0);
-                    
+                      childIndent      = prefix.includes('-') ? 1 : 0,
+                      childPrefix      = childIndent ? _.repeat('  ', indent + 1) + '-' : '###',
+                      { targetAccess } = category[item],
+                      accessLabel      = targetAccess ? ` (${targetAccess})` : '',
+                      lineBreak        = prefix.includes('#') ? '\n' : '',
+                      itemIndent       = childIndent + (childIndent ? 1 : 0);
+
                 // create the modified item label
-                output += `${lineBreak}${childPrefix} ${item}${lineBreak}`;
-                output += this.markdownItem(category[item], indent + itemIndent);
+                output += `${lineBreak}${childPrefix} ${item}${accessLabel}${lineBreak}`;
+                const mdItem = this.markdownItem(category[item], indent + itemIndent);
+                if (mdItem[1] === '(') {
+                    output = this.trimNewlines(output);
+                }
+                output += mdItem;
             }
         }
         
@@ -330,16 +336,14 @@ class Diff extends Parser {
                       itemNewLine     = i === 0 ? '\n' : '';
                 let   { from, to }    = change;
                 const indentName      = _.repeat('  ', indent),
-                      indentValueDiff = _.repeat('  ', indent + 1),
-                      isCode          = /^(?:\[(?:.*\n|\r+)|{(?:.*\n|\r+)|Ext.(?:.*\n|\r+)|new(?:.*\n|\r+))/i;
+                      indentValueDiff = _.repeat('  ', indent + 1);
+                      //isCode          = /^(?:\[(?:.*\n|\r+)|{(?:.*\n|\r+)|Ext.(?:.*\n|\r+)|new(?:.*\n|\r+))/i;
                         
                 if (name !== 'access') {
                     const { targetAccess } = change,
                           accessLabel      = targetAccess ? ` (${targetAccess})` : '',
                           fromWords        = from.toString().length,
                           toWords          = to.toString().length,
-                          isLast           = (i === (len - 1)),
-                          replaceVal       = isLast ? '' : '\n' + indentValueDiff,
                           size             = (toWords < 40 && fromWords < 40)  ?
                                              'small' :
                                              (toWords < 90 && fromWords < 90) ?
@@ -368,36 +372,36 @@ class Diff extends Parser {
                         // create a diff between old and new values
                         const valueDiff = JsDiff.diffLines(_.escape(from), _.escape(to)),
                             decorated = [];
-                        
-                        // using the values diff we just created, loop over each item and process
-                        // it to show it was either added, removed, or didn't change
-                        valueDiff.forEach((part, idx) => {
-                            const { added, removed } = part,
-                                lineIndent = idx ? indentValueDiff : '',
-                                close      = added ? '</ins>' : (removed ? '</del>' : ''),
-                                open       = added ? `${lineIndent}<ins>` : (
-                                    removed ? `${lineIndent}<del>` : ''
-                                );
-                            let   { value }  = part;
+
+                        valueDiff.forEach((part, idx, arr) => {
+                            const { added, removed } = part;
+                            let   { value } = part,
+                                  open      = '',
+                                  close     = '';
                             
-                            //value = value.replace(/\n|\r/gm, '\n' + indentValueDiff);
-                            //value = value.replace(/(?:\n)+|(?:\r)+/gm, '\n' + indentValueDiff);
-                            //value = this.trimNewlines(value);
-                            if (added || removed) {
-                                value = value.replace(/(?:\n)+|(?:\r)+/gm, '');
-                            } else {
-                                //const replaceVal = isLast ? '' : '\n' + indentValueDiff;
-                                value = indentValueDiff + value.replace(/(?:\n)+|(?:\r)+/gm, replaceVal);
+                            if (added) {
+                                open    = '<ins>';
+                                close   = '</ins>';
+                            }
+                            if (removed) {
+                                open    = '<del>';
+                                close   = '</del>';
                             }
                             
-                            decorated.push(`${open}${value}${close}`);
+                            if (added || removed) {
+                                value = this.trimNewlines(value);
+                            }
+                            value = `${open}${value}${close}\n`;
+                            value = value.replace(/(?:\n)+|(?:\r)+/gm, '\n' + indentValueDiff);
+                            
+                            decorated.push(value);
                         });
                         
-                        // join up the value diff into a string we can add to the markdown
-                        output += decorated.join(isCode.test(to) ? '' : '\n');
+                        //let joined = decorated.join(isCode.test(to) ? '' : '\n');
+                        let joined = decorated.join('');
+                        joined     = this.trimNewlines(joined);
                         
-                        // add the value diff and close the code/pre tags
-                        //output += `${indentValueDiff}</code></pre>\n`;
+                        output += joined;
                         output += `</code></pre>\n`;
                     }
                 } else {
@@ -409,7 +413,7 @@ class Diff extends Parser {
                     }
                     const accessLabel = ` (${to} *was ${from}*)`
                     
-                    output += `${accessLabel}\n`;
+                    output += `${accessLabel}\n\n`;
                 }
             }
         }

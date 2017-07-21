@@ -434,7 +434,6 @@ class HtmlApp extends AppBase {
      */
     buildToc (data) {
         // the guide body HTML
-        let content = data.content;
         return data;
         //TODO build the TOC and set it back on the data object
     }
@@ -529,11 +528,11 @@ class HtmlApp extends AppBase {
      * @return {String} The hierarchy HTML
      */
     processHierarchy (cls) {
-        let name = cls.name,
-            elementCls  = 'hierarchy pl2',
-            list = this.splitInline(
+        let { name }        = cls,
+            elementCls      = 'hierarchy pl2',
+            list            = this.splitInline(
                 Utils.processCommaLists(cls.extended, false, true, true),
-                `<div class="${elementCls}">`
+                `<div class = "${elementCls}">`
             ),
             ret = `<div class="list">${list}<div class="${elementCls}">${name}`;
 
@@ -664,7 +663,7 @@ class HtmlApp extends AppBase {
      */
     outputProductHomePage () {
         return new Promise((resolve, reject) => {
-            let options     = this.options,
+            let { options } = this,
                 root        = options._myRoot,
                 prodTplPath = Path.join(
                     root,
@@ -672,7 +671,7 @@ class HtmlApp extends AppBase {
                     'product-home',
                     options.product
                 ),
-                version     = options.version,
+                { version } = options,
                 homeConfig  = this.getFileByVersion(prodTplPath, version),
                 homePath    = Path.join(prodTplPath, homeConfig),
                 dest        = Path.join(this.outputProductDir, 'index.html');
@@ -699,12 +698,8 @@ class HtmlApp extends AppBase {
      * @return {Promise}
      */
     outputMainLandingPage () {
-        /*return new Promise((resolve, reject) => {
-            resolve();
-        })
-        .catch(this.error.bind(this));*/
         return new Promise((resolve, reject) => {
-            let options     = this.options,
+            let { options } = this,
                 root        = options._myRoot,
                 tplPath = Path.join(
                     root,
@@ -712,10 +707,6 @@ class HtmlApp extends AppBase {
                     'landing',
                     'config.json'
                 ),
-                //version     = options.version,
-                //homeConfig  = this.getFileByVersion(prodTplPath, version),
-                //homePath    = Path.join(prodTplPath, homeConfig),
-                //dest        = Path.join(this.outputProductDir, 'index.html');
                 dest        = Path.join(options.outputDir, 'index.html');
 
             let data = Fs.readJsonSync(tplPath);
@@ -731,12 +722,20 @@ class HtmlApp extends AppBase {
                 productsObj = options.products;
 
             while (len--) {
-                let homeItem = data.homeItems[len];
+                const homeItem = data.homeItems[len],
+                      prodObj  = productsObj[homeItem.product];
 
                 homeItem.header = Utils.format(
                     homeItem.header,
-                    productsObj[homeItem.product]
+                    prodObj
                 );
+                
+                if (homeItem.content) {
+                    homeItem.content = [Utils.format(
+                        homeItem.content.join(''),
+                        prodObj
+                    )];
+                }
             }
 
             let html = this.mainTemplate(data);

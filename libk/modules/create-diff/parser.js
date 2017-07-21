@@ -159,7 +159,7 @@ class DiffParser extends DiffBase {
             
             // the diffing is kicked off by passing in the array of all classes from both the
             // target and the source
-            this.diffItems(diff, 'class', targetClasses, sourceClasses);
+            this.diffItems(diff, 'class', undefined, targetClasses, sourceClasses);
             this.cleanObject(diff); // remove all of the empty objects and arrays
             this.addDiffToSinceMap(diff);
             return diff;
@@ -419,7 +419,7 @@ class DiffParser extends DiffBase {
      * @param {Object[]} [sourceItems=[]] The class or member items from the source 
      * product
      */
-    diffItems (diffObj, type = 'class', targetItems = [], sourceItems = []) {
+    diffItems (diffObj, type = 'class', parentType, targetItems = [], sourceItems = []) {
         const diffItems = diffObj.items = {};
 
         // first, filter out any unwanted items before processing them
@@ -456,7 +456,7 @@ class DiffParser extends DiffBase {
         while (len--) {
             const name = commonNames[len];
             
-            this.diffItem(name, modifiedObj, type, targetMap, sourceMap);
+            this.diffItem(name, modifiedObj, type, parentType, targetMap, sourceMap);
             
             // add the access to each item
             const [ , dispName ] = name.split('|'),
@@ -490,7 +490,7 @@ class DiffParser extends DiffBase {
      * @param {Object} targetMap The map of all target items
      * @param {Object} sourceMap The map of all source items
      */
-    diffItem (name, diffObj, type, targetMap, sourceMap) {
+    diffItem (name, diffObj, type, parentType, targetMap, sourceMap) {
         const nameSplit      = name.split('|'),
               [ , dispName ] = nameSplit, // this is the actual class / member name
               target         = targetMap[name],
@@ -548,12 +548,17 @@ class DiffParser extends DiffBase {
                           sourceCategory = sourceTypeObj[itemType] || {},
                           sourceItems    = sourceCategory.items;
                           
-                    this.diffItems(diffObj[type][dispName], itemType, targetItems, sourceItems);
+                    this.diffItems(diffObj[type][dispName], itemType, itemType, targetItems, sourceItems);
                 }
             } else {
                 // otherwise, this item we're diffing is a member or a param and has
                 // params / sub-params
-                this.diffItems(diffObj[type][dispName], 'param', targetItems, sourceItems);
+                // 
+                // If the parentType is 'methods' then the type passed will be 'param'.
+                // Else the type will be property.
+                const itemType = (parentType === 'methods') ? 'param' : 'property';
+
+                this.diffItems(diffObj[type][dispName], itemType, parentType, targetItems, sourceItems);
             }
         }
     }

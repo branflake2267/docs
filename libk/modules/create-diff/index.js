@@ -373,7 +373,7 @@ class Diff extends Parser {
                         const valueDiff = JsDiff.diffLines(_.escape(from), _.escape(to)),
                             decorated = [];
 
-                        valueDiff.forEach((part, idx, arr) => {
+                        valueDiff.forEach((part) => {
                             const { added, removed } = part;
                             let   { value } = part,
                                   open      = '',

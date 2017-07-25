@@ -395,7 +395,7 @@ class AppBase extends SourceGuides {
      * @return {String} The decorated guide body HTML
      */
     decorateExamples (html) {
-        let fiddleWrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{fiddleId}" data-fiddle-meta='{metaObj}'>
+        let fiddleWrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{docsXFiddleId}" data-fiddle-meta='{docsXMetaObj}'>
                     <div class="da-inline-fiddle-nav relative bg-near-white ba b--black-05">
                         <div class="code-controls dib bg-transparent ma0 near-black pt2 b relative overflow-visible">
                             <span class="collapse-tool fa fa-caret-up mr2 bg-transparent lh-copy f4 ph2 mb2 ml2 relative br2 b pointer v-mid z-0 dark-gray"></span>
@@ -418,7 +418,7 @@ class AppBase extends SourceGuides {
                             <div class="callout callout-b"></div>
                         </span>
                     </div>
-                    <div id="{aceCtId}" class="ace-ct ba b--black-20 z-0">{code}</div>
+                    <div id="{docsXAceCtId}" class="ace-ct ba b--black-20 z-0">{docsXCode}</div>
                 </div>`,
             out         = html,
             options     = this.options,
@@ -442,9 +442,9 @@ class AppBase extends SourceGuides {
             };
 
         // decorates @example blocks as inline fiddles
-        out = html.replace(/(?:<pre><code>(?:\s*@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, code) => {
+        out = html.replace(/(?:<pre><code>(?:\s*@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, docsXCode) => {
             meta = meta.trim();
-            code = code.trim();
+            docsXCode = docsXCode.trim();
             //meta = 'packages=reactor';
             if (meta && meta.length) {
                 fidMeta = Object.assign({}, fidMeta);
@@ -474,20 +474,20 @@ class AppBase extends SourceGuides {
                 }
             }
 
-            let fiddleId = this.uniqueId,
-                aceCtId  = this.uniqueId,
-                metaObj  = JSON.stringify(fidMeta);
+            let docsXFiddleId = this.uniqueId,
+                docsXAceCtId  = this.uniqueId,
+                docsXMetaObj  = JSON.stringify(fidMeta);
 
             return Utils.format(fiddleWrap, {
-                code,
-                metaObj,
-                fiddleId,
-                aceCtId
+                docsXCode,
+                docsXMetaObj,
+                docsXFiddleId,
+                docsXAceCtId
             });
         });
 
-        out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, code) => {
-            return `<pre><code class="language-javascript">${code}</code></pre>`;
+        out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, docsXCode) => {
+            return `<pre><code class="language-javascript">${docsXCode}</code></pre>`;
         });
 
         return out;

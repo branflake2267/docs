@@ -205,15 +205,28 @@ class Diff extends Parser {
      * @return {String} The markdown string
      */
     markdownItems (diffObj = {}, indent = 0, prefix = '##') {
-        const { added, removed, modified } = diffObj;
-        let output = '';
+        const { modified, params } = diffObj;
+        let   { added, removed }   = diffObj,
+              output = '';
         
-        if (added) {
-            output += this.markdownAddedRemoved(added, 'Added', indent, prefix);
+        if (added || removed) {
+            if (params) {
+                output += this.markdownParams(diffObj, (indent - 1), prefix);
+                if (added) {
+                    delete added.param;
+                }
+                if (removed) {
+                    delete removed.param;
+                }
+            }
+            if (added && _.size(added)) {
+                output += this.markdownAddedRemoved(added, 'Added', indent, prefix);
+            }
+            if (removed && _.size(removed)) {
+                output += this.markdownAddedRemoved(removed, 'Removed', indent, prefix);
+            }
         }
-        if (removed) {
-            output += this.markdownAddedRemoved(removed, 'Removed', indent, prefix);
-        }
+        
         if (modified) {
             output += this.markdownModified(modified, indent, prefix);
         }
@@ -303,6 +316,61 @@ class Diff extends Parser {
                     output = this.trimNewlines(output);
                 }
                 output += mdItem;
+            }
+        }
+        
+        return output;
+    }
+    
+    /**
+     * 
+     */
+    markdownParams (diffObj, indent) {
+        const { params } = diffObj;
+        let   {
+                  source = [],
+                  target = []
+              }      = params,
+              output = '';
+        const len    = source.length > target.length ? source.length : target.length;
+        let   i      = 0,
+              header = false;
+        
+        for (; i < len; i++) {
+            const sourceItem   = source[i] || {},
+                  sourceName   = sourceItem && sourceItem.name,
+                  targetItem   = target[i] || {},
+                  targetName   = targetItem && targetItem.name,
+                  isAdded      = targetName && !sourceName,
+                  isRemoved    = sourceName && !targetName,
+                  isModified   = sourceName && targetName && sourceName !== targetName;
+            
+            if (isAdded || isRemoved || isModified) {
+                const headingPrefix = _.repeat('  ', indent) + '-',
+                      paramIndent   = (indent + 1),
+                      paramPrefix   = _.repeat('  ', paramIndent) + '-';
+                let   paramAction   = '',
+                      paramName     = '';
+                
+                if (!header) {
+                    output += `${headingPrefix} Param Changes\n`;
+                    header = true;
+                }
+                
+                if (isAdded) {
+                    paramAction = '(new)';
+                    paramName   = targetName;
+                }
+                if (isRemoved) {
+                    paramAction = '(removed)';
+                    paramName   = sourceName;
+                }
+                if (isModified) {
+                    paramAction = `(*was ${sourceName}*)`;
+                    paramName   = targetName;
+                }
+                
+                output += `${paramPrefix} ${paramName} ${paramAction}\n`;
             }
         }
         

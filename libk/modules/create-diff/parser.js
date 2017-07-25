@@ -449,6 +449,20 @@ class DiffParser extends DiffBase {
         
         diffItems.modified = modifiedObj;
         
+        if (type === 'param' && (_.size(added) || _.size(removed) || _.size(modifiedObj))) {
+            diffItems.params = {
+                source : this.filterParams(sourceItems).reverse(),
+                target : this.filterParams(targetItems).reverse()
+            }
+        }
+        
+        if (type === 'return' && (_.size(added) || _.size(removed) || _.size(modifiedObj))) {
+            diffItems.returns = {
+                source : this.filterReturns(sourceItems).reverse(),
+                target : this.filterReturns(targetItems).reverse()
+            }
+        }
+        
         // loop over all common names between target and source and pass their items to
         // the `diffItem` method
         let len = commonNames.length;
@@ -479,6 +493,30 @@ class DiffParser extends DiffBase {
                 modifiedObj[type][dispName].targetAccess = targetMap[name].access;
             }
         }
+    }
+    
+    /**
+     * Returns only the params from the params list
+     * @param {Array} paramsList
+     * The params + returns
+     * @return {Array} The params
+     */
+    filterParams (paramsList) {
+        return _.filter(paramsList, (param) => {
+            return param.$type === 'param';
+        });
+    }
+    
+    /**
+     * Returns only the return item from the params list
+     * @param {Array} paramsList
+     * The params + returns
+     * @return {Array} The return
+     */
+    filterReturns (paramsList) {
+        return _.filter(paramsList, (param) => {
+            return param.$type === 'return';
+        });
     }
     
     /**
@@ -553,7 +591,7 @@ class DiffParser extends DiffBase {
             } else {
                 // otherwise, this item we're diffing is a member or a param and has
                 // params / sub-params
-                // 
+                
                 // If the parentType is 'methods' then the type passed will be 'param'.
                 // Else the type will be property.
                 const itemType = (parentType === 'methods') ? 'param' : 'property';

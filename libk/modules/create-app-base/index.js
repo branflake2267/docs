@@ -395,7 +395,7 @@ class AppBase extends SourceGuides {
      * @return {String} The decorated guide body HTML
      */
     decorateExamples (html) {
-        let fiddleWrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{2}" data-fiddle-meta='{1}'>
+        let fiddleWrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{fiddleId}" data-fiddle-meta='{metaObj}'>
                     <div class="da-inline-fiddle-nav relative bg-near-white ba b--black-05">
                         <div class="code-controls dib bg-transparent ma0 near-black pt2 b relative overflow-visible">
                             <span class="collapse-tool fa fa-caret-up mr2 bg-transparent lh-copy f4 ph2 mb2 ml2 relative br2 b pointer v-mid z-0 dark-gray"></span>
@@ -418,7 +418,7 @@ class AppBase extends SourceGuides {
                             <div class="callout callout-b"></div>
                         </span>
                     </div>
-                    <div id="{3}" class="ace-ct ba b--black-20 z-0">{0}</div>
+                    <div id="{aceCtId}" class="ace-ct ba b--black-20 z-0">{code}</div>
                 </div>`,
             out         = html,
             options     = this.options,
@@ -478,7 +478,12 @@ class AppBase extends SourceGuides {
                 aceCtId  = this.uniqueId,
                 metaObj  = JSON.stringify(fidMeta);
 
-            return Utils.format(fiddleWrap, code, metaObj, fiddleId, aceCtId);
+            return Utils.format(fiddleWrap, {
+                code,
+                metaObj,
+                fiddleId,
+                aceCtId
+            });
         });
 
         out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, code) => {

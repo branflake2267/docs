@@ -395,7 +395,7 @@ class AppBase extends SourceGuides {
      * @return {String} The decorated guide body HTML
      */
     decorateExamples (html) {
-        let fiddleWrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{docsXFiddleId}" data-fiddle-meta='{docsXMetaObj}'>
+        let fiddleWrapPre = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{docsXFiddleId}" data-fiddle-meta='{docsXMetaObj}'>
                     <div class="da-inline-fiddle-nav relative bg-near-white ba b--black-05">
                         <div class="code-controls dib bg-transparent ma0 near-black pt2 b relative overflow-visible">
                             <span class="collapse-tool fa fa-caret-up mr2 bg-transparent lh-copy f4 ph2 mb2 ml2 relative br2 b pointer v-mid z-0 dark-gray"></span>
@@ -418,8 +418,8 @@ class AppBase extends SourceGuides {
                             <div class="callout callout-b"></div>
                         </span>
                     </div>
-                    <div id="{docsXAceCtId}" class="ace-ct ba b--black-20 z-0">{docsXCode}</div>
-                </div>`,
+                    <div id="{docsXAceCtId}" class="ace-ct ba b--black-20 z-0">`,
+            fiddleWrapClose = '</div></div>',
             out         = html,
             options     = this.options,
             production  = options.production,
@@ -477,13 +477,32 @@ class AppBase extends SourceGuides {
             let docsXFiddleId = this.uniqueId,
                 docsXAceCtId  = this.uniqueId,
                 docsXMetaObj  = JSON.stringify(fidMeta);
-
-            return Utils.format(fiddleWrap, {
-                docsXCode,
+            
+            fiddleWrapPre = Utils.format(fiddleWrapPre, {
                 docsXMetaObj,
                 docsXFiddleId,
                 docsXAceCtId
             });
+            
+            return fiddleWrapPre + docsXCode + fiddleWrapClose;
+
+            // if (docsXCode.includes('boxplot')) {
+            //     console.log(docsXCode);
+            //     docsXCode = 'abcdefg';
+            //     console.log(Utils.format(fiddleWrap, {
+            //         docsXCode,
+            //         docsXMetaObj,
+            //         docsXFiddleId,
+            //         docsXAceCtId
+            //     }));
+            // }
+                
+            // return Utils.format(fiddleWrap, {
+            //     docsXCode,
+            //     docsXMetaObj,
+            //     docsXFiddleId,
+            //     docsXAceCtId
+            // });
         });
 
         out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, docsXCode) => {

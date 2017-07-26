@@ -485,24 +485,6 @@ class AppBase extends SourceGuides {
             });
             
             return fiddleWrapPre + docsXCode + fiddleWrapClose;
-
-            // if (docsXCode.includes('boxplot')) {
-            //     console.log(docsXCode);
-            //     docsXCode = 'abcdefg';
-            //     console.log(Utils.format(fiddleWrap, {
-            //         docsXCode,
-            //         docsXMetaObj,
-            //         docsXFiddleId,
-            //         docsXAceCtId
-            //     }));
-            // }
-                
-            // return Utils.format(fiddleWrap, {
-            //     docsXCode,
-            //     docsXMetaObj,
-            //     docsXFiddleId,
-            //     docsXAceCtId
-            // });
         });
 
         out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, docsXCode) => {

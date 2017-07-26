@@ -317,7 +317,7 @@ class SourceGuides extends SourceApi {
      * `getSearch`.
      * @return {Object} Promise
      */
-    getGuideSearch() {
+    getGuideSearch () {
         return this.processGuideCfg()
         .then(this.readGuides.bind(this))
         .then(this.getSearchFromGuides.bind(this))

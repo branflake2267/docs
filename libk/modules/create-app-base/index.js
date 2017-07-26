@@ -249,23 +249,23 @@ class AppBase extends SourceGuides {
     //parseApiLinks (html, data) {
     parseGuideLinks (html, data) {
         html = html.replace(/\[{2}([a-z0-9.]+):([a-z0-9._\-#]+)\s?([a-z$\/'.()[\]\\_-\s]*)\]{2}/gim, (match, productVer, link, text) => {
-            let options       = this.options,
-                exceptions    = options.buildExceptions,
-                prodVerMeta   = options.prodVerMeta,
-                hasHash       = link.indexOf('#'),
-                hasDash       = link.indexOf('-'),
-                canSplit      = !!(hasHash > -1 || hasDash > -1),
-                splitIndex    = (hasHash > -1) ? hasHash                  : hasDash,
-                className     = canSplit ? link.substring(0, splitIndex)  : link,
-                hash          = canSplit ? link.substring(splitIndex + 1) : null,
-                prodDelimiter = productVer.indexOf('-'),
-                hasVersion    = prodDelimiter > -1,
-                product       = hasVersion ? productVer.substring(0, prodDelimiter) : productVer,
-                version       = hasVersion ? productVer.substr(prodDelimiter + 1)   : false,
-                toolkit       = (!data.toolkit || data.toolkit === 'universal') ? (prodVerMeta.toolkit || 'api') : data.toolkit,
+            let { options }     = this,
+                exceptions      = options.buildExceptions,
+                { prodVerMeta } = options,
+                hasHash         = link.indexOf('#'),
+                hasDash         = link.indexOf('-'),
+                canSplit        = !!(hasHash > -1 || hasDash > -1),
+                splitIndex      = (hasHash > -1) ? hasHash                  : hasDash,
+                className       = canSplit ? link.substring(0, splitIndex)  : link,
+                hash            = canSplit ? link.substring(splitIndex + 1) : null,
+                prodDelimiter   = productVer.indexOf('-'),
+                hasVersion      = prodDelimiter > -1,
+                product         = hasVersion ? productVer.substring(0, prodDelimiter) : productVer,
+                version         = hasVersion ? productVer.substr(prodDelimiter + 1)   : false,
+                toolkit         = (!data.toolkit || data.toolkit === 'universal') ? (prodVerMeta.toolkit || 'api') : data.toolkit,
                 memberName;
 
-            product = this.getProduct();
+            product = this.getProduct(product);
             version = version || this.options.version;
             text    = text || className + (hash ? `#${hash}` : '');
 
@@ -298,14 +298,19 @@ class AppBase extends SourceGuides {
             if (exceptions[product]) {
                 if (exceptions[product] === true || (version && exceptions[product].includes(version))) {
                     //toolkit = '';
-                    let rootPath   = data.rootPath,
-                        outputDir  = options.outputDir,
-                        relPath    = Path.relative(rootPath, outputDir),
-                        href = Path.join(relPath, product, (version || ''), (toolkit || ''), '#!', `${className}.html`);
+                    let { rootPath }  = data,
+                        { outputDir } = options,
+                        relPath       = Path.relative(rootPath, outputDir),
+                        href          = Path.join(
+                            relPath,
+                            product,
+                            (version || ''), (toolkit || ''), '#!', `${className}.html`
+                        );
 
                     if (memberName) {
                         href += `-${memberName}`;
                     }
+                    
                     return `<a href="./${href}">${text}</a>`;
                 }
             }

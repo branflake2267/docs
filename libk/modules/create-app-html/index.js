@@ -465,6 +465,13 @@ class HtmlApp extends AppBase {
      */
     // TODO process the api links for HTML guides
     createGuideLink (product, version, toolkit, className, memberName, text, data) {
+        if (product === 'gxt') {
+            const linkVer = version === '4.x' ? '4.0.2' : '3.1.4';
+            
+            toolkit   = Path.join('javadoc', `gxt-${linkVer}`);
+            className = Path.join(...className.split('.'));
+        }
+        
         let { rootPath }  = data,
             { outputDir } = this.options,
             relPath       = Path.relative(rootPath, outputDir),

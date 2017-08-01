@@ -1186,6 +1186,10 @@ class Base {
         if (options.syncRemote === false) {
             return;
         }
+        // don't attempt to sync folders other than those in "localRepos"
+        /*if (!sourceDir.includes('localRepos')) {
+            return;
+        }*/
 
         this.modifiedList = [];
 

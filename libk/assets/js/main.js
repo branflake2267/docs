@@ -555,7 +555,6 @@ DocsApp.initNavTree = function () {
             tree.select(targetNode.id)
             // and expand the tree to the selected node
             .expandTo(targetNode.id);
-            //console.log(document.getElementById(targetNode.id));
             document.getElementById(targetNode.id).scrollIntoView(true);
         }
 
@@ -2540,13 +2539,15 @@ DocsApp.getEventTarget = function (e) {
             beautifyButtons = ExtL.fromNodeList(document.getElementsByClassName('fiddle-code-beautify')),
             invisibles      = document.getElementsByClassName('invisible'),
             codeBtnsLen     = codeButtons.length,
+            theme           = DocsApp.getState('exampleTheme') || 'ace/theme/chrome',
             i               = 0,
             editor;
 
         for (; i < len; i++) {
             editor = ace.edit(aceTargets[i]);
-            editor.setTheme("ace/theme/chrome");
-            //editor.getSession().setMode("ace/mode/javascript");
+            //editor.setTheme("ace/theme/chrome");
+            editor.setTheme(theme);
+            aceTargets[i].parentNode.querySelector('.example-theme-picker').value = theme;
             editor.getSession().setMode("ace/mode/jsx");
             if (ExtL.isIE8() || ExtL.isIE9()) {
                 editor.getSession().setOption("useWorker", false);
@@ -3424,7 +3425,9 @@ DocsApp.getEventTarget = function (e) {
         ExtL.removeCls(ExtL.get('tree-header'), 'pre-load');
 
         DocsApp.fetchState(true);
-
+        
+        DocsApp.applyAceEditors();
+        
         if (DocsApp.meta.pageType === 'api') {
             // force a scroll response at load for browsers that don't fire the scroll
             // event themselves initially
@@ -3530,7 +3533,7 @@ DocsApp.getEventTarget = function (e) {
 
         DocsApp.initHistory();
 
-        DocsApp.applyAceEditors();
+        //DocsApp.applyAceEditors();
     });
 
     /**
@@ -3883,6 +3886,28 @@ DocsApp.getEventTarget = function (e) {
             ExtL.addCls(picker, 'show-multi');
         }
     };
+    
+    /**
+     * 
+     */
+    DocsApp.setExampleEditorTheme = function (e) {
+        var value      = this.value,
+            aceTargets = document.getElementsByClassName('ace-ct'),
+            len        = aceTargets.length,
+            i          = 0,
+            editor;
+        
+        ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.example-theme-picker')), function (select) {
+            select.value = value;
+        });
+
+        for (; i < len; i++) {
+            editor = ace.edit(aceTargets[i]);
+            editor.setTheme(value);
+        }
+        
+        DocsApp.saveState();
+    }
 
     /**
      *
@@ -4368,6 +4393,11 @@ DocsApp.getEventTarget = function (e) {
         ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.multi-src-btn')), function (item) {
             ExtL.on(item, 'click', DocsApp.showMultiSrcPanel);
         });
+        
+        // Set up example theme picker listeners
+        ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.example-theme-picker')), function (select) {
+            ExtL.on(select, 'change', DocsApp.setExampleEditorTheme);
+        });
 
         // Set up search history panel (and ultimately item) click handler
         ExtL.on(ExtL.get('search-history-panel'), 'click', DocsApp.onSearchHistoryClick);
@@ -4494,6 +4524,7 @@ DocsApp.getEventTarget = function (e) {
             version              = meta.version,
             pageName             = ExtL.htmlDecode(ExtL.htmlDecode(meta.pageName)),
             pageTitle            = meta.title,
+            exampleThemeSelector = document.querySelector('.example-theme-picker'),
             activeNavTab;
 
         state.showTree = !ExtL.hasCls(body, 'tree-hidden');
@@ -4520,6 +4551,10 @@ DocsApp.getEventTarget = function (e) {
         if (privateClassCheckbox) {
             state.privateClassCheckbox = privateClassCheckbox.checked;
         }
+        
+        if (exampleThemeSelector) {
+            state.exampleTheme = exampleThemeSelector.value;
+        }
 
         if (modernSearchFilter && classicSearchFilter) {
             if (ExtL.hasCls(modernSearchFilter, 'active')) {
@@ -4532,7 +4567,6 @@ DocsApp.getEventTarget = function (e) {
         if (DocsApp.meta.pageType === 'guide' || DocsApp.meta.pageType === 'api') {
             state.history = state.history || [];
             ExtL.each(state.history, function (item, i) {
-                //if (item.product === product && item.pversion === pversion && item.text === ExtL.htmlDecode(ExtL.htmlDecode(pageName)) && item.path === path) {
                 if (
                     item.product === product &&
                     item.version === version &&
@@ -4549,7 +4583,6 @@ DocsApp.getEventTarget = function (e) {
 
             state.history.push({
                 product    : product,
-                //pversion : pversion,
                 toolkit    : toolkit,
                 version    : version,
                 text       : pageName,

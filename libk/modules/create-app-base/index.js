@@ -400,30 +400,76 @@ class AppBase extends SourceGuides {
      * @return {String} The decorated guide body HTML
      */
     decorateExamples (html) {
-        let fiddleWrapPre = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target relative mv3 overflow-hidden pb4" id="{docsXFiddleId}" data-fiddle-meta='{docsXMetaObj}'>
-                    <div class="da-inline-fiddle-nav relative bg-near-white ba b--black-05">
-                        <div class="code-controls dib bg-transparent ma0 near-black pt2 b relative overflow-visible">
-                            <span class="collapse-tool fa fa-caret-up mr2 bg-transparent lh-copy f4 ph2 mb2 ml2 relative br2 b pointer v-mid z-0 dark-gray"></span>
-                            <span class="expand-tool fa fa-caret-down mr2 bg-transparent lh-copy f4 ph1 ml2 relative br2 b pointer v-mid z-1 dark-gray dn"></span>
-                            <span class="expand-code dark-gray b lh-copy f6 v-mid dn">Expand Code</span>
+        let fiddleWrapPre = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target" id="{docsXFiddleId}" data-fiddle-meta='{docsXMetaObj}'>
+                    <div class="da-inline-fiddle-nav">
+                        <div class="code-controls">
+                            <span class="collapse-tool fa fa-caret-up"></span>
+                            <span class="expand-tool fa fa-caret-down"></span>
+                            <span class="expand-code">Expand Code</span>
                         </div>
-                        <span class="da-inline-fiddle-nav-code da-inline-fiddle-nav-active pv2 ph3 tracked f6 ba b--black-20 bg-white-50 blue">
-                            <span class="fa fa-code f5"></span>
+                        <span class="da-inline-fiddle-nav-code da-inline-fiddle-nav-active">
+                            <span class="fa fa-code"></span>
                             Code
                         </span><!--
-                        --><span class="da-inline-fiddle-nav-fiddle blue bg-near-white pv2 ph3 tracked pointer bl bt br b--black-20 f6">
-                            <span class="fiddle-icon-wrap overflow-hidden relative dib v-mid w1 h1">
-                                <span class="fa fa-play-circle f5 absolute left-0 top-0">
-                                </span><span class="fa fa-refresh f5 absolute left-0"></span>
+                        --><span class="da-inline-fiddle-nav-fiddle">
+                            <span class="fiddle-icon-wrap">
+                                <span class="fa fa-play-circle">
+                                </span><span class="fa fa-refresh"></span>
                             </span>
                             Run
                         </span>
-                        <span class="icon-btn fiddle-code-beautify tooltip tooltip-tr-br bg-blue white relative dib br2 pointer pa1 ml3" data-beautify="Beautify Code">
+                        <span class="icon-btn fiddle-code-beautify tooltip tooltip-tr-br" data-beautify="Beautify Code">
                             <i class="fa fa-indent"></i>
                             <div class="callout callout-b"></div>
                         </span>
+                        
+                        <label class="example-theme-picker-label">
+                            Editor Theme:
+                            <select class="example-theme-picker" size="1">
+                                <optgroup label="Bright">
+                                    <option value="ace/theme/chrome">Chrome</option>
+                                    <option value="ace/theme/clouds">Clouds</option>
+                                    <option value="ace/theme/crimson_editor">Crimson Editor</option>
+                                    <option value="ace/theme/dawn">Dawn</option>
+                                    <option value="ace/theme/dreamweaver">Dreamweaver</option>
+                                    <option value="ace/theme/eclipse">Eclipse</option>
+                                    <option value="ace/theme/github">GitHub</option>
+                                    <option value="ace/theme/iplastic">IPlastic</option>
+                                    <option value="ace/theme/solarized_light">Solarized Light</option>
+                                    <option value="ace/theme/textmate">TextMate</option>
+                                    <option value="ace/theme/tomorrow">Tomorrow</option>
+                                    <option value="ace/theme/xcode">XCode</option>
+                                    <option value="ace/theme/kuroir">Kuroir</option>
+                                    <option value="ace/theme/katzenmilch">KatzenMilch</option>
+                                    <option value="ace/theme/sqlserver">SQL Server</option>
+                                </optgroup>
+                                <optgroup label="Dark">
+                                    <option value="ace/theme/ambiance">Ambiance</option>
+                                    <option value="ace/theme/chaos">Chaos</option>
+                                    <option value="ace/theme/clouds_midnight">Clouds Midnight</option>
+                                    <option value="ace/theme/cobalt">Cobalt</option>
+                                    <option value="ace/theme/gruvbox">Gruvbox</option>
+                                    <option value="ace/theme/gob">Green on Black</option>
+                                    <option value="ace/theme/idle_fingers">idle Fingers</option>
+                                    <option value="ace/theme/kr_theme">krTheme</option>
+                                    <option value="ace/theme/merbivore">Merbivore</option>
+                                    <option value="ace/theme/merbivore_soft">Merbivore Soft</option>
+                                    <option value="ace/theme/mono_industrial">Mono Industrial</option>
+                                    <option value="ace/theme/monokai">Monokai</option>
+                                    <option value="ace/theme/pastel_on_dark">Pastel on dark</option>
+                                    <option value="ace/theme/solarized_dark">Solarized Dark</option>
+                                    <option value="ace/theme/terminal">Terminal</option>
+                                    <option value="ace/theme/tomorrow_night">Tomorrow Night</option>
+                                    <option value="ace/theme/tomorrow_night_blue">Tomorrow Night Blue</option>
+                                    <option value="ace/theme/tomorrow_night_bright">Tomorrow Night Bright</option>
+                                    <option value="ace/theme/tomorrow_night_eighties">Tomorrow Night 80s</option>
+                                    <option value="ace/theme/twilight">Twilight</option>
+                                    <option value="ace/theme/vibrant_ink">Vibrant Ink</option>
+                                </optgroup>
+                            </select>
+                        </label>
                     </div>
-                    <div id="{docsXAceCtId}" class="ace-ct ba b--black-20 z-0">`,
+                    <div id="{docsXAceCtId}" class="ace-ct">`,
             fiddleWrapClose = '</div></div>',
             out         = html,
             options     = this.options,

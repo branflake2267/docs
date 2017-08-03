@@ -1181,29 +1181,62 @@ class Base {
      * @param {String} sourceDir The source directory of the local repo
      */
     syncRemote (product = this.apiProduct, sourceDir = this.apiSourceDir) {
-        let { options } = this;
+        const { options } = this,
+              { _myRoot } = options;
 
         if (options.syncRemote === false) {
             return;
         }
         // don't attempt to sync folders other than those in "localRepos"
-        /*if (!sourceDir.includes('localRepos')) {
+        if (!sourceDir.includes('localRepos')) {
             return;
-        }*/
+        }
 
         this.modifiedList = [];
 
-        let path                         = Shell.pwd(),
-            version                      = this.apiVersion,
-            { toolkit }                  = options,
-            wToolkit                     = version + '-' + (toolkit || product),
-            prodCfg                      = options.products[product],
-            { remotes, repo, remoteUrl } = prodCfg,
-            verInfo                      = remotes && remotes[version],
-            branch                       = verInfo && verInfo.branch || 'master',
-            tag                          = verInfo && verInfo.tag,
-            reposPath                    = options.localReposDir;
+        const path                         = Shell.pwd(),
+              version                      = this.apiVersion,
+              { toolkit }                  = options,
+              wToolkit                     = version + '-' + (toolkit || product),
+              prodCfg                      = options.products[product],
+              { remotes, repo, remoteUrl } = prodCfg,
+              verInfo                      = remotes && remotes[version],
+              branch                       = verInfo && verInfo.branch || 'master',
+              tag                          = verInfo && verInfo.tag,
+              reposPath                    = options.localReposDir;
 
+        let allRemotes  = [],
+            allRepos    = [ repo ],
+            { addlRepos = [], addlRemoteUrls = [] } = prodCfg;
+            
+        addlRepos      = Utils.from(addlRepos);
+        addlRemoteUrls = Utils.from(addlRemoteUrls);
+        allRepos = allRepos.concat(addlRepos);
+        
+        allRemotes.push(
+            Utils.format(remoteUrl, prodCfg)
+        );
+        
+        addlRepos.forEach((val, i, arr) => {
+            allRemotes.push(Utils.format(
+                addlRemoteUrls[i] || arr[0],
+                {
+                    repo : val
+                }
+            ));
+        });
+        
+        let allDirs = [ sourceDir ];
+        
+        addlRepos.forEach(repo => {
+            allDirs.push(
+                Path.join(Path.resolve(
+                    _myRoot,
+                    reposPath
+                ), repo)
+            );
+        });
+        
         // if the api source directory exists and is not a git repo then skip syncing
         if (Fs.existsSync(sourceDir) && !Git.isGitSync(sourceDir)) {
             this.log(`Cannot perform remote Git sync: API source directory is not a Git repo: ${sourceDir}`, 'info');
@@ -1217,15 +1250,19 @@ class Base {
         //if (options.syncRemote || !Fs.existsSync(sourceDir) || this.isEmpty(sourceDir) || (branch && branch !== Git.branchSync(sourceDir))) {
         // if the api source directory doesn't exist (may or may not be within the
         // repos directory) then create the repos directory and clone the remote
-        if (!Fs.existsSync(sourceDir)) {
-            // create the repos directory if it doesn't exist already
-            Mkdirp.sync(reposPath);
-            Shell.cd(reposPath);
-            remoteUrl = Utils.format(remoteUrl, prodCfg);
+        allDirs.forEach((dir, i, arr) => {
+            if (!Fs.existsSync(dir)) {
+                // create the repos directory if it doesn't exist already
+                Mkdirp.sync(reposPath);
+                Shell.cd(reposPath);
+                //remoteUrl = Utils.format(remoteUrl, prodCfg);
+                let repo   = allRepos[i],
+                    remote = allRemotes[i];
 
-            this.log('Repo not found.  Cloning repo: ' + repo);
-            Shell.exec(`git clone ${remoteUrl}`);
-        }
+                this.log('Repo not found.  Cloning repo: ' + repo);
+                Shell.exec(`git clone ${remote}`);
+            }
+        });
 
         // cd into the repo directory and fetch all + tags
         Shell.cd(sourceDir);

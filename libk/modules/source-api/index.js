@@ -1131,9 +1131,10 @@ class SourceApi extends Base {
         if (alias) {
             let isWidget = alias.includes('widget');
 
-            cls.aliasPrefix = isWidget ? 'xtype' : alias.substr(0, alias.indexOf('.'));
+            //cls.aliasPrefix = isWidget ? 'xtype' : alias.substr(0, alias.indexOf('.'));
+            cls.aliasPrefix = isWidget ? 'xtype' : 'alias';
             cls.aliasName   = (isWidget ? alias.replace(WidgetRe, '') : alias)
-                              .replace(',', ', ');
+                              .replace(/,/g, ', ');
         }
 
         // indicate if the class is deprecated

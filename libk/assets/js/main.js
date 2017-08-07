@@ -2541,13 +2541,17 @@ DocsApp.getEventTarget = function (e) {
             codeBtnsLen     = codeButtons.length,
             theme           = DocsApp.getState('exampleTheme') || 'ace/theme/chrome',
             i               = 0,
-            editor;
+            editor, themePicker;
 
         for (; i < len; i++) {
+            var themePicker = aceTargets[i].parentNode.querySelector('.example-theme-picker');
+            
             editor = ace.edit(aceTargets[i]);
             //editor.setTheme("ace/theme/chrome");
             editor.setTheme(theme);
-            aceTargets[i].parentNode.querySelector('.example-theme-picker').value = theme;
+            if (themePicker) {
+                themePicker.value = theme;
+            }
             editor.getSession().setMode("ace/mode/jsx");
             if (ExtL.isIE8() || ExtL.isIE9()) {
                 editor.getSession().setOption("useWorker", false);

@@ -3749,7 +3749,7 @@ DocsApp.getEventTarget = function (e) {
 
                 cn    = [{
                     tag  : 'a',
-                    href : meta.docsRootPath + child.path + (exception ? '/' : '/index.html'),
+                    href : meta.docsRootPath + child.path.replace(/ .*$/, '') + (exception ? '/' : '/index.html'),
                     html : child.text
                 }];
 

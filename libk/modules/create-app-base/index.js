@@ -248,7 +248,9 @@ class AppBase extends SourceGuides {
      */
     //parseApiLinks (html, data) {
     parseGuideLinks (html, data) {
-        html = html.replace(/\[{2}([a-z0-9.]+):([a-z0-9._\-#]+)\s?([a-z$\/'.()[\]\\_-\s]*)\]{2}/gim, (match, productVer, link, text) => {
+        html = html.replace(/\[{2}([a-z0-9.]+):([a-z0-9!._\-#]+)\s?([a-z$\/'.()[\]\\_-\s]*)\]{2}/gim, (match, productVer, link, text) => {
+            link = link.replace('!','-');
+
             let { options }     = this,
                 exceptions      = options.buildExceptions,
                 { prodVerMeta } = options,

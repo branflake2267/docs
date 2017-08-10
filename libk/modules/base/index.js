@@ -1185,6 +1185,7 @@ class Base {
               { _myRoot } = options;
 
         if (options.syncRemote === false) {
+            this.triggerDoxi[product] = true;
             return;
         }
         // don't attempt to sync folders other than those in "localRepos"

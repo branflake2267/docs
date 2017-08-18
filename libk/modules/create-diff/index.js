@@ -55,7 +55,7 @@ class Diff extends Parser {
     
     /**
      * @private
-     * Private diff run method that actually creates the diffs adn then outputs them 
+     * Private diff run method that actually creates the diffs and then outputs them
      * using the passed output method (`outputMethod`)
      * @param {String} outputMethod The method to output the diffs with (i.e. outputRaw 
      * or outputMarkdown)

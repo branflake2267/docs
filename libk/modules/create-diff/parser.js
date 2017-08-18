@@ -342,9 +342,9 @@ class DiffParser extends DiffBase {
      */
     filterItems (items, type) {
         return _.filter(items, (item) => {
-            const { from, ignore, hide, $type, access } = item,
+            const { from, ignore, hide, $type, access, readonly } = item,
                   { options }                           = this,
-                  { diffIgnorePrivate }                 = options;
+                  { diffIgnorePrivate, diffIgnoreRO, diffIgnoreMethods } = options;
             
             // if classes are being passed in and the item isn't a class (a member in
             // the global space that showed up accidentally) then filter it out
@@ -357,7 +357,19 @@ class DiffParser extends DiffBase {
             if (diffIgnorePrivate && access === 'private') {
                 return false;
             }
-            
+
+            // readonly members may be ignored in the diff by setting
+            // `--diffIgnoreRO`
+            if (diffIgnoreRO && readonly === true) {
+                return false;
+            }
+
+            // methods may be ignored in the diff by setting
+            // `--diffIgnoreMethods`
+            if (diffIgnoreMethods && $type === 'method') {
+                return false;
+            }
+
             // finally, we'll filter out any inherited, ignored, or hidden items
             return !from && !ignore && !hide;
         });

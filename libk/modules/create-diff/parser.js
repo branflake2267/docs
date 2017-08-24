@@ -342,9 +342,14 @@ class DiffParser extends DiffBase {
      */
     filterItems (items, type) {
         return _.filter(items, (item) => {
-            const { from, ignore, hide, $type, access, readonly } = item,
-                  { options }                           = this,
-                  { diffIgnorePrivate, diffIgnoreRO, diffIgnoreMethods } = options;
+            const { from, ignore, hide, $type, access, readonly, removed, deprecated } = item,
+                  { options } = this,
+                  { diffIgnorePrivate,
+                      diffIgnoreRO,
+                      diffIgnoreMethods,
+                      diffIgnoreDeprecated,
+                      diffIgnoreRemoved
+                  } = options;
             
             // if classes are being passed in and the item isn't a class (a member in
             // the global space that showed up accidentally) then filter it out
@@ -355,6 +360,18 @@ class DiffParser extends DiffBase {
             // private classes / members may be ignored in the diff by setting 
             // `--diffIgnorePrivate`
             if (diffIgnorePrivate && access === 'private') {
+                return false;
+            }
+
+            // removed members may be ignored in the diff by setting
+            // `--diffIgnoreRemoved`
+            if (diffIgnoreRemoved && removed === true) {
+                return false;
+            }
+
+            // deprecated members may be ignored in the diff by setting
+            // `--diffIgnoreDeprecated`
+            if (diffIgnoreDeprecated && deprecated === true) {
                 return false;
             }
 
@@ -530,7 +547,7 @@ class DiffParser extends DiffBase {
             return param.$type === 'return';
         });
     }
-    
+
     /**
      * Evaluates the target and source maps for each item passed in to collect all of the
      * differences and adds the differences to the `diffObj`
@@ -559,7 +576,7 @@ class DiffParser extends DiffBase {
               // collect up the modified items between the target and the source items
               modified       = _.reduce(targetObj, (result, value, key) => {
                   const fromValue = sourceObj[key];
-                
+
                   if (!_.isEqual(value, fromValue)) {
                       result[key] = {
                           from : fromValue || 'undefined',

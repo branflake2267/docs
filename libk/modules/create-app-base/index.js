@@ -527,14 +527,10 @@ class AppBase extends SourceGuides {
                 }
             }
 
-            let docsXFiddleId = this.uniqueId,
-                docsXAceCtId  = this.uniqueId,
-                docsXMetaObj  = JSON.stringify(fidMeta);
-            
             fiddleWrapPre = Utils.format(fiddleWrapPre, {
-                docsXMetaObj,
-                docsXFiddleId,
-                docsXAceCtId
+                docsXMetaObj  : JSON.stringify(fidMeta),
+                docsXFiddleId : this.uniqueId,
+                docsXAceCtId  : this.uniqueId
             });
             
             return fiddleWrapPre + docsXCode + fiddleWrapClose;

@@ -507,7 +507,7 @@ class AppBase extends SourceGuides {
                     // e.g.: toolkit=modern
                     meta = meta.split(' ');
 
-                    meta.forEach(function(option) {
+                    meta.forEach(function (option) {
                         let optionMatch = option.match(keyedRe),
                             key         = optionMatch[1],
                             val         = optionMatch[2],
@@ -526,14 +526,14 @@ class AppBase extends SourceGuides {
                     fidMeta.toolkit   = parts[3];
                 }
             }
-
-            fiddleWrapPre = Utils.format(fiddleWrapPre, {
+            
+            const formattedFiddleWrapPre = Utils.format(fiddleWrapPre, {
                 docsXMetaObj  : JSON.stringify(fidMeta),
                 docsXFiddleId : this.uniqueId,
                 docsXAceCtId  : this.uniqueId
             });
             
-            return fiddleWrapPre + docsXCode + fiddleWrapClose;
+            return formattedFiddleWrapPre + docsXCode + fiddleWrapClose;
         });
 
         out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, docsXCode) => {

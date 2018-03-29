@@ -12,6 +12,12 @@ Clone this repository to your machine
 ### Install Cmd
 Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/) for your platform.
 
+### Required NPM packages
+Run NPM install to import the node packages used in the project.
+
+    $ cd ./libk/
+    $ npm install
+    
 ## Run the Things
 
 This process is broken down into three sub-processes
@@ -40,22 +46,24 @@ along with the other things.  The `pname` and `pversion` values can be found the
 
 + pversion - the versions level `version`
 
+```
+{
+  "products": [
     {
-      "products": [
+      "title": "Ext JS",
+      "name" : "extjs",
+      "repo" : "SDK",
+      "versions": [
         {
-          "title": "Ext JS",
-          "name" : "extjs",
-          "repo" : "SDK",
-          "versions": [
-            {
-              "version" : "6.1.0-modern",
-              "config"  : "6.1.0-modern.doxi.json",
-              "branch"  : "ext-6.1.x",
-              "tag"     : "",
-              "input"   : "modern-json",
-              "build"   : "../../build/docs/modern",
-              "rurl"    : "git@github.com:extjs/SDK.git"
-            },
+          "version" : "6.1.0-modern",
+          "config"  : "6.1.0-modern.doxi.json",
+          "branch"  : "ext-6.1.x",
+          "tag"     : "",
+          "input"   : "modern-json",
+          "build"   : "../../build/docs/modern",
+          "rurl"    : "git@github.com:extjs/SDK.git"
+        },
+```
     
     $ node index source-parser --config=classic --pname=extjs --pversion=6.1.0-classic            
     

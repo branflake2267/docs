@@ -1,5 +1,5 @@
 # docs
-Home for new Sencha Documentation
+The home of the Sencha Documentation Builder.
 
 ## Setup
 
@@ -12,13 +12,22 @@ Clone this repository to your machine
 ### Install Cmd
 Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/) for your platform.
 
-### Required NPM packages
-Run NPM install to import the node packages used in the project.
+### Install NPM packages
+Run NPM install to import the node packages used in the project. 
+There are two directories that can run node commands.
+
+* ./libk/
 
     $ cd ./libk/
     $ npm install
-    
-## Run the Things
+
+* ./lib/
+
+    $ cd ./lib/
+    $ npm install
+
+
+## Running
 
 This process is broken down into three sub-processes
 

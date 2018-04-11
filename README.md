@@ -20,6 +20,7 @@ Initially build the project.
 
 
 ## Building Site
+TODO(branflake2267) enhance build instructions...
 
 * Options arguments:
 

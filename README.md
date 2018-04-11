@@ -21,15 +21,22 @@ Initially build the project.
 
 ## Building Site
 
-Options arguments:
---cmdPath=../../../sencha-cmd
+* Options arguments:
 
-node --max-old-space-size=4076 index create-app-html --workspace=~/git/docs/build_config_sencha --product=extjs --version=6.5.3 --syncRemote=true --forceDoxi=true --log --production 
+		--cmdPath=../../../sencha-cmd
 
-// --max-old-space-size=4076 - memory or heap setting
-// index - entrypoint?
-// create-app-html - run module
-//  --product=[product] - config for product 
+* Testing Sencha build
+ 
+
+		node --max-old-space-size=4076 index create-app-html --workspace=~/git/docs/build_config_sencha --product=extjs --version=6.5.3 --syncRemote=true --forceDoxi=true --log --production 
+
+
+* Notes - TODO table
+
+		// --max-old-space-size=4076 - memory or heap setting
+		// index - entrypoint?
+		// create-app-html - run module
+		//  --product=[product] - config for product 
 
 
 

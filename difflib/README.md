@@ -1,6 +1,4 @@
-Class Diff Module
-===
-
+# Class Diff Module
 The purpose of this module is to generate markdown of class and class member changes between two versions.
 
 ## Running

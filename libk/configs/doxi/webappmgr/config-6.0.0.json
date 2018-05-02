@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "profiles": {
+    "js": {
+      "language": "javascript",
+      "builtins": [
+        "Mixed",
+        "Event",
+        "HTMLElement",
+        "undefined",
+        "null",
+        "Window",
+        "Error",
+        "CSSStyleRule",
+        "CSSStyleSheet",
+        "Arguments",
+        "Integer",
+        "XMLElement",
+        "TextNode",
+        "Uint8Array",
+        "NodeList",
+        "XMLHttpRequest",
+        "FileList",
+        "measurement"
+      ]
+    }
+  },
+  "sources": [{
+    "profile": "js",
+    "path": [
+      "{_myRoot}/../docs/js/primitives",
+      "{apiSourceDir}/SpaceSDK/src"
+    ]
+  }],
+  "outputs": {
+    "all": {
+      "default": true,
+      "depends": [ "combo-nosrc", "all-classes" ]
+    },
+    "all-classes": {
+      "type": "json",
+      "dir": "{apiInputDir}/{product}/{version}/all-classes-flatten",
+      "file": "_all-classes.json",
+      "includeSrc": true,
+      "links": true,
+      "flatten": false,
+      "autoLinks": [
+        "text",
+        "deprecatedMessage",
+        "removedMessage"
+      ],
+      "renames": {
+        "number"  : "Number",
+        "boolean" : "Boolean",
+        "string"  : "String"
+      }
+    },
+    "combo-nosrc": {
+      "type": "json",
+      "dir": "{apiInputDir}/{product}/{version}/{toolkit}-json",
+      "includeSrc": true,
+      "links": true,
+      "flatten": true,
+      "autoLinks": [
+        "text",
+        "deprecatedMessage",
+        "removedMessage"
+      ],
+      "renames": {
+        "number"  : "Number",
+        "boolean" : "Boolean",
+        "string"  : "String"
+      }
+    }
+  }
+}

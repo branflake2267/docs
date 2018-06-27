@@ -380,7 +380,7 @@ DocsApp.buildForm = function (target, params) {
     var form = ExtL.createElement({
         tag    : 'form',
         role   : 'presentation',
-        action : 'https://test-fiddle.sencha.com/run?dc=' + new Date().getTime(),
+        action : 'https://fiddle.sencha.com/run?dc=' + new Date().getTime(),
         method : 'POST',
         target : target,
         style  : 'display:none'

@@ -28,3 +28,12 @@ Start by building the node library.
 * View output in `./build/output/index.html` to start from the main page.
 * View output in `./build/output/myproduct/index.html` to start from the myproduct page. 
 
+### Build Directory
+Everything in the build directory is generated. 
+The build directory can be cleaned at any time and generated again. 
+
+* `./build/_temp` - doxi output
+* `./build/input` - doxi input
+* `./build/output` - html output
+* `./build/repos` - cloned git repos
+

@@ -1,7 +1,11 @@
 # Sencha Docs Site Generator
 The home of the Sencha site generator or builder.
 
-## Required set up
+## Requirements
+
+* (*)nix System
+
+## Configure
 
 ### Clone Docs Repository
 Clone this repository to your machine

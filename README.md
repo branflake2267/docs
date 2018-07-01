@@ -3,7 +3,7 @@ The home of the Sencha site generator or builder.
 
 ## Requirements
 
-* (*)nix System
+* (*)nix System, because the path system is not windows compatible yet.
 
 ## Configure
 

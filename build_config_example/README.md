@@ -2,28 +2,27 @@
 This is an exmaple of a simple docs generator configuration.
 
 ## Project Resources
-This project includes one product called `myproduct` and guides for it. 
+This project includes one product called `myproduct` and guides for it on github. 
 
-### Project Guides
+### Guides
 
-* [docs-example-guides repo](https://github.com/sencha/docs-example-guides)
+* [docs-example-guides](https://github.com/sencha/docs-example-guides) git repo.
 
-### Project Source
+### Source
 
-* [docs-example-project repo](https://github.com/sencha/docs-example-project)
-
+* [docs-example-project](https://github.com/sencha/docs-example-project) git repo.
 
 
 ## Build
 Build the docs by running the node command in the bash script.  
 
-### Lib Install
-Start by building the library.
+### Install
+Start by building the node library.
 
 * Go into the lib diretory. `cd ../lib`
 * run `npm install` and this will build the library. 
 
-### Docs Build
+### Docs
 
 * Run `build_example_mhproduct_15.sh`
 * View output in `./build/output/index.html` to start from the main page.

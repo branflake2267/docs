@@ -24,7 +24,7 @@ Start by building the node library.
 
 ### Docs
 
-* Run `build_example_mhproduct_15.sh`
+* Run `sh ./build_example_mhproduct_15.sh`
 * View output in `./build/output/index.html` to start from the main page.
 * View output in `./build/output/myproduct/index.html` to start from the myproduct page. 
 

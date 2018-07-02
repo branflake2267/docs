@@ -15,5 +15,5 @@ node --max-old-space-size=4076 index create-app-html \
 --syncRemote=true \
 --forceDoxi=true \
 --log \
---production
+--production 
 

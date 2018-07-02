@@ -10,7 +10,7 @@ This project includes one product called `myproduct` and guides for it on github
 
 ### Source
 
-* [docs_project_config.json](build_config_sencha/configs/docs_project_config.json) source configuration here.
+* [docs_project_config.json](./configs/docs_project_config.json) source configuration here.
 
 
 ## Build

@@ -6,7 +6,7 @@ The home of the Sencha site generator or builder.
 * (*)nix System, because the path system is not windows compatible yet.
 
 ### CMD
-Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/) for your platform.
+Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/).
 
 
 ## Build

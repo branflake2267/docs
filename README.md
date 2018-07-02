@@ -19,8 +19,8 @@ Clone this repository.
 ### Install 
 Start by installing the npm packages. 
 
-    $ cd ./lib/
-    $ npm install
+* `cd ./lib/`
+* `npm install` 
 
 
 ### Generate

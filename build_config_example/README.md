@@ -32,8 +32,8 @@ Start by building the node library.
 Everything in the build directory is generated. 
 The build directory can be cleaned at any time and generated again. 
 
-* `./build/_temp` - doxi output
-* `./build/input` - doxi input
+* `./build/_temp` - doxi manifest
+* `./build/input` - doxi output
 * `./build/output` - html output
 * `./build/repos` - cloned git repos
 

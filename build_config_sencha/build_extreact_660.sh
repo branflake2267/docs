@@ -7,8 +7,8 @@ cd ../lib
 # docs config directory 
 CONFIG_DIR="$(cd ../build_config_sencha; echo "$(pwd)")"
 
-# docs build command
-node --max-old-space-size=4076 index create-app-html \
+# docs build command - (Notice: create-rext-app-html - it's build is different than normal)
+node --max-old-space-size=4076 index create-rext-app-html \
 --buildConfigsDir=$CONFIG_DIR \
 --product=extreact \
 --version=6.6.0 \

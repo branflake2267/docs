@@ -3,11 +3,15 @@ The home of the Sencha site generator or builder.
 
 ## Requirements
 
-* (*)nix System, because the path system is not windows compatible yet.
+- (*)nix System, because the path system is not windows compatible yet.
 
 ### CMD
 Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/).
 
+## Reference
+
+- [Doxi](https://github.com/sencha/doxi) is used to build a json representation of the code. 
+- Process: Doxi JSON Manifest > Doxi JSON Output > Doxi Used to Render HTML
 
 ## Build
 

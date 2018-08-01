@@ -11,7 +11,7 @@ Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/).
 ## Reference
 
 - [Doxi](https://github.com/sencha/doxi) is used to build a json representation of the code. 
-- Process: Doxi JSON Manifest > Doxi JSON Output > Doxi Used to Render HTML
+- API Docs Render Process: Doxi JSON Manifest > Doxi JSON Output > Doxi Used to Render HTML
 
 ## Build
 

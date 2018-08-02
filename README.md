@@ -1,7 +1,7 @@
 # docs
 Home for new Sencha Documentation
 
-## Docs V2 Build
+## V2 Source
 This is being prepped for public access here...
 
 * [Locate the V2 build here](https://github.com/sencha/docs/pull/980)

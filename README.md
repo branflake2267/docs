@@ -1,4 +1,4 @@
-# docs
+# Sencha Docs Generator
 Home of the Sencha docs generator. 
 
 ## V2 Source

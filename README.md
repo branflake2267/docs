@@ -7,7 +7,7 @@ The home of the Sencha site generator or builder.
 
 ## Example
 
-* `build_config_example` - Look at the read me in `build_config_example` for build example.  
+* `build_config_example` - Look at the readme in `build_config_example` for build example.  
 
 ### CMD
 Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/).

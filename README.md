@@ -1,5 +1,5 @@
 # docs
-Home for new Sencha Documentation
+Home for new Sencha docs generator. 
 
 ## V2 Source
 This is being prepped for public access here...

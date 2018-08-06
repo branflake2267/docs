@@ -1,8 +1,8 @@
 # docs
-Home for new Sencha docs generator. 
+Home of the Sencha docs generator. 
 
 ## V2 Source
-This is being prepped for public access here...
+This is being prepped for public access here... All invitees see this branch. 
 
 * [Locate the V2 build here](https://github.com/sencha/docs/pull/980)
 

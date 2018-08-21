@@ -377,10 +377,18 @@ DocsApp.getSearchClassName = function (rec) {
  * @return {Element} The form used the submit the fiddle code to the fiddle server
  */
 DocsApp.buildForm = function (target, params) {
+    // Default fiddle URL points to production
+    var fiddleURL = 'https://fiddle.sencha.com/run?dc=' + new Date().getTime();
+
+    // Poing docs-devel.sencha.com to the test fiddles. 
+    if (window.location.hostname.indexOf('docs-devel') == 0) {
+        fiddleURL = 'https://test-fiddle.sencha.com/run?dc=' + new Date().getTime();
+    }
+
     var form = ExtL.createElement({
         tag    : 'form',
         role   : 'presentation',
-        action : 'https://fiddle.sencha.com/run?dc=' + new Date().getTime(),
+        action : fiddleURL,
         method : 'POST',
         target : target,
         style  : 'display:none'

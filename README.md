@@ -5,6 +5,10 @@ The home of the Sencha site generator or builder.
 
 - (*)nix System, because the path system is not windows compatible yet.
 
+## Example
+
+* `build_config_example` - Look at the readme in `build_config_example` for build example.  
+
 ### CMD
 Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/).
 

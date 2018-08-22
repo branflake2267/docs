@@ -2699,8 +2699,7 @@ DocsApp.getEventTarget = function (e) {
                 packages : packages
             },
             data       = {
-                // If ExtReact, set it
-                framework : actualProd === 'extreact' ? 'ExtReact' : meta,
+                framework : meta,
                 codes     : codes
             },
             form, mask;
@@ -2985,6 +2984,12 @@ DocsApp.getEventTarget = function (e) {
         if (window.location.hostname.indexOf('docs-devel') == 0) {
             fiddleURL = 'https://test-fiddle.sencha.com/run?dc=' + new Date().getTime();
         }
+
+        var myMeta = DocsApp.meta;
+        var actualProd = myMeta.product;
+        if (actualProd === 'extreact') {
+            params.framework.framework = 'ExtReact';
+        }    
 
         var form = ExtL.createElement({
             tag    : 'form',

@@ -385,6 +385,12 @@ DocsApp.buildForm = function (target, params) {
         fiddleURL = 'https://test-fiddle.sencha.com/run?dc=' + new Date().getTime();
     }
 
+    var myMeta = DocsApp.meta;
+    var actualProd = myMeta.product;
+    if (actualProd === 'extreact') {
+        params.framework.framework = 'ExtReact';
+    }
+
     var form = ExtL.createElement({
         tag    : 'form',
         role   : 'presentation',
@@ -396,10 +402,17 @@ DocsApp.buildForm = function (target, params) {
 
     var assets = params.codes.assets;
 
+    // before: 'import React from \'react\';\nimport App from \'./App\';\nimport { launch } from \'@extjs/reactor\';\nlaunch(<App\/>);',
+    var rcode = "";
+    rcode += "import React, { Component } from 'react';\n";
+    rcode += "import App from './App';\n";
+    rcode += "import { launch } from '@sencha/ext-react';\n";
+    rcode += "launch(<App\/>);";
+
     assets[0].name = "App.js";
     var wrappingAssets = [{
         name   : "app.js",
-        code   : 'import React from \'react\';\nimport App from \'./App\';\nimport { launch } from \'@extjs/reactor\';\nlaunch(<App\/>);',
+        code   : rcode,
         type   : "js"
     }, {
         name   : "index.html",

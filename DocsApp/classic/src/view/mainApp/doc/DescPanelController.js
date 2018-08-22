@@ -95,9 +95,20 @@ Ext.define('DocsApp.view.mainApp.doc.DescPanelController', {
         // Default fiddle URL points to production
         var fiddleURL = 'https://fiddle.sencha.com/run?dc=' + new Date().getTime();
 
-        // Poing docs-devel.sencha.com to the test fiddles. 
+        // Point docs-devel.sencha.com to the test fiddles. 
         if (window.location.hostname.indexOf('docs-devel') == 0) {
+            // Used for the staged fiddle testing
             fiddleURL = 'https://test-fiddle.sencha.com/run?dc=' + new Date().getTime();
+        } else if (window.location.origin.indexOf('file://') == 0) {
+            // Used for local debugging - Like when debugging docs v2 builds
+            fiddleURL = 'https://fiddle-dev.sencha.com/run?dc=' + new Date().getTime();
+        }
+    
+        // Change the framework for ExtReact only - Used for embedded fiddles
+        var myMeta = DocsApp.meta;
+        var actualProd = myMeta.product;
+        if (actualProd === 'extreact') {
+            params.framework.framework = 'ExtReact';
         }
 
         var fieldsSpec = [],

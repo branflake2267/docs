@@ -2699,7 +2699,8 @@ DocsApp.getEventTarget = function (e) {
                 packages : packages
             },
             data       = {
-                framework : meta,
+                // If ExtReact, set it
+                framework : actualProd === 'extreact' ? 'ExtReact' : meta,
                 codes     : codes
             },
             form, mask;

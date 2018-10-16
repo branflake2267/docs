@@ -103,7 +103,7 @@ Ext.define('DocsApp.view.mainApp.doc.DescPanelController', {
             // Used for local debugging - Like when debugging docs v2 builds
             fiddleURL = 'https://fiddle-dev.sencha.com/run?dc=' + new Date().getTime();
         }
-
+    
         // Change the framework for ExtReact only - Used for embedded fiddles
         var myMeta = DocsApp.meta;
         var actualProd = myMeta.product;

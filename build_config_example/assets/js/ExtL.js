@@ -1063,8 +1063,9 @@ window.ExtL = window.ExtL || {};
         });
 
         if (html && !insertBefore) {
-            textNode = document.createTextNode(html);
-            el.appendChild(textNode);
+            //textNode = document.createTextNode(html);
+            //el.appendChild(textNode);
+            el.innerHTML = html;
         }
 
         if (children) {

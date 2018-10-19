@@ -112,8 +112,7 @@ function Tree (data, renderTo) {
 Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     data = ExtL.from(data);
 
-    var i          = 0,
-        len        = data.length,
+    var len        = data.length,
         cfgs       = [],
         isIndexed  =  this.isIndexed(),
         indexedCls = isIndexed ? ' tree-node-indexed' : '',
@@ -123,7 +122,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     depth = depth || 0;
 
     // loop over all passed nodes
-    for (; i < len; i++) {
+    for (var i = 0; i < len; i++) {
         node      = data[i]; // the current node
         accessCls = node.access + '-tree-node';
         // the default config to use for this node when processed to the DOM by
@@ -230,7 +229,8 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
  * @return {Boolean} `true` if the tree nodes are to display as indexed
  */
 Tree.prototype.isIndexed = function () {
-    return DocsApp.meta.navTreeName === 'Quick Start';
+    // TODO set this attribute from the json data
+    return DocsApp.meta.navTreeName === 'QuickStart';
 };
 
 /**

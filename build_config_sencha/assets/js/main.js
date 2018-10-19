@@ -229,6 +229,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
  * @return {Boolean} `true` if the tree nodes are to display as indexed
  */
 Tree.prototype.isIndexed = function () {
+    // TODO set this attribute from the json data
     return DocsApp.meta.navTreeName === 'QuickStart';
 };
 

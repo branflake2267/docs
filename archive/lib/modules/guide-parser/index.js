@@ -518,7 +518,6 @@ class Guide extends Base {
 
         me.prependHrefPath(tree, guideDir, me.docDir);
         me.prependHrefPath(quickStartTree, guideDir, me.docDir);
-
         me.prependHrefPath(productTree, guideDir, guideDir);
 
         let newtemplate = handlebars.compile(me.template); // Compile the handlebars template with the view object;

@@ -1,6 +1,9 @@
 #!/bin/sh
 # build extjs docs
 
+# clean the build directory
+rm -rf ./build
+
 # Run this from the library directory where the app logic is.
 cd ../lib
 

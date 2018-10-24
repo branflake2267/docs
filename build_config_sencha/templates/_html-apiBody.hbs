@@ -1,0 +1,378 @@
+<div id="member-toolbars">
+    <div id="member-class-name">
+        {{#if cls.clsSpec}}
+            <span class='icon'>
+                <i class="title-decoration {{cls.clsSpecIcon}}"></i>
+            </span>
+        {{/if}}
+
+        <h1 class='{{cls.$type}}'>
+            {{#if cls.multiSrc}}
+                <span class="multi-src-btn">{{{cls.name}}}</span>
+            {{else}}
+                <a href="src/{{cls.srcLink}}" target="_blank">{{{cls.name}}}</a>
+            {{/if}}
+            {{#cls.alias}}
+                <span class='alias'>
+                    {{#if ../cls.aliasPrefix}}
+                        {{../cls.aliasPrefix}}:
+                    {{/if}}
+                    {{../cls.aliasName}}</span>
+            {{/cls.alias}}
+            {{#cls.access}}
+                <span class="member-tags"><span class="{{.}} full-flag">{{.}}</span></span>
+            {{/cls.access}}
+            {{#cls.isDeprecated}}
+                <span class="member-tags"><span class="deprecated full-flag">deprecated</span></span>
+            {{/cls.isDeprecated}}
+            {{#cls.isRemoved}}
+                <span class="member-tags"><span class="removed full-flag">removed</span></span>
+            {{/cls.isRemoved}}
+            {{#cls.singleton}}
+                <span class="member-tags"><span class='singleton'>singleton</span></span>
+            {{/cls.singleton}}
+            {{#any cls.tier}}
+                <span class="member-tags"><span class='{{cls.tier}}'>{{cls.tier}}</span></span>
+            {{/any}}
+            {{#cls.abstract}}
+                <span class="member-tags"><span class='abstract'>abstract</span></span>
+            {{/cls.abstract}}
+            {{#cls.isEnum}}
+                <span class='alias'>enum of <b>String</b></span>
+            {{/cls.isEnum}}
+            {{#cls.tier}}
+                <span class="member-tags"><span class="{{{tier}}}">{{{tier}}}</span></span>
+            {{/cls.tier}}
+        </h1>
+    </div>
+</div>
+<div class="context-menu-ct">
+    <div class="context-header">
+        <div id="hide-context-menu" class="fa fa-close"></div>
+    </div>
+
+    {{> _search}}
+    <div class="context-menu-content navigation-parent-ct">
+        <div class="context-menu-tabs">
+            <div id="filterTab" class="toolbarHeaderButton active-tab">
+                Filters
+            </div>
+            <div id="relatedClassesTab" class="toolbarHeaderButton">
+                Related Classes
+            </div>
+        </div>
+        <div id="context-menu-filters-header" class="sub-nav-header sub-nav-header-expanded">
+            <span>Filters</span>
+            <i class="fa fa-chevron-down" style="z-index: 0; transform: matrix(-1, 0, 0, -1, 0, 0);"></i>
+        </div>
+        <div id="filters-ct">
+            <div id="toolbar">
+                <div class="memberFilter">
+                    <input placeholder="Filter members..." type="search" id="member-filter-field" name="member-filter-field">
+                    <div id="toggleExamples" class="icon-btn tooltip tooltip-tr-br" data-collapse="Collapse All Examples" data-expand="Expand All Examples">
+                        <i id="toggle-examples-indicator" class="fa fa-code"></i>
+                        <div class="callout callout-b"></div>
+                    </div>
+                    <div id="toggleAll" class="icon-btn tooltip tooltip-tr-br" data-toggle="Expand All Members">
+                        <i id="toggle-members-indicator" class="fa fa-plus"></i>
+                        <div class="callout callout-b"></div>
+                    </div>
+                </div>
+                <div id="member-display">
+                    <div class="member-access-display">
+                        <label>
+                            <input id="publicCheckbox" type="checkbox" value="member-public" checked=true/>Public
+                        </label>
+                    </div>
+                    <div class="member-access-display">
+                        <label>
+                            <input id="protectedCheckbox" type="checkbox" value="member-protected" checked=true/>Protected
+                        </label>
+                    </div>
+                    <div class="member-access-display">
+                        <label>
+                            <input id="privateCheckbox" type="checkbox" value="member-private"/>Private
+                        </label>
+                    </div>
+                    <div class="member-access-display">
+                        <label>
+                            <input id="inheritedCheckbox" type="checkbox" value="member-inherited" checked=true/>Inherited
+                        </label>
+                    </div>
+                    <div class="member-access-display">
+                        <label>
+                            <input id="readonlyCheckbox" type="checkbox" value="member-readonly" checked=true/>Read Only
+                        </label>
+                    </div>
+                </div>
+                <div id="member-types-menu" class="member-types-menu dib">
+                    {{#if hasConfigs}}
+                        <a href="#configs" id="configs-button-link">
+                            <div id="configs-nav-btn" class="toolbarButton disabled">
+                                <i class="fa fa-cubes"></i>
+                                <span class="member-type-btn-text">{{configs.name}}</span>
+                                <div id="configs-count" class="nav-btn-count"></div>
+                                <div class="nav-btn-mask"></div>
+                            </div>
+                        </a>
+                    {{/if}}
+                    {{#if hasChildItems}}
+                        <a href="#child-items" id="child-items-button-link">
+                            <div id="child-items-nav-btn" class="toolbarButton disabled">
+                                <i class="fa fa-dot-circle-o"></i>
+                                <span class="member-type-btn-text">children</span>
+                                <div id="child-items-count" class="nav-btn-count"></div>
+                                <div class="nav-btn-mask"></div>
+                            </div>
+                        </a>
+                    {{/if}}
+                    {{#if hasProperties}}
+                        <a href="#properties" id="properties-button-link"><div id="properties-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-book"></i>
+                            <span class="member-type-btn-text">{{properties.name}}</span>
+                            <div id="properties-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div></a>
+                    {{/if}}
+                    {{#if hasMethods}}
+                        <a href="#methods" id="methods-button-link"><div id="methods-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-object-group"></i>
+                            <span class="member-type-btn-text">methods</span>
+                            <div id="methods-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div></a>
+                    {{/if}}
+                    {{#if hasEvents}}
+                        <a href="#events" id="events-button-link"><div id="events-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-bolt"></i>
+                            <span class="member-type-btn-text">events</span>
+                            <div id="events-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div></a>
+                    {{/if}}
+                    {{#if hasVars}}
+                        <a href="#vars" id="vars-button-link"><div id="vars-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-paint-brush"></i>
+                            <span class="member-type-btn-text">theme variables</span>
+                            <div id="vars-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div></a>
+                    {{/if}}
+                    {{#if hasSass-mixins}}
+                        <a href="#sass-mixins" id="sass-mixins-button-link"><div id="sass-mixins-nav-btn" class="toolbarButton disabled">
+                            <i class="fa fa-tint"></i>
+                            <span class="member-type-btn-text">theme mixins</span>
+                            <div id="sass-mixins-count" class="nav-btn-count"></div>
+                            <div class="nav-btn-mask"></div>
+                        </div></a>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        <div id="context-menu-related-header" class="sub-nav-header sub-nav-ct-collapsed">
+            <span>Related Classes</span>
+            <i class="fa fa-chevron-down" style="z-index: 0; transform: matrix(-1, 0, 0, -1, 0, 0);"></i>
+        </div>
+        <div id="related-classes-context-ct" class="hide">
+            <!-- We'll programmatically copy in the related classes elements here on page load -->
+        </div>
+    </div>
+</div>
+<div id="class-body-wrap" class="class-body-wrap">
+    <div class="body-wrap-inner">
+        <div id="classText" class="classText">
+            <div class="classHead">
+                <div class="classMeta">
+                    {{#if npmPackage}}
+                        <div class="classMetaColumn">
+                            <h3>NPM Package</h3>
+                            {{{npmPackage}}}
+                        </div>
+                    {{/if}}
+                    {{#if altNames}}
+                        <div class="classMetaColumn">
+                            <h3>Alternate Names</h3>
+                            <p class="list">{{{altNames}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if extends}}
+                        <div class="classMetaColumn">
+                            <h3>Hierarchy</h3>
+                            {{{extends}}}
+                        </div>
+                    {{/if}}
+                    {{#if localMixins}}
+                        <div class="classMetaColumn">
+                            <h3>Mixins</h3>
+                            <p class="list">{{{localMixins}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if mixins}}
+                        <div class="classMetaColumn">
+                            <h3>Inherited Mixins</h3>
+                            <p class="list">{{{mixins}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if requires}}
+                        <div class="classMetaColumn">
+                            <h3>Requires</h3>
+                            <p class="list">{{{requires}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if uses}}
+                        <div class="classMetaColumn">
+                            <h3>Uses</h3>
+                            <p class="list">{{{uses}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if extenders}}
+                        <div class="classMetaColumn">
+                            <h3>Sub-Classes</h3>
+                            <p class="list">{{{extenders}}}</p>
+                        </div>
+                    {{/if}}
+                    {{#if mixers}}
+                        <div class="classMetaColumn">
+                            <h3>Mixed Into</h3>
+                            <p class="list">{{{mixers}}}</p>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+            {{#if cls.isDeprecated}}
+                {{#deprecatedMessage}}
+                    <div class="deprecated-dec">This class has been <span class="member-tags"><span class="deprecated">deprecated</span>{{#deprecatedVersion}} since {{.}}{{/deprecatedVersion}}</span>
+                        {{{.}}}</div>
+                {{/deprecatedMessage}}
+            {{/if}}
+            {{#is cls.access "private"}}
+                <div class="privatecls-dec">
+                    NOTE: This is a private utility class for internal use by the framework. Don't rely on its existence.
+                </div>
+            {{/is}}
+            {{#if classText}}
+                <h2>Summary</h2>
+                {{{classText}}}
+            {{/if}}
+            {{#if cls.isEnum}}
+                <div class="enum-msg">ENUM: This enumeration defines a set of String values. It exists primarily for documentation purposes - in code use the actual string values like <i>{{enumProperty}}</i>, don't reference them through this class <i>{{cls.name}}.{{enumProperty}}</i>.</div>
+            {{/if}}
+        </div>
+        <div class="no-visible-members-warning">No members found using the current filters</div>
+        <div class="members">
+            {{#if hasConfigs}}
+                <div id="configs-ct">
+                    <h2 id="configs" class="type">{{configs.name}}</h2>
+                    <a class="link underline-hover blue" name="configs"></a>
+                    {{#if configs.hasRequiredConfigs}}
+                        <div id="required-configs-ct">
+                            <div class="type-sub-category-title">Required {{capitalizeFirst configs.name}}</div>
+                            {{#configs.requiredConfigs}}
+{{> _api-member}}
+                            {{/configs.requiredConfigs}}
+                        </div>
+                    {{/if}}
+
+                    {{#if configs.hasOptionalConfigs}}
+                        <div id="optional-configs-ct">
+                            <div class="type-sub-category-title">Optional {{capitalizeFirst configs.name}}</div>
+                            {{#configs.optionalConfigs}}
+{{> _api-member}}
+                            {{/configs.optionalConfigs}}
+                        </div>
+                    {{/if}}
+                </div>
+            {{/if}}
+
+            {{#if hasChildItems}}
+                <div id="child-items-ct">
+                    <h2 id="child-items" class="type">children</h2>
+                    <a name="child-items"></a>
+                    {{#child-items}}
+{{> _api-member}}
+                    {{/child-items}}
+                </div>
+            {{/if}}
+
+            {{#if hasProperties}}
+                <div id="properties-ct">
+                    <h2 id="properties" class="type">properties</h2>
+                    <a name="properties"></a>
+                    {{#if properties.hasInstanceProperties}}
+                        <div id="instance-properties-ct">
+                            <div class="type-sub-category-title ">Instance {{capitalizeFirst properties.name}}</div>
+                            {{#properties.instanceProperties}}
+{{> _api-member}}
+                            {{/properties.instanceProperties}}
+                        </div>
+                    {{/if}}
+
+                    {{#if properties.hasStaticProperties}}
+                        <div id="static-properties-ct">
+                            <div class="type-sub-category-title">Static {{capitalizeFirst properties.name}}</div>
+                            {{#properties.staticProperties}}
+{{> _api-member}}
+                            {{/properties.staticProperties}}
+                        </div>
+                    {{/if}}
+                </div>
+            {{/if}}
+
+            {{#if hasMethods}}
+                <div id="methods-ct">
+                    <h2 id="methods" class="type">methods</h2>
+                    <a name="methods"></a>
+                    {{#if methods.hasInstanceMethods}}
+                        <div id="instance-methods-ct">
+                            <div class="type-sub-category-title">Instance Methods</div>
+                            {{#methods.instanceMethods}}
+{{> _api-member}}
+                            {{/methods.instanceMethods}}
+                        </div>
+                    {{/if}}
+
+                    {{#if methods.hasStaticMethods}}
+                        <div id="static-methods-ct">
+                            <div class="type-sub-category-title">Static Methods</div>
+                            {{#methods.staticMethods}}
+{{> _api-member}}
+                            {{/methods.staticMethods}}
+                        </div>
+                    {{/if}}
+                </div>
+            {{/if}}
+
+            {{#if hasEvents}}
+                <div id="events-ct">
+                    <h2 id="events" class="type">events</h2>
+                    <a name="events"></a>
+                    {{#events}}
+{{> _api-member}}
+                    {{/events}}
+                </div>
+            {{/if}}
+
+            {{#if hasVars}}
+                <div id="vars-ct">
+                    <h2 id="vars" class="type">theme variables</h2>
+                    <a name="vars"></a>
+                    {{#vars}}
+{{> _api-member}}
+                    {{/vars}}
+                </div>
+            {{/if}}
+
+            {{#if hasSass-mixins}}
+                <div id="sass-mixins-ct">
+                    <h2 id="sass-mixins" class="type">theme mixins</h2>
+                    <a name="sass-mixins"></a>
+                    {{#sass-mixins}}
+{{> _api-member}}
+                    {{/sass-mixins}}
+                </div>
+            {{/if}}
+
+        </div>
+    </div>
+    {{> _footer}}
+</div>

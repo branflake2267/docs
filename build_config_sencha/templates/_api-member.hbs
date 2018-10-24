@@ -1,0 +1,243 @@
+{{#unless hide}}
+    <div id="{{{$type}}}-{{{name}}}" class="classmembers member member{{#access}}-{{{.}}}{{/access}} {{#if static}}isStatic{{else}}isNotStatic{{/if}} {{#is $type "config"}}{{#if required}}isRequired{{else}}isNotRequired{{/if}}{{/is}} {{#if isInherited}}isInherited{{else}}is-not-inherited{{/if}} {{#deprecatedMessage}}deprecated-strike{{/deprecatedMessage}} {{#removedVersion}}deprecated-strike{{/removedVersion}} {{#fromObject}}fromObject{{/fromObject}} {{#isGetter}}accessor-method explicit-accessor-method isGetter{{/isGetter}} {{#isSetter}}accessor-method explicit-accessor-method isSetter{{/isSetter}} {{#isAutoGetter}}isAutoGetter{{/isAutoGetter}} {{#isAutoSetter}}isAutoSetter{{/isAutoSetter}}" data-member-name="{{{name}}}" {{#accessor}} data-accessor="true"{{/accessor}}{{#inheritdoc}} data-inherited="true"{{/inheritdoc}}>
+        <div class="collapse-toggle">
+            <i class="fa fa-caret-right"></i>
+            <i class="fa fa-caret-down"></i>
+        </div>
+        <div class="source-class">
+            <a href="{{srcClass}}.html">{{srcClassText}}</a>
+            <div class="viewSource">
+                {{#if srcLink}}
+                    <a target="_blank" href="src/{{srcLink}}">view source</a>
+                {{/if}}
+            </div>
+        </div>
+        <h2 class="member-header">
+            <a href="#{{$type}}-{{name}}" class="member-name-link"><span data-ref="{{$type}}-{{name}}" class="member-name">{{{name}}}</span></a>
+            {{#if listParams}}
+                <span class="params-list">
+                    {{#if paramsPrefix}}
+                        {{paramsPrefix}}
+                    {{/if}}
+                    (
+                    {{#is $type "css_mixin"}}
+                        ...list...
+                    {{else}}
+                        {{~#params~}}
+                            {{~#unless @first~}}, {{/unless~}}
+                            {{~#if optional~}}[{{~/if~}}{{~name~}}{{~#if optional}}]{{~/if~}}
+                            {{~#if @last~}}
+                                {{~#is ../$type "event"~}}, eOpts{{/is}}
+                            {{/if}}
+                        {{~/params~}}
+                    {{/is}}
+
+                    )
+                    {{#if listReturn}}
+                        {{#if returnPrefix}}
+                            {{returnPrefix}}
+                        {{else}}
+                            :
+                        {{/if}}
+                    {{/if}}
+                </span>
+            {{/if}}
+
+            {{#if listReturn}}
+                {{#returns}}
+                    <span class="memberType">{{{type}}}</span>
+                {{/returns}}
+            {{/if}}
+
+            {{#if type}}
+                {{#type}}
+                    <span class="memberType"> : {{{.}}}</span>
+                {{/type}}
+            {{/if}}
+            <div class="member-tags">
+                {{#chainable}}
+                    <span class="chainable full-flag">chainable</span>
+                    <span class="chainable mini-flag">ch</span>
+                {{/chainable}}
+                {{#deprecatedMessage}}
+                    <span class="deprecated full-flag">deprecated</span>
+                    <span class="deprecated mini-flag">dep</span>
+                {{/deprecatedMessage}}
+                {{#bindable}}
+                    <span class="bindable full-flag">bindable</span>
+                    <span class="bindable mini-flag">bind</span>
+                {{/bindable}}
+                {{#immutable}}
+                    <span class="immutable full-flag">immutable</span>
+                    <span class="immutable mini-flag">imm</span>
+                {{/immutable}}
+                {{#preventable}}
+                    <span class="preventable full-flag">preventable</span>
+                    <span class="preventable mini-flag">prev</span>
+                {{/preventable}}
+                {{#readonly}}
+                    <span class="readonly full-flag">readonly</span>
+                    <span class="readonly mini-flag">ro</span>
+                {{/readonly}}
+                {{#static}}
+                    <span class="static full-flag">static</span>
+                    <span class="static mini-flag">sta</span>
+                {{/static}}
+                {{#required}}
+                    <span class="required full-flag">required</span>
+                    <span class="required mini-flag">req</span>
+                {{/required}}
+                {{#template}}
+                    <span class="template full-flag">template</span>
+                    <span class="template mini-flag">tpl</span>
+                {{/template}}
+                {{#removedVersion}}
+                    <span class="removed full-flag">removed</span>
+                    <span class="removed mini-flag">rem</span>
+                {{/removedVersion}}
+                {{#abstract}}
+                    <span class="abstract full-flag">abstract</span>
+                    <span class="abstract mini-flag">abs</span>
+                {{/abstract}}
+                {{#isnt access 'public'}}
+                    <span class="{{{access}}} full-flag">{{{access}}}</span>
+                    <span class="{{{access}}} mini-flag">{{accessMini}}</span>
+                {{/isnt}}
+            </div>
+        </h2>
+
+        {{#text}}
+            {{{.}}}
+        {{/text}}
+        {{#value}}
+            <p class="defaults-to-dec">Defaults to: {{{.}}}</p>
+        {{/value}}
+        {{#since}}
+            <p class="since-dec">Available since: <b>{{{.}}}</b></p>
+        {{/since}}
+        {{#if hasParams}}
+            <h3 class="detail-header">Parameters</h3>
+            {{#params}}
+                <div class="param-row">
+                    <p><span class="params-list param-list-item" id="{{../$type}}-{{../name}}--{{name}}">{{{name}}}</span> :
+                        {{#if type}}
+                            <span class="memberType">&nbsp;{{{type}}}</span>
+                        {{else}}
+                            <span class="memberType">&nbsp;Object</span>
+                        {{/if}}
+                        {{#if optional}}<i class="memberType">(optional)</i>{{/if}}
+                    </p>
+                    <div class="params-desc">{{{text}}}</div>
+                    {{#value}}
+                        <p class="defaults-to-dec">Defaults to: {{.}}</p>
+                    {{/value}}
+
+                    {{#if items}}
+{{> _sub-params}}
+                    {{/if}}
+                </div>
+                {{#if @last}}
+
+                    {{#is ../$type "event"}}
+                        <div class="param-row">
+                            <p><span class="params-list">eOpts</span> : <span class="memberType"><a href="Object.html">Object</a></span></p>
+                            <div class="params-desc"><p>The options object passed to <a href="Ext.util.Observable.html">Ext.util.Observable.addListener</a>.</p></div>
+                        </div>
+                    {{/is}}
+                {{/if}}
+            {{/params}}
+        {{/if}}
+        {{#if hasProperties}}
+            <h3 class="detail-header">Properties</h3>
+            {{#properties}}
+                <p><span class="params-list">{{{name}}}</span> : <span class="memberType">{{{type}}}</span></p>
+                <p>{{{text}}}</p>
+                {{#value}}
+                    <p class="defaults-to-dec">Defaults to: {{.}}</p>
+                {{/value}}
+
+                {{#if items}}
+{{> _sub-params}}
+                {{/if}}
+            {{/properties}}
+        {{/if}}
+        {{#if hasReturn}}
+            <h3 class="detail-header">Returns</h3>
+            {{#returns}}
+                :<span style="margin-left:12px;" class="memberType">{{{type}}}</span>
+                <div class="return-desc">{{{text}}}</div>
+
+                {{#if items}}
+{{> _sub-params}}
+                {{/if}}
+            {{/returns}}
+        {{/if}}
+        {{#if deprecatedMessage}}
+            <p class="deprecated-dec">Deprecated{{#if deprecatedVersion}} since version {{deprecatedVersion}}{{/if}}
+                <br>{{{deprecatedMessage}}}
+            </p>
+        {{/if}}
+        {{#preventable}}
+            <p class="preventable-dec">This action following this event is preventable. When any
+                of the listeners returns false, the action is cancelled.</p>
+        {{/preventable}}
+        {{#removedVersion}}
+            <p class="removed-dec">This method has been REMOVED since {{{.}}}</p>
+        {{/removedVersion}}
+        {{#template}}
+            <p class="template-dec">This is a template method. a hook into the functionality of this
+                class. Feel free to override it in child classes.</p>
+        {{/template}}
+        {{#if getter}}
+{{> _api-member getter}}
+        {{/if}}
+        {{#autoGetter}}
+            <div id="method-get{{capitalName}}" class="classmembers member accessor-method auto-accessor-method isGetter" data-member-name="get{{capitalName}}" data-accessor="true">
+                <div class="collapse-toggle">
+                    <i class="fa fa-caret-right"></i>
+                    <i class="fa fa-caret-down"></i>
+                </div>
+                <h2 class="member-header">
+                    <a data-ref="method-get{{capitalName}}" href="#method-get{{capitalName}}" class="member-name">
+                        get{{capitalName}}
+                    </a>
+                    {{#if type}}
+                        :
+                        {{#type}}
+                            <span class="memberType">{{{.}}}</span>
+                        {{/type}}
+                    {{/if}}
+                </h2>
+                <p>Returns the value of {{name}}</p>
+                <h3 class="detail-header">Returns</h3>
+                <p><span class="memberType">{{{type}}}</span></p>
+            </div>
+        {{/autoGetter}}
+        {{#if setter}}
+{{> _api-member setter}}
+        {{/if}}
+        {{#autoSetter}}
+            <div id="method-set{{capitalName}}" class="classmembers member accessor-method auto-accessor-method isSetter" data-member-name="set{{capitalName}}" data-accessor="true">
+                <div class="collapse-toggle">
+                    <i class="fa fa-caret-right"></i>
+                    <i class="fa fa-caret-down"></i>
+                </div>
+                <h2 class="member-header">
+                    <a data-ref="method-set{{capitalName}}" href="#method-set{{capitalName}}" class="member-name">
+                        set{{capitalName}}
+                    </a>
+                    <span class="params-list">({{name}})</span>
+                </h2>
+                <p>Sets the value of {{name}}</p>
+                <h3 class="detail-header">Parameters</h3>
+                <p><span class="params-list">{{{name}}}</span> :
+                    {{#if type}}
+                        <span class="memberType">&nbsp;{{{type}}}</span>
+                    {{else}}
+                        <span class="memberType">&nbsp;Object</span>
+                    {{/if}}
+                </p>
+            </div>
+        {{/autoSetter}}
+    </div>
+{{/unless}}

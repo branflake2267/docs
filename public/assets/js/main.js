@@ -518,6 +518,8 @@ DocsApp.initNavTree = function () {
     //navTrees = ExtL.assign({}, apiTarget, guidesTree);
     navTrees = ExtL.assign({}, apiTree, guidesTree);
 
+    console.log("initNavTree navTreeName=" + navTreeName + " DocsApp.meta.pageType=" + DocsApp.meta.pageType);
+
     // the product home page likely will not have passed a navTreeName to determine which
     // nav tree to display so we'll grab the first guides or the first api name we find
     if (DocsApp.meta.pageType === 'home' && !navTreeName) {
@@ -536,6 +538,9 @@ DocsApp.initNavTree = function () {
     // the tree object for the current page
     //navTree = navTrees[navTreeName];
     navTree = ExtL.valueFromPath(navTrees, navTreeName);
+
+    console.log("navTree=", navTree);
+    console.log("initNavTree navTreeName=" + navTreeName + " navTrees=", navTrees);
 
     // if a navigation tree is found for the current page
     if (navTree) {
@@ -607,6 +612,8 @@ DocsApp.initNavTreeTabs = function () {
         tab, tabId, tabCls, isActive, activeCls, cfg, navTree, hasChildren,
         childTabs, j, childLen, childTab, childTabId, childTabCls, childCfg, childNavTree;
 
+    console.log("initNavTreeTabs len=" + len);
+        
     // loop through the keys from the guides and api trees (the top tab names)
     for (; i < len; i++) {
         tab       = navTreeTabs[i];
@@ -672,6 +679,8 @@ DocsApp.initNavTreeTabs = function () {
                 }
             }
         }
+
+        console.log("~~~~ treeheader cfg=", cfg)
 
         // append the tab to the tree header element
         treeHeader.appendChild(ExtL.createElement(cfg));
@@ -4708,6 +4717,27 @@ DocsApp.getEventTarget = function (e) {
         DocsApp.setTreeVisibility(state.showTree);
         if (!skipSave) {
             DocsApp.saveState();
+        }
+
+
+         // Turn on buttons for toolkits
+         if (DocsApp.meta.toolkits.includes('modern') && DocsApp.meta.toolkits.includes('classic')) {
+            // ignore
+        } else if (DocsApp.meta.toolkits.includes('modern')) {
+            // remove classic buttons
+            var cButton = ExtL.get('classic-search-filter');
+            if (cButton != null) {
+                cButton.style.display = 'none';
+                ExtL.removeCls(cButton, 'active');
+            }
+            
+        } else if (DocsApp.meta.includes('classic')) {
+            // remove modern buttons
+            var mButton = ExtL.get('modern-search-filter');
+            if (mButton != null) {
+                mButton.style.border = 'none';
+                ExtL.removeCls(mButton, 'active');
+            }
         }
     };
 

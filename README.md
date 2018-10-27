@@ -1,51 +1,48 @@
 # Sencha Docs Site Generator
-The home of the Sencha site generator or builder.
+The Sencha docs site generator takes guides and api documentation and makes a site. 
+
+## Get Started
+
+* [Example Build Configuration](./build-config-example) - Try out the example build configuration.
+
+## Demo
+
+* [Sencha Documentation](https://docs.sencha.com)
 
 ## Requirements
 
-- (*)nix System, because the path system is not windows compatible yet.
+* (*)nix System only. Windows systems will come later.
 
-## Example
+## Repo Manifest
 
-* `build_config_example` - Look at the readme in `build_config_example` for build example.  
-
-### CMD
-Download and install [Sencha Cmd](https://www.sencha.com/products/sencha-cmd/).
-
-## Reference
-
-- [Doxi](https://github.com/sencha/doxi) is used to build a json representation of the code. 
-- API Docs Render Process: Doxi JSON Manifest > Doxi JSON Output > Doxi Used to Render HTML
-
-## Build
-
-### Clone Repo
-Clone this repository.
-
-* `git clone git@github.com:sencha/docs.git`
-
-### Install 
-Start by installing the npm packages. 
-
-* `cd ./lib/`
-* `npm install` 
+| Name                                                     |   About                                 |
+|----------------------------------------------------------|-----------------------------------------|
+| [@sencha/docs-generator](./packages/docs-generator)      | Sencha docs site generator CLI app.     |
+| [build-config-example](./packages/build-config-example)  | Example config demo                     |
+| [build-config-sencha](./packages/build-config-sencha)    | Sencah docs site config                 |
 
 
-### Generate
-Use node to run the build generation cmd. 
-See the example for more specific information.
+## License
 
-* Options arguments:
+* TODO
 
-		--cmdPath=../../../sencha-cmd
+## Contributors
 
-* Example build command.
- 
+* Contributors read the [instructions here](./CONTRIBUTOR.md).
 
-		node --max-old-space-size=4076 index create-app-html --buildConfigsDir=~/git/docs/build_config_sencha --product=extjs --version=6.5.3 --syncRemote=true --forceDoxi=true --log --production 
- 
+## Development
 
+### Build
 
+* Run `npm install`
+
+### Debug
+
+* Run `npm link` - This will link the source into the cache.
+
+### Deploy
+
+* TODO
 
 
 

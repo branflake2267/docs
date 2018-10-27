@@ -512,14 +512,21 @@ DocsApp.initNavTree = function () {
     var navTreeName = DocsApp.meta.navTreeName,
         apiTree     = DocsApp.apiTree || {},
         guidesTree  = DocsApp.guidesTree || {},
-        navTrees, navTree, guideKeys;
+        navTrees, 
+        navTree, 
+        guideKeys;
 
     // collect all trees into a single object
     //navTrees = ExtL.assign({}, apiTarget, guidesTree);
     navTrees = ExtL.assign({}, apiTree, guidesTree);
 
-    console.log("initNavTree navTreeName=" + navTreeName + " DocsApp.meta.pageType=" + DocsApp.meta.pageType);
-
+    //console.log("apiTree", apiTree);
+    //console.log("guidesTree", guidesTree);
+    //console.log("navTrees=", navTrees);
+    //console.log("navTree=", navTree);
+    //console.log("navTreeName=" + navTreeName);
+    //console.log("DocsApp.meta=" + DocsApp.meta.myId);
+    
     // the product home page likely will not have passed a navTreeName to determine which
     // nav tree to display so we'll grab the first guides or the first api name we find
     if (DocsApp.meta.pageType === 'home' && !navTreeName) {
@@ -539,8 +546,8 @@ DocsApp.initNavTree = function () {
     //navTree = navTrees[navTreeName];
     navTree = ExtL.valueFromPath(navTrees, navTreeName);
 
-    console.log("navTree=", navTree);
-    console.log("initNavTree navTreeName=" + navTreeName + " navTrees=", navTrees);
+    //console.log("navTree=", navTree);
+    //console.log("initNavTree navTreeName=" + navTreeName + " navTrees=", navTrees);
 
     // if a navigation tree is found for the current page
     if (navTree) {
@@ -612,7 +619,7 @@ DocsApp.initNavTreeTabs = function () {
         tab, tabId, tabCls, isActive, activeCls, cfg, navTree, hasChildren,
         childTabs, j, childLen, childTab, childTabId, childTabCls, childCfg, childNavTree;
 
-    console.log("initNavTreeTabs len=" + len);
+    //console.log("initNavTreeTabs len=" + len);
         
     // loop through the keys from the guides and api trees (the top tab names)
     for (; i < len; i++) {

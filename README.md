@@ -30,20 +30,6 @@ The Sencha docs site generator takes guides and api documentation and makes a si
 
 * Contributors read the [instructions here](./CONTRIBUTOR.md).
 
-## Development
-
-### Build
-
-* Run `npm install`
-
-### Debug
-
-* Run `npm link` - This will link the source into the cache.
-
-### Deploy
-
-* TODO
-
 
 
  

@@ -8,7 +8,7 @@ rm -rf ./build
 CONFIG_DIR="$(pwd)"
 
 # create-diff (Creates both json and markdown)
-sencha-docs-generator  create-diff \
+npx sencha-docs-generator create-diff \
 --buildConfigsDir=$CONFIG_DIR \
 --diffTarget=extjs \
 --diffTargetVersion=6.6.0 \

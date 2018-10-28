@@ -8,7 +8,7 @@ rm -rf ./build
 CONFIG_DIR="$(pwd)"
 
 # docs build command
-sencha-docs-generator  create-app-html \
+npx sencha-docs-generator  create-app-html \
 --buildConfigsDir=$CONFIG_DIR \
 --product=cmd \
 --version=6.6.0 \

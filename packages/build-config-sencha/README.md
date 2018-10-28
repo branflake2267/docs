@@ -1,4 +1,4 @@
-# Sencha Docs Site 
+# Sencha Docs Site Config
 Generates Sencha product documentation site. 
 
 
@@ -14,9 +14,21 @@ The source configuration.
 
 * [docs_project_config.json](./configs/docs_project_config.json) source configuration here.
 
+### Dependencies
+Builds are dependt on these packages. 
+
+* @sencha/cmd - Sencha CMD
+* @sencha/custom-gramophone - Repackaged module
+* @sencha/custom-marked - Repackaged module
+
 
 ## Build
 Build the docs by running the node command in the bash script.  
+
+### NPM Login
+Login into the internal repository. 
+
+* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
 
 ### Install
 Start by building the node library.

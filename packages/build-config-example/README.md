@@ -1,9 +1,5 @@
-# Docs Generator Example
+# Docs Generator Example Config
 This is a basic example of how to generate a docs site.
-
-# Docs Site Generator Sencha
-This is the Sencha docs site generator project configuration.
-
 
 ## Project Resources
 This project includes one product called `myproduct` and guides for it on github. 

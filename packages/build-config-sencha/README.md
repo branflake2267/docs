@@ -33,12 +33,15 @@ Login into the internal repository.
 ### Install
 Start by building the node library.
 
-* Run `npm install -g @sencha/docs-generator`
+* Run `npm install` then use `npx sencha-docs-generator [args]`
+* Or run `npm install -g @sencha/docs-generator` to install for global cli use. Then use `sencha-docs-generator [args]`
 
 ### Debug
-Instead of running `npm install -g`, run `npm link`.
+Instead of running `npm install -g @sencha/docs-generator`, run `npm link ../docs-generator`.
 
 * Run `npm link ../docs-generator/`
+* Then run `sh ./build*.sh`
+* Or run VSCode launcher. 
 
 ### Build Output
 

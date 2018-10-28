@@ -545,7 +545,7 @@ class SourceApi extends Base {
     generateDoxiConfig (tmpDir, doxiBuild, runQuiet) {
         console.log('generateDoxiConfig: Started...');
 
-        return new Promise((resolve, reject) => {xc
+        return new Promise((resolve, reject) => {
             var tempDoxiCfgFile = Path.join(tmpDir, 'tempDoxiCfg.json');
 
             const senchaCmdProc = spawn(sencha, [

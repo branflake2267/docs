@@ -20,7 +20,7 @@ const SourceApi       = require('../source-api'),
       Utils           = require('../shared/Utils'),
       _               = require('lodash'),
       Entities        = require('html-entities').AllHtmlEntities,
-      Gramophone      = require('sencha-gramophone'); // https://github.com/edlea/gramophone;
+      Gramophone      = require('@sencha/custom-gramophone'); // https://github.com/edlea/gramophone;
 
 class SourceGuides extends SourceApi {
     constructor (options) {

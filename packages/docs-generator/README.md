@@ -6,7 +6,7 @@ This application glues the api docs and guides together into a web site.
 ### NPM Login
 This login is used to fetch the Sencha CMD repository. 
 
-* Run `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sench` - Used for @sencha/cmd.
+* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha` - Used for @sencha/cmd.
 
 ### Build
 

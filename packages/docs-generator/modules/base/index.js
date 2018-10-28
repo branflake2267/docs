@@ -192,34 +192,6 @@ class Base {
     }
 
     /**
-     * Return Cmd path to use
-     * 
-     * TODO move to node command
-     * 
-     * @return {String} The command or path/command used to run Sencha Cmd
-     */
-    get cmdPath () {
-        let keyword = 'sencha',
-            path = this.options.cmdPath;
-
-        // if the cmd path is not passed in then look for it on the path.
-        if (!path) {
-            // if 'sencha' is on the PATH use that
-            if (Shell.which(keyword)) {
-                path = keyword;
-            } else {
-                // else thrown an error
-                throw 'Sencha Cmd not found.  Please install Sencha Cmd.';
-            }
-        } else {
-            // join the 'sencha' keyword with the passed path
-            path = Path.join(path, keyword);
-        }
-
-        return path;
-    }
-
-    /**
      * Returns common metadata needed by app pages
      * @return {Object} Hash of common current page metadata
      */

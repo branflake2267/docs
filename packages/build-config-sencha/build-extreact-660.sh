@@ -8,7 +8,7 @@ rm -rf ./build
 CONFIG_DIR="$(pwd)"
 
 # docs build command - (Notice: create-rext-app-html - it's build is different than normal)
-sencha-docs-generator  create-rext-app-html \
+npx sencha-docs-generator  create-rext-app-html \
 --buildConfigsDir=$CONFIG_DIR \
 --product=extreact \
 --version=6.6.0 \

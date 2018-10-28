@@ -5,7 +5,7 @@
 CONFIG_DIR="$(pwd)"
 
 # docs build command
-sencha-docs-generator create-app-html \
+npx sencha-docs-generator create-app-html \
 --buildConfigsDir=$CONFIG_DIR \
 --product=myproduct \
 --version=1.5 \

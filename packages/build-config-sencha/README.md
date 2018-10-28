@@ -15,7 +15,7 @@ The source configuration.
 * [docs_project_config.json](./configs/docs_project_config.json) source configuration here.
 
 ### Dependencies
-Builds are dependt on these packages. 
+Builds are dependent on these packages. 
 
 * @sencha/cmd - Sencha CMD
 * @sencha/custom-gramophone - Repackaged module

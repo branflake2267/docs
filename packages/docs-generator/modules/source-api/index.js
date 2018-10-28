@@ -38,7 +38,9 @@ const Base       = require('../base'),
       // TODO - is Mkdirp being used in any module or it's all Fs-extra now?  Might be able to remove its require statements if it can be purged via Fs-extra
       //Mkdirp     = require('mkdirp'),
       _          = require('lodash'),
-      WidgetRe   = /widget\./g;
+      WidgetRe   = /widget\./g,
+      sencha           = require('@sencha/cmd'),
+      { spawn } = require('child_process');
 
 class SourceApi extends Base {
     constructor (options) {
@@ -464,9 +466,8 @@ class SourceApi extends Base {
         this.classMap   = {};
         this.srcFileMap = {};
 
-        this.doRunDoxi();
-        return this.readDoxiFiles();
-
+        return this.doRunDoxi()
+        .then(this.readDoxiFiles.bind(this));
     }
     
     /**
@@ -477,7 +478,9 @@ class SourceApi extends Base {
         
         this.options.forceDoxi = true;
         this.createTempDoxiFile();
-        this.doRunDoxi(buildName);
+        this.doRunDoxi(buildName); // TODO now a promise 
+        // TODO readDoxiFiles?
+
         this.options.forceDoxi = force;
     }
 
@@ -486,48 +489,94 @@ class SourceApi extends Base {
      * (HTML docs or Ext app)
      */
     doRunDoxi (buildName) {
-        this.log('Starting doRunDoxi buildName=' + buildName);
+        return new Promise((resolve, reject) => {
+           
+            this.log('Starting doRunDoxi buildName=' + buildName);
 
-        let { options }       = this,
-            { doxiQuiet, forceDoxi } = options,
-            cmd           = this.cmdPath,
-            triggerDoxi   = this.triggerDoxi,
-            doxiBuild     = buildName || options.doxiBuild || 'combo-nosrc',
-            doxiRequired  = this.doxiRequired,
-            runQuiet      = doxiQuiet === true ? '--quiet' : '';
+            let { options }       = this,
+                { doxiQuiet, forceDoxi } = options,
+                triggerDoxi   = this.triggerDoxi,
+                doxiBuild     = buildName || options.doxiBuild || 'combo-nosrc',
+                doxiRequired  = this.doxiRequired,
+                runQuiet      = doxiQuiet === true ? '--quiet' : '';
 
-        this.log('\tdoRunDoxi: apiProduct=' + this.apiProduct + ' apisourceDir=' + this.apiSourceDir);
+            this.log('\tdoRunDoxi: apiProduct=' + this.apiProduct + ' apisourceDir=' + this.apiSourceDir);
 
-        this.syncRemote(
-            this.apiProduct,
-            this.apiSourceDir
-        );
+            this.syncRemote(
+                this.apiProduct,
+                this.apiSourceDir
+            );
 
-        if (forceDoxi === false) {
-            return;
-        }
-
-        // if the `forceDoxi` options is passed or the doxi input directory is empty /
-        // missing then run doxi
-        if (forceDoxi || doxiRequired || (triggerDoxi && triggerDoxi[this.apiProduct])) {
-            // empty the folder (or remove the input file) first before running doxi
-            if (doxiBuild === 'combo-nosrc') {
-                Fs.emptyDirSync(this.getDoxiInputDir());
-            } else {
-                const inputFile = Path.join(
-                    this.getDoxiInputDir(doxiBuild),
-                    this.getDoxiInputFile(doxiBuild)
-                );
-                
-                Fs.removeSync(inputFile)
+            if (forceDoxi === false) {
+                resolve();
+                return;
             }
-            
-            const path = Shell.pwd();
 
-            Shell.cd(this.tempDir);
-            Shell.exec(`${cmd} ${runQuiet} doxi build -p tempDoxiCfg.json ${doxiBuild}`);
-            Shell.cd(path);
-        }
+            // if the `forceDoxi` options is passed or the doxi input directory is empty /
+            // missing then run doxi
+            if (forceDoxi || doxiRequired || (triggerDoxi && triggerDoxi[this.apiProduct])) {
+                // empty the folder (or remove the input file) first before running doxi
+                if (doxiBuild === 'combo-nosrc') {
+                    Fs.emptyDirSync(this.getDoxiInputDir());
+                } else {
+                    const inputFile = Path.join(
+                        this.getDoxiInputDir(doxiBuild),
+                        this.getDoxiInputFile(doxiBuild)
+                    );
+                    
+                    Fs.removeSync(inputFile)
+                }
+
+                this.generateDoxiConfig(this.tempDir, doxiBuild, runQuiet)
+                .then(() => resolve());
+
+            } else {
+                resolve();
+            } 
+        })
+        .catch(this.error.bind(this));
+    }
+
+    /**
+     * Generates a theme package with provided arguments in config object (name and baseTheme).
+     * @param {String} tmpDir The directory to output the doxi config to. 
+     * @param {*} doxiBuild The doxi build flag. 
+     */
+    generateDoxiConfig (tmpDir, doxiBuild, runQuiet) {
+        console.log('generateDoxiConfig: Started...');
+
+        return new Promise((resolve, reject) => {xc
+            var tempDoxiCfgFile = Path.join(tmpDir, 'tempDoxiCfg.json');
+
+            const senchaCmdProc = spawn(sencha, [
+                runQuiet,
+                'doxi', 
+                'build',
+                '-p', tempDoxiCfgFile,
+                doxiBuild
+            ]);
+    
+            // TODO std pipes are duplicated
+            // https://nodejs.org/api/child_process.html#child_process_child_process
+            senchaCmdProc.stdout.on('data', (data) => {
+                console.log(`CMD DOXI: ${data}`);
+            });
+            senchaCmdProc.stderr.on('data', (data) => {
+                console.error(`CMD DOXI: ERROR: ${data}`);
+            });
+    
+            senchaCmdProc.on('close', (code) => {
+                console.log(`CMD DOXI: Finished: Code=${code}`);
+                if (code > 0) {
+                    console.error("Could not complete the doxi config.");
+                    reject("Error processing the doxi config.");
+                } else {
+                    console.log("generateDoxiConfig: Finished.");
+                    resolve();
+                }
+            });
+        })
+        .catch(this.error.bind(this));
     }
 
     /**

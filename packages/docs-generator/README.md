@@ -19,9 +19,9 @@ This login is used to fetch the dependencies, such as Sencha CMD.
 ### Dependencies
 Builds are dependent on these packages. 
 
-* @sencha/cmd - Sencha CMD
-* @sencha/custom-gramophone - Repackaged module
-* @sencha/custom-marked - Repackaged module
+* `@sencha/cmd` - Sencha CMD
+* `@sencha/custom-gramophone` - Repackaged module
+* `@sencha/custom-marked` - Repackaged module
 
 ### Build
 

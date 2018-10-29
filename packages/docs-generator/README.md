@@ -3,7 +3,7 @@ This application glues the api docs and guides together into a web site.
 
 ## CLI
 
-* This installs `sencha-docs-generator` cli binary. 
+* This npm package installs the `sencha-docs-generator` cli binary. 
 
 ### CLI Help
 

@@ -46,7 +46,7 @@ Instead of running `npm install -g @sencha/docs-generator`, run `npm link ../doc
 ### Debug VSCode
 Using VSCode will allow you to set breakpoints, inspect stacks, variables and console output with ease. 
 
-* Run `npm link ../docs-generator/` - Link the source directly instead of the compiled package. 
+* Run `npm link ../docs-generator/` - This will link the binary. (Run from the ./build-config-sencha directory.)
 * Run the VSCode launcher, to debug one of the sencha doc configs. 
 
 ### Build Output

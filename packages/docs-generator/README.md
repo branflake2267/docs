@@ -1,6 +1,14 @@
 # Sencha docs generator application 
 This application glues the api docs and guides together into a web site. 
 
+## CLI
+
+* This installs `sencha-docs-generator` cli binary. 
+
+### CLI Help
+
+* Run `sencha-docs-generator -h` to console log the arg options. 
+
 ## Development
 
 ### NPM Login

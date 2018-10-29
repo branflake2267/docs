@@ -50,8 +50,8 @@ Using VSCode will allow you to set breakpoints, inspect stacks, variables and co
 * Run the VSCode launcher, to debug one of the sencha doc configs. 
 
 ### Build Output
+The build output will go into the generated `./build` directory. 
 
-* Run `sh ./build_extjs_660.sh`
 * Open [build output](./build/output)
 
 ### Build Directory Manifest

@@ -1,6 +1,7 @@
 # Docs Generator Example Config
 This is a basic example of how to generate a docs site.
 
+
 ## Project Resources
 This project includes one product called `myproduct` and guides for it on github. 
 
@@ -18,19 +19,33 @@ The example source configuration.
 ## Build
 Build the docs by running the node command in the bash script.  
 
+### NPM Login
+Login into the internal repository. 
+
+* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
+
 ### Install
 Start by building the node library.
 
-* Run `npm install -g @sencha/docs-generator`
+* Run `npm install` then use `npx sencha-docs-generator [args]`
+* Or run `npm install -g @sencha/docs-generator` to install for global cli use. Then use `sencha-docs-generator [args]`
 
-### Debug
-Instead of running `npm install -g`, run `npm link`.
+### Debug CLI
+Instead of running `npm install -g @sencha/docs-generator`, run `npm link ../docs-generator`.
 
 * Run `npm link ../docs-generator/`
+* Then run `sh ./build*.sh`
+* Or run VSCode launcher. 
+
+### Debug VSCode
+Using VSCode will allow you to set breakpoints, inspect stacks, variables and console output with ease. 
+
+* Run `npm link ../docs-generator/` - This will link the binary. (Run from the ./build-config-example directory.)
+* Run the VSCode launcher, to debug one of the sencha doc configs. 
 
 ### Build Output
+The build output will go into the generated `./build` directory. 
 
-* Run `sh ./build_example_mhproduct_15.sh`
 * Open [build output](./build/output)
 
 ### Build Directory Manifest
@@ -41,3 +56,4 @@ It can be deleted.
 * `./build/input` - doxi output
 * `./build/output` - html output
 * `./build/repos` - cloned git repos
+

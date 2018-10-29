@@ -16,6 +16,13 @@ This login is used to fetch the dependencies, such as Sencha CMD.
 
 * Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
 
+### Dependencies
+Builds are dependent on these packages. 
+
+* @sencha/cmd - Sencha CMD
+* @sencha/custom-gramophone - Repackaged module
+* @sencha/custom-marked - Repackaged module
+
 ### Build
 
 * Run `npm install`. This will install the binary in `node_modules/.bin/sencha-docs-generator`.

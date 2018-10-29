@@ -21,11 +21,11 @@ This login is used to fetch the Sencha CMD repository.
 * Run `npm install`
 
 ### Debug
-Instead of running `npm instll` run `npm link`.
+Instead of running `npm install` run `npm link`. If you do use npm link, run it from the config directory.
 
 * Run `npm link` this will link the binary to the global repository. 
-    * Or `cd build-config-sencha` and then run `npm link ../docs-generator`.
-    * Or `cd build-config-example` and then run `npm link ../docs-generator`.
+    * Or better yet, `cd build-config-sencha` and then run `npm link ../docs-generator`.
+    * Or better yet, `cd build-config-example` and then run `npm link ../docs-generator`.
 * Run `sh ./build*.sh` to test one of the builds.
 
 ### Testing

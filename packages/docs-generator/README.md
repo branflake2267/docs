@@ -1,4 +1,4 @@
-# Sencha docs generator application 
+# Sencha Docs Generator CLI
 This application glues the api docs and guides together into a web site. 
 
 ## CLI

@@ -21,7 +21,7 @@ This login is used to fetch the Sencha CMD repository.
 * Run `npm install`. This will install the binary in `node_modules/.bin/sencha-docs-generator`.
 
 ### Debug
-Instead of running `npm install` run `npm link`. If you do use npm link, run it from the config directory.
+Instead of running `npm install` run `npm link`. If you do use `npm link`, run it from the config directory.
 
 * Run `npm link` this will link the binary to the global repository. 
     * Or better yet, `cd build-config-sencha` and then run `npm link ../docs-generator`.

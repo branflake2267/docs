@@ -18,6 +18,10 @@ The source configuration.
 ## Build
 Build the docs by running the node command in the bash script.  
 
+### Github sshkey
+* Add your sshkey to the git dash. 
+* You'll need acess to extjs/SDK and sencha/guides.
+
 ### NPM Login
 Login into the internal repository. 
 

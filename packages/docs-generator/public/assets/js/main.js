@@ -687,7 +687,7 @@ DocsApp.initNavTreeTabs = function () {
             }
         }
 
-        console.log("~~~~ treeheader cfg=", cfg)
+        //console.log("~~~~ treeheader cfg=", cfg)
 
         // append the tab to the tree header element
         treeHeader.appendChild(ExtL.createElement(cfg));
@@ -4728,9 +4728,9 @@ DocsApp.getEventTarget = function (e) {
 
 
          // Turn on buttons for toolkits
-         if (DocsApp.meta.toolkits.includes('modern') && DocsApp.meta.toolkits.includes('classic')) {
+         if (DocsApp.meta.toolkits && DocsApp.meta.toolkits.includes('modern') && DocsApp.meta.toolkits.includes('classic')) {
             // ignore
-        } else if (DocsApp.meta.toolkits.includes('modern')) {
+        } else if (DocsApp.meta.toolkits && DocsApp.meta.toolkits.includes('modern')) {
             // remove classic buttons
             var cButton = ExtL.get('classic-search-filter');
             if (cButton != null) {

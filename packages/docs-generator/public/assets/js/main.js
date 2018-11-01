@@ -4738,7 +4738,7 @@ DocsApp.getEventTarget = function (e) {
                 ExtL.removeCls(cButton, 'active');
             }
             
-        } else if (DocsApp.meta.includes('classic')) {
+        } else if (DocsApp.meta.toolkits && DocsApp.meta.toolkits.includes('classic')) {
             // remove modern buttons
             var mButton = ExtL.get('modern-search-filter');
             if (mButton != null) {

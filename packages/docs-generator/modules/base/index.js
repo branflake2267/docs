@@ -555,26 +555,32 @@ class Base {
             delimiterLen = delimiter.length,
             matchingFile;
 
+        console.log("\t\t getFileByVersion(): files on path=" + path);
+
         // if there is only one file just return it
         if (len === 1) {
             [ matchingFile ] = files;
         } else {
             // else we'll loop over the files to find the one that is closest to the
             // passed version without going over
-            let i      = 0,
-            cfgVer = '0';
+            let cfgVer = '0';
 
-            for (; i < len; i++) {
+            for (let i = 0; i < len; i++) {
                 let file     = files[i],
                     { name } = Path.parse(file),
                     v        = name.substring(name.indexOf('-') + delimiterLen);
+                let compare = CompareVersions(v, version);
 
-                if (CompareVersions(v, version) <= 0 && CompareVersions(v, cfgVer) > 0) {
+                console.log("\t\t\t getFileByVersion(): Compare v=" + v + " compared to version=" + version + "=" + compare);
+
+                if (compare <= 0 && compare >= 0) {
                     cfgVer       = v;
                     matchingFile = file;
                 }
             }
         }
+
+        console.log("\t\t\t\t getFileByVersion(): matchingFile=" + matchingFile);
 
         return matchingFile;
     }

@@ -142,11 +142,12 @@ class SourceGuides extends SourceApi {
             version = version.split('-')[0];
         }
         
-        for (var i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             // add only the eligible directories given the current product version being built
             try {
-                if (CompareVersions(dirs[i], version) <= 0) {
-                    //this.log('\tguideDirPaths add version=' + version);
+                let compare = CompareVersions(dirs[i], version);
+                if (compare <= 0) {
+                    this.log("\t ---->>> guideDirPaths add dir=" + dirs[i] + " compare to version=" + version + " compare=" + compare);
                     paths.push(Path.join(me.guidePath, dirs[i]));
                 }
             } catch (e) {
@@ -317,7 +318,8 @@ class SourceGuides extends SourceApi {
         // Start by fetching the guides source
         this.syncRemote('guides', this.guideSourceDir);
 
-        return this.processGuideCfg()
+        return this.removeExcludeDirectories()
+        .then(this.processGuideCfg.bind(this))
         .then(this.readGuides.bind(this))
         .then(this.assembleSearch.bind(this))
         .then(this.outputGuideSearch.bind(this))
@@ -334,6 +336,46 @@ class SourceGuides extends SourceApi {
         this.log('\t Processing Guides End');
         this.log('~~~~~~~~~~~~~~~~~~~~');
         this.log('~~~~~~~~~~~~~~~~~~~~');
+    }
+
+    /**
+     * Remove the excluded directories to start with. 
+     */
+    removeExcludeDirectories () {
+        return new Promise((resolve, reject) => {
+            let options = this.options;
+            let product = this.options.product;
+            let productVersion = this.options.version;
+
+            console.log("Exclude Directories by removing them from the repos guides path");
+
+            let guideConfigPath = this.guideConfigPath;
+            let guidePath = this.guidePath;
+
+            try {
+                if (product && productVersion && options.products.guides.products[product][productVersion].exclude) {
+                    let exclude = options.products.guides.products[product][productVersion].exclude;
+                    exclude.forEach(function(version) {
+                        console.log("\t Exlude version" + version);
+                        
+                        let guideConfigJsonFile = Path.resolve(guideConfigPath, "config-" + version + ".json");
+                        console.log("\t Exclude: Removing config: " + guideConfigJsonFile);
+                        Fs.removeSync(guideConfigJsonFile);
+
+                        let guidePathDir = Path.resolve(guidePath, version);
+                        console.log("\t Exclude: Remove directory: " + guidePathDir);
+                        Fs.removeSync(guidePathDir);
+
+                        resolve();
+                    });
+                }
+            } catch (e) {
+                console.error("removeExcludeDirectories error: ", e);
+                reject(e);
+            }
+           
+        })
+        .catch(this.error.bind(this));
     }
 
     /**

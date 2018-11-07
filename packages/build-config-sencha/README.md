@@ -59,7 +59,7 @@ Using VSCode will allow you to set breakpoints, inspect stacks, variables and co
 ## Build Output
 The build output will go into the generated `./build` directory. 
 
-* Open [build output](./build/output)
+* Open `./build/output` in this directory.
 
 ### Build Directory Manifest
 Everything in the build directory is generated. 

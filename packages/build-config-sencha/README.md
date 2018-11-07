@@ -20,7 +20,7 @@ Build the docs by running the node command in the bash script.
 
 ### 1. Github sshkey
 * Add your sshkey to the git dash. 
-* You'll need acess to these repos: [pgithub.com/extjs/SDK](https://github.com/extjs/sdk), [github.com/sencha/guides](https://github.com/sencha/guides).
+* You'll need acess to these repos: [github.com/extjs/SDK](https://github.com/extjs/sdk), [github.com/sencha/guides](https://github.com/sencha/guides).
 
 ### 2. NPM Login
 Login into the internal repository. 

@@ -33,9 +33,10 @@ Start by building the node library.
 * Run `npm install -g @sencha/docs-generator` to install for global cli use. 
 
 ### 4. Run Script
+Now the CLI command will be available in the terminal from anywhere. 
 
-* To confirm it's installed run `sencha-docs-generator`
-* To Run with configs, first remove npx from .sh files, then run `sh ./build.*.sh`. 
+* To confirm it's installed run `sencha-docs-generator` in the terminal.
+* To run with predefined configs, first remove npx from `build(.*).sh` files, then run `sh ./build(.*).sh`. 
 
 
 ## Debug
@@ -43,13 +44,14 @@ Instead of instaling the CLI command globablly, install it locally or run with V
 
 ### Debug with Local CLI
 * Run `npm link ../docs-generator/` - From this directory, this will link the cli command, so it can be ran with npx.
-* Then run `sh ./build*.sh` - Be sure `npx sencha-docs-generator` is used in the sh script. 
+* Then run `sh ./build(.*).sh` - Be sure `npx sencha-docs-generator` is used in the sh script. 
 
 ### Debug with VSCode
 Using VSCode will allow you to set breakpoints, inspect stacks, variables and console output with ease. 
 
 * Run `npm link ../docs-generator/` - This will link the binary, running from this directory.
 * Run the VSCode launcher, to debug one of the sencha doc configs. 
+
 
 
 ## Build Output

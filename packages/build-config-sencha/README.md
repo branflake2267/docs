@@ -16,7 +16,8 @@ The source configuration.
 
 
 ## Build
-Build the docs by running the node command in the bash script.
+Build the docs by running the node command in the bash script. 
+This is what the build server will do.
 
 ### 1. Github sshkey
 * Add your sshkey to the git dash. 
@@ -41,6 +42,7 @@ Now the CLI command will be available in the terminal from anywhere.
 
 ## Debug
 Instead of instaling the CLI command globablly, install it locally or run with VSCode.
+This is great for debugging the source.
 
 ### Debug with Local CLI
 * Run `npm link ../docs-generator/` - From this directory, this will link the cli command, so it can be ran with npx.

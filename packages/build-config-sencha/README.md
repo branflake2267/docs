@@ -24,7 +24,7 @@ This is what the build server will do.
 * You'll need acess to these repos: [github.com/extjs/SDK](https://github.com/extjs/sdk), [github.com/sencha/guides](https://github.com/sencha/guides).
 
 ### 2. NPM Login
-Login into the internal repository. 
+Login into the [internal repository](https://sencha.myget.org/feed/internal/package/npm/@sencha/docs-generator). 
 
 * Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
 

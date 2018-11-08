@@ -420,6 +420,7 @@ class SourceApi extends Base {
             //this.log(`CONFIG: source-api: meta.navTreeName=${apiDirName}`);
         }
 
+        // DocsApp.meta = myMeta - search hint
         return meta;
     }
 
@@ -1959,21 +1960,19 @@ class SourceApi extends Base {
             len      = treeKeys.length,
             apiTree;
 
-        // TODO change this for react? 
-        // This adds the apis to navTree
-        // TODO change back to 1?
-        if (len === -1) { 
+        // There can be more than one api tree, such as modern or classic. This determines how it lays out. 
+        // If modern or classic is by it self be sure to move on to the the else statement
+        // Otherwise, most everythign will only have one set of api docs. 
+        if (len === 1 && !treeKeys.includes('modern') && !treeKeys.includes('classic')) { 
             apiTree = {
                 API : this.sortTree(apiTrees[treeKeys[0]])
             };
         } else {
-            let i = 0;
-
             apiTree = {
                 API : {}
             };
 
-            for (; i < len; i++) {
+            for (let i = 0; i < len; i++) {
                 let key = treeKeys[i];
 
                 apiTree.API[key] = this.sortTree(apiTrees[key]);

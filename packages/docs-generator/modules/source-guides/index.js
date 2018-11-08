@@ -330,12 +330,14 @@ class SourceGuides extends SourceApi {
             //this.log('runGuides:', this.getElapsed(dt));
             // TODO Maybe ove to create-app-base after "All Told" once promise is respected
             //this.concludeBuild();
+
+            this.log('\t Processing Guides End');
+            this.log('~~~~~~~~~~~~~~~~~~~~');
+            this.log('~~~~~~~~~~~~~~~~~~~~');
         })
         .catch(this.error.bind(this));
 
-        this.log('\t Processing Guides End');
-        this.log('~~~~~~~~~~~~~~~~~~~~');
-        this.log('~~~~~~~~~~~~~~~~~~~~');
+
     }
 
     /**
@@ -346,17 +348,17 @@ class SourceGuides extends SourceApi {
             let options = this.options;
             let product = this.options.product;
             let productVersion = this.options.version;
-
-            console.log("Exclude Directories by removing them from the repos guides path");
-
             let guideConfigPath = this.guideConfigPath;
             let guidePath = this.guidePath;
 
             try {
-                if (product && productVersion && options.products.guides.products[product][productVersion].exclude) {
+                if (product && productVersion && options.products.guides.products[product] && 
+                    options.products.guides.products[product][productVersion].exclude) {
+                    console.log("Exclude versions by removing them.");
+
                     let exclude = options.products.guides.products[product][productVersion].exclude;
                     exclude.forEach(function(version) {
-                        console.log("\t Exlude version" + version);
+                        console.log("\t Exclude version" + version);
                         
                         let guideConfigJsonFile = Path.resolve(guideConfigPath, "config-" + version + ".json");
                         console.log("\t Exclude: Removing config: " + guideConfigJsonFile);
@@ -368,6 +370,9 @@ class SourceGuides extends SourceApi {
 
                         resolve();
                     });
+                } else {
+                    // Nothing to do skip
+                    resolve();
                 }
             } catch (e) {
                 console.error("removeExcludeDirectories error: ", e);

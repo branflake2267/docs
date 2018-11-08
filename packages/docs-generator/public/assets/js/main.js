@@ -546,13 +546,15 @@ DocsApp.initNavTree = function () {
     //navTree = navTrees[navTreeName];
     navTree = ExtL.valueFromPath(navTrees, navTreeName);
 
-    //console.log("navTree=", navTree);
-    //console.log("initNavTree navTreeName=" + navTreeName + " navTrees=", navTrees);
+    //console.log("--navTree=", navTree);
+    //console.log("--initNavTree navTreeName=" + navTreeName + " navTrees=", navTrees);
 
     // if a navigation tree is found for the current page
     if (navTree) {
         var id   = DocsApp.meta.myId,
             tabs = [], tree;
+
+        //console.log("---navTree id=" + id);
 
         // create the tree
         tree = DocsApp.navTree = DocsApp.buildNavTree(navTree);
@@ -614,15 +616,14 @@ DocsApp.initNavTreeTabs = function () {
         navTreeNameSplit = navTreeName.split('.'),
         navTreeNameRoot  = navTreeNameSplit[0],
         navTreeNameChild = navTreeNameSplit[1],
-        i                = 0,
         len              = navTreeTabs.length,
         tab, tabId, tabCls, isActive, activeCls, cfg, navTree, hasChildren,
         childTabs, j, childLen, childTab, childTabId, childTabCls, childCfg, childNavTree;
 
-    //console.log("initNavTreeTabs len=" + len);
-        
+    //console.log(">>> initNavTreeTabs len=" + len);
+      
     // loop through the keys from the guides and api trees (the top tab names)
-    for (; i < len; i++) {
+    for (var i = 0; i < len; i++) {
         tab       = navTreeTabs[i];
         tabId     = tabCls = tab.replace(/\s+/g, '-').toLowerCase() + '-tab';
         // the active tab is the one that matches tha tree name of the current page
@@ -640,6 +641,8 @@ DocsApp.initNavTreeTabs = function () {
         navTree     = navTrees[tab];
         hasChildren = ExtL.isObject(navTree);
 
+        //console.log(">>> hasChildren=" + hasChildren);
+
         // if there are child trees fetch the first available child
         if (hasChildren) {
             navTree = navTree[ExtL.keys(navTree)[0]];
@@ -655,11 +658,10 @@ DocsApp.initNavTreeTabs = function () {
             // if this active tab's tree has children then there are sub tabs to process
             if (hasChildren) {
                 childTabs = ExtL.keys(navTrees[tab]);
-                j         = 0;
                 childLen  = childTabs.length;
 
                 // loop over the sub-tab names
-                for (; j < childLen; j++) {
+                for (var j = 0; j < childLen; j++) {
                     childTab     = childTabs[j];
                     childTabId   = childTabCls = childTab.replace(/\s+/g, '-').toLowerCase() + '-tab';
                     isActive     = navTreeNameChild === childTab;
@@ -4727,8 +4729,8 @@ DocsApp.getEventTarget = function (e) {
         }
 
 
-         // Turn on buttons for toolkits
-         if (DocsApp.meta.toolkits && DocsApp.meta.toolkits.includes('modern') && DocsApp.meta.toolkits.includes('classic')) {
+        // Turn on buttons for toolkits
+        if (DocsApp.meta.toolkits && DocsApp.meta.toolkits.includes('modern') && DocsApp.meta.toolkits.includes('classic')) {
             // ignore
         } else if (DocsApp.meta.toolkits && DocsApp.meta.toolkits.includes('modern')) {
             // remove classic buttons

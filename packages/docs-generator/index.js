@@ -211,13 +211,13 @@ const args = require('yargs')
             example: 'node --max-old-space-size=4076 index create-diff --product=extjs --version=6.2.1 --diffTitle="Example Title"'
         }
     })
-    .command('command', 'Module to run. commands: [create-app-html, create-rext-app-html, create-app-ext, source-api, source-guides, landing, create-diff-md, reports/locale, create-diff]', { alias: 'command' })
+    .command('command', 'Module to run. commands: [create-app-html, create-rext-app-html, source-api, source-guides, landing, create-diff-md, reports/locale, create-diff]', { alias: 'command' })
     .help('h')
     .alias('h', 'help')
     .wrap()
     .argv;
 
-const targets = ['create-app-html', 'create-rext-app-html', 'create-app-ext', 'source-api',
+const targets = ['create-app-html', 'create-rext-app-html', 'source-api',
     'source-guides', 'landing', 'create-diff-md', 'reports/locale',
     'create-diff'],
     // the target module to run

@@ -141,6 +141,7 @@ class Base {
             title       : prodObj.title
         };
 
+        // DocsApp.meta = myMeta - search hint
         console.log(`CONFIG: options.prodVerMeta.toolkits=${options.prodVerMeta.toolkits}`);
         console.log(`CONFIG: options.prodVerMeta.toolkit=${options.prodVerMeta.toolkit}`);
         console.log(`CONFIG: options.prodVerMeta.hasToolkits=${options.prodVerMeta.hasToolkits}`);
@@ -573,7 +574,7 @@ class Base {
 
                 console.log("\t\t\t getFileByVersion(): Compare v=" + v + " compared to version=" + version + "=" + compare);
 
-                if (compare <= 0 && compare >= 0) {
+                if (compare <= 0) {
                     cfgVer       = v;
                     matchingFile = file;
                 }
@@ -581,6 +582,10 @@ class Base {
         }
 
         console.log("\t\t\t\t getFileByVersion(): matchingFile=" + matchingFile);
+
+        if (!matchingFile) {
+            this.error("getFileByVersion(): matching File is undefined!");
+        }
 
         return matchingFile;
     }

@@ -309,7 +309,7 @@ class SourceApi extends Base {
      * app.json) will be appended to the SDK source directory.
      */
     get apiSourceDir () {
-        const { options } = this,
+        let { options } = this,
               cfg = Object.assign({}, options, {
                   repo : options.products[this.apiProduct].repo || null
               });
@@ -322,7 +322,9 @@ class SourceApi extends Base {
             )
         );
 
-        if (!p) {
+        // Something went wrong with the api source
+        if (p.indexOf("null")) {
+            this.error("apiSourceDir is null. apiProduct=" + this.apiProduct);
             this.error("apiSourceDir is null. repo=" + options.products[this.apiProduct].repo);
         }
 

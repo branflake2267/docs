@@ -323,10 +323,12 @@ class SourceApi extends Base {
         );
 
         // Something went wrong with the api source
-        if (p.indexOf("null")) {
+        if (p.indexOf("null") > -1) {
             this.error("apiSourceDir is null. apiProduct=" + this.apiProduct);
             this.error("apiSourceDir is null. repo=" + options.products[this.apiProduct].repo);
         }
+
+        //console.log(">>> repo=" + options.products[this.apiProduct].repo);
 
         return p;
     }

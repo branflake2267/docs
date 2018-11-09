@@ -322,6 +322,10 @@ class SourceApi extends Base {
             )
         );
 
+        if (!p) {
+            this.error("apiSourceDir is null. repo=" + options.products[this.apiProduct].repo);
+        }
+
         return p;
     }
     

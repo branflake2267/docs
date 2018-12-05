@@ -1,0 +1,44 @@
+<div class="context-menu-ct">
+    <div class="context-header">
+        <div id="hide-context-menu" class="fa fa-caret-right"></div>
+    </div>
+
+    {{> _search}}
+
+    <div id="toc-context-ct">
+        <!-- context content added at runtime -->
+    </div>
+</div>
+<div class="guide-body-wrap">
+    <div class="body-wrap-inner">
+        <div id="toggleExamples" class="icon-btn tooltip tooltip-tr-br" data-collapse="Collapse All Examples" data-expand="Expand All Examples">
+            <i class="fa fa-code"></i>
+            <div class="callout callout-b"></div>
+        </div>
+        <div class="classText">
+            {{#if hasToolkits}}
+                {{#if toolkit}}
+                    <div class="toolkit-badge-ct {{toolkit}}-badge">
+                        Guide applies to:
+                        <span class="toolkit-badge {{toolkit}}">
+                            {{toolkit}}
+                        </span>
+                    </div>
+                {{/if}}
+            {{/if}}
+            {{#if toc}}
+                <div class="toc">
+                    <h2>Contents</h2>
+                    {{#each toc}}
+                        <a class="toc-page-{{this.tag}} " href="#{{this.id}}">{{{this.name}}}</a>
+                    {{/each}}
+                </div>
+            {{/if}}
+            {{#if tier}}
+                <span class="guide-tags"><span class="{{{tier}}}">{{{tier}}}</span></span>
+            {{/if}}
+            {{{content}}}
+        </div>
+    </div>
+    {{> _footer}}
+</div>

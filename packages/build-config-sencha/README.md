@@ -1,0 +1,72 @@
+# Sencha Docs Site Config
+Generates Sencha product documentation site. 
+
+
+## Project Dependencies
+
+### Guides
+The Sencha Guides. 
+
+* [Sencha guides](https://github.com/sencha/guides) git repo.
+
+### Source
+The source configuration. 
+
+* [docs_project_config.json](./configs/docs_project_config.json) source configuration here.
+
+
+## Build
+Build the docs by running the node command in the bash script. 
+This is what the build server will do.
+
+### 1. Github sshkey
+* Add your sshkey to the git dash. 
+* You'll need acess to these repos: [github.com/extjs/SDK](https://github.com/extjs/sdk), [github.com/sencha/guides](https://github.com/sencha/guides).
+
+### 2. NPM Login
+Login into the [internal repository](https://sencha.myget.org/feed/internal/package/npm/@sencha/docs-generator). 
+
+* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
+
+### 3. Install
+Start by building the node library.
+
+* Run `npm install -g @sencha/docs-generator` to install for global cli use. 
+
+### 4. Run Script
+Now the CLI command will be available in the terminal from anywhere. 
+
+* To confirm it's installed run `sencha-docs-generator` in the terminal.
+* To run with predefined configs, first remove npx from `build(.*).sh` files, then run `sh ./build(.*).sh`. 
+
+
+## Debug
+Instead of instaling the CLI command globablly, install it locally or run with VSCode.
+This is great for debugging the source.
+
+### Debug with Local CLI
+* Run `npm link ../docs-generator/` - From this directory, this will link the cli command, so it can be ran with npx.
+* Then run `sh ./build(.*).sh` - Be sure `npx sencha-docs-generator` is used in the sh script. 
+
+### Debug with VSCode
+Using VSCode will allow you to set breakpoints, inspect stacks, variables and console output with ease. 
+
+* Run `npm link ../docs-generator/` - This will link the binary, running from this directory.
+* Run the VSCode launcher, to debug one of the sencha doc configs. 
+
+
+
+## Build Output
+The build output will go into the generated `./build` directory. 
+
+* Open `./build/output` in this directory.
+
+### Build Directory Manifest
+Everything in the build directory is generated. 
+It can be deleted.
+
+* `./build/_temp` - doxi manifest
+* `./build/input` - doxi output
+* `./build/output` - html output
+* `./build/repos` - cloned git repos
+

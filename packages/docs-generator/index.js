@@ -227,7 +227,10 @@ const targets = ['create-app-html', 'create-rext-app-html', 'source-api',
     ] = args._,
     canRun = targets.indexOf(targetMod) > -1;
 
-console.log('Starting Sencha docs generator... canRun=' + canRun);
+console.log('\n\nStarting the Sencha docs generator...');
+
+var pjson = require('./package.json');
+console.log('Docs Site Generator Version=' + pjson.version + '\n');
 
 // check to see if a valid module name was passed
 // i.e. "node index read-source"

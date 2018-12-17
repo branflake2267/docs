@@ -226,7 +226,7 @@ const replacements = [
     { find: /beforestore/gi, replace: 'BeforeStore' }
 ];
 
-class ExtReactHtmlApp extends HtmlApp {
+class OpenToolingHtmlApp extends HtmlApp {
     constructor (options) {
         super(options);
 
@@ -330,38 +330,6 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
-     * Returns the Ext JS version associated with the Reactor version currently being
-     * built
-     * @return {String} The Ext JS version number for the current Reactor build
-     */
-    get apiVersion () {
-        let ver = this._apiVer;
-
-        if (!ver) {
-            let options = this.options,
-                rextVersion = options.version || options.currentVersion;
-
-            ver = this._apiVer = options.products.extreact.sourceVer[rextVersion];
-        }
-
-        return ver;
-    }
-
-    // /**
-    //  * Returns the `extjs` product name used for processing the API output
-    //  * @return {String} The `extjs` product name
-    //  */
-    // get apiProduct () {
-    //     let prod = this._apiProd;
-
-    //     if (!prod) {
-    //         prod = this._apiProd = 'extjs';
-    //     }
-
-    //     return prod;
-    // }
-
-    /**
      * The classes to apply to guide nodes in the navigation tree by type:
      *
      *  - universal
@@ -461,7 +429,7 @@ class ExtReactHtmlApp extends HtmlApp {
 
     /**
      * Populates the componentNameMap property with the full class name and component
-     * name pairings.  The map is used to replace the displayed names of ExtReact class
+     * name pairings.  The map is used to replace the displayed names of OpenTooling class
      * names with their simplified names
      */
     createComponentNameMap () {
@@ -707,7 +675,7 @@ class ExtReactHtmlApp extends HtmlApp {
 
             prepared.myMeta.pageName = cls.name;
 
-            // remove select properties for the ExtReact output
+            // remove select properties for the Opentooling output
             let configs = prepared.configs;
 
             if (configs) {
@@ -731,7 +699,7 @@ class ExtReactHtmlApp extends HtmlApp {
                 }
             }
 
-            prepared.addlBodyCls  = 'extreact-component';
+            prepared.addlBodyCls  = 'opentooling-component';
             prepared.cls.multiSrc = true;
         }
     }
@@ -781,7 +749,7 @@ class ExtReactHtmlApp extends HtmlApp {
                 link += '.html';
             }
 
-            // replace canonical class names with ExtReact names
+            // replace canonical class names with OpenTooling names
             text = this.replaceWithComponentName(text);
 
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));
@@ -789,10 +757,10 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
-     * Replaces the passed string with an ExtReact component name from the
+     * Replaces the passed string with an OpenTooling component name from the
      * componentNameMap property if a match is found
      * @param {String} str The string to match with
-     * @return {String} The ExtReact component name if a match is found in the
+     * @return {String} The OpenTooling component name if a match is found in the
      * componentNameMap or the original string param if not
      */
     replaceWithComponentName (str) {
@@ -902,9 +870,9 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 
     /**
-     * Splits the postprocessing of a class's configs for "ExtReact Component" classes
+     * Splits the postprocessing of a class's configs for "OpenTooling Component" classes
      * and others since we don't want setter / getter methods described in the configs
-     * section of "ExtReact Component" classes
+     * section of "OpenTooling Component" classes
      * @param {Object} data The class object to be passed to the HTML template
      */
     postProcessConfigs (data) {
@@ -1118,4 +1086,4 @@ class ExtReactHtmlApp extends HtmlApp {
     }
 }
 
-module.exports = ExtReactHtmlApp;
+module.exports = OpenToolingHtmlApp;

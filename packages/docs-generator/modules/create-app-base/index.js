@@ -501,10 +501,9 @@ class AppBase extends SourceGuides {
         out = html.replace(/(?:<pre><code>(?:\s*@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, docsXCode) => {
             meta = meta.trim();
             docsXCode = docsXCode.trim();
-            //meta = 'packages=reactor';
+            
             if (meta && meta.length) {
                 fidMeta = Object.assign({}, fidMeta);
-                //if (meta.includes(' ') && meta.includes('=')) {
                 if (meta.includes('=')) {
                     // should be formatted with space-separated key=value pairs
                     // e.g.: toolkit=modern
@@ -518,9 +517,6 @@ class AppBase extends SourceGuides {
                             let mapped      = frameworkMap[val];
                             fidMeta[key] = (key === 'framework' && mapped) ? mapped : (val.includes('[') ? _.words(val) : val);
                         }
-                        
-
-                        
                     });
                 } else if (meta.includes('-')) {
                     // should be formatted like: framework-fullVersion-theme-toolkit

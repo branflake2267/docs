@@ -251,10 +251,10 @@ DocsApp.toggleNavHeaders = function (e) {
  */
 DocsApp.showMultiSrcPanel = function (e) {
     // Normally a class with multiple sources would show a menu of source files when the
-    // class name / view source is clicked.  However, if the class is an ExtReact
+    // class name / view source is clicked.  However, if the class is an OpenTooling
     // component then we want to suppress showing the source menu as the source is just
     // comments.
-    if (ExtL.hasCls(document.body, 'extreact-component')) {
+    if (ExtL.hasCls(document.body, 'opentooling-component')) {
         return;
     }
 
@@ -394,6 +394,9 @@ DocsApp.buildForm = function (target, params) {
     var actualProd = myMeta.product;
     if (actualProd === 'extreact') {
         params.framework.framework = 'ExtReact';
+    } else if (actualProd === 'extangular') {
+        // TODO extangular???
+        params.framework.framework = 'ExtAngular';
     }
 
     var form = ExtL.createElement({
@@ -407,6 +410,7 @@ DocsApp.buildForm = function (target, params) {
 
     var assets = params.codes.assets;
 
+    // TODO extangular???
     var rcode = "";
     rcode += "import React from 'react';\n";
     rcode += "import App from './App';\n";

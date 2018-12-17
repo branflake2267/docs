@@ -2696,8 +2696,9 @@ DocsApp.getEventTarget = function (e) {
             meta       = JSON.parse(wrap.getAttribute('data-fiddle-meta')),
             myMeta     = DocsApp.meta,
             actualProd = myMeta.product,
-            intro      = actualProd === 'extreact' ? '' : "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
-            outro      = actualProd === 'extreact' ? '' : "}\n});",
+            // TODO extangular???
+            intro      = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
+            outro      = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "}\n});",
             iframe     = DocsApp.getIFrame(wrap),
             pageName   = myMeta.myId,
             toolkit    = myMeta.toolkit,
@@ -3013,6 +3014,9 @@ DocsApp.getEventTarget = function (e) {
         var actualProd = myMeta.product;
         if (actualProd === 'extreact') {
             params.framework.framework = 'ExtReact';
+        } else if (actualProd === 'extangular') {
+            // TODO extangular???
+            params.framework.framework = 'ExtAngular';
         }
 
         var form = ExtL.createElement({

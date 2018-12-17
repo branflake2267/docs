@@ -347,19 +347,19 @@ class ExtReactHtmlApp extends HtmlApp {
         return ver;
     }
 
-    /**
-     * Returns the `extjs` product name used for processing the API output
-     * @return {String} The `extjs` product name
-     */
-    get apiProduct () {
-        let prod = this._apiProd;
+    // /**
+    //  * Returns the `extjs` product name used for processing the API output
+    //  * @return {String} The `extjs` product name
+    //  */
+    // get apiProduct () {
+    //     let prod = this._apiProd;
 
-        if (!prod) {
-            prod = this._apiProd = 'extjs';
-        }
+    //     if (!prod) {
+    //         prod = this._apiProd = 'extjs';
+    //     }
 
-        return prod;
-    }
+    //     return prod;
+    // }
 
     /**
      * The classes to apply to guide nodes in the navigation tree by type:

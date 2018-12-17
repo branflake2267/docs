@@ -1207,12 +1207,11 @@ class Base {
         const { options } = this,
               { _myRoot } = options;
 
-        this.log('-----------------');
-        this.log('-----------------');
-        this.log('sync remote starting...');
-        this.log('\tapiProduct=' + this.apiProduct);
-        this.log('\tsourceDir=' + sourceDir);
-        this.log('\tsyncRemote=' + options.syncRemote);
+        this.log('\n\n');
+        this.log('Sync Remote: Starting...');
+        this.log('Sync Remote: apiProduct=' + this.apiProduct);
+        this.log('Sync Remote: sourceDir=' + sourceDir);
+        this.log('Sync Remote: options.syncRemote=' + options.syncRemote);
         
         if (options.syncRemote === false) {
             this.triggerDoxi[product] = true;
@@ -1220,7 +1219,7 @@ class Base {
         }
         // don't attempt to sync folders other than those in "build/repos"
         if (!sourceDir.includes('build/repos')) {
-            this.log('\t*** ------>>>>>> SKIP b/c !(build/repos)');
+            this.log('Sync Remote: ------>>>>>> SKIP b/c !(build/repos)');
             return;
         }
 
@@ -1250,12 +1249,7 @@ class Base {
         );
         
         addlRepos.forEach((val, i, arr) => {
-            allRemotes.push(Utils.format(
-                addlRemoteUrls[i] || arr[0],
-                {
-                    repo : val
-                }
-            ));
+            allRemotes.push(Utils.format(addlRemoteUrls[i] || arr[0], { repo : val }));
         });
         
         let allDirs = [ sourceDir ];
@@ -1271,7 +1265,7 @@ class Base {
         
         // if the api source directory exists and is not a git repo then skip syncing
         if (Fs.existsSync(sourceDir) && !Git.isGitSync(sourceDir)) {
-            this.log(`Cannot perform remote Git sync: API source directory is not a Git repo: ${sourceDir}`, 'info');
+            this.log(`Sync Remote: Cannot perform remote Git sync: API source directory is not a Git repo: ${sourceDir}`, 'info');
             return;
         }
 
@@ -1283,11 +1277,11 @@ class Base {
         // if the api source directory doesn't exist (may or may not be within the
         // repos directory) then create the repos directory and clone the remote
         allDirs.forEach((dir, i, arr) => {
-            this.log('*** Processing git clone: ' + i + '. dir=' + dir);
+            this.log('Sync Remote: Processing git clone: ' + i + ' of ' + allDirs.length +  '. dir=' + dir);
             
             if (!Fs.existsSync(dir)) {
                 // create the repos directory if it doesn't exist already
-                this.log('\t*** CreateReposOutputDir dir=' + dir);
+                this.log('Sync Remote: CreateReposOutputDir dir=' + dir);
                 // TODO change dir to reposPath?
                 var destinationPath = this.createReposOutputDir(dir);
 
@@ -1295,13 +1289,13 @@ class Base {
                 Shell.cd(destinationPath);
 
                 var pwd = Shell.pwd();
-                this.log("\t*** pwd=" + pwd);
+                this.log("Sync Remote: pwd=" + pwd);
 
                 let repo   = allRepos[i],
                     remote = allRemotes[i];
 
-                this.log('\t*** Cloning repo=' + repo);
-                this.log('\t*** Cloning remote=' + remote);
+                this.log('Sync Remote: Cloning repo=' + repo);
+                this.log('Sync Remote: Cloning remote=' + remote);
                 Shell.exec(`git clone ${remote}`);
             }
         });
@@ -1327,7 +1321,7 @@ class Base {
 
             this.triggerDoxi[product] = true;
             Shell.cd(path);
-            this.log('Exiting.... API source directory has modified / un-tracked changes - skipping remote sync', 'info');
+            this.log('Sync Remote: Exiting.... API source directory has modified / un-tracked changes - skipping remote sync', 'info');
             return;
         }
 
@@ -1335,13 +1329,13 @@ class Base {
 
         if (options.syncRemote !== false) {
             // check out the branch used for this product / version
-            this.log(`Checkout out main branch: ${branch}`);
+            this.log(`Sync Remote:  Checkout out main branch: ${branch}`);
             Shell.exec(`git checkout ${branch}`);
 
             // if there is a tag to use for this version then switch off of head over to the
             // tagged branch
             if (tag) {
-                this.log(`Checking out tagged version: ${tag}`);
+                this.log(`Sync Remote: Sync Remote: Checking out tagged version: ${tag}`);
                 Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
             }
         }
@@ -1357,10 +1351,8 @@ class Base {
         // get back to the original working directory
         Shell.cd(path);
 
-        this.log('*** sync remote ending ***');
-        this.log('-----------------');
-        this.log('-----------------');
-        
+        this.log('Sync Remote: Ending...');
+        this.log('\n\n');        
     }
 
     /**
@@ -1369,8 +1361,6 @@ class Base {
      * @param {String} dir 
      */
     createReposOutputDir (dir) {
-        this.log('\t*** Create dir=' + dir);
-
         var d = '';
         if (dir.indexOf(Path.sep) > -1) {
             var splitPath = dir.split(Path.sep);
@@ -1378,7 +1368,7 @@ class Base {
             d = Path.join(Path.sep, ...splitPath);
         } 
 
-        this.log('\t*** Create d=' + d);
+        this.log('\tcreateReposOutputDir: Create dir=' + d);
 
         Fs.mkdirsSync(d);
 

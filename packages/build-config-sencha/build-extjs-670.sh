@@ -11,7 +11,7 @@ CONFIG_DIR="$(pwd)"
 npx sencha-docs-generator  create-app-html \
 --buildConfigsDir=$CONFIG_DIR \
 --product=extjs \
---version=6.7.0 \
+--version=6.7.0-EA \
 --syncRemote=true \
 --forceDoxi=true \
 --log \

@@ -10,10 +10,5 @@ CONFIG_DIR="$(pwd)"
 # docs build command
 npx sencha-docs-generator create-app-html \
 --buildConfigsDir=$CONFIG_DIR \
---product=cmd \
---productVersion=6.6.0 \
---syncRemote=true \
---forceDoxi=true \
---log \
---production 
+--version
 

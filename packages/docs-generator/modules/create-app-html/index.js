@@ -14,19 +14,18 @@
  * Create the product / version landing page
  */
 
-const AppBase         = require('../create-app-base'),
-      Path            = require('path'),
-      Utils           = require('../shared/Utils'),
-      //Handlebars      = require('handlebars'),
-      Fs              = require('fs-extra'),
-      UglifyJS        = require("uglify-js"),
-      CleanCSS        = require('clean-css'),
-      Diff            = require('../create-diff'),
-      _               = require('lodash'),
-      ImgRe           = /{\s*@img(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g;
+const AppBase = require('../create-app-base');
+const Path = require('path');
+const Utils = require('../shared/Utils');
+const Fs = require('fs-extra');
+const UglifyJS = require("uglify-js");
+const CleanCSS = require('clean-css');
+const Diff = require('../create-diff');
+const _ = require('lodash');
+const ImgRe = /{\s*@img(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g;
 
 class HtmlApp extends AppBase {
-    constructor (options) {
+    constructor(options) {
         super(options);
         this.copyAssets();
     }
@@ -34,44 +33,40 @@ class HtmlApp extends AppBase {
     /**
      * Default entry point for this module
      */
-    run () {
+    run() {
         this.log("create-app-html: Starting...");
 
         super.run()
-        .then(this.outputProductHomePage.bind(this))
-        .then(this.outputMainLandingPage.bind(this))
-        .then(this.outputMainRedirectToVersionPage.bind(this))
-        // TODO add hasVersion redirect to latest version page here!!!!!
-        .then(() => {
-            this.concludeBuild();
-        })
-        .catch(this.error.bind(this));
+            .then(this.outputProductHomePage.bind(this))
+            .then(this.outputMainLandingPage.bind(this))
+            .then(this.outputMainRedirectToVersionPage.bind(this))
+            .catch(this.error.bind(this));
 
         this.log("create-app-html: Finished");
     }
-    
+
     /**
      * Returns an array of this module's file name along with the file names of all
      * ancestor modules
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
-    get parentChain () {
+    get parentChain() {
         return super.parentChain.concat([Path.parse(__dirname).base]);
     }
 
     /**
      * Returns the public assets directory with static resources. 
      */
-    get assetsSrc () {
+    get assetsSrc() {
         // where: ./lib/../public/assets
-        let d = Path.join(__dirname, '../..', 'public/assets'); 
+        let d = Path.join(__dirname, '../..', 'public/assets');
         return d;
     }
 
     /**
      * Returns this module's name
      */
-    get moduleName () {
+    get moduleName() {
         return Path.parse(__dirname).base;
     }
 
@@ -79,7 +74,7 @@ class HtmlApp extends AppBase {
      * Returns the link regular expression used when parsing API links
      * @return {Object} The API link regex instance
      */
-    get linkRe () {
+    get linkRe() {
         if (!this._linkRe) {
             this._linkRe = /['`]*\{\s*@link(?:\s+|\\n)(\S*?)(?:(?:\s+|\\n)(.+?))?\}['`]*/g;
         }
@@ -91,7 +86,7 @@ class HtmlApp extends AppBase {
      * Regex test to see if the string starts with `#`
      * @return {Object} The hash regex instance
      */
-    get hashStartRe () {
+    get hashStartRe() {
         if (!this._hashStartRe) {
             this._hashStartRe = /^#/;
         }
@@ -105,7 +100,7 @@ class HtmlApp extends AppBase {
      * output (creating it if it does not already exist)
      * @return {String} The full path to the guides output directory
      */
-    get guidesOutputDir () {
+    get guidesOutputDir() {
         let dir = this._guidesOutputDir;
 
         if (!dir) {
@@ -130,7 +125,7 @@ class HtmlApp extends AppBase {
      * @param {Object} data Current data hash to be applied to the page template
      * @return {Object} Hash of common current page metadata
      */
-    getHomeMetaData (data) {
+    getHomeMetaData(data) {
         let meta = this.commonMetaData,
             docsRelativePath = Path.relative(
                 this.outputProductDir,
@@ -139,9 +134,9 @@ class HtmlApp extends AppBase {
 
         if (data) {
             Object.assign(meta, {
-                rootPath     : '',
-                pageType     : 'home',
-                docsRootPath : `${docsRelativePath}/`
+                rootPath: '',
+                pageType: 'home',
+                docsRootPath: `${docsRelativePath}/`
             });
         }
 
@@ -153,16 +148,16 @@ class HtmlApp extends AppBase {
      * @param {Object} data Current data hash to be applied to the page template
      * @return {Object} Hash of common current page metadata
      */
-    getLandingMetaData (data) {
+    getLandingMetaData(data) {
         let meta = this.commonMetaData;
 
         if (data) {
             Object.assign(meta, {
-                rootPath     : '',
-                pageType     : 'landing',
-                docsRootPath : '',
-                hasApi       : false,
-                hasGuides    : false
+                rootPath: '',
+                pageType: 'landing',
+                docsRootPath: '',
+                hasApi: false,
+                hasGuides: false
             });
         }
 
@@ -180,15 +175,14 @@ class HtmlApp extends AppBase {
      * @return {String[]} Array of file paths to the override files in order of most to
      * least Base in the class hierarchy.  Else an empty array if no files match.
      */
-    getAncestorFiles (folder, fileName) {
-        let { parentChain } = this,
-            len             = parentChain.length,
-            i               = 0,
-            ancestorFiles   = [];
+    getAncestorFiles(folder, fileName) {
+        let { parentChain } = this;
+        let len = parentChain.length;
+        let ancestorFiles = [];
 
-        for (; i < len; i++) {
-            let ancestorName = parentChain[i],
-                filePath     = Path.join(this.assetsSrc, folder, ancestorName, fileName);
+        for (let i = 0; i < len; i++) {
+            let ancestorName = parentChain[i];
+            let filePath = Path.join(this.assetsSrc, folder, ancestorName, fileName);
 
             console.log("\t getAncestorFiles: looking for override: filePath=" + filePath);
 
@@ -205,7 +199,7 @@ class HtmlApp extends AppBase {
      * Copy supporting assets to the output folder.
      * i.e. app.js, app.css, ace editor assets, etc.
      */
-    copyAssets () {
+    copyAssets() {
         Fs.ensureDirSync(this.assetsDir);
 
         this.copyCss();
@@ -218,40 +212,40 @@ class HtmlApp extends AppBase {
      * Copy project 'css' files over from the project assets directory to the output
      * directory
      */
-    copyCss () {
+    copyCss() {
         this.log('Copy public/assets/css to build/output directory');
 
-        let { options }    = this,
+        let { options } = this,
             { production } = options,
-            assetType      = 'css',
-            mainName       = 'main.css',
-            mainCss        = Path.join(this.assetsSrc, 'css', mainName),
-            faCss          = Path.join(this.assetsSrc, 'css', 'docs-fonts.css'),
-            css            = new CleanCSS({
+            assetType = 'css',
+            mainName = 'main.css',
+            mainCss = Path.join(this.assetsSrc, 'css', mainName),
+            faCss = Path.join(this.assetsSrc, 'css', 'docs-fonts.css'),
+            css = new CleanCSS({
                 rebase: false, // TODO rebasing is off until rebaseTo is fixed.
                 rebaseTo: options.outputDir, // TODO - this isn't changing the paths correctly yet.
-                compatibility : 'ie9',
-                level         : production ? 2 : 0,
-                format        : {
-                    breaks : { // controls where to insert breaks
-                        afterAtRule      : !production, // controls if a line break comes after an at-rule; e.g. `@charset`; defaults to `false`
-                        afterBlockBegins : !production, // controls if a line break comes after a block begins; e.g. `@media`; defaults to `false`
-                        afterBlockEnds   : !production, // controls if a line break comes after a block ends, defaults to `false`
-                        afterComment     : !production, // controls if a line break comes after a comment; defaults to `false`
-                        afterProperty    : !production, // controls if a line break comes after a property; defaults to `false`
-                        afterRuleBegins  : !production, // controls if a line break comes after a rule begins; defaults to `false`
-                        afterRuleEnds    : !production, // controls if a line break comes after a rule ends; defaults to `false`
-                        beforeBlockEnds  : !production, // controls if a line break comes before a block ends; defaults to `false`
-                        betweenSelectors : !production // controls if a line break comes between selectors; defaults to `false`
+                compatibility: 'ie9',
+                level: production ? 2 : 0,
+                format: {
+                    breaks: { // controls where to insert breaks
+                        afterAtRule: !production, // controls if a line break comes after an at-rule; e.g. `@charset`; defaults to `false`
+                        afterBlockBegins: !production, // controls if a line break comes after a block begins; e.g. `@media`; defaults to `false`
+                        afterBlockEnds: !production, // controls if a line break comes after a block ends, defaults to `false`
+                        afterComment: !production, // controls if a line break comes after a comment; defaults to `false`
+                        afterProperty: !production, // controls if a line break comes after a property; defaults to `false`
+                        afterRuleBegins: !production, // controls if a line break comes after a rule begins; defaults to `false`
+                        afterRuleEnds: !production, // controls if a line break comes after a rule ends; defaults to `false`
+                        beforeBlockEnds: !production, // controls if a line break comes before a block ends; defaults to `false`
+                        betweenSelectors: !production // controls if a line break comes between selectors; defaults to `false`
                     },
-                    indentBy   : production ? 0 : 4, // controls number of characters to indent with; defaults to `0`
-                    indentWith : 'space', // controls a character to indent with, can be `'space'` or `'tab'`; defaults to `'space'`
-                    spaces     : { // controls where to insert spaces
-                        aroundSelectorRelation : !production, // controls if spaces come around selector relations; e.g. `div > a`; defaults to `false`
-                        beforeBlockBegins      : !production, // controls if a space comes before a block begins; e.g. `.block {`; defaults to `false`
-                        beforeValue            : !production // controls if a space comes before a value; e.g. `width : 1rem`; defaults to `false`
+                    indentBy: production ? 0 : 4, // controls number of characters to indent with; defaults to `0`
+                    indentWith: 'space', // controls a character to indent with, can be `'space'` or `'tab'`; defaults to `'space'`
+                    spaces: { // controls where to insert spaces
+                        aroundSelectorRelation: !production, // controls if spaces come around selector relations; e.g. `div > a`; defaults to `false`
+                        beforeBlockBegins: !production, // controls if a space comes before a block begins; e.g. `.block {`; defaults to `false`
+                        beforeValue: !production // controls if a space comes before a value; e.g. `width : 1rem`; defaults to `false`
                     },
-                    wrapAt : false // controls maximum line length; defaults to `false`
+                    wrapAt: false // controls maximum line length; defaults to `false`
                 }
             }).minify([
                 faCss,       // font awesome styles
@@ -270,41 +264,42 @@ class HtmlApp extends AppBase {
      * Copy project 'js' files over from the project assets directory to the output
      * directory
      */
-    copyJs () {
+    copyJs() {
         this.log("Copy public/assets/js to build/output directory");
 
-        let { options }    = this,
-            { production } = options,
-            { jsDir }      = this,
-            root           = options._myRoot,
-            assetType      = 'js',
-            mainName       = 'main.js',
-            extl           = Path.join(this.assetsSrc, 'js',  'ExtL.js'),
-            main           = Path.join(this.assetsSrc, 'js', mainName),
-            beautify       = Path.join(this.assetsSrc, 'js', 'beautify.js'),
-            gsap           = Path.join(this.options._execRoot, '/node_modules/gsap/src/minified/TweenMax.min.js'),
-            aceFolder      = Path.join(this.options._execRoot, '/node_modules/ace-builds/src-min-noconflict'),
-            jsFileArr      = [
-                gsap,
-                extl,
-                beautify,
-                main
-            ],
-            jsMinified = UglifyJS.minify(
-                jsFileArr.concat(
-                    this.getAncestorFiles(
-                        assetType,
-                        mainName
-                    )
-                ),
-                {
-                    compress : production,
-                    mangle   : production,
-                    output   : {
-                        beautify : !production
-                    }
-                }
-            );
+        let { options } = this;
+        let { production } = options;
+        let { jsDir } = this;
+        let root = options._myRoot;
+        let assetType = 'js';
+        let mainName = 'main.js';
+        let extl = Path.join(this.assetsSrc, 'js', 'ExtL.js');
+        let main = Path.join(this.assetsSrc, 'js', mainName);
+        let beautify = Path.join(this.assetsSrc, 'js', 'beautify.js');
+        let gsap = Path.join(this.options._execRoot, '/node_modules/gsap/src/minified/TweenMax.min.js');
+        let aceFolder = Path.join(this.options._execRoot, '/node_modules/ace-builds/src-min-noconflict');
+        let jsFileArr = [ gsap, extl, beautify, main ];
+        let codeFilesArr = jsFileArr.concat(this.getAncestorFiles(assetType, mainName));
+
+        let uglifyCode = {};
+        for (let i=0; i < codeFilesArr.length; i++) {
+            var file = Path.basename(codeFilesArr[i]);
+            uglifyCode[file] = Fs.readFileSync(codeFilesArr[i], "utf8");
+        }
+
+        let uglifyOptions = {
+            compress: production,
+            mangle: production,
+            output: {
+                beautify: !production
+            }
+        };
+
+        let jsMinified = UglifyJS.minify(uglifyCode, uglifyOptions);
+        if (jsMinified.error) {
+            console.log("copyJs: jsMinified error.", jsMinified.error);
+            throw jsMinified.error
+        }
 
         Fs.ensureDirSync(jsDir);
         Fs.writeFileSync(
@@ -319,7 +314,7 @@ class HtmlApp extends AppBase {
      * Create guide folders in the guides output directory using the supplied path
      * @param {String} path The path to create on disk
      */
-    makeGuideDir (path) {
+    makeGuideDir(path) {
         var guideDir = Path.join(this.guidesOutputDir, path);
         if (!Fs.existsSync(guideDir)) {
             Fs.ensureDirSync(guideDir);
@@ -343,7 +338,7 @@ class HtmlApp extends AppBase {
      * @param {String} html The markdown from the guide source file
      * @return {String} The processed guide HTML
      */
-    processGuideHtml (html, data) {
+    processGuideHtml(html, data) {
         // processes the markdown to HTML
         html = super.processGuideHtml(html, data);
 
@@ -361,7 +356,7 @@ class HtmlApp extends AppBase {
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
      */
-    processGuideDataObject (data) {
+    processGuideDataObject(data) {
         super.processGuideDataObject(data);
         return this.buildToc(data);
     }
@@ -370,7 +365,7 @@ class HtmlApp extends AppBase {
      * Build the guide table of contents using the heading tags in the doc
      * @param {Object} data The data object to apply to the guide template
      */
-    buildToc (data) {
+    buildToc(data) {
         // the guide body HTML
         return data;
         //TODO build the TOC and set it back on the data object
@@ -383,7 +378,7 @@ class HtmlApp extends AppBase {
      * @return {String} The link markup
      */
     //return this.createApiLink(product, version, toolkit, className, memberName, text, data);
-    createApiLink (href, text) {
+    createApiLink(href, text) {
         return `<a href="${href}">${text}</a>`;
     }
 
@@ -402,18 +397,18 @@ class HtmlApp extends AppBase {
      * @return {String} The link markup
      */
     // TODO process the api links for HTML guides
-    createGuideLink (product, version, toolkit, className, memberName, text, data) {
+    createGuideLink(product, version, toolkit, className, memberName, text, data) {
         if (product === 'gxt') {
             const linkVer = version === '4.x' ? '4.0.2' : '3.1.4';
-            
-            toolkit   = Path.join('javadoc', `gxt-${linkVer}`);
+
+            toolkit = Path.join('javadoc', `gxt-${linkVer}`);
             className = Path.join(...className.split('.'));
         }
-        
-        let { rootPath }  = data,
+
+        let { rootPath } = data,
             { outputDir } = this.options,
-            relPath       = Path.relative(rootPath, outputDir),
-            href          = Path.join(relPath, product, (version || ''), toolkit, `${className}.html`);
+            relPath = Path.relative(rootPath, outputDir),
+            href = Path.join(relPath, product, (version || ''), toolkit, `${className}.html`);
 
         if (memberName) {
             href += `#${memberName}`;
@@ -427,9 +422,9 @@ class HtmlApp extends AppBase {
      * @param {String} html The HTML to process images on
      * @return {String} The processed HTML
      */
-    processImageTags (html) {
+    processImageTags(html) {
         return html.replace(ImgRe, (match, img) => {
-            return "<img src='images/"+ img +"'/>";
+            return "<img src='images/" + img + "'/>";
         });
     }
 
@@ -438,9 +433,9 @@ class HtmlApp extends AppBase {
      * @param {String} html The HTML markup whose links require processing
      * @return {String} The original HTML string with all links processed
      */
-    parseApiLinks (html) {
+    parseApiLinks(html) {
         html = html.replace(this.linkRe, (match, link, text) => {
-            link = link.replace('!','-');
+            link = link.replace('!', '-');
 
             let memberName = link.substring(link.indexOf('-') + 1);
 
@@ -472,10 +467,10 @@ class HtmlApp extends AppBase {
      * @param {Object} cls The class object to output the hierarchy for
      * @return {String} The hierarchy HTML
      */
-    processHierarchy (cls) {
-        let { name }        = cls,
-            elementCls      = 'hierarchy pl2',
-            list            = this.splitInline(
+    processHierarchy(cls) {
+        let { name } = cls,
+            elementCls = 'hierarchy pl2',
+            list = this.splitInline(
                 Utils.processCommaLists(cls.extended, false, true, true),
                 `<div class = "${elementCls}">`
             ),
@@ -492,7 +487,7 @@ class HtmlApp extends AppBase {
      * Private method to process the contents of the related classes for HTML output.
      * Separates each class name / link with a line break.
      */
-    splitRelatedClasses (classes) {
+    splitRelatedClasses(classes) {
         if (classes) {
             return this.splitInline(classes, '<br>');
         }
@@ -504,16 +499,16 @@ class HtmlApp extends AppBase {
      * @param {Object} cls The original class object
      * @param {Object} data The recipient of the processed related classes
      */
-    processRelatedClasses (cls, data) {
-        data.mixins      = this.splitRelatedClasses(cls.mixed);
+    processRelatedClasses(cls, data) {
+        data.mixins = this.splitRelatedClasses(cls.mixed);
         data.localMixins = this.splitRelatedClasses(cls.mixins);
-        data.requires    = this.splitRelatedClasses(cls.requires);
-        data.uses        = this.splitRelatedClasses(cls.uses);
-        data.extends     = cls.extended  ? this.processHierarchy(cls) : '';
-        data.extenders   = cls.extenders ? Utils.processCommaLists(cls.extenders, false) : '';
-        data.extenders   = this.splitRelatedClasses(cls.extenders);
-        data.mixers      = cls.mixers    ? Utils.processCommaLists(cls.mixers, false) : '';
-        data.mixers      = this.splitRelatedClasses(cls.mixers);
+        data.requires = this.splitRelatedClasses(cls.requires);
+        data.uses = this.splitRelatedClasses(cls.uses);
+        data.extends = cls.extended ? this.processHierarchy(cls) : '';
+        data.extenders = cls.extenders ? Utils.processCommaLists(cls.extenders, false) : '';
+        data.extenders = this.splitRelatedClasses(cls.extenders);
+        data.mixers = cls.mixers ? Utils.processCommaLists(cls.mixers, false) : '';
+        data.mixers = this.splitRelatedClasses(cls.mixers);
     }
 
     /**
@@ -521,7 +516,7 @@ class HtmlApp extends AppBase {
      * @param {String} html The markup to process
      * @return {String} The processed HTML
      */
-    processApiHtml (html) {
+    processApiHtml(html) {
         html = this.decorateExamples(html);
         html = this.processImageTags(html);
         html = this.parseApiLinks(html);
@@ -535,15 +530,15 @@ class HtmlApp extends AppBase {
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
      */
-    processHomeDataObject (data) {
+    processHomeDataObject(data) {
         let { outputProductDir } = this;
 
-        data.cssPath    = Path.relative(outputProductDir, this.cssDir);
-        data.jsPath     = Path.relative(outputProductDir, this.jsDir);
+        data.cssPath = Path.relative(outputProductDir, this.cssDir);
+        data.jsPath = Path.relative(outputProductDir, this.jsDir);
         data.imagesPath = Path.relative(outputProductDir, this.imagesDir);
-        data.myMeta     = this.getHomeMetaData(data);
-        data.isHome     = true;
-        data.toolkit    = null;
+        data.myMeta = this.getHomeMetaData(data);
+        data.isHome = true;
+        data.toolkit = null;
         data.description = `${data.title} API documentation from Sencha`;
         this.processCommonDataObject(data);
     }
@@ -554,30 +549,30 @@ class HtmlApp extends AppBase {
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
      */
-    processLandingDataObject (data) {
+    processLandingDataObject(data) {
         let { options } = this;
-        
-        data.cssPath     = Path.relative(options.outputDir, this.cssDir);
-        data.jsPath      = Path.relative(options.outputDir, this.jsDir);
-        data.imagesPath  = Path.relative(options.outputDir, this.imagesDir);
-        data.myMeta      = this.getLandingMetaData(data);
-        
+
+        data.cssPath = Path.relative(options.outputDir, this.cssDir);
+        data.jsPath = Path.relative(options.outputDir, this.jsDir);
+        data.imagesPath = Path.relative(options.outputDir, this.imagesDir);
+        data.myMeta = this.getLandingMetaData(data);
+
         console.log("processLandingDataObject: options.outputDir=" + options.outputDir);
         console.log("processLandingDataObject: data.cssPath=" + data.cssPath);
 
-        let { myMeta }   = data;
-        myMeta.product   = null;
-        myMeta.version   = null;
+        let { myMeta } = data;
+        myMeta.product = null;
+        myMeta.version = null;
 
-        data.isLanding   = true;
-        data.toolkit     = null;
+        data.isLanding = true;
+        data.toolkit = null;
         data.description = 'API documentation from Sencha';
         this.processCommonDataObject(data);
-        data.product     = '';
-        data.title       = 'Sencha Documentation';
-        data.version     = null;
-        data.hasApi      = false;
-        data.hasGuides   = false;
+        data.product = '';
+        data.title = 'Sencha Documentation';
+        data.version = null;
+        data.hasApi = false;
+        data.hasGuides = false;
     }
 
     /**
@@ -587,14 +582,14 @@ class HtmlApp extends AppBase {
      * @return {Object} A promise the resolves once the api file is written to the output
      * directory
      */
-    outputApiFile (className, data) {
+    outputApiFile(className, data) {
         return new Promise((resolve, reject) => {
             let fileName = Path.join(this.apiDir, `${className}.html`);
             let html = "";
-            
+
             try {
                 html = this.mainTemplate(data);
-            } catch(e) {
+            } catch (e) {
                 this.error("outputApiFile: Could not configure mainTemplate.", e);
             }
 
@@ -606,23 +601,22 @@ class HtmlApp extends AppBase {
                 // resolve after a timeout to let garbage collection catch up
                 setTimeout(resolve, 100);
             });
-        })
-        .catch(this.error.bind(this));
+        }).catch(this.error.bind(this));
     }
 
     /**
      * Outputs the product home page
      * @return {Promise}
      */
-    outputProductHomePage () {
+    outputProductHomePage() {
         return new Promise((resolve, reject) => {
             let { options } = this,
-                root        = options._myRoot,
+                root = options._myRoot,
                 prodTplPath = Path.join(root, 'configs', 'product-home', options.product),
                 { version } = options,
-                homeConfig  = this.getFileByVersion(prodTplPath, version),
-                homePath    = Path.join(prodTplPath, homeConfig),
-                dest        = Path.join(this.outputProductDir, 'index.html');
+                homeConfig = this.getFileByVersion(prodTplPath, version),
+                homePath = Path.join(prodTplPath, homeConfig),
+                dest = Path.join(this.outputProductDir, 'index.html');
 
             let data = Fs.readJsonSync(homePath);
 
@@ -638,14 +632,14 @@ class HtmlApp extends AppBase {
                 resolve();
             });
         })
-        .catch(this.error.bind(this));
+            .catch(this.error.bind(this));
     }
 
     /**
      * Outputs the product home page
      * @return {Promise}
      */
-    outputMainLandingPage () {
+    outputMainLandingPage() {
         this.log("Landing Page: outputMainLandingPage: landing page: options.outputDir=" + this.options.outputDir);
 
         return new Promise((resolve, reject) => {
@@ -665,7 +659,7 @@ class HtmlApp extends AppBase {
             data = Object.assign(data, options);
             data = Object.assign(data, options.prodVerMeta);
 
-            data.rootPath       = '..';
+            data.rootPath = '..';
             data.contentPartial = '_product-home';
 
             this.processLandingDataObject(data);
@@ -675,10 +669,10 @@ class HtmlApp extends AppBase {
 
             while (len--) {
                 const homeItem = data.homeItems[len],
-                      prodObj = productsObj[homeItem.product];
+                    prodObj = productsObj[homeItem.product];
 
-                homeItem.header = Utils.format( homeItem.header, prodObj);
-                
+                homeItem.header = Utils.format(homeItem.header, prodObj);
+
                 if (homeItem.content) {
                     homeItem.content = [Utils.format(homeItem.content.join(''), prodObj)];
                 }
@@ -691,15 +685,14 @@ class HtmlApp extends AppBase {
 
                 resolve();
             });
-        })
-        .catch(this.error.bind(this));
+        }).catch(this.error.bind(this));
     }
 
     /**
      * Outputs redirect to the latest version page.
      * @return {Promise}
      */
-    outputMainRedirectToVersionPage () {
+    outputMainRedirectToVersionPage() {
         this.log("Landing Page: outputMainRedirectToVersionPage Page: redirect page: options.outputDir=" + this.options.outputDir);
 
         return new Promise((resolve, reject) => {
@@ -712,7 +705,7 @@ class HtmlApp extends AppBase {
                 return;
             }
 
-            let dest = Path.join(options.outputDir, options.product , 'index.html');
+            let dest = Path.join(options.outputDir, options.product, 'index.html');
             console.log("Redirect Page: dest=" + dest);
 
             let html = this.mainProductRedirectToCurrentPage(productObj);
@@ -721,8 +714,7 @@ class HtmlApp extends AppBase {
 
                 resolve();
             });
-        })
-        .catch(this.error.bind(this));
+        }).catch(this.error.bind(this));
     }
 }
 

@@ -1,4 +1,4 @@
-const AppBase     = require('../../create-app-html');
+const AppBase = require('../../create-app-html');
 
 class Reporting extends AppBase {
 

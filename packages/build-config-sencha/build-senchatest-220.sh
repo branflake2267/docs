@@ -11,7 +11,7 @@ CONFIG_DIR="$(pwd)"
 npx sencha-docs-generator create-app-html \
 --buildConfigsDir=$CONFIG_DIR \
 --product=sencha_test \
---version=2.2.0 \
+--productVersion=2.2.0 \
 --syncRemote=true \
 --forceDoxi=true \
 --log \

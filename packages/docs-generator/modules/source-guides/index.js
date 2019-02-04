@@ -104,8 +104,8 @@ class SourceGuides extends SourceApi {
      * @return {Object} The guide config object
      */
     get guideConfig () {
-        let path = this.guideConfigPath,
-            version = this.options.version;
+        let path = this.guideConfigPath;
+        let version = this.options.version;
 
         return Fs.readJSONSync(
             Path.join(
@@ -308,8 +308,6 @@ class SourceGuides extends SourceApi {
             return Promise.resolve();
         }
 
-        let dt = new Date();
-
         this.log('~~~~~~~~~~~~~~~~~~~~');
         this.log('~~~~~~~~~~~~~~~~~~~~');
         this.log('\t Processing Guides Start');
@@ -327,17 +325,11 @@ class SourceGuides extends SourceApi {
         .then(this.outputGuideTree.bind(this))
         .then(this.copyResources.bind(this))
         .then(() => {
-            //this.log('runGuides:', this.getElapsed(dt));
-            // TODO Maybe ove to create-app-base after "All Told" once promise is respected
-            //this.concludeBuild();
-
             this.log('\t Processing Guides End');
             this.log('~~~~~~~~~~~~~~~~~~~~');
             this.log('~~~~~~~~~~~~~~~~~~~~');
         })
         .catch(this.error.bind(this));
-
-
     }
 
     /**
@@ -743,15 +735,14 @@ class SourceGuides extends SourceApi {
      */
     processGuideCfg () {
         return new Promise((resolve, reject) => {
-            let cfg       = this.guideConfig,
-                items     = cfg.items,
-                i         = 0,
-                len       = items.length,
-                toReadArr = [];
+            let cfg       = this.guideConfig;
+            let items     = cfg.items;
+            let len       = items.length;
+            let toReadArr = [];
 
             //this.log('\t Process Guides: Cfg cfg=', cfg);
 
-            for (; i < len; i++) {
+            for (let i = 0; i < len; i++) {
                 let guidesObj = items[i];
 
                 this.log('\t Process Guides: guidesObj.rootPath=' +  guidesObj.rootPath);

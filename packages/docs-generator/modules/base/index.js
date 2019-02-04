@@ -1013,12 +1013,7 @@ class Base {
      * Performs and cleanup as the build concludes
      */
     concludeBuild () {
-        //this.log(`Begin 'Base.concludeBuild'`, 'info');
-        let { options } = this;
-
-        if (!options.production && options.audioAlert === true) {
-            Play.sound('./assets/audio/jobsdone.m4a');
-        }
+        console.log("...Build Completed!");
         
         process.exit();
     }
@@ -1368,9 +1363,11 @@ class Base {
             d = Path.join(Path.sep, ...splitPath);
         } 
 
-        this.log('\tcreateReposOutputDir: Create dir=' + d);
+        if (!Fs.existsSync(d)) {
+            Fs.mkdirsSync(d);
+        }
 
-        Fs.mkdirsSync(d);
+        this.log('\tcreateReposOutputDir: Create dir=' + d);
 
         return d;
     }

@@ -200,7 +200,9 @@ class HtmlApp extends AppBase {
      * i.e. app.js, app.css, ace editor assets, etc.
      */
     copyAssets() {
-        Fs.ensureDirSync(this.assetsDir);
+        if (!Fs.existsSync(this.assetsDir)) {
+            Fs.ensureDirSync(this.assetsDir);
+        }
 
         this.copyCss();
         this.copyJs();
@@ -256,7 +258,9 @@ class HtmlApp extends AppBase {
                 mainName
             )));
 
-        Fs.ensureDirSync(this.cssDir);
+        if (!Fs.existsSync(this.cssDir)) {
+            Fs.ensureDirSync(this.cssDir);
+        }
         Fs.writeFileSync(Path.join(this.cssDir, `${this.moduleName}-app.css`), css.styles, 'utf8');
     }
 
@@ -301,7 +305,9 @@ class HtmlApp extends AppBase {
             throw jsMinified.error
         }
 
-        Fs.ensureDirSync(jsDir);
+        if (!Fs.existsSync(jsDir)) {
+            Fs.ensureDirSync(jsDir);
+        }
         Fs.writeFileSync(
             Path.join(jsDir, `${this.moduleName}-app.js`),
             jsMinified.code.toString(),

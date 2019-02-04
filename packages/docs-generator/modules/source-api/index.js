@@ -167,12 +167,7 @@ class SourceApi extends Base {
      * @return {Object} The doxi config object used by the docs processors
      */
     get tempDoxiCfg() {
-        return Fs.readJsonSync(
-            Path.join(
-                this.tempDir,
-                'tempDoxiCfg.json'
-            )
-        );
+        return Fs.readJsonSync(Path.join(this.tempDir, 'tempDoxiCfg.json'));
     }
 
     /**
@@ -181,10 +176,7 @@ class SourceApi extends Base {
      * @return {String} The path to the temp directory
      */
     get tempDir() {
-        return Path.join(
-            this.options._myRoot,
-            'build', "_temp"
-        );
+        return Path.join(this.options._myRoot,'build', "_temp");
     }
 
     /**
@@ -195,10 +187,7 @@ class SourceApi extends Base {
     get rootApiInputDir() {
         let { options } = this;
 
-        return Path.join(
-            options._myRoot,
-            options.apiInputDir
-        );
+        return Path.join(options._myRoot, options.apiInputDir);
     }
 
     /**
@@ -474,7 +463,8 @@ class SourceApi extends Base {
         this.srcFileMap = {};
 
         return this.doRunDoxi()
-            .then(this.readDoxiFiles.bind(this));
+        .then(this.readDoxiFiles.bind(this))
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -514,11 +504,13 @@ class SourceApi extends Base {
             if (forceDoxi || doxiRequired || (triggerDoxi && triggerDoxi[this.apiProduct])) {
                 // Empty the folder (or remove the input file) first before running doxi
                 if (doxiBuild === 'combo-nosrc') {
-                    Fs.emptyDirSync(this.getDoxiInputDir());
+                    if (Fs.existsSync(this.getDoxiInputDir())) {
+                        Fs.emptyDirSync(this.getDoxiInputDir());
+                    }
                 } else {
                     const inputFile = Path.join(this.getDoxiInputDir(doxiBuild), this.getDoxiInputFile(doxiBuild));
                     if (Fs.existsSync(inputFile)) {
-                        Fs.removeSync(inputFile)
+                        Fs.rmdirSync(inputFile)
                     }
                 }
 
@@ -526,7 +518,7 @@ class SourceApi extends Base {
                 this.generateDoxiConfig(this.tempDir, doxiBuild, runQuiet);
             } 
 
-            this.log('RunDoxi: Completed: buildName=' + buildName);
+            this.log('RunDoxi: Completed: doxiBuild=' + doxiBuild);
             resolve();
         });
     }
@@ -588,98 +580,95 @@ class SourceApi extends Base {
      */
     createSrcFileMap() {
         //this.log(`Begin 'SourceApi.createSrcFileMap'`, 'info');
-        let inputDir = this.getDoxiInputDir(),
-            map = this.srcFileMap,
-            classMap = this.classMap,
-            files = this.getFilteredFiles(Fs.readdirSync(inputDir)),
-            i = 0,
-            len = files.length,
-            ops = [],
-            modifiedList = this.modifiedList;
+        let inputDir = this.getDoxiInputDir();
+        let map = this.srcFileMap;
+        let classMap = this.classMap;
+        let files = this.getFilteredFiles(Fs.readdirSync(inputDir));
+        let len = files.length;
+        let ops = [];
+        let modifiedList = this.modifiedList;
 
-        //this.log('Processing the parsed SDK source files', 'info');
+        this.log('Processing the parsed SDK source files', 'info');
 
-        for (; i < len; i++) {
+        for (let i=0; i < len; i++) {
             ops.push(
                 new Promise((resolve, reject) => {
                     let path = Path.join(inputDir, files[i]);
 
-                    Fs.readJson(path, (err, cls) => {
-                        if (err) {
-                            reject(err);
+                    console.log("createSrcFileMap: " + i + " ops: path=" + path);
+
+                    const cls = Fs.readJsonSync(path, { throws: false });
+
+                    let [clsObj] = cls.global.items; // the class obj
+                    let { ignore } = clsObj;
+
+                    if (ignore === true) {
+                        console.log("\t\t ops: ignore");
+                        resolve();
+                    } else {
+                        let type = clsObj.$type,     // the class type (class or enum)
+                            validType = type === 'class' || type === 'enum',
+                            // the index in the files list where the class is primarily sourced
+                            srcIdx = (clsObj.src.text || clsObj.src.name).substring(0, 1),
+                            srcFiles = cls.files, // ths list of class source files
+                            primarySrc = srcFiles[0] || '',
+                            // the path of the class source from the SDK
+                            srcPath = srcFiles[srcIdx],
+                            hasOverride = clsObj.src.override,
+                            overrideIdx = hasOverride && hasOverride.split(',')[0],
+                            overridePath = overrideIdx && srcFiles[overrideIdx],
+                            { modifiedList } = this,
+                            modifiedMatch = [];
+
+                        // if there is are modified files in the SDK source then see if
+                        // the primary source file for the current class is in the
+                        // modified list.  If so, we'll mark the class as modified in the
+                        // classMap
+                        if (modifiedList && modifiedList.length) {
+                            modifiedMatch = _.filter(modifiedList, item => {
+                                return _.endsWith(primarySrc, item);
+                            });
                         }
 
-                        let [clsObj] = cls.global.items, // the class obj
-                            { ignore } = clsObj;
+                        // add all source files for this class to the master source file
+                        // map
+                        this.mapSrcFiles(srcFiles || []);
 
-                        if (ignore === true) {
-                            resolve();
-                        } else {
-                            let type = clsObj.$type,     // the class type (class or enum)
-                                validType = type === 'class' || type === 'enum',
-                                // the index in the files list where the class is primarily sourced
-                                srcIdx = (clsObj.src.text || clsObj.src.name).substring(0, 1),
-                                srcFiles = cls.files, // ths list of class source files
-                                primarySrc = srcFiles[0] || '',
-                                // the path of the class source from the SDK
-                                srcPath = srcFiles[srcIdx],
-                                hasOverride = clsObj.src.override,
-                                overrideIdx = hasOverride && hasOverride.split(',')[0],
-                                overridePath = overrideIdx && srcFiles[overrideIdx],
-                                { modifiedList } = this,
-                                modifiedMatch = [];
-
-                            // if there is are modified files in the SDK source then see if
-                            // the primary source file for the current class is in the
-                            // modified list.  If so, we'll mark the class as modified in the
-                            // classMap
-                            if (modifiedList && modifiedList.length) {
-                                modifiedMatch = _.filter(modifiedList, item => {
-                                    return _.endsWith(primarySrc, item);
-                                });
+                        // if the current file is a "class" file then cache the contents
+                        // in the source file hash
+                        // Supports #addAnchors
+                        if (validType) {
+                            map[srcPath].input = cls;
+                            if (overridePath) {
+                                map[overridePath].input = cls;
                             }
-
-                            // add all source files for this class to the master source file
-                            // map
-                            this.mapSrcFiles(srcFiles || []);
-
-                            // if the current file is a "class" file then cache the contents
-                            // in the source file hash
-                            // Supports #addAnchors
-                            if (validType) {
-                                map[srcPath].input = cls;
-                                if (overridePath) {
-                                    map[overridePath].input = cls;
-                                }
-                            }
-
-                            if (validType) {
-                                let prepared = Object.assign({}, clsObj);
-                                delete prepared.items;
-
-                                classMap[clsObj.name] = {
-                                    raw: cls,
-                                    prepared: prepared,
-                                    modified: !!modifiedMatch.length
-                                };
-                            }
-
-                            resolve();
                         }
-                    });
-                })
+
+                        if (validType) {
+                            let prepared = Object.assign({}, clsObj);
+                            delete prepared.items;
+
+                            classMap[clsObj.name] = {
+                                raw: cls,
+                                prepared: prepared,
+                                modified: !!modifiedMatch.length
+                            };
+                        }
+
+                        resolve();
+                    }
+                }).catch(this.error.bind(this))
             );
         }
         return Promise.all(ops)
             .then(() => {
-                let i = 0,
-                    map = this.srcFileMap,
-                    keys = Object.keys(map),
-                    len = keys.length,
-                    names = {},
-                    inputDir = this.getDoxiInputDir();
+                let map = this.srcFileMap;
+                let keys = Object.keys(map);
+                let len = keys.length;
+                let names = {};
+                let inputDir = this.getDoxiInputDir();
 
-                for (; i < len; i++) {
+                for (let i = 0; i < len; i++) {
                     let path = keys[i],
                         // returns 'file.ext' from the full path
                         name = Path.parse(path).base;
@@ -707,7 +696,9 @@ class SourceApi extends Base {
                         inputDir: inputDir
                     };
                 }
-            }).catch(this.error.bind(this));
+                console.log("createSrcFileMap: completed");
+            })
+            .catch(this.error.bind(this));
     }
 
     /**
@@ -978,11 +969,12 @@ class SourceApi extends Base {
      * Entry method to process the doxi files into files for use by the HTML docs or Ext app
      */
     readDoxiFiles() {
-        this.log(`Begin 'SourceApi.readDoxiFiles'`, 'info');
         let dt = new Date();
         return this.createSrcFileMap()
             .then(() => {
-                this.ensureDir(this.apiDir);
+                if (!Fs.existsSync(this.apiDir)) {
+                    Fs.ensureDirSync(this.apiDir);
+                }
             })
             .then(this.processApiFiles.bind(this))
             .then(this.getApiSearch.bind(this))
@@ -1004,37 +996,40 @@ class SourceApi extends Base {
      * `outputApiFile`
      */
     processApiFiles() {
-        //this.log(`Begin 'SourceApi.processApiFiles'`, 'info');
-        let classMap = this.classMap,
-            classNames = Object.keys(classMap),
-            i = 0,
-            len = classNames.length,
-            modifiedOnly = this.options.modifiedOnly;
+        return new Promise((resolve, reject) => {
+            console.log("processApiFiles: Started...");
+            let classMap = this.classMap;
+            let classNames = Object.keys(classMap);
+            let len = classNames.length;
+            let modifiedOnly = this.options.modifiedOnly;
 
-        // loops through all class names from the classMap
-        for (; i < len; i++) {
-            let className = classNames[i],
-                classObj = classMap[className],
-                // the prepared object is the one that has been created by
-                // `createSrcFileMap` and will be processed in `decorateClass`
-                prepared = classMap[className].prepared,
-                apiTree = this.getApiTree(className),
-                isModified = classMap[className].modified,
-                modified = !modifiedOnly || (modifiedOnly && isModified);
+            // loops through all class names from the classMap
+            for (let i = 0; i < len; i++) {
+                let className = classNames[i],
+                    classObj = classMap[className],
+                    // the prepared object is the one that has been created by
+                    // `createSrcFileMap` and will be processed in `decorateClass`
+                    prepared = classMap[className].prepared,
+                    apiTree = this.getApiTree(className),
+                    isModified = classMap[className].modified,
+                    modified = !modifiedOnly || (modifiedOnly && isModified);
 
-            if (modified) {
-                this.decorateClass(className);
+                if (modified) {
+                    this.decorateClass(className);
+                }
+
+                // the class could be marked as skip=true if it's not something we wish to
+                // process after running it through decorateClass.  i.e. an enums class with
+                // no properties is empty so is skipped
+                if (classObj.skip || (modifiedOnly && !modified)) {
+                    delete classMap[className];
+                } else {
+                    this.addToApiTree(className, prepared.cls.clsSpecIcon, apiTree);
+                }
             }
-
-            // the class could be marked as skip=true if it's not something we wish to
-            // process after running it through decorateClass.  i.e. an enums class with
-            // no properties is empty so is skipped
-            if (classObj.skip || (modifiedOnly && !modified)) {
-                delete classMap[className];
-            } else {
-                this.addToApiTree(className, prepared.cls.clsSpecIcon, apiTree);
-            }
-        }
+            console.log("processApiFiles: Completed.");
+            resolve(); 
+        });
     }
 
     /**
@@ -1042,17 +1037,18 @@ class SourceApi extends Base {
      * @return {Object} Promise
      */
     outputApiFiles() {
-        //this.log(`Begin 'SourceApi.outputApiFiles'`, 'info');
-        let classMap = this.classMap,
-            classNames = Object.keys(classMap),
-            i = 0,
-            len = classNames.length,
-            outputs = [];
+        this.log(`Begin 'SourceApi.outputApiFiles'`, 'info');
+        let classMap = this.classMap;
+        let classNames = Object.keys(classMap);
+        let len = classNames.length;
+        let outputs = [];
 
-        Fs.ensureDirSync(this.apiDir);
+        if (!Fs.existsSync(this.apiDir)) {
+            Fs.ensureDirSync(this.apiDir);
+        }
 
         // loops through all class names from the classMap
-        for (; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             let className = classNames[i],
                 // the prepared object is the one that has been created by
                 // `createSrcFileMap` and will be processed in `decorateClass`
@@ -1700,7 +1696,7 @@ class SourceApi extends Base {
      * combining multiple search results together.
      */
     getApiSearch() {
-        //this.log(`Begin 'SourceApi.getApiSearch'`, 'info');
+        this.log(`Begin 'SourceApi.getApiSearch'`, 'info');
         let map = this.classMap,
             classNames = Object.keys(map),
             i = 0,

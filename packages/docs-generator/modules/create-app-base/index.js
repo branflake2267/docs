@@ -57,6 +57,7 @@ class AppBase extends SourceGuides {
      * each toolkit - if applicable)
      */
     doRunApi() {
+        var me = this;
         return new Promise((resolve, reject) => {
             console.log(`doRunApi: Start 'AppBase.doRunApi'...`);
 
@@ -67,17 +68,19 @@ class AppBase extends SourceGuides {
     
             if (!hasApi) {
                 console.log("doRunApi: Skip running api... hasApi=" + hasApi);
-                resolve();
-                return;
+                return Promise.resolve();
             }
     
             // Build the doxi files for api docs
-            toolkitList.forEach(toolkit => {
-                this.options.toolkit = toolkit;
-                this.prepareApiSource();
-            });
-
-            resolve();
+            return toolkitList.reduce((promise, toolkit) => {
+                return promise.then(() => {
+                    me.options.toolkit = toolkit;
+                    console.log("---------------->>>>>");
+                    console.log("---------------->>>>>");
+                    console.log("doRunApi: toolkit=" + toolkit);
+                    return this.prepareApiSource();
+                });
+            }, Promise.resolve());
         });
     }
 

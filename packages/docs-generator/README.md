@@ -1,20 +1,30 @@
 # Sencha Docs Generator CLI
-This application glues the api docs and guides together into a web site. 
+This application glues the [Doxi](https://github.com/sencha/doxi) api docs and markdown guides together into a web site. 
 
-## CLI
+## Getting Started
 
-* This npm package installs the `sencha-docs-generator` cli binary. 
+### Prep
+Login to the npm.sencha.com. 
 
-### CLI Help
+* Login by running: `npm login --registry=https://npm.sencha.com --scope=@sencha`
 
-* Run `sencha-docs-generator -h` to console log the arg options. 
+### Install
+Start by installing the system process `sencha-docs-generator`.
+
+* Install using: `install -g @sencha/sencha-docs-generator`
+
+### Running
+Running can be done in the terminal or command prompt. 
+
+* Run `sencha-docs-generator -h`
+
 
 ## Development
 
 ### NPM Login
 This login is used to fetch the dependencies from the [internal repository](https://sencha.myget.org/feed/internal/package/npm/@sencha/docs-generator), such as Sencha CMD. 
 
-* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
+* Run `npm login --registry=https://npm.sencha.com --scope=@sencha`
 
 ### Dependencies
 Builds are dependent on these packages. 

@@ -1,6 +1,11 @@
 # Sencha Docs Site Generator
 The Sencha docs site generator takes guides and api documentation and makes a site. 
 
+## TODO
+
+* TODO [Transfer the JsDuck content to wiki here](https://github.com/senchalabs/jsduck/wiki)
+
+
 ## Reference
 
 ### Writing Guides

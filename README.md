@@ -1,6 +1,17 @@
 # Sencha Docs Site Generator
 The Sencha docs site generator takes guides and api documentation and makes a site. 
 
+## Reference
+
+### Writing Guides
+
+* [Writing Guides with Markdown](https://github.com/sencha/docs/wiki)
+
+### Writing API Docs
+
+* [Writing API Docs for Doxi](https://github.com/sencha/docs/wiki) 
+
+
 ## Getting Started
 Try out the example build configuration.
 

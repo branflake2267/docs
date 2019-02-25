@@ -4,7 +4,7 @@
 
 Before any contributions can be done, we need you to sign a CLA. 
 
-## Patches & Enhancments
+## Patches & Enhancements
 Have you found something that you would like to fix. 
 
 1. Fork the repo

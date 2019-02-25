@@ -26,7 +26,6 @@ Check out what the docs generator does for Sencha.
 | [custom-gramophone](./packages/custom-gramophone)        | Repackaged module                       |
 | [custom-marked](./packages/custom-marked)                | Repackaged module                       |
 
-* TODO upgrade - upgrade to the production modules. 
 * TODO DocsApp - Upgrade to use NPM module and Ext JS modern tooling. 
 * TODO custom packages - Move off of the custom packages. 
 

@@ -1,6 +1,11 @@
 # Sencha Docs Generator CLI
 This application glues the [Doxi](https://github.com/sencha/doxi) api docs and markdown guides together into a web site. 
 
+## TODO
+
+* TODO finish the config reference
+* TODO finish the doxi docs reference
+
 ## Getting Started
 
 ### Prep

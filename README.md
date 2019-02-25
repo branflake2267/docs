@@ -3,8 +3,8 @@ The Sencha docs site generator takes guides and api documentation and makes a si
 
 The docs site generator uses Doxi Api Docs formatting. 
 
-The guides platform allows you to save making redudndant data across version. 
-And it uses simple markdown to render the html. 
+The guides platform allows you to save time and elliminates multiple versions of the same content across your api versions. 
+It also uses simple markdown to render the html. 
 Which makes writing docs quick and easy. 
 
 ## TODO

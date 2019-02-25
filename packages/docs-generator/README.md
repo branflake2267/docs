@@ -65,4 +65,4 @@ Instead of running `npm install` run `npm link`. If you do use `npm link`, run i
 
 ## Config Reference
 
-* [Config Reference](https://github.com/sencha/docs/wiki/Config-Reference)
+* [Config Reference](https://github.com/sencha/docs/wiki/Config-Reference) - Generator Config Reference

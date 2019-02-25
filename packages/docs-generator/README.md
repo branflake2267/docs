@@ -4,7 +4,7 @@ This application glues the [Doxi](https://github.com/sencha/doxi) api docs and m
 ## Getting Started
 
 ### Prep
-Login to the npm.sencha.com. 
+Login to the NPM repository.
 
 * [Sign up](https://www.sencha.com/products/extjs/communityedition/) for Ext JS CE to get NPM credentials.
 * Login to NPM by running: `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`

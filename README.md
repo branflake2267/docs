@@ -1,6 +1,12 @@
 # Sencha Docs Site Generator
 The Sencha docs site generator takes guides and api documentation and makes a site. 
 
+The docs site generator uses Doxi Api Docs formatting. 
+
+The guides platform allows you to save making redudndant data across version. 
+And it uses simple markdown to render the html. 
+Which makes writing docs quick and easy. 
+
 ## TODO
 
 * TODO [Transfer the JsDuck content to wiki here](https://github.com/senchalabs/jsduck/wiki)

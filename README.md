@@ -3,7 +3,7 @@ The Sencha docs site generator takes guides and api documentation and makes a si
 
 ## Get Started
 
-* [Example Build Configuration](./build-config-example) - Try out the example build configuration.
+* [Example Build Configuration](./packages/build-config-example) - Try out the example build configuration.
 
 ## Demo
 
@@ -29,7 +29,7 @@ The Sencha docs site generator takes guides and api documentation and makes a si
 
 ## License
 
-* TODO
+* [Apache 2.0](./LICENSE.md)
 
 ## Contributors
 

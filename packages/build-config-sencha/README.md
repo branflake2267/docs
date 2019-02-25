@@ -26,7 +26,7 @@ This is what the build server will do.
 ### 2. NPM Login
 Login into the [internal repository](https://sencha.myget.org/feed/internal/package/npm/@sencha/docs-generator). 
 
-* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
+* Run `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`
 
 ### 3. Install
 Start by building the node library.

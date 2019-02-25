@@ -2,7 +2,7 @@
 
 ## Sign the CLA
 
-Before any contributions can be done, we need you to sign a CLA. 
+Before any contributions can be done, we need you to [sign a CLA](https://goo.gl/forms/XGj5PlhNUc9suiQE3). 
 
 ## Patches & Enhancements
 Have you found something that you would like to fix. 

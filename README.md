@@ -26,7 +26,7 @@ Check out what the docs generator does for Sencha.
 
 ## Requirements
 
-* (*)nix System only. Windows systems will come later.
+* (*)nix System only. Windows systems will come later. (TODO fix joining paths)
 
 
 ## Repo Manifest

@@ -1,9 +1,19 @@
 # Contributor Instructions
 
-## Patches are welcome
+## Sign the CLA
 
-## Goals
+Before any contributions can be done, we need you to sign a CLA. 
 
-## Non-Goals
+## Patches & Enhancments
+Have you found something that you would like to fix. 
 
-## Pull Requests
+1. Fork the repo
+2. Make your modification
+3. Submit your patch by pulling against the master. 
+4. Wait for a repo admin to review. 
+5. Possibly make modifications
+6. Repeat #4 after modifications
+7. Repo admin may merge your request. 
+
+## Communication
+Please ask us questions, we want to help. 

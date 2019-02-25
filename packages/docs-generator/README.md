@@ -7,12 +7,12 @@ This application glues the [Doxi](https://github.com/sencha/doxi) api docs and m
 Login to the NPM repository.
 
 * [Sign up](https://www.sencha.com/products/extjs/communityedition/) for Ext JS CE to get NPM credentials.
-* Login to NPM by running: `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`
+* Run `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`
 
 ### Install
 Start by installing the system process `sencha-docs-generator`.
 
-* Install using: `install -g @sencha/sencha-docs-generator`
+* Run `install -g @sencha/sencha-docs-generator`
 
 ### CLI Execution
 Running can be done in the terminal or command prompt. 

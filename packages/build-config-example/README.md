@@ -22,7 +22,7 @@ Build the docs by running the node command in the bash script.
 ### NPM Login
 Login into the internal repository. 
 
-* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
+* Run `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`
 
 ### Install
 Start by building the node library.

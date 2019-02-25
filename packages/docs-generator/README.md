@@ -3,8 +3,8 @@ This application glues the [Doxi](https://github.com/sencha/doxi) api docs and m
 
 ## TODO
 
-* TODO finish the config reference
-* TODO finish the doxi docs reference
+* TODO finish docs diff fix. 
+* TODO finish the config reference.
 
 ## Getting Started
 

@@ -40,12 +40,7 @@ Check out what the docs generator does for Sencha.
 
 ## Reference
 
-### Writing Guides
-
 * [Writing Guides with Markdown](https://github.com/sencha/docs/wiki)
-
-### Writing API Docs
-
 * [Writing API Docs for Doxi](https://github.com/sencha/docs/wiki) 
 
 

@@ -2,7 +2,7 @@
 
 ## Sign the CLA
 
-Before any contributions can be done, we need you to [sign a CLA](https://goo.gl/forms/XGj5PlhNUc9suiQE3). 
+Before any contributions can be done, we need you to [sign the Sencha CLA](https://goo.gl/forms/XGj5PlhNUc9suiQE3). If you've already signed it for another repistory, your good to go. 
 
 ## Patches & Enhancements
 Have you found something that you would like to fix. 

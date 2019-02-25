@@ -1,4 +1,4 @@
-# Docs Generator Example Config
+# Docs Generator Example App Config
 This is a basic example of how to generate a docs site.
 
 

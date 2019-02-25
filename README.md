@@ -1,9 +1,10 @@
 # Sencha Docs Site Generator
 The Sencha docs site generator takes guides and api documentation and makes a site. 
 
-## Get Started
+## Getting Started
+Try out the example build configuration.
 
-* [Example Build Configuration](./packages/build-config-example) - Try out the example build configuration.
+* Navigate to: [Example Build Configuration](./packages/build-config-example)
 
 ## Demo
 

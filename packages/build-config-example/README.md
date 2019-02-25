@@ -44,3 +44,7 @@ And it can be deleted.
 * `./build/output` - html output
 * `./build/repos` - cloned git repos
 
+## Build Configuration
+The build configuration is controlled by the docs site generator config. 
+
+* Config location: [configs/docs_project_config.json](./configs/docs_project_config.json)

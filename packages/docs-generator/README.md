@@ -13,7 +13,7 @@ Start by installing the system process `sencha-docs-generator`.
 
 * Install using: `install -g @sencha/sencha-docs-generator`
 
-### Running
+### CLI Execution
 Running can be done in the terminal or command prompt. 
 
 * Run `sencha-docs-generator -h`

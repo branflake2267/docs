@@ -33,11 +33,11 @@ Start by installing the docs site generator system process.
 The build output will go into the generated `./build` directory. 
 
 * Run: `sh ./build-example-myproduct-15.sh`
-* Open: [build output](./build/output)
+* Then open: `./build/output`, it contains the generated site. 
 
 ### Build Directory Manifest
 Everything in the build directory is generated. 
-It can be deleted.
+And it can be deleted.
 
 * `./build/_temp` - doxi manifest
 * `./build/input` - doxi output

@@ -24,8 +24,9 @@ The Sencha docs site generator takes guides and api documentation and makes a si
 | [custom-gramophone](./packages/custom-gramophone)        | Repackaged module (* TODO upgrade)      |
 | [custom-marked](./packages/custom-marked)                | Repackaged module (* TODO upgrade)      |
 
-* Note: (TODO upgrade) - upgrade to the production modules. 
+* Note: TODO upgrade - upgrade to the production modules. 
 * Note: TODO DocsApp - Upgrade to use NPM module and Ext JS modern tooling. 
+* Note: TODO custom packages - Move off of the custom packages. 
 
 ## License
 
@@ -34,10 +35,4 @@ The Sencha docs site generator takes guides and api documentation and makes a si
 ## Contributors
 
 * Contributors read the [instructions here](./CONTRIBUTOR.md).
-
-
-
- 
- 
-
 

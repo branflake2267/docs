@@ -49,7 +49,6 @@ The build configuration is controlled by the docs site generator config.
 
 * Config location: [configs/docs_project_config.json](./configs/docs_project_config.json)
 
-
 ## Config Reference
 
 * [Config Reference](https://github.com/sencha/docs/wiki/Config-Reference) - Generator Config Reference

@@ -33,7 +33,7 @@ Check out what the docs generator does for Sencha.
 
 | Package                                                  | Description                             |
 |----------------------------------------------------------|-----------------------------------------|
-| [@sencha/docs-generator](./packages/docs-generator)      | Sencha docs site generator CLI process. |
+| [@sencha/docs-generator](./packages/docs-generator)      | Sencha docs site generator CLI app.     |
 | [build-config-example](./packages/build-config-example)  | Example config demo.                    |
 | [build-config-sencha](./packages/build-config-sencha)    | Sencah docs site config.                |
 | [DocsApp](./pakcages/DocsApp)                            | The JS logic used on the site.          |

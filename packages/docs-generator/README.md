@@ -10,7 +10,7 @@ Login to the NPM repository.
 * Run `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`
 
 ### Install
-Start by installing the system process `sencha-docs-generator`.
+Install the system process `sencha-docs-generator`.
 
 * Run `install -g @sencha/sencha-docs-generator`
 

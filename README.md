@@ -15,7 +15,7 @@ The Sencha docs site generator takes guides and api documentation and makes a si
 ## Getting Started
 Try out the example build configuration.
 
-* Navigate to the: [Example Build Configuration](./packages/build-config-example).
+* Navigate to the basic example: [Example Build Configuration](./packages/build-config-example).
 
 ## Demo
 Check out what the docs generator does for Sencha.

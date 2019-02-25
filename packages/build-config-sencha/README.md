@@ -70,3 +70,7 @@ It can be deleted.
 * `./build/output` - html output
 * `./build/repos` - cloned git repos
 
+
+## Config Reference
+
+* [Config Reference](https://github.com/sencha/docs/wiki/Config-Reference) - Generator Config Reference

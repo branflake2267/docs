@@ -12,6 +12,7 @@ Which makes writing docs quick and easy.
 * TODO finish docs diff fix in PR, this changes `-version=6.7` to `-productVersion=6.7`
 * TODO [Transfer the JsDuck content to wiki here](https://github.com/senchalabs/jsduck/wiki)
 * TODO add release notes. 
+* TODO add third party attributions
 
 
 ## Getting Started

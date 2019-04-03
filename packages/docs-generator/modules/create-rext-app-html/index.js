@@ -655,7 +655,7 @@ class OpenToolingHtmlApp extends HtmlApp {
             if (prepared.configs) {
                 prepared.configs.name    = 'configs';
             }
-            if (prepared.properties) {1
+            if (prepared.properties) {
                 prepared.properties.name = 'properties';
             }
 

@@ -44,11 +44,15 @@ class AppBase extends SourceGuides {
      * Default entry point for this module
      */
     run() {
+        console.log("appBase.run() Started.")
         return this.doRunApi()
             .then(this.outputApiSearch.bind(this))
             .then(this.processGuides.bind(this))
             .then(this.outputProductMenu.bind(this))
             .then(this.outputOfflineDocs.bind(this))
+            .then(() => {
+                console.log("appBase.run() Completed.")
+            })
             .catch(this.error.bind(this));
     }
 
@@ -57,30 +61,30 @@ class AppBase extends SourceGuides {
      * each toolkit - if applicable)
      */
     doRunApi() {
-        var me = this;
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             console.log(`doRunApi: Start 'AppBase.doRunApi'...`);
 
-            let options = this.options;
             let meta = this.options.prodVerMeta;
             let hasApi = meta.hasApi;
-            let toolkitList = Utils.from(meta.hasToolkits ? (options.toolkit || meta.toolkits) : false);
-    
+            let toolkitList = Utils.from(meta.hasToolkits ? (this.options.toolkit || meta.toolkits) : false);
+
+
+
+            
             if (!hasApi) {
-                console.log("doRunApi: Skip running api... hasApi=" + hasApi);
-                return Promise.resolve();
+                console.log("doRunApi: SKIP: running api... hasApi=" + hasApi);
+                return resolve();
             }
     
-            // Build the doxi files for api docs
-            return toolkitList.reduce((promise, toolkit) => {
-                return promise.then(() => {
-                    me.options.toolkit = toolkit;
-                    console.log("---------------->>>>>");
-                    console.log("---------------->>>>>");
-                    console.log("doRunApi: toolkit=" + toolkit);
-                    return this.prepareApiSource();
-                });
-            }, Promise.resolve());
+            // Build the doxi files for api docs promises
+            toolkitList.forEach(async (toolkit) => {
+                console.log("doRunApi: process toolkit=" + toolkit);
+                await this.prepareApiSource(toolkit);
+            });
+
+            console.log("doRunApi: Completed.");
+
+            return Promise.resolve();
         });
     }
 
@@ -333,8 +337,8 @@ class AppBase extends SourceGuides {
             prep = Promise.resolve();
         }
 
-        //prep.then(this.outputOfflineDocs.bind(this))
-        //.catch(this.error.bind(this));
+        // TODO remove? 
+        //prep.then(this.outputOfflineDocs.bind(this)).catch(this.error.bind(this));
 
         return prep
             .then(this.doOutputOfflineDocs.bind(this))

@@ -40,9 +40,10 @@ class HtmlApp extends AppBase {
             .then(this.outputProductHomePage.bind(this))
             .then(this.outputMainLandingPage.bind(this))
             .then(this.outputMainRedirectToVersionPage.bind(this))
+            .then(() => {
+                this.log("create-app-html: Completed.");
+            })
             .catch(this.error.bind(this));
-
-        this.log("create-app-html: Finished");
     }
 
     /**
@@ -616,7 +617,7 @@ class HtmlApp extends AppBase {
      */
     outputProductHomePage() {
         return new Promise((resolve, reject) => {
-            let { options } = this,
+            var { options } = this,
                 root = options._myRoot,
                 prodTplPath = Path.join(root, 'configs', 'product-home', options.product),
                 { version } = options,
@@ -624,21 +625,23 @@ class HtmlApp extends AppBase {
                 homePath = Path.join(prodTplPath, homeConfig),
                 dest = Path.join(this.outputProductDir, 'index.html');
 
-            let data = Fs.readJsonSync(homePath);
+            var data = Fs.readJsonSync(homePath);
 
             data.contentPartial = '_product-home';
 
             this.processHomeDataObject(data);
 
-            let html = this.mainTemplate(data);
+            var html = this.mainTemplate(data);
 
             Fs.writeFile(dest, html, 'utf8', (err) => {
-                if (err) reject(err);
+                if (err) {
+                    console.log("outputProductHomePage: ERROR: could not write file dest=" + dest);
+                    reject(err);
+                }
 
                 resolve();
             });
-        })
-            .catch(this.error.bind(this));
+        }).catch(this.error.bind(this));
     }
 
     /**

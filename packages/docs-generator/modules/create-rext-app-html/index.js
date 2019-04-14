@@ -653,7 +653,7 @@ class OpenToolingHtmlApp extends HtmlApp {
 
             // set the config and property names to match what React users would expect
             if (prepared.configs) {
-                prepared.configs.name    = 'props';
+                prepared.configs.name    = 'properties';
             }
             if (prepared.properties) {
                 prepared.properties.name = 'fields';

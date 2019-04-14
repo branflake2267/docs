@@ -26,7 +26,7 @@ This is what the build server will do.
 ### 2. NPM Login
 Login into the [internal repository](https://sencha.myget.org/feed/internal/package/npm/@sencha/docs-generator). 
 
-* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
+* Run `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`
 
 ### 3. Install
 Start by building the node library.
@@ -69,4 +69,14 @@ It can be deleted.
 * `./build/input` - doxi output
 * `./build/output` - html output
 * `./build/repos` - cloned git repos
+
+
+## Build Configuration
+The build configuration is controlled by the docs site generator config. 
+
+* Config location: [configs/docs_project_config.json](./configs/docs_project_config.json)
+
+## Config Reference
+
+* [Config Reference](https://github.com/sencha/docs/wiki/Config-Reference) - Generator Config Reference
 

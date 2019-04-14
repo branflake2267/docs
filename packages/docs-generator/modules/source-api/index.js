@@ -100,11 +100,18 @@ class SourceApi extends Base {
         let meta = this.options.prodVerMeta;
         let toolkitList = Utils.from(meta.hasToolkits ? (options.toolkit || meta.toolkits) : false);
 
-        // Process all the toolkits for the framework.
-        toolkitList.forEach(toolkit => {
-            this.options.toolkit = toolkit;
-            this.prepareApiSource();
+        // Build the doxi files for api docs
+        let promises = [];
+        toolkitList.forEach((toolkit) => {
+            promises.push(this.prepareApiSource(toolkit));
         });
+
+        return Promise.all(promises)
+        .then(() => {
+            console.log("SourceApi.run: Completed.");
+            Promise.resolve();
+        })
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -241,10 +248,9 @@ class SourceApi extends Base {
 
         for (let i = 0; i < len; i++) {
             const { path } = sources[i];
-            let j = 0;
             const jLen = path.length;
 
-            for (; j < jLen; j++) {
+            for (let j = 0; j < jLen; j++) {
                 path[j] = Utils.format(path[j], {
                     apiSourceDir: this.apiSourceDir,
                     _myRoot: options._myRoot
@@ -453,8 +459,10 @@ class SourceApi extends Base {
      * class files to create the output used by the docs post processors (HTML docs or
      * Ext app).  Is called by the {@link #run} method.
      */
-    prepareApiSource() {
-        this.log('\tStarting SourceApi.prepareApiSource...');
+    prepareApiSource(toolkit) {
+        this.options.toolkit = toolkit;
+
+        this.log('prepareApiSource: Starting SourceApi.prepareApiSource... toolkit=' + this.options.toolkit);
 
         // Create the file Doxi will use to parse the SDK
         this.createTempDoxiFile();
@@ -464,6 +472,9 @@ class SourceApi extends Base {
 
         return this.doRunDoxi()
         .then(this.readDoxiFiles.bind(this))
+        .then(() => {
+            console.log("prepareApiSource: Completed! toolkit=" + this.options.toolkit);
+        })
         .catch(this.error.bind(this));
     }
 
@@ -482,7 +493,7 @@ class SourceApi extends Base {
      * Runs doxi against the SDK to output class files used by the docs post processors (HTML docs or Ext app)
      */
     doRunDoxi(buildName) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let { options } = this;
             let { doxiQuiet, forceDoxi } = options;
             let triggerDoxi = this.triggerDoxi;
@@ -520,7 +531,8 @@ class SourceApi extends Base {
 
             this.log('RunDoxi: Completed: doxiBuild=' + doxiBuild);
             resolve();
-        });
+        })
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -592,10 +604,10 @@ class SourceApi extends Base {
 
         for (let i=0; i < len; i++) {
             ops.push(
-                new Promise((resolve, reject) => {
+                new Promise((resolve) => {
                     let path = Path.join(inputDir, files[i]);
 
-                    console.log("createSrcFileMap: " + i + " ops: path=" + path);
+                    console.log("createSrcFileMap: " + i + " path=" + path);
 
                     const cls = Fs.readJsonSync(path, { throws: false });
 
@@ -603,7 +615,7 @@ class SourceApi extends Base {
                     let { ignore } = clsObj;
 
                     if (ignore === true) {
-                        console.log("\t\t ops: ignore");
+                        console.log("createSrcFileMap: IGNORE. path=" + path);
                         resolve();
                     } else {
                         let type = clsObj.$type,     // the class type (class or enum)
@@ -630,8 +642,7 @@ class SourceApi extends Base {
                             });
                         }
 
-                        // add all source files for this class to the master source file
-                        // map
+                        // add all source files for this class to the master source file map
                         this.mapSrcFiles(srcFiles || []);
 
                         // if the current file is a "class" file then cache the contents
@@ -969,7 +980,6 @@ class SourceApi extends Base {
      * Entry method to process the doxi files into files for use by the HTML docs or Ext app
      */
     readDoxiFiles() {
-        let dt = new Date();
         return this.createSrcFileMap()
             .then(() => {
                 if (!Fs.existsSync(this.apiDir)) {
@@ -980,11 +990,9 @@ class SourceApi extends Base {
             .then(this.getApiSearch.bind(this))
             .then(this.outputApiFiles.bind(this))
             .then(this.outputApiTree.bind(this))
+            .then(this.createSrcFiles.bind(this))
             .then(() => {
-                this.log(new Date() - dt);
-                return this.createSrcFiles();
-            }).then(() => {
-                this.log("readDoxiFiles: Finished");
+                this.log("readDoxiFiles: Finished. toolkit=" + this.options.toolkit);
             })
             .catch(this.error.bind(this));
     }
@@ -1899,7 +1907,7 @@ class SourceApi extends Base {
      * @return {Object} Promise
      */
     outputApiSearch() {
-        this.log("outputApiSearch started");
+        console.log("outputApiSearch: Started...");
 
         let apiSearch = this.apiSearchIndex,
             output = JSON.stringify(apiSearch),
@@ -1911,11 +1919,12 @@ class SourceApi extends Base {
         output = `DocsApp.apiSearch =${output};`;
 
         return new Promise((resolve, reject) => {
-            this.log(`Begin 'SourceApi.outputApiSearch'`, 'info');
             Fs.writeFile(Path.join(this.jsDir, `${product}-${version}-apiSearch.js`), output, 'utf8', err => {
                 if (err) {
+                    console.log("outputApiSearch: ERROR. ", err);
                     reject(err);
                 } else {
+                    console.log("outputApiSearch: Completed");
                     resolve();
                 }
             });
@@ -2037,10 +2046,10 @@ class SourceApi extends Base {
                 if (err) {
                     reject(err);
                 }
-                resolve();
             });
 
             this.log(`SourceApi.outputApiTree: Finished`);
+            resolve();
         });
     }
 
@@ -2050,51 +2059,48 @@ class SourceApi extends Base {
      */
     createSrcFiles() {
         if (this.options.skipSourceFiles === true) {
-            this.log('Skipping creating source HTML files: --skipSourceFiles');
+            this.log('Skipping creating source HTML files: --skipSourceFiles toolkit=' + this.options.toolkit);
             return Promise.resolve();
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.log('Start SourceApi.createSrcFiles');
 
-            let i = 0,
-                map = this.srcFileMap,
-                keys = Object.keys(map),
-                len = keys.length,
-                inputDir = this.getDoxiInputDir();
+            var map = this.srcFileMap;
+            var keys = Object.keys(map);
+            var len = keys.length;
+            var inputDir = this.getDoxiInputDir();
 
-            for (; i < len; i++) {
+            for (var i = 0; i < len; i++) {
                 keys[i] = {
                     path: keys[i],
                     inputDir: inputDir
                 };
             }
 
-            // time stamp and log status
-            //this.openStatus('Create source HTML files');
-
             _.remove(keys, item => {
                 return item.path.includes('/enums/');
             });
 
+            console.log("createSrcFiles: keys.length=" + keys.length);
+
             // loop over the source file paths and HTML-ify them
             this.processQueue(keys, __dirname + '/htmlify.js', (items) => {
+                console.log("createSrcFiles: processQueue: Started... items.len=" + items.length);
+
                 // once all files have been HTML-ified add anchor tags with the name of each
                 // class-member so that you can link to that place in the docs
-                let anchored = this.addAnchorsAll(items);
-
-                // conclude 'Create source HTML files' status
+                var anchored = this.addAnchorsAll(items);
 
                 // output all of the source HTML files
                 this.outputSrcFiles(anchored)
-                    .then(resolve)
+                    .then(() => {
+                        console.log("createSrcFiles: processQueue: outputSrcFiles: Completed. toolkit=" + this.options.toolkit);
+                        resolve();
+                    })
                     .catch(this.error.bind(this));
-
-                this.log("\t processQueue: finished");
             });
         });
-
-        this.log("Finished SourceApi.createSrcFiles.");
     }
 
     /**
@@ -2110,55 +2116,72 @@ class SourceApi extends Base {
         return new Promise((resolve, reject) => {
             this.log(`Start SourceApi.outputSrcFiles`);
 
-            let i = 0,
-                len = contents.length,
-                map = this.srcFileMap,
-                options = this.options,
-                // TODO = this should be set globally probably in the base constructor
-                //outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
-                outDir = Path.join(this.apiDir, 'src');
+            var len = contents.length;
+            var map = this.srcFileMap;
+            var options = this.options;
+            // TODO = this should be set globally probably in the base constructor
+            //outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
+            var outDir = Path.join(this.apiDir, 'src');
 
             // create the output directory
             Fs.ensureDir(outDir, () => {
                 // time stamp and lot status
                 //me.openStatus('Write out source HTML files')
 
-                let writes = [];
+                var writes = [];
 
                 // loop through all items to be output
-                for (; i < len; i++) {
+                for (let i=0; i < len; i++) {
                     writes.push(new Promise((resolve, reject) => {
-                        let content = contents[i],
-                            filename = map[content.path].filename, // the filename to write out
-                            // the data object to apply to the source HTML handlebars template
-                            data = {
-                                content: content.html,
-                                name: filename,
-                                title: options.prodVerMeta.prodObj.title,
-                                version: options.version,
-                                // TODO figure out what numVer is in production today
-                                numVer: '...',
-                                // TODO this should be output more thoughtfully than just using options.toolkit
-                                meta: options.toolkit,
-                                moduleName: this.moduleName,
-                                cssPath: Path.relative(outDir, this.cssDir)
-                            };
+                        var content = contents[i];
+                        var path = map[content.path];
 
-                        // write out the current source file
-                        Fs.writeFile(`${outDir}/${filename}.html`, this.srcTemplate(data), 'utf8', (err) => {
-                            //if (err) this.log('outputSrcFiles error');
-                            if (err) reject(err);
+                        // TODO why would this be null? Second time? 
+                        if (path != null) {
+                            var filename = path.filename; 
 
-                            delete map[content.path];
-                            resolve();
-                        });
+                            // TODO why would this be null?
+                            if (filename == null) {
+                                console.console("outputSrcFiles: ERROR: filename-=null content.path=" + content.path);
+                            } else {
+                                // the data object to apply to the source HTML handlebars template
+                                var data = {
+                                        content: content.html,
+                                        name: filename,
+                                        title: options.prodVerMeta.prodObj.title,
+                                        version: options.version,
+                                        // TODO figure out what numVer is in production today
+                                        numVer: '...',
+                                        // TODO this should be output more thoughtfully than just using options.toolkit
+                                        meta: options.toolkit,
+                                        moduleName: this.moduleName,
+                                        cssPath: Path.relative(outDir, this.cssDir)
+                                    };
+
+                                console.log(`outputSrcFiles: write file=${outDir}/${filename}.html`)
+
+                                // write out the current source file
+                                Fs.writeFile(`${outDir}/${filename}.html`, this.srcTemplate(data), 'utf8', (err) => {
+                                    if (err) {
+                                        this.log("outputSrcFiles: ERROR, can't write file.")
+                                        reject(err);
+                                    }
+
+                                    delete map[content.path];
+                                    resolve();
+                                });
+                            }
+                        } else {
+                            console.log("outputSrcFiles: path == null SKIPPING content.path=" + content.path);
+                        }
                     }));
                 }
 
-                this.log(`Finished SourceApi.outputSrcFiles.`);
-
                 return Promise.all(writes)
-                    .then(resolve)
+                    .then(() => {
+                        this.log(`outputSrcFiles: Completed.`);        
+                        resolve();
+                    })
                     .catch(this.error.bind(this));
             });
         });
@@ -2228,9 +2251,13 @@ class SourceApi extends Base {
      */
     catalogAnchors(srcPath) {
         //this.log(`Begin 'SourceApi.addAnchors'`, 'log');
-        let src = this.srcFileMap[srcPath],
-            clsSrc = src.input,   // the doxi output for this class at srcPath
-            clsFiles = clsSrc && clsSrc.files; // array of all source files
+        let src = this.srcFileMap[srcPath];
+        if (!src) {
+            console.log("catalogAnchors: Error: srcPath=" + srcPath);
+            return;
+        }
+        let clsSrc = src.input;   // the doxi output for this class at srcPath
+        let clsFiles = clsSrc && clsSrc.files; // array of all source files
 
         // reference / create the anchorLocs map on the `src` object for use in the
         // `addAnchors` method
@@ -2333,8 +2360,12 @@ class SourceApi extends Base {
      * anchor tags
      */
     addAnchors(html, srcPath) {
-        let src = this.srcFileMap[srcPath],
-            anchorLocs = src.anchorLocs;
+        let src = this.srcFileMap[srcPath];
+        if (!src) {
+            console.log("addAnchors: Error: srcPath=" + srcPath);
+            return;
+        }
+        let anchorLocs = src.anchorLocs;
 
         if (anchorLocs) {
             // split out all each line in the HTML

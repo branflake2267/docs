@@ -1,20 +1,36 @@
 # Sencha Docs Generator CLI
-This application glues the api docs and guides together into a web site. 
+This application glues the [Doxi](https://github.com/sencha/doxi) api docs and markdown guides together into a web site. 
 
-## CLI
+## TODO
 
-* This npm package installs the `sencha-docs-generator` cli binary. 
+* TODO finish docs diff fix. 
+* TODO finish the config reference.
 
-### CLI Help
+## Getting Started
 
-* Run `sencha-docs-generator -h` to console log the arg options. 
+### Prep
+Login to the NPM repository.
+
+* [Sign up](https://www.sencha.com/products/extjs/communityedition/) for Ext JS CE to get NPM credentials.
+* Run `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`
+
+### Install
+Install the system process `sencha-docs-generator`.
+
+* Run `install -g @sencha/sencha-docs-generator`
+
+### CLI Execution
+Running can be done in the terminal or command prompt. 
+
+* Run `sencha-docs-generator -h`
+
 
 ## Development
 
 ### NPM Login
 This login is used to fetch the dependencies from the [internal repository](https://sencha.myget.org/feed/internal/package/npm/@sencha/docs-generator), such as Sencha CMD. 
 
-* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
+* Run `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`
 
 ### Dependencies
 Builds are dependent on these packages. 
@@ -47,3 +63,6 @@ Instead of running `npm install` run `npm link`. If you do use `npm link`, run i
 * [TeamCity Build](https://teamcity.sencha.com/viewType.html?buildTypeId=EngineeringOperations_NodeModules_SenchaDocsGenerator)
 
 
+## Config Reference
+
+* [Config Reference](https://github.com/sencha/docs/wiki/Config-Reference) - Generator Config Reference

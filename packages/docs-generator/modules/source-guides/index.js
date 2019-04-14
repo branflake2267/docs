@@ -147,7 +147,7 @@ class SourceGuides extends SourceApi {
             try {
                 let compare = CompareVersions(dirs[i], version);
                 if (compare <= 0) {
-                    this.log("\t ---->>> guideDirPaths add dir=" + dirs[i] + " compare to version=" + version + " compare=" + compare);
+                    this.log("guideDirPaths add dir=" + dirs[i] + " compare to version=" + version + " compare=" + compare);
                     paths.push(Path.join(me.guidePath, dirs[i]));
                 }
             } catch (e) {
@@ -166,19 +166,19 @@ class SourceGuides extends SourceApi {
      * @return {Object} The hash of guide > guide paths
      */
     get guidePathMap() {
-        let map = this._guidePathMap;
+        var map = this._guidePathMap;
 
         if (!map) {
             map = this._guidePathMap = {};
 
             // get all applicable guide directories
-            let verDirs = this.guideDirPaths,
+            var verDirs = this.guideDirPaths,
                 i = 0,
                 len = verDirs.length;
 
             // loop through the directories and add the files to the guide map
             for (; i < len; i++) {
-                let dir = verDirs[i];
+                var dir = verDirs[i];
 
                 this.mapFiles(dir, '', dir, map);
             }
@@ -380,7 +380,7 @@ class SourceGuides extends SourceApi {
             }
 
         })
-            .catch(this.error.bind(this));
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -881,7 +881,7 @@ class SourceGuides extends SourceApi {
      */
     readGuide(node) {
         return new Promise((resolve, reject) => {
-            let path = this.guidePathMap[node.id],
+            var path = this.guidePathMap[node.id],
                 name = node.name,
                 slug = node.slug;
 

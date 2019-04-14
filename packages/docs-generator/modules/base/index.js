@@ -1202,11 +1202,10 @@ class Base {
         const { options } = this,
               { _myRoot } = options;
 
-        this.log('\n\n');
-        this.log('Sync Remote: Starting...');
-        this.log('Sync Remote: apiProduct=' + this.apiProduct);
-        this.log('Sync Remote: sourceDir=' + sourceDir);
-        this.log('Sync Remote: options.syncRemote=' + options.syncRemote);
+        this.log('sncRemote: Starting...');
+        this.log('syncRemote: apiProduct=' + this.apiProduct);
+        this.log('syncRemote: sourceDir=' + sourceDir);
+        this.log('syncRemote: options.syncRemote=' + options.syncRemote);
         
         if (options.syncRemote === false) {
             this.triggerDoxi[product] = true;
@@ -1214,7 +1213,7 @@ class Base {
         }
         // don't attempt to sync folders other than those in "build/repos"
         if (!sourceDir.includes('build/repos')) {
-            this.log('Sync Remote: ------>>>>>> SKIP b/c !(build/repos)');
+            this.log('syncRemote: ------>>>>>> SKIP b/c !(build/repos)');
             return;
         }
 
@@ -1272,11 +1271,11 @@ class Base {
         // if the api source directory doesn't exist (may or may not be within the
         // repos directory) then create the repos directory and clone the remote
         allDirs.forEach((dir, i, arr) => {
-            this.log('Sync Remote: Processing git clone: ' + i + ' of ' + allDirs.length +  '. dir=' + dir);
+            this.log('syncRemote: Processing git clone: ' + i + ' of ' + allDirs.length +  '. dir=' + dir);
             
             if (!Fs.existsSync(dir)) {
                 // create the repos directory if it doesn't exist already
-                this.log('Sync Remote: CreateReposOutputDir dir=' + dir);
+                this.log('syncRemote: CreateReposOutputDir dir=' + dir);
                 // TODO change dir to reposPath?
                 var destinationPath = this.createReposOutputDir(dir);
 
@@ -1284,13 +1283,13 @@ class Base {
                 Shell.cd(destinationPath);
 
                 var pwd = Shell.pwd();
-                this.log("Sync Remote: pwd=" + pwd);
+                this.log("syncRemote: pwd=" + pwd);
 
                 let repo   = allRepos[i],
                     remote = allRemotes[i];
 
-                this.log('Sync Remote: Cloning repo=' + repo);
-                this.log('Sync Remote: Cloning remote=' + remote);
+                this.log('syncRemote: Cloning repo=' + repo);
+                this.log('syncRemote: Cloning remote=' + remote);
                 Shell.exec(`git clone ${remote}`);
             }
         });
@@ -1316,7 +1315,7 @@ class Base {
 
             this.triggerDoxi[product] = true;
             Shell.cd(path);
-            this.log('Sync Remote: Exiting.... API source directory has modified / un-tracked changes - skipping remote sync', 'info');
+            this.log('syncRemote: Exiting.... API source directory has modified / un-tracked changes - skipping remote sync', 'info');
             return;
         }
 
@@ -1324,13 +1323,13 @@ class Base {
 
         if (options.syncRemote !== false) {
             // check out the branch used for this product / version
-            this.log(`Sync Remote:  Checkout out main branch: ${branch}`);
+            this.log(`syncRemote: Checkout out main branch: ${branch}`);
             Shell.exec(`git checkout ${branch}`);
 
             // if there is a tag to use for this version then switch off of head over to the
             // tagged branch
             if (tag) {
-                this.log(`Sync Remote: Sync Remote: Checking out tagged version: ${tag}`);
+                this.log(`syncRemote: Sync Remote: Checking out tagged version: ${tag}`);
                 Shell.exec(`git checkout -b ${wToolkit} ${tag}`);
             }
         }
@@ -1346,8 +1345,7 @@ class Base {
         // get back to the original working directory
         Shell.cd(path);
 
-        this.log('Sync Remote: Ending...');
-        this.log('\n\n');        
+        this.log('syncRemote: Ending...\n');   
     }
 
     /**
@@ -1367,7 +1365,7 @@ class Base {
             Fs.mkdirsSync(d);
         }
 
-        this.log('\tcreateReposOutputDir: Create dir=' + d);
+        this.log('createReposOutputDir: Create dir=' + d);
 
         return d;
     }

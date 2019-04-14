@@ -1,59 +1,54 @@
-# Docs Generator Example Config
+# Docs Generator Example App Config
 This is a basic example of how to generate a docs site.
 
 
 ## Project Resources
 This project includes one product called `myproduct` and guides for it on github. 
 
-### Guides
-The example guides. 
+### Project Guides
+The example guides for this project. 
 
 * [docs-example-guides](https://github.com/sencha/docs-example-guides) git repo.
 
-### Source
-The example source configuration.
+### Project Source
+The example source configuration for this project.
 
 * [docs-example-project](https://github.com/sencha/docs-example-project) git repo.
 
 
-## Build
+## Getting Started
 Build the docs by running the node command in the bash script.  
 
-### NPM Login
-Login into the internal repository. 
+### Login
+Login into the community repository. 
 
-* Run `npm login --registry=https://sencha.myget.org/F/internal/npm/ --scope=@sencha`
+* Run `npm login --registry=https://sencha.myget.org/F/community/npm/ --scope=@sencha`
 
 ### Install
-Start by building the node library.
+Start by installing the docs site generator system process. 
 
-* Run `npm install` then use `npx sencha-docs-generator [args]`
-* Or run `npm install -g @sencha/docs-generator` to install for global cli use. Then use `sencha-docs-generator [args]`
+* Run: `npm install -g @sencha/docs-generator`
 
-### Debug CLI
-Instead of running `npm install -g @sencha/docs-generator`, run `npm link ../docs-generator`.
-
-* Run `npm link ../docs-generator/`
-* Then run `sh ./build*.sh`
-* Or run VSCode launcher. 
-
-### Debug VSCode
-Using VSCode will allow you to set breakpoints, inspect stacks, variables and console output with ease. 
-
-* Run `npm link ../docs-generator/` - This will link the binary. (Run from the ./build-config-example directory.)
-* Run the VSCode launcher, to debug one of the sencha doc configs. 
-
-### Build Output
+### Build
 The build output will go into the generated `./build` directory. 
 
-* Open [build output](./build/output)
+* Run: `sh ./build-example-myproduct-15.sh`
+* Then open: `./build/output`, it contains the generated site. 
 
 ### Build Directory Manifest
 Everything in the build directory is generated. 
-It can be deleted.
+And it can be deleted.
 
 * `./build/_temp` - doxi manifest
 * `./build/input` - doxi output
 * `./build/output` - html output
 * `./build/repos` - cloned git repos
 
+## Build Configuration
+The build configuration is controlled by the docs site generator config. 
+
+* Config location: [configs/docs_project_config.json](./configs/docs_project_config.json)
+
+## Config Reference
+
+* [Config Reference](https://github.com/sencha/docs/wiki/Config-Reference) - Generator Config Reference

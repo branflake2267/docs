@@ -289,7 +289,8 @@ class HtmlApp extends AppBase {
         let uglifyCode = {};
         for (let i=0; i < codeFilesArr.length; i++) {
             var file = Path.basename(codeFilesArr[i]);
-            uglifyCode[file] = Fs.readFileSync(codeFilesArr[i], "utf8");
+            // Use number to make the key unqiue, otherwise the overrides get removed
+            uglifyCode[file + '' + i] = Fs.readFileSync(codeFilesArr[i], "utf8");
         }
 
         let uglifyOptions = {

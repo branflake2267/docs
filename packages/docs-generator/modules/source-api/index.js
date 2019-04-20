@@ -109,7 +109,6 @@ class SourceApi extends Base {
         return Promise.all(promises)
         .then(() => {
             console.log("SourceApi.run: Completed.");
-            Promise.resolve();
         })
         .catch(this.error.bind(this));
     }

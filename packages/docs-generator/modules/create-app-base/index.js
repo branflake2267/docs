@@ -53,7 +53,9 @@ class AppBase extends SourceGuides {
             .then(() => {
                 console.log("appBase.run() Completed.")
             })
-            .catch(this.error.bind(this));
+            .catch((e) => {
+                console.log("error=", e);
+            }); // this.error.bind(this)
     }
 
     /**
@@ -68,9 +70,9 @@ class AppBase extends SourceGuides {
             let hasApi = meta.hasApi;
             let toolkitList = Utils.from(meta.hasToolkits ? (this.options.toolkit || meta.toolkits) : false);
 
+            // debugging
+            //toolkitList = ['modern'];
 
-
-            
             if (!hasApi) {
                 console.log("doRunApi: SKIP: running api... hasApi=" + hasApi);
                 return resolve();
@@ -84,7 +86,7 @@ class AppBase extends SourceGuides {
 
             console.log("doRunApi: Completed.");
 
-            return Promise.resolve();
+            resolve();
         });
     }
 
@@ -486,8 +488,10 @@ class AppBase extends SourceGuides {
             version: version,
             toolkit: toolkit,
             theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
-        },
-            keyedRe = /(\w+)=([\[\w.,\]]+)/i,
+        };
+        
+        // fiddle @example: match properties like "packages=[ext-react,charts]"
+        var keyedRe = /(\w+)=([\[\w\-.,\]]+)/i,
             frameworkMap = {
                 extjs: 'Ext JS',
                 ext: 'Ext JS',
@@ -512,7 +516,22 @@ class AppBase extends SourceGuides {
                             let key = optionMatch[1];
                             let val = optionMatch[2];
                             let mapped = frameworkMap[val];
-                            fidMeta[key] = (key === 'framework' && mapped) ? mapped : (val.includes('[') ? _.words(val) : val);
+                            var values = "";
+                            if (val.includes('[')) { // like [ext-react,charts], extract the array to values
+                                val = val.replace('[',''); 
+                                val = val.replace(']', '');
+                                if (val.includes(',')) {
+                                    // has multiple values
+                                    values = val.split(',');
+                                } else {
+                                    // only one value
+                                    values = val;
+                                }
+                                
+                            } else {
+                                values = val;
+                            }
+                            fidMeta[key] = (key === 'framework' && mapped) ? mapped : values;
                         }
                     });
                 } else if (meta.includes('-')) {

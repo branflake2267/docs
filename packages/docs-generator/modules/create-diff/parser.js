@@ -45,15 +45,14 @@ class DiffParser extends DiffBase {
      * {@link diffTargetVersion}
      * @return {Object} The doxi file containing all processed files from the API
      */
-    get targetFile () {
+     getTargetFile() {
         let targetFile = this.options.diffTargetPath;
         
         if (!targetFile) {
             this.diffProcess = 'target';
-            // create the file Doxi will use to parse the SDK
+            // Create the file Doxi will use to parse the SDK
             this.createTempDoxiFile();
             
-            // creates the doxi flat file if not already created
             this.doRunDoxi(this.doxiBuildCommand);
             
             targetFile = this.flatDoxiFilePath;
@@ -65,7 +64,7 @@ class DiffParser extends DiffBase {
         
         return contents;
     }
-    
+
     /**
      * The contents of the doxi file used by the parser logic when comparing to the 
      * target product / version.  The `--diffSourcePath` will be used if supplied.  Else, 
@@ -73,7 +72,7 @@ class DiffParser extends DiffBase {
      * {@link diffSourceVersion}
      * @return {Object} The doxi file containing all processed files from the API
      */
-    get sourceFile () {
+    getSourceFile () {
         let sourceFile = this.options.diffSourcePath;
         
         if (!sourceFile) {
@@ -100,7 +99,7 @@ class DiffParser extends DiffBase {
      * @return {Object} The diff object outlining all of the differences between the two 
      * products / versions
      */
-    get diff () {
+    processDiff () {
         const { options, diffOutputDir, diffFileName } = this,
               { forceDiff } = options,
               path = Path.join(diffOutputDir, diffFileName) + '.json';
@@ -110,9 +109,13 @@ class DiffParser extends DiffBase {
         if (Fs.existsSync(path) && forceDiff !== true) {
             return Fs.readJsonSync(path);
         } else {
-            const { options }   = this,
-                  targetClasses = this.targetFile.global.items,
-                  sourceClasses = this.sourceFile.global.items,
+            const { options }   = this;
+
+            var targetFileJson = this.getTargetFile();
+            let sourceFileJson = this.getSourceFile();
+
+            let targetClasses = targetFileJson.global.items;
+            let sourceClasses = sourceFileJson.global.items,
                   {
                       diffTargetProduct,
                       diffTargetVersion,

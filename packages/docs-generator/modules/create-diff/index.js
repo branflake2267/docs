@@ -9,6 +9,8 @@ const Parser    = require('./parser.js'),
       Fs        = require('fs-extra'),
       Chalk     = require('chalk');
 
+const path = require('path');
+
 /**
  * Outputs the diff of a product and two differing versions 
  * (or even two different products)
@@ -25,6 +27,11 @@ class Diff extends Parser {
      * toolkits) and outputs the diffs as a markdown file as well as a json file
      */
     run () {
+        let buildDir = path.join(this.options._myRoot, "build")
+        if (!Fs.existsSync(buildDir)) {
+            Fs.ensureDirSync(buildDir);
+        }
+
         this.options.forceDiff = true;
         this.doRun('outputMarkdown');
         this.doRun('outputRaw');
@@ -84,9 +91,9 @@ class Diff extends Parser {
         }
 
         // create the diff for all eligible toolkits
-        toolkitList.forEach(toolkit => {
+        toolkitList.forEach((toolkit) => {
             this.options.toolkit = toolkit;
-            const { diff } = this;
+            var diff = this.processDiff();
             this[outputMethod](diff);
             diffObj[toolkit] = diff;
             delete this.options.toolkit;
@@ -104,8 +111,9 @@ class Diff extends Parser {
         const { apiProduct, diffableVersions } = this;
         
         diffableVersions.forEach(version => {
-            const toolkits    = this.getToolkits(apiProduct, version),
-                  toolkitList = toolkits || [ 'api' ];
+            const toolkits = this.getToolkits(apiProduct, version);
+            // TODO api-[version] doxi config for the frameworks do not exist, remove api here
+            const toolkitList = toolkits || [ 'api' ];
             
             this.options.version = version;
             
@@ -123,7 +131,6 @@ class Diff extends Parser {
      */
     outputRaw (diff) {
         const path = this.getDiffOutputPath('json');
-        
         Fs.outputJsonSync(path, diff);
     }
     

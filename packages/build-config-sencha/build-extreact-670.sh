@@ -11,7 +11,7 @@ CONFIG_DIR="$(pwd)"
 npx sencha-docs-generator  create-rext-app-html \
 --buildConfigsDir=$CONFIG_DIR \
 --product=extreact \
---version=6.7.0 \
+--productVersion=6.7.0 \
 --syncRemote=true \
 --forceDoxi=true \
 --log \

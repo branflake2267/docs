@@ -28,22 +28,24 @@
  * Output the class resource object (? this might just be templated here and executed by the create-app modules)
  */
 
-const Base       = require('../base'),
-      Path       = require('path'),
-      Utils      = require('../shared/Utils'),
-      Handlebars = require('handlebars'),
-      Fs         = require('fs-extra'),
-      Shell      = require('shelljs'),
-      //path       = require('path'),
-      // TODO - is Mkdirp being used in any module or it's all Fs-extra now?  Might be able to remove its require statements if it can be purged via Fs-extra
-      //Mkdirp     = require('mkdirp'),
-      _          = require('lodash'),
-      WidgetRe   = /widget\./g,
-      sencha           = require('@sencha/cmd'),
-      { spawn } = require('child_process');
+const Base = require('../base'),
+    Path = require('path'),
+    Utils = require('../shared/Utils'),
+    Handlebars = require('handlebars'),
+    Fs = require('fs-extra'),
+    Shell = require('shelljs'),
+    //path       = require('path'),
+    // TODO - is Mkdirp being used in any module or it's all Fs-extra now?  Might be able to remove its require statements if it can be purged via Fs-extra
+    //Mkdirp     = require('mkdirp'),
+    _ = require('lodash'),
+    WidgetRe = /widget\./g,
+    sencha = require('@sencha/cmd'),
+    { spawnSync } = require('child_process');
+
+    var process = require('process');
 
 class SourceApi extends Base {
-    constructor (options) {
+    constructor(options) {
         super(options);
         //this.log(`Create 'SourceApi' instance`, 'info');
 
@@ -84,16 +86,31 @@ class SourceApi extends Base {
      * ancestor modules
      * @return {String[]} This module's file name preceded by its ancestors'.
      */
-    get parentChain () {
+    get parentChain() {
         return super.parentChain.concat([Path.parse(__dirname).base]);
     }
 
     /**
-     * Default entry point for this module
+     * Default entry point for this module. Run the target source-api.
      */
-    run () {
-        //this.log(`Begin 'SourceApi run'`, 'info');
-        this.prepareApiSource();
+    run() {
+        this.log(`Begin 'SourceApi run'`, 'info');
+        
+        let options = this.options;
+        let meta = this.options.prodVerMeta;
+        let toolkitList = Utils.from(meta.hasToolkits ? (options.toolkit || meta.toolkits) : false);
+
+        // Build the doxi files for api docs
+        let promises = [];
+        toolkitList.forEach((toolkit) => {
+            promises.push(this.prepareApiSource(toolkit));
+        });
+
+        return Promise.all(promises)
+        .then(() => {
+            console.log("SourceApi.run: Completed.");
+        })
+        .catch(this.error.bind(this));
     }
 
     /**
@@ -101,10 +118,11 @@ class SourceApi extends Base {
      * the product, version, and toolkit currently being acted on.
      * @return {String} The doxi config file name
      */
-    get doxiCfgFileName () {
-        const { options, apiProduct : product, apiVersion : version } = this,
-              toolkit = this.getToolkits(product, version) ? options.toolkit : 'config',
-              path    = this.getDoxiCfgPath();
+    get doxiCfgFileName() {
+        let { options, apiProduct: product, apiVersion: version } = this;
+        let toolkits = this.getToolkits(product, version);
+        let toolkit = toolkits ? options.toolkit : 'config';
+        let path = this.getDoxiCfgPath();
 
         this.log('\tgetDoxiCfgPath path=' + path + ' versin=' + version);
 
@@ -125,23 +143,14 @@ class SourceApi extends Base {
      * directory
      * @return {String} The path to the doxi config files
      */
-    getDoxiCfgPath (fromDir) {
+    getDoxiCfgPath(fromDir) {
         const dir = fromDir || __dirname;
-        
+
         return Path.resolve(
             dir,
             Path.join(
-                Path.relative(
-                    dir,
-                    this.options._myRoot
-                ),
-                Utils.format(
-                    this.options.parserConfigPath,
-                    {
-                        product: this.getProduct()
-                        //product : this.apiProduct
-                    }
-                )
+                Path.relative(dir, this.options._myRoot),
+                Utils.format(this.options.parserConfigPath,{ product: this.getProduct() })
             )
         );
     }
@@ -151,13 +160,11 @@ class SourceApi extends Base {
      * {@link #createTempDoxiFile} method)
      * @return {Object} The original doxi config
      */
-    get doxiCfg () {
-        return Fs.readJsonSync(
-            Path.join(
-                this.getDoxiCfgPath(),
-                this.doxiCfgFileName
-            )
-        );
+    get doxiCfg() {
+        let path = Path.join(this.getDoxiCfgPath(), this.doxiCfgFileName);
+        console.log("doxiCfg path=" + path);
+        let doxiCfgJson = Fs.readJsonSync(path);
+        return doxiCfgJson;
     }
 
     /**
@@ -165,13 +172,8 @@ class SourceApi extends Base {
      * {@link #createTempDoxiFile} method.
      * @return {Object} The doxi config object used by the docs processors
      */
-    get tempDoxiCfg () {
-        return Fs.readJsonSync(
-            Path.join(
-                this.tempDir,
-                'tempDoxiCfg.json'
-            )
-        );
+    get tempDoxiCfg() {
+        return Fs.readJsonSync(Path.join(this.tempDir, 'tempDoxiCfg.json'));
     }
 
     /**
@@ -179,11 +181,8 @@ class SourceApi extends Base {
      * for the docs processors
      * @return {String} The path to the temp directory
      */
-    get tempDir () {
-        return Path.join(
-            this.options._myRoot,
-            'build', "_temp"
-        );
+    get tempDir() {
+        return Path.join(this.options._myRoot,'build', "_temp");
     }
 
     /**
@@ -191,15 +190,12 @@ class SourceApi extends Base {
      * running doxi for all products / versions.  Used by {@link #getDoxiInputDir}
      * @return {String} The path to the directory of the doxi-processed files
      */
-    get rootApiInputDir () {
+    get rootApiInputDir() {
         let { options } = this;
 
-        return Path.join(
-            options._myRoot,
-            options.apiInputDir
-        );
+        return Path.join(options._myRoot, options.apiInputDir);
     }
-    
+
     /**
      * The full path of the doxi output files for the current product / version (/
      * toolkit potentially)
@@ -207,18 +203,18 @@ class SourceApi extends Base {
      * directory for
      * @return {String} The path to the doxi files for the current product / version
      */
-    getDoxiInputDir (buildType) {
+    getDoxiInputDir(buildType) {
         buildType = buildType || this.options.doxiBuild || 'combo-nosrc';
-        
-        let cfgDir       = this.getDoxiCfgPath(),
-            cfg          = this.tempDoxiCfg,
-            outputDir    = cfg.outputs[buildType].dir,
+
+        let cfgDir = this.getDoxiCfgPath(),
+            cfg = this.tempDoxiCfg,
+            outputDir = cfg.outputs[buildType].dir,
             relToDoxiCfg = Path.resolve(__dirname, cfgDir),
-            inputDir     = Path.resolve(relToDoxiCfg, outputDir);
+            inputDir = Path.resolve(relToDoxiCfg, outputDir);
 
         return inputDir;
     }
-    
+
     /**
      * Returns the input file name for the given `buildType`
      * 
@@ -229,9 +225,9 @@ class SourceApi extends Base {
      * the Doxi config file
      * @return {String} The input file generated by doxi
      */
-    getDoxiInputFile (buildType = this.options.doxiBuild) {
+    getDoxiInputFile(buildType = this.options.doxiBuild) {
         const cfg = this.tempDoxiCfg;
-            
+
         return cfg.outputs[buildType].file;
     }
 
@@ -241,34 +237,31 @@ class SourceApi extends Base {
      * paths are replaced with values supplied by the passed options (projectDefaults,
      * app.json, CLI)
      */
-    //createTempDoxiFile (product = this.apiProduct) {
-    createTempDoxiFile (product = this.getProduct()) {
-        //this.log(`Begin 'SourceApi.createTempDoxiFile'`, 'info');
-        const { options, doxiCfg : cfg } = this,
-              { doxiProcessLinks }       = options,
-              { sources, outputs }       = cfg,
-              len                        = sources.length,
-              apiInputDir                = this.rootApiInputDir;
-        let   i                          = 0;
+    createTempDoxiFile(product = this.getProduct()) {
+        this.log(`Begin 'SourceApi.createTempDoxiFile'`, 'info');
+        const { options, doxiCfg: cfg } = this;
+        const { doxiProcessLinks } = options;
+        const { sources, outputs } = cfg;
+        const len = sources.length;
+        const apiInputDir = this.rootApiInputDir;
 
-        for (; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             const { path } = sources[i];
-            let   j        = 0;
-            const jLen     = path.length;
+            const jLen = path.length;
 
-            for (; j < jLen; j++) {
+            for (let j = 0; j < jLen; j++) {
                 path[j] = Utils.format(path[j], {
-                    apiSourceDir : this.apiSourceDir,
-                    _myRoot      : options._myRoot
+                    apiSourceDir: this.apiSourceDir,
+                    _myRoot: options._myRoot
                 });
             }
         }
 
         const inputObj = {
-              apiInputDir : apiInputDir,
-              product     : product,
-              version     : this.apiVersion,
-              toolkit     : options.toolkit || ''
+            apiInputDir: apiInputDir,
+            product: product,
+            version: this.apiVersion,
+            toolkit: options.toolkit || ''
         };
 
         outputs['combo-nosrc'].dir = Utils.format(outputs['combo-nosrc'].dir, inputObj);
@@ -280,14 +273,12 @@ class SourceApi extends Base {
             outputs['all-classes-flatten'].links = doxiProcessLinks;
         }
 
-        Fs.ensureDirSync(this.tempDir);
-        Fs.writeJsonSync(
-            Path.join(
-                this.tempDir,
-                'tempDoxiCfg.json'
-            ),
-            cfg
-        );
+        if (!Fs.existsSync(this.tempDir)) {
+            Fs.ensureDirSync(this.tempDir);
+        }
+
+        Fs.writeJsonSync(Path.join(this.tempDir,'tempDoxiCfg.json'), cfg);
+        this.log(`End 'SourceApi.createTempDoxiFile'`, 'info');
     }
 
     /**
@@ -295,7 +286,7 @@ class SourceApi extends Base {
      * run of the docs processor) or empty
      * @return {Boolean} True if the folder is missing or empty
      */
-    get doxiInputFolderIsEmpty () {
+    get doxiInputFolderIsEmpty() {
         const dir = this.getDoxiInputDir();
 
         if (!Fs.existsSync(dir) || this.isEmpty(dir)) {
@@ -308,11 +299,11 @@ class SourceApi extends Base {
      * files.  By default the product's repo (if configured in the projectDefaults or
      * app.json) will be appended to the SDK source directory.
      */
-    get apiSourceDir () {
+    get apiSourceDir() {
         let { options } = this,
-              cfg = Object.assign({}, options, {
-                  repo : options.products[this.apiProduct].repo || null
-              });
+            cfg = Object.assign({}, options, {
+                repo: options.products[this.apiProduct].repo || null
+            });
 
         var p = Path.join(
             options._myRoot,
@@ -332,47 +323,47 @@ class SourceApi extends Base {
 
         return p;
     }
-    
+
     /**
      * Returns the product passed by the CLI build command
      * @return {String} The product to generate the API output for
      */
-    get apiProduct () {
+    get apiProduct() {
         const { options } = this;
 
         return this._apiProd = options.product;
     }
-    
+
     /**
      * Returns the version passed by the CLI build command or the `currentVersion` from
      * the config file if there was no version passed initially
      * @return {String} The version number for the current product
      */
-    get apiVersion () {
+    get apiVersion() {
         const { options } = this;
 
         return options.version || options.currentVersion;
     }
-    
+
     /**
      * Determines whether doxi should be run or can be skipped
      * @return {Boolean} Returns `true` if the doxi input folder is empty
      */
-    get doxiRequired () {
+    get doxiRequired() {
         return this.doxiInputFolderIsEmpty;
     }
-    
+
     /**
      * Returns the versions for the current product that are eligible to be diffed; all 
      * of the versions in the version menu minus the last one one the list and any 
      * versions in the build exceptions list.
      * @return {String[]} Array of eligible versions
      */
-    get diffableVersions () {
-        const { options, apiProduct }       = this,
-              { products, buildExceptions } = options,
-              { productMenu = [] }          = products[apiProduct];
-        
+    get diffableVersions() {
+        const { options, apiProduct } = this,
+            { products, buildExceptions } = options,
+            { productMenu = [] } = products[apiProduct];
+
         return _.differenceWith(
             productMenu,
             buildExceptions[apiProduct] || [],
@@ -388,7 +379,7 @@ class SourceApi extends Base {
      * override of this method to derive which tree to return;
      * @return {Array} The api tree
      */
-    getApiTree (className) {
+    getApiTree(className) {
         let apiTree = this.apiTrees[this.apiDirName];
 
         if (!apiTree) {
@@ -403,28 +394,28 @@ class SourceApi extends Base {
      * @param {Object} data Current data hash to be applied to the page template
      * @return {Object} Hash of common current page metadata
      */
-    getApiMetaData (data) {
+    getApiMetaData(data) {
         const meta = this.commonMetaData;
 
         if (data && data.cls) {
-            const { name }       = data.cls,
-                  { apiDirName } = this,
-                  docsRelativePath = Path.relative(
-                      this.apiDir,
-                      this.options.outputDir
-                  );
+            const { name } = data.cls,
+                { apiDirName } = this,
+                docsRelativePath = Path.relative(
+                    this.apiDir,
+                    this.options.outputDir
+                );
 
             Object.assign(meta, {
                 //navTreeName : 'API',
                 //navTreeName : apiDirName === 'api' ? 'API' : apiDirName,
-                navTreeName : apiDirName === 'api' ? 'API' : `API.${apiDirName}`,
-                myId        : name,
-                rootPath    : '../',
-                pageType    : 'api',
-                pageName    : name,
-                docsRootPath : `${docsRelativePath}/`
+                navTreeName: apiDirName === 'api' ? 'API' : `API.${apiDirName}`,
+                myId: name,
+                rootPath: '../',
+                pageType: 'api',
+                pageName: name,
+                docsRootPath: `${docsRelativePath}/`
             });
-            
+
             //this.log(`CONFIG: source-api: meta.navTreeName=${apiDirName}`);
         }
 
@@ -440,17 +431,17 @@ class SourceApi extends Base {
      * @param {Object} raw The raw doxi output (that has the source files array)
      * @return {String} The path to the source file for the passed class / member
      */
-    getSourceFilePath (obj, raw) {
+    getSourceFilePath(obj, raw) {
         let srcObj = obj.src,
-            files  = raw.files,
+            files = raw.files,
             srcFilePath;
 
         if (srcObj) {
             let target = srcObj.inheritdoc || srcObj.text || srcObj.name || srcObj.constructor;
 
             if (target && target.split) {
-                let srcArr  = target.split(','),
-                    srcIdx  = srcArr[0];
+                let srcArr = target.split(','),
+                    srcIdx = srcArr[0];
 
                 srcFilePath = files[srcIdx];
             } else {
@@ -467,81 +458,78 @@ class SourceApi extends Base {
      * class files to create the output used by the docs post processors (HTML docs or
      * Ext app).  Is called by the {@link #run} method.
      */
-    prepareApiSource () {
-        this.log('\tStarting SourceApi.prepareApiSource...');
-        // create the file Doxi will use to parse the SDK
+    prepareApiSource(toolkit) {
+        this.options.toolkit = toolkit;
+
+        this.log('prepareApiSource: Starting SourceApi.prepareApiSource... toolkit=' + this.options.toolkit);
+
+        // Create the file Doxi will use to parse the SDK
         this.createTempDoxiFile();
 
-        this.classMap   = {};
+        this.classMap = {};
         this.srcFileMap = {};
 
         return this.doRunDoxi()
-        .then(this.readDoxiFiles.bind(this));
+        .then(this.readDoxiFiles.bind(this))
+        .then(() => {
+            console.log("prepareApiSource: Completed! toolkit=" + this.options.toolkit);
+        })
+        .catch(this.error.bind(this));
     }
-    
+
     /**
      * Public method to run Doxi ad hoc
      */
-    runDoxi (buildName) {
+    runDoxi(buildName) {
         let force = this.options.forceDoxi;
-        
         this.options.forceDoxi = true;
         this.createTempDoxiFile();
-        this.doRunDoxi(buildName); // TODO now a promise 
-        // TODO readDoxiFiles?
-
+        this.doRunDoxi(buildName); 
         this.options.forceDoxi = force;
     }
 
     /**
-     * Runs doxi against the SDK to output class files used by the docs post processors
-     * (HTML docs or Ext app)
+     * Runs doxi against the SDK to output class files used by the docs post processors (HTML docs or Ext app)
      */
-    doRunDoxi (buildName) {
-        return new Promise((resolve, reject) => {
-           
-            this.log('Starting doRunDoxi buildName=' + buildName);
+    doRunDoxi(buildName) {
+        return new Promise((resolve) => {
+            let { options } = this;
+            let { doxiQuiet, forceDoxi } = options;
+            let triggerDoxi = this.triggerDoxi;
+            let doxiBuild = buildName || options.doxiBuild || 'combo-nosrc';
+            let doxiRequired = this.doxiRequired;
+            let runQuiet = doxiQuiet === true ? '--quiet' : '';
 
-            let { options }       = this,
-                { doxiQuiet, forceDoxi } = options,
-                triggerDoxi   = this.triggerDoxi,
-                doxiBuild     = buildName || options.doxiBuild || 'combo-nosrc',
-                doxiRequired  = this.doxiRequired,
-                runQuiet      = doxiQuiet === true ? '--quiet' : '';
-
+            this.log('RunDoxi: Begin doRunDoxi buildName=' + buildName);
             this.log('\tdoRunDoxi: apiProduct=' + this.apiProduct + ' apisourceDir=' + this.apiSourceDir);
 
-            this.syncRemote(
-                this.apiProduct,
-                this.apiSourceDir
-            );
+            this.syncRemote(this.apiProduct, this.apiSourceDir);
 
+            // Skip processing doxi
             if (forceDoxi === false) {
-                resolve();
                 return;
             }
 
-            // if the `forceDoxi` options is passed or the doxi input directory is empty /
-            // missing then run doxi
+            // If the `forceDoxi` options is passed or the doxi input directory is empty / missing then run doxi
             if (forceDoxi || doxiRequired || (triggerDoxi && triggerDoxi[this.apiProduct])) {
-                // empty the folder (or remove the input file) first before running doxi
+                // Empty the folder (or remove the input file) first before running doxi
                 if (doxiBuild === 'combo-nosrc') {
-                    Fs.emptyDirSync(this.getDoxiInputDir());
+                    if (Fs.existsSync(this.getDoxiInputDir())) {
+                        Fs.emptyDirSync(this.getDoxiInputDir());
+                    }
                 } else {
-                    const inputFile = Path.join(
-                        this.getDoxiInputDir(doxiBuild),
-                        this.getDoxiInputFile(doxiBuild)
-                    );
-                    
-                    Fs.removeSync(inputFile)
+                    const inputFile = Path.join(this.getDoxiInputDir(doxiBuild), this.getDoxiInputFile(doxiBuild));
+                    if (Fs.existsSync(inputFile)) {
+                        Fs.rmdirSync(inputFile)
+                    }
                 }
 
-                this.generateDoxiConfig(this.tempDir, doxiBuild, runQuiet)
-                .then(() => resolve());
-
-            } else {
-                resolve();
+                // Wait for the generation to complete
+                this.generateDoxiConfig(this.tempDir, doxiBuild, runQuiet);
             } 
+
+            this.log('RunDoxi: Completed: doxiBuild=' + doxiBuild);
+            resolve();
         })
         .catch(this.error.bind(this));
     }
@@ -551,41 +539,26 @@ class SourceApi extends Base {
      * @param {String} tmpDir The directory to output the doxi config to. 
      * @param {*} doxiBuild The doxi build flag. 
      */
-    generateDoxiConfig (tmpDir, doxiBuild, runQuiet) {
+     generateDoxiConfig(tmpDir, doxiBuild, runQuiet) {
         console.log('generateDoxiConfig: Started...');
+        console.log('generateDoxiConfig: Starting CMD to build doxi...');
 
-        return new Promise((resolve, reject) => {
-            var tempDoxiCfgFile = Path.join(tmpDir, 'tempDoxiCfg.json');
+        var tempDoxiCfgFile = Path.join(tmpDir, 'tempDoxiCfg.json');
 
-            const senchaCmdProc = spawn(sencha, [
-                runQuiet,
-                'doxi', 
-                'build',
-                '-p', tempDoxiCfgFile,
-                doxiBuild
-            ]);
-    
-            // TODO std pipes are duplicated
-            // https://nodejs.org/api/child_process.html#child_process_child_process
-            senchaCmdProc.stdout.on('data', (data) => {
-                console.log(`CMD DOXI: ${data}`);
-            });
-            senchaCmdProc.stderr.on('data', (data) => {
-                console.error(`CMD DOXI: ERROR: ${data}`);
-            });
-    
-            senchaCmdProc.on('close', (code) => {
-                console.log(`CMD DOXI: Finished: Code=${code}`);
-                if (code > 0) {
-                    console.error("Could not complete the doxi config.");
-                    reject("Error processing the doxi config.");
-                } else {
-                    console.log("generateDoxiConfig: Finished.");
-                    resolve();
-                }
-            });
-        })
-        .catch(this.error.bind(this));
+        console.log("generateDoxiConfig: tempDoxiCfgFile=" + tempDoxiCfgFile);
+
+        const args = [
+            runQuiet,
+            'doxi',
+            'build',
+            '-p', tempDoxiCfgFile,
+            doxiBuild
+        ];
+
+        // TODO increase the verbosity of the output
+        spawnSync(sencha, args, { stdio: 'inherit' });
+
+        console.log('generateDoxiConfig: Completed CMD doxi output!');
     }
 
     /**
@@ -594,11 +567,11 @@ class SourceApi extends Base {
      * then be associated to the source file path.
      * @param {Array/String} files A file or array of files to be added to the map
      */
-    mapSrcFiles (files) {
+    mapSrcFiles(files) {
         //this.log(`Begin 'SourceApi.outputApiSearch'`, 'info');
         files = Utils.from(files);
 
-        let i   = 0,
+        let i = 0,
             len = files.length,
             map = this.srcFileMap;
 
@@ -616,129 +589,126 @@ class SourceApi extends Base {
      * Creates the source file map from the Doxi output
      * @return {Object} Promise
      */
-    createSrcFileMap () {
+    createSrcFileMap() {
         //this.log(`Begin 'SourceApi.createSrcFileMap'`, 'info');
-        let inputDir     = this.getDoxiInputDir(),
-            map          = this.srcFileMap,
-            classMap     = this.classMap,
-            files        = this.getFilteredFiles(Fs.readdirSync(inputDir)),
-            i            = 0,
-            len          = files.length,
-            ops          = [],
-            modifiedList = this.modifiedList;
+        let inputDir = this.getDoxiInputDir();
+        let map = this.srcFileMap;
+        let classMap = this.classMap;
+        let files = this.getFilteredFiles(Fs.readdirSync(inputDir));
+        let len = files.length;
+        let ops = [];
+        let modifiedList = this.modifiedList;
 
-        //this.log('Processing the parsed SDK source files', 'info');
+        this.log('Processing the parsed SDK source files', 'info');
 
-        for (; i < len; i++) {
+        for (let i=0; i < len; i++) {
             ops.push(
-                new Promise((resolve, reject) => {
+                new Promise((resolve) => {
                     let path = Path.join(inputDir, files[i]);
 
-                    Fs.readJson(path, (err, cls) => {
-                        if (err) {
-                            reject(err);
+                    console.log("createSrcFileMap: " + i + " path=" + path);
+
+                    const cls = Fs.readJsonSync(path, { throws: false });
+
+                    let [clsObj] = cls.global.items; // the class obj
+                    let { ignore } = clsObj;
+
+                    if (ignore === true) {
+                        console.log("createSrcFileMap: IGNORE. path=" + path);
+                        resolve();
+                    } else {
+                        let type = clsObj.$type,     // the class type (class or enum)
+                            validType = type === 'class' || type === 'enum',
+                            // the index in the files list where the class is primarily sourced
+                            srcIdx = (clsObj.src.text || clsObj.src.name).substring(0, 1),
+                            srcFiles = cls.files, // ths list of class source files
+                            primarySrc = srcFiles[0] || '',
+                            // the path of the class source from the SDK
+                            srcPath = srcFiles[srcIdx],
+                            hasOverride = clsObj.src.override,
+                            overrideIdx = hasOverride && hasOverride.split(',')[0],
+                            overridePath = overrideIdx && srcFiles[overrideIdx],
+                            { modifiedList } = this,
+                            modifiedMatch = [];
+
+                        // if there is are modified files in the SDK source then see if
+                        // the primary source file for the current class is in the
+                        // modified list.  If so, we'll mark the class as modified in the
+                        // classMap
+                        if (modifiedList && modifiedList.length) {
+                            modifiedMatch = _.filter(modifiedList, item => {
+                                return _.endsWith(primarySrc, item);
+                            });
                         }
 
-                        let [ clsObj ]       = cls.global.items, // the class obj
-                            { ignore }       = clsObj;
-                        
-                        if (ignore === true) {
-                            resolve();
-                        } else {
-                            let type             = clsObj.$type,     // the class type (class or enum)
-                                validType        = type === 'class' || type === 'enum',
-                                // the index in the files list where the class is primarily sourced
-                                srcIdx           = (clsObj.src.text || clsObj.src.name).substring(0, 1),
-                                srcFiles         = cls.files, // ths list of class source files
-                                primarySrc       = srcFiles[0] || '',
-                                // the path of the class source from the SDK
-                                srcPath          = srcFiles[srcIdx],
-                                hasOverride      = clsObj.src.override,
-                                overrideIdx      = hasOverride && hasOverride.split(',')[0],
-                                overridePath     = overrideIdx && srcFiles[overrideIdx],
-                                { modifiedList } = this,
-                                modifiedMatch    = [];
+                        // add all source files for this class to the master source file map
+                        this.mapSrcFiles(srcFiles || []);
 
-                            // if there is are modified files in the SDK source then see if
-                            // the primary source file for the current class is in the
-                            // modified list.  If so, we'll mark the class as modified in the
-                            // classMap
-                            if (modifiedList && modifiedList.length) {
-                                modifiedMatch = _.filter(modifiedList, item => {
-                                    return _.endsWith(primarySrc, item);
-                                });
+                        // if the current file is a "class" file then cache the contents
+                        // in the source file hash
+                        // Supports #addAnchors
+                        if (validType) {
+                            map[srcPath].input = cls;
+                            if (overridePath) {
+                                map[overridePath].input = cls;
                             }
-
-                            // add all source files for this class to the master source file
-                            // map
-                            this.mapSrcFiles(srcFiles || []);
-
-                            // if the current file is a "class" file then cache the contents
-                            // in the source file hash
-                            // Supports #addAnchors
-                            if (validType) {
-                                map[srcPath].input = cls;
-                                if (overridePath) {
-                                    map[overridePath].input = cls;
-                                }
-                            }
-
-                            if (validType) {
-                                let prepared = Object.assign({}, clsObj);
-                                delete prepared.items;
-
-                                classMap[clsObj.name] = {
-                                    raw      : cls,
-                                    prepared : prepared,
-                                    modified : !!modifiedMatch.length
-                                };
-                            }
-
-                            resolve();
                         }
-                    });
-                })
+
+                        if (validType) {
+                            let prepared = Object.assign({}, clsObj);
+                            delete prepared.items;
+
+                            classMap[clsObj.name] = {
+                                raw: cls,
+                                prepared: prepared,
+                                modified: !!modifiedMatch.length
+                            };
+                        }
+
+                        resolve();
+                    }
+                }).catch(this.error.bind(this))
             );
         }
         return Promise.all(ops)
-        .then(() => {
-            let i         = 0,
-                map       = this.srcFileMap,
-                keys      = Object.keys(map),
-                len       = keys.length,
-                names     = {},
-                inputDir = this.getDoxiInputDir();
+            .then(() => {
+                let map = this.srcFileMap;
+                let keys = Object.keys(map);
+                let len = keys.length;
+                let names = {};
+                let inputDir = this.getDoxiInputDir();
 
-            for (; i < len; i++) {
-                let path = keys[i],
-                    // returns 'file.ext' from the full path
-                    name = Path.parse(path).base;
+                for (let i = 0; i < len; i++) {
+                    let path = keys[i],
+                        // returns 'file.ext' from the full path
+                        name = Path.parse(path).base;
 
-                // rename the file name to be used in the source file output if it's been
-                // used already.  i.e. the first Button.js class will be Button.js and any
-                // additional Button classes will have a number appended.  The next would be
-                // Button.js-1 as the file name
-                if (names[name]) {
-                    let namesLength = names[name].length,
-                        rename = `${name}-${namesLength}`;
+                    // rename the file name to be used in the source file output if it's been
+                    // used already.  i.e. the first Button.js class will be Button.js and any
+                    // additional Button classes will have a number appended.  The next would be
+                    // Button.js-1 as the file name
+                    if (names[name]) {
+                        let namesLength = names[name].length,
+                            rename = `${name}-${namesLength}`;
 
-                    names[name].push(rename);
-                    name = rename;
-                } else {
-                    names[name] = [name];
+                        names[name].push(rename);
+                        name = rename;
+                    } else {
+                        names[name] = [name];
+                    }
+
+                    // once the file names are sorted for duplicates add the final file name to
+                    // the source file map
+                    map[keys[i]].filename = name;
+
+                    keys[i] = {
+                        path: keys[i],
+                        inputDir: inputDir
+                    };
                 }
-
-                // once the file names are sorted for duplicates add the final file name to
-                // the source file map
-                map[keys[i]].filename = name;
-
-                keys[i] = {
-                    path     : keys[i],
-                    inputDir : inputDir
-                };
-            }
-        })
-        .catch(this.error.bind(this));
+                console.log("createSrcFileMap: completed");
+            })
+            .catch(this.error.bind(this));
     }
 
     /**
@@ -752,11 +722,11 @@ class SourceApi extends Base {
      * @param {Object} apiTree The tree to add the classname / node to
      * @param {String} [idSuffix] An optional suffix to add to the node id
      */
-    addToApiTree (className, icon, apiTree, idSuffix='') {
+    addToApiTree(className, icon, apiTree, idSuffix = '') {
         //this.log(`Begin 'SourceApi.addToApiTree'`, 'info');
-        let nameArray   = className.split('.'),
+        let nameArray = className.split('.'),
             elementsLen = nameArray.length,
-            apiDirName  = this.apiDirName;
+            apiDirName = this.apiDirName;
 
         // process all parts of the class name (each string in the .-separated full class
         // name)
@@ -776,37 +746,37 @@ class SourceApi extends Base {
             // then this is a leaf.  Though, root namespace items like "Ext" and "ST"
             // will be later have a `children` property added as necessary and be
             // "unleafed"
-            let leaf     = (i === (elementsLen - 1)),
-                id       = this.getNodeId(className, i),
+            let leaf = (i === (elementsLen - 1)),
+                id = this.getNodeId(className, i),
                 // the default node configuration
                 baseNode = {
-                    name        : name,
-                    text        : name,
-                    navTreeName : 'api',
-                    id          : id,
-                    leaf        : leaf,
-                    idSuffix    : idSuffix
+                    name: name,
+                    text: name,
+                    navTreeName: 'api',
+                    id: id,
+                    leaf: leaf,
+                    idSuffix: idSuffix
                 };
 
-            let target        = this.getExistingNode(nodes, id),
+            let target = this.getExistingNode(nodes, id),
                 folderNodeCls = this.folderNodeCls,
-                mapped        = this.classMap[id],
-                isSingleton   = mapped && mapped.prepared.singleton,
-                access        = mapped && mapped.prepared.access,
+                mapped = this.classMap[id],
+                isSingleton = mapped && mapped.prepared.singleton,
+                access = mapped && mapped.prepared.access,
                 newNode;
 
             if (!leaf) {
-                newNode  = Object.assign(baseNode, {
-                    iconCls  : isSingleton ? icon : folderNodeCls,
-                    children : []
+                newNode = Object.assign(baseNode, {
+                    iconCls: isSingleton ? icon : folderNodeCls,
+                    children: []
                 });
                 // else we're processing a leaf node (note, this could be a node / namespace
                 // like "Ext" or "ST", but we account for that in the processing above)
             } else {
                 //create the leaf node configuration
                 newNode = Object.assign(baseNode, {
-                    access  : access || 'public',
-                    iconCls : `${icon}`
+                    access: access || 'public',
+                    iconCls: `${icon}`
                 });
             }
             if (this.classMap[id]) {
@@ -831,7 +801,7 @@ class SourceApi extends Base {
      * @param {Object[]} nodes An array of api tree nodes to sort
      * @return {Object[]} The sorted array
      */
-    sortNodes (nodes) {
+    sortNodes(nodes) {
         //this.log(`Begin 'SourceApi.sortNodes'`, 'info');
         return _.orderBy(nodes, [node => {
             return node.children ? 1 : 0;
@@ -845,13 +815,13 @@ class SourceApi extends Base {
      * of child nodes
      * @return {Object[]} The sorted tree
      */
-    sortTree (tree) {
+    sortTree(tree) {
         //this.log(`Begin 'SourceApi.sortTree'`, 'info');
         let len = tree.length,
-            i   = 0;
+            i = 0;
 
         for (; i < len; i++) {
-            let node     = tree[i],
+            let node = tree[i],
                 children = node.children;
 
             if (children) {
@@ -876,11 +846,11 @@ class SourceApi extends Base {
      * essentially the depth this node is in the tree when the ID is requested
      * @return {String} The id for the current node being processed
      */
-    getNodeId (className, currentIndex) {
+    getNodeId(className, currentIndex) {
         //this.log(`Begin 'SourceApi.getNodeId'`, 'log');
         let nameArr = className.split('.'),
-            id      = [],
-            i       = 0;
+            id = [],
+            i = 0;
 
         for (; i < currentIndex + 1; i++) {
             let element = nameArr[i];
@@ -898,10 +868,10 @@ class SourceApi extends Base {
      * @param {String} name The class name element (package name) to look for
      * @return {Object} The existing node or false if an existing node was not found
      */
-    getExistingNode (nodes, name) {
+    getExistingNode(nodes, name) {
         //this.log(`Begin 'SourceApi.getExistingNode'`, 'log');
-        let len    = nodes.length,
-            i      = 0,
+        let len = nodes.length,
+            i = 0,
             target = false;
 
         for (; i < len; i++) {
@@ -922,14 +892,14 @@ class SourceApi extends Base {
     /**
      * Logs out a list of classes with no examples in the description
      */
-    listMissingExamples () {
+    listMissingExamples() {
         this.bulkClassReportedUtil('doListMissingExamples');
     }
 
     /**
      * Logs out a list of component classes with no examples in the description
      */
-    listMissingComponentExamples () {
+    listMissingComponentExamples() {
         this.bulkClassReportedUtil('doListMissingExamples', true);
     }
 
@@ -939,8 +909,8 @@ class SourceApi extends Base {
      * @param {Boolean} [componentsOnly] True to list only component classes missing an
      * example
      */
-    doListMissingExamples (prepared, componentsOnly) {
-        let text        = prepared.text,
+    doListMissingExamples(prepared, componentsOnly) {
+        let text = prepared.text,
             extendsList = prepared.extends;
 
         if (text && !text.includes('@example')) {
@@ -954,7 +924,7 @@ class SourceApi extends Base {
      * Logs out a list of classes with no description or a description less than 80
      * characters
      */
-    listLackingDescription () {
+    listLackingDescription() {
         this.bulkClassReportedUtil('doListLackingDescription');
     }
 
@@ -962,7 +932,7 @@ class SourceApi extends Base {
      * See {@link #listLackingDescription}
      * @param {Object} prepared The prepared class object
      */
-    doListLackingDescription (prepared) {
+    doListLackingDescription(prepared) {
         let text = prepared.text;
 
         if (!text || (text && text.length < 80)) {
@@ -979,54 +949,51 @@ class SourceApi extends Base {
      * method
      * @return {Promise}
      */
-    bulkClassReportedUtil (methodName, param) {
-        this.classMap   = {};
+    bulkClassReportedUtil(methodName, param) {
+        this.classMap = {};
         this.srcFileMap = {};
 
         return this.createSrcFileMap()
-        .then(() => {
-            let classMap     = this.classMap,
-                classNames   = Object.keys(classMap),
-                i            = 0,
-                len          = classNames.length,
-                modifiedOnly = this.options.modifiedOnly;
+            .then(() => {
+                let classMap = this.classMap,
+                    classNames = Object.keys(classMap),
+                    i = 0,
+                    len = classNames.length,
+                    modifiedOnly = this.options.modifiedOnly;
 
-            // loops through all class names from the classMap
-            for (; i < len; i++) {
-                let className  = classNames[i],
-                    prepared   = classMap[className].prepared;
+                // loops through all class names from the classMap
+                for (; i < len; i++) {
+                    let className = classNames[i],
+                        prepared = classMap[className].prepared;
 
-                this[methodName](prepared, param);
-            }
-        })
-        .then(() => {
-            this.concludeBuild();
-        })
-        .catch(this.error.bind(this));
+                    this[methodName](prepared, param);
+                }
+            })
+            .then(() => {
+                this.concludeBuild();
+            })
+            .catch(this.error.bind(this));
     }
 
     /**
-     * Entry method to process the doxi files into files for use by the HTML docs or Ext
-     * app
+     * Entry method to process the doxi files into files for use by the HTML docs or Ext app
      */
-    readDoxiFiles () {
-        //this.log(`Begin 'SourceApi.readDoxiFiles'`, 'info');
-        let dt = new Date();
+    readDoxiFiles() {
         return this.createSrcFileMap()
-        .then(() => {
-            this.ensureDir(this.apiDir);
-        })
-        .then(this.processApiFiles.bind(this))
-        .then(this.getApiSearch.bind(this))
-        .then(this.outputApiFiles.bind(this))
-        .then(this.outputApiTree.bind(this))
-        .then(() => {
-            this.log(new Date() - dt);
-            return this.createSrcFiles();
-        })
-        .catch(this.error.bind(this));
-
-        this.log("readDoxiFiles: Finished");
+            .then(() => {
+                if (!Fs.existsSync(this.apiDir)) {
+                    Fs.ensureDirSync(this.apiDir);
+                }
+            })
+            .then(this.processApiFiles.bind(this))
+            .then(this.getApiSearch.bind(this))
+            .then(this.outputApiFiles.bind(this))
+            .then(this.outputApiTree.bind(this))
+            .then(this.createSrcFiles.bind(this))
+            .then(() => {
+                this.log("readDoxiFiles: Finished. toolkit=" + this.options.toolkit);
+            })
+            .catch(this.error.bind(this));
     }
 
     /**
@@ -1035,66 +1002,70 @@ class SourceApi extends Base {
      * @return {Object} A Promise that processes all class files and calls to
      * `outputApiFile`
      */
-    processApiFiles () {
-        //this.log(`Begin 'SourceApi.processApiFiles'`, 'info');
-        let classMap     = this.classMap,
-            classNames   = Object.keys(classMap),
-            i            = 0,
-            len          = classNames.length,
-            modifiedOnly = this.options.modifiedOnly;
+    processApiFiles() {
+        return new Promise((resolve, reject) => {
+            console.log("processApiFiles: Started...");
+            let classMap = this.classMap;
+            let classNames = Object.keys(classMap);
+            let len = classNames.length;
+            let modifiedOnly = this.options.modifiedOnly;
 
-        // loops through all class names from the classMap
-        for (; i < len; i++) {
-            let className  = classNames[i],
-                classObj   = classMap[className],
-                // the prepared object is the one that has been created by
-                // `createSrcFileMap` and will be processed in `decorateClass`
-                prepared   = classMap[className].prepared,
-                apiTree    = this.getApiTree(className),
-                isModified = classMap[className].modified,
-                modified   = !modifiedOnly || (modifiedOnly && isModified);
+            // loops through all class names from the classMap
+            for (let i = 0; i < len; i++) {
+                let className = classNames[i],
+                    classObj = classMap[className],
+                    // the prepared object is the one that has been created by
+                    // `createSrcFileMap` and will be processed in `decorateClass`
+                    prepared = classMap[className].prepared,
+                    apiTree = this.getApiTree(className),
+                    isModified = classMap[className].modified,
+                    modified = !modifiedOnly || (modifiedOnly && isModified);
 
-            if (modified) {
-                this.decorateClass(className);
+                if (modified) {
+                    this.decorateClass(className);
+                }
+
+                // the class could be marked as skip=true if it's not something we wish to
+                // process after running it through decorateClass.  i.e. an enums class with
+                // no properties is empty so is skipped
+                if (classObj.skip || (modifiedOnly && !modified)) {
+                    delete classMap[className];
+                } else {
+                    this.addToApiTree(className, prepared.cls.clsSpecIcon, apiTree);
+                }
             }
-
-            // the class could be marked as skip=true if it's not something we wish to
-            // process after running it through decorateClass.  i.e. an enums class with
-            // no properties is empty so is skipped
-            if (classObj.skip || (modifiedOnly && !modified)) {
-                delete classMap[className];
-            } else {
-                this.addToApiTree(className, prepared.cls.clsSpecIcon, apiTree);
-            }
-        }
+            console.log("processApiFiles: Completed.");
+            resolve(); 
+        });
     }
 
     /**
      * Outputs all API doc files
      * @return {Object} Promise
      */
-    outputApiFiles () {
-        //this.log(`Begin 'SourceApi.outputApiFiles'`, 'info');
-        let classMap   = this.classMap,
-            classNames = Object.keys(classMap),
-            i          = 0,
-            len        = classNames.length,
-            outputs    = [];
+    outputApiFiles() {
+        this.log(`Begin 'SourceApi.outputApiFiles'`, 'info');
+        let classMap = this.classMap;
+        let classNames = Object.keys(classMap);
+        let len = classNames.length;
+        let outputs = [];
 
-        Fs.ensureDirSync(this.apiDir);
+        if (!Fs.existsSync(this.apiDir)) {
+            Fs.ensureDirSync(this.apiDir);
+        }
 
         // loops through all class names from the classMap
-        for (; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             let className = classNames[i],
                 // the prepared object is the one that has been created by
                 // `createSrcFileMap` and will be processed in `decorateClass`
-                prepared  = classMap[className].prepared;
+                prepared = classMap[className].prepared;
 
             outputs.push(this.outputApiFile(className, prepared));
         }
 
         return Promise.all(outputs)
-        .catch(this.error.bind(this));
+            .catch(this.error.bind(this));
     }
 
     /**
@@ -1128,7 +1099,7 @@ class SourceApi extends Base {
      * @param {Object} cls The original class object
      * @param {Object} data The recipient of the processed related classes
      */
-    processRelatedClasses () {}
+    processRelatedClasses() { }
 
     /**
      * Prepares additional api data processing prior to handing the data over to the api
@@ -1136,16 +1107,16 @@ class SourceApi extends Base {
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
      */
-    processApiDataObject (data) {
+    processApiDataObject(data) {
         //this.log(`Begin 'SourceApi.processApiDataObject'`, 'info');
         let { apiDir } = this;
 
         data.prodVerPath = '../';
-        data.cssPath     = Path.relative(apiDir, this.cssDir);
-        data.jsPath      = Path.relative(apiDir, this.jsDir);
-        data.imagesPath  = Path.relative(apiDir, this.imagesDir);
-        data.myMeta      = this.getApiMetaData(data);
-        data.isApi       = true;
+        data.cssPath = Path.relative(apiDir, this.cssDir);
+        data.jsPath = Path.relative(apiDir, this.jsDir);
+        data.imagesPath = Path.relative(apiDir, this.imagesDir);
+        data.myMeta = this.getApiMetaData(data);
+        data.isApi = true;
         data.description = Utils.striphtml(this.parseApiLinks(data.classText));
         this.processCommonDataObject(data);
     }
@@ -1159,26 +1130,26 @@ class SourceApi extends Base {
      * 'processed' object.
      * @param {String} className The name of the class to be processed
      */
-    decorateClass (className) {
+    decorateClass(className) {
         //this.log(`Begin 'SourceApi.decorateClass'`, 'log');
         const {
-                  options,
-                  classMap,
-                  sinceMap,
-                  apiProduct,
-                  apiDirName,
-                  diffableVersions
-              }                   = this,
-              { raw }             = classMap[className],
-              [ cls ]             = raw.global.items,
-              { alias, name, since }     = cls,
-              mappedSince = _.get(sinceMap, [ apiProduct, apiDirName, name, 'since' ]);
-        let   { prepared : data } = classMap[className];
+            options,
+            classMap,
+            sinceMap,
+            apiProduct,
+            apiDirName,
+            diffableVersions
+        } = this,
+            { raw } = classMap[className],
+            [cls] = raw.global.items,
+            { alias, name, since } = cls,
+            mappedSince = _.get(sinceMap, [apiProduct, apiDirName, name, 'since']);
+        let { prepared: data } = classMap[className];
 
         data.classText = this.markup(data.text);
         // TODO need to decorate the following.  Not sure if this would be done differently for HTML and Ext app output
         this.processRelatedClasses(cls, data);
-        
+
         if (mappedSince) {
             if (!since) {
                 cls.since = mappedSince;
@@ -1187,13 +1158,13 @@ class SourceApi extends Base {
             }
         }
 
-        data.requiredConfigs     = [];
-        data.optionalConfigs     = [];
-        data.instanceMethods     = [];
-        data.instanceMethodsObj  = {};
-        data.staticMethods       = [];
-        data.instanceProperties  = [];
-        data.staticProperties    = [];
+        data.requiredConfigs = [];
+        data.optionalConfigs = [];
+        data.instanceMethods = [];
+        data.instanceMethodsObj = {};
+        data.staticMethods = [];
+        data.instanceProperties = [];
+        data.staticProperties = [];
 
         data.contentPartial = '_html-apiBody';
 
@@ -1205,16 +1176,16 @@ class SourceApi extends Base {
 
             //cls.aliasPrefix = isWidget ? 'xtype' : alias.substr(0, alias.indexOf('.'));
             cls.aliasPrefix = isWidget ? 'xtype' : 'alias';
-            cls.aliasName   = (isWidget ? alias.replace(WidgetRe, '') : alias)
-                              .replace(/,/g, ', ');
+            cls.aliasName = (isWidget ? alias.replace(WidgetRe, '') : alias)
+                .replace(/,/g, ', ');
         }
 
         // indicate if the class is deprecated
         cls.isDeprecated = !!(cls.deprecatedMessage || cls.deprecatedVersion);
         // indicate if the class is removed
-        cls.isRemoved    = !!(cls.removedMessage    || cls.removedVersion);
+        cls.isRemoved = !!(cls.removedMessage || cls.removedVersion);
         // indicate if the class is an enum
-        cls.isEnum       = cls.$type === 'enum';
+        cls.isEnum = cls.$type === 'enum';
         cls.originalName = cls.name;
         data.cls = cls;
 
@@ -1228,13 +1199,13 @@ class SourceApi extends Base {
         // indicates whether the class is of type component, singleton, or some other
         // class
         if (cls.extended && cls.extended.includes('Ext.Component')) {
-            cls.clsSpec     = 'title-decoration component';
+            cls.clsSpec = 'title-decoration component';
             cls.clsSpecIcon = 'component-type fa fa-cog';
         } else if (cls.singleton === true) {
-            cls.clsSpec     = 'title-decoration singleton';
+            cls.clsSpec = 'title-decoration singleton';
             cls.clsSpecIcon = 'singleton-type fa fa-cube';
         } else {
-            cls.clsSpec     = 'title-decoration class';
+            cls.clsSpec = 'title-decoration class';
             cls.clsSpecIcon = 'class-type fa fa-cube';
         }
 
@@ -1244,24 +1215,24 @@ class SourceApi extends Base {
         // get the source file path for the class
         let srcFilePath = this.getSourceFilePath(cls, raw),
             // and subsequently the source filename of the output source HTML
-            filename      = this.srcFileMap[srcFilePath].filename + '.html',
-            relPath       = Path.relative(this.options._myRoot, this.apiSourceDir) + '/',
+            filename = this.srcFileMap[srcFilePath].filename + '.html',
+            relPath = Path.relative(this.options._myRoot, this.apiSourceDir) + '/',
             sanitizedPath = srcFilePath.replace(relPath, '').replace(/(\.\.\/)/g, ''),
-            srcFileObj    = {
-                pathText : sanitizedPath,
-                path     : filename
+            srcFileObj = {
+                pathText: sanitizedPath,
+                path: filename
             };
 
         // add the class source file info to the srcFiles array
         data.srcFiles.push(srcFileObj);
 
-        let i                = 0,
+        let i = 0,
             memberTypeGroups = cls.items || [],
-            len              = memberTypeGroups.length;
+            len = memberTypeGroups.length;
 
         for (; i < len; i++) {
-            let group   = memberTypeGroups[i],
-                type    = group.$type,
+            let group = memberTypeGroups[i],
+                type = group.$type,
                 members = group.items;
 
             if (members && members.length) {
@@ -1315,7 +1286,7 @@ class SourceApi extends Base {
             // if the class has properties find the first one for use in the template output
             if (data.hasProperties) {
                 let propertiesObj = data.properties,
-                    properties    = propertiesObj.hasInstanceProperties ? propertiesObj.instanceProperties : propertiesObj.staticProperties;
+                    properties = propertiesObj.hasInstanceProperties ? propertiesObj.instanceProperties : propertiesObj.staticProperties;
 
                 data.enumProperty = properties[0].name;
             } else { // else mark this class as one to skip further processing on
@@ -1345,7 +1316,7 @@ class SourceApi extends Base {
      * @param {String} strB The second property string
      * @return {Object} The prepared object
      */
-    splitMemberGroups (type, data, strA, strB) {
+    splitMemberGroups(type, data, strA, strB) {
         //this.log(`Begin 'SourceApi.splitMemberGroups'`, 'log');
         let obj = {},
             a = _.filter(data[strA], (obj) => {
@@ -1370,21 +1341,21 @@ class SourceApi extends Base {
      * @param {Object[]} items Array of member objects to process
      * @return {Object[]} Array of processed member objects
      */
-    processMembers (className, type, items) {
+    processMembers(className, type, items) {
         //this.log(`Begin 'SourceApi.processMembers'`, 'log');
         const { sinceMap, apiProduct, apiDirName, diffableVersions } = this,
-              { prepared }    = this.classMap[className],
-              len             = items.length,
-              capitalizedType = Utils.capitalize(type);
-        let   i               = 0;
+            { prepared } = this.classMap[className],
+            len = items.length,
+            capitalizedType = Utils.capitalize(type);
+        let i = 0;
 
         // loop over the member groups.  Indicate on the class object that each member
         // type is present and process the member object itself.
         for (; i < len; i++) {
-            const item      = items[i],
-                  { $type, name, since } = item,
-                  mappedSince = _.get(sinceMap, [ apiProduct, apiDirName, className, 'items', `${$type}|${name}`, 'since' ]);
-            
+            const item = items[i],
+                { $type, name, since } = item,
+                mappedSince = _.get(sinceMap, [apiProduct, apiDirName, className, 'items', `${$type}|${name}`, 'since']);
+
             if (mappedSince) {
                 if (!since) {
                     item.since = mappedSince;
@@ -1392,7 +1363,7 @@ class SourceApi extends Base {
                     this.log(`Mismatch between declared @since (${since}) and sinceMap value (${mappedSince})`, 'info');
                 }
             }
-            
+
             prepared[`has${capitalizedType}`] = true;
             this.processMember(className, type, item);
         }
@@ -1416,14 +1387,14 @@ class SourceApi extends Base {
      * @param {String} type The type of member being processed
      * @param {Object} member The member object to process
      */
-    processMember (className, type, member) {
-        let classMap   = this.classMap,
-            raw        = classMap[className].raw,
-            prepared   = classMap[className].prepared,
+    processMember(className, type, member) {
+        let classMap = this.classMap,
+            raw = classMap[className].raw,
+            prepared = classMap[className].prepared,
             srcFileMap = this.srcFileMap,
-            rawRoot    = raw.global.items[0],
-            clsName    = rawRoot.name,
-            name       = member.name;
+            rawRoot = raw.global.items[0],
+            clsName = rawRoot.name,
+            name = member.name;
 
         // get the source file path for the class member
         //
@@ -1439,18 +1410,18 @@ class SourceApi extends Base {
             // object like evented events that are inferred by their class / mixins
             if (srcFilePath) {
                 // get the source filename of the output source HTML
-                let filename      = this.srcFileMap[srcFilePath].filename + '.html',
-                    relPath       = Path.relative(this.options._myRoot, this.apiSourceDir) + '/',
+                let filename = this.srcFileMap[srcFilePath].filename + '.html',
+                    relPath = Path.relative(this.options._myRoot, this.apiSourceDir) + '/',
                     sanitizedPath = srcFilePath.replace(relPath, '').replace(/(\.\.\/)/g, ''),
-                    srcFileObj    = {
-                        pathText : sanitizedPath,
-                        path     : filename
+                    srcFileObj = {
+                        pathText: sanitizedPath,
+                        path: filename
                     };
 
                 prepared.srcFiles.push(srcFileObj);
             }
         }
-        
+
         if (member.value) {
             member.value = `<pre class="defaults-to-dec">${_.escape(member.value)}</pre>`;
         }
@@ -1465,21 +1436,20 @@ class SourceApi extends Base {
 
         // split the member type if there are multiple
         if (member.type !== null) {
-            member.type = this.splitInline(member.type,  ' / ');
+            member.type = this.splitInline(member.type, ' / ');
         }
         member.text = this.markup(member.text);
-
-        member.params     = [];
-        member.returns    = [];
+        member.params = [];
+        member.returns = [];
         member.properties = [];
 
         if (member.items) {
-            let i   = 0,
+            let i = 0,
                 len = member.items.length;
 
             for (; i < len; i++) {
                 let item = member.items[i],
-                    {text, $type, type, items} = item;
+                    { text, $type, type, items } = item;
 
                 // prepare the param and return text
                 if (text && ($type === 'param' || $type === 'return' || $type === 'property')) {
@@ -1487,7 +1457,7 @@ class SourceApi extends Base {
                 }
                 // linkify the return types
                 if ($type === 'return' || $type === 'param') {
-                    type = this.splitInline(type,  ' / ');
+                    type = this.splitInline(type, ' / ');
                 }
                 if ($type === 'return') {
                     member.returns.push(item);
@@ -1504,7 +1474,7 @@ class SourceApi extends Base {
                 // process any sub-items that this param / property may have
                 if (items) {
                     let itemsLen = items.length;
-                        
+
                     while (itemsLen--) {
                         this.processMember(className, null, items[itemsLen]);
                     }
@@ -1560,13 +1530,13 @@ class SourceApi extends Base {
         }
 
         // find the source class and note whether the member comes from an ancestor class
-        member.srcClass     = member.from || clsName;
+        member.srcClass = member.from || clsName;
         member.srcClassText = member.srcClass;
-        member.isInherited  = member.srcClass !== clsName;
-        member.fromObject   = member.from === 'Object';
-        member.hide         = member.hide || member.fromObject;
+        member.isInherited = member.srcClass !== clsName;
+        member.fromObject = member.from === 'Object';
+        member.hide = member.hide || member.fromObject;
         // TODO is this necessary if all of the $types are correct by the time we get here?
-        member.linkType     = member.$type;
+        member.linkType = member.$type;
 
         // TODO is this necessary if all of the $types are correct by this time?
         if (member.static) {
@@ -1588,7 +1558,7 @@ class SourceApi extends Base {
         if (srcFile) {
             let filename = this.srcFileMap[srcFile].filename,
                 srcClass = member.srcClass,
-                type     = member.linkType;
+                type = member.linkType;
 
             member.srcLink = `${filename}.html#${srcClass}-${type}-${name}`;
         }
@@ -1608,25 +1578,25 @@ class SourceApi extends Base {
      * after {@link #processMembers} is complete
      * @param {Object} data The class object to be passed to the HTML template
      */
-    postProcessConfigs (data) {
-        let instanceMethods    = data.instanceMethods,
+    postProcessConfigs(data) {
+        let instanceMethods = data.instanceMethods,
             instanceMethodsObj = data.instanceMethodsObj,
-            configsObj         = data.configs,
-            optionalConfigs    = configsObj.optionalConfigs,
-            requiredConfigs    = configsObj.requiredConfigs,
-            configs            = optionalConfigs.concat(requiredConfigs),
-            configsLen         = configs.length,
-            i                  = 0,
-            mixins             = data.mixed && data.mixed.split(','),
-            mixesBindable      = mixins && mixins.includes('Ext.mixin.Bindable');
+            configsObj = data.configs,
+            optionalConfigs = configsObj.optionalConfigs,
+            requiredConfigs = configsObj.requiredConfigs,
+            configs = optionalConfigs.concat(requiredConfigs),
+            configsLen = configs.length,
+            i = 0,
+            mixins = data.mixed && data.mixed.split(','),
+            mixesBindable = mixins && mixins.includes('Ext.mixin.Bindable');
 
         for (; i < configsLen; i++) {
-            let config      = configs[i],
-                name        = config.name || '',
+            let config = configs[i],
+                name = config.name || '',
                 capitalName = Utils.capitalize(name),
                 // edge cases like 'ui' and 'setUI'
-                upperName   = name.toUpperCase(),
-                accessor    = config.accessor;
+                upperName = name.toUpperCase(),
+                accessor = config.accessor;
 
             if (!config.name) {
                 this.log('Missing config name: ' + JSON.stringify(config, null, 4), 'error');
@@ -1637,9 +1607,9 @@ class SourceApi extends Base {
 
             // cache any existing getter / setter instance methods
             let g = config.getter = instanceMethodsObj[`get${capitalName}`] ||
-                            instanceMethodsObj[`get${upperName}`];
+                instanceMethodsObj[`get${upperName}`];
             let s = config.setter = instanceMethodsObj[`set${capitalName}`] ||
-                            instanceMethodsObj[`set${upperName}`];
+                instanceMethodsObj[`set${upperName}`];
 
             // if there is a getter or the config is accessor decorate the getter
             // method config
@@ -1651,16 +1621,16 @@ class SourceApi extends Base {
                 }
 
                 let getterName = g ? g.name : `get${capitalName}`,
-                    getterCfg  = {
-                        name         : getterName,
-                        $type        : g ? 'placeholder-simple' : 'placeholder-accessor',
-                        access       : g ? g.access : config.access,
-                        text         : 'see: <a href="#method-' + getterName + '">' + config.name + '</a>',
-                        isInherited  : g ? g.isInherited : config.isInherited,
-                        isAutoGetter : !g,
-                        srcLink      : config.srcLink,
-                        srcClass     : config.srcClass,
-                        srcClassText : config.srcClassText
+                    getterCfg = {
+                        name: getterName,
+                        $type: g ? 'placeholder-simple' : 'placeholder-accessor',
+                        access: g ? g.access : config.access,
+                        text: 'see: <a href="#method-' + getterName + '">' + config.name + '</a>',
+                        isInherited: g ? g.isInherited : config.isInherited,
+                        isAutoGetter: !g,
+                        srcLink: config.srcLink,
+                        srcClass: config.srcClass,
+                        srcClassText: config.srcClassText
                     };
 
                 // if the getter came from the instance methods directly
@@ -1685,16 +1655,16 @@ class SourceApi extends Base {
                 }
 
                 let setterName = s ? s.name : `set${capitalName}`,
-                    setterCfg  = {
-                        name         : setterName,
-                        $type        : s ? 'placeholder' : 'placeholder-accessor',
-                        access       : s ? s.access : config.access,
-                        text         : 'see: <a href="#method-' + setterName + '">' + config.name + '</a>',
-                        isInherited  : s ? s.isInherited : config.isInherited,
-                        isAutoSetter : !s,
-                        srcLink      : config.srcLink,
-                        srcClass     : config.srcClass,
-                        srcClassText : config.srcClassText
+                    setterCfg = {
+                        name: setterName,
+                        $type: s ? 'placeholder' : 'placeholder-accessor',
+                        access: s ? s.access : config.access,
+                        text: 'see: <a href="#method-' + setterName + '">' + config.name + '</a>',
+                        isInherited: s ? s.isInherited : config.isInherited,
+                        isAutoSetter: !s,
+                        srcLink: config.srcLink,
+                        srcClass: config.srcClass,
+                        srcClassText: config.srcClassText
                     };
 
                 // if the getter came from the instance methods directly
@@ -1732,26 +1702,26 @@ class SourceApi extends Base {
      * @param {String} suffix A suffix to append to the search key.  Helpful when you are
      * combining multiple search results together.
      */
-    getApiSearch () {
-        //this.log(`Begin 'SourceApi.getApiSearch'`, 'info');
-        let map         = this.classMap,
-            classNames  = Object.keys(map),
-            i           = 0,
-            len         = classNames.length,
-            toolkit     = this.options.toolkit,
+    getApiSearch() {
+        this.log(`Begin 'SourceApi.getApiSearch'`, 'info');
+        let map = this.classMap,
+            classNames = Object.keys(map),
+            i = 0,
+            len = classNames.length,
+            toolkit = this.options.toolkit,
             searchIndex = this.apiSearchIndex,
             // suffix allows us to combine toolkits in one search
-            suffix      = (toolkit && toolkit.charAt(0)) || '',
-            typeRef     = {
-                optionalConfigs     : 'c',
-                requiredConfigs     : 'c',
-                instanceProperties  : 'p',
-                staticProperties    : 'sp',
-                instanceMethods     : 'm',
-                staticMethods       : 'sm',
-                events              : 'e',
-                vars                : 'v',
-                "sass-mixins"       : 'x'//,
+            suffix = (toolkit && toolkit.charAt(0)) || '',
+            typeRef = {
+                optionalConfigs: 'c',
+                requiredConfigs: 'c',
+                instanceProperties: 'p',
+                staticProperties: 'sp',
+                instanceMethods: 'm',
+                staticMethods: 'sm',
+                events: 'e',
+                vars: 'v',
+                "sass-mixins": 'x'//,
                 //"sass-mixin-params" : 'z'
             },
             memberTypes = [ // all possible member types in a given class
@@ -1769,8 +1739,8 @@ class SourceApi extends Base {
         // loop over all class names to parse search from the class map
         for (; i < len; i++) {
             let className = classNames[i],
-                cls       = map[className].prepared,
-                key       = `${i}${suffix}`;
+                cls = map[className].prepared,
+                key = `${i}${suffix}`;
 
             // caches the member type short names on the class object for use in the
             // processMemberSearch method
@@ -1778,9 +1748,9 @@ class SourceApi extends Base {
 
             // record the class name and toolkit
             searchIndex[key] = {
-                d : cls.name,
-                n : cls.cls.originalName,
-                t : toolkit ? toolkit : null
+                d: cls.name,
+                n: cls.cls.originalName,
+                t: toolkit ? toolkit : null
             };
 
             // record the class access level
@@ -1795,8 +1765,8 @@ class SourceApi extends Base {
             // record an entry for all alternate class names
             if (cls.alternateClassNames) {
                 let altClassNames = cls.alternateClassNames.split(','),
-                    j             = 0,
-                    namesLength   = altClassNames.length;
+                    j = 0,
+                    namesLength = altClassNames.length;
 
                 searchIndex[key].g = altClassNames;
 
@@ -1804,22 +1774,22 @@ class SourceApi extends Base {
                     let altName = altClassNames[j];
 
                     searchIndex[altName + key] = {
-                        n : altName,
-                        t : toolkit    ? toolkit : null,
-                        a : cls.access ? 'i'     : null
+                        n: altName,
+                        t: toolkit ? toolkit : null,
+                        a: cls.access ? 'i' : null
                     };
                 }
             }
 
             let typesLen = memberTypes.length,
-                k        = 0;
+                k = 0;
 
             // loop over all possible member types
             for (; k < typesLen; k++) {
-                let type       = memberTypes[k],
-                    members    = cls[type],
+                let type = memberTypes[k],
+                    members = cls[type],
                     membersLen = members ? members.length : 0,
-                    l          = 0;
+                    l = 0;
 
                 // then over the members for each type to process each member into the
                 // search object
@@ -1843,36 +1813,36 @@ class SourceApi extends Base {
      * @param {Object} searchIndex The search object that all assembled search is being
      * cached on until it's output
      */
-    processMemberSearch (member, key, cls, type, searchIndex) {
+    processMemberSearch(member, key, cls, type, searchIndex) {
         //this.log(`Begin 'SourceApi.processMemberSearch'`, 'log');
         // initially we'll check to see see if the member belongs to the current class.  
         // If so, then we'll process it. 
-        let hidden        = member.hide,
+        let hidden = member.hide,
             processMember = !member.from;
-        
+
         // if the member is not hidden and if it's not from the current class then check 
         // to see if the member is found on the parent class.  If it exists on the 
         // current class and not on the parent class then we'll want to add it to the 
         // search output
         if (!hidden && !processMember) {
-            let classMap     = this.classMap,
-                prepared     = classMap[cls.cls.originalName].prepared,
+            let classMap = this.classMap,
+                prepared = classMap[cls.cls.originalName].prepared,
                 ancestorList = prepared.extended;
-            
+
             // if the current class has a parent then get a reference to the parent class 
             // object
             if (ancestorList) {
-                let ancestors         = ancestorList.split(','),
+                let ancestors = ancestorList.split(','),
                     ancestorsLen = ancestors.length;
-                    
+
                 processMember = true;
-                
+
                 // loop over any ancestor classes
                 while (ancestorsLen--) {
-                    let ancestor               = ancestors[ancestorsLen],
-                        ancestorPrepared       = classMap[ancestor] && classMap[ancestor].prepared,
+                    let ancestor = ancestors[ancestorsLen],
+                        ancestorPrepared = classMap[ancestor] && classMap[ancestor].prepared,
                         ancestorTypeCollection = ancestorPrepared && ancestorPrepared[type];
-                        
+
                     // and see if it has member of the type currently being evaluated
                     if (ancestorTypeCollection) {
                         let nameExists = _.find(ancestorTypeCollection, ancestorMember => {
@@ -1888,7 +1858,7 @@ class SourceApi extends Base {
                 }
             }
         }
-        
+
         if (!hidden && processMember) {
             let acc = member.access === 'private' ? 'i' : (member.access === 'protected' ? 'o' : 'p'),
                 extras;
@@ -1908,15 +1878,15 @@ class SourceApi extends Base {
             if (member.$type === 'css_mixin' && member.items && member.items.length) {
                 Utils.each(member.items, function (param) {
                     searchIndex[key]['z.' + param.name] = {
-                        a : acc,
-                        t : member.name
+                        a: acc,
+                        t: member.name
                     };
                 });
             }
 
             // record the member access
             searchIndex[key][cls.typeRef[type] + '.' + member.name] = {
-                a : acc
+                a: acc
             };
 
             // record any extra metadata
@@ -1935,24 +1905,25 @@ class SourceApi extends Base {
      * Writes the parsed search output from all API classes to disk for use by the UI
      * @return {Object} Promise
      */
-    outputApiSearch () {
-        this.log("outputApiSearch started");
-        
+    outputApiSearch() {
+        console.log("outputApiSearch: Started...");
+
         let apiSearch = this.apiSearchIndex,
-            output    = JSON.stringify(apiSearch),
-            options   = this.options,
-            product   = options.product,
-            version   = options.version;
+            output = JSON.stringify(apiSearch),
+            options = this.options,
+            product = options.product,
+            version = options.version;
 
         version = options.prodVerMeta.hasVersions ? `${version}` : '';
         output = `DocsApp.apiSearch =${output};`;
 
         return new Promise((resolve, reject) => {
-            //this.log(`Begin 'SourceApi.outputApiSearch'`, 'info');
             Fs.writeFile(Path.join(this.jsDir, `${product}-${version}-apiSearch.js`), output, 'utf8', err => {
                 if (err) {
+                    console.log("outputApiSearch: ERROR. ", err);
                     reject(err);
                 } else {
+                    console.log("outputApiSearch: Completed");
                     resolve();
                 }
             });
@@ -1963,21 +1934,21 @@ class SourceApi extends Base {
      * Sort the API trees
      * @return {Object} The sorted API tree
      */
-    sortTrees (apiTrees) {
+    sortTrees(apiTrees) {
         let treeKeys = Object.keys(apiTrees),
-            len      = treeKeys.length,
+            len = treeKeys.length,
             apiTree;
 
         // There can be more than one api tree, such as modern or classic. This determines how it lays out. 
         // If modern or classic is by it self be sure to move on to the the else statement
         // Otherwise, most everythign will only have one set of api docs. 
-        if (len === 1 && !treeKeys.includes('modern') && !treeKeys.includes('classic')) { 
+        if (len === 1 && !treeKeys.includes('modern') && !treeKeys.includes('classic')) {
             apiTree = {
-                API : this.sortTree(apiTrees[treeKeys[0]])
+                API: this.sortTree(apiTrees[treeKeys[0]])
             };
         } else {
             apiTree = {
-                API : {}
+                API: {}
             };
 
             for (let i = 0; i < len; i++) {
@@ -1996,19 +1967,19 @@ class SourceApi extends Base {
      * @param {Object} parent The parent node of the `nodes` array param.  Will be
      * undefined if the root nodes of the tree are being processed.
      */
-    decoratePrivateNodes (nodes, parent) {
+    decoratePrivateNodes(nodes, parent) {
         // initially we'll mark the parent node as private and later change it to public
         // if there are public children
         if (parent) {
             parent.access = 'private';
         }
 
-        let len         = nodes.length,
+        let len = nodes.length,
             startingLen = len;
 
         // loop over all passed nodes
         while (len--) {
-            let node     = nodes[len],
+            let node = nodes[len],
                 children = node.children;
 
             // cache a reference to the parent node on each node for later use
@@ -2047,12 +2018,12 @@ class SourceApi extends Base {
      * Output the api tree for UI nav once all classes are processed
      * @return Promise wrapping the writing of the api tree file
      */
-    outputApiTree () {
+    outputApiTree() {
         return new Promise((resolve, reject) => {
             this.log(`SourceApi.outputApiTree: Starting...`);
 
             let apiTrees = this.apiTrees,
-                apiTree  = this.sortTrees(apiTrees);
+                apiTree = this.sortTrees(apiTrees);
 
             // process all trees and indicate parent nodes as private if all child nodes are
             if (_.isArray(apiTree.API)) {
@@ -2065,19 +2036,19 @@ class SourceApi extends Base {
 
             apiTree = JSON.stringify(apiTree, null, 4);
 
-            let wrap       = `DocsApp.apiTree = ${apiTree}`,
-                product    = this.getProduct(),
-                version    = this.options.version,
-                dest       = Path.join(this.jsDir, `${product}-${version}-apiTree.js`);
+            let wrap = `DocsApp.apiTree = ${apiTree}`,
+                product = this.getProduct(),
+                version = this.options.version,
+                dest = Path.join(this.jsDir, `${product}-${version}-apiTree.js`);
 
             Fs.writeFile(dest, wrap, 'utf8', (err) => {
                 if (err) {
                     reject(err);
                 }
-                resolve();
             });
 
             this.log(`SourceApi.outputApiTree: Finished`);
+            resolve();
         });
     }
 
@@ -2085,53 +2056,50 @@ class SourceApi extends Base {
      * Create an HTML version of the each source JS file in the framework
      * @return {Object} Promise
      */
-    createSrcFiles () {
+    createSrcFiles() {
         if (this.options.skipSourceFiles === true) {
-            this.log('Skipping creating source HTML files: --skipSourceFiles');
+            this.log('Skipping creating source HTML files: --skipSourceFiles toolkit=' + this.options.toolkit);
             return Promise.resolve();
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.log('Start SourceApi.createSrcFiles');
 
-            let i         = 0,
-                map       = this.srcFileMap,
-                keys      = Object.keys(map),
-                len       = keys.length,
-                inputDir = this.getDoxiInputDir();
+            var map = this.srcFileMap;
+            var keys = Object.keys(map);
+            var len = keys.length;
+            var inputDir = this.getDoxiInputDir();
 
-            for (; i < len; i++) {
+            for (var i = 0; i < len; i++) {
                 keys[i] = {
-                    path     : keys[i],
-                    inputDir : inputDir
+                    path: keys[i],
+                    inputDir: inputDir
                 };
             }
-
-            // time stamp and log status
-            //this.openStatus('Create source HTML files');
 
             _.remove(keys, item => {
                 return item.path.includes('/enums/');
             });
 
+            console.log("createSrcFiles: keys.length=" + keys.length);
+
             // loop over the source file paths and HTML-ify them
             this.processQueue(keys, __dirname + '/htmlify.js', (items) => {
+                console.log("createSrcFiles: processQueue: Started... items.len=" + items.length);
+
                 // once all files have been HTML-ified add anchor tags with the name of each
                 // class-member so that you can link to that place in the docs
-                let anchored = this.addAnchorsAll(items);
-
-                // conclude 'Create source HTML files' status
+                var anchored = this.addAnchorsAll(items);
 
                 // output all of the source HTML files
                 this.outputSrcFiles(anchored)
-                .then(resolve)
-                .catch(this.error.bind(this));
-
-                this.log("\t processQueue: finished");
+                    .then(() => {
+                        console.log("createSrcFiles: processQueue: outputSrcFiles: Completed. toolkit=" + this.options.toolkit);
+                        resolve();
+                    })
+                    .catch(this.error.bind(this));
             });
         });
-
-        this.log("Finished SourceApi.createSrcFiles.");
     }
 
     /**
@@ -2143,60 +2111,77 @@ class SourceApi extends Base {
      *  - **path**: the path of the original source file.  Used to look in the srcFileMap
      * to get the filename to output
      */
-    outputSrcFiles (contents) {
+    outputSrcFiles(contents) {
         return new Promise((resolve, reject) => {
             this.log(`Start SourceApi.outputSrcFiles`);
 
-            let i       = 0,
-                len     = contents.length,
-                map     = this.srcFileMap,
-                options = this.options,
-                // TODO = this should be set globally probably in the base constructor
-                //outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
-                outDir  = Path.join(this.apiDir, 'src');
+            var len = contents.length;
+            var map = this.srcFileMap;
+            var options = this.options;
+            // TODO = this should be set globally probably in the base constructor
+            //outDir  = Path.join('output', options.product, options.version, options.toolkit || 'api', 'src'),
+            var outDir = Path.join(this.apiDir, 'src');
 
             // create the output directory
             Fs.ensureDir(outDir, () => {
                 // time stamp and lot status
                 //me.openStatus('Write out source HTML files')
 
-                let writes = [];
+                var writes = [];
 
                 // loop through all items to be output
-                for (; i < len; i++) {
+                for (let i=0; i < len; i++) {
                     writes.push(new Promise((resolve, reject) => {
-                        let content  = contents[i],
-                            filename = map[content.path].filename, // the filename to write out
-                            // the data object to apply to the source HTML handlebars template
-                            data     = {
-                                content    : content.html,
-                                name       : filename,
-                                title      : options.prodVerMeta.prodObj.title,
-                                version    : options.version,
-                                // TODO figure out what numVer is in production today
-                                numVer     : '...',
-                                // TODO this should be output more thoughtfully than just using options.toolkit
-                                meta       : options.toolkit,
-                                moduleName : this.moduleName,
-                                cssPath    : Path.relative(outDir, this.cssDir)
-                            };
+                        var content = contents[i];
+                        var path = map[content.path];
 
-                        // write out the current source file
-                        Fs.writeFile(`${outDir}/${filename}.html`, this.srcTemplate(data), 'utf8', (err) => {
-                            //if (err) this.log('outputSrcFiles error');
-                            if (err) reject(err);
+                        // TODO why would this be null? Second time? 
+                        if (path != null) {
+                            var filename = path.filename; 
 
-                            delete map[content.path];
-                                resolve();
-                        });
+                            // TODO why would this be null?
+                            if (filename == null) {
+                                console.console("outputSrcFiles: ERROR: filename-=null content.path=" + content.path);
+                            } else {
+                                // the data object to apply to the source HTML handlebars template
+                                var data = {
+                                        content: content.html,
+                                        name: filename,
+                                        title: options.prodVerMeta.prodObj.title,
+                                        version: options.version,
+                                        // TODO figure out what numVer is in production today
+                                        numVer: '...',
+                                        // TODO this should be output more thoughtfully than just using options.toolkit
+                                        meta: options.toolkit,
+                                        moduleName: this.moduleName,
+                                        cssPath: Path.relative(outDir, this.cssDir)
+                                    };
+
+                                console.log(`outputSrcFiles: write file=${outDir}/${filename}.html`)
+
+                                // write out the current source file
+                                Fs.writeFile(`${outDir}/${filename}.html`, this.srcTemplate(data), 'utf8', (err) => {
+                                    if (err) {
+                                        this.log("outputSrcFiles: ERROR, can't write file.")
+                                        reject(err);
+                                    }
+
+                                    delete map[content.path];
+                                    resolve();
+                                });
+                            }
+                        } else {
+                            console.log("outputSrcFiles: path == null SKIPPING content.path=" + content.path);
+                        }
                     }));
                 }
 
-                this.log(`Finished SourceApi.outputSrcFiles.`);
-
                 return Promise.all(writes)
-                .then(resolve)
-                .catch(this.error.bind(this));
+                    .then(() => {
+                        this.log(`outputSrcFiles: Completed.`);        
+                        resolve();
+                    })
+                    .catch(this.error.bind(this));
             });
         });
     }
@@ -2209,7 +2194,7 @@ class SourceApi extends Base {
      * coordinates
      * @return {Array} The location coordinates of the src
      */
-    getLocArray (item) {
+    getLocArray(item) {
         //this.log(`Begin 'SourceApi.getLocArray'`, 'log');
         let src = item.src.text || item.src.name;
 
@@ -2225,9 +2210,9 @@ class SourceApi extends Base {
      * processed
      * @return {Object} The source path and processed HTML
      */
-    addAnchorsAll (items) {
+    addAnchorsAll(items) {
         //this.log(`Begin 'SourceApi.addAnchorsAll'`, 'info');
-        let len      = items.length,
+        let len = items.length,
             anchored = [];
 
         // collect up the positions in each source file where anchors should be added
@@ -2248,8 +2233,8 @@ class SourceApi extends Base {
                 path = item.path;
 
             anchored.push({
-                html : this.addAnchors(html, path),
-                path : path
+                html: this.addAnchors(html, path),
+                path: path
             });
         }
 
@@ -2263,11 +2248,15 @@ class SourceApi extends Base {
      * Supports {@link #addAnchorsAll} + {@link #addAnchors} + {@link #createSrcFiles}
      * @param {String} srcPath The path of the source class file
      */
-    catalogAnchors (srcPath) {
+    catalogAnchors(srcPath) {
         //this.log(`Begin 'SourceApi.addAnchors'`, 'log');
-        let src      = this.srcFileMap[srcPath],
-            clsSrc   = src.input,   // the doxi output for this class at srcPath
-            clsFiles = clsSrc && clsSrc.files; // array of all source files
+        let src = this.srcFileMap[srcPath];
+        if (!src) {
+            console.log("catalogAnchors: Error: srcPath=" + srcPath);
+            return;
+        }
+        let clsSrc = src.input;   // the doxi output for this class at srcPath
+        let clsFiles = clsSrc && clsSrc.files; // array of all source files
 
         // reference / create the anchorLocs map on the `src` object for use in the
         // `addAnchors` method
@@ -2275,8 +2264,8 @@ class SourceApi extends Base {
 
         // if the srcPath has a class object associated with it
         if (clsSrc) {
-            let cls         = clsSrc.global.items[0], // the class object
-                clsName     = cls.name,               // class name
+            let cls = clsSrc.global.items[0], // the class object
+                clsName = cls.name,               // class name
                 memberTypes = cls.items,              // array of member type groups
                 loc, clsFileNum, clsLineNum;
 
@@ -2286,35 +2275,35 @@ class SourceApi extends Base {
                 loc = this.getLocArray(cls);
                 // and log the position with the name of the class
                 if (loc) {
-                    [ clsFileNum, clsLineNum ] = loc;
+                    [clsFileNum, clsLineNum] = loc;
                     src.anchorLocs[clsLineNum] = `${clsName}`;
                 }
             }
 
             // if there are any class members (an array of class member types)
             if (memberTypes) {
-                let i   = 0,
+                let i = 0,
                     len = memberTypes.length;
 
                 // loop over each type group
                 for (; i < len; i++) {
-                    let group      = memberTypes[i],
+                    let group = memberTypes[i],
                         // the collection of members of this type
-                        members    = group.items,
+                        members = group.items,
                         membersLen = members.length;
 
                     // if there are members in this group
                     if (members && membersLen) {
                         let type = this.memberTypesMap[group.$type],
-                            j    = 0;
+                            j = 0;
 
                         // loop over all members in this type group
                         for (; j < membersLen; ++j) {
-                            let member   = members[j],
+                            let member = members[j],
                                 // get the source class + member type info to prefix to 
                                 // the following members as they're processed
                                 fromName = member.from || clsName,
-                                name     = `${fromName}-${type}-`,
+                                name = `${fromName}-${type}-`,
                                 memloc, memFileNum, memLineNum;
 
                             // if the member has description in this class
@@ -2322,7 +2311,7 @@ class SourceApi extends Base {
                                 // get the location where it's described
                                 memloc = this.getLocArray(member);
                                 if (memloc) {
-                                    [ memFileNum, memLineNum ] = memloc;
+                                    [memFileNum, memLineNum] = memloc;
                                 }
                             }
 
@@ -2340,13 +2329,13 @@ class SourceApi extends Base {
                                     // we look up the source class here as it may or may 
                                     // not be the same as `clsSrc` looked up above
                                     let memSrc = this.srcFileMap[clsFiles[memFileNum]];
-                                    
+
                                     if (memSrc) {
                                         memSrc.anchorLocs = memSrc.anchorLocs || {};
                                         memSrc.anchorLocs[memLineNum] = `${name}${memberName}`;
                                     }
                                 }
-                                
+
                             }
                         }
                     }
@@ -2354,7 +2343,7 @@ class SourceApi extends Base {
             }
         }
     }
-    
+
     /**
      * Adds anchor tags to the source files.  Used when you link to the source of a class 
      * or member description within the source files.  Each anchor will include a name 
@@ -2369,32 +2358,36 @@ class SourceApi extends Base {
      * @return {String} The html string for the class source file including the injected 
      * anchor tags
      */
-    addAnchors (html, srcPath) {
-        let src        = this.srcFileMap[srcPath],
-            anchorLocs = src.anchorLocs;
-        
+    addAnchors(html, srcPath) {
+        let src = this.srcFileMap[srcPath];
+        if (!src) {
+            console.log("addAnchors: Error: srcPath=" + srcPath);
+            return;
+        }
+        let anchorLocs = src.anchorLocs;
+
         if (anchorLocs) {
             // split out all each line in the HTML
             let lines = html.split('<div class="line">'),
-                locs  = Object.keys(anchorLocs),
-                len   = locs.length;
-                
+                locs = Object.keys(anchorLocs),
+                len = locs.length;
+
             while (len--) {
-                let loc  = locs[len],
+                let loc = locs[len],
                     name = anchorLocs[loc];
-                
+
                 lines[loc] = `<a name="${name}">` + lines[loc];
             }
-            
+
             let linesLen = lines.length;
-            
+
             while (linesLen--) {
                 lines[linesLen] = `<a name="line${linesLen}">` + lines[linesLen];
             }
-            
+
             html = lines.join('<div class="line">');
         }
-        
+
         return html;
     }
 }

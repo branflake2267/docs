@@ -410,11 +410,24 @@ DocsApp.buildForm = function (target, params) {
         wrapperCodeFile = "app.js";
         wrapperCodeType = "javascript";
 
-        // uglify has a problem with template literals
+         // Find the component class
+         // Class object
+         var componentClassName = "MyExample";
+         var foundClass = /export.?default.?class(.*?)extends/.exec(fiddleCode);
+         if (foundClass && foundClass[1]) {
+            componentClassName = foundClass[1].trim();
+         }
+
+         // Function object
+         foundClass = /export.*?default.*?function.*?(.*?)\(\)/.exec(fiddleCode);
+         if (foundClass && foundClass[1]) {
+            componentClassName = foundClass[1].trim();
+         }
+
+        // uglify has a problem with template literals ``
         wrapperCode += "import { launch } from '@sencha/ext-react';\n\n";
         wrapperCode += fiddleCode;
-        // TODO derive class for launching
-        wrapperCode += "\n\nlaunch(<MyExample/>);\n";
+        wrapperCode += "\n\nlaunch(<" + componentClassName + "/>);\n";
     
         htmlCode = "";
 

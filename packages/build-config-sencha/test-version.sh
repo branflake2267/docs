@@ -8,12 +8,7 @@ rm -rf ./build
 CONFIG_DIR="$(pwd)"
 
 # docs build command
-npx sencha-docs-generator  create-app-html \
+npx sencha-docs-generator create-app-html \
 --buildConfigsDir=$CONFIG_DIR \
---product=extjs \
---productVersion=6.7.0 \ 
---syncRemote=true \
---forceDoxi=true \
---log \
---production 
+--version
 

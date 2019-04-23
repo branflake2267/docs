@@ -10,7 +10,7 @@ CONFIG_DIR="$(pwd)"
 # docs build command
 npx sencha-docs-generator create-app-html \
 --buildConfigsDir=$CONFIG_DIR \
---product=extjs \
+--productVersion=extjs \
 --version=6.6.0-CE \
 --syncRemote=true \
 --forceDoxi=true \

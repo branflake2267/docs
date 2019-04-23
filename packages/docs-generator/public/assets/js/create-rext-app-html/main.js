@@ -392,11 +392,97 @@ DocsApp.buildForm = function (target, params) {
     // Change the framework for ExtReact only - Used for embedded fiddles
     var myMeta = DocsApp.meta;
     var actualProd = myMeta.product;
+    
+    var framework = "";
+    var wrapperCode = "";
+    var wrapperCodeFile = "";
+    var htmlCode = "";
+
+    var assets = params.codes.assets;
+
+    var fiddleCode = "";
+    if (assets[0].code) {
+        fiddleCode = assets[0].code;
+    }
+
     if (actualProd === 'extreact') {
-        params.framework.framework = 'ExtReact';
+        framework = 'ExtReact';
+        wrapperCodeFile = "app.js";
+        wrapperCodeType = "javascript";
+
+         // Find the component class
+         // Class object
+         var componentClassName = "MyExample";
+         var foundClass = /export.?default.?class(.*?)extends/.exec(fiddleCode);
+         if (foundClass && foundClass[1]) {
+            componentClassName = foundClass[1].trim();
+         }
+
+         // Function object
+         foundClass = /export.*?default.*?function.*?(.*?)\(\)/.exec(fiddleCode);
+         if (foundClass && foundClass[1]) {
+            componentClassName = foundClass[1].trim();
+         }
+
+        // uglify has a problem with template literals ``
+        wrapperCode += "import { launch } from '@sencha/ext-react';\n\n";
+        wrapperCode += fiddleCode;
+        wrapperCode += "\n\nlaunch(<" + componentClassName + "/>);\n";
+    
+        htmlCode = "";
+
     } else if (actualProd === 'extangular') {
-        // TODO extangular???
-        params.framework.framework = 'ExtAngular';
+        framework = 'ExtAngular';
+        wrapperCodeFile = "main.ts";
+        wrapperCodeType = "typescript";
+
+        // Find the selector used in the AppComponent
+        var selector = "app-root-1";
+        var foundSelector = /selector.*?:.*?['\"](.*?)['\"].*?,/.exec(fiddleCode);
+        if (foundSelector && foundSelector[1]) {
+            selector = foundSelector[1];
+        }
+
+        // template `` aren't working with ugflify
+        wrapperCode += "import 'core-js/es7/reflect';\n";
+        wrapperCode += "import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'; \n";
+        wrapperCode += "import { BrowserModule } from '@angular/platform-browser';\n";
+        wrapperCode += "import { NgModule } from '@angular/core';\n";
+        wrapperCode += "import { ExtAngularModule } from '@sencha/ext-angular'\n";
+        wrapperCode += fiddleCode;
+        wrapperCode += "\n@NgModule({\n";
+        wrapperCode += "  declarations: [\n";
+        wrapperCode += "    AppComponent\n";
+        wrapperCode += "  ],\n";
+        wrapperCode += "  imports: [\n";
+        wrapperCode += "    BrowserModule, ExtAngularModule\n";
+        wrapperCode += "  ],\n";
+        wrapperCode += "  providers: [],\n";
+        wrapperCode += "  bootstrap: [ \n";
+        wrapperCode += "    AppComponent \n";
+        wrapperCode += "  ]\n";
+        wrapperCode += "})\n";
+        wrapperCode += "export class AppModule { }\n";
+        wrapperCode += "platformBrowserDynamic().bootstrapModule(AppModule);\n";
+        
+        htmlCode += "<!DOCTYPE html>\n";
+        htmlCode += "<html>\n";
+        htmlCode += "<head>\n";
+        htmlCode += "<base href='/'>\n";
+        htmlCode += "<meta charset='UTF-8'>\n";
+        htmlCode += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>\n";
+        //htmlCode += "<meta http-equiv='X-UA-Compatible' content='ie=edge'>\n";
+        htmlCode += "<title>Fiddle Example</title>\n";
+        htmlCode += "</head>\n";
+        htmlCode += "<body>\n";
+        htmlCode += "<" + selector + ">Loading...</" + selector + ">\n";
+        htmlCode += "</body>\n"
+        htmlCode += "</html>\n"
+
+    } else if (actualProd === 'extwebcomponents') {
+        // TODO extwebcomponents
+    } else if (actualProd === 'extjs-next') {
+        // TODO extjs next
     }
 
     var form = ExtL.createElement({
@@ -408,32 +494,29 @@ DocsApp.buildForm = function (target, params) {
         style  : 'display:none'
     });
 
-    var assets = params.codes.assets;
-
-    // TODO extangular???
-    var rcode = "";
-    rcode += "import React from 'react';\n";
-    rcode += "import App from './App';\n";
-    rcode += "import { launch } from '@sencha/ext-react';\n";
-    rcode += "launch(<App\/>);";
-
-    assets[0].name = "App.js";
     var wrappingAssets = [{
-        name   : "app.js",
-        code   : rcode,
-        type   : "js"
+        name   : wrapperCodeFile,
+        type   : wrapperCodeType,
+        code   : wrapperCode,
     }, {
         name   : "index.html",
-        code   : "",
+        code   : htmlCode,
         type   : "html"
     }];
-    params.codes.assets = wrappingAssets.concat(assets);
+
+    // var assets = params.codes.assets;
+    // assets[0].name = wrapperCodeFile; // was App.js
+    // params.framework.framework = framework;
+    // params.codes.assets = wrappingAssets.concat(assets);
+
+    // Add assets to form
+    params.framework.framework = framework;
+    params.codes.assets = wrappingAssets;
 
     ExtL.each(params, function (key, val) {
         if (ExtL.isArray || ExtL.isObject) {
             val = JSON.stringify(val);
         }
-
         form.appendChild(ExtL.createElement({
             tag   : 'input',
             type  : 'hidden',
@@ -441,7 +524,6 @@ DocsApp.buildForm = function (target, params) {
             value : val
         }));
     });
-
     document.body.appendChild(form);
 
     return form;

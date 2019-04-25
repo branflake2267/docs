@@ -49,7 +49,6 @@ class AppBase extends SourceGuides {
             .then(this.outputApiSearch.bind(this))
             .then(this.processGuides.bind(this))
             .then(this.outputProductMenu.bind(this))
-            .then(this.outputOfflineDocs.bind(this))
             .then(() => {
                 console.log("appBase.run() Completed.")
             })
@@ -378,12 +377,14 @@ class AppBase extends SourceGuides {
             offlineDocsDir = this.offlineDocsDir,
             outputPath = Path.join(offlineDocsDir, file);
 
+        console.log("Output Offline Docs outputPath=" + outputPath);
+
         return new Promise((resolve, reject) => {
             Fs.ensureDir(offlineDocsDir, err => {
                 if (err) {
                     reject(err);
                 } else {
-                    Zipdir(this.outputProductDir, {
+                    Zipdir(this.options.outputDir, {
                         saveTo: outputPath
                     },
                         (err, buffer) => {

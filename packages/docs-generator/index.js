@@ -238,6 +238,9 @@ options._args = args;
 // TODO rename version to productVersion. This is because yargs, supports version as the bin process version.
 options.version = args.productVersion;
 
+// TODO add argument for building offlinedocs, turning on or off
+options.outputOffline = true;
+
 // Resolve the buildConfigsDir directory, consider directories that might start with ~/ to point to home. 
 options._myRoot = resolveDirectory(options.buildConfigsDir);
 

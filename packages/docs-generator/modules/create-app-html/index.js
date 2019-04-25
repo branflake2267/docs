@@ -40,6 +40,7 @@ class HtmlApp extends AppBase {
             .then(this.outputProductHomePage.bind(this))
             .then(this.outputMainLandingPage.bind(this))
             .then(this.outputMainRedirectToVersionPage.bind(this))
+            .then(this.outputOfflineDocs.bind(this))
             .then(() => {
                 this.log("create-app-html: Completed.");
             })

@@ -240,9 +240,6 @@ class OpenToolingHtmlApp extends HtmlApp {
      */
     run () {
         super.run();
-
-        // TODO create a product home page
-        // TODO create a Landing page class (if a CLI param is passed - or can be called directly, of course)
     }
 
     /**

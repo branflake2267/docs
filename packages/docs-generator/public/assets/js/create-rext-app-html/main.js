@@ -18,31 +18,61 @@ DocsApp.getNavHeaders = function (accordionCt) {
  * tabs.
  */
 DocsApp.initNavTree = function () {
-    var DA             = DocsApp,
-        apiTree        = DA.apiTree,
-        componentsTree = apiTree.API.Components,
-        classesTree    = apiTree.API.API,
-        guidesTree     = DA.guidesTree.Guides,
-        treeCt         = ExtL.get('tree'),
-        componentsId   = 'react-components-nav-',
-        guidesId       = 'react-guides-nav-',
-        classesId      = 'react-api-nav-',
-        id             = DA.meta.myId,
-        navTrees, target, targetId, targetNode;
+    var DA = DocsApp;
+    var apiTree = DA.apiTree || {};
+
+    var componentsTree;
+    if (apiTree.API && apiTree.API.Components) {
+        componentsTree = apiTree.API.Components;
+    }
+
+    var classesTree;
+    if (apiTree.API && apiTree.API.API) {
+        classesTree = apiTree.API.API;
+    }
+
+    var guidesTree;
+    if (DA.guidesTree && DA.guidesTree.Guides) {
+        guidesTree = DA.guidesTree.Guides;
+    }
+    
+    var treeCt = ExtL.get('tree');
+    var componentsId = 'react-components-nav-';
+    var guidesId = 'react-guides-nav-';
+    var classesId = 'react-api-nav-';
+    var id = DA.meta.myId;
+    var navTrees, target, targetId, targetNode;
 
     ExtL.addCls(treeCt, 'navigation-parent-ct');
-    treeCt.appendChild(this.createSubNavCt(componentsId, 'Components'));
-    treeCt.appendChild(this.createSubNavCt(guidesId,     'Guides'));
-    treeCt.appendChild(this.createSubNavCt(classesId,    'API'));
+    if (apiTree.API && apiTree.API.Components) {
+        treeCt.appendChild(this.createSubNavCt(componentsId, 'Components'));
+    }
 
-    navTrees = [
-        DA.componentsNavTree = DA.buildNavTree(componentsTree, componentsId + 'target'),
-        DA.guidesNavTree     = DA.buildNavTree(guidesTree,     guidesId     + 'target'),
-        DA.apiNavTree        = DA.buildNavTree(classesTree,    classesId    + 'target')
-    ];
+    if (DA.guidesTree && DA.guidesTree.Guides) {
+        treeCt.appendChild(this.createSubNavCt(guidesId, 'Guides'));
+    }
+
+    if (apiTree.API && apiTree.API.API) {
+        treeCt.appendChild(this.createSubNavCt(classesId, 'API'));
+    }
+
+    navTrees = [];
+
+    if (apiTree.API && apiTree.API.Components) {
+        DA.componentsNavTree = DA.buildNavTree(componentsTree, componentsId + 'target');
+    }
+
+    if (DA.guidesTree && DA.guidesTree.Guides) {
+        DA.guidesNavTree = DA.buildNavTree(guidesTree, guidesId + 'target');
+    }
+
+    if (apiTree.API && apiTree.API.API) {
+        DA.apiNavTree = DA.buildNavTree(classesTree, classesId + 'target');
+    }
+
 
     var len = navTrees.length,
-        i   = 0,
+        i = 0,
         tree;
 
     if (id) {
@@ -56,8 +86,8 @@ DocsApp.initNavTree = function () {
         DocsApp.addTreeToggleButton(tree);
 
         if (id) {
-            target       = tree.target;
-            targetId     = target.id + '-';
+            target = tree.target;
+            targetId = target.id + '-';
             targetNode = target.querySelector('[id="' + id + '"]') || target.querySelector('[id="' + targetId + id + '"]');
 
             if (targetNode) {
@@ -80,8 +110,8 @@ DocsApp.initNavTreeCollapseHeader = function () {
     var header = ExtL.get('tree-header');
 
     header.appendChild(ExtL.createElement({
-        tag  : 'span',
-        html : 'Menu'
+        tag: 'span',
+        html: 'Menu'
     }));
 };
 
@@ -92,14 +122,14 @@ DocsApp.initNavTreeCollapseHeader = function () {
 DocsApp.initNavTreeFilter = function () {
     var header = ExtL.get('tree-header'),
         navSearch = header.appendChild(ExtL.createElement({
-            tag         : 'input',
-            id          : 'nav-search',
-            type        : 'search',
-            placeholder : 'filter navigation...'
+            tag: 'input',
+            id: 'nav-search',
+            type: 'search',
+            placeholder: 'filter navigation...'
         }));
 
-    ExtL.on(navSearch, 'keyup',  DocsApp.filterNavTrees);
-    ExtL.on(navSearch, 'input',  DocsApp.filterNavTrees);
+    ExtL.on(navSearch, 'keyup', DocsApp.filterNavTrees);
+    ExtL.on(navSearch, 'input', DocsApp.filterNavTrees);
     ExtL.on(navSearch, 'change', DocsApp.filterNavTrees);
 };
 
@@ -109,7 +139,7 @@ DocsApp.initNavTreeFilter = function () {
  */
 DocsApp.filterNavTrees = ExtL.createBuffered(function () {
     var navSearch = ExtL.get('nav-search'),
-        value     = navSearch.value;
+        value = navSearch.value;
 
     DocsApp.componentsNavTree.filter(value);
     DocsApp.guidesNavTree.filter(value);
@@ -135,24 +165,24 @@ DocsApp.buildNavTree = function (navTree, ct) {
  */
 DocsApp.createSubNavCt = function (id, headerText) {
     return ExtL.createElement({
-        id : id + 'ct',
-        "class" : 'sub-nav-ct',
-        cn : [{
-            id      : id + 'header',
-            "class" : 'sub-nav-header sub-nav-ct-collapsed',
-            cn : [{
-                tag  : 'span',
-                html : headerText
+        id: id + 'ct',
+        "class": 'sub-nav-ct',
+        cn: [{
+            id: id + 'header',
+            "class": 'sub-nav-header sub-nav-ct-collapsed',
+            cn: [{
+                tag: 'span',
+                html: headerText
             }, {
-                tag     : 'i',
-                "class" : 'fa fa-chevron-down'
-            /*}, {
-                tag     : 'i',
-                "class" : 'fa fa-chevron-up'*/
+                tag: 'i',
+                "class": 'fa fa-chevron-down'
+                /*}, {
+                    tag     : 'i',
+                    "class" : 'fa fa-chevron-up'*/
             }]
         }, {
-            id      : id + 'target',
-            "class" : 'sub-nav-tree'
+            id: id + 'target',
+            "class": 'sub-nav-tree'
         }]
     });
 };
@@ -173,47 +203,47 @@ DocsApp.onHideClassTreeClick = function (e) {
 
 DocsApp.expandSubNav = function (header) {
     var expandedCls = 'sub-nav-header-expanded',
-        content     = header.nextElementSibling,
-        icon        = header.querySelector('i'),
-        tl          = TweenLite;
+        content = header.nextElementSibling,
+        icon = header.querySelector('i'),
+        tl = TweenLite;
 
     ExtL.addCls(header, expandedCls);
     tl.set(content, {
-        height  : 'auto',
-        padding : '10px 25px 10px 15px'
+        height: 'auto',
+        padding: '10px 25px 10px 15px'
     });
     tl.from(content, 0.4, {
-        height          : 0,
-        immediateRender : false,
+        height: 0,
+        immediateRender: false,
         //ease            : Back.easeOut
-        ease            : Power1.easeOut
+        ease: Power1.easeOut
     }, 0);
     tl.set(icon, {
-        rotation : 180
+        rotation: 180
     });
     tl.from(icon, 0.4, {
-        rotation : 0,
+        rotation: 0,
         //ease     : Back.easeOut
-        ease     : Power1.easeOut
+        ease: Power1.easeOut
     }, 0);
 };
 
 DocsApp.collapseSubNav = function (header) {
     var expandedCls = 'sub-nav-header-expanded',
-        content     = header.nextElementSibling,
-        icon        = header.querySelector('i'),
-        tl          = TweenLite;
+        content = header.nextElementSibling,
+        icon = header.querySelector('i'),
+        tl = TweenLite;
 
     ExtL.removeCls(header, expandedCls);
     tl.to(content, 0.3, {
-        height          : 0,
-        padding         : '0 25px 0 15px',
-        immediateRender : false,
-        ease            : Power1.easeOut
+        height: 0,
+        padding: '0 25px 0 15px',
+        immediateRender: false,
+        ease: Power1.easeOut
     }, 0);
     tl.to(icon, 0.3, {
-        rotation : 0,
-        ease     : Power1.easeOut
+        rotation: 0,
+        ease: Power1.easeOut
     }, 0);
 };
 
@@ -222,12 +252,12 @@ DocsApp.collapseSubNav = function (header) {
  * @param {Object} e The click event
  */
 DocsApp.toggleNavHeaders = function (e) {
-    var target       = DocsApp.getEventTarget(e),
-        navHeaders   = DocsApp.getNavHeaders(ExtL.up(target, '.navigation-parent-ct')),
-        len          = navHeaders.length,
-        i            = 0,
-        headerCls    = 'sub-nav-header',
-        expandedCls  = 'sub-nav-header-expanded',
+    var target = DocsApp.getEventTarget(e),
+        navHeaders = DocsApp.getNavHeaders(ExtL.up(target, '.navigation-parent-ct')),
+        len = navHeaders.length,
+        i = 0,
+        headerCls = 'sub-nav-header',
+        expandedCls = 'sub-nav-header-expanded',
         header, content;
 
     if (target) {
@@ -236,7 +266,7 @@ DocsApp.toggleNavHeaders = function (e) {
         }
 
         for (; i < len; i++) {
-            header  = navHeaders[i];
+            header = navHeaders[i];
             if (header === target && !ExtL.hasCls(header, expandedCls)) {
                 DocsApp.expandSubNav(header);
             } else {
@@ -258,15 +288,15 @@ DocsApp.showMultiSrcPanel = function (e) {
         return;
     }
 
-    var target    = DocsApp.getEventTarget(e),
+    var target = DocsApp.getEventTarget(e),
         //picker    = ExtL.get('multi-src-picker'),
-        picker    = DocsApp.getMultiSrcPanel(),
+        picker = DocsApp.getMultiSrcPanel(),
         targetBox = target.getBoundingClientRect();
 
     if (picker) {
         ExtL.applyStyles(picker, {
-            top  : targetBox.bottom + 'px',
-            left : targetBox.left + 'px'
+            top: targetBox.bottom + 'px',
+            left: targetBox.left + 'px'
         });
         ExtL.addCls(picker, 'show-multi');
     }
@@ -277,8 +307,8 @@ DocsApp.showMultiSrcPanel = function (e) {
  */
 DocsApp.initNavTreeEventListeners = function () {
     var navHeaders = DocsApp.getNavHeaders(),
-        len        = navHeaders.length,
-        i          = 0,
+        len = navHeaders.length,
+        i = 0,
         header;
 
     for (; i < len; i++) {
@@ -292,8 +322,8 @@ DocsApp.initNavTreeEventListeners = function () {
  * @param {HTMLElement} collapseEl The collapse / expand toggle element
  */
 DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
-    var member      = ExtL.up(collapseEl, '.classmembers'),
-        icon        = collapseEl.querySelector('.fa-caret-right'),
+    var member = ExtL.up(collapseEl, '.classmembers'),
+        icon = collapseEl.querySelector('.fa-caret-right'),
         expandedCls = 'member-expanded';
 
     ExtL.toggleCls(member, expandedCls);
@@ -301,30 +331,30 @@ DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
     var tl = TweenLite;
     if (ExtL.hasCls(member, expandedCls)) {
         tl.set(member, {
-            height  : 'auto'
+            height: 'auto'
         });
         tl.from(member, 0.4, {
-            height          : 46,
-            immediateRender : false,
+            height: 46,
+            immediateRender: false,
             //ease            : Back.easeOut
-            ease            : Power1.easeOut
+            ease: Power1.easeOut
         });
         tl.set(icon, {
-            rotation : 90
+            rotation: 90
         });
         tl.from(icon, 0.4, {
-            rotation : 0,
-            ease     : Power1.easeOut
+            rotation: 0,
+            ease: Power1.easeOut
         }, 0);
     } else {
         tl.to(member, 0.3, {
-            height          : 46,
-            immediateRender : false,
-            ease            : Power1.easeOut
+            height: 46,
+            immediateRender: false,
+            ease: Power1.easeOut
         });
         tl.to(icon, 0.3, {
-            rotation : 0,
-            ease     : Power1.easeOut
+            rotation: 0,
+            ease: Power1.easeOut
         }, 0);
     }
 
@@ -334,15 +364,15 @@ DocsApp.onMemberCollapseToggleClick = function (collapseEl) {
  *
  */
 DocsApp.typesDisplay = {
-    c  : 'prop',
-    p  : 'prop',
-    sp : 'property',
-    m  : 'method',
-    sm : 'method',
-    e  : 'event',
-    v  : 'css var',
-    x  : 'css mixin',
-    z  : 'mixin param'
+    c: 'prop',
+    p: 'prop',
+    sp: 'property',
+    m: 'method',
+    sm: 'method',
+    e: 'event',
+    v: 'css var',
+    x: 'css mixin',
+    z: 'mixin param'
 };
 
 /**
@@ -392,7 +422,7 @@ DocsApp.buildForm = function (target, params) {
     // Change the framework for ExtReact only - Used for embedded fiddles
     var myMeta = DocsApp.meta;
     var actualProd = myMeta.product;
-    
+
     var framework = "";
     var wrapperCode = "";
     var wrapperCodeFile = "";
@@ -410,25 +440,25 @@ DocsApp.buildForm = function (target, params) {
         wrapperCodeFile = "app.js";
         wrapperCodeType = "javascript";
 
-         // Find the component class
-         // Class object
-         var componentClassName = "MyExample";
-         var foundClass = /export.?default.?class(.*?)extends/.exec(fiddleCode);
-         if (foundClass && foundClass[1]) {
+        // Find the component class
+        // Class object
+        var componentClassName = "MyExample";
+        var foundClass = /export.?default.?class(.*?)extends/.exec(fiddleCode);
+        if (foundClass && foundClass[1]) {
             componentClassName = foundClass[1].trim();
-         }
+        }
 
-         // Function object
-         foundClass = /export.*?default.*?function.*?(.*?)\(\)/.exec(fiddleCode);
-         if (foundClass && foundClass[1]) {
+        // Function object
+        foundClass = /export.*?default.*?function.*?(.*?)\(\)/.exec(fiddleCode);
+        if (foundClass && foundClass[1]) {
             componentClassName = foundClass[1].trim();
-         }
+        }
 
         // uglify has a problem with template literals ``
         wrapperCode += "import { launch } from '@sencha/ext-react';\n\n";
         wrapperCode += fiddleCode;
         wrapperCode += "\n\nlaunch(<" + componentClassName + "/>);\n";
-    
+
         htmlCode = "";
 
     } else if (actualProd === 'extangular') {
@@ -464,7 +494,7 @@ DocsApp.buildForm = function (target, params) {
         wrapperCode += "})\n";
         wrapperCode += "export class AppModule { }\n";
         wrapperCode += "platformBrowserDynamic().bootstrapModule(AppModule);\n";
-        
+
         htmlCode += "<!DOCTYPE html>\n";
         htmlCode += "<html>\n";
         htmlCode += "<head>\n";
@@ -486,22 +516,22 @@ DocsApp.buildForm = function (target, params) {
     }
 
     var form = ExtL.createElement({
-        tag    : 'form',
-        role   : 'presentation',
-        action : fiddleURL,
-        method : 'POST',
-        target : target,
-        style  : 'display:none'
+        tag: 'form',
+        role: 'presentation',
+        action: fiddleURL,
+        method: 'POST',
+        target: target,
+        style: 'display:none'
     });
 
     var wrappingAssets = [{
-        name   : wrapperCodeFile,
-        type   : wrapperCodeType,
-        code   : wrapperCode,
+        name: wrapperCodeFile,
+        type: wrapperCodeType,
+        code: wrapperCode,
     }, {
-        name   : "index.html",
-        code   : htmlCode,
-        type   : "html"
+        name: "index.html",
+        code: htmlCode,
+        type: "html"
     }];
 
     // var assets = params.codes.assets;
@@ -518,10 +548,10 @@ DocsApp.buildForm = function (target, params) {
             val = JSON.stringify(val);
         }
         form.appendChild(ExtL.createElement({
-            tag   : 'input',
-            type  : 'hidden',
-            name  : key,
-            value : val
+            tag: 'input',
+            type: 'hidden',
+            name: key,
+            value: val
         }));
     });
     document.body.appendChild(form);
@@ -536,33 +566,33 @@ DocsApp.getElementBorderRadius = function (el) {
         bRadTR = window.getComputedStyle(el).getPropertyValue("border-top-right-radius");
 
     return {
-        borderTopLeftRadius     : bRadTL,
-        borderBottomLeftRadius  : bRadBL,
-        borderTopRightRadius    : bRadTR,
-        borderBottomRightRadius : bRadBR
+        borderTopLeftRadius: bRadTL,
+        borderBottomLeftRadius: bRadBL,
+        borderTopRightRadius: bRadTR,
+        borderBottomRightRadius: bRadBR
     };
 };
 
 DocsApp.animateRipple = function (e, clickTarget, timing) {
-    e      = DocsApp.getEvent(e);
+    e = DocsApp.getEvent(e);
     timing = timing || 0.5;
 
     var animationParent = clickTarget.querySelector('svg'),
         animationTarget = clickTarget.querySelector('use'),
-        tl              = new TimelineMax(),
-        clickTargetBox  = clickTarget.getBoundingClientRect(),
-        eventTargetBox  = DocsApp.getEventTarget(e).getBoundingClientRect(),
+        tl = new TimelineMax(),
+        clickTargetBox = clickTarget.getBoundingClientRect(),
+        eventTargetBox = DocsApp.getEventTarget(e).getBoundingClientRect(),
         //x               = e.offsetX,
-        x               = eventTargetBox.left - clickTargetBox.left + e.offsetX,
+        x = eventTargetBox.left - clickTargetBox.left + e.offsetX,
         //y               = e.offsetY,
-        y               = eventTargetBox.top - clickTargetBox.top + e.offsetY,
-        w               = clickTarget.offsetWidth,
-        h               = clickTarget.offsetHeight,
-        offsetX         = Math.abs((w / 2) - x),
-        offsetY         = Math.abs((h / 2) - y),
-        deltaX          = (w / 2) + offsetX,
-        deltaY          = (h / 2) + offsetY,
-        scale_ratio     = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+        y = eventTargetBox.top - clickTargetBox.top + e.offsetY,
+        w = clickTarget.offsetWidth,
+        h = clickTarget.offsetHeight,
+        offsetX = Math.abs((w / 2) - x),
+        offsetY = Math.abs((h / 2) - y),
+        deltaX = (w / 2) + offsetX,
+        deltaY = (h / 2) + offsetY,
+        scale_ratio = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
     /*console.log('x is:' + x);
     console.log('y is:' + y);
@@ -576,16 +606,16 @@ DocsApp.animateRipple = function (e, clickTarget, timing) {
 
     tl.set(animationParent, this.getElementBorderRadius(clickTarget));
     tl.fromTo(animationTarget, timing, {
-        x               : x,
-        y               : y,
-        transformOrigin : '50% 50%',
-        scale           : 0,
-        opacity         : 1,
-        ease            : Linear.easeIn
+        x: x,
+        y: y,
+        transformOrigin: '50% 50%',
+        scale: 0,
+        opacity: 1,
+        ease: Linear.easeIn
     }, {
-        scale   : scale_ratio,
-        opacity : 0
-    });
+            scale: scale_ratio,
+            opacity: 0
+        });
 
     return tl;
 };
@@ -593,7 +623,7 @@ DocsApp.animateRipple = function (e, clickTarget, timing) {
 DocsApp.initRippleClickListener = function (el) {
     el = ExtL.get(el);
 
-    ExtL.on(el, 'click',  function (e) {
+    ExtL.on(el, 'click', function (e) {
         var target = DocsApp.getEventTarget(e);
 
         while (target !== el) {
@@ -604,9 +634,9 @@ DocsApp.initRippleClickListener = function (el) {
 };
 
 DocsApp.addRippleEl = function (parentEl) {
-    var svgns   = "http://www.w3.org/2000/svg",
+    var svgns = "http://www.w3.org/2000/svg",
         xlinkns = "http://www.w3.org/1999/xlink",
-        svg     = document.createElementNS(svgns, 'svg'),
+        svg = document.createElementNS(svgns, 'svg'),
         useEl;
 
     svg.setAttribute('class', 'ripple-obj');
@@ -703,17 +733,17 @@ Tree.prototype.toggleCollapse = function (el, collapse) {
  */
 Tree.prototype.expand = function (node) {
     var content = node.nextSibling,
-        tl      = TweenLite;
+        tl = TweenLite;
 
     ExtL.removeCls(node, this.collapseCls);
     tl.set(content, {
-        height  : 'auto'
+        height: 'auto'
     });
     tl.from(content, 0.4, {
-        height          : 0,
-        immediateRender : false,
+        height: 0,
+        immediateRender: false,
         //ease            : Back.easeOut
-        ease            : Power1.easeOut
+        ease: Power1.easeOut
     });
 };
 
@@ -725,12 +755,12 @@ Tree.prototype.expand = function (node) {
  */
 Tree.prototype.collapse = function (node) {
     var content = node.nextSibling,
-        tl      = TweenLite;
+        tl = TweenLite;
 
     ExtL.addCls(node, this.collapseCls);
     tl.to(content, 0.3, {
-        height          : 0,
-        immediateRender : false,
-        ease            : Power1.easeOut
+        height: 0,
+        immediateRender: false,
+        ease: Power1.easeOut
     });
 };

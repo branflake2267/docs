@@ -76,7 +76,7 @@ class AppBase extends SourceGuides {
                 console.log("doRunApi: SKIP: running api... hasApi=" + hasApi);
                 return resolve();
             }
-    
+
             // Build the doxi files for api docs promises
             toolkitList.forEach(async (toolkit) => {
                 console.log("doRunApi: process toolkit=" + toolkit);
@@ -377,23 +377,28 @@ class AppBase extends SourceGuides {
             offlineDocsDir = this.offlineDocsDir,
             outputPath = Path.join(offlineDocsDir, file);
 
-        console.log("Output Offline Docs outputPath=" + outputPath);
+        console.log("doOutputOfflineDocs: Output Offline Docs outputPath=" + outputPath);
 
         return new Promise((resolve, reject) => {
             Fs.ensureDir(offlineDocsDir, err => {
                 if (err) {
                     reject(err);
                 } else {
-                    Zipdir(this.options.outputDir, {
-                        saveTo: outputPath
-                    },
-                        (err, buffer) => {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve();
-                            }
-                        });
+                    // Just in case, remove the previous build zip
+                    let zipExists = Fs.pathExistsSync(outputPath);
+                    if (zipExists) {
+                        console.log("doOutputOfflineDocs: Delete existing zip file. outputPath=" + outputPath);
+                        Fs.removeSync(outputPath)
+                    }
+
+                    // zip up output directory into a zip
+                    Zipdir(this.options.outputDir, { saveTo: outputPath }, (err, buffer) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
                 }
             });
         });
@@ -490,7 +495,7 @@ class AppBase extends SourceGuides {
             toolkit: toolkit,
             theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
         };
-        
+
         // fiddle @example: match properties like "packages=[ext-react,charts]"
         var keyedRe = /(\w+)=([\[\w\-.,\]]+)/i,
             frameworkMap = {
@@ -519,7 +524,7 @@ class AppBase extends SourceGuides {
                             let mapped = frameworkMap[val];
                             var values = "";
                             if (val.includes('[')) { // like [ext-react,charts], extract the array to values
-                                val = val.replace('[',''); 
+                                val = val.replace('[', '');
                                 val = val.replace(']', '');
                                 if (val.includes(',')) {
                                     // has multiple values
@@ -528,7 +533,7 @@ class AppBase extends SourceGuides {
                                     // only one value
                                     values = val;
                                 }
-                                
+
                             } else {
                                 values = val;
                             }

@@ -62,7 +62,7 @@ class AppBase extends SourceGuides {
      * each toolkit - if applicable)
      */
     doRunApi() {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             console.log(`doRunApi: Start 'AppBase.doRunApi'...`);
 
             let meta = this.options.prodVerMeta;
@@ -77,11 +77,11 @@ class AppBase extends SourceGuides {
                 return resolve();
             }
 
-            // Build the doxi files for api docs promises
-            toolkitList.forEach(async (toolkit) => {
-                console.log("doRunApi: process toolkit=" + toolkit);
-                await this.prepareApiSource(toolkit);
-            });
+            // awaiting in a foreach loop won't work here. 
+            for (var i=0; i < toolkitList.length; i++) {
+                console.log("doRunApi: process toolkit=" + toolkitList[i]);
+                await this.prepareApiSource(toolkitList[i]);
+            }
 
             console.log("doRunApi: Completed.");
 

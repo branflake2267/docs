@@ -124,6 +124,9 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     // loop over all passed nodes
     for (var i = 0; i < len; i++) {
         node      = data[i]; // the current node
+        if (!node) {
+            continue;
+        }
         accessCls = node.access + '-tree-node';
         // the default config to use for this node when processed to the DOM by
         // ExtL.createElement

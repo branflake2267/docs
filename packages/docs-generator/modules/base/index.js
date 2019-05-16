@@ -1,26 +1,26 @@
 /* jshint node: true */
 'use strict';
 
-const EventEmitter     = require('events'),
-      Debug            = require('../../Debug'),
-      Worker           = require('tiny-worker'),
-      Os               = require('os'),
-      Path             = require('path'),
-      CompareVersions  = require('compare-versions'),
-      CpuCount         = Os.cpus().length,
-      Utils            = require('../shared/Utils'),
-      Chalk            = require('chalk'),
-      Shell            = require('shelljs'),
-      Play             = require('play'),
-      Fs               = require('fs-extra'),
-      Mkdirp           = require('mkdirp'),
-      marked           = require('@sencha/custom-marked'),
-      Git              = require('git-state'),
-      Handlebars       = require('handlebars'),
-      safeLinkRe       = /(\[]|\.\.\.)/g,
-      StringSimilarity = require('string-similarity'),
-      //idRe             = /[^\w]+/g,
-      _                = require('lodash');
+const EventEmitter = require('events'),
+    Debug = require('../../Debug'),
+    Worker = require('tiny-worker'),
+    Os = require('os'),
+    Path = require('path'),
+    CompareVersions = require('compare-versions'),
+    CpuCount = Os.cpus().length,
+    Utils = require('../shared/Utils'),
+    Chalk = require('chalk'),
+    Shell = require('shelljs'),
+    Play = require('play'),
+    Fs = require('fs-extra'),
+    Mkdirp = require('mkdirp'),
+    marked = require('@sencha/custom-marked'),
+    Git = require('git-state'),
+    Handlebars = require('handlebars'),
+    safeLinkRe = /(\[]|\.\.\.)/g,
+    StringSimilarity = require('string-similarity'),
+    //idRe             = /[^\w]+/g,
+    _ = require('lodash');
 
 // TODO add this.log() stuff throughout all classes: `log` for general messaging, `info`
 // for warnings, and `error` for serious / fatal errors
@@ -28,7 +28,7 @@ const EventEmitter     = require('events'),
 // TODO create a BuildApps class for running both the HTML and Ext builds (maybe
 // controllable with CLI params)
 class Base {
-    constructor (options) {
+    constructor(options) {
         let root = options._myRoot,
             projectDefaults = Fs.readJsonSync(
                 Path.join(root, 'configs/docs_project_config.json')
@@ -46,7 +46,7 @@ class Base {
         options.assetsDir = this.assetsDir;
 
         // Resolve the public directory
-        options.publicDir = Path.join(__dirname, '../..', 'public'); 
+        options.publicDir = Path.join(__dirname, '../..', 'public');
 
         // Debug
         console.log(`CONFIG: options.outputDir=${options.outputDir} - The build output directory.`);
@@ -65,19 +65,19 @@ class Base {
         // a map of doxi member type group names to the format expected by the docs
         // post-processors
         this.memberTypesMap = {
-            configs             : "cfg",
-            properties          : "property",
-            methods             : "method",
-            events              : "event",
-            vars                : "var",
-            "sass-mixins"       : "method",
-            "static-methods"    : "static-method",
-            "static-properties" : "static-property"
+            configs: "cfg",
+            properties: "property",
+            methods: "method",
+            events: "event",
+            vars: "var",
+            "sass-mixins": "method",
+            "static-methods": "static-method",
+            "static-properties": "static-property"
         };
 
         // possible member types
-        this.memberTypes = [ 'cfg', 'property', 'static-property', 'method',
-                            'static-method', 'event', 'css_var-S', 'css_mixin' ];
+        this.memberTypes = ['cfg', 'property', 'static-property', 'method',
+            'static-method', 'event', 'css_var-S', 'css_mixin'];
 
         this.escapeRegexRe = /([-.*+?\^${}()|\[\]\/\\])/g;
 
@@ -103,19 +103,19 @@ class Base {
         } catch (e) {
             this.error("Error registering handlebars helpers.", e);
         }
-        
+
         // assign current runtime metadata
         let o = this.options,
             { product, version } = o,
-            majorVer             = version && version.charAt(),
-            prodObj              = o.products[product];
+            majorVer = version && version.charAt(),
+            prodObj = o.products[product];
 
         if (!prodObj) {
             let match = StringSimilarity.findBestMatch(
                 product,
                 Object.keys(o.products)
             ),
-            proposed = `--product=${match.bestMatch.target}`;
+                proposed = `--product=${match.bestMatch.target}`;
 
             this.log(`
                 ${Chalk.white.bgRed('ERROR :')} '${Chalk.gray('docs_project_config.json')}' does not have the product config for the passed product: '${Chalk.gray(product)}'
@@ -126,19 +126,19 @@ class Base {
 
         // toolkit version "6.6.0-CE" or "6". options: modern, classic
         let toolkitObj = (prodObj.toolkit && prodObj.toolkit[version]) || (prodObj.toolkit && prodObj.toolkit[majorVer]);
-        let toolkits   = toolkitObj ? toolkitObj.toolkits : false;
-        let toolkit    = o.toolkit || (toolkitObj && toolkitObj.defaultToolkit) || 'api';
+        let toolkits = toolkitObj ? toolkitObj.toolkits : false;
+        let toolkit = o.toolkit || (toolkitObj && toolkitObj.defaultToolkit) || 'api';
 
-        o.prodVerMeta   = {
-            majorVer    : majorVer,
-            prodObj     : prodObj,
-            hasApi      : !!prodObj.hasApi,
-            hasVersions : prodObj.hasVersions,
-            hasToolkits : (toolkits && toolkits.length),
-            toolkits    : toolkits,
-            toolkit     : toolkit,
-            hasGuides   : prodObj.hasGuides !== false,
-            title       : prodObj.title
+        o.prodVerMeta = {
+            majorVer: majorVer,
+            prodObj: prodObj,
+            hasApi: !!prodObj.hasApi,
+            hasVersions: prodObj.hasVersions,
+            hasToolkits: (toolkits && toolkits.length),
+            toolkits: toolkits,
+            toolkit: toolkit,
+            hasGuides: prodObj.hasGuides !== false,
+            title: prodObj.title
         };
 
         // DocsApp.meta = myMeta - search hint
@@ -156,7 +156,7 @@ class Base {
      * + api directory name
      * @return {String} The api files' output path
      */
-    get apiDir () {
+    get apiDir() {
         // ** NOTE ** Do not cache since the apiDirName may be changed between toolkits
         return Path.join(this.outputProductDir, this.apiDirName);
     }
@@ -166,7 +166,7 @@ class Base {
      * the 'options' object if it exists else "api".
      * @return {String} The directory for API output
      */
-    get apiDirName () {
+    get apiDirName() {
         // ** NOTE ** Do not cache since the options.toolkit may be changed between builds
         let adn = this.options.toolkit || 'api';
         //console.log("CONFIG: apiDirName=" + adn);
@@ -178,13 +178,13 @@ class Base {
      * build
      * @return {String} The full path to the output assets directory
      */
-    get assetsDir () {
+    get assetsDir() {
         let dir = this._assetsDir;
 
         if (!dir) {
-            let { options }   = this,
+            let { options } = this,
                 { assetsDir } = options,
-                formatted     = Utils.format(assetsDir, options);
+                formatted = Utils.format(assetsDir, options);
 
             dir = this._assetsDir = formatted;
         }
@@ -196,30 +196,30 @@ class Base {
      * Returns common metadata needed by app pages
      * @return {Object} Hash of common current page metadata
      */
-    get commonMetaData () {
-        const { options }     = this,
-              { prodVerMeta } = options,
-              meta            = Object.assign({}, options.prodVerMeta),
-              product         = this.getProduct(options.product),
-              { searchPartnerVersions } = this;
-            
+    get commonMetaData() {
+        const { options } = this,
+            { prodVerMeta } = options,
+            meta = Object.assign({}, options.prodVerMeta),
+            product = this.getProduct(options.product),
+            { searchPartnerVersions } = this;
+
         // if (guideSearchPartners) {
         //     const { productMenu: partnerVersions } = products[guideSearchPartners];
         // }
 
         return Object.assign(meta, {
-            version               : options.version,
-            pageType              : 'common',
-            product               : product,
-            apiProduct            : this.apiProduct,
-            apiVersion            : this.apiVersion,
-            title                 : meta.title,
-            toolkit               : prodVerMeta.hasToolkits && options.toolkit,
-            exceptions            : options.buildExceptions,
-            searchPartnerVersions : searchPartnerVersions
+            version: options.version,
+            pageType: 'common',
+            product: product,
+            apiProduct: this.apiProduct,
+            apiVersion: this.apiVersion,
+            title: meta.title,
+            toolkit: prodVerMeta.hasToolkits && options.toolkit,
+            exceptions: options.buildExceptions,
+            searchPartnerVersions: searchPartnerVersions
         });
     }
-    
+
     /**
      * Finds the search partner version that most closely matches the product version
      * you're currently working with
@@ -245,37 +245,33 @@ class Base {
      *         }
      *     }
      */
-    get searchPartnerVersions () {
+    get searchPartnerVersions() {
         const { options } = this,
-              {
-                  product : currentProduct,
-                  products
-              }       = options,
-              product = this.getProduct(currentProduct),
-              {
-                  guideSearchPartners,
-                  productMenu
-              } = products[product],
-              searchPartnerVersions   = {};
-        
+            {
+                product: currentProduct,
+                products
+            } = options,
+            product = this.getProduct(currentProduct),
+            { guideSearchPartners, productMenu } = products[product], searchPartnerVersions = {};
+
         if (guideSearchPartners && guideSearchPartners.length) {
             guideSearchPartners.forEach(partner => {
-                const prodObj         = searchPartnerVersions[partner] = {};
-                let   partnerVersions = _.clone(products[partner].productMenu);
-                
+                const prodObj = searchPartnerVersions[partner] = {};
+                let partnerVersions = _.clone(products[partner].productMenu);
+
                 if (!partnerVersions || partnerVersions === true) {
                     partnerVersions = [];
                 }
-                partnerVersions      = partnerVersions.reverse();
+                partnerVersions = partnerVersions.reverse();
 
                 productMenu.forEach(prodVer => {
                     const [
-                              firstPartner
-                          ]           = partnerVersions,
-                          lastPartner = _.last(partnerVersions),
-                          under       = CompareVersions(prodVer, firstPartner) < 1,
-                          over        = CompareVersions(prodVer, lastPartner) === 1;
-                    
+                        firstPartner
+                    ] = partnerVersions,
+                        lastPartner = _.last(partnerVersions),
+                        under = CompareVersions(prodVer, firstPartner) < 1,
+                        over = CompareVersions(prodVer, lastPartner) === 1;
+
                     if (under) {
                         prodObj[prodVer] = firstPartner;
                     } else if (over) {
@@ -291,7 +287,7 @@ class Base {
                 });
             });
         }
-        
+
         return searchPartnerVersions;
     }
 
@@ -299,15 +295,15 @@ class Base {
      * The directory where CSS assets should be copied to in a build
      * @return {String} The full path to the output CSS directory
      */
-    get cssDir () {
+    get cssDir() {
         let dir = this._cssDir;
 
         if (!dir) {
             let { options } = this,
-            cssDir          = Utils.format(options.cssDir, options);
+                cssDir = Utils.format(options.cssDir, options);
 
             dir = this._cssDir = options.cssDir = Path.resolve(options._myRoot, cssDir);
-            
+
             this.log("CONFIG: cssDir=" + dir);
         }
 
@@ -318,7 +314,7 @@ class Base {
      * Returns the folder node class used for tree navigation
      * @return {String} The navigation tree's folder node class
      */
-    get folderNodeCls () {
+    get folderNodeCls() {
         return 'fa fa-folder-o';
     }
 
@@ -326,7 +322,7 @@ class Base {
      * The partial to use as the help page content
      * @return {String} The name of the partial file to use as the docs help content
      */
-    get helpPartial () {
+    get helpPartial() {
         return '_help';
     }
 
@@ -334,12 +330,12 @@ class Base {
      * The directory where image assets should be copied to in a build
      * @return {String} The full path to the output images directory
      */
-    get imagesDir () {
+    get imagesDir() {
         let dir = this._imagesDir;
 
         if (!dir) {
             let { options } = this,
-                imagesDir   = Utils.format(options.imagesDir, options);
+                imagesDir = Utils.format(options.imagesDir, options);
 
             dir = this._imagesDir = options.imagesDir = Path.resolve(options._myRoot, imagesDir);
 
@@ -353,12 +349,12 @@ class Base {
      * The directory where JS assets should be copied to in a build
      * @return {String} The full path to the output JS directory
      */
-    get jsDir () {
+    get jsDir() {
         let dir = this._jsDir;
 
         if (!dir) {
             let { options } = this,
-                jsDir       = Utils.format(options.jsDir, options);
+                jsDir = Utils.format(options.jsDir, options);
 
             dir = this._jsDir = options.jsDir = Path.resolve(options._myRoot, jsDir);
 
@@ -372,7 +368,7 @@ class Base {
      * The handlebars template for HTML output
      * @return {Object} The compiled handlebars template
      */
-    get mainTemplate () {
+    get mainTemplate() {
         let tpl = this._guideTpl;
         if (!tpl) {
             let path = Path.join(this.options._myRoot, 'templates/html-main.hbs');
@@ -401,9 +397,9 @@ class Base {
     /**
      * Returns the downloads / offline docs dir
      */
-    get offlineDocsDir () {
+    get offlineDocsDir() {
         let { options } = this,
-            offlineDir  = Utils.format(options.offlineDocsDir, options);
+            offlineDir = Utils.format(options.offlineDocsDir, options);
 
         return Path.resolve(options._myRoot, offlineDir);
     }
@@ -412,11 +408,11 @@ class Base {
      * Returns the full path of the output directory + the product name (and version if applicable).
      * @return {String} The full output directory path
      */
-    get outputProductDir () {
+    get outputProductDir() {
         // TODO cache this and all the other applicable static getters
-        let { options }     = this,
-            { product }     = options,
-            outPath         = Utils.format(options.outputProductDir, options),
+        let { options } = this,
+            { product } = options,
+            outPath = Utils.format(options.outputProductDir, options),
             { hasVersions } = options.products[product]
 
         if (hasVersions) {
@@ -430,15 +426,15 @@ class Base {
      * Initializes the parent chain array of all module ancestry by file name
      * @return {String[]} This module's file name (in an array).
      */
-    get parentChain () {
-        return [ Path.parse(__dirname).base ];
+    get parentChain() {
+        return [Path.parse(__dirname).base];
     }
 
     /**
      * Returns the resources directory used to house resource files for the apps
      * @return {String} the common resources directory (full) path
      */
-    get resourcesDir () {
+    get resourcesDir() {
         return Path.join(this.outputProductDir, this.options.resourcesDir);
     }
 
@@ -446,33 +442,33 @@ class Base {
      * Generates a unique ID for an element
      * @return {String} The unique ID
      */
-    get uniqueId () {
+    get uniqueId() {
         if (!this._rollingId) {
             this._rollingId = 0;
         }
         return `s-${this._rollingId++}`;
     }
-    
+
     /**
      * Returns the path to the since map file
      * @return {String} The file path
      */
-    get sinceMapPath () {
+    get sinceMapPath() {
         const { options } = this,
-              root        = options._myRoot,
-              assetsSrc   = Path.join(root, 'assets');
-              
+            root = options._myRoot,
+            assetsSrc = Path.join(root, 'assets');
+
         return Path.join(assetsSrc, 'js', 'sinceMap.json');
     }
-    
+
     /**
      * Returns an object containing classes and all members as keys with the version that
      * that class / member shows up in the SDK
      * @return {Object} Map of classes / members and when they were introduced
      */
-    get sinceMap () {
+    get sinceMap() {
         const { sinceMapPath } = this;
-        
+
         return Fs.existsSync(sinceMapPath) ? Fs.readJsonSync(sinceMapPath) : {};
     }
 
@@ -491,7 +487,7 @@ class Base {
      * be returned from
      * @return {String[]} Array of directory names
      */
-    getDirs (path) {
+    getDirs(path) {
         return this.getFilteredFiles(Fs.readdirSync(path)).filter(item => {
             return Fs.statSync(Path.join(path, item)).isDirectory();
         });
@@ -510,14 +506,14 @@ class Base {
      * @param {Date} endTime the ending time
      * @return {String} a human-readable elapsed time
      */
-    getElapsed (startTime, endTime) {
-        endTime     = endTime || new Date();
-        
+    getElapsed(startTime, endTime) {
+        endTime = endTime || new Date();
+
         let elapsed = new Date(endTime - startTime),
             minutes = elapsed.getMinutes(),
             seconds = elapsed.getSeconds(),
-            ms      = elapsed.getMilliseconds(),
-            ret     = [];
+            ms = elapsed.getMilliseconds(),
+            ret = [];
 
         if (minutes) {
             ret.push(minutes + 'm');
@@ -548,11 +544,11 @@ class Base {
      * looking for the version within the filename.  Defaults to '-'.
      * @return {String} The filename most closely matching the passed version
      */
-    getFileByVersion (path, version, delimiter) {
+    getFileByVersion(path, version, delimiter) {
         delimiter = delimiter || '-';
 
-        let files        = this.getFiles(path),
-            len          = files.length,
+        let files = this.getFiles(path),
+            len = files.length,
             delimiterLen = delimiter.length,
             matchingFile;
 
@@ -560,22 +556,22 @@ class Base {
 
         // if there is only one file just return it
         if (len === 1) {
-            [ matchingFile ] = files;
+            [matchingFile] = files;
         } else {
             // else we'll loop over the files to find the one that is closest to the
             // passed version without going over
             let cfgVer = '0';
 
             for (let i = 0; i < len; i++) {
-                let file     = files[i],
+                let file = files[i],
                     { name } = Path.parse(file),
-                    v        = name.substring(name.indexOf('-') + delimiterLen);
+                    v = name.substring(name.indexOf('-') + delimiterLen);
                 let compare = CompareVersions(v, version);
 
                 console.log("\t\t\t getFileByVersion(): Compare v=" + v + " compared to version=" + version + "=" + compare);
 
                 if (compare <= 0) {
-                    cfgVer       = v;
+                    cfgVer = v;
                     matchingFile = file;
                 }
             }
@@ -596,11 +592,11 @@ class Base {
      * from
      * @return {String[]} Array of file names from the source directory
      */
-    getFiles (path) {
+    getFiles(path) {
         //this.log('\tgetFiles path=' + path);
-        
+
         // filter out system files and only return files (filter out directories)
-        return this.getFilteredFiles(Fs.readdirSync(path)).filter(function(file) {
+        return this.getFilteredFiles(Fs.readdirSync(path)).filter(function (file) {
             return Fs.statSync(Path.join(path, file)).isFile();
         });
     }
@@ -610,7 +606,7 @@ class Base {
      * @param {String[]} files Array of file names
      * @return [String[]] Array of file names minus system files
      */
-    getFilteredFiles (files) {
+    getFilteredFiles(files) {
         return files.filter(item => !(/(^|\/)\.[^\/\.]/g).test(item));
     }
 
@@ -620,7 +616,7 @@ class Base {
      * @param {String[]} files Array of file names to filter
      * @return {String[]} The array of filtered file names
      */
-    getPartials (files) {
+    getPartials(files) {
         return files.filter((file) => {
             return file.charAt(0) === '_';
         });
@@ -634,9 +630,14 @@ class Base {
      * @param {String} prod The product name to normalized
      * @return {String} The normalized product name or `null` if not found
      */
-    getProduct (prod) {
+    getProduct(prod) {
         prod = prod || this.options.product;
-        return this.options.normalizedProductList[prod];
+        // TODO if missing from normalizedProductList report it. 
+        var rp = this.options.normalizedProductList[prod];
+        if (!rp) {
+            console.log("ERROR: The product was not listed in the 'normalizedProductList' in the config.")
+        }
+        return rp;
     }
 
     /*=============================================
@@ -651,25 +652,25 @@ class Base {
      * @return {Array/Undefined} The array of toolkits or undefined if the product /
      * version does not have toolkits
      */
-    getToolkits (product = this.apiProduct, version = this.apiVersion) {
+    getToolkits(product = this.apiProduct, version = this.apiVersion) {
         const { products } = this.options,
-              prodObj = products[product],
-              [ majorVer ] = version.split('.');
-              
+            prodObj = products[product],
+            [majorVer] = version.split('.');
+
         return prodObj.toolkit
-               && prodObj.toolkit[majorVer]
-               && prodObj.toolkit[majorVer].toolkits;
+            && prodObj.toolkit[majorVer]
+            && prodObj.toolkit[majorVer].toolkits;
     }
 
     /**
      * Register all handlebars partials from the templates directory
      */
-    registerHandlebarsPartials () {
+    registerHandlebarsPartials() {
         //this.log(`Begin 'Base.registerHandlebarsPartials'`, 'info');
         let templateDir = Path.join(this.options._myRoot, 'templates'),
-            files       = this.getPartials(this.getFiles(templateDir)),
-            len         = files.length,
-            i           = 0;
+            files = this.getPartials(this.getFiles(templateDir)),
+            len = files.length,
+            i = 0;
 
         for (; i < len; i++) {
             let fileName = files[i],
@@ -685,7 +686,7 @@ class Base {
      * @param {String} dir The directory to check
      * @return {Boolean} True if the directory is empty
      */
-    isEmpty (dir) {
+    isEmpty(dir) {
         let files = Fs.readdirSync(dir);
         files = this.getFilteredFiles(files);
 
@@ -697,19 +698,19 @@ class Base {
      * @param {Object} data The object to be processed / changed / added to before
      * supplying it to the template
      */
-    processCommonDataObject (data) {
-        let { options }     = this,
+    processCommonDataObject(data) {
+        let { options } = this,
             { prodVerMeta } = options,
-            dt              = new Date();
+            dt = new Date();
 
-        data.title       = prodVerMeta.prodObj.title;
-        data.product     = this.getProduct(options.product);
-        data.hasGuides   = prodVerMeta.hasGuides;
-        data.hasApi      = prodVerMeta.hasApi;
-        data.version     = options.version;
-        data.moduleName  = this.moduleName;
+        data.title = prodVerMeta.prodObj.title;
+        data.product = this.getProduct(options.product);
+        data.hasGuides = prodVerMeta.hasGuides;
+        data.hasApi = prodVerMeta.hasApi;
+        data.version = options.version;
+        data.moduleName = this.moduleName;
         data.helpPartial = this.helpPartial;
-        data.date = dt.toLocaleString("en-us",{ month : "long" }) + ", " + dt.getDate() + " " + dt.getFullYear() + " at " + dt.getHours() + ":" + dt.getMinutes();
+        data.date = dt.toLocaleString("en-us", { month: "long" }) + ", " + dt.getDate() + " " + dt.getFullYear() + " at " + dt.getHours() + ":" + dt.getMinutes();
     }
 
     /**
@@ -718,7 +719,7 @@ class Base {
      * @param {String} partialPath The path of the handlebars file to register as a
      * partial template
      */
-    registerPartial (partialName, partialPath) {
+    registerPartial(partialName, partialPath) {
         let template = Fs.readFileSync(partialPath, 'utf8');
 
         Handlebars.registerPartial(partialName, template);
@@ -727,14 +728,14 @@ class Base {
     /**
      * Register all handlebars helpers
      */
-    registerHandlebarsHelpers () {
+    registerHandlebarsHelpers() {
         // The `json` helper stringifies a Javascript object.  Helpful when you want to
         // pass a hash of information directly to a handlebars template.
         Handlebars.registerHelper('json', context => {
             return JSON.stringify(context);
         });
 
-        Handlebars.registerHelper("any", function(array, options) {
+        Handlebars.registerHelper("any", function (array, options) {
             if (array && array.length > 0) {
                 return options.fn(this);
             } else {
@@ -742,7 +743,7 @@ class Base {
             }
         });
 
-        Handlebars.registerHelper('is', function(value, test, options) {
+        Handlebars.registerHelper('is', function (value, test, options) {
             if (value && value === test) {
                 return options.fn(this);
             } else {
@@ -750,7 +751,7 @@ class Base {
             }
         });
 
-        Handlebars.registerHelper('isnt', function(value, test, options) {
+        Handlebars.registerHelper('isnt', function (value, test, options) {
             if (!value || value !== test) {
                 return options.fn(this);
             } else {
@@ -758,7 +759,7 @@ class Base {
             }
         });
 
-        Handlebars.registerHelper("capitalizeFirst", function(str) {
+        Handlebars.registerHelper("capitalizeFirst", function (str) {
             return str.charAt(0).toUpperCase() + str.slice(1);
         });
 
@@ -767,7 +768,7 @@ class Base {
         // need to be wrapped by an element in the template.  This helper will decorate
         // each item saying whether it should have the wrapping element begun, ended, or
         // both
-        Handlebars.registerHelper("bubbleWrap", (arr, options) =>{
+        Handlebars.registerHelper("bubbleWrap", (arr, options) => {
             if (arr && arr.length) {
                 let buffer = "",
                     i = 0,
@@ -815,7 +816,7 @@ class Base {
      *
      *     enableLogging(['error', 'info']);
      */
-    enableLogging (level) {
+    enableLogging(level) {
         //this.log(`Begin 'Base.enableLogging'`, 'info');
         level = Utils.from(level);
         let all;
@@ -823,7 +824,7 @@ class Base {
         // accounts for --log
         if (level.length === 0) {
             all = true;
-        // accounts for --log= and --log=true
+            // accounts for --log= and --log=true
         } else if (level.length === 1) {
             if (level[0] === 'true' || level[0] === '' || level[0] === true) {
                 all = true;
@@ -832,9 +833,9 @@ class Base {
 
         // if true then include all options
         if (all === true) {
-            level = [ 'log', 'info', 'error' ];
+            level = ['log', 'info', 'error'];
         }
-        let i   = 0,
+        let i = 0,
             len = level.length;
 
         // enable every option passed in
@@ -848,7 +849,7 @@ class Base {
      * @param {String/Object} err The error instance or error string to wrap as an error
      * instance
      */
-    error (err) {
+    error(err) {
         if (!(err instanceof Error)) {
             err = new Error(err);
         }
@@ -866,7 +867,7 @@ class Base {
      * **Note:** The message will only log out if the type passed is enabled by
      * {@link #enableLogging}
      */
-    log (msg, type) {
+    log(msg, type) {
         type = type || 'log';
 
         Debug[type](msg);
@@ -891,11 +892,11 @@ class Base {
      * @param {Object[]} callback.responses The responses passed back from each Worker
      * will be collected into the `responses` param
      */
-    processQueue (items, mod, callback) {
-        let i         = 0,
-            len       = items.length < CpuCount ? items.length : CpuCount,
+    processQueue(items, mod, callback) {
+        let i = 0,
+            len = items.length < CpuCount ? items.length : CpuCount,
             responses = [],
-            workers   = [];
+            workers = [];
 
         // the Worker pool will be the number of cores your processor has or the number
         // of items passed in; whichever is smaller
@@ -964,20 +965,20 @@ class Base {
      * tags.
      * @return {String} The HTML blob with the classes added.
      */
-    addCls (html, tags, cls) {
+    addCls(html, tags, cls) {
         // create a string from an array of class strings is possible
         // if tags is a string then wrap it in an array
         tags = Utils.isString(tags) ? Utils.from(tags) : tags;
 
         let len = tags.length,
-            i   = 0;
+            i = 0;
 
         // if tags is not already an object create one with the tags as keys and the cls
         // as the class to add to the element
         if (!Utils.isObject(tags)) {
             let temp = {};
             for (; i < len; i++) {
-                let tag   = tags[i];
+                let tag = tags[i];
                 temp[tag] = cls;
             }
             tags = temp;
@@ -985,21 +986,21 @@ class Base {
 
         let tagNames = Object.keys(tags);
         len = tagNames.length;
-        i   = 0;
+        i = 0;
 
         // loop over all of the tags and add the specified class / classes to them
         for (; i < len; i++) {
-            let tag      = tagNames[i],
+            let tag = tagNames[i],
                 reString = `(<${tag}(?![^>]*class)[^>]*?)(>)|(<${tag}[^>]*?class=["']?.*?)(["']?[^>]*?>)`,
-                re       = new RegExp(reString, 'gim');
+                re = new RegExp(reString, 'gim');
 
             cls = tags[tag];
             // create a string from an array of class strings is possible
-            cls  = cls && Array.isArray(cls) ? cls.join(' ') : cls;
+            cls = cls && Array.isArray(cls) ? cls.join(' ') : cls;
 
             html = html.replace(re, (match, p1, p2, p3, p4) => {
-                let pre      = p1 || p3,
-                    post     = p2 || p4,
+                let pre = p1 || p3,
+                    post = p2 || p4,
                     classStr = p1 ? ` class="${cls}"` : ` ${cls} `;
 
                 return `${pre}${classStr}${post}`;
@@ -1012,9 +1013,9 @@ class Base {
     /**
      * Performs and cleanup as the build concludes
      */
-    concludeBuild () {
+    concludeBuild() {
         console.log("...Build Completed!");
-        
+
         process.exit();
     }
 
@@ -1023,14 +1024,14 @@ class Base {
      * @param href
      * @param text
      */
-    createLink (href, text) {
+    createLink(href, text) {
         let openExternal = '',
             hash, split;
 
         if (href.includes('#') && href.charAt(0) != '#') {
-            split    = href.split('#');
-            [ href ] = split;
-            hash     = '#' + split[1];
+            split = href.split('#');
+            [href] = split;
+            hash = '#' + split[1];
         }
 
         if (!text) {
@@ -1065,7 +1066,7 @@ class Base {
      * @param {String} path The directory path to ensure / create
      * @return {Object} A Promise that resolves once the directory is found / created
      */
-    ensureDir (path) {
+    ensureDir(path) {
         return new Promise((resolve) => {
             Fs.ensureDir(path, (err) => {
                 if (!err) {
@@ -1082,7 +1083,7 @@ class Base {
      * @param {String} replacement character with which to replace space
      * @return {String} The string with replaced spaces
      */
-    replaceSpaces (str, replacement) {
+    replaceSpaces(str, replacement) {
         return str.replace(/\s+/g, replacement);
     }
 
@@ -1094,8 +1095,8 @@ class Base {
      * @param {String} name The element text node
      * @return {String} The modified id
      */
-    makeID (id, name) {
-        id   = this.replaceSpaces(id, "_").replace("/", "-_-");
+    makeID(id, name) {
+        id = this.replaceSpaces(id, "_").replace("/", "-_-");
         name = this.replaceSpaces(name, "_").replace(/[^\w]+/g, "_").toLowerCase();
         return id + "_-_" + name;
     }
@@ -1106,7 +1107,7 @@ class Base {
      * @param {String} [cls] The API class being marked up (if applicable)
      * @return {String} The converted HTML text
      */
-    markup (text, cls) {
+    markup(text, cls) {
         let me = this;
 
         if (!text) {
@@ -1114,11 +1115,11 @@ class Base {
         }
 
         return marked(text, {
-            addHeaderId : !cls ? false : function (text, level, raw) {
+            addHeaderId: !cls ? false : function (text, level, raw) {
                 return me.makeID(cls, raw);
             },
-            appendLink       : true,
-            decorateExternal : true
+            appendLink: true,
+            decorateExternal: true
         });
     }
 
@@ -1132,19 +1133,19 @@ class Base {
      * Returns:
      * <a href="{link to String}">String</a><br><a href="{link to String}">String</a>
      */
-    splitInline (text, joinStr) {
+    splitInline(text, joinStr) {
         if (!text) {
             return '';
         }
 
         // replace pipes with slash
         text.replace(/\|/, '/');
-        let str       = [],
+        let str = [],
             // set the delimiter based on what is found in the `text` string
             delimiter = text.includes(',') ? ',' : (text.includes('/') ? '/' : ','),
             // and we'll rejoin the links afterwards with the delimiter found unless one
             // is passed in
-            joinWith  = joinStr || delimiter;
+            joinWith = joinStr || delimiter;
 
         // create links to the associated class (if found) from each item in the `text`
         if (text && text.includes(delimiter)) {
@@ -1175,8 +1176,8 @@ class Base {
      * @param {String} item The text item to use in place of a link
      * @return {String} The original or marked up string
      */
-    generateSplitString (link, item) {
-        let str ="";
+    generateSplitString(link, item) {
+        let str = "";
         // if the string is a class name in the classMap create a link from it
         if (this.classMap && this.classMap[link]) {
             str = this.createLink(link + '.html', item);
@@ -1198,15 +1199,15 @@ class Base {
      * branch in Git to pull from, etc.
      * @param {String} sourceDir The source directory of the local repo
      */
-    syncRemote (product = this.apiProduct, sourceDir = this.apiSourceDir) {
+    syncRemote(product = this.apiProduct, sourceDir = this.apiSourceDir) {
         const { options } = this,
-              { _myRoot } = options;
+            { _myRoot } = options;
 
         this.log('sncRemote: Starting...');
         this.log('syncRemote: apiProduct=' + this.apiProduct);
         this.log('syncRemote: sourceDir=' + sourceDir);
         this.log('syncRemote: options.syncRemote=' + options.syncRemote);
-        
+
         if (options.syncRemote === false) {
             this.triggerDoxi[product] = true;
             return;
@@ -1219,35 +1220,35 @@ class Base {
 
         this.modifiedList = [];
 
-        const path                         = Shell.pwd(),
-              version                      = this.apiVersion,
-              { toolkit }                  = options,
-              wToolkit                     = version + '-' + (toolkit || product),
-              prodCfg                      = options.products[product],
-              { remotes, repo, remoteUrl } = prodCfg,
-              verInfo                      = remotes && remotes[version],
-              branch                       = verInfo && verInfo.branch || 'master',
-              tag                          = verInfo && verInfo.tag,
-              reposPath                    = options.localReposDir;
+        const path = Shell.pwd(),
+            version = this.apiVersion,
+            { toolkit } = options,
+            wToolkit = version + '-' + (toolkit || product),
+            prodCfg = options.products[product],
+            { remotes, repo, remoteUrl } = prodCfg,
+            verInfo = remotes && remotes[version],
+            branch = verInfo && verInfo.branch || 'master',
+            tag = verInfo && verInfo.tag,
+            reposPath = options.localReposDir;
 
-        let allRemotes  = [],
-            allRepos    = [ repo ],
+        let allRemotes = [],
+            allRepos = [repo],
             { addlRepos = [], addlRemoteUrls = [] } = prodCfg;
-            
-        addlRepos      = Utils.from(addlRepos);
+
+        addlRepos = Utils.from(addlRepos);
         addlRemoteUrls = Utils.from(addlRemoteUrls);
         allRepos = allRepos.concat(addlRepos);
-        
+
         allRemotes.push(
             Utils.format(remoteUrl, prodCfg)
         );
-        
+
         addlRepos.forEach((val, i, arr) => {
-            allRemotes.push(Utils.format(addlRemoteUrls[i] || arr[0], { repo : val }));
+            allRemotes.push(Utils.format(addlRemoteUrls[i] || arr[0], { repo: val }));
         });
-        
-        let allDirs = [ sourceDir ];
-        
+
+        let allDirs = [sourceDir];
+
         addlRepos.forEach(repo => {
             allDirs.push(
                 Path.join(Path.resolve(
@@ -1256,7 +1257,7 @@ class Base {
                 ), repo)
             );
         });
-        
+
         // if the api source directory exists and is not a git repo then skip syncing
         if (Fs.existsSync(sourceDir) && !Git.isGitSync(sourceDir)) {
             this.log(`Sync Remote: Cannot perform remote Git sync: API source directory is not a Git repo: ${sourceDir}`, 'info');
@@ -1271,8 +1272,8 @@ class Base {
         // if the api source directory doesn't exist (may or may not be within the
         // repos directory) then create the repos directory and clone the remote
         allDirs.forEach((dir, i, arr) => {
-            this.log('syncRemote: Processing git clone: ' + i + ' of ' + allDirs.length +  '. dir=' + dir);
-            
+            this.log('syncRemote: Processing git clone: ' + i + ' of ' + allDirs.length + '. dir=' + dir);
+
             if (!Fs.existsSync(dir)) {
                 // create the repos directory if it doesn't exist already
                 this.log('syncRemote: CreateReposOutputDir dir=' + dir);
@@ -1285,7 +1286,7 @@ class Base {
                 var pwd = Shell.pwd();
                 this.log("syncRemote: pwd=" + pwd);
 
-                let repo   = allRepos[i],
+                let repo = allRepos[i],
                     remote = allRemotes[i];
 
                 this.log('syncRemote: Cloning repo=' + repo);
@@ -1303,7 +1304,7 @@ class Base {
         // TODO reset to head - always use a clean slate
         if (status.dirty || status.untracked) {
             let modified = Shell.exec('git ls-files --m --o --exclude-standard', {
-                silent : true
+                silent: true
             }).stdout;
 
             // the files list is separated by \n as well as suffixed with \n so the
@@ -1345,7 +1346,7 @@ class Base {
         // get back to the original working directory
         Shell.cd(path);
 
-        this.log('syncRemote: Ending...\n');   
+        this.log('syncRemote: Ending...\n');
     }
 
     /**
@@ -1353,13 +1354,13 @@ class Base {
      * The goal is to create the repos output directory.
      * @param {String} dir 
      */
-    createReposOutputDir (dir) {
+    createReposOutputDir(dir) {
         var d = '';
         if (dir.indexOf(Path.sep) > -1) {
             var splitPath = dir.split(Path.sep);
             splitPath.pop();
             d = Path.join(Path.sep, ...splitPath);
-        } 
+        }
 
         if (!Fs.existsSync(d)) {
             Fs.mkdirsSync(d);
@@ -1369,14 +1370,14 @@ class Base {
 
         return d;
     }
-    
+
     /**
      * Writes the since map to disc (the map of all classes / members and when they were 
      * introduced to the SDK)
      */
-    outputSinceMap (sinceMap) {
+    outputSinceMap(sinceMap) {
         const { sinceMapPath } = this;
-        
+
         Fs.outputJsonSync(sinceMapPath, sinceMap);
     }
 }

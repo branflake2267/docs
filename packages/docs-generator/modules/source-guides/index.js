@@ -344,7 +344,7 @@ class SourceGuides extends SourceApi {
             let guidePath = this.guidePath;
 
             try {
-                if (product && productVersion && options.products.guides.products[product] &&
+                if (product && productVersion && options.products.guides.products && options.products.guides.products[product] &&
                     options.products.guides.products[product][productVersion].exclude) {
                     console.log("Exclude versions by removing them.");
 

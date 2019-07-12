@@ -604,7 +604,6 @@ class AppBase extends SourceGuides {
                 if (parentParsedPreId === parsedPre.parentId) {
                     var parentParsedPre = this.findParsedPre(presArray, parentParsedPreId);
 
-                    // TODO change label to code type
                     tabsHtml += this._getTab(parsedPre); 
                     presHtml += this._getPreContent(parsedPre);
                     

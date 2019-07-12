@@ -2650,7 +2650,11 @@ DocsApp.getEventTarget = function (e) {
             codeTab = ExtL.upToParent(codeTab, 'da-inline-fiddle-nav-code');
             //console.log("codeTab=", codeTab);
         }
+        
         var wrap = ExtL.up(codeTab, '.da-inline-code-wrap');
+
+        DocsApp.hideFiddle(wrap);
+
         var activeContentId = codeTab.getAttribute('contentid');
         var contentElements = wrap.getElementsByClassName('ace_editor');
         if (contentElements) {
@@ -2658,15 +2662,14 @@ DocsApp.getEventTarget = function (e) {
                 var contentEl = contentElements[i];
                 var contentElId = contentEl.id;
 
-                if (activeContentId == contentElId) {
+                // V1 won't have an activeContentId tag, so pick the first one. 
+                if (activeContentId == contentElId || (contentElements.length <= 1)) {
                     DocsApp.hideFiddle(wrap);
                     // set active. TODO future: contentEl.classList.remove('ace-ct-disabled');
                     ExtL.toggleCls(contentEl, 'ace-ct-disabled', false);
-                    //console.log("active " + contentElId);
                 } else {
                     // set inactive. TODO future: contentEl.classList.add('ace-ct-disabled');
                     ExtL.toggleCls(contentEl, 'ace-ct-disabled', true);
-                    //console.log("notactive "  + contentElId);
                 }
             }
         }
@@ -2676,7 +2679,8 @@ DocsApp.getEventTarget = function (e) {
             for (var i = 0; i < tabElements.length; i++) {
                 var tabEl = tabElements[i];
                 var tabElId = tabEl.id;
-                if (codeTab.id == tabElId) {
+                // If there is only one tab, always select it
+                if (codeTab.id == tabElId || (tabElements.length <= 1)) {
                     ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-active', true);
                     ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-code-notactive', false);
                 } else {
@@ -2719,7 +2723,7 @@ DocsApp.getEventTarget = function (e) {
 
     DocsApp.showFiddle = function (wrap) {
         DocsApp.disableTabs(wrap);
-        
+
         var codeNav = wrap.querySelector('.da-inline-fiddle-nav-code'),
             fiddleNav = wrap.querySelector('.da-inline-fiddle-nav-fiddle');
 
@@ -2754,7 +2758,7 @@ DocsApp.getEventTarget = function (e) {
 
         // TODO extwebcomponents???
         var intro = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n";
-        var outro = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "}\n});";
+        var outro = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "\n}\n});";
 
         var iframe = DocsApp.getIFrame(wrap);
         var pageName = myMeta.myId;

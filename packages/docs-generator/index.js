@@ -3,9 +3,10 @@
 /* jshint node: true */
 'use strict';
 
-const Chalk = require('chalk'),
-    StringSimilarity = require('string-similarity'),
-    Path = require('path');
+const Chalk = require('chalk');
+const StringSimilarity = require('string-similarity');
+const os = require('os');
+const packageJson = require('./package.json');
 
 /**
  * Get all the args
@@ -226,10 +227,15 @@ if (!canRun) {
     process.exit();
 }
 
-console.log('\n\nStarting the Sencha docs generator...');
-
-var pjson = require('./package.json');
-console.log('Docs Site Generator app version=' + pjson.version + '\n');
+console.log('\nStarting the Sencha docs generator...');
+console.log('Docs Site Generator app version=' + packageJson.version);
+console.log(`\tNode ${process.version}`);
+console.log(`\tNode OS ${os.type()}`);
+console.log(`\tNode OS Architecture ${os.arch()}`);
+console.log('These are the arguments passed:');
+for (var i = 0; i < process.argv.length; i++) {
+    console.log(`\targ: ${process.argv[i]}`);
+}
 
 // Get the default project options and merge them with the app config
 // TODO see if the 'productIndex' of projectDefaults is even needed after we're all done

@@ -162,7 +162,7 @@ class SourceApi extends Base {
      */
     get doxiCfg() {
         let path = Path.join(this.getDoxiCfgPath(), this.doxiCfgFileName);
-        console.log("doxiCfg path=" + path);
+        this.log("doxiCfg path=" + path);
         let doxiCfgJson = Fs.readJsonSync(path);
         return doxiCfgJson;
     }
@@ -2249,12 +2249,14 @@ class SourceApi extends Base {
      * @param {String} srcPath The path of the source class file
      */
     catalogAnchors(srcPath) {
-        //this.log(`Begin 'SourceApi.addAnchors'`, 'log');
+        this.log(`CatalogAnchors ${srcPath}`);
+
         let src = this.srcFileMap[srcPath];
         if (!src) {
-            console.log("catalogAnchors: Error: srcPath=" + srcPath);
+            this.log("catalogAnchors: Error: srcPath=" + srcPath);
             return;
         }
+        
         let clsSrc = src.input;   // the doxi output for this class at srcPath
         let clsFiles = clsSrc && clsSrc.files; // array of all source files
 

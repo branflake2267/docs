@@ -7,13 +7,11 @@ rm -rf ./build
 # docs config directory 
 CONFIG_DIR="$(pwd)"
 
-# docs build command
-npx sencha-docs-generator create-app-html \
+# Create json and markdown diffs, modern and classic
+npx sencha-docs-generator create-diff \
 --buildConfigsDir=$CONFIG_DIR \
 --product=extjs \
---productVersion=6.7.0 \ 
---syncRemote=true \
---forceDoxi=true \
---log \
---production 
+--diffTargetVersion=7.0.0 \
+--diffSource=extjs \
+--diffSourceVersion=6.7.0
 

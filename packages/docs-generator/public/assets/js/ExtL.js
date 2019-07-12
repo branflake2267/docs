@@ -968,6 +968,14 @@ window.ExtL = window.ExtL || {};
         return false;
     };
 
+    ExtL.upToParent = function (el, clazz) {
+        if (ExtL.hasCls(el, clazz) ) {
+            return el;
+        } else {
+            return ExtL.upToParent(el.parentNode, clazz);
+        }
+    }
+
     ExtL.is = function (el, selector) {
         if (matchesSelector) {
             return el[matchesSelector](selector);

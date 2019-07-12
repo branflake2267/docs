@@ -297,9 +297,9 @@ class HtmlApp extends AppBase {
         let uglifyOptions = {
             compress: production,
             mangle: production,
-            output: {
-                beautify: !production
-            }
+            // output: {
+            //     beautify: !production
+            // }
         };
 
         let jsMinified = UglifyJS.minify(uglifyCode, uglifyOptions);

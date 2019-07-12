@@ -12,10 +12,10 @@ window.DocsApp = window.DocsApp || {};
  * @param {Object[]} data The array of tree nodes to process
  * @param {String} renderTo The ID of the element to render the tree to
  */
-function Tree (data, renderTo) {
+function Tree(data, renderTo) {
     var me = this,
         // get the element we'll render the tree to
-        target   = document.getElementById(renderTo);
+        target = document.getElementById(renderTo);
 
     // the class to apply to a node when it and its children are collapsed
     me.collapseCls = 'tree-node-collapsed';
@@ -34,8 +34,8 @@ function Tree (data, renderTo) {
     // render to the page.  This will create the parent node, child node, and the
     // wrapping element around the child nodes used to collapse / hide child nodes
     var nodeCfgs = me.createNodeCfgs(data),
-        i        = 0,
-        len      = nodeCfgs.length;
+        i = 0,
+        len = nodeCfgs.length;
 
     // now that we have the configs used to create each tree node (and its children)
     // using ExtL.createElement we'll append each node (and its children) to the target
@@ -55,7 +55,7 @@ function Tree (data, renderTo) {
         // walk up the tree until we find a LI item
         //while (el && el.tagName !== 'A') {
         while (el && !ExtL.hasCls(el, 'tree-parent-node')) {
-           el = el.parentNode;
+            el = el.parentNode;
         }
         // if a node was clicked (-vs- clicking on the tree body)
         if (el) {
@@ -112,9 +112,9 @@ function Tree (data, renderTo) {
 Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
     data = ExtL.from(data);
 
-    var len        = data.length,
-        cfgs       = [],
-        isIndexed  =  this.isIndexed(),
+    var len = data.length,
+        cfgs = [],
+        isIndexed = this.isIndexed(),
         indexedCls = isIndexed ? ' tree-node-indexed' : '',
         node, accessCls, cfg, href, textTag, leafIcon;
 
@@ -123,7 +123,7 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
 
     // loop over all passed nodes
     for (var i = 0; i < len; i++) {
-        node      = data[i]; // the current node
+        node = data[i]; // the current node
         if (!node) {
             continue;
         }
@@ -132,8 +132,8 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         // ExtL.createElement
         cfg = {
             //id             : node.id,
-            parentTreeNode : parentId || null,
-            "class"        : (accessCls || '') + ' tree-node tree-depth-' + depth + indexedCls
+            parentTreeNode: parentId || null,
+            "class": (accessCls || '') + ' tree-node tree-depth-' + depth + indexedCls
         };
 
         href = null;
@@ -155,29 +155,29 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
             // text, and finally a wrapping container for all child nodes (used to
             // collapse children in the UI)
             cfg.cn = [{
-                tag     : 'span',
-                html    : '▸',
-                "class" : 'tree-expando tree-expando-collapsed '
+                tag: 'span',
+                html: '▸',
+                "class": 'tree-expando tree-expando-collapsed '
             }, {
-                tag     : 'span',
-                html    : '▿',
-                "class" : 'tree-expando tree-expando-expanded '
+                tag: 'span',
+                html: '▿',
+                "class": 'tree-expando tree-expando-expanded '
             }, {
-                tag        : 'i',
-                "class"    : (node.iconCls || '') + ' tree-node-icon',
-                "data-idx" : node.idx
+                tag: 'i',
+                "class": (node.iconCls || '') + ' tree-node-icon',
+                "data-idx": node.idx
             }, {
-                tag  : textTag,
-                html : node.text,
-                href : href
+                tag: textTag,
+                html: node.text,
+                href: href
             }];
             cfgs.push(cfg);
 
             // the child node wrap (for expand / collapse control)
             var ctCfg = {
-                tag     : 'div',
-                "class" : 'child-nodes-ct',
-                cn      : this.createNodeCfgs(node.children, cfg.id, depth + 1)
+                tag: 'div',
+                "class": 'child-nodes-ct',
+                cn: this.createNodeCfgs(node.children, cfg.id, depth + 1)
             };
             /*var j = 0,
                 children = ctCfg.cn,
@@ -199,8 +199,8 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
         } else {
             // decorate this node as a leaf node
             cfg.leaf = true;
-            cfg.id   = node.id + (node.idSuffix || '');
-            cfg.tag  = textTag;
+            cfg.id = node.id + (node.idSuffix || '');
+            cfg.tag = textTag;
             cfg.href = href;
             cfg["class"] += ' tree-leaf';
 
@@ -210,15 +210,15 @@ Tree.prototype.createNodeCfgs = function (data, parentId, depth) {
 
             // add the leaf node's icon, text, and a star if it's indicated as "new"
             cfg.cn = [{
-                tag        : 'i',
-                "class"    : leafIcon + ' tree-node-icon',
-                "data-idx" : node.idx
+                tag: 'i',
+                "class": leafIcon + ' tree-node-icon',
+                "data-idx": node.idx
             }, {
-                tag  : 'span',
-                html : node.text
+                tag: 'span',
+                html: node.text
             }, {
-                tag     : 'i',
-                "class" : node.displayNew ? 'fa fa-star new ' : ''
+                tag: 'i',
+                "class": node.displayNew ? 'fa fa-star new ' : ''
             }];
             cfgs.push(cfg);
         }
@@ -248,22 +248,22 @@ Tree.prototype.isIndexed = function () {
  *  - filteredCount: The count of all leaf nodes matched by the filter
  */
 Tree.prototype.filter = function (value) {
-    var hasValue       = value.length,
-        leaves         = this.getLeafNodes(),
-        leavesLen      = leaves.length,
-        i              = 0,
-        parentNodes    = this.getParentNodes(),
-        parentsLen     = parentNodes.length,
-        filteredCls    = 'tree-node-filtered',
-        re             = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
+    var hasValue = value.length,
+        leaves = this.getLeafNodes(),
+        leavesLen = leaves.length,
+        i = 0,
+        parentNodes = this.getParentNodes(),
+        parentsLen = parentNodes.length,
+        filteredCls = 'tree-node-filtered',
+        re = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
         visibleParents = [],
-        filtered       = [],
+        filtered = [],
         parentNode, leaf, text, textNode, parent, visiblesLen;
 
     // loop over all parent nodes and hide them if there is a value passed in; else show
     // the node
     for (; i < parentsLen; i++) {
-        parentNode         = ExtL.get(parentNodes[i]);
+        parentNode = ExtL.get(parentNodes[i]);
         ExtL[hasValue ? 'addCls' : 'removeCls'](parentNode, filteredCls);
     }
 
@@ -273,8 +273,8 @@ Tree.prototype.filter = function (value) {
     // the matching text, expand the tree to that node, and add the node's parent (if it
     // has one) to the array of parent nodes to show in the following loop
     for (; i < leavesLen; i++) {
-        leaf     = ExtL.get(leaves[i]);
-        text     = leaf.innerText.toLowerCase();
+        leaf = ExtL.get(leaves[i]);
+        text = leaf.innerText.toLowerCase();
         textNode = leaf.querySelector('span');
 
         // if there is no value or the value matches the leaf text then show it
@@ -283,7 +283,7 @@ Tree.prototype.filter = function (value) {
             this.expandTo(leaf.id);
             filtered.push(leaf);
             textNode.innerHTML = (textNode.textContent || textNode.innerText).replace(re, '<strong>$1</strong>');
-            parent             = ExtL.get(leaf.getAttribute('parenttreenode'));
+            parent = ExtL.get(leaf.getAttribute('parenttreenode'));
             if (parent) {
                 visibleParents.push(parent);
             }
@@ -298,7 +298,7 @@ Tree.prototype.filter = function (value) {
     // the preceding loop and show them and their ancestor nodes
     if (hasValue) {
         visiblesLen = visibleParents.length;
-        i           = 0;
+        i = 0;
 
         for (; i < visiblesLen; i++) {
             parent = visibleParents[i];
@@ -313,10 +313,10 @@ Tree.prototype.filter = function (value) {
     // return an object showing the total nodes, their count, the filtered nodes, and
     // their count
     return {
-        total         : leaves,
-        totalCount    : leaves.length,
-        filtered      : filtered,
-        filteredCount : filtered.length
+        total: leaves,
+        totalCount: leaves.length,
+        filtered: filtered,
+        filteredCount: filtered.length
     };
 };
 
@@ -325,10 +325,10 @@ Tree.prototype.filter = function (value) {
  */
 Tree.prototype.getChildNodes = function (parentNodeId) {
     var parentNode = ExtL.get(parentNodeId),
-        children   = [],
+        children = [],
         childNodes = ExtL.fromNodeList(parentNode.nextSibling.childNodes),
-        childLen   = childNodes.length,
-        i          = 0,
+        childLen = childNodes.length,
+        i = 0,
         child;
 
     for (; i < childLen; i++) {
@@ -405,8 +405,8 @@ Tree.prototype.expandTo = function (node) {
  */
 Tree.prototype.toggleCollapseAll = function (collapse) {
     var parentNodes = this.getParentNodes(),
-        i           = 0,
-        len         = parentNodes.length;
+        i = 0,
+        len = parentNodes.length;
 
     for (; i < len; i++) {
         this.toggleCollapse(parentNodes[i], collapse);
@@ -471,25 +471,25 @@ Tree.prototype.select = function (node) {
  */
 
 DocsApp.appMeta = {
-    menuCanClose       : true,
-    allowSave          : false,
-    isStateful         : true,
-    currentApiPage     : 0,
-    currentGuidePage   : 0,
-    internalId         : 0,
-    pageSize           : 10,
-    masterSearchList   : '',
-    searchHistory      : [],
-    pos                : {},
-    isFirefox          : (navigator.userAgent.indexOf("firefox") !== -1),
-    isMacWebkit        : (navigator.userAgent.indexOf("Macintosh") !== -1 &&
-                         navigator.userAgent.indexOf("WebKit") !== -1),
+    menuCanClose: true,
+    allowSave: false,
+    isStateful: true,
+    currentApiPage: 0,
+    currentGuidePage: 0,
+    internalId: 0,
+    pageSize: 10,
+    masterSearchList: '',
+    searchHistory: [],
+    pos: {},
+    isFirefox: (navigator.userAgent.indexOf("firefox") !== -1),
+    isMacWebkit: (navigator.userAgent.indexOf("Macintosh") !== -1 &&
+        navigator.userAgent.indexOf("WebKit") !== -1),
     //ios              : (navigator.userAgent.indexOf("Macintosh") !== -1 && navigator.userAgent.indexOf("WebKit") !== -1),
-    apiSearchRecords   : null,
-    addHighlight       : null,
-    removeHighlight    : null,
-    clicked            : null,
-    guideSearchRecords : []
+    apiSearchRecords: null,
+    addHighlight: null,
+    removeHighlight: null,
+    clicked: null,
+    guideSearchRecords: []
 };
 
 
@@ -513,10 +513,10 @@ DocsApp.buildNavTree = function (navTree, ct) {
 DocsApp.initNavTree = function () {
     // The name of the navigation tree for the current page
     var navTreeName = DocsApp.meta.navTreeName,
-        apiTree     = DocsApp.apiTree || {},
-        guidesTree  = DocsApp.guidesTree || {},
-        navTrees, 
-        navTree, 
+        apiTree = DocsApp.apiTree || {},
+        guidesTree = DocsApp.guidesTree || {},
+        navTrees,
+        navTree,
         guideKeys;
 
     // collect all trees into a single object
@@ -529,12 +529,12 @@ DocsApp.initNavTree = function () {
     //console.log("navTree=", navTree);
     //console.log("navTreeName=" + navTreeName);
     //console.log("DocsApp.meta=" + DocsApp.meta.myId);
-    
+
     // the product home page likely will not have passed a navTreeName to determine which
     // nav tree to display so we'll grab the first guides or the first api name we find
     if (DocsApp.meta.pageType === 'home' && !navTreeName) {
         guideKeys = ExtL.keys(guidesTree);
-        apiKeys   = ExtL.keys(apiTree);
+        apiKeys = ExtL.keys(apiTree);
 
         if (guideKeys.length) {
             navTreeName = DocsApp.meta.navTreeName = guideKeys[0];
@@ -554,7 +554,7 @@ DocsApp.initNavTree = function () {
 
     // if a navigation tree is found for the current page
     if (navTree) {
-        var id   = DocsApp.meta.myId,
+        var id = DocsApp.meta.myId,
             tabs = [], tree;
 
         //console.log("---navTree id=" + id);
@@ -565,13 +565,13 @@ DocsApp.initNavTree = function () {
 
         // select the node for the current page
         if (id) {
-            var target     = tree.target,
-                targetId   = target.id + '-';
-                targetNode = target.querySelector('[id="' + id + '"]') || target.querySelector('[id="' + targetId + id + '"]');
+            var target = tree.target,
+                targetId = target.id + '-';
+            targetNode = target.querySelector('[id="' + id + '"]') || target.querySelector('[id="' + targetId + id + '"]');
 
             tree.select(targetNode.id)
-            // and expand the tree to the selected node
-            .expandTo(targetNode.id);
+                // and expand the tree to the selected node
+                .expandTo(targetNode.id);
             document.getElementById(targetNode.id).scrollIntoView(true);
         }
 
@@ -587,13 +587,13 @@ DocsApp.addTreeToggleButton = function (tree) {
 
     if (target.querySelector('.tree-parent-node')) {
         var btn = target.appendChild(ExtL.createElement({
-            "class"       : 'icon-btn toggle-all-tree-nodes-btn tooltip tooltip-tr-br',
-            "data-toggle" : 'Expand All Classes',
-            cn            : [{
-                "class"   : 'callout callout-b'
+            "class": 'icon-btn toggle-all-tree-nodes-btn tooltip tooltip-tr-br',
+            "data-toggle": 'Expand All Classes',
+            cn: [{
+                "class": 'callout callout-b'
             }, {
-                tag       : 'i',
-                "class"   : 'fa fa-plus'
+                tag: 'i',
+                "class": 'fa fa-plus'
             }]
         }));
 
@@ -608,40 +608,40 @@ DocsApp.addTreeToggleButton = function (tree) {
  * Creates the navigation tabs for the navigation panel using the passed tab names
  */
 DocsApp.initNavTreeTabs = function () {
-    var navTreeName      = DocsApp.meta.navTreeName,
+    var navTreeName = DocsApp.meta.navTreeName,
         // the tree header container for all tabs
-        treeHeader       = ExtL.get('tree-header'),
-        treeSubHeader    = ExtL.get('tree-sub-header'),
-        apiTree          = DocsApp.apiTree    || {},
-        guidesTree       = DocsApp.guidesTree || {},
-        navTrees         = ExtL.assign({}, guidesTree, apiTree),
-        navTreeTabs      = ExtL.keys(navTrees),
+        treeHeader = ExtL.get('tree-header'),
+        treeSubHeader = ExtL.get('tree-sub-header'),
+        apiTree = DocsApp.apiTree || {},
+        guidesTree = DocsApp.guidesTree || {},
+        navTrees = ExtL.assign({}, guidesTree, apiTree),
+        navTreeTabs = ExtL.keys(navTrees),
         navTreeNameSplit = navTreeName.split('.'),
-        navTreeNameRoot  = navTreeNameSplit[0],
+        navTreeNameRoot = navTreeNameSplit[0],
         navTreeNameChild = navTreeNameSplit[1],
-        len              = navTreeTabs.length,
+        len = navTreeTabs.length,
         tab, tabId, tabCls, isActive, activeCls, cfg, navTree, hasChildren,
         childTabs, j, childLen, childTab, childTabId, childTabCls, childCfg, childNavTree;
 
     //console.log(">>> initNavTreeTabs len=" + len);
-      
+
     // loop through the keys from the guides and api trees (the top tab names)
     for (var i = 0; i < len; i++) {
-        tab       = navTreeTabs[i];
-        tabId     = tabCls = tab.replace(/\s+/g, '-').toLowerCase() + '-tab';
+        tab = navTreeTabs[i];
+        tabId = tabCls = tab.replace(/\s+/g, '-').toLowerCase() + '-tab';
         // the active tab is the one that matches tha tree name of the current page
-        isActive  = tab === navTreeNameRoot;
+        isActive = tab === navTreeNameRoot;
         activeCls = isActive ? ' active-tab' : '';
 
         // the default config for all tabs
         cfg = {
-            tag     : isActive ? 'div' : 'a',
-            "class" : 'nav-tab toolbarHeaderButton ' + tabCls,
-            html    : tab,
-            id      : tabId
+            tag: isActive ? 'div' : 'a',
+            "class": 'nav-tab toolbarHeaderButton ' + tabCls,
+            html: tab,
+            id: tabId
         };
 
-        navTree     = navTrees[tab];
+        navTree = navTrees[tab];
         hasChildren = ExtL.isObject(navTree);
 
         //console.log(">>> hasChildren=" + hasChildren);
@@ -661,26 +661,26 @@ DocsApp.initNavTreeTabs = function () {
             // if this active tab's tree has children then there are sub tabs to process
             if (hasChildren) {
                 childTabs = ExtL.keys(navTrees[tab]);
-                childLen  = childTabs.length;
+                childLen = childTabs.length;
 
                 // loop over the sub-tab names
                 for (var j = 0; j < childLen; j++) {
-                    childTab     = childTabs[j];
-                    childTabId   = childTabCls = childTab.replace(/\s+/g, '-').toLowerCase() + '-tab';
-                    isActive     = navTreeNameChild === childTab;
+                    childTab = childTabs[j];
+                    childTabId = childTabCls = childTab.replace(/\s+/g, '-').toLowerCase() + '-tab';
+                    isActive = navTreeNameChild === childTab;
 
                     // the default config for all child tabs
                     childCfg = {
-                        tag     : isActive ? 'div' : 'a',
-                        "class" : 'sub-tab ' + childTabCls,
-                        html    : childTab,
-                        id      : childTabId
+                        tag: isActive ? 'div' : 'a',
+                        "class": 'sub-tab ' + childTabCls,
+                        html: childTab,
+                        id: childTabId
                     };
 
                     // decorate the active sub-tab
                     if (isActive) {
                         childCfg["class"] += activeCls;
-                    // and otherwise make the tab a link
+                        // and otherwise make the tab a link
                     } else {
                         childNavTree = ExtL.valueFromPath(navTrees, tab + '.' + childTab);
                         childCfg.href = DocsApp.getNodeHref(childNavTree[0]);
@@ -711,7 +711,7 @@ DocsApp.buildTreeNodeHref = function (node) {
     var href;
 
     if (node.href || node.link) {
-        href = node.link || (DocsApp.meta.rootPath  + node.href);
+        href = node.link || (DocsApp.meta.rootPath + node.href);
     }
 
     return href;
@@ -761,13 +761,13 @@ DocsApp.initProductMenu = function () {
         parent = menuData[i];
 
         node = ExtL.createElement({
-            html : parent.text,
-            "class" : 'product-name-item',
-            id : 'product-menu-' + parent.product,
-            "data-name" : parent.product,
-            cn : [{
-                tag : 'i',
-                "class" : 'fa fa-caret-right'
+            html: parent.text,
+            "class": 'product-name-item',
+            id: 'product-menu-' + parent.product,
+            "data-name": parent.product,
+            cn: [{
+                tag: 'i',
+                "class": 'fa fa-caret-right'
             }]
         });
         node.myParentNode = parent;
@@ -800,19 +800,19 @@ DocsApp.getEventTarget = function (e) {
 
 
 
-(function() {
+(function () {
     // TODO should the click event injection be removed?  I can't see it used anywhere
     if (document.addEventListener) {
-        document.addEventListener('click', function(event) {
-            if(!event.synthetic) {
+        document.addEventListener('click', function (event) {
+            if (!event.synthetic) {
                 DocsApp.appMeta.pos.x = event.clientX;
                 DocsApp.appMeta.pos.y = event.clientY;
                 DocsApp.appMeta.clicked = true;
             }
         }, false);
     } else {
-        document.attachEvent('onclick', function(event) {
-            if(!event.synthetic) {
+        document.attachEvent('onclick', function (event) {
+            if (!event.synthetic) {
                 DocsApp.appMeta.pos.x = event.clientX;
                 DocsApp.appMeta.pos.y = event.clientY;
                 DocsApp.appMeta.clicked = true;
@@ -820,16 +820,16 @@ DocsApp.getEventTarget = function (e) {
         });
     }
 
-    setTimeout(function(){
-        if(DocsApp.appMeta.clicked) {
+    setTimeout(function () {
+        if (DocsApp.appMeta.clicked) {
             DocsApp.dispatchClick(DocsApp.appMeta.pos);
             DocsApp.appMeta.clicked = false;
         }
-    },500);
+    }, 500);
 
-    DocsApp.dispatchClick = function (coords){
+    DocsApp.dispatchClick = function (coords) {
         var event = document.createEvent("MouseEvent"),
-            elem  = document.elementFromPoint(coords.x, coords.y);
+            elem = document.elementFromPoint(coords.x, coords.y);
 
         event.initMouseEvent(
             "click",
@@ -845,7 +845,7 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.addEventsAndSetMenuClose = function (item, event, menuClose, fn) {
-        ExtL.on(item, event, function() {
+        ExtL.on(item, event, function () {
             // menuCanClose is a closure variable
             if (menuClose !== null) {
                 DocsApp.appMeta.menuCanClose = menuClose;
@@ -890,33 +890,33 @@ DocsApp.getEventTarget = function (e) {
 
         DocsApp.setTypeNavAndHeaderVisibility();
         DocsApp.highlightTypeMenuItem();*/
-        var publicCheckbox    = ExtL.get('publicCheckbox'),
-            publicChecked     = publicCheckbox && publicCheckbox.checked,
+        var publicCheckbox = ExtL.get('publicCheckbox'),
+            publicChecked = publicCheckbox && publicCheckbox.checked,
             protectedCheckbox = ExtL.get('protectedCheckbox'),
-            protectedChecked  = protectedCheckbox && protectedCheckbox.checked,
-            privateCheckbox   = ExtL.get('privateCheckbox'),
-            privateChecked    = privateCheckbox && privateCheckbox.checked,
+            protectedChecked = protectedCheckbox && protectedCheckbox.checked,
+            privateCheckbox = ExtL.get('privateCheckbox'),
+            privateChecked = privateCheckbox && privateCheckbox.checked,
             inheritedCheckbox = ExtL.get('inheritedCheckbox'),
-            inheritedChecked  = inheritedCheckbox && inheritedCheckbox.checked,
-            readonlyCheckbox  = ExtL.get('readonlyCheckbox'),
-            readonlyChecked   = readonlyCheckbox && readonlyCheckbox.checked,
-            membersCt         = ExtL.get('rightMembers'),
-            rows              = ExtL.fromNodeList(membersCt.querySelectorAll('.classmembers')),
-            rowsLen           = rows.length,
+            inheritedChecked = inheritedCheckbox && inheritedCheckbox.checked,
+            readonlyCheckbox = ExtL.get('readonlyCheckbox'),
+            readonlyChecked = readonlyCheckbox && readonlyCheckbox.checked,
+            membersCt = ExtL.get('rightMembers'),
+            rows = ExtL.fromNodeList(membersCt.querySelectorAll('.classmembers')),
+            rowsLen = rows.length,
             row, isAutoAccessor, isPublic, isPrivate, isProtected,
             isInherited, hasReadOnly, isReadOnly;
 
         DocsApp.resetTempShownMembers();
 
         while (rowsLen--) {
-            row            = rows[rowsLen];
+            row = rows[rowsLen];
             isAutoAccessor = ExtL.hasCls(row, 'auto-accessor-method');
-            isPublic       = publicChecked    && ExtL.hasCls(row, 'member-public');
-            isProtected    = protectedChecked && ExtL.hasCls(row, 'member-protected');
-            isPrivate      = privateChecked   && ExtL.hasCls(row, 'member-private');
-            isInherited    = ExtL.hasCls(row, 'is-not-inherited') || inheritedChecked === ExtL.hasCls(row, 'isInherited');
-            hasReadOnly    = !!row.querySelector('.readonly')
-            isReadOnly     = !hasReadOnly || readonlyChecked  === hasReadOnly;
+            isPublic = publicChecked && ExtL.hasCls(row, 'member-public');
+            isProtected = protectedChecked && ExtL.hasCls(row, 'member-protected');
+            isPrivate = privateChecked && ExtL.hasCls(row, 'member-private');
+            isInherited = ExtL.hasCls(row, 'is-not-inherited') || inheritedChecked === ExtL.hasCls(row, 'isInherited');
+            hasReadOnly = !!row.querySelector('.readonly')
+            isReadOnly = !hasReadOnly || readonlyChecked === hasReadOnly;
 
             if (isAutoAccessor || ((isPublic || isProtected || isPrivate) && isInherited && isReadOnly)) {
                 ExtL.removeCls(row, 'hide');
@@ -945,9 +945,9 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.filterClassTreeByAccess = function () {
         var privateCheckbox = ExtL.get('private-class-toggle'),
-            checked         = privateCheckbox && privateCheckbox.checked === true,
-            privateCls      = 'show-private',
-            treeMembersCt   = ExtL.get('tree');
+            checked = privateCheckbox && privateCheckbox.checked === true,
+            privateCls = 'show-private',
+            treeMembersCt = ExtL.get('tree');
 
         ExtL.toggleCls(treeMembersCt, privateCls, checked);
     };
@@ -971,7 +971,7 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.toggleContextTab = function () {
-        var filterTab         = ExtL.get('filterTab'),
+        var filterTab = ExtL.get('filterTab'),
             relatedClassesTab = ExtL.get('relatedClassesTab');
 
         ExtL.toggleCls(ExtL.get('filters-ct'), 'hide');
@@ -986,10 +986,10 @@ DocsApp.getEventTarget = function (e) {
      * Disable the top nav buttons when no members for that type are shown by the filters
      */
     DocsApp.setTypeNavAndHeaderVisibility = function () {
-        var headers    = [],
-            types      = ['child-items', 'configs', 'properties', 'methods', 'events', 'vars', 'sass-mixins'],
-            typeLen    = types.length,
-            i          = 0,
+        var headers = [],
+            types = ['child-items', 'configs', 'properties', 'methods', 'events', 'vars', 'sass-mixins'],
+            typeLen = types.length,
+            i = 0,
             totalCount = 0,
             typeCt, headersLen, els, len, j, hasVisible, count, btn, memberEl;
 
@@ -1001,11 +1001,11 @@ DocsApp.getEventTarget = function (e) {
 
             // account for the required / optional configs/properties/methods sub-headings
             if (typeCt && (types[i] === 'configs' || types[i] === 'properties' || types[i] === 'methods')) {
-                typeCt = ExtL.get((types[i] === 'configs' ? 'optional' : 'instance') + '-' + types[i] +'-ct');
+                typeCt = ExtL.get((types[i] === 'configs' ? 'optional' : 'instance') + '-' + types[i] + '-ct');
                 if (typeCt) {
                     headers.push(typeCt);
                 }
-                typeCt = ExtL.get((types[i] === 'configs' ? 'required' : 'static') + '-'+ types[i] +'-ct');
+                typeCt = ExtL.get((types[i] === 'configs' ? 'required' : 'static') + '-' + types[i] + '-ct');
                 if (typeCt) {
                     headers.push(typeCt);
                 }
@@ -1054,7 +1054,7 @@ DocsApp.getEventTarget = function (e) {
     DocsApp.highlightMemberMatch = function (member, value) {
         value = value.replace(/"/g, '');
 
-        var re   = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
+        var re = new RegExp(('(' + value + ')').replace('$', '\\$'), 'ig'),
             name = member.querySelector('.member-name') || member.querySelector('.params-list');
 
         name.innerHTML = (name.textContent || name.innerText).replace(re, '<strong>$1</strong>');
@@ -1071,17 +1071,17 @@ DocsApp.getEventTarget = function (e) {
      *  - width: the viewport width
      *  - height: the viewport height
      */
-    DocsApp.getViewportSize = function (){
+    DocsApp.getViewportSize = function () {
         var e = window,
             a = 'inner';
 
-        if (!('innerWidth' in window)){
+        if (!('innerWidth' in window)) {
             a = 'client';
             e = document.documentElement || document.body;
         }
         return {
-            width: e[ a + 'Width' ],
-            height: e[ a + 'Height' ]
+            width: e[a + 'Width'],
+            height: e[a + 'Height']
         };
     };
 
@@ -1101,7 +1101,7 @@ DocsApp.getEventTarget = function (e) {
      * Toggle class tree visibility
      */
     DocsApp.toggleTreeVisibility = function () {
-        var body         = document.body,
+        var body = document.body,
             rightMembers = ExtL.get('rightMembers'),
             contextShown = ExtL.hasCls(rightMembers, 'show-context-menu');
 
@@ -1114,11 +1114,11 @@ DocsApp.getEventTarget = function (e) {
      * Filter the members using the filter input field value
      */
     DocsApp.filter = ExtL.createBuffered(function (e, target) {
-        var value        = ExtL.trim(target.value),
-            matcher      = new RegExp(value.replace('$', '\\$'), 'gi'),
+        var value = ExtL.trim(target.value),
+            matcher = new RegExp(value.replace('$', '\\$'), 'gi'),
             classmembers = ExtL.fromNodeList(document.getElementsByClassName('classmembers')),
-            classText    = document.getElementsByClassName('classText')[0],
-            matches      = [],
+            classText = document.getElementsByClassName('classText')[0],
+            matches = [],
             matchesLen, owner;
 
         DocsApp.resetTempShownMembers();
@@ -1207,7 +1207,7 @@ DocsApp.getEventTarget = function (e) {
     }, 200);
 
     DocsApp.getSearchList = function () {
-        var list    = DocsApp.appMeta.masterSearchList,
+        var list = DocsApp.appMeta.masterSearchList,
             itemTpl = '{0}-{1}`';
 
         if (!list) {
@@ -1277,7 +1277,7 @@ DocsApp.getEventTarget = function (e) {
 
         value = value || field.value;
 
-        var temp  = [],
+        var temp = [],
             limit = 10;
 
         ExtL.each(DocsApp.appMeta.searchHistory, function (item) {
@@ -1301,26 +1301,26 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.logSearchValue = ExtL.createBuffered(DocsApp.doLogSearchValue, 750);
 
-    DocsApp.searchFilter = ExtL.createBuffered(function (e){
-        var results     = [],
-            hits        = [],
+    DocsApp.searchFilter = ExtL.createBuffered(function (e) {
+        var results = [],
+            hits = [],
             //hasApi    = ExtL.get('apiTab').offsetHeight,
             //hasGuide  = ExtL.get('guideTab').offsetHeight,
-            hasApi      = DocsApp.meta.hasApi,
-            hasGuides   = DocsApp.meta.hasGuides,
+            hasApi = DocsApp.meta.hasApi,
+            hasGuides = DocsApp.meta.hasGuides,
             searchField = ExtL.get('searchtext'),
-            value       = searchField.value,
-            forceExact  = /^".+"$/.test(value),
-            unique      = [],
-            catalog     = {},
-            mButton     = ExtL.get('modern-search-filter'),
-            cButton     = ExtL.get('classic-search-filter'),
+            value = searchField.value,
+            forceExact = /^".+"$/.test(value),
+            unique = [],
+            catalog = {},
+            mButton = ExtL.get('modern-search-filter'),
+            cButton = ExtL.get('classic-search-filter'),
             searchList, keyCode, result, rx, re, item, match,
             filterClassic, filterModern, classObj, matchStr;
 
         if (DocsApp.meta.toolkit) {
             filterClassic = ExtL.hasCls(cButton, 'active');
-            filterModern  = ExtL.hasCls(mButton, 'active');
+            filterModern = ExtL.hasCls(mButton, 'active');
         }
 
         e = DocsApp.getEvent(e);
@@ -1364,9 +1364,9 @@ DocsApp.getEventTarget = function (e) {
                 classObj = DocsApp.apiSearch[result[1]];
                 matchStr = result[2];
                 item = {
-                    searchValue : value,
-                    searchMatch : matchStr,
-                    classObj    : classObj
+                    searchValue: value,
+                    searchMatch: matchStr,
+                    classObj: classObj
                 };
 
                 if (forceExact) {
@@ -1392,8 +1392,8 @@ DocsApp.getEventTarget = function (e) {
 
             // Strip out any duplicate entries from the search results
             ExtL.each(DocsApp.appMeta.apiSearchRecords, function (rec) {
-                var name   = rec.classObj.n,
-                    type   = rec.memberType,
+                var name = rec.classObj.n,
+                    type = rec.memberType,
                     member = rec.sortValue,
                     toolkit;
 
@@ -1457,7 +1457,7 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.showSearchHistory = function (e) {
         var target = DocsApp.getEventTarget(e),
-            value  = target && target.value,
+            value = target && target.value,
             panel, field, fieldBox;
 
         if (target && target !== document && !value.length && DocsApp.appMeta.searchHistory && DocsApp.appMeta.searchHistory.length) {
@@ -1479,9 +1479,9 @@ DocsApp.getEventTarget = function (e) {
             ExtL.addCls(document.body, 'show-search-history');
 
             ExtL.applyStyles(panel, {
-                top   : fieldBox.bottom + 'px',
-                width : (fieldBox.right - fieldBox.left) + 'px',
-                left  : fieldBox.left + 'px'
+                top: fieldBox.bottom + 'px',
+                width: (fieldBox.right - fieldBox.left) + 'px',
+                left: fieldBox.left + 'px'
             });
         }
     };
@@ -1500,7 +1500,7 @@ DocsApp.getEventTarget = function (e) {
         e = DocsApp.getEvent(e);
 
         var target = DocsApp.getEventTarget(e),
-            field  = ExtL.get('searchtext');
+            field = ExtL.get('searchtext');
 
         if (target) {
             field.value = target.getAttribute('data-value');
@@ -1515,10 +1515,10 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.filterSearchByToolkit = function (e) {
-        var mButton     = ExtL.get('modern-search-filter'),
-            cButton     = ExtL.get('classic-search-filter'),
+        var mButton = ExtL.get('modern-search-filter'),
+            cButton = ExtL.get('classic-search-filter'),
             searchField = ExtL.get('searchtext'),
-            target      = [];
+            target = [];
 
         if (ExtL.isString(e)) {
             if (e === 'both') {
@@ -1552,12 +1552,12 @@ DocsApp.getEventTarget = function (e) {
     DocsApp.prepareGuideSearchRecords = function (hits) {
         if (hits.length) {
             hits.sort(function (a, b) {
-                var aType      = a.t,
-                    bType      = b.t,
+                var aType = a.t,
+                    bType = b.t,
                     aFrequency = a.p,
                     bFrequency = b.p,
-                    aPriority  = a.priority,
-                    bPriority  = b.priority;
+                    aPriority = a.priority,
+                    bPriority = b.priority;
 
                 if (aType === 'b' && bType === 't') {
                     return 1;
@@ -1585,15 +1585,15 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.typesDisplay = {
-        c  : 'config',
-        p  : 'property',
-        sp : 'property',
-        m  : 'method',
-        sm : 'method',
-        e  : 'event',
-        v  : 'css var',
-        x  : 'css mixin',
-        z  : 'mixin param'
+        c: 'config',
+        p: 'property',
+        sp: 'property',
+        m: 'method',
+        sm: 'method',
+        e: 'event',
+        v: 'css var',
+        x: 'css mixin',
+        z: 'mixin param'
     };
 
     DocsApp.prepareApiSearchRecords = function (results) {
@@ -1675,23 +1675,23 @@ DocsApp.getEventTarget = function (e) {
             var item = results[len],
                 searchMatch = item.searchMatch,
                 searchValue = item.searchValue,
-                valueRegex  = new RegExp(searchValue, 'i'),
-                classObj    = item.classObj,
-                aliases     = item.classObj.x,
-                typesDisp   = DocsApp.typesDisplay,
+                valueRegex = new RegExp(searchValue, 'i'),
+                classObj = item.classObj,
+                aliases = item.classObj.x,
+                typesDisp = DocsApp.typesDisplay,
                 i, aliasPre, aliasPost, member, memberType, memberName, access,
                 targetClassName, classSuffix, types, meta;
 
             types = {
-                c  : 'cfg',
-                p  : 'property',
-                sp : 'property',
-                m  : 'method',
-                sm : 'static-method',
-                e  : 'event',
-                v  : 'css_var-S',
-                x  : 'css_mixin',
-                z  : 'css_mixin'
+                c: 'cfg',
+                p: 'property',
+                sp: 'property',
+                m: 'method',
+                sm: 'static-method',
+                e: 'event',
+                v: 'css_var-S',
+                x: 'css_mixin',
+                z: 'css_mixin'
             };
 
             /*typesDisp = {
@@ -1707,10 +1707,10 @@ DocsApp.getEventTarget = function (e) {
             };*/
 
             meta = {
-                r  : 'removed',
-                d  : 'deprecated',
-                s  : 'static',
-                ro : 'readonly'
+                r: 'removed',
+                d: 'deprecated',
+                s: 'static',
+                ro: 'readonly'
             };
 
             // prioritize alias/xtype
@@ -1718,18 +1718,18 @@ DocsApp.getEventTarget = function (e) {
                 var aliasesLen = aliases.length;
 
                 while (aliasesLen--) {
-                //ExtL.each(aliases, function (alias) {
+                    //ExtL.each(aliases, function (alias) {
                     var alias = aliases[aliasesLen];
-                    i         = alias.indexOf('.');
-                    aliasPre  = alias.substring(0, i);
+                    i = alias.indexOf('.');
+                    aliasPre = alias.substring(0, i);
                     aliasPost = alias.substr(i + 1);
 
                     if (searchMatch === alias) {
-                        item.byAlias   = true;
-                        item.alias     = alias;
-                        item.aliasPre  = aliasPre;
+                        item.byAlias = true;
+                        item.alias = alias;
+                        item.aliasPre = aliasPre;
                         item.aliasPost = item.sortValue = aliasPost;
-                        item.access    = classObj.a === 'i' ? 'private' : 'public';
+                        item.access = classObj.a === 'i' ? 'private' : 'public';
 
                         if (searchValue.toLowerCase() === aliasPost.toLowerCase()) {
                             item.priority = 5;
@@ -1742,11 +1742,11 @@ DocsApp.getEventTarget = function (e) {
 
             // prioritize class / alternate class
             else if (searchMatch === classObj.n || (classObj.g && classObj.g.indexOf(searchMatch) > -1)) {
-                item.byClass    = true;
+                item.byClass = true;
                 targetClassName = (searchMatch === classObj.n) ? classObj.n : searchMatch;
-                classSuffix     = targetClassName.substr(targetClassName.lastIndexOf('.') + 1);
-                item.sortValue  = classSuffix;
-                item.access     = classObj.a === 'i' ? 'private' : 'public';
+                classSuffix = targetClassName.substr(targetClassName.lastIndexOf('.') + 1);
+                item.sortValue = classSuffix;
+                item.access = classObj.a === 'i' ? 'private' : 'public';
                 if (classSuffix.toLowerCase() === searchValue.toLowerCase()) {
                     item.priority = (classObj.a) ? 2805 : 10;
                 }
@@ -1763,15 +1763,15 @@ DocsApp.getEventTarget = function (e) {
                 // regarding the below replace()..
                 // The search list has entries for class + member searches, but really the member
                 // is the member only, not the concatenation of class name and member name
-                member     = searchMatch.replace(classObj.n + '.', '');
-                i          = member.indexOf('.');
+                member = searchMatch.replace(classObj.n + '.', '');
+                i = member.indexOf('.');
                 memberType = member.substring(0, i);
                 memberName = item.sortValue = member.substr(i + 1);
 
-                memberObj           = classObj[member];
-                access              = memberObj.a;
-                item.access         = access === 'p' ? 'public' : (access === 'i' ? 'private' : 'protected');
-                item.memberType     = types[memberType];
+                memberObj = classObj[member];
+                access = memberObj.a;
+                item.access = access === 'p' ? 'public' : (access === 'i' ? 'private' : 'protected');
+                item.memberType = types[memberType];
                 item.memberTypeDisp = typesDisp[memberType];
 
                 if (memberObj.x) {
@@ -1797,78 +1797,78 @@ DocsApp.getEventTarget = function (e) {
                 if (memberName.toLowerCase() === searchValue.toLowerCase()) {
                     // configs
                     if (memberType === 'c') {
-                        item.priority = (access === 'p') ? 15 : ((access === 'o') ? 20 : 2810 );
+                        item.priority = (access === 'p') ? 15 : ((access === 'o') ? 20 : 2810);
                     }
                     // properties
                     if (memberType === 'p' || memberType === 'sp') {
-                        item.priority = (access === 'p') ? 25 : ((access === 'o') ? 30 : 2815 );
+                        item.priority = (access === 'p') ? 25 : ((access === 'o') ? 30 : 2815);
                     }
                     // methods
                     if (memberType === 'm' || memberType === 'sm') {
-                        item.priority = (access === 'p') ? 35 : ((access === 'o') ? 40 : 2820 );
+                        item.priority = (access === 'p') ? 35 : ((access === 'o') ? 40 : 2820);
                     }
                     // events
                     if (memberType === 'e') {
-                        item.priority = (access === 'p') ? 45 : ((access === 'o') ? 50 : 2825 );
+                        item.priority = (access === 'p') ? 45 : ((access === 'o') ? 50 : 2825);
                     }
                     // css vars
                     if (memberType === 'v') {
-                        item.priority = (access === 'p') ? 55 : ((access === 'o') ? 60 : 2830 );
+                        item.priority = (access === 'p') ? 55 : ((access === 'o') ? 60 : 2830);
                     }
                     // css mixins
                     if (memberType === 'x') {
-                        item.priority = (access === 'p') ? 65 : ((access === 'o') ? 70 : 2835 );
+                        item.priority = (access === 'p') ? 65 : ((access === 'o') ? 70 : 2835);
                     }
                 }
                 else if (memberName.search(valueRegex) === 0) {
                     // configs
                     if (memberType === 'c') {
-                        item.priority = (access === 'p') ? 300 : ((access === 'o') ? 400 : 3000 );
+                        item.priority = (access === 'p') ? 300 : ((access === 'o') ? 400 : 3000);
                     }
                     // properties
                     if (memberType === 'p' || memberType === 'sp') {
-                        item.priority = (access === 'p') ? 500 : ((access === 'o') ? 600 : 3100 );
+                        item.priority = (access === 'p') ? 500 : ((access === 'o') ? 600 : 3100);
                     }
                     // methods
                     if (memberType === 'm' || memberType === 'sm') {
-                        item.priority = (access === 'p') ? 700 : ((access === 'o') ? 800 : 3200 );
+                        item.priority = (access === 'p') ? 700 : ((access === 'o') ? 800 : 3200);
                     }
                     // events
                     if (memberType === 'e') {
-                        item.priority = (access === 'p') ? 900 : ((access === 'o') ? 1000 : 3300 );
+                        item.priority = (access === 'p') ? 900 : ((access === 'o') ? 1000 : 3300);
                     }
                     // css vars
                     if (memberType === 'v') {
-                        item.priority = (access === 'p') ? 1100 : ((access === 'o') ? 1200 : 3400 );
+                        item.priority = (access === 'p') ? 1100 : ((access === 'o') ? 1200 : 3400);
                     }
                     // css mixins
                     if (memberType === 'x') {
-                        item.priority = (access === 'p') ? 1300 : ((access === 'o') ? 1400 : 3500 );
+                        item.priority = (access === 'p') ? 1300 : ((access === 'o') ? 1400 : 3500);
                     }
                 } else { // then has
                     // configs
                     if (memberType === 'c') {
-                        item.priority = (access === 'p') ? 1700 : ((access === 'o') ? 1800 : 3700 );
+                        item.priority = (access === 'p') ? 1700 : ((access === 'o') ? 1800 : 3700);
                     }
                     // properties
                     if (memberType === 'p' || memberType === 'sp') {
-                        item.priority = (access === 'p') ? 1900 : ((access === 'o') ? 2000 : 3800 );
+                        item.priority = (access === 'p') ? 1900 : ((access === 'o') ? 2000 : 3800);
                     }
                     // methods
                     if (memberType === 'm' || memberType === 'sm') {
-                        item.priority = (access === 'p') ? 2100 : ((access === 'o') ? 2200 : 3900 );
+                        item.priority = (access === 'p') ? 2100 : ((access === 'o') ? 2200 : 3900);
                     }
                     // events
                     if (memberType === 'e') {
-                        item.priority = (access === 'p') ? 2300 : ((access === 'o') ? 2400 : 4000 );
+                        item.priority = (access === 'p') ? 2300 : ((access === 'o') ? 2400 : 4000);
                     }
                     // css vars
                     if (memberType === 'v') {
-                        item.priority = (access === 'p') ? 2500 : ((access === 'o') ? 2600 : 4100 );
+                        item.priority = (access === 'p') ? 2500 : ((access === 'o') ? 2600 : 4100);
                     }
                     // css mixins
                     if (memberType === 'x') {
-                        item.priority = (access === 'p') ? 2700 : ((access === 'o') ? 2800 : 4200 );
+                        item.priority = (access === 'p') ? 2700 : ((access === 'o') ? 2800 : 4200);
                     }
                 }
             }
@@ -1900,8 +1900,8 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.getSearchResultsCt = function () {
-        var ct        = ExtL.get('search-results-ct'),
-            hasApi    = DocsApp.meta.hasApi,
+        var ct = ExtL.get('search-results-ct'),
+            hasApi = DocsApp.meta.hasApi,
             hasGuides = DocsApp.meta.hasGuides,
             cn;
 
@@ -1932,18 +1932,18 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.showSearchResults = function (page) {
-        var ct         = DocsApp.getSearchResultsCt(),
-            size       = DocsApp.getViewportSize(),
+        var ct = DocsApp.getSearchResultsCt(),
+            size = DocsApp.getViewportSize(),
             compressed = size.width <= 950,
             posRef, boundingBox, top, right;
 
-        posRef      = compressed ? document.querySelector('.context-menu-ct') : ExtL.get('searchtext');
+        posRef = compressed ? document.querySelector('.context-menu-ct') : ExtL.get('searchtext');
         boundingBox = posRef.getBoundingClientRect();
-        top         = compressed ? (boundingBox.top + 32) : (boundingBox.top + posRef.clientHeight);
-        right       = compressed ? 0 : (document.body.clientWidth - boundingBox.right);
+        top = compressed ? (boundingBox.top + 32) : (boundingBox.top + posRef.clientHeight);
+        right = compressed ? 0 : (document.body.clientWidth - boundingBox.right);
 
         ct.style.right = right.toString() + 'px';
-        ct.style.top   = top.toString() + 'px';
+        ct.style.top = top.toString() + 'px';
 
         DocsApp.sizeSearchResultsCt();
 
@@ -1960,82 +1960,82 @@ DocsApp.getEventTarget = function (e) {
 
     DocsApp.sizeSearchResultsCt = function () {
         var searchCt = DocsApp.getSearchResultsCt(),
-            size     = DocsApp.getViewportSize(),
+            size = DocsApp.getViewportSize(),
             vpHeight = size.height,
-            h        = (vpHeight < 509) ? (vpHeight - 58) : 451;
+            h = (vpHeight < 509) ? (vpHeight - 58) : 451;
 
-            searchCt.style.height = h.toString() + 'px';
+        searchCt.style.height = h.toString() + 'px';
     };
 
     DocsApp.loadGuideSearchPage = function (page) {
-        var i                  = 0,
-            start              = page * DocsApp.appMeta.pageSize - DocsApp.appMeta.pageSize,
-            value              = ExtL.get('searchtext').value,
-            guideCt            = ExtL.get('guide-search-results'),
-            homePath           = DocsApp.meta.rootPath,
+        var i = 0,
+            start = page * DocsApp.appMeta.pageSize - DocsApp.appMeta.pageSize,
+            value = ExtL.get('searchtext').value,
+            guideCt = ExtL.get('guide-search-results'),
+            homePath = DocsApp.meta.rootPath,
             guideSearchRecords = DocsApp.appMeta.guideSearchRecords,
-            len                = DocsApp.appMeta.pageSize < guideSearchRecords.length ? DocsApp.appMeta.pageSize : guideSearchRecords.length,
+            len = DocsApp.appMeta.pageSize < guideSearchRecords.length ? DocsApp.appMeta.pageSize : guideSearchRecords.length,
             matchEl, item, cn, href, badge;
 
-        page  = page || 1;
+        page = page || 1;
         value = ExtL.trim(value).toLowerCase();
         value = value.replace('$', '\\$');
 
         ExtL.removeChildNodes(guideCt);
 
         guideCt.appendChild(ExtL.createElement({
-            "class" : 'search-results-nav-header',
-            cn      : [{
-                html : 'API Docs'
+            "class": 'search-results-nav-header',
+            cn: [{
+                html: 'API Docs'
             }, {
-                "class" : 'active-tab',
-                html    : 'Guides'
+                "class": 'active-tab',
+                html: 'Guides'
             }]
         }));
 
         guideCt.appendChild(ExtL.createElement({
-            "class" : 'search-results-header',
-            html    : 'Guides'
+            "class": 'search-results-header',
+            html: 'Guides'
         }));
 
-        for (;i < len; i++) {
+        for (; i < len; i++) {
             item = guideSearchRecords[start + i];
             if (item) {
                 badge = ExtL.isIE8() ? '' : ' ' + item.prod + '-badge badge';
                 cn = [{
-                    "class" : 'guide-search-title',
-                    html    : item.guide
+                    "class": 'guide-search-title',
+                    html: item.guide
                 }];
 
                 if (item.t === 'b') {
                     cn.push({
-                        "class" : 'search-match',
-                        html    : item.m
+                        "class": 'search-match',
+                        html: item.m
                     });
                 }
 
                 if (DocsApp.meta.product !== 'cmd' && item.prod === 'cmd') {
-                    href = DocsApp.meta.rootPath  + '../../' + item.prod + '/' + DocsApp.meta.searchPartnerVersions.cmd[DocsApp.meta.version] + '/' + item.searchUrls[item.r];
+                    href = DocsApp.meta.rootPath + '../../' + item.prod + '/' + DocsApp.meta.searchPartnerVersions.cmd[DocsApp.meta.version] + '/' + item.searchUrls[item.r];
                 } else {
                     href = DocsApp.meta.rootPath + item.searchUrls[item.r];
                 }
 
                 guideCt.appendChild(ExtL.createElement({
-                    tag     : 'a',
-                    href    : href,
-                    "class" : 'guide-search-item' + (item.t === 'b' ? ' body-result-item' : '') + badge,
-                    cn      : cn
+                    tag: 'a',
+                    href: href,
+                    "class": 'guide-search-item' + (item.t === 'b' ? ' body-result-item' : '') + badge,
+                    cn: cn
                 }));
             }
         }
 
         DocsApp.addSearchPagingToolbar(guideCt, guideSearchRecords, page);
 
-        re  = new RegExp('(' + value.replace('$', '\\$').replace(/"/g, '') + ')', 'ig');
+        re = new RegExp('(' + value.replace('$', '\\$').replace(/"/g, '') + ')', 'ig');
         len = guideCt.childNodes.length;
         for (i = 0; i < len; i++) {
             var isBody = ExtL.hasCls(guideCt.childNodes.item(i), 'body-result-item');
-            matchEl    = guideCt.childNodes.item(i).querySelector(isBody ? '.search-match' : '.guide-search-title');
+            matchEl = guideCt.childNodes.item(i).querySelector(isBody ? '.search-match' : '.guide-search-title');
 
             if (matchEl) {
                 matchEl.innerHTML = (matchEl.textContent || matchEl.innerText).replace(re, '<strong>$1</strong>');
@@ -2044,10 +2044,10 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.getRelativePath = function (curl) {
-        var regex      = new RegExp('.*guides\/(.*?)\.html'),
+        var regex = new RegExp('.*guides\/(.*?)\.html'),
             guideMatch = regex.exec(curl)[1],
             slashCount = guideMatch.split("/"),
-            rel        = '',
+            rel = '',
             i;
 
         if (slashCount.length > 0) {
@@ -2066,14 +2066,14 @@ DocsApp.getEventTarget = function (e) {
         return rec.classObj.n;
     };
 
-    DocsApp.loadApiSearchPage = function(page) {
-        var i                = 0,
-            pageSize         = DocsApp.appMeta.pageSize,
-            start            = page * pageSize - pageSize,
+    DocsApp.loadApiSearchPage = function (page) {
+        var i = 0,
+            pageSize = DocsApp.appMeta.pageSize,
+            start = page * pageSize - pageSize,
             apiSearchRecords = DocsApp.appMeta.apiSearchRecords,
-            ct               = DocsApp.getSearchResultsCt(),
-            apiCt            = ExtL.get('api-search-results'),
-            value            = ExtL.get('searchtext').value,
+            ct = DocsApp.getSearchResultsCt(),
+            apiCt = ExtL.get('api-search-results'),
+            value = ExtL.get('searchtext').value,
             rec, access, el, cn, re, matchEl, href, meta;
 
         page = page || 1;
@@ -2084,54 +2084,54 @@ DocsApp.getEventTarget = function (e) {
         ExtL.removeChildNodes(apiCt);
 
         apiCt.appendChild(ExtL.createElement({
-            "class" : 'search-results-nav-header',
-            cn      : [{
-                "class" : 'active-tab',
-                html    : 'API Docs'
+            "class": 'search-results-nav-header',
+            cn: [{
+                "class": 'active-tab',
+                html: 'API Docs'
             }, {
-                html : 'Guides'
+                html: 'Guides'
             }]
         }));
 
         apiCt.appendChild(ExtL.createElement({
-            "class" : 'search-results-header',
-            html    : 'API Docs'
+            "class": 'search-results-header',
+            html: 'API Docs'
         }));
 
-        for (;i < pageSize; i++) {
+        for (; i < pageSize; i++) {
             rec = apiSearchRecords[start + i];
 
             if (rec) {
                 cn = [{
-                    "class" : 'search-match',
-                    html    : rec.sortValue
+                    "class": 'search-match',
+                    html: rec.sortValue
                 }, {
-                    "class" : 'search-source',
+                    "class": 'search-source',
                     //html    : rec.classObj.n + (rec.byClassMember ? ('.' + rec.sortValue) : '')
                     //html    : DocsApp.getSearchClassName(rec) + (rec.byClassMember ? ('.' + rec.sortValue) : '')
-                    html    : rec.classObj.d + (rec.byClassMember ? ('.' + rec.sortValue) : '')
+                    html: rec.classObj.d + (rec.byClassMember ? ('.' + rec.sortValue) : '')
                 }];
 
                 access = rec.access;
 
                 meta = [{
-                    "class" : 'meta-access',
-                    html    : access === 'private' ? 'private' : (access === 'protected' ? 'protected' : 'public')
+                    "class": 'meta-access',
+                    html: access === 'private' ? 'private' : (access === 'protected' ? 'protected' : 'public')
                 }, {
-                    "class" : 'meta-type',
-                    html    : rec.byAlias ? 'alias' : (rec.byClass ? 'class' : rec.memberTypeDisp)
+                    "class": 'meta-type',
+                    html: rec.byAlias ? 'alias' : (rec.byClass ? 'class' : rec.memberTypeDisp)
                 }];
 
                 if (rec.byClassMember && rec.meta) {
                     meta.push({
-                        "class" : 'meta-meta ' + rec.meta,
-                        html    : rec.meta
+                        "class": 'meta-meta ' + rec.meta,
+                        html: rec.meta
                     });
                 }
 
                 cn.push({
-                    "class" : (access === 'private' ? 'private' : (access === 'protected' ? 'protected' : 'public')) + ' search-item-meta-ct',
-                    cn      : meta
+                    "class": (access === 'private' ? 'private' : (access === 'protected' ? 'protected' : 'public')) + ' search-item-meta-ct',
+                    cn: meta
                 });
 
                 href = rec.classObj.n + '.html';
@@ -2150,10 +2150,10 @@ DocsApp.getEventTarget = function (e) {
                 }
 
                 el = ExtL.createElement({
-                    tag     : 'a',
-                    href    : href,
-                    "class" : 'search-item' + (rec.classObj.t ? ' ' + rec.classObj.t : ''),
-                    cn      : cn
+                    tag: 'a',
+                    href: href,
+                    "class": 'search-item' + (rec.classObj.t ? ' ' + rec.classObj.t : ''),
+                    cn: cn
                 });
 
                 apiCt.appendChild(el);
@@ -2165,7 +2165,7 @@ DocsApp.getEventTarget = function (e) {
         re = new RegExp('(' + value.replace('$', '\\$').replace(/"/g, '') + ')', 'ig');
 
         for (i = 0; i < apiCt.childNodes.length; i++) {
-            matchEl  = apiCt.childNodes.item(i).querySelector('.search-match');
+            matchEl = apiCt.childNodes.item(i).querySelector('.search-match');
             matchSrc = apiCt.childNodes.item(i).querySelector('.search-source');
 
             if (matchEl) {
@@ -2177,34 +2177,34 @@ DocsApp.getEventTarget = function (e) {
         }
     };
 
-    DocsApp.addSearchPagingToolbar = function(ct, records, page) {
-        var isApi       = ct.id === 'api-search-results',
-            rowCount    = ct.querySelectorAll(isApi ? '.search-item' : '.guide-search-item').length,
-            pageSize    = DocsApp.appMeta.pageSize,
+    DocsApp.addSearchPagingToolbar = function (ct, records, page) {
+        var isApi = ct.id === 'api-search-results',
+            rowCount = ct.querySelectorAll(isApi ? '.search-item' : '.guide-search-item').length,
+            pageSize = DocsApp.appMeta.pageSize,
             recordCount = records.length,
-            pageEnd     = (pageSize * page),
-            useCount    = pageEnd > recordCount,
-            endCount    = useCount ? recordCount : pageEnd;
+            pageEnd = (pageSize * page),
+            useCount = pageEnd > recordCount,
+            endCount = useCount ? recordCount : pageEnd;
 
         if (rowCount) {
             // check to see if we have more results than we can display with the results
             // page size and if so add a nav footer with the current page / count
             if (records.length > pageSize) {
                 ct.appendChild(ExtL.createElement({
-                    "class" : 'search-results-nav',
-                    html    : (pageEnd - pageSize + 1) + ' - ' + endCount + ' of ' + recordCount,
-                    cn      : [{
-                        "class" : 'search-nav-first' + ((page === 1) ? ' disabled' : ''),
-                        html    : '«'
+                    "class": 'search-results-nav',
+                    html: (pageEnd - pageSize + 1) + ' - ' + endCount + ' of ' + recordCount,
+                    cn: [{
+                        "class": 'search-nav-first' + ((page === 1) ? ' disabled' : ''),
+                        html: '«'
                     }, {
-                        "class" : 'search-nav-back' + ((page === 1) ? ' disabled' : ''),
-                        html    : '◄'
+                        "class": 'search-nav-back' + ((page === 1) ? ' disabled' : ''),
+                        html: '◄'
                     }, {
-                        "class" : 'search-nav-forward' + ((recordCount <= pageEnd) ? ' disabled' : ''),
-                        html    : '►'
+                        "class": 'search-nav-forward' + ((recordCount <= pageEnd) ? ' disabled' : ''),
+                        html: '►'
                     }, {
-                        "class" : 'search-nav-last' + ((recordCount <= pageEnd) ? ' disabled' : ''),
-                        html    : '»'
+                        "class": 'search-nav-last' + ((recordCount <= pageEnd) ? ' disabled' : ''),
+                        html: '»'
                     }]
                 }));
             }
@@ -2215,22 +2215,22 @@ DocsApp.getEventTarget = function (e) {
             }
         } else {
             ct.appendChild(ExtL.createElement({
-                "class" : 'search-results-nav-header',
-                cn      : [{
-                    "class" : isApi ? 'active-tab no-results' : null,
-                    html    : 'API Docs'
+                "class": 'search-results-nav-header',
+                cn: [{
+                    "class": isApi ? 'active-tab no-results' : null,
+                    html: 'API Docs'
                 }, {
-                    "class" : !isApi ? 'active-tab no-results' : null,
-                    html    : 'Guides'
+                    "class": !isApi ? 'active-tab no-results' : null,
+                    html: 'Guides'
                 }]
             }));
 
             ct.appendChild(ExtL.createElement({
-                "class" : 'search-results-not-found',
-                html    : 'No results found'
+                "class": 'search-results-not-found',
+                html: 'No results found'
             }));
 
-            DocsApp.currentApiPage   = null;
+            DocsApp.currentApiPage = null;
             DocsApp.currentGuidePage = null;
         }
     };
@@ -2248,18 +2248,18 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.onBodyClick = function (e) {
-        var target               = DocsApp.getEventTarget(e),
-            searchText           = ExtL.get('searchtext'),
-            isSearchInput        = target.id === 'searchtext',
-            isSearchNav          = ExtL.up(target, '.search-results-nav-header'),
-            isPagingNav          = ExtL.up(target, '.search-results-nav'),
-            isProductMenu        = ExtL.up(target, '#product-tree-ct'),
+        var target = DocsApp.getEventTarget(e),
+            searchText = ExtL.get('searchtext'),
+            isSearchInput = target.id === 'searchtext',
+            isSearchNav = ExtL.up(target, '.search-results-nav-header'),
+            isPagingNav = ExtL.up(target, '.search-results-nav'),
+            isProductMenu = ExtL.up(target, '#product-tree-ct'),
             isHistoryConfigPanel = ExtL.up(target, '#historyConfigPanel'),
-            isMultiSrcBtn        = ExtL.hasCls(target, 'multi-src-btn'),
-            productMenu          = ExtL.get('product-tree-ct'),
-            rightMembers         = ExtL.get('rightMembers'),
-            treeVis              = ExtL.hasCls(document.body, 'tree-hidden'),
-            width                = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+            isMultiSrcBtn = ExtL.hasCls(target, 'multi-src-btn'),
+            productMenu = ExtL.get('product-tree-ct'),
+            rightMembers = ExtL.get('rightMembers'),
+            treeVis = ExtL.hasCls(document.body, 'tree-hidden'),
+            width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
         if (target.id !== 'classic-search-filter' && target.id !== 'modern-search-filter' && target.id != 'searchtext' && !isSearchNav && !isPagingNav) {
             DocsApp.hideSearchResults();
@@ -2309,13 +2309,13 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.onMobileInputBlur = function (e) {
-        var target   = e.relatedTarget,
-            node     = target,
-            search   = 'search-results-ct',
+        var target = e.relatedTarget,
+            node = target,
+            search = 'search-results-ct',
             isResult = false;
 
         while (node) {
-            if (node.id===search) {
+            if (node.id === search) {
                 isResult = true;
                 break;
             }
@@ -2332,7 +2332,7 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.onSearchEnter = function () {
-        var ct    = DocsApp.getSearchResultsCt(),
+        var ct = DocsApp.getSearchResultsCt(),
             first = ct.querySelector('.search-item');
 
         if (first) {
@@ -2343,7 +2343,7 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.onSearchTab = function () {
-        var ct    = DocsApp.getSearchResultsCt(),
+        var ct = DocsApp.getSearchResultsCt(),
             first = ct.querySelector('.search-item');
 
         if (first) {
@@ -2356,13 +2356,13 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.onResultsCtClick = function (e) {
         var apiSearchRecords = DocsApp.appMeta.apiSearchRecords,
-            pageSize         = DocsApp.appMeta.pageSize,
+            pageSize = DocsApp.appMeta.pageSize,
             target, counter, item;
 
-        e       = DocsApp.getEvent(e);
-        target  = DocsApp.getEventTarget(e);
+        e = DocsApp.getEvent(e);
+        target = DocsApp.getEventTarget(e);
         counter = ExtL.up(target, '#api-search-results') ? DocsApp.appMeta.currentApiPage : DocsApp.appMeta.currentGuidePage;
-        item    = ExtL.up(target, '.search-item');
+        item = ExtL.up(target, '.search-item');
 
         if (e.stopPropagation) {
             e.stopPropagation();
@@ -2412,7 +2412,7 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.getScrollPosition = function () {
         var verticalPosition = 0,
-            ieOffset         = document.documentElement.scrollTop,
+            ieOffset = document.documentElement.scrollTop,
             target;
 
         if (DocsApp.meta.pageType === 'api') {
@@ -2429,7 +2429,7 @@ DocsApp.getEventTarget = function (e) {
             verticalPosition = target.scrollTop;
         } else if (document.body) { //ie quirks
             verticalPosition = target.scrollTop;
-        }else {
+        } else {
             verticalPosition = ieOffset;
         }
 
@@ -2452,19 +2452,19 @@ DocsApp.getEventTarget = function (e) {
      * scrolled up against the top nav toolbar
      */
     DocsApp.highlightTypeMenuItem = function () {
-        var memberTypesEl     = ExtL.get('toolbar'),
+        var memberTypesEl = ExtL.get('toolbar'),
             memberTypeButtons = memberTypesEl.querySelectorAll('div.toolbarButton'),
-            memberTypeLen     = memberTypeButtons.length,
+            memberTypeLen = memberTypeButtons.length,
             memberTypesBottom = memberTypesEl.getBoundingClientRect().bottom,
-            typeHeaders       = document.querySelectorAll('h2.type'),
-            len               = typeHeaders.length,
-            activeCls         = 'active-type-menu-item',
-            i                 = 0,
+            typeHeaders = document.querySelectorAll('h2.type'),
+            len = typeHeaders.length,
+            activeCls = 'active-type-menu-item',
+            i = 0,
             item, itemTop, activeItem, activeButtonEl;
 
         // find the active type header by whichever scrolled above the nav header last
         for (; i < len; i++) {
-            item    = typeHeaders.item(i);
+            item = typeHeaders.item(i);
             itemTop = item.getBoundingClientRect().top;
 
             if (item.offsetHeight && (itemTop < memberTypesBottom + 7)) {
@@ -2541,9 +2541,9 @@ DocsApp.getEventTarget = function (e) {
      * Toggles visibility of member type menu
      */
     DocsApp.toggleMemberTypesMenu = function () {
-        var menu    = ExtL.get('member-types-menu'),
+        var menu = ExtL.get('member-types-menu'),
             showCls = 'menu-visible',
-            hasCls  = ExtL.hasCls(menu, showCls);
+            hasCls = ExtL.hasCls(menu, showCls);
 
         ExtL[hasCls ? 'removeCls' : 'addCls'](menu, showCls);
     };
@@ -2552,21 +2552,21 @@ DocsApp.getEventTarget = function (e) {
      * Apply an ace editor to all elements with the 'ace-ct' class designation.
      */
     DocsApp.applyAceEditors = function () {
-        var aceTargets      = document.getElementsByClassName('ace-ct'),
-            len             = aceTargets.length,
-            runButtons      = document.getElementsByClassName('da-inline-fiddle-nav-fiddle'),
-            buttonsLen      = runButtons.length,
-            codeButtons     = document.getElementsByClassName('da-inline-fiddle-nav-code'),
+        var aceTargets = document.getElementsByClassName('ace-ct'),
+            len = aceTargets.length,
+            runButtons = document.getElementsByClassName('da-inline-fiddle-nav-fiddle'),
+            buttonsLen = runButtons.length,
+            codeButtons = document.getElementsByClassName('da-inline-fiddle-nav-code'),
             beautifyButtons = ExtL.fromNodeList(document.getElementsByClassName('fiddle-code-beautify')),
-            invisibles      = document.getElementsByClassName('invisible'),
-            codeBtnsLen     = codeButtons.length,
-            theme           = DocsApp.getState('exampleTheme') || 'ace/theme/chrome',
-            i               = 0,
+            invisibles = document.getElementsByClassName('invisible'),
+            codeBtnsLen = codeButtons.length,
+            theme = DocsApp.getState('exampleTheme') || 'ace/theme/chrome',
+            i = 0,
             editor, themePicker;
 
         for (; i < len; i++) {
             var themePicker = aceTargets[i].parentNode.querySelector('.example-theme-picker');
-            
+
             editor = ace.edit(aceTargets[i]);
             //editor.setTheme("ace/theme/chrome");
             editor.setTheme(theme);
@@ -2581,11 +2581,11 @@ DocsApp.getEventTarget = function (e) {
         }
 
         for (i = 0; i < buttonsLen; i++) {
-            runButtons[i].onclick = DocsApp.onRunFiddleClick;
+            runButtons[i].addEventListener('click', DocsApp.onRunFiddleClick);
         }
 
         for (i = 0; i < codeBtnsLen; i++) {
-            codeButtons[i].onclick = DocsApp.onCodeFiddleClick;
+            codeButtons[i].addEventListener('click', DocsApp.onCodeTabClick);
         }
 
         ExtL.each(beautifyButtons, function (btn) {
@@ -2598,9 +2598,9 @@ DocsApp.getEventTarget = function (e) {
 
         if (ExtL.isIE8()) {
             ExtL.each(ExtL.fromNodeList(aceTargets), function (ct) {
-                var editor     = ace.edit(ct),
+                var editor = ace.edit(ct),
                     beautified = js_beautify(editor.getValue(), {
-                        e4x : true
+                        e4x: true
                     });
 
                 editor.setValue(beautified.toString(), -1);
@@ -2612,11 +2612,11 @@ DocsApp.getEventTarget = function (e) {
      * Run fiddle button handler
      * @param {Event} e The click event
      */
-    DocsApp.onRunFiddleClick = function(e) {
+    DocsApp.onRunFiddleClick = function (e) {
         var fiddle = DocsApp.getEventTarget(e),
-            wrap   = ExtL.up(fiddle, '.da-inline-code-wrap'),
+            wrap = ExtL.up(fiddle, '.da-inline-code-wrap'),
             editor = ace.edit(wrap.querySelector('.ace-ct').id),
-            code   = editor.getValue(),
+            code = editor.getValue(),
             cached = wrap.code;
 
         if (code === cached) {
@@ -2643,22 +2643,71 @@ DocsApp.getEventTarget = function (e) {
         }
     };
 
-    DocsApp.onCodeFiddleClick = function (e) {
-        var code     = DocsApp.getEventTarget(e),
-            wrap     = ExtL.up(code, '.da-inline-code-wrap'),
-            isActive = ExtL.hasCls(code, 'da-inline-fiddle-nav-active');
+    DocsApp.onCodeTabClick = function (e) {
+        var codeTab = DocsApp.getEventTarget(e);
+        if (codeTab != null) {
+            // Be sure it's the tab and not the child in the tab
+            codeTab = ExtL.upToParent(codeTab, 'da-inline-fiddle-nav-code');
+            //console.log("codeTab=", codeTab);
+        }
+        
+        var wrap = ExtL.up(codeTab, '.da-inline-code-wrap');
 
-        if (wrap && !ExtL.hasCls(wrap, 'disabled') && !isActive) {
-            DocsApp.hideFiddle(wrap);
+        DocsApp.hideFiddle(wrap);
+
+        var activeContentId = codeTab.getAttribute('contentid');
+        var contentElements = wrap.getElementsByClassName('ace_editor');
+        if (contentElements) {
+            for (var i = 0; i < contentElements.length; i++) {
+                var contentEl = contentElements[i];
+                var contentElId = contentEl.id;
+
+                // V1 won't have an activeContentId tag, so pick the first one. 
+                if (activeContentId == contentElId || (contentElements.length <= 1)) {
+                    DocsApp.hideFiddle(wrap);
+                    // set active. TODO future: contentEl.classList.remove('ace-ct-disabled');
+                    ExtL.toggleCls(contentEl, 'ace-ct-disabled', false);
+                } else {
+                    // set inactive. TODO future: contentEl.classList.add('ace-ct-disabled');
+                    ExtL.toggleCls(contentEl, 'ace-ct-disabled', true);
+                }
+            }
+        }
+
+        var tabElements = wrap.getElementsByClassName('da-inline-fiddle-nav-code');
+        if (tabElements) {
+            for (var i = 0; i < tabElements.length; i++) {
+                var tabEl = tabElements[i];
+                var tabElId = tabEl.id;
+                // If there is only one tab, always select it
+                if (codeTab.id == tabElId || (tabElements.length <= 1)) {
+                    ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-active', true);
+                    ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-code-notactive', false);
+                } else {
+                    ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-active', false);
+                    ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-code-notactive', true);
+                }
+            }
         }
     };
 
+    DocsApp.disableTabs = function(wrap) {
+        var tabElements = wrap.getElementsByClassName('da-inline-fiddle-nav-code');
+        if (tabElements) {
+            for (var i = 0; i < tabElements.length; i++) {
+                var tabEl = tabElements[i];
+                ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-active', false);
+                ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-code-notactive', true);
+            }
+        }
+    }
+
     DocsApp.onBeautifyClick = function (e) {
-        var code       = DocsApp.getEventTarget(e),
-            wrap       = ExtL.up(code, '.da-inline-code-wrap'),
-            editor     = ace.edit(wrap.querySelector('.ace-ct').id),
+        var code = DocsApp.getEventTarget(e),
+            wrap = ExtL.up(code, '.da-inline-code-wrap'),
+            editor = ace.edit(wrap.querySelector('.ace-ct').id),
             beautified = js_beautify(editor.getValue(), {
-                e4x : true
+                e4x: true
             });
 
         editor.setValue(beautified.toString(), -1);
@@ -2673,7 +2722,9 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.showFiddle = function (wrap) {
-        var codeNav   = wrap.querySelector('.da-inline-fiddle-nav-code'),
+        DocsApp.disableTabs(wrap);
+
+        var codeNav = wrap.querySelector('.da-inline-fiddle-nav-code'),
             fiddleNav = wrap.querySelector('.da-inline-fiddle-nav-fiddle');
 
         ExtL.addCls(wrap, 'show-fiddle');
@@ -2682,12 +2733,12 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.hideFiddle = function (wrap) {
-        var codeNav   = wrap.querySelector('.da-inline-fiddle-nav-code'),
+        var codeNav = wrap.querySelector('.da-inline-fiddle-nav-code'),
             fiddleNav = wrap.querySelector('.da-inline-fiddle-nav-fiddle');
 
-        ExtL.removeCls(wrap, 'show-fiddle');
-        ExtL.toggleCls(codeNav, 'da-inline-fiddle-nav-active');
-        ExtL.toggleCls(fiddleNav, 'da-inline-fiddle-nav-active');
+        ExtL.removeCls(wrap, 'show-fiddle', false);
+        ExtL.toggleCls(codeNav, 'da-inline-fiddle-nav-active', false);
+        ExtL.toggleCls(fiddleNav, 'da-inline-fiddle-nav-active', false);
     };
 
     /**
@@ -2695,36 +2746,80 @@ DocsApp.getEventTarget = function (e) {
      * @param {Element} wrap The element housing the fiddle and fiddle code
      */
     DocsApp.runFiddleExample = function (wrap) {
-        var editor     = ace.edit(wrap.querySelector('.ace-ct').id),
-            meta       = JSON.parse(wrap.getAttribute('data-fiddle-meta')),
-            myMeta     = DocsApp.meta,
-            actualProd = myMeta.product,
-            // TODO extangular???
-            intro      = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
-            outro      = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "}\n});",
-            iframe     = DocsApp.getIFrame(wrap),
-            pageName   = myMeta.myId,
-            toolkit    = myMeta.toolkit,
-            version    = myMeta.apiVersion,
-            myVer      = version.split('.'),
-            majorVer   = parseInt(myVer[0], 10),
-            minorVer   = parseInt(myVer[1], 10),
-            canPackage = (majorVer >= 6 && minorVer >= 2),
-            packages   = meta.packages ? ExtL.from(meta.packages) : [],
-            codes      = {
-                assets   : [{
-                    type   : 'js',
-                    name   : 'app.js',
-                    code   : intro + editor.getValue() + outro,
-                }],
-                mockdata : [],
-                packages : packages
-            },
-            data       = {
-                framework : meta,
-                codes     : codes
-            },
-            form, mask;
+        var aceContentElements = wrap.getElementsByClassName('ace-ct');
+        if (!aceContentElements) {
+            return;
+        }
+
+        var json = wrap.getAttribute('data-fiddle-meta');
+        var meta = JSON.parse(json);
+        var myMeta = DocsApp.meta;
+        var actualProd = myMeta.product;
+
+        // TODO extwebcomponents???
+        var intro = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n";
+        var outro = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "\n}\n});";
+
+        var iframe = DocsApp.getIFrame(wrap);
+        var pageName = myMeta.myId;
+        var toolkit = myMeta.toolkit;
+        var version = myMeta.apiVersion;
+        var myVer = version.split('.');
+        var majorVer = parseInt(myVer[0], 10);
+        var minorVer = parseInt(myVer[1], 10);
+        var canPackage = (majorVer >= 6 && minorVer >= 2);
+        var packages = meta.packages ? ExtL.from(meta.packages) : [];
+        
+        var codes = {
+            assets: [],
+            mockdata: [],
+            packages: packages
+        };
+
+        if (aceContentElements.length == 1) { // V1
+            var aceElementId = aceContentElements[0].id;
+            var aceEditor = ace.edit(aceElementId);
+            var asset = {
+                type: 'js',
+                name: 'app.js',
+                code: intro + aceEditor.getValue() + outro,
+            };
+            codes.assets.push(asset);
+        } else { // V2
+            for (var i = 0; i < aceContentElements.length; i++) {
+                var aceContentElement = aceContentElements[i];
+                var aceElementId = aceContentElement.id;
+                var lang = aceContentElement.getAttribute('lang');
+                if (!lang) {
+                    lang = 'js';
+                }
+
+                var name = 'file' + i +'.';
+                if (lang == 'javascript') {
+                    name += 'js';
+                } else if (lang == 'typescript') {
+                    name += 'ts';
+                } else {
+                    name += lang;
+                }
+                
+                var aceEditor = ace.edit(aceElementId);
+                var asset = {
+                    type: lang,
+                    name: name,
+                    code: aceEditor.getValue(),
+                };
+                codes.assets.push(asset);
+            }
+        }
+
+        var data = {
+            framework: meta,
+            codes: codes
+        };
+
+        var form;
+        var mask;
 
         //data.framework.version = '6.5.0.1111';
         if (toolkit === 'modern') {
@@ -2736,15 +2831,15 @@ DocsApp.getEventTarget = function (e) {
                 packages.push('ux');
             } else {
                 data.codes.assets = data.codes.assets.concat([{
-                    type   : 'js',
-                    name   : 'ux-build.js',
-                    code   : toolkit ? 'https://{frameworkPath}/build/packages/ux/' + toolkit + '/ux-debug.js' : 'https://{frameworkPath}/build/packages/ext-ux/build/ext-ux-debug.js',
-                    remote : true
+                    type: 'js',
+                    name: 'ux-build.js',
+                    code: toolkit ? 'https://{frameworkPath}/build/packages/ux/' + toolkit + '/ux-debug.js' : 'https://{frameworkPath}/build/packages/ext-ux/build/ext-ux-debug.js',
+                    remote: true
                 }, {
-                    type   : 'css',
-                    name   : 'ux-all-debug.css',
-                    code   : toolkit ? 'https://{frameworkPath}/build/packages/ux/' + toolkit + '/classic/resources/ux-all-debug.css' : 'https://{frameworkPath}/build/packages/ext-ux/build/classic/resources/ext-ux-all-debug.css',
-                    remote : true
+                    type: 'css',
+                    name: 'ux-all-debug.css',
+                    code: toolkit ? 'https://{frameworkPath}/build/packages/ux/' + toolkit + '/classic/resources/ux-all-debug.css' : 'https://{frameworkPath}/build/packages/ext-ux/build/classic/resources/ext-ux-all-debug.css',
+                    remote: true
                 }]);
             }
         } else if (pageName.toLowerCase().indexOf('google') > -1) {
@@ -2752,10 +2847,10 @@ DocsApp.getEventTarget = function (e) {
                 packages.push('google');
             } else {
                 data.codes.assets = data.codes.assets.concat([{
-                    type   : 'js',
-                    name   : 'google-build.js',
-                    code   : toolkit ? 'https://{frameworkPath}/build/packages/google/' + toolkit + '/google-debug.js' : '',
-                    remote : true
+                    type: 'js',
+                    name: 'google-build.js',
+                    code: toolkit ? 'https://{frameworkPath}/build/packages/google/' + toolkit + '/google-debug.js' : '',
+                    remote: true
                 }]);
             }
         } else if (pageName.toLowerCase().indexOf('d3') > -1) {
@@ -2763,56 +2858,56 @@ DocsApp.getEventTarget = function (e) {
                 packages.push('d3');
             } else {
                 data.codes.assets = data.codes.assets.concat([{
-                    type   : 'js',
-                    name   : 'd3-build.js',
-                    code   : toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/d3-debug.js' : '',
-                    remote : true
+                    type: 'js',
+                    name: 'd3-build.js',
+                    code: toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/d3-debug.js' : '',
+                    remote: true
                 }]);
 
                 if (toolkit === 'classic') {
                     data.codes.assets = data.codes.assets.concat([{
-                        type   : 'css',
-                        name   : 'd3-classic-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/classic/resources/d3-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'd3-classic-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/classic/resources/d3-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'd3-crisp-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/crisp/resources/d3-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'd3-crisp-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/crisp/resources/d3-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'd3-neptune-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/neptune/resources/d3-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'd3-neptune-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/neptune/resources/d3-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'd3-triton-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/triton/resources/d3-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'd3-triton-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/triton/resources/d3-all-debug.css' : '',
+                        remote: true
                     }]);
                 }
                 if (toolkit === 'modern') {
                     data.codes.assets = data.codes.assets.concat([{
-                        type   : 'css',
-                        name   : 'd3-ios-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/ios/resources/d3-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'd3-ios-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/ios/resources/d3-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'd3-material-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/material/resources/d3-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'd3-material-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/material/resources/d3-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'd3-modern-neptune-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/modern-neptune/resources/d3-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'd3-modern-neptune-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/modern-neptune/resources/d3-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'd3-modern-triton-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/modern-triton/resources/d3-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'd3-modern-triton-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/d3/' + toolkit + '/modern-triton/resources/d3-all-debug.css' : '',
+                        remote: true
                     }]);
                 }
             }
@@ -2821,56 +2916,56 @@ DocsApp.getEventTarget = function (e) {
                 packages.push('calendar');
             } else {
                 data.codes.assets = data.codes.assets.concat([{
-                    type   : 'js',
-                    name   : 'calendar-build.js',
-                    code   : toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/calendar-debug.js' : '',
-                    remote : true
+                    type: 'js',
+                    name: 'calendar-build.js',
+                    code: toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/calendar-debug.js' : '',
+                    remote: true
                 }]);
 
                 if (toolkit === 'classic') {
                     data.codes.assets = data.codes.assets.concat([{
-                        type   : 'css',
-                        name   : 'calendar-classic-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/classic/resources/calendar-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'calendar-classic-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/classic/resources/calendar-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'calendar-crisp-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/crisp/resources/calendar-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'calendar-crisp-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/crisp/resources/calendar-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'calendar-neptune-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/neptune/resources/calendar-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'calendar-neptune-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/neptune/resources/calendar-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'calendar-triton-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/triton/resources/calendar-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'calendar-triton-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/triton/resources/calendar-all-debug.css' : '',
+                        remote: true
                     }]);
                 }
                 if (toolkit === 'modern') {
                     data.codes.assets = data.codes.assets.concat([{
-                        type   : 'css',
-                        name   : 'calendar-ios-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/ios/resources/calendar-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'calendar-ios-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/ios/resources/calendar-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'calendar-material-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/material/resources/calendar-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'calendar-material-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/material/resources/calendar-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'calendar-modern-neptune-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/modern-neptune/resources/calendar-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'calendar-modern-neptune-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/modern-neptune/resources/calendar-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'calendar-modern-triton-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/modern-triton/resources/calendar-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'calendar-modern-triton-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/calendar/' + toolkit + '/modern-triton/resources/calendar-all-debug.css' : '',
+                        remote: true
                     }]);
                 }
             }
@@ -2879,10 +2974,10 @@ DocsApp.getEventTarget = function (e) {
                 packages.push('exporter');
             } else {
                 data.codes.assets = data.codes.assets.concat([{
-                    type   : 'js',
-                    name   : 'exporter-build.js',
-                    code   : toolkit ? 'https://{frameworkPath}/build/packages/exporter/' + toolkit + '/exporter-debug.js' : '',
-                    remote : true
+                    type: 'js',
+                    name: 'exporter-build.js',
+                    code: toolkit ? 'https://{frameworkPath}/build/packages/exporter/' + toolkit + '/exporter-debug.js' : '',
+                    remote: true
                 }]);
             }
         } else if (pageName.toLowerCase().indexOf('pivot') > -1) {
@@ -2890,56 +2985,56 @@ DocsApp.getEventTarget = function (e) {
                 packages.push('pivot');
             } else {
                 data.codes.assets = data.codes.assets.concat([{
-                    type   : 'js',
-                    name   : 'pivot-build.js',
-                    code   : toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/pivot-debug.js' : '',
-                    remote : true
+                    type: 'js',
+                    name: 'pivot-build.js',
+                    code: toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/pivot-debug.js' : '',
+                    remote: true
                 }]);
 
                 if (toolkit === 'classic') {
                     data.codes.assets = data.codes.assets.concat([{
-                        type   : 'css',
-                        name   : 'pivot-classic-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/classic/resources/pivot-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'pivot-classic-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/classic/resources/pivot-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'pivot-crisp-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/crisp/resources/pivot-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'pivot-crisp-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/crisp/resources/pivot-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'pivot-neptune-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/neptune/resources/pivot-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'pivot-neptune-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/neptune/resources/pivot-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'pivot-triton-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/triton/resources/pivot-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'pivot-triton-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/triton/resources/pivot-all-debug.css' : '',
+                        remote: true
                     }]);
                 }
                 if (toolkit === 'modern') {
                     data.codes.assets = data.codes.assets.concat([{
-                        type   : 'css',
-                        name   : 'pivot-ios-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/ios/resources/pivot-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'pivot-ios-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/ios/resources/pivot-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'pivot-material-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/material/resources/pivot-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'pivot-material-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/material/resources/pivot-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'pivot-modern-neptune-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/modern-neptune/resources/pivot-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'pivot-modern-neptune-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/modern-neptune/resources/pivot-all-debug.css' : '',
+                        remote: true
                     }, {
-                        type   : 'css',
-                        name   : 'pivot-modern-triton-build.css',
-                        code   : toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/modern-triton/resources/pivot-all-debug.css' : '',
-                        remote : true
+                        type: 'css',
+                        name: 'pivot-modern-triton-build.css',
+                        code: toolkit ? 'https://{frameworkPath}/build/packages/pivot/' + toolkit + '/modern-triton/resources/pivot-all-debug.css' : '',
+                        remote: true
                     }]);
                 }
             }
@@ -2951,7 +3046,7 @@ DocsApp.getEventTarget = function (e) {
 
         form = DocsApp.buildForm(iframe.id, data);
         mask = wrap.appendChild(ExtL.createElement({
-            "class" : 'fiddle-mask'
+            "class": 'fiddle-mask'
         }));
 
         if (!ExtL.isIE8() && !ExtL.isIE9()) {
@@ -2982,7 +3077,7 @@ DocsApp.getEventTarget = function (e) {
         var iframe = wrap.querySelector('iframe');
 
         if (!iframe) {
-            iframe    = document.createElement('iframe');
+            iframe = document.createElement('iframe');
             iframe.id = iframe.name = DocsApp.id(); //needs to be unique on whole page
 
             wrap.appendChild(iframe);
@@ -3023,12 +3118,12 @@ DocsApp.getEventTarget = function (e) {
         }
 
         var form = ExtL.createElement({
-            tag    : 'form',
-            role   : 'presentation',
-            action : fiddleURL,
-            method : 'POST',
-            target : target,
-            style  : 'display:none'
+            tag: 'form',
+            role: 'presentation',
+            action: fiddleURL,
+            method: 'POST',
+            target: target,
+            style: 'display:none'
         });
 
         ExtL.each(params, function (key, val) {
@@ -3037,10 +3132,10 @@ DocsApp.getEventTarget = function (e) {
             }
 
             form.appendChild(ExtL.createElement({
-                tag   : 'input',
-                type  : 'hidden',
-                name  : key,
-                value : val
+                tag: 'input',
+                type: 'hidden',
+                name: key,
+                value: val
             }));
         });
 
@@ -3070,17 +3165,17 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.showMemberTypeMenu = function (e) {
-        var menu        = DocsApp.getMemberTypeMenu(),
-            target      = DocsApp.getEventTarget(e),
-            membersBox  = ExtL.get('class-body-wrap').getBoundingClientRect(),
-            height      = (membersBox.bottom - membersBox.top) - 4,
-            maxWidth    = (membersBox.right - membersBox.left) - 4,
-            targetId    = target.id.replace('-nav-btn', ''),
-            targetCt    = ExtL.get(targetId + '-ct'),
-            memberList  = ExtL.fromNodeList(targetCt.querySelectorAll('.classmembers')),
+        var menu = DocsApp.getMemberTypeMenu(),
+            target = DocsApp.getEventTarget(e),
+            membersBox = ExtL.get('class-body-wrap').getBoundingClientRect(),
+            height = (membersBox.bottom - membersBox.top) - 4,
+            maxWidth = (membersBox.right - membersBox.left) - 4,
+            targetId = target.id.replace('-nav-btn', ''),
+            targetCt = ExtL.get(targetId + '-ct'),
+            memberList = ExtL.fromNodeList(targetCt.querySelectorAll('.classmembers')),
             eligMembers = [],
-            cols        = [],
-            tallest     = 0,
+            cols = [],
+            tallest = 0,
             configsCt, rows, maxCols, maxLiteralWidth, useMembersWidth, width, left, colCount, rowCount, j, col, explicitAccessors;
 
         targetBox = target.getBoundingClientRect();
@@ -3106,16 +3201,16 @@ DocsApp.getEventTarget = function (e) {
             // ignore any methods that have been hoisted into the configs section or are
             // hidden
             if (item.offsetHeight && item.id.indexOf('placeholder') !== 0) {
-            //if (item.offsetHeight) {
-                link      = item.querySelector('[data-ref]');
-                name      = ExtL.trim(link.textContent || link.innerText);
+                //if (item.offsetHeight) {
+                link = item.querySelector('[data-ref]');
+                name = ExtL.trim(link.textContent || link.innerText);
                 memberObj = {
-                    tag          : 'a',
-                    html         : name,
-                    title        : name,
-                    href         : '#' + link.getAttribute('data-ref'),
-                    sortName     : name,
-                    sortPriority : 0
+                    tag: 'a',
+                    html: name,
+                    title: name,
+                    href: '#' + link.getAttribute('data-ref'),
+                    sortName: name,
+                    sortPriority: 0
                 };
 
 
@@ -3134,85 +3229,85 @@ DocsApp.getEventTarget = function (e) {
                 if (memberTagsCt) {
                     if (memberTagsCt.querySelector('.private')) {
                         cn.push({
-                            html    : 'pri',
-                            "class" : 'private member-menu-flag'
+                            html: 'pri',
+                            "class": 'private member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.protected')) {
                         cn.push({
-                            html    : 'pro',
-                            "class" : 'protected member-menu-flag'
+                            html: 'pro',
+                            "class": 'protected member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.required')) {
                         cn.push({
-                            html    : 'req',
-                            "class" : 'required member-menu-flag'
+                            html: 'req',
+                            "class": 'required member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.deprecated')) {
                         cn.push({
-                            html    : 'dep',
-                            "class" : 'deprecated member-menu-flag'
+                            html: 'dep',
+                            "class": 'deprecated member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.removed')) {
                         cn.push({
-                            html    : 'rem',
-                            "class" : 'removed member-menu-flag'
+                            html: 'rem',
+                            "class": 'removed member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.static')) {
                         cn.push({
-                            html    : 'sta',
-                            "class" : 'static member-menu-flag'
+                            html: 'sta',
+                            "class": 'static member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.readonly')) {
                         cn.push({
-                            html    : 'ro',
-                            "class" : 'readonly member-menu-flag'
+                            html: 'ro',
+                            "class": 'readonly member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.template')) {
                         cn.push({
-                            html    : 'tpl',
-                            "class" : 'template member-menu-flag'
+                            html: 'tpl',
+                            "class": 'template member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.abstract')) {
                         cn.push({
-                            html    : 'abs',
-                            "class" : 'abstract member-menu-flag'
+                            html: 'abs',
+                            "class": 'abstract member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.chainable')) {
                         cn.push({
-                            html    : '>',
-                            "class" : 'chainable member-menu-flag'
+                            html: '>',
+                            "class": 'chainable member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.bindable')) {
                         cn.push({
-                            html    : 'bind',
-                            "class" : 'bindable member-menu-flag'
+                            html: 'bind',
+                            "class": 'bindable member-menu-flag'
                         });
                     }
 
                     if (memberTagsCt.querySelector('.immutable')) {
                         cn.push({
-                            html    : 'imm',
-                            "class" : 'immutable member-menu-flag'
+                            html: 'imm',
+                            "class": 'immutable member-menu-flag'
                         });
                     }
                 }
@@ -3231,8 +3326,8 @@ DocsApp.getEventTarget = function (e) {
         //   getter it will follow the config and a setter would then follow before
         //   proceeding with the natural sort order
         eligMembers.sort(function (a, b) {
-            var aName     = a.sortName,
-                bName     = b.sortName,
+            var aName = a.sortName,
+                bName = b.sortName,
                 aPriority = a.sortPriority,
                 bPriority = b.sortPriority;
 
@@ -3255,11 +3350,11 @@ DocsApp.getEventTarget = function (e) {
             arr[i] = ExtL.createElement(member);
         });
 
-        rows            = parseInt((height - 34) / 20);
-        maxCols         = Math.ceil(eligMembers.length / rows);
+        rows = parseInt((height - 34) / 20);
+        maxCols = Math.ceil(eligMembers.length / rows);
         maxLiteralWidth = (maxCols * 300) + 4;
         useMembersWidth = maxLiteralWidth > maxWidth;
-        width           = useMembersWidth ? maxWidth : maxLiteralWidth;
+        width = useMembersWidth ? maxWidth : maxLiteralWidth;
 
         if (useMembersWidth) {
             left = membersBox.left;
@@ -3276,10 +3371,10 @@ DocsApp.getEventTarget = function (e) {
         }
 
         ExtL.applyStyles(menu, {
-            width  : width + 'px',
-            height : height + 'px',
-            left   : left + 'px',
-            top    : membersBox.top + 'px'
+            width: width + 'px',
+            height: height + 'px',
+            left: left + 'px',
+            top: membersBox.top + 'px'
         });
 
         colCount = Math.floor(width / 300);
@@ -3347,7 +3442,7 @@ DocsApp.getEventTarget = function (e) {
     //var addHighlight, removeHighlight;
     DocsApp.highlightMemberRow = function (target) {
         var highlightCls = 'member-highlight',
-            fadeCls      = 'member-highlight-fade';
+            fadeCls = 'member-highlight-fade';
 
         if (DocsApp.appMeta.addHighlight) {
             clearTimeout(DocsApp.appMeta.addHighlight);
@@ -3383,62 +3478,62 @@ DocsApp.getEventTarget = function (e) {
     DocsApp.initHistory = function () {
         DocsApp.saveState();
 
-        var history  = DocsApp.getHistory(),
-            nav      = ExtL.get('history-nav'),
-            path     = window.location.pathname,
-            list     = ExtL.get('history-full-list'),
-            meta     = DocsApp.meta,
-            product  = meta.product,
-            version  = meta.version,
-            toolkit  = meta.toolkit,
+        var history = DocsApp.getHistory(),
+            nav = ExtL.get('history-nav'),
+            path = window.location.pathname,
+            list = ExtL.get('history-full-list'),
+            meta = DocsApp.meta,
+            product = meta.product,
+            version = meta.version,
+            toolkit = meta.toolkit,
             pageName = ExtL.htmlDecode(ExtL.htmlDecode(meta.pageName));
 
         nav.appendChild(ExtL.createElement({
-            tag     : 'span',
-            html    : 'History : ',
-            "class" : 'history-title'
+            tag: 'span',
+            html: 'History : ',
+            "class": 'history-title'
         }));
         if (history && history.length) {
             history.reverse();
             ExtL.each(history, function (item) {
-                var current     = (item.product === product && item.version === version && item.toolkit === toolkit && item.text === pageName && item.path === path),
-                    other       = (item.product !== product || item.version !== version || item.toolkit !== toolkit),
-                    badge       = ExtL.isIE8() ? '' : ' ' + item.product + '-badge badge',
-                    isGuide     = (item.path.indexOf('/guides/') > -1);
-                    itemVersion = item.version,
+                var current = (item.product === product && item.version === version && item.toolkit === toolkit && item.text === pageName && item.path === path),
+                    other = (item.product !== product || item.version !== version || item.toolkit !== toolkit),
+                    badge = ExtL.isIE8() ? '' : ' ' + item.product + '-badge badge',
+                    isGuide = (item.path.indexOf('/guides/') > -1);
+                itemVersion = item.version,
                     itemToolkit = item.toolkit,
-                    combined    = (itemToolkit ? (itemVersion + '-' + itemToolkit) : itemVersion);
+                    combined = (itemToolkit ? (itemVersion + '-' + itemToolkit) : itemVersion);
 
                 nav.appendChild(ExtL.createElement({
-                    tag        : 'a',
-                    "class"    : 'tooltip tooltip-tl-bl history-btn' + (other ? ' history-other' : ''),
-                    href       : item.path,
-                    style      : current ? 'display: none;' : null,
-                    'data-tip' : item.title + ' ' + (isGuide ? itemVersion : combined),
-                    cn         : [{
-                        tag     : 'span',
-                        html    : item.title + ' ' + (isGuide ? itemVersion : combined) + ' | ',
-                        "class" : 'history-meta'
+                    tag: 'a',
+                    "class": 'tooltip tooltip-tl-bl history-btn' + (other ? ' history-other' : ''),
+                    href: item.path,
+                    style: current ? 'display: none;' : null,
+                    'data-tip': item.title + ' ' + (isGuide ? itemVersion : combined),
+                    cn: [{
+                        tag: 'span',
+                        html: item.title + ' ' + (isGuide ? itemVersion : combined) + ' | ',
+                        "class": 'history-meta'
                     }, {
-                        tag  : 'span',
-                        html : item.text
+                        tag: 'span',
+                        html: item.text
                     }, {
-                        "class" : 'callout callout-bl'
+                        "class": 'callout callout-bl'
                     }]
                 }));
 
                 list.appendChild(ExtL.createElement({
-                    tag     : 'a',
-                    "class" : 'tooltip tooltip-tr-br history-item' + (other ? ' history-other' : '') + badge,
-                    href    : item.path,
-                    style   : current ? 'display: none;' : null,
-                    cn      : [{
-                        tag  : 'div',
-                        html : item.text
+                    tag: 'a',
+                    "class": 'tooltip tooltip-tr-br history-item' + (other ? ' history-other' : '') + badge,
+                    href: item.path,
+                    style: current ? 'display: none;' : null,
+                    cn: [{
+                        tag: 'div',
+                        html: item.text
                     }, {
-                        tag     : 'div',
-                        html    : item.title + ' ' + combined,
-                        "class" : 'history-meta'
+                        tag: 'div',
+                        html: item.title + ' ' + combined,
+                        "class": 'history-meta'
                     }]
                 }));
             });
@@ -3473,9 +3568,9 @@ DocsApp.getEventTarget = function (e) {
         ExtL.removeCls(ExtL.get('tree-header'), 'pre-load');
 
         DocsApp.fetchState(true);
-        
+
         DocsApp.applyAceEditors();
-        
+
         if (DocsApp.meta.pageType === 'api') {
             // force a scroll response at load for browsers that don't fire the scroll
             // event themselves initially
@@ -3520,7 +3615,7 @@ DocsApp.getEventTarget = function (e) {
         eventsEl = ExtL.get('searchtext');
         if (eventsEl) {
             ExtL.on(eventsEl, 'keyup', function (e) {
-                e       = DocsApp.getEvent(e);
+                e = DocsApp.getEvent(e);
                 keyCode = e.keyCode || e.which;
 
                 if (keyCode === 27) {
@@ -3531,7 +3626,7 @@ DocsApp.getEventTarget = function (e) {
                 }
             });
             ExtL.on(eventsEl, 'keydown', function (e) {
-                e       = DocsApp.getEvent(e);
+                e = DocsApp.getEvent(e);
                 keyCode = e.keyCode || e.which;
 
                 if (keyCode === 27) {
@@ -3546,27 +3641,27 @@ DocsApp.getEventTarget = function (e) {
 
         eventsEl = ExtL.get('mobile-input');
         ExtL.on(eventsEl, 'keyup', function (e) {
-                e       = DocsApp.getEvent(e);
-                keyCode = e.keyCode || e.which;
+            e = DocsApp.getEvent(e);
+            keyCode = e.keyCode || e.which;
 
-                if (keyCode === 27) {
-                    DocsApp.hideSearchHistory();
-                    DocsApp.hideSearchResults();
-                } else {
-                    DocsApp.searchFilter();
-                }
-            });
+            if (keyCode === 27) {
+                DocsApp.hideSearchHistory();
+                DocsApp.hideSearchResults();
+            } else {
+                DocsApp.searchFilter();
+            }
+        });
         ExtL.on(eventsEl, 'keydown', function (e) {
-                e       = DocsApp.getEvent(e);
-                keyCode = e.keyCode || e.which;
+            e = DocsApp.getEvent(e);
+            keyCode = e.keyCode || e.which;
 
-                if (keyCode === 27) {
-                    DocsApp.hideSearchHistory();
-                    DocsApp.hideSearchResults();
-                } else {
-                    DocsApp.searchFilter();
-                }
-            });
+            if (keyCode === 27) {
+                DocsApp.hideSearchHistory();
+                DocsApp.hideSearchResults();
+            } else {
+                DocsApp.searchFilter();
+            }
+        });
         ExtL.on(eventsEl, 'blur', DocsApp.onMobileInputBlur);
 
         eventsEl = null;
@@ -3602,10 +3697,10 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.setScrollPos = function (e, pos) {
         var el = DocsApp.meta.pageType === 'api' ? '.class-body-wrap' : (DocsApp.meta.pageType === 'guide' ? '.guide-body-wrap' : '.generic-content');
-        pos    = pos || 0;
+        pos = pos || 0;
 
         e = DocsApp.getEvent(e);
-        if(e && e.preventDefault) {
+        if (e && e.preventDefault) {
             e.preventDefault();
         }
 
@@ -3618,12 +3713,12 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.onToggleAllClick = function (e) {
         var memberList = ExtL.fromNodeList(document.querySelectorAll('.classmembers')),
-            btn        = ExtL.get('toggleAll'),
-            indicator  = btn.querySelector('i'),
-            collapsed  = ExtL.hasCls(indicator, 'fa-plus'),
-            action     = collapsed ? 'addCls' : 'removeCls',
-            i          = 0,
-            len        = memberList.length,
+            btn = ExtL.get('toggleAll'),
+            indicator = btn.querySelector('i'),
+            collapsed = ExtL.hasCls(indicator, 'fa-plus'),
+            action = collapsed ? 'addCls' : 'removeCls',
+            i = 0,
+            len = memberList.length,
             member;
 
         for (; i < len; i++) {
@@ -3639,8 +3734,8 @@ DocsApp.getEventTarget = function (e) {
     DocsApp.onToggleExampleClick = function (e) {
         e = DocsApp.getEvent(e);
 
-        var target      = DocsApp.getEventTarget(e),
-            targetEl    = ExtL.hasCls(target, 'example-collapse-target') || ExtL.up(target, '.example-collapse-target'),
+        var target = DocsApp.getEventTarget(e),
+            targetEl = ExtL.hasCls(target, 'example-collapse-target') || ExtL.up(target, '.example-collapse-target'),
             headerClick = ExtL.hasCls(target, 'da-inline-fiddle-nav');
 
         DocsApp.stopEvent(e);
@@ -3662,7 +3757,7 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.onToggleExamplesClick = function () {
-        var body      = document.querySelector('body'),
+        var body = document.querySelector('body'),
             collapsed = ExtL.hasCls(body, 'collapse-code-all');
 
         DocsApp.toggleExamples(!collapsed);
@@ -3674,12 +3769,12 @@ DocsApp.getEventTarget = function (e) {
      * @param {Boolean} collapse True to collapse, false to expand, or null to toggle all
      * code / fiddle blocks
      */
-   DocsApp.toggleExamples = function (collapse) {
-        var body        = document.querySelector('body'),
+    DocsApp.toggleExamples = function (collapse) {
+        var body = document.querySelector('body'),
             collapseCls = 'collapse-code-all',
-            collapsed   = ExtL.hasCls(body, collapseCls),
-            doCollapse  = ExtL.isEmpty(collapse) ? !collapsed : collapse,
-            action      = doCollapse ? 'addCls' : 'removeCls';
+            collapsed = ExtL.hasCls(body, collapseCls),
+            doCollapse = ExtL.isEmpty(collapse) ? !collapsed : collapse,
+            action = doCollapse ? 'addCls' : 'removeCls';
 
         ExtL[action](body, collapseCls);
         ExtL.each(ExtL.fromNodeList(document.getElementsByClassName('example-collapse-target')), function (ex) {
@@ -3697,11 +3792,11 @@ DocsApp.getEventTarget = function (e) {
     /**
      * @method toggleTreeNodes
      */
-    DocsApp.toggleTreeNodes = function(e, navTree) {
+    DocsApp.toggleTreeNodes = function (e, navTree) {
         navTree = navTree || DocsApp.navTree;
 
-        var target    = DocsApp.getEventTarget(e),
-            btn       = ExtL.hasCls(target, 'icon-btn') ? target : ExtL.up(target, '.icon-btn'),
+        var target = DocsApp.getEventTarget(e),
+            btn = ExtL.hasCls(target, 'icon-btn') ? target : ExtL.up(target, '.icon-btn'),
             indicator = btn.querySelector('i'),
             collapsed = ExtL.hasCls(indicator, 'fa-minus');
 
@@ -3718,10 +3813,10 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.onProductMenuItemClick = function (e) {
-        var target     = DocsApp.getEventTarget(e),
-            ct         = ExtL.up(target, '#product-tree-ct'),
-            prodId     = target.id.substr("product-menu-".length),
-            items      = ExtL.fromNodeList(ct.querySelectorAll('.product-name-item')),
+        var target = DocsApp.getEventTarget(e),
+            ct = ExtL.up(target, '#product-tree-ct'),
+            prodId = target.id.substr("product-menu-".length),
+            items = ExtL.fromNodeList(ct.querySelectorAll('.product-name-item')),
             versionCts = ExtL.fromNodeList(ct.querySelectorAll('.product-version-ct'));
 
         ExtL.each(items, function (item) {
@@ -3737,16 +3832,16 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.showProductVersionMenu = function (e) {
-        var target             = DocsApp.getEventTarget(e),
-            productItemCls     = 'product-name-item',
-            versionMenuCt      = ExtL.get('product-version-tree-ct'),
+        var target = DocsApp.getEventTarget(e),
+            productItemCls = 'product-name-item',
+            versionMenuCt = ExtL.get('product-version-tree-ct'),
             productsWithHeader = ['extjs'],
-            selectedCls        = 'selected-product',
-            productMenuCt      = ExtL.get('product-tree-ct'),
-            products           = productMenuCt.childNodes,
-            productsLen        = products.length,
-            meta               = DocsApp.meta,
-            exceptions         = meta.exceptions,
+            selectedCls = 'selected-product',
+            productMenuCt = ExtL.get('product-tree-ct'),
+            products = productMenuCt.childNodes,
+            productsLen = products.length,
+            meta = DocsApp.meta,
+            exceptions = meta.exceptions,
             productNode, product, parent, children, childrenLen, i, child, node,
             myVersion, majorVersion, hasHeaders, cn, childPath, exception;
 
@@ -3765,17 +3860,17 @@ DocsApp.getEventTarget = function (e) {
             ExtL.removeChildNodes(versionMenuCt);
 
             versionMenuCt.product = product;
-            parentNode            = target.myParentNode;
-            children              = parentNode.children;
-            childrenLen           = children.length;
-            i                     = 0;
-            hasHeaders            = productsWithHeader.indexOf(product) > -1;
-            majorVersion          = null;
+            parentNode = target.myParentNode;
+            children = parentNode.children;
+            childrenLen = children.length;
+            i = 0;
+            hasHeaders = productsWithHeader.indexOf(product) > -1;
+            majorVersion = null;
 
             versionMenuCt.appendChild(
                 ExtL.createElement({
-                    tag  : 'h1',
-                    html : parentNode.text
+                    tag: 'h1',
+                    html: parentNode.text
                 })
             );
 
@@ -3791,22 +3886,22 @@ DocsApp.getEventTarget = function (e) {
                     }
                 }
 
-                cn    = [{
-                    tag  : 'a',
-                    href : meta.docsRootPath + child.path.replace(/ .*$/, '') + (exception ? '/' : '/index.html'),
-                    html : child.text
+                cn = [{
+                    tag: 'a',
+                    href: meta.docsRootPath + child.path.replace(/ .*$/, '') + (exception ? '/' : '/index.html'),
+                    html: child.text
                 }];
 
                 if (!exception) {
                     cn.push({
-                        tag  : 'a',
-                        href : DocsApp.meta.docsRootPath + 'downloads/' + child.path.replace(/\//g, '-').replace(/\./g, '') + '-docs.zip',
-                        html : '<i class="fa fa-download"></i>'
+                        tag: 'a',
+                        href: DocsApp.meta.docsRootPath + 'downloads/' + child.path.replace(/\//g, '-').replace(/\./g, '') + '-docs.zip',
+                        html: '<i class="fa fa-download"></i>'
                     });
                 }
 
-                node  = ExtL.createElement({
-                    cn : cn
+                node = ExtL.createElement({
+                    cn: cn
                 });
 
                 versionMenuCt.appendChild(node);
@@ -3816,8 +3911,8 @@ DocsApp.getEventTarget = function (e) {
                     if (myVersion !== majorVersion) {
                         majorVersion = myVersion;
                         versionMenuCt.insertBefore(ExtL.createElement({
-                            tag  : 'h2',
-                            html : myVersion + '.x'
+                            tag: 'h2',
+                            html: myVersion + '.x'
                         }), node);
                     }
                 }
@@ -3843,23 +3938,23 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.positionProductVersionMenu = function (target) {
-        var productTreeCt    = ExtL.get('product-tree-ct'),
-            parentCtBox      = productTreeCt.getBoundingClientRect(),
-            parentBox        = target.getBoundingClientRect(),
-            parentWidth      = ExtL.getWidth(productTreeCt),
-            versionMenuCt    = ExtL.get('product-version-tree-ct'),
+        var productTreeCt = ExtL.get('product-tree-ct'),
+            parentCtBox = productTreeCt.getBoundingClientRect(),
+            parentBox = target.getBoundingClientRect(),
+            parentWidth = ExtL.getWidth(productTreeCt),
+            versionMenuCt = ExtL.get('product-version-tree-ct'),
             versionMenuWidth = ExtL.getWidth(versionMenuCt),
-            vpSize           = DocsApp.getViewportSize(),
-            vpWidth          = vpSize.width,
-            defaultLeft      = parentWidth - 2,
+            vpSize = DocsApp.getViewportSize(),
+            vpWidth = vpSize.width,
+            defaultLeft = parentWidth - 2,
             btn, btnBox, heightAvail, height, totalVersionWidth, isLeftOverflow;
 
         totalVersionWidth = parentBox.left + defaultLeft + versionMenuWidth;
-        isLeftOverflow    = totalVersionWidth > vpWidth;
+        isLeftOverflow = totalVersionWidth > vpWidth;
 
         ExtL.applyStyles(versionMenuCt, {
-            top  : parentBox.top - parentCtBox.top + 'px',
-            left : (isLeftOverflow ? defaultLeft - (totalVersionWidth - vpWidth) : defaultLeft) + 'px'
+            top: parentBox.top - parentCtBox.top + 'px',
+            left: (isLeftOverflow ? defaultLeft - (totalVersionWidth - vpWidth) : defaultLeft) + 'px'
         });
     };
 
@@ -3868,7 +3963,7 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.onClassTreeCtClick = function (e) {
         var target = DocsApp.getEventTarget(e),
-            href   = target.href;
+            href = target.href;
 
         if (href && DocsApp.isMobile()) {
             DocsApp.setTreeVisibility(false);
@@ -3881,31 +3976,31 @@ DocsApp.getEventTarget = function (e) {
 
         if (!picker && DocsApp.meta.srcFiles) {
             var srcFiles = DocsApp.meta.srcFiles,
-                len      = srcFiles.length,
-                i        = 0,
+                len = srcFiles.length,
+                i = 0,
                 pickerCt = {
-                    id : pickerId,
-                    cn : []
+                    id: pickerId,
+                    cn: []
                 },
                 divided;
 
             for (; i < len; i++) {
                 var srcObj = srcFiles[i],
-                    text   = srcObj.pathText,
-                    href   = srcObj.path;
+                    text = srcObj.pathText,
+                    href = srcObj.path;
 
                 if (!divided && text.indexOf('.scss') > -1) {
                     pickerCt.cn.push({
-                        tag : 'hr'
+                        tag: 'hr'
                     });
                     divided = true;
                 }
 
                 pickerCt.cn.push({
-                    tag    : 'a',
-                    target : '_blank',
-                    href   : './src/' + href,
-                    html   : text
+                    tag: 'a',
+                    target: '_blank',
+                    href: './src/' + href,
+                    html: text
                 });
             }
 
@@ -3921,30 +4016,30 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.showMultiSrcPanel = function (e) {
-        var target    = DocsApp.getEventTarget(e),
+        var target = DocsApp.getEventTarget(e),
             //picker    = ExtL.get('multi-src-picker'),
-            picker    = DocsApp.getMultiSrcPanel(),
+            picker = DocsApp.getMultiSrcPanel(),
             targetBox = target.getBoundingClientRect();
 
         if (picker) {
             ExtL.applyStyles(picker, {
-                top  : targetBox.bottom + 'px',
-                left : targetBox.left + 'px'
+                top: targetBox.bottom + 'px',
+                left: targetBox.left + 'px'
             });
             ExtL.addCls(picker, 'show-multi');
         }
     };
-    
+
     /**
      * 
      */
     DocsApp.setExampleEditorTheme = function (e) {
-        var value      = this.value,
+        var value = this.value,
             aceTargets = document.getElementsByClassName('ace-ct'),
-            len        = aceTargets.length,
-            i          = 0,
+            len = aceTargets.length,
+            i = 0,
             editor;
-        
+
         ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.example-theme-picker')), function (select) {
             select.value = value;
         });
@@ -3953,7 +4048,7 @@ DocsApp.getEventTarget = function (e) {
             editor = ace.edit(aceTargets[i]);
             editor.setTheme(value);
         }
-        
+
         DocsApp.saveState();
     }
 
@@ -3975,8 +4070,8 @@ DocsApp.getEventTarget = function (e) {
     DocsApp.showHistoryConfigPanel = function (e) {
         e = DocsApp.getEvent(e);
 
-        var panel  = ExtL.get('historyConfigPanel'),
-            btn    = ExtL.get('history-config'),
+        var panel = ExtL.get('historyConfigPanel'),
+            btn = ExtL.get('history-config'),
             btnBox = btn.getBoundingClientRect();
 
         DocsApp.stopEvent(e);
@@ -3984,8 +4079,8 @@ DocsApp.getEventTarget = function (e) {
         ExtL.addCls(document.body, 'show-history-panel');
 
         ExtL.applyStyles(panel, {
-            top  : btnBox.bottom + 'px',
-            left : (btnBox.right - panel.clientWidth) + 'px'
+            top: btnBox.bottom + 'px',
+            left: (btnBox.right - panel.clientWidth) + 'px'
         });
     };
 
@@ -4021,7 +4116,7 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.clearHistory = function () {
         var historyItems = ExtL.fromNodeList(ExtL.get('history-full-list').childNodes),
-            historyBtns  = ExtL.fromNodeList(ExtL.get('history-nav').querySelectorAll('.history-btn'));
+            historyBtns = ExtL.fromNodeList(ExtL.get('history-nav').querySelectorAll('.history-btn'));
 
         if (ExtL.canLocalStorage()) {
             DocsApp.getState().history = [];
@@ -4058,7 +4153,7 @@ DocsApp.getEventTarget = function (e) {
         if (e.preventDefault) e.preventDefault();
         if (e.stopPropagation) e.stopPropagation();
         e.cancelBubble = true;  // IE events
-        e.returnValue  = false;  // IE events
+        e.returnValue = false;  // IE events
     };
 
     /**
@@ -4081,9 +4176,9 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.positionProductMenu = function () {
         var productTreeCt = ExtL.get('product-tree-ct'),
-            btns          = ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn-wrap')),
-            vpSize        = DocsApp.getViewportSize(),
-            menuWidth     = ExtL.getWidth(productTreeCt),
+            btns = ExtL.fromNodeList(document.querySelectorAll('.product-menu-btn-wrap')),
+            vpSize = DocsApp.getViewportSize(),
+            menuWidth = ExtL.getWidth(productTreeCt),
             btn, btnBox, heightAvail, height, leftOverflow;
 
         ExtL.each(btns, function (el) {
@@ -4091,15 +4186,15 @@ DocsApp.getEventTarget = function (e) {
         });
 
         if (btn) {
-            btnBox       = btn.getBoundingClientRect();
-            heightAvail  = vpSize.height - btnBox.bottom;
-            height       = heightAvail < ExtL.getHeight(productTreeCt) ? heightAvail - 10 : null;
+            btnBox = btn.getBoundingClientRect();
+            heightAvail = vpSize.height - btnBox.bottom;
+            height = heightAvail < ExtL.getHeight(productTreeCt) ? heightAvail - 10 : null;
             leftOverflow = (menuWidth + btnBox.left) > (vpSize.width - btnBox.left);
 
             ExtL.applyStyles(productTreeCt, {
-                top    : btnBox.bottom + 'px',
-                height : height ? height + 'px' : height,
-                left   : leftOverflow ? 0 : btnBox.left + 'px'
+                top: btnBox.bottom + 'px',
+                height: height ? height + 'px' : height,
+                left: leftOverflow ? 0 : btnBox.left + 'px'
             });
         } else {
             DocsApp.hideProductMenu();
@@ -4133,7 +4228,7 @@ DocsApp.getEventTarget = function (e) {
     };
 
     DocsApp.enlargeImage = function () {
-        var modal        = ExtL.get('modal-placeholder'),
+        var modal = ExtL.get('modal-placeholder'),
             modalContent = ExtL.get('modal-content'),
             modalCaption = ExtL.get('modal-caption');
 
@@ -4144,11 +4239,11 @@ DocsApp.getEventTarget = function (e) {
             modalCaption.innerHTML = this.alt;
         }
 
-        ExtL.get("modal-close").onclick = function() {
+        ExtL.get("modal-close").onclick = function () {
             modal.style.display = "none";
         };
 
-        modal.onclick = function() {
+        modal.onclick = function () {
             modal.style.display = "none";
         };
     };
@@ -4157,9 +4252,9 @@ DocsApp.getEventTarget = function (e) {
      *
      */
     DocsApp.toggleSearchTabs = function (e) {
-        var apiResults   = ExtL.get('api-search-results'),
+        var apiResults = ExtL.get('api-search-results'),
             guideResults = ExtL.get('guide-search-results'),
-            elem         = DocsApp.getEventTarget(e);
+            elem = DocsApp.getEventTarget(e);
 
         if (ExtL.hasCls(elem, 'active-tab')) {
             return;
@@ -4183,9 +4278,9 @@ DocsApp.getEventTarget = function (e) {
      * Window resize handler
      */
     DocsApp.resizeHandler = ExtL.createBuffered(function () {
-        var size     = DocsApp.getViewportSize(),
+        var size = DocsApp.getViewportSize(),
             showTree = DocsApp.getState('showTree'),
-            width    = size.width;
+            width = size.width;
 
         ExtL.toggleCls(document.body, 'vp-med-size', (width < 1280 && width > 950));
 
@@ -4220,8 +4315,8 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.initMemberTypeMouseoverHandlers = function () {
         var btns = document.querySelectorAll('.toolbarButton'),
-            len  = btns.length,
-            i    = 0;
+            len = btns.length,
+            i = 0;
 
         for (; i < len; i++) {
             DocsApp.addEventsAndSetMenuClose(btns.item(i), 'mouseenter', false);
@@ -4238,7 +4333,7 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.copyRelatedClasses = function () {
         var desktopRelated = document.querySelector('#rightMembers .classMeta'),
-            copy           = desktopRelated.cloneNode(true);
+            copy = desktopRelated.cloneNode(true);
 
         if (desktopRelated.children.length > 0) {
             ExtL.get('related-classes-context-ct').appendChild(copy);
@@ -4253,7 +4348,7 @@ DocsApp.getEventTarget = function (e) {
      */
     DocsApp.copyTOC = function () {
         var desktopToc = document.querySelector('#rightMembers .toc'),
-            copy       = (desktopToc) ? desktopToc.cloneNode(true) : null;
+            copy = (desktopToc) ? desktopToc.cloneNode(true) : null;
 
         if (copy !== null) {
             ExtL.get('toc-context-ct').appendChild(copy);
@@ -4291,49 +4386,49 @@ DocsApp.getEventTarget = function (e) {
             // event, we'll end up double-counting it here. Hopefully, however,
             // cancelling the wheel event will prevent generation of mousewheel.
             deltaX = e.deltaX * -30 ||  // wheel event
-                     e.wheelDeltaX / 4 ||  // mousewheel
-                                    0,    // property not defined
+                e.wheelDeltaX / 4 ||  // mousewheel
+                0,    // property not defined
             deltaY = e.deltaY * -30 ||  // wheel event
-                      e.wheelDeltaY / 4 ||  // mousewheel event in Webkit
-       (e.wheelDeltaY === undefined &&      // if there is no 2D property then
-                      e.wheelDelta / 4) ||  // use the 1D wheel property
-                         e.detail * -10 ||  // Firefox DOMMouseScroll event
-                                   0;     // property not defined
+                e.wheelDeltaY / 4 ||  // mousewheel event in Webkit
+                (e.wheelDeltaY === undefined &&      // if there is no 2D property then
+                    e.wheelDelta / 4) ||  // use the 1D wheel property
+                e.detail * -10 ||  // Firefox DOMMouseScroll event
+                0;     // property not defined
 
-            // Most browsers generate one event with delta 120 per mousewheel click.
-            // On Macs, however, the mousewheels seem to be velocity-sensitive and
-            // the delta values are often larger multiples of 120, at
-            // least with the Apple Mouse. Use browser-testing to defeat this.
-            if (DocsApp.appMeta.isMacWebkit) {
-                deltaX /= 30;
-                deltaY /= 30;
-            }
-            e.currentTarget.scrollTop -= deltaY;
-            // If we ever get a mousewheel or wheel event in (a future version of)
-            // Firefox, then we don't need DOMMouseScroll anymore.
-            if (DocsApp.appMeta.isFirefox && e.type !== "DOMMouseScroll")
-                element.removeEventListener("DOMMouseScroll", DocsApp.wheelHandler, false);
+        // Most browsers generate one event with delta 120 per mousewheel click.
+        // On Macs, however, the mousewheels seem to be velocity-sensitive and
+        // the delta values are often larger multiples of 120, at
+        // least with the Apple Mouse. Use browser-testing to defeat this.
+        if (DocsApp.appMeta.isMacWebkit) {
+            deltaX /= 30;
+            deltaY /= 30;
+        }
+        e.currentTarget.scrollTop -= deltaY;
+        // If we ever get a mousewheel or wheel event in (a future version of)
+        // Firefox, then we don't need DOMMouseScroll anymore.
+        if (DocsApp.appMeta.isFirefox && e.type !== "DOMMouseScroll")
+            element.removeEventListener("DOMMouseScroll", DocsApp.wheelHandler, false);
 
-            // Don't let this event bubble. Prevent any default action.
-            // This stops the browser from using the mousewheel event to scroll
-            // the document. Hopefully calling preventDefault() on a wheel event
-            // will also prevent the generation of a mousewheel event for the
-            // same rotation.
-            if (e.preventDefault) e.preventDefault();
-            if (e.stopPropagation) e.stopPropagation();
-            e.cancelBubble = true;  // IE events
-            e.returnValue = false;  // IE events
-            return false;
+        // Don't let this event bubble. Prevent any default action.
+        // This stops the browser from using the mousewheel event to scroll
+        // the document. Hopefully calling preventDefault() on a wheel event
+        // will also prevent the generation of a mousewheel event for the
+        // same rotation.
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+        e.cancelBubble = true;  // IE events
+        e.returnValue = false;  // IE events
+        return false;
     };
 
     /**
      *
      */
     DocsApp.onHashChange = function (force) {
-        var hash            = location.hash,
-            rightMembers    = ExtL.get('rightMembers'),
+        var hash = location.hash,
+            rightMembers = ExtL.get('rightMembers'),
             contextMenuOpen = ExtL.hasCls(rightMembers, 'show-context-menu'),
-            filterInput     = document.getElementById("member-filter-field"),
+            filterInput = document.getElementById("member-filter-field"),
             target, parent, isAccessor;
 
         if (!hash) {
@@ -4363,7 +4458,7 @@ DocsApp.getEventTarget = function (e) {
             if (filterInput) {
                 filterInput.value = '';
                 filterInput.dispatchEvent(new Event('change'));
-                setTimeout(function(){
+                setTimeout(function () {
                     target.scrollIntoView(true);
                 }, 250);
             }
@@ -4405,7 +4500,7 @@ DocsApp.getEventTarget = function (e) {
             var pageImages = pageWrapper.getElementsByTagName('img');
 
             if (pageImages.length > 0) {
-                ExtL.each(pageImages, function(index, el) {
+                ExtL.each(pageImages, function (index, el) {
                     ExtL.on(el, 'click', DocsApp.enlargeImage);
                 });
             }
@@ -4441,7 +4536,7 @@ DocsApp.getEventTarget = function (e) {
         ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.multi-src-btn')), function (item) {
             ExtL.on(item, 'click', DocsApp.showMultiSrcPanel);
         });
-        
+
         // Set up example theme picker listeners
         ExtL.each(ExtL.fromNodeList(document.querySelectorAll('.example-theme-picker')), function (select) {
             ExtL.on(select, 'change', DocsApp.setExampleEditorTheme);
@@ -4469,11 +4564,11 @@ DocsApp.getEventTarget = function (e) {
             // expand / collapse the related classes
 
             // show / hide public, protected, and private members
-            ExtL.get('publicCheckbox').onclick    = DocsApp.onAccessCheckboxClick;
+            ExtL.get('publicCheckbox').onclick = DocsApp.onAccessCheckboxClick;
             ExtL.get('protectedCheckbox').onclick = DocsApp.onAccessCheckboxClick;
-            ExtL.get('privateCheckbox').onclick   = DocsApp.onAccessCheckboxClick;
+            ExtL.get('privateCheckbox').onclick = DocsApp.onAccessCheckboxClick;
             ExtL.get('inheritedCheckbox').onclick = DocsApp.onAccessCheckboxClick;
-            ExtL.get('readonlyCheckbox').onclick  = DocsApp.onAccessCheckboxClick;
+            ExtL.get('readonlyCheckbox').onclick = DocsApp.onAccessCheckboxClick;
 
             // show / hide private classes
             ExtL.get('private-class-toggle').onclick = DocsApp.onFilterClassCheckboxToggle;
@@ -4547,31 +4642,31 @@ DocsApp.getEventTarget = function (e) {
      * The stateful aspects of the page are collected and saved to localStorage
      */
     DocsApp.saveState = function () {
-        var path           = window.location.pathname,
+        var path = window.location.pathname,
             historyRemoves = [];
 
         if (DocsApp.appMeta.allowSave !== true || !ExtL.canLocalStorage()) {
             return;
         }
-        var publicCheckbox       = ExtL.get('publicCheckbox'),
-            protectedCheckbox    = ExtL.get('protectedCheckbox'),
-            privateCheckbox      = ExtL.get('privateCheckbox'),
-            inheritedCheckbox    = ExtL.get('inheritedCheckbox'),
-            readonlyCheckbox     = ExtL.get('readonlyCheckbox'),
+        var publicCheckbox = ExtL.get('publicCheckbox'),
+            protectedCheckbox = ExtL.get('protectedCheckbox'),
+            privateCheckbox = ExtL.get('privateCheckbox'),
+            inheritedCheckbox = ExtL.get('inheritedCheckbox'),
+            readonlyCheckbox = ExtL.get('readonlyCheckbox'),
             privateClassCheckbox = ExtL.get('private-class-toggle'),
-            historyType          = ExtL.get('historyTypeCurrent'),
+            historyType = ExtL.get('historyTypeCurrent'),
             historyLabelCheckbox = ExtL.get('history-all-labels'),
-            modernSearchFilter   = ExtL.get('modern-search-filter'),
-            classicSearchFilter  = ExtL.get('classic-search-filter'),
-            body                 = document.querySelector('body'),
-            collapsed            = ExtL.hasCls(body, 'collapse-code-all'),
-            state                = DocsApp.getState() || {},
-            meta                 = DocsApp.meta,
-            product              = meta.product,
-            toolkit              = meta.toolkit,
-            version              = meta.version,
-            pageName             = ExtL.htmlDecode(ExtL.htmlDecode(meta.pageName)),
-            pageTitle            = meta.title,
+            modernSearchFilter = ExtL.get('modern-search-filter'),
+            classicSearchFilter = ExtL.get('classic-search-filter'),
+            body = document.querySelector('body'),
+            collapsed = ExtL.hasCls(body, 'collapse-code-all'),
+            state = DocsApp.getState() || {},
+            meta = DocsApp.meta,
+            product = meta.product,
+            toolkit = meta.toolkit,
+            version = meta.version,
+            pageName = ExtL.htmlDecode(ExtL.htmlDecode(meta.pageName)),
+            pageTitle = meta.title,
             exampleThemeSelector = document.querySelector('.example-theme-picker'),
             activeNavTab;
 
@@ -4599,7 +4694,7 @@ DocsApp.getEventTarget = function (e) {
         if (privateClassCheckbox) {
             state.privateClassCheckbox = privateClassCheckbox.checked;
         }
-        
+
         if (exampleThemeSelector) {
             state.exampleTheme = exampleThemeSelector.value;
         }
@@ -4619,8 +4714,8 @@ DocsApp.getEventTarget = function (e) {
                     item.product === product &&
                     item.version === version &&
                     item.toolkit === toolkit &&
-                    item.text    === pageName &&
-                    item.path    === path
+                    item.text === pageName &&
+                    item.path === path
                 ) {
                     historyRemoves.push(i);
                 }
@@ -4630,12 +4725,12 @@ DocsApp.getEventTarget = function (e) {
             });
 
             state.history.push({
-                product    : product,
-                toolkit    : toolkit,
-                version    : version,
-                text       : pageName,
-                path       : path,
-                title      : pageTitle
+                product: product,
+                toolkit: toolkit,
+                version: version,
+                text: pageName,
+                path: path,
+                title: pageTitle
             });
             // limit the history size to 150 items (across all products)
             if (state.history.length > 150) {
@@ -4651,9 +4746,9 @@ DocsApp.getEventTarget = function (e) {
             state.historyLabels = historyLabelCheckbox.checked;
         }
 
-        state.searchHistory    = DocsApp.appMeta.searchHistory;
+        state.searchHistory = DocsApp.appMeta.searchHistory;
         state.collapseExamples = collapsed;
-        state.activeNavTab     = activeNavTab;
+        state.activeNavTab = activeNavTab;
         localStorage.setItem('htmlDocsState', ExtL.encodeValue(state));
     };
 
@@ -4662,22 +4757,22 @@ DocsApp.getEventTarget = function (e) {
      * the page
      */
     DocsApp.fetchState = function (skipSave, returnOnly) {
-        var saved                = localStorage.getItem('htmlDocsState'),
-            publicCheckbox       = ExtL.get('publicCheckbox'),
-            protectedCheckbox    = ExtL.get('protectedCheckbox'),
-            privateCheckbox      = ExtL.get('privateCheckbox'),
-            inheritedCheckbox    = ExtL.get('inheritedCheckbox'),
-            readonlyCheckbox     = ExtL.get('readonlyCheckbox'),
+        var saved = localStorage.getItem('htmlDocsState'),
+            publicCheckbox = ExtL.get('publicCheckbox'),
+            protectedCheckbox = ExtL.get('protectedCheckbox'),
+            privateCheckbox = ExtL.get('privateCheckbox'),
+            inheritedCheckbox = ExtL.get('inheritedCheckbox'),
+            readonlyCheckbox = ExtL.get('readonlyCheckbox'),
             privateClassCheckbox = ExtL.get('private-class-toggle'),
-            historyTypeCurrent   = ExtL.get('historyTypeCurrent'),
-            historyTypeAll       = ExtL.get('historyTypeAll'),
+            historyTypeCurrent = ExtL.get('historyTypeCurrent'),
+            historyTypeAll = ExtL.get('historyTypeAll'),
             historyLabelCheckbox = ExtL.get('history-all-labels'),
-            mButton              = ExtL.get('modern-search-filter'),
-            cButton              = ExtL.get('classic-search-filter'),
-            body                 = document.querySelector('body'),
-            hash                 = window.location.hash,
-            qi                   = hash.indexOf('?'),
-            queryString          = (qi > -1) ? hash.substr(qi + 1) : false,
+            mButton = ExtL.get('modern-search-filter'),
+            cButton = ExtL.get('classic-search-filter'),
+            body = document.querySelector('body'),
+            hash = window.location.hash,
+            qi = hash.indexOf('?'),
+            queryString = (qi > -1) ? hash.substr(qi + 1) : false,
             queryObj, examplesCollapseDir;
 
         state = ExtL.decodeValue(saved) || {
@@ -4746,7 +4841,7 @@ DocsApp.getEventTarget = function (e) {
                 cButton.style.display = 'none';
                 ExtL.removeCls(cButton, 'active');
             }
-            
+
         } else if (DocsApp.meta.toolkits && DocsApp.meta.toolkits.includes('classic')) {
             // remove modern buttons
             var mButton = ExtL.get('modern-search-filter');

@@ -16,7 +16,6 @@
 
 const SourceGuides = require('../source-guides'),
     Utils = require('../shared/Utils'),
-    Beautify = require('js-beautify').js_beautify,
     Fs = require('fs-extra'),
     Path = require('path'),
     Chalk = require('chalk'),
@@ -25,6 +24,16 @@ const SourceGuides = require('../source-guides'),
     _ = require('lodash'),
     Zipdir = require('zip-dir'),
     CompareVersions = require('compare-versions');
+
+var beautify_js = require('js-beautify');
+var beautify_css = require('js-beautify').css;
+var beautify_html = require('js-beautify').html;
+
+const cheerio = require('cheerio');
+const JSON5 = require('json5')
+const Entities = require('html-entities').AllHtmlEntities;
+var entities = new Entities();
+
 
 class AppBase extends SourceGuides {
     constructor(options) {
@@ -44,6 +53,8 @@ class AppBase extends SourceGuides {
      * Default entry point for this module
      */
     run() {
+
+
         console.log("appBase.run() Started.")
         return this.doRunApi()
             .then(this.outputApiSearch.bind(this))
@@ -78,7 +89,7 @@ class AppBase extends SourceGuides {
             }
 
             // awaiting in a foreach loop won't work here. 
-            for (var i=0; i < toolkitList.length; i++) {
+            for (var i = 0; i < toolkitList.length; i++) {
                 console.log("doRunApi: process toolkit=" + toolkitList[i]);
                 await this.prepareApiSource(toolkitList[i]);
             }
@@ -410,84 +421,10 @@ class AppBase extends SourceGuides {
      * @return {String} The decorated guide body HTML
      */
     decorateExamples(html) {
-        let fiddleWrapPre = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target" id="{docsXFiddleId}" data-fiddle-meta='{docsXMetaObj}'>
-                    <div class="da-inline-fiddle-nav">
-                        <div class="code-controls">
-                            <span class="collapse-tool fa fa-caret-up"></span>
-                            <span class="expand-tool fa fa-caret-down"></span>
-                            <span class="expand-code">Expand Code</span>
-                        </div>
-                        <span class="da-inline-fiddle-nav-code da-inline-fiddle-nav-active">
-                            <span class="fa fa-code"></span>
-                            Code
-                        </span><!--
-                        --><span class="da-inline-fiddle-nav-fiddle">
-                            <span class="fiddle-icon-wrap">
-                                <span class="fa fa-play-circle">
-                                </span><span class="fa fa-refresh"></span>
-                            </span>
-                            Run
-                        </span>
-                        <span class="icon-btn fiddle-code-beautify tooltip tooltip-tr-br" data-beautify="Beautify Code">
-                            <i class="fa fa-indent"></i>
-                            <div class="callout callout-b"></div>
-                        </span>
-                        
-                        <label class="example-theme-picker-label">
-                            Editor Theme:
-                            <select class="example-theme-picker" size="1">
-                                <optgroup label="Bright">
-                                    <option value="ace/theme/chrome">Chrome</option>
-                                    <option value="ace/theme/clouds">Clouds</option>
-                                    <option value="ace/theme/crimson_editor">Crimson Editor</option>
-                                    <option value="ace/theme/dawn">Dawn</option>
-                                    <option value="ace/theme/dreamweaver">Dreamweaver</option>
-                                    <option value="ace/theme/eclipse">Eclipse</option>
-                                    <option value="ace/theme/github">GitHub</option>
-                                    <option value="ace/theme/iplastic">IPlastic</option>
-                                    <option value="ace/theme/solarized_light">Solarized Light</option>
-                                    <option value="ace/theme/textmate">TextMate</option>
-                                    <option value="ace/theme/tomorrow">Tomorrow</option>
-                                    <option value="ace/theme/xcode">XCode</option>
-                                    <option value="ace/theme/kuroir">Kuroir</option>
-                                    <option value="ace/theme/katzenmilch">KatzenMilch</option>
-                                    <option value="ace/theme/sqlserver">SQL Server</option>
-                                </optgroup>
-                                <optgroup label="Dark">
-                                    <option value="ace/theme/ambiance">Ambiance</option>
-                                    <option value="ace/theme/chaos">Chaos</option>
-                                    <option value="ace/theme/clouds_midnight">Clouds Midnight</option>
-                                    <option value="ace/theme/cobalt">Cobalt</option>
-                                    <option value="ace/theme/gruvbox">Gruvbox</option>
-                                    <option value="ace/theme/gob">Green on Black</option>
-                                    <option value="ace/theme/idle_fingers">idle Fingers</option>
-                                    <option value="ace/theme/kr_theme">krTheme</option>
-                                    <option value="ace/theme/merbivore">Merbivore</option>
-                                    <option value="ace/theme/merbivore_soft">Merbivore Soft</option>
-                                    <option value="ace/theme/mono_industrial">Mono Industrial</option>
-                                    <option value="ace/theme/monokai">Monokai</option>
-                                    <option value="ace/theme/pastel_on_dark">Pastel on dark</option>
-                                    <option value="ace/theme/solarized_dark">Solarized Dark</option>
-                                    <option value="ace/theme/terminal">Terminal</option>
-                                    <option value="ace/theme/tomorrow_night">Tomorrow Night</option>
-                                    <option value="ace/theme/tomorrow_night_blue">Tomorrow Night Blue</option>
-                                    <option value="ace/theme/tomorrow_night_bright">Tomorrow Night Bright</option>
-                                    <option value="ace/theme/tomorrow_night_eighties">Tomorrow Night 80s</option>
-                                    <option value="ace/theme/twilight">Twilight</option>
-                                    <option value="ace/theme/vibrant_ink">Vibrant Ink</option>
-                                </optgroup>
-                            </select>
-                        </label>
-                    </div>
-                    <div id="{docsXAceCtId}" class="ace-ct">`,
-            fiddleWrapClose = '</div></div>',
-            out = html,
-            options = this.options,
-            production = options.production,
-            prodVerMeta = this.options.prodVerMeta,
-            version = this.apiVersion,
-            prodObj = this.options.products[this.apiProduct],
-            toolkit = options.toolkit;
+        let out = html;
+        let version = this.apiVersion;
+        let prodObj = this.options.products[this.apiProduct];
+        let toolkit = this.options.toolkit;
 
         let fidMeta = {
             framework: this.options.products[this.apiProduct].title, // either "Ext JS" or "Sencha Touch" as required by Fiddle
@@ -496,80 +433,363 @@ class AppBase extends SourceGuides {
             theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
         };
 
-        // fiddle @example: match properties like "packages=[ext-react,charts]"
-        var keyedRe = /(\w+)=([\[\w\-.,\]]+)/i,
-            frameworkMap = {
-                extjs: 'Ext JS',
-                ext: 'Ext JS',
-                touch: 'Sencha Touch'
-            };
+        // Are the examples wired with v2 decorators
+        // TODO convert to version2
+        let hasExampleV2 = html.match(/\@example\(.*?{/g);
+        if (hasExampleV2 && hasExampleV2.length > 0) {
+            out = this.decorateExamples_V2(html);
 
-        // decorates @example blocks as inline fiddles
-        out = html.replace(/(?:<pre><code>(?:\s*@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, docsXCode) => {
-            meta = meta.trim();
-            docsXCode = docsXCode.trim();
+        } else {
+            let fiddleWrapPre = this._getFiddlePreWrapV1();
+            let fiddleWrapClose = '</div></div>';
 
-            if (meta && meta.length) {
-                fidMeta = Object.assign({}, fidMeta);
-                if (meta.includes('=')) {
-                    // should be formatted with space-separated key=value pairs
-                    // e.g.: toolkit=modern
-                    meta = meta.split(' ');
+            // V1 format - packages=[...]
+            // fiddle @example: match properties like "packages=[ext-react,charts]"
+            var keyedRe = /(\w+)=([\[\w\-.,\]]+)/i,
+                frameworkMap = {
+                    extjs: 'Ext JS',
+                    ext: 'Ext JS',
+                    touch: 'Sencha Touch'
+                };
 
-                    meta.forEach(function (option) {
-                        let optionMatch = option.match(keyedRe);
-                        if (optionMatch != null) {
-                            let key = optionMatch[1];
-                            let val = optionMatch[2];
-                            let mapped = frameworkMap[val];
-                            var values = "";
-                            if (val.includes('[')) { // like [ext-react,charts], extract the array to values
-                                val = val.replace('[', '');
-                                val = val.replace(']', '');
-                                if (val.includes(',')) {
-                                    // has multiple values
-                                    values = val.split(',');
+            // decorates @example blocks as inline fiddles
+            out = html.replace(/(?:<pre><code>(?:\s*\@example(?::)?(.*?)\n))((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, meta, docsXCode) => {
+                meta = meta.trim();
+                docsXCode = docsXCode.trim();
+
+                if (meta && meta.length) {
+                    fidMeta = Object.assign({}, fidMeta);
+                    if (meta.includes('=')) {
+                        // should be formatted with space-separated key=value pairs
+                        // e.g.: toolkit=modern
+                        meta = meta.split(' ');
+
+                        meta.forEach(function (option) {
+                            let optionMatch = option.match(keyedRe);
+                            if (optionMatch != null) {
+                                let key = optionMatch[1];
+                                let val = optionMatch[2];
+                                let mapped = frameworkMap[val];
+                                var values = "";
+                                if (val.includes('[')) { // like [ext-react,charts], extract the array to values
+                                    val = val.replace('[', '');
+                                    val = val.replace(']', '');
+                                    if (val.includes(',')) {
+                                        // has multiple values
+                                        values = val.split(',');
+                                    } else {
+                                        // only one value
+                                        values = val;
+                                    }
+
                                 } else {
-                                    // only one value
                                     values = val;
                                 }
-
-                            } else {
-                                values = val;
+                                fidMeta[key] = (key === 'framework' && mapped) ? mapped : values;
                             }
-                            fidMeta[key] = (key === 'framework' && mapped) ? mapped : values;
-                        }
-                    });
-                } else if (meta.includes('-')) {
-                    // should be formatted like: framework-fullVersion-theme-toolkit
-                    // e.g.: extjs-6.0.2-neptune-classic
-                    let parts = meta.split('-');
+                        });
+                    } else if (meta.includes('-')) {
+                        // should be formatted like: framework-fullVersion-theme-toolkit
+                        // e.g.: extjs-6.0.2-neptune-classic
+                        let parts = meta.split('-');
 
-                    fidMeta.framework = frameworkMap[parts[0]];
-                    fidMeta.version = parts[1];
-                    fidMeta.theme = parts[2];
-                    fidMeta.toolkit = parts[3];
+                        fidMeta.framework = frameworkMap[parts[0]];
+                        fidMeta.version = parts[1];
+                        fidMeta.theme = parts[2];
+                        fidMeta.toolkit = parts[3];
+                    }
                 }
+
+                const formattedFiddleWrapPre = Utils.format(fiddleWrapPre, {
+                    docsXMetaObj: JSON.stringify(fidMeta),
+                    docsXFiddleId: this.uniqueId,
+                    docsXAceCtId: this.uniqueId
+                });
+
+                return formattedFiddleWrapPre + docsXCode + fiddleWrapClose;
+            });
+
+            try {
+                out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, docsXCode) => {
+                    return `<pre><code class="language-javascript">${docsXCode}</code></pre>`;
+                });
+            } catch (e) {
+                console.error("decorateExamples: Could not replace example.", e);
             }
-
-            const formattedFiddleWrapPre = Utils.format(fiddleWrapPre, {
-                docsXMetaObj: JSON.stringify(fidMeta),
-                docsXFiddleId: this.uniqueId,
-                docsXAceCtId: this.uniqueId
-            });
-
-            return formattedFiddleWrapPre + docsXCode + fiddleWrapClose;
-        });
-
-        try {
-            out = out.replace(/(?:<pre><code>)((?:.?\s?)*?)(?:<\/code><\/pre>)/mig, (match, docsXCode) => {
-                return `<pre><code class="language-javascript">${docsXCode}</code></pre>`;
-            });
-        } catch (e) {
-            console.error("decorateExamples: Could not replace example.", e);
         }
 
         return out;
+    }
+
+    /**
+     * Decorates @example({...}) into to tabbed html.
+     * 
+     * exampleConfig.tab: index
+     * exampleConfig.packages: array
+     * 
+     * @param {*} html 
+     */
+    decorateExamples_V2(html) {
+        var $ = cheerio.load(html);
+
+        // Unique list of the pre groups, grouped by `tab: #`
+        var presParentMap = {};
+        // All of the pres in the example html
+        var presArray = [];
+
+        // Parse pres
+        var parentId;
+        var lastTab = -1;
+        $('pre').each(function (index, elem) {
+            var preHtml = $(this).html();
+            var examples = preHtml.match(/\@example/g);
+            var hasExample = examples && examples.length > 0;
+
+            // Version 2 @example({options...})
+            // @example({...}) - has to have curly brackets
+            var exampleRe = /\@example\((.*?\{.*?\}.*?)\)/.exec(preHtml);
+
+            var exampleReOptions;
+            var exampleReOptionsDeocded;
+            var exampleConfig = {};
+            if (exampleRe) {
+                exampleReOptions = exampleRe[1];
+                exampleReOptionsDeocded = entities.decode(exampleReOptions);
+                exampleConfig = JSON5.parse(exampleReOptionsDeocded);
+            }
+
+            // Parse language from lang-[language]
+            if (!exampleConfig.lang) {
+                var lang = /['"]lang\-(.*?)['"]/.exec(preHtml);
+                if (lang && lang.length > 0) {
+                    exampleConfig.lang = lang[1];
+                } else {
+                    exampleConfig.lang = 'javascript';
+                }
+            }
+                
+            var parsedPre = {
+                parentId: null,
+                id: `pre${index}`,
+                index: index,
+                preHtml: preHtml,
+                example: hasExample,
+                exampleConfig: exampleConfig,
+                element: elem
+            };
+
+            if (hasExample && exampleConfig && exampleConfig.tab) {
+                if (exampleConfig.tab == 1) {
+                    lastTab = exampleConfig.tab;
+                    parentId = parsedPre['id'];
+                }
+                parsedPre['parentId'] = parentId;
+                // Save to a group, for easy iteration
+                presParentMap[parentId] = index;
+            } else {
+                lastTab = -1;
+            }
+
+            presArray[index] = parsedPre;
+        });
+
+        // Render the grouped pre examples into tabs
+        var replacePreIndex = -1;
+        var processedParsedPresId = [];
+        Object.keys(presParentMap).forEach((parentParsedPreId) => {
+            var tabsHtml = '';
+            var presHtml = '';
+            presArray.forEach((parsedPre, index) => {
+                // Only proccess the grouped pres
+                if (parentParsedPreId === parsedPre.parentId) {
+                    var parentParsedPre = this.findParsedPre(presArray, parentParsedPreId);
+
+                    tabsHtml += this._getTab(parsedPre); 
+                    presHtml += this._getPreContent(parsedPre);
+                    
+                    // Only remove the children, not the parent
+                    if (parsedPre.exampleConfig.tab === 1) {
+                        replacePreIndex = parentParsedPre.index;
+                    } else {
+                        // Remove the pre so it's not processed again
+                        $(parsedPre.element).remove();
+                    }
+
+                    // Pre is no longer needed.
+                    processedParsedPresId.push(parsedPre.id);
+                }
+            });
+
+            // Create the html for the tabs
+            let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml, replacePreIndex);
+            $('pre').eq(replacePreIndex).replaceWith(newPreHtml);
+        });
+
+        // Remove the processed pres
+        processedParsedPresId.forEach((id) => {
+            presArray = this.arrayRemove(presArray, id);
+        });
+
+        // Process the rest of the examples that weren't grouped by parent using tabs
+        presArray.forEach((parsedPre) => {
+            let tabsHtml = this._getTab(parsedPre); 
+            let presHtml = this._getPreContent(parsedPre);
+            let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml);
+            $('pre').eq(parsedPre.index).replaceWith(newPreHtml);
+        });
+
+        var newHtml = $.html();
+        return newHtml;
+    }
+
+    findParsedPre(parsedPresArray, id) {
+        var found = parsedPresArray.find(function(el) {
+            return el.id === id;
+        });
+        return found;
+    }
+
+    arrayRemove(arr, id) {
+        return arr.filter(function(element) {
+            return element.id != id;
+        });
+    }
+
+
+    /* @example v2 below */
+
+
+    _getTab(parsedPre) {
+        let index = parsedPre.index;
+        let tabNumber = parsedPre.exampleConfig.tab;
+        let label = 'JS';
+
+        if (parsedPre.exampleConfig.label) {
+            label = parsedPre.exampleConfig.label;
+        } else if (parsedPre.exampleConfig.lang && parsedPre.exampleConfig.lang == 'html') {
+            label = 'HTML';
+        } else if (parsedPre.exampleConfig.lang && parsedPre.exampleConfig.lang == 'css') {
+            label = 'CSS';
+        } else if (parsedPre.exampleConfig.lang && parsedPre.exampleConfig.lang == 'javascript') {
+            label = 'JS';
+        } else if (parsedPre.exampleConfig.lang && parsedPre.exampleConfig.lang == 'typescript') {
+            label = 'TS';
+        } else if (parsedPre.exampleConfig.lang) {
+            label = parsedPre.exampleConfig.lang.toUpperCase();
+        }
+
+        let notActiveCls = ''
+        if (tabNumber > 1) {
+            notActiveCls = 'da-inline-fiddle-nav-code-notactive';
+        }
+        let tab = `
+            <span id='pre${index}-tab-${tabNumber}' contentid="pre-${index}-code-${tabNumber}" class="da-inline-fiddle-nav-code da-inline-fiddle-nav-active ${notActiveCls}">
+                <span class="fa fa-code"></span>
+                ${label}
+            </span>`;
+        return tab;
+    }
+
+    _getPreContent(parsedPre) {
+        let index = parsedPre.index;
+        let tabNumber = parsedPre.exampleConfig.tab;
+        let preHtml = parsedPre.preHtml;
+        let lang = parsedPre.exampleConfig.lang;
+        if (!lang) {
+            lang = 'javascript';
+        }
+        
+        // Hide any with > 1 index, so tabs set visibility
+        let disabledCls = '';
+        if (tabNumber > 1) {
+            disabledCls = 'ace-ct-disabled';
+        }
+
+        // Remove @example to \n (TODO if we want multi line example json contents)
+        preHtml = preHtml.replace(/@example.*?\n/gm, '');
+
+        var preContentDiv = `<div id="pre-${index}-code-${tabNumber}" tabid="pre${index}-tab-${tabNumber}" class="ace-ct ${disabledCls}" lang='${lang}'><pre>${preHtml}</pre></div>`;
+        return preContentDiv;
+    }
+
+    _getFiddlePreWrapV2(tabsHtml, presHtml) {
+        let version = this.apiVersion;
+        let prodObj = this.options.products[this.apiProduct];
+        let toolkit = this.options.toolkit;
+
+        let fidMeta = {
+            framework: this.options.products[this.apiProduct].title,
+            version: version,
+            toolkit: toolkit,
+            theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
+        };
+
+        let docsXMetaObj = JSON.stringify(fidMeta);
+        let docsXFiddleId = this.uniqueId;
+        let wrap = `
+            <div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target" id="${docsXFiddleId}" data-fiddle-meta='${docsXMetaObj}'>
+                <div class="da-inline-fiddle-nav">
+                    <div class="code-controls">
+                        <span class="collapse-tool fa fa-caret-up"></span>
+                        <span class="expand-tool fa fa-caret-down"></span>
+                        <span class="expand-code">Expand Code</span>
+                    </div>
+                    
+                    <!-- Tabbar-->
+                    ${tabsHtml}
+                    
+                    <span class="da-inline-fiddle-nav-fiddle">
+                        <span class="fiddle-icon-wrap">
+                            <span class="fa fa-play-circle">
+                            </span><span class="fa fa-refresh"></span>
+                        </span>
+                        Run
+                    </span>
+                </div>
+                
+                ${presHtml}
+                
+            </div>`;
+        return wrap;
+    }
+
+    _getFiddlePreWrapV1() {
+        var wrap = `<div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target" id="{docsXFiddleId}" data-fiddle-meta='{docsXMetaObj}'>
+            <div class="da-inline-fiddle-nav">
+                <div class="code-controls">
+                    <span class="collapse-tool fa fa-caret-up"></span>
+                    <span class="expand-tool fa fa-caret-down"></span>
+                    <span class="expand-code">Expand Code</span>
+                </div>
+                
+                <span class="da-inline-fiddle-nav-code da-inline-fiddle-nav-active">
+                    <span class="fa fa-code"></span>
+                    Code
+                </span>
+                
+                <span class="da-inline-fiddle-nav-fiddle">
+                    <span class="fiddle-icon-wrap">
+                        <span class="fa fa-play-circle">
+                        </span><span class="fa fa-refresh"></span>
+                    </span>
+                    Run
+                </span>
+                
+                <span class="icon-btn fiddle-code-beautify tooltip tooltip-tr-br" data-beautify="Beautify Code">
+                    <i class="fa fa-indent"></i>
+                    <div class="callout callout-b"></div>
+                </span>
+            </div>
+            <div id="{docsXAceCtId}" class="ace-ct">`;
+        return wrap;
+    }
+
+    _formatCode(html) {
+        var opts = {
+            "indent_size": 2
+        };
+        var result = beautify_html(html, opts);
+        return result;
     }
 }
 

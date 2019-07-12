@@ -2581,11 +2581,11 @@ DocsApp.getEventTarget = function (e) {
         }
 
         for (i = 0; i < buttonsLen; i++) {
-            runButtons[i].onclick = DocsApp.onRunFiddleClick;
+            runButtons[i].addEventListener('click', DocsApp.onRunFiddleClick);
         }
 
         for (i = 0; i < codeBtnsLen; i++) {
-            codeButtons[i].onclick = DocsApp.onCodeFiddleClick;
+            codeButtons[i].addEventListener('click', DocsApp.onCodeTabClick);
         }
 
         ExtL.each(beautifyButtons, function (btn) {
@@ -2643,13 +2643,47 @@ DocsApp.getEventTarget = function (e) {
         }
     };
 
-    DocsApp.onCodeFiddleClick = function (e) {
-        var code     = DocsApp.getEventTarget(e),
-            wrap     = ExtL.up(code, '.da-inline-code-wrap'),
-            isActive = ExtL.hasCls(code, 'da-inline-fiddle-nav-active');
+    DocsApp.onCodeTabClick = function (e) {
+        var codeTab = DocsApp.getEventTarget(e);
+        if (codeTab != null) {
+            // Be sure it's the tab and not the child in the tab
+            codeTab = ExtL.upToParent(codeTab, 'da-inline-fiddle-nav-code');
+            //console.log("codeTab=", codeTab);
+        }
+        var wrap = ExtL.up(codeTab, '.da-inline-code-wrap');
+        var activeContentId = codeTab.getAttribute('contentid'); 
+        var contentElements = wrap.getElementsByClassName('ace_editor');
+        if (contentElements) {
+            for (var i = 0; i < contentElements.length; i++) {
+                var contentEl = contentElements[i];
+                var contentElId = contentEl.id;
 
-        if (wrap && !ExtL.hasCls(wrap, 'disabled') && !isActive) {
-            DocsApp.hideFiddle(wrap);
+                if (activeContentId == contentElId) {
+                    //DocsApp.hideFiddle(wrap);
+                    // set active. TODO future: contentEl.classList.remove('ace-ct-disabled');
+                    ExtL.toggleCls(contentEl, 'ace-ct-disabled', false);
+                    //console.log("active " + contentElId);
+                } else {
+                    // set inactive. TODO future: contentEl.classList.add('ace-ct-disabled');
+                    ExtL.toggleCls(contentEl, 'ace-ct-disabled', true);
+                    //console.log("notactive "  + contentElId);
+                }
+            }
+        }
+
+        var tabElements = wrap.getElementsByClassName('da-inline-fiddle-nav-code');
+        if (tabElements) {
+            for (var i = 0; i < tabElements.length; i++) {
+                var tabEl = tabElements[i];
+                var tabElId = tabEl.id;
+                if (codeTab.id == tabElId) {
+                    ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-active', true); 
+                    ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-code-notactive', false);
+                } else {
+                    ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-active', false);
+                    ExtL.toggleCls(tabEl, 'da-inline-fiddle-nav-code-notactive', true);
+                }
+            }
         }
     };
 
@@ -2699,9 +2733,11 @@ DocsApp.getEventTarget = function (e) {
             meta       = JSON.parse(wrap.getAttribute('data-fiddle-meta')),
             myMeta     = DocsApp.meta,
             actualProd = myMeta.product,
-            // TODO extangular???
+
+            // TODO extwebcomponents???
             intro      = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "Ext.application({\n    name: 'Fiddle',\n\n    launch: function() {\n\n",
             outro      = actualProd === 'extreact' || actualProd === 'extangular' ? '' : "}\n});",
+            
             iframe     = DocsApp.getIFrame(wrap),
             pageName   = myMeta.myId,
             toolkit    = myMeta.toolkit,

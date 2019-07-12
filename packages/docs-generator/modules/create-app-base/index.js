@@ -435,9 +435,10 @@ class AppBase extends SourceGuides {
 
         // Are the examples wired with v2 decorators
         // TODO convert to version2
-        let hasExample = html.match(/\@example\(.*?{/g);
-        if (hasExample && hasExample.length > 0) {
+        let hasExampleV2 = html.match(/\@example\(.*?{/g);
+        if (hasExampleV2 && hasExampleV2.length > 0) {
             out = this.decorateExamples_V2(html);
+
         } else {
             let fiddleWrapPre = this._getFiddlePreWrapV1();
             let fiddleWrapClose = '</div></div>';
@@ -550,7 +551,7 @@ class AppBase extends SourceGuides {
 
             var exampleReOptions;
             var exampleReOptionsDeocded;
-            var exampleConfig;
+            var exampleConfig = {};
             if (exampleRe) {
                 exampleReOptions = exampleRe[1];
                 exampleReOptionsDeocded = entities.decode(exampleReOptions);
@@ -594,8 +595,8 @@ class AppBase extends SourceGuides {
                     var parentParsedPre = this.findParsedPre(presArray, parentParsedPreId);
 
                     // TODO change label to code type
-                    tabsHtml += this._getTab(parsedPre.index, 'Code'); 
-                    presHtml += this._getPreContent(parsedPre.index, parsedPre.preHtml);
+                    tabsHtml += this._getTab(parsedPre); 
+                    presHtml += this._getPreContent(parsedPre);
                     
                     // Only remove the children, not the parent
                     if (parsedPre.exampleConfig.tab === 1) {
@@ -607,9 +608,6 @@ class AppBase extends SourceGuides {
 
                     // Pre is no longer needed.
                     processedParsedPresId.push(parsedPre.id);
-
-
-                    // TODO remove @example line
                 }
             });
 
@@ -625,8 +623,8 @@ class AppBase extends SourceGuides {
 
         // Process the rest of the examples that weren't grouped by parent using tabs
         presArray.forEach((parsedPre) => {
-            let tabsHtml = this._getTab(parsedPre.index, 'Code'); 
-            let presHtml = this._getPreContent(parsedPre.index, parsedPre.preHtml);
+            let tabsHtml = this._getTab(parsedPre); 
+            let presHtml = this._getPreContent(parsedPre);
             let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml);
             $('pre').eq(parsedPre.index).replaceWith(newPreHtml);
         });
@@ -648,28 +646,73 @@ class AppBase extends SourceGuides {
         });
     }
 
-    _getTab(index, label) {
+
+    /* @example v2 below */
+
+
+    _getTab(parsedPre) {
+        let index = parsedPre.index;
+        let tabNumber = parsedPre.exampleConfig.tab;
+        let label = 'JS';
+
+        if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-javascript')) {
+            label = "CODE";
+        } else  if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-html')) {
+            label = "HTML";
+        } else if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-css')) {
+            label = "CSS";
+        } else if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-typescript')) {
+            label = "TS";
+        } else if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-jsx')) {
+            label = "JSX";
+        }
+
+        let notActiveCls = ''
+        if (tabNumber > 1) {
+            notActiveCls = 'da-inline-fiddle-nav-code-notactive';
+        }
         let tab = `
-            <span id='tab-${index}' class="da-inline-fiddle-nav-code da-inline-fiddle-nav-active">
+            <span id='pre${index}-tab-${tabNumber}' contentid="pre-${index}-code-${tabNumber}" class="da-inline-fiddle-nav-code da-inline-fiddle-nav-active ${notActiveCls}">
                 <span class="fa fa-code"></span>
                 ${label}
             </span>`;
         return tab;
     }
 
-    _getPreContent(index, preHtml) {
-        // TODO hide any with > 1 index, so tabs set visibility
+    _getPreContent(parsedPre) {
+        let index = parsedPre.index;
+        let tabNumber = parsedPre.exampleConfig.tab;
+        var preHtml = parsedPre.preHtml;
+        
+        // Hide any with > 1 index, so tabs set visibility
+        let disabledCls = '';
+        if (tabNumber > 1) {
+            disabledCls = 'ace-ct-disabled';
+        }
 
-        var div = `
-            <div id="pre-${index}" class="ace-ct">
-                <pre>${preHtml}</pre>
-            </div>`
-        return div;
+        // Remove @example to \n
+        preHtml = preHtml.replace(/@example.*?\n/gm, '');
+
+        var preContentDiv = `<div id="pre-${index}-code-${tabNumber}" tabid="pre${index}-tab-${tabNumber}" class="ace-ct ${disabledCls}"><pre>${preHtml}</pre></div>`;
+        return preContentDiv;
     }
 
     _getFiddlePreWrapV2(tabsHtml, presHtml) {
-        var wrap = `
-            <div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target" id="{docsXFiddleId}" data-fiddle-meta='{docsXMetaObj}'>
+        let version = this.apiVersion;
+        let prodObj = this.options.products[this.apiProduct];
+        let toolkit = this.options.toolkit;
+
+        let fidMeta = {
+            framework: this.options.products[this.apiProduct].title,
+            version: version,
+            toolkit: toolkit,
+            theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
+        };
+
+        let docsXMetaObj = JSON.stringify(fidMeta);
+        let docsXFiddleId = this.uniqueId;
+        let wrap = `
+            <div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target" id="${docsXFiddleId}" data-fiddle-meta="${docsXMetaObj}">
                 <div class="da-inline-fiddle-nav">
                     <div class="code-controls">
                         <span class="collapse-tool fa fa-caret-up"></span>
@@ -687,18 +730,11 @@ class AppBase extends SourceGuides {
                         </span>
                         Run
                     </span>
-                    
-                    <span class="icon-btn fiddle-code-beautify tooltip tooltip-tr-br" data-beautify="Beautify Code">
-                        <i class="fa fa-indent"></i>
-                        <div class="callout callout-b"></div>
-                    </span>
                 </div>
                 
                 ${presHtml}
                 
             </div>`;
-
-            wrap = this._formatCode(wrap);
         return wrap;
     }
 
@@ -730,8 +766,6 @@ class AppBase extends SourceGuides {
                 </span>
             </div>
             <div id="{docsXAceCtId}" class="ace-ct">`;
-        
-        wrap = this._formatCode(wrap);
         return wrap;
     }
 

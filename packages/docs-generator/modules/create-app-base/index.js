@@ -558,6 +558,16 @@ class AppBase extends SourceGuides {
                 exampleConfig = JSON5.parse(exampleReOptionsDeocded);
             }
 
+            // Parse language from lang-[language]
+            if (!exampleConfig.lang) {
+                var lang = /['"]lang\-(.*?)['"]/.exec(preHtml);
+                if (lang && lang.length > 0) {
+                    exampleConfig.lang = lang[1];
+                } else {
+                    exampleConfig.lang = 'javascript';
+                }
+            }
+                
             var parsedPre = {
                 parentId: null,
                 id: `pre${index}`,
@@ -655,16 +665,18 @@ class AppBase extends SourceGuides {
         let tabNumber = parsedPre.exampleConfig.tab;
         let label = 'JS';
 
-        if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-javascript')) {
-            label = "CODE";
-        } else  if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-html')) {
-            label = "HTML";
-        } else if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-css')) {
-            label = "CSS";
-        } else if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-typescript')) {
-            label = "TS";
-        } else if (parsedPre.preHtml && parsedPre.preHtml.includes('lang-jsx')) {
-            label = "JSX";
+        if (parsedPre.exampleConfig.label) {
+            label = parsedPre.exampleConfig.label;
+        } else if (parsedPre.exampleConfig.lang && parsedPre.exampleConfig.lang == 'html') {
+            label = 'HTML';
+        } else if (parsedPre.exampleConfig.lang && parsedPre.exampleConfig.lang == 'css') {
+            label = 'CSS';
+        } else if (parsedPre.exampleConfig.lang && parsedPre.exampleConfig.lang == 'javascript') {
+            label = 'JS';
+        } else if (parsedPre.exampleConfig.lang && parsedPre.exampleConfig.lang == 'typescript') {
+            label = 'TS';
+        } else if (parsedPre.exampleConfig.lang) {
+            label = parsedPre.exampleConfig.lang.toUpperCase();
         }
 
         let notActiveCls = ''
@@ -682,7 +694,11 @@ class AppBase extends SourceGuides {
     _getPreContent(parsedPre) {
         let index = parsedPre.index;
         let tabNumber = parsedPre.exampleConfig.tab;
-        var preHtml = parsedPre.preHtml;
+        let preHtml = parsedPre.preHtml;
+        let lang = parsedPre.exampleConfig.lang;
+        if (!lang) {
+            lang = 'javascript';
+        }
         
         // Hide any with > 1 index, so tabs set visibility
         let disabledCls = '';
@@ -690,10 +706,10 @@ class AppBase extends SourceGuides {
             disabledCls = 'ace-ct-disabled';
         }
 
-        // Remove @example to \n
+        // Remove @example to \n (TODO if we want multi line example json contents)
         preHtml = preHtml.replace(/@example.*?\n/gm, '');
 
-        var preContentDiv = `<div id="pre-${index}-code-${tabNumber}" tabid="pre${index}-tab-${tabNumber}" class="ace-ct ${disabledCls}"><pre>${preHtml}</pre></div>`;
+        var preContentDiv = `<div id="pre-${index}-code-${tabNumber}" tabid="pre${index}-tab-${tabNumber}" class="ace-ct ${disabledCls}" lang='${lang}'><pre>${preHtml}</pre></div>`;
         return preContentDiv;
     }
 
@@ -712,7 +728,7 @@ class AppBase extends SourceGuides {
         let docsXMetaObj = JSON.stringify(fidMeta);
         let docsXFiddleId = this.uniqueId;
         let wrap = `
-            <div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target" id="${docsXFiddleId}" data-fiddle-meta="${docsXMetaObj}">
+            <div class="da-inline-code-wrap da-inline-code-wrap-fiddle invisible example-collapse-target" id="${docsXFiddleId}" data-fiddle-meta='${docsXMetaObj}'>
                 <div class="da-inline-fiddle-nav">
                     <div class="code-controls">
                         <span class="collapse-tool fa fa-caret-up"></span>

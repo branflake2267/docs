@@ -2289,10 +2289,15 @@ class SourceApi extends Base {
 
                 // loop over each type group
                 for (; i < len; i++) {
-                    let group = memberTypes[i],
-                        // the collection of members of this type
-                        members = group.items,
-                        membersLen = members.length;
+                    let group = memberTypes[i];
+                    // the collection of members of this type
+                    let members = group.items;
+                    let membersLen = 0;
+                    if (members) {
+                      membersLen = members.length;
+                    } else {
+                        console.log("---->>> There are no members for: group=", group);
+                    }
 
                     // if there are members in this group
                     if (members && membersLen) {

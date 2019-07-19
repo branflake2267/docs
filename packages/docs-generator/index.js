@@ -245,7 +245,7 @@ options._args = args;
 options.version = args.productVersion;
 
 // TODO add argument for building offlinedocs, turning on or off
-options.outputOffline = false; // TODO re-enable
+options.outputOffline = true;
 
 // Resolve the buildConfigsDir directory, consider directories that might start with ~/ to point to home. 
 options._myRoot = resolveDirectory(options.buildConfigsDir);

@@ -106,7 +106,7 @@ const args = require('yargs')
             'type': 'string',
             'default': null,
             'description': 'Provides the new "all file" of the framework from which to execute a diff',
-            'example': 'sencha-docs-generator   create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
+            'example': 'sencha-docs-generator create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
         },
         'oldFile': {
             'type': 'string',

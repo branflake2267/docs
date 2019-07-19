@@ -106,7 +106,7 @@ const args = require('yargs')
             'type': 'string',
             'default': null,
             'description': 'Provides the new "all file" of the framework from which to execute a diff',
-            'example': 'sencha-docs-generator   create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
+            'example': 'sencha-docs-generator create-diff-md --new=6.2.1 --old=6.2.0 --newFile=../foo.json --oldFile=../bar.json'
         },
         'oldFile': {
             'type': 'string',
@@ -245,7 +245,7 @@ options._args = args;
 options.version = args.productVersion;
 
 // TODO add argument for building offlinedocs, turning on or off
-options.outputOffline = true;
+options.outputOffline = false; // TODO re-enable
 
 // Resolve the buildConfigsDir directory, consider directories that might start with ~/ to point to home. 
 options._myRoot = resolveDirectory(options.buildConfigsDir);

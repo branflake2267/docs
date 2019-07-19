@@ -2786,6 +2786,13 @@ DocsApp.getEventTarget = function (e) {
             };
             codes.assets.push(asset);
         } else { // V2
+            var trackNum = {
+                javascript : 0,
+                typescript : 0,
+                html : 0,
+                css : 0
+            };
+
             for (var i = 0; i < aceContentElements.length; i++) {
                 var aceContentElement = aceContentElements[i];
                 var aceElementId = aceContentElement.id;
@@ -2793,8 +2800,19 @@ DocsApp.getEventTarget = function (e) {
                 if (!lang) {
                     lang = 'js';
                 }
+                lang = lang.toLowerCase();
 
-                var name = 'file' + i +'.';
+                var si = '';
+                
+                var t = trackNum[lang];
+                if (!t || t == 0) {
+                    si = '';
+                } else {
+                    si = t;
+                }
+                trackNum[lang] += 1; 
+
+                var name = 'app' + si + '.';
                 if (lang == 'javascript') {
                     name += 'js';
                 } else if (lang == 'typescript') {
@@ -3110,11 +3128,15 @@ DocsApp.getEventTarget = function (e) {
         // Change the framework for ExtReact only - Used for embedded fiddles
         var myMeta = DocsApp.meta;
         var actualProd = myMeta.product;
+
         if (actualProd === 'extreact') {
             params.framework.framework = 'ExtReact';
+
         } else if (actualProd === 'extangular') {
-            // TODO extangular???
             params.framework.framework = 'ExtAngular';
+
+        } else if (actualProd === 'extwebcomponents') {
+            params.framework.framework = 'ExtWebComponents';
         }
 
         var form = ExtL.createElement({
@@ -3130,7 +3152,6 @@ DocsApp.getEventTarget = function (e) {
             if (ExtL.isArray || ExtL.isObject) {
                 val = JSON.stringify(val);
             }
-
             form.appendChild(ExtL.createElement({
                 tag: 'input',
                 type: 'hidden',

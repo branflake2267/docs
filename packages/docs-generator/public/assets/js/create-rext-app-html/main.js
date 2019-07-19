@@ -422,21 +422,18 @@ DocsApp.buildForm = function (target, params) {
     // Change the framework for ExtReact only - Used for embedded fiddles
     var myMeta = DocsApp.meta;
     var actualProd = myMeta.product;
-
-    var framework = "";
     var wrapperCode = "";
     var wrapperCodeFile = "";
     var htmlCode = "";
-
     var assets = params.codes.assets;
-
+    
     var fiddleCode = "";
     if (assets[0].code) {
         fiddleCode = assets[0].code;
     }
 
     if (actualProd === 'extreact') {
-        framework = 'ExtReact';
+        params.framework.framework = 'ExtReact';
         wrapperCodeFile = "app.js";
         wrapperCodeType = "javascript";
 
@@ -461,8 +458,18 @@ DocsApp.buildForm = function (target, params) {
 
         htmlCode = "";
 
+        params.codes.assets = [{
+            name: wrapperCodeFile,
+            type: wrapperCodeType,
+            code: wrapperCode,
+        }, {
+            name: "index.html",
+            code: htmlCode,
+            type: "html"
+        }];
+
     } else if (actualProd === 'extangular') {
-        framework = 'ExtAngular';
+        params.framework.framework = 'ExtAngular';
         wrapperCodeFile = "main.ts";
         wrapperCodeType = "typescript";
 
@@ -509,8 +516,36 @@ DocsApp.buildForm = function (target, params) {
         htmlCode += "</body>\n"
         htmlCode += "</html>\n"
 
-    } else if (actualProd === 'extwebcomponents') {
-        // TODO extwebcomponents
+        params.codes.assets = [{
+            name: wrapperCodeFile,
+            type: wrapperCodeType,
+            code: wrapperCode,
+        }, {
+            name: "index.html",
+            code: htmlCode,
+            type: "html"
+        }];
+    } else if (actualProd === 'extwebcomponents' || actualProd === 'ext-web-components') {
+        params.framework.framework = 'ExtWebComponents';
+
+        if (params.packages) {
+            params.packages.push('ext-web-components');
+        } else {        
+            params.packages = ['ext-web-components'];
+        }
+
+        if (params.framework.packages) {
+            params.framework.packages.push('ext-web-components');
+        } else {        
+            params.framework.packages = ['ext-web-components'];
+        }
+
+        if (params.codes.packages) {
+            params.codes.packages.push('ext-web-components');
+        } else {        
+            params.codes.packages = ['ext-web-components'];
+        }
+
     } else if (actualProd === 'extjs-next') {
         // TODO extjs next
     }
@@ -523,25 +558,6 @@ DocsApp.buildForm = function (target, params) {
         target: target,
         style: 'display:none'
     });
-
-    var wrappingAssets = [{
-        name: wrapperCodeFile,
-        type: wrapperCodeType,
-        code: wrapperCode,
-    }, {
-        name: "index.html",
-        code: htmlCode,
-        type: "html"
-    }];
-
-    // var assets = params.codes.assets;
-    // assets[0].name = wrapperCodeFile; // was App.js
-    // params.framework.framework = framework;
-    // params.codes.assets = wrappingAssets.concat(assets);
-
-    // Add assets to form
-    params.framework.framework = framework;
-    params.codes.assets = wrappingAssets;
 
     ExtL.each(params, function (key, val) {
         if (ExtL.isArray || ExtL.isObject) {

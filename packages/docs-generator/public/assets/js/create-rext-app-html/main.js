@@ -41,46 +41,50 @@ DocsApp.initNavTree = function () {
     var guidesId = 'react-guides-nav-';
     var classesId = 'react-api-nav-';
     var id = DA.meta.myId;
-    var navTrees, target, targetId, targetNode;
+
+    // Build a list of trees to search for selection
+    var navTrees = [];
+    var target, targetId, targetNode, tree;
 
     ExtL.addCls(treeCt, 'navigation-parent-ct');
     if (apiTree.API && apiTree.API.Components) {
         treeCt.appendChild(this.createSubNavCt(componentsId, 'Components'));
     }
 
+    // Add Guides to accordion panel on the left
     if (DA.guidesTree && DA.guidesTree.Guides) {
         treeCt.appendChild(this.createSubNavCt(guidesId, 'Guides'));
     }
 
+    // Add API-docs to accordion on the left
     if (apiTree.API && apiTree.API.API) {
         treeCt.appendChild(this.createSubNavCt(classesId, 'API'));
     }
 
-    navTrees = [];
-
+    // Build navTree of Components
     if (apiTree.API && apiTree.API.Components) {
         DA.componentsNavTree = DA.buildNavTree(componentsTree, componentsId + 'target');
+        navTrees.push(DA.componentsNavTree);
     }
 
+    // Build navTree of Guides
     if (DA.guidesTree && DA.guidesTree.Guides) {
         DA.guidesNavTree = DA.buildNavTree(guidesTree, guidesId + 'target');
+        navTrees.push(DA.guidesNavTree);
     }
 
+    // Build navTree of API docs
     if (apiTree.API && apiTree.API.API) {
         DA.apiNavTree = DA.buildNavTree(classesTree, classesId + 'target');
+        navTrees.push(DA.apiNavTree);
     }
-
-
-    var len = navTrees.length,
-        i = 0,
-        tree;
 
     if (id) {
         id = id.replace(/\./g, '\\.');
     }
 
     // select the node for the current page
-    for (; i < len; i++) {
+    for (var i = 0; i < navTrees.length; i++) {
         tree = navTrees[i];
         // add the expand-all button for each tree
         DocsApp.addTreeToggleButton(tree);

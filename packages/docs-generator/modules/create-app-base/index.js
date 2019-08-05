@@ -630,13 +630,15 @@ class AppBase extends SourceGuides {
             presArray = this.arrayRemove(presArray, id);
         });
 
-        // Process the rest of the examples that weren't grouped by parent using tabs
-        presArray.forEach((parsedPre) => {
-            let tabsHtml = this._getTab(parsedPre); 
-            let presHtml = this._getPreContent(parsedPre);
-            let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml);
-            $('pre').eq(parsedPre.index).replaceWith(newPreHtml);
-        });
+        // // Process the rest of the examples that weren't grouped by parent using tabs
+        // presArray.forEach((parsedPre) => {
+        //     let tabsHtml = this._getTab(parsedPre); 
+        //     let presHtml = this._getPreContent(parsedPre);
+        //     let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml);
+        //     if (parsedPre.example) {
+        //       $('pre').eq(parsedPre.index).replaceWith(newPreHtml);
+        //     }
+        // });
 
         var newHtml = $.html();
         return newHtml;

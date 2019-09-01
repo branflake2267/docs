@@ -22,7 +22,10 @@ const SourceApi = require('../source-api'),
     Gramophone = require('@sencha/custom-gramophone'), // https://github.com/edlea/gramophone;
     rimraf = require("rimraf");
 
+var errorInGuides = false;
+
 class SourceGuides extends SourceApi {
+  
     constructor(options) {
         super(options);
 
@@ -325,6 +328,12 @@ class SourceGuides extends SourceApi {
             .then(this.outputGuideTree.bind(this))
             .then(this.copyResources.bind(this))
             .then(() => {
+                if (errorInGuides) {
+                  this.log("\n");
+                  this.log("There were errors in building the guides. Fix the guides errors to move on.");
+                  process.exit(1);
+                }
+
                 this.log('\t Processing Guides End');
                 this.log('~~~~~~~~~~~~~~~~~~~~');
                 this.log('~~~~~~~~~~~~~~~~~~~~');
@@ -908,7 +917,9 @@ class SourceGuides extends SourceApi {
                 this.log("\t node.slug=" + node.slug, 'error');
                 this.log("~~~~~~~~~~~~~~~~~~~~~~~~~~", 'error');
 
-                reject("ERROR: Rejection: The guide path is undefined. node.name=" + node.name);
+                //reject("ERROR: Rejection: The guide path is undefined. node.name=" + node.name);
+                errorInGuides = true; // report at the end. 
+                resolve();
             }
         })
             .catch(this.error.bind(this));

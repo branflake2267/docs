@@ -2767,7 +2767,7 @@ DocsApp.getEventTarget = function (e) {
         var myVer = version.split('.');
         var majorVer = parseInt(myVer[0], 10);
         var minorVer = parseInt(myVer[1], 10);
-        var canPackage = (majorVer >= 6 && minorVer >= 2);
+        var canPackage = majorVer >= 6;
         var packages = meta.packages ? ExtL.from(meta.packages) : [];
         
         var codes = {
@@ -3120,7 +3120,7 @@ DocsApp.getEventTarget = function (e) {
         if (window.location.hostname.indexOf('docs-devel') == 0) {
             // Used for the staged fiddle testing
             fiddleURL = 'https://test-fiddle.sencha.com/run?dc=' + new Date().getTime();
-        } else if (window.location.origin.indexOf('file://') == 0) {
+        } else if (window.location.origin.indexOf('file://') == 0 || window.location.origin.indexOf('docs-dev.s')) {
             // Used for local debugging - Like when debugging docs v2 builds
             fiddleURL = 'https://fiddle-dev.sencha.com/run?dc=' + new Date().getTime();
         }
@@ -3179,7 +3179,6 @@ DocsApp.getEventTarget = function (e) {
             DocsApp.addEventsAndSetMenuClose(menu, 'mouseleave', true);
 
             ExtL.monitorMouseLeave(menu, 200, DocsApp.hideMemberTypeMenu);
-
         }
 
         return menu;
@@ -3219,8 +3218,7 @@ DocsApp.getEventTarget = function (e) {
             var cn = [],
                 link, memberObj, name, memberTagsCt;
 
-            // ignore any methods that have been hoisted into the configs section or are
-            // hidden
+            // ignore any methods that have been hoisted into the configs section or are hidden
             if (item.offsetHeight && item.id.indexOf('placeholder') !== 0) {
                 //if (item.offsetHeight) {
                 link = item.querySelector('[data-ref]');
@@ -3233,7 +3231,6 @@ DocsApp.getEventTarget = function (e) {
                     sortName: name,
                     sortPriority: 0
                 };
-
 
                 if (targetId === "configs" && (ExtL.hasCls(item, "accessor-method") || ExtL.hasCls(item.parentNode, "accessor-method"))) {
                     memberObj["class"] = "accessor";

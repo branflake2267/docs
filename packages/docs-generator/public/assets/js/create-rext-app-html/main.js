@@ -418,10 +418,11 @@ DocsApp.buildForm = function (target, params) {
     if (window.location.hostname.indexOf('docs-devel') == 0) {
         // Used for the staged fiddle testing
         fiddleURL = 'https://test-fiddle.sencha.com/run?dc=' + new Date().getTime();
-    } else if (window.location.origin.indexOf('file://') == 0 || window.location.origin.indexOf('docs-dev.s')) {
-        // Used for local debugging - Like when debugging docs v2 builds
-        fiddleURL = 'https://fiddle-dev.sencha.com/run?dc=' + new Date().getTime();
-    }
+    } 
+    // else if (window.location.origin.indexOf('file://') == 0 || window.location.origin.indexOf('docs-dev.s')) {
+    //     // Used for local debugging - Like when debugging docs v2 builds
+    //     fiddleURL = 'https://fiddle-dev.sencha.com/run?dc=' + new Date().getTime();
+    // }
 
     // Change the framework for ExtReact only - Used for embedded fiddles
     var myMeta = DocsApp.meta;

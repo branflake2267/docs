@@ -935,7 +935,7 @@ class SourceGuides extends SourceApi {
      * @return {String} The table of contents markup
      */
     buildTOC(html, id) {
-        let rx = /<(h[2|3|4|5|6]+)(?:(?:\s+id=["]?)([a-zA-Z0-9-_]*)(?:["]?))?>(.*)<\/h[2|3|4|5|6]+>/gi,
+        let rx = /<(h[2|3|4|5|6]+)(?:(?:\s+id=["]?)([a-zA-Z0-9-_\/]*)(?:["]?))?>(.*)<\/h[2|3|4|5|6]+>/gi,
             results = [],
             result;
 
@@ -965,8 +965,13 @@ class SourceGuides extends SourceApi {
         data.cssPath = Path.relative(data.rootPath, this.cssDir);
         data.jsPath = Path.relative(data.rootPath, this.jsDir);
         data.imagesPath = Path.relative(data.rootPath, this.imagesDir);
+
+        
+
         //data.title     = data.prodObj.title;
         data.toc = this.buildTOC(data.content, data.id);
+
+
         data.myMeta = this.getGuideMetaData(data);
         data.isGuide = true;
         data.toolkit = toolkit === 'universal' ? null : toolkit;

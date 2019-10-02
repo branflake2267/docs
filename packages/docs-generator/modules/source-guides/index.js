@@ -368,17 +368,15 @@ class SourceGuides extends SourceApi {
                         let guideConfigJsonFile = Path.resolve(guideConfigPath, "config-" + version + ".json");
                         console.log("\t Exclude: Removing config: " + guideConfigJsonFile);
                         if (Fs.existsSync(guideConfigJsonFile)) {
-                            rimraf(guideConfigJsonFile, function () { 
-                                console.log('Deleted ' + guideConfigJsonFile); 
-                            });
+                            rimraf.sync(guideConfigJsonFile);
+                            console.log('Deleted ' + guideConfigJsonFile); 
                         }
 
                         let guidePathDir = Path.resolve(guidePath, version);
                         console.log("\t Exclude: Remove directory: " + guidePathDir);
                         if (Fs.existsSync(guidePathDir)) {
-                            rimraf(guidePathDir, function () { 
-                                console.log('Deleted ' + guidePathDir); 
-                            });
+                            rimraf.sync(guidePathDir);
+                            console.log('Deleted ' + guidePathDir); 
                         }
 
                         resolve();

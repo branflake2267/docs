@@ -537,10 +537,6 @@ class AppBase extends SourceGuides {
     // All of the pres in the example html
     var presArray = [];
 
-    if (html.includes('framework')) {
-      console.log("has framework");
-    }
-
     // Parse pres
     var parentId;
     var lastTab = -1;
@@ -657,8 +653,13 @@ class AppBase extends SourceGuides {
       let presHtml = this._getPreContent(parsedPre);
       let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml);
 
+      if (newPreHtml.includes('sayHello')) {
+        console.log("newPreHtml=" + newPreHtml);
+        console.log("test");
+      }
+
       if (parsedPre.example) {
-        $('pre').eq(parsedPre.index).replaceWith(newPreHtml);
+        $(parsedPre.element).replaceWith(newPreHtml);
       }
     });
 
@@ -733,6 +734,7 @@ class AppBase extends SourceGuides {
     preHtml = preHtml.replace(/@example.*?\n/gm, '');
 
     var preContentDiv = `<div id="pre-${index}-code-${tabNumber}" tabid="pre${index}-tab-${tabNumber}" class="ace-ct ${disabledCls}" lang='${lang}'><pre>${preHtml}</pre></div>`;
+
     return preContentDiv;
   }
 

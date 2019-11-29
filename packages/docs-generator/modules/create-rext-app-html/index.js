@@ -22,6 +22,8 @@ const HtmlApp    = require('../create-app-html'),
       CleanCSS   = require('clean-css'),
       Utils      = require('../shared/Utils'),
       _          = require('lodash');
+const Entities = require('html-entities').AllHtmlEntities;
+var entities = new Entities();
 
 const words = [
     'split',
@@ -699,6 +701,22 @@ class OpenToolingHtmlApp extends HtmlApp {
             prepared.addlBodyCls  = 'opentooling-component';
             prepared.cls.multiSrc = true;
         }
+
+        // FRAMEWORK CHOICE - TODO add extjs framework arg
+        if (cls.alias) {
+          let isWidget = cls.alias.includes('widget');
+          if (isWidget) {
+             if (this.options.prodVerMeta.title == 'ExtAngular') {
+              cls.name = `<Ext${cls.name}/>`;
+            } else if (this.options.prodVerMeta.title == 'ExtReact') { 
+              cls.name = `<Ext${cls.name}/>`;
+            } else if (this.options.prodVerMeta.title == 'ExtWebComponents') { 
+              cls.name = `<ext-${cls.name.toLowerCase()}/>`;
+            }
+            cls.name = entities.encode(cls.name);
+          }
+
+        }
     }
 
     /**
@@ -710,7 +728,7 @@ class OpenToolingHtmlApp extends HtmlApp {
      */
     processMember (className, type, member) {
         super.processMember(className, type, member);
-        member.srcClassText = this.replaceWithComponentName(member.srcClassText);
+        member.srcClassText = this.replaceWithComponentName(member.srcClassText, false);
     }
 
     /**
@@ -747,7 +765,7 @@ class OpenToolingHtmlApp extends HtmlApp {
             }
 
             // replace canonical class names with OpenTooling names
-            text = this.replaceWithComponentName(text);
+            text = this.replaceWithComponentName(text, true);
 
             return this.createApiLink(link, text.replace(this.hashStartRe, ''));
         });
@@ -760,13 +778,27 @@ class OpenToolingHtmlApp extends HtmlApp {
      * @return {String} The OpenTooling component name if a match is found in the
      * componentNameMap or the original string param if not
      */
-    replaceWithComponentName (str) {
+    replaceWithComponentName (str, encodeEntities) {
         let map = this.componentNameMap,
             ref = map.hasOwnProperty(str) && map[str];
 
         if (ref && ref.length) {
             str = ref[0].name;
+
+            // FRAMEWORK CHOICE - TODO add extjs framework arg
+            if (this.options.prodVerMeta.title == 'ExtAngular') {
+              str = `<Ext${str}/>`;
+            } else if (this.options.prodVerMeta.title == 'ExtReact') { 
+              str = `<Ext${str}/>`;
+            } else if (this.options.prodVerMeta.title == 'ExtWebComponents') { 
+              str = `<ext-${str.toLowerCase()}/>`;
+            }
         }
+
+        if (encodeEntities) {
+          str = entities.encode(str);
+        }
+
         return str;
     }
 
@@ -776,7 +808,7 @@ class OpenToolingHtmlApp extends HtmlApp {
      * @param text
      */
     createLink (href, text) {
-        text = this.replaceWithComponentName(text);
+        text = this.replaceWithComponentName(text, true);
         return super.createLink(href, text);
     }
 
@@ -827,7 +859,7 @@ class OpenToolingHtmlApp extends HtmlApp {
 
         if (data.extends) {
             data.extends = data.extends.replace(/(.*<div class="hierarchy pl2">)(.*?)(<\/div>.*)/gi, (match, p1, p2, p3) => {
-                return p1 + this.replaceWithComponentName(p2) + p3;
+                return p1 + this.replaceWithComponentName(p2, true) + p3;
             });
         }
     }

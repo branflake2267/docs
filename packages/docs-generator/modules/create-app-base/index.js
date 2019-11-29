@@ -653,11 +653,6 @@ class AppBase extends SourceGuides {
       let presHtml = this._getPreContent(parsedPre);
       let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml);
 
-      if (newPreHtml.includes('sayHello')) {
-        console.log("newPreHtml=" + newPreHtml);
-        console.log("test");
-      }
-
       if (parsedPre.example) {
         $(parsedPre.element).replaceWith(newPreHtml);
       }

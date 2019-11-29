@@ -1176,8 +1176,7 @@ class SourceApi extends Base {
 
             //cls.aliasPrefix = isWidget ? 'xtype' : alias.substr(0, alias.indexOf('.'));
             cls.aliasPrefix = isWidget ? 'xtype' : 'alias';
-            cls.aliasName = (isWidget ? alias.replace(WidgetRe, '') : alias)
-                .replace(/,/g, ', ');
+            cls.aliasName = (isWidget ? alias.replace(WidgetRe, '') : alias).replace(/,/g, ', ');
         }
 
         // indicate if the class is deprecated
@@ -1196,8 +1195,7 @@ class SourceApi extends Base {
 
         this.processApiDataObject(data);
 
-        // indicates whether the class is of type component, singleton, or some other
-        // class
+        // indicates whether the class is of type component, singleton, or some other class
         if (cls.extended && cls.extended.includes('Ext.Component')) {
             cls.clsSpec = 'title-decoration component';
             cls.clsSpecIcon = 'component-type fa fa-cog';

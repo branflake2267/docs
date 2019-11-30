@@ -22,6 +22,9 @@ const EventEmitter = require('events'),
     //idRe             = /[^\w]+/g,
     _ = require('lodash');
 
+const Entities = require('html-entities').AllHtmlEntities;
+var entities = new Entities();
+
 // TODO add this.log() stuff throughout all classes: `log` for general messaging, `info`
 // for warnings, and `error` for serious / fatal errors
 // TODO add status() endpoints for each section we want to show to users as the app runs
@@ -1379,6 +1382,40 @@ class Base {
         const { sinceMapPath } = this;
 
         Fs.outputJsonSync(sinceMapPath, sinceMap);
+    }
+
+    // FRAMEWORK CHOICE
+    getWebComponentDeclaration(className, encode = true) {
+      if (!className) {
+        return null;
+      }
+      let classData = this.classMap[className];
+      if (!classData) {
+        return null;
+      }
+
+      let prepared = classData.prepared;
+      if (!prepared) {
+        return null;
+      }
+
+      let webComponent = null;
+      if (prepared.alias && prepared.alias.includes('widget')) {
+        let aLower = prepared.alias.replace('widget.', '').toLowerCase();
+        let aCapped = aLower.charAt(0).toUpperCase() + aLower.slice(1);
+        if (this.options.prodVerMeta.title == 'ExtAngular') {
+          webComponent = `<Ext${aCapped}/>`;
+        } else if (this.options.prodVerMeta.title == 'ExtReact') { 
+          webComponent = `<Ext${aCapped}/>`;
+        } else if (this.options.prodVerMeta.title == 'ExtWebComponents') { 
+          webComponent = `<ext-${aLower}/>`;
+        }
+        if (encode) {
+          webComponent = entities.encode(webComponent);
+        }
+      }
+
+      return webComponent;
     }
 }
 

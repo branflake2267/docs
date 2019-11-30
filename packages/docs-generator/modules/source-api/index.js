@@ -42,7 +42,8 @@ const Base = require('../base'),
     sencha = require('@sencha/cmd'),
     { spawnSync } = require('child_process');
 
-    var process = require('process');
+const Entities = require('html-entities').AllHtmlEntities;
+var entities = new Entities();
 
 class SourceApi extends Base {
     constructor(options) {
@@ -764,7 +765,7 @@ class SourceApi extends Base {
                 isSingleton = mapped && mapped.prepared.singleton,
                 access = mapped && mapped.prepared.access,
                 newNode;
-
+        
             if (!leaf) {
                 newNode = Object.assign(baseNode, {
                     iconCls: isSingleton ? icon : folderNodeCls,
@@ -779,8 +780,15 @@ class SourceApi extends Base {
                     iconCls: `${icon}`
                 });
             }
+            
             if (this.classMap[id]) {
                 newNode.href = `${apiDirName}/${id}.html`;
+
+                // FRAMEWORK CHOICE
+                let webComponent = this.getWebComponentDeclaration(id);
+                if (webComponent) {
+                  newNode.webComponent = webComponent;
+                }
             }
 
             if (!target) {
@@ -1195,7 +1203,7 @@ class SourceApi extends Base {
 
         this.processApiDataObject(data);
 
-        // indicates whether the class is of type component, singleton, or some other class
+        // indicates whether the class is of type component, singleton, or some otherclass
         if (cls.extended && cls.extended.includes('Ext.Component')) {
             cls.clsSpec = 'title-decoration component';
             cls.clsSpecIcon = 'component-type fa fa-cog';
@@ -1744,9 +1752,16 @@ class SourceApi extends Base {
             // processMemberSearch method
             cls.typeRef = typeRef;
 
+            // FRAMEWORK CHOICE
+            let webComponent = this.getWebComponentDeclaration(className, false);
+            if (webComponent) {
+              webComponent = webComponent.replace('<', '');
+              webComponent = webComponent.replace('/>', '');
+            }
+
             // record the class name and toolkit
             searchIndex[key] = {
-                d: cls.name,
+                d: webComponent || cls.name,
                 n: cls.cls.originalName,
                 t: toolkit ? toolkit : null
             };

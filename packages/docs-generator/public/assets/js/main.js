@@ -2149,6 +2149,8 @@ DocsApp.getEventTarget = function (e) {
                     }
                 }
 
+                console.log('search-item=', rec);
+
                 el = ExtL.createElement({
                     tag: 'a',
                     href: href,

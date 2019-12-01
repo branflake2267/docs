@@ -417,6 +417,7 @@ class AppBase extends SourceGuides {
 
   /**
    * Decorate @example blocks so that they can operate as inline fiddle examples
+   * and decorate <pre/> with prettyprint.
    * @param {String} html The guide body HTML
    * @return {String} The decorated guide body HTML
    */
@@ -433,13 +434,11 @@ class AppBase extends SourceGuides {
       theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
     };
 
-    // Are the examples wired with v2 decorators
-    // TODO convert to version2
-    let hasExampleV2 = html.match(/\@example\(.*?{/g);
-    if (hasExampleV2 && hasExampleV2.length > 0) {
+    // TODO convert extjs examples!!!!
+    if (this.options.prodVerMeta.title != 'Ext JS') {
       out = this.decorateExamples_V2(html);
 
-    } else {
+    } else { 
       let fiddleWrapPre = this._getFiddlePreWrapV1();
       let fiddleWrapClose = '</div></div>';
 
@@ -539,7 +538,6 @@ class AppBase extends SourceGuides {
 
     // Parse pres
     var parentId;
-    var lastTab = -1;
     $('pre').each(function (index, elem) {
       var preHtml = $(this).html();
       var examples = preHtml.match(/\@example/g);
@@ -580,15 +578,12 @@ class AppBase extends SourceGuides {
 
       if (hasExample && exampleConfig && exampleConfig.tab) {
         if (exampleConfig.tab == 1) {
-          lastTab = exampleConfig.tab;
           parentId = parsedPre['id'];
         }
         parsedPre['parentId'] = parentId;
         // Save to a group, for easy iteration
         presParentMap[parentId] = index;
-      } else {
-        lastTab = -1;
-      }
+      } 
 
       presArray[index] = parsedPre;
     });
@@ -600,7 +595,6 @@ class AppBase extends SourceGuides {
       var tabsHtml = '';
       var presHtml = '';
       presArray.forEach((parsedPre, index) => {
-
         // When the framework is defined, compare it with the product being rendered. 
         if (parsedPre.exampleConfig.framework && parsedPre.exampleConfig.framework.replace('-', '') != this.options.product) {
           // Framework must match the product being rendering
@@ -639,7 +633,7 @@ class AppBase extends SourceGuides {
       presArray = this.arrayRemove(presArray, id);
     });
 
-    // // Process the rest of the examples that weren't grouped by parent using tabs
+    // Process the rest of the examples that weren't grouped by parent using tabs
     presArray.forEach((parsedPre) => {
       // When the framework is defined, compare it with the product being rendered. 
       if (parsedPre.exampleConfig.framework && parsedPre.exampleConfig.framework.replace('-', '') != this.options.product) {
@@ -649,12 +643,16 @@ class AppBase extends SourceGuides {
         return;
       }
 
-      let tabsHtml = this._getTab(parsedPre);
-      let presHtml = this._getPreContent(parsedPre);
-      let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml);
+      if (parsedPre.hasExample) {
+        let tabsHtml = this._getTab(parsedPre);
+        let presHtml = this._getPreContent(parsedPre);
+        let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml);
 
-      if (parsedPre.example) {
+        // Replace the example with the transformed code
         $(parsedPre.element).replaceWith(newPreHtml);
+      } else {
+        // Add the prettify syntax highlighting  to all the other examples
+        $(parsedPre.element).addClass('prettyprint');
       }
     });
 

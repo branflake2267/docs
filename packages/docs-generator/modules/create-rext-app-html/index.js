@@ -733,54 +733,130 @@ class OpenToolingHtmlApp extends HtmlApp {
         // members class description on the right of the properties, methods and events.
         member.srcClassText = this.replaceWithComponentName(name, false);
 
-
+        // Web Componnent Attributes
         let webComponent = this.getWebComponentDeclaration(className, false);
         if (webComponent) {
           webComponent = webComponent.substring(1, webComponent.length-2);          
           
-          let paramsStr = '';
-          if (member.params) {
-            let a = [];
-            for (let i=0; i < member.params; i++) {
-              a.push(params.text);
-            }
-            paramsStr = a.toString();
-          }
-
-          let funReturn = '';
-          if (member.returns && member.returns.length > 0) {
-            funReturn = `return ${member.returns.text};`;
-          }
-
+          // Attribute Name
           let attrName = member.name;
 
+          // Function Paramaters
+          let funParams = '';
+          if (member.params && member.params.length > 0) {
+            let a = [];
+            for (let i=0; i < member.params.length; i++) {
+              a.push(member.params[i].name);
+            }
+            funParams = a.toString();
+            funParams = funParams.replace(/,/g, ', ');
+          }
+
+          // Function Return
+          let funReturn = '';
+          if (member.returns && member.returns.length > 0) {
+            var rt = null;
+            if (member.returns[0].type == 'Boolean') {
+              rt = true;
+            } else if (member.returns[0].type =='String') {
+              rt = "'value'";
+            } else if (member.returns[0].type == 'Number') {
+              rt = 10;
+            } else if (member.returns[0].type == 'Object') {
+              rt = '{ }';
+            } else if (member.returns[0].type == 'Object') {
+              rt = 'function() { }'
+            }
+            funReturn = `return ${rt};`;
+          }
+
+          // Event AST
+          let eventHtml = '';
           if (member.$type === 'event') {
-            attrName = `on${this.camelize(attrName)} = function(${paramsStr}) { ${funReturn} }`;
+            let fn = `function(${funParams}) { }`;
+
+            let funEvent1 = '';
+            funEvent1 += `<${webComponent} on${this.camelize(attrName)}="${fn}" />`;
+
+            let funEvent2 = '';
+            funEvent2 += `let element = document.body.querySelector('${webComponent}');\n`;
+            funEvent2 += `element.addEventListener('${member.name}', function(${funParams}) { });`;
+
+            eventHtml += `<pre class='prettyprint'><code class='lang-html'>${entities.encode(funEvent1)}</code></pre>\n`;
+            eventHtml += `<pre class='prettyprint'><code class='lang-javascript'>${entities.encode(funEvent2)}</code></pre>\n`;
           }
 
-          // inline readonly
-          let inlineReadOnly = `
-          let element = document.body.querySelector('${webComponent}');
-          let ${attrName} = element.${attrName};
-          `;
+          // Property AST
+          let propertyHtml = '';
+          let memberValueType = 'value';
+          if (member.$type == 'property' || member.$type == 'cfg') {
+            if (member.type && member.type.includes('Boolean')) {
+              memberValueType = true;
+            } else if (member.type && member.type.includes('String')) {
+              memberValueType = 'value';
+            } else if (member.type && member.type.includes('Number')) {
+              memberValueType = 10;
+            } else if (member.type && member.type.includes('Object')) {
+              memberValueType = '{ }';
+            } else if (member.type && member.type.includes('Function')) {
+              memberValueType = 'function() { }';
+            } 
 
-          // inline
-          let inlineSetter = `<${webComponent} ${attrName} />`;
+            let inlineProperty = `<${webComponent} ${attrName}="${memberValueType}" />`;
 
-          // TODO
-          let qsSetter = ``;
-          let qsGetter = ``;
+            let propertyReturn = `let ${attrName} = `;
 
-          let example = '';
-          if (member.readonly) {
-            example += inlineReadOnly;
-          } else {
-            example += inlineSetter;
-            example += qsSetter;
-            example += qsGetter;
+            let property = '';
+            property += `let element = document.body.querySelector('${webComponent}');\n`
+            if (funParams) {
+              property += `element.${attrName}(${funParams});`; 
+            } else {
+              if (memberValueType == 'value') {
+                memberValueType = `'${memberValueType}'`; // add quotes to string ast
+              }
+              // setter
+              if (!member.readonly) {
+                property += `element.${attrName} = ${memberValueType};\n`;
+              }
+              // getter
+              property += `${propertyReturn}element.${attrName};`;
+            }
+
+            propertyHtml += `<pre class='prettyprint'><code class='lang-html'>${entities.encode(inlineProperty)}</code></pre>\n`;
+            propertyHtml += `<pre class='prettyprint'><code class='lang-javascript'>${entities.encode(property)}</code></pre>\n`;
           }
 
-          member.example = entities.encode(example);
+          // Method AST
+          let methodHtml = ``;
+          if (member.$type == 'method' || member.$type == 'static-methods') {
+            //let fn = `function(${funParams}) { }`;
+            //let inlineMethod = `<${webComponent} ${attrName}="${fn}" />`;
+
+            let methodReturn = '';
+            if (member.returns && member.returns.length > 0) {
+              methodReturn = `let ${attrName} = `;
+            }
+
+            let method = '';
+            method += `let element = document.body.querySelector('${webComponent}');\n`;
+            method += `${methodReturn}element.${attrName}(${funParams});`;
+
+            // if (!member.name.match(/get.*/)) {
+            //   methodHtml += `<pre class='prettyprint'><code>${entities.encode(inlineMethod)}</code></pre>\n`; 
+            // }
+            methodHtml += `<pre class='prettyprint'><code class='lang-javascript'>${entities.encode(method)}</code></pre>\n`;
+          }
+
+          let exampleHtml = '';
+          if (member.$type == 'property' || member.$type == 'cfg') {
+            exampleHtml = propertyHtml;
+          } else if (member.$type == 'event') {
+            exampleHtml = eventHtml;
+          } else if (member.$type == 'method' || member.$type == 'static-methods') {
+            exampleHtml = methodHtml;
+          }
+
+          member.example = exampleHtml;
         }
     }
 

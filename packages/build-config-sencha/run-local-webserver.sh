@@ -10,6 +10,6 @@
 
 # 2. docs-dev.sencha.com - using the ssl reverse proxy to test locally
 cd ./build/output
-python -m http.server 3003
+python -m SimpleHTTPServer 3003
 
 # 3. Goto: https://docs-dev.sencha.com/

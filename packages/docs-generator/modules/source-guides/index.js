@@ -93,7 +93,7 @@ class SourceGuides extends SourceApi {
     get guideConfigPath() {
         let p = Path.resolve(this.guideSourceDir, 'configs', this.options.product);
         //this.log("###### guideConfigPath=" + p);
-        return p
+        return p;
     }
 
     /**

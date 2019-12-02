@@ -709,7 +709,8 @@ class OpenToolingHtmlApp extends HtmlApp {
       prepared.addlBodyCls = 'opentooling-component';
       prepared.cls.multiSrc = true;
 
-      // class examples components-7.1.0.json examples
+      // TODO add to Ext JS too
+      // Class examples components-7.1.0.json examples
       if (this.componentList[name] && this.componentList[name].examples) {
         let examplesHtml = '';
         for (let example of this.componentList[name].examples) {

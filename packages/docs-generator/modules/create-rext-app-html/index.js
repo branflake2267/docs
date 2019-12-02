@@ -733,7 +733,7 @@ class OpenToolingHtmlApp extends HtmlApp {
     let style = example.style;
 
     if (!width) {
-      width = 'calc(100% - 280px)'
+      width = 'calc(100% - 300px)'
     }
 
     if (!height) {

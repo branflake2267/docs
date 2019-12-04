@@ -830,7 +830,7 @@ class HtmlApp extends AppBase {
     // default example height
     if (!height) {
       height = '300px';
-    }
+    } 
 
     if (!style) {
       style = `style='height:${height};width:${width};'`;

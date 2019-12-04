@@ -262,57 +262,6 @@ class OpenToolingHtmlApp extends HtmlApp {
   }
 
   /**
-   * Fetches the component class list object from disk
-   * @return {Object} The object of component class names : component tree location
-   */
-  get componentList() {
-    let list = this._componentList;
-
-    if (!list) {
-      let version = this.options.version;
-      let base = Path.resolve(this.options.buildConfigsDir, 'configs', 'components', this.options.product);
-      let jsonPath = Path.resolve(base, "components-" + version + ".json");
-
-      if (!Fs.pathExistsSync(jsonPath)) {
-        // fallback to built in components list
-        jsonPath = Path.join(__dirname, 'configs', 'components.json');
-      }
-
-      let file = Fs.readJsonSync(jsonPath);
-      list = this._componentList = file.components;
-    }
-
-    return list;
-  }
-
-  /**
-   * Gets the array of component class names
-   * @return {String[]} The array of component names
-   */
-  get componentClassNames() {
-    let names = this._componentClassNames;
-
-    if (!names) {
-      let list = this.componentList,
-        map = this.classMap,
-        classNames = Object.keys(map),
-        len;
-
-      names = this._componentClassNames = Object.keys(list);
-
-      len = names.length;
-
-      while (len--) {
-        if (!classNames.includes(names[len])) {
-          this.log(names[len] + " appears in components.json, but does not exist", 'info');
-        }
-      }
-    }
-
-    return names;
-  }
-
-  /**
    * Gets the array of component class names
    * @return {String[]} The array of component names
    */
@@ -640,12 +589,21 @@ class OpenToolingHtmlApp extends HtmlApp {
     super.decorateClass(className);
 
     let classMap = this.classMap,
-      prepared = classMap[className].prepared,
-      cls = prepared.cls,
-      names = this.componentClassNames;
+    prepared = classMap[className].prepared,
+    cls = prepared.cls,
+    names = this.componentClassNames;
+
+    // Hide things in the bridges
+    if (prepared.styleOverrides == null) {
+      prepared.styleOverrides = "";
+    }
+
+    prepared.styleOverrides += ".classHead { display: none; }\n"; // Don't display the box on the right
+    prepared.styleOverrides += ".alias { display: none; }\n"; // hide the class alias
+    prepared.styleOverrides += "#member-display { display: none; }\n"; // ide the filter of the members, TODO maybe keep this
+    prepared.styleOverrides += ".source-class { display: none; }\n"; // hide the extended class links
 
     if (names.includes(className)) {
-      //let alias  = cls.aliasName,
       let alias = this.componentNameMap[className],
         name = cls.name,
         events = prepared.events;
@@ -654,7 +612,7 @@ class OpenToolingHtmlApp extends HtmlApp {
       // as the class 'name' and the class name will display as an alias
       if (alias && alias.length) {
         cls.name = this.componentList[name].preferredAlias || alias[0].name;
-        cls.aliasName = name;
+        //cls.aliasName = name; // don't show the alias name for bridges
         delete cls.aliasPrefix;
       }
 
@@ -708,45 +666,14 @@ class OpenToolingHtmlApp extends HtmlApp {
 
       prepared.addlBodyCls = 'opentooling-component';
       prepared.cls.multiSrc = true;
-
-      // TODO add to Ext JS too
-      // Class examples components-7.1.0.json examples
-      if (this.componentList[name] && this.componentList[name].examples) {
-        let examplesHtml = '';
-        for (let example of this.componentList[name].examples) {
-          examplesHtml += this._getExample(example);
-        }
-        prepared.classExamples = examplesHtml;
-      }
     }
 
     // FRAMEWORK CHOICE
     let webComponent = this.getWebComponentDeclaration(className);
     if (webComponent) {
-      cls.name = webComponent;
+      let wc = webComponent.replace('/','');
+      cls.name = wc + wc.replace('&lt;','&lt;/');
     }
-  }
-
-  _getExample(example) {
-    let fiddle = example.fiddle;
-    let width = example.width;
-    let height = example.height;
-    let style = example.style;
-
-    if (!width) {
-      width = 'calc(100% - 300px)'
-    }
-
-    if (!height) {
-      height = '300px';
-    }
-
-    if (!style) {
-      style = `style='height:${height};width:${width};'`;
-    }
-
-    let exampleHtml = `<iframe src='${fiddle}' ${style} frameborder=0></iframe>\n`;
-    return exampleHtml;
   }
 
   /**
@@ -949,6 +876,7 @@ class OpenToolingHtmlApp extends HtmlApp {
   replaceWithComponentName(str, encode = true) {
     let webComponent = this.getWebComponentDeclaration(str, encode);
     if (webComponent) {
+      // Return the web component name
       return webComponent;
     }
 

@@ -555,7 +555,7 @@ class Base {
             delimiterLen = delimiter.length,
             matchingFile;
 
-        console.log("\t\t getFileByVersion(): files on path=" + path);
+        //console.log("\t\t getFileByVersion(): files on path=" + path);
 
         // if there is only one file just return it
         if (len === 1) {
@@ -571,7 +571,7 @@ class Base {
                     v = name.substring(name.indexOf('-') + delimiterLen);
                 let compare = CompareVersions(v, version);
 
-                console.log("\t\t\t getFileByVersion(): Compare v=" + v + " compared to version=" + version + "=" + compare);
+                //console.log("\t\t\t getFileByVersion(): Compare v=" + v + " compared to version=" + version + "=" + compare);
 
                 if (compare <= 0) {
                     cfgVer = v;
@@ -580,7 +580,7 @@ class Base {
             }
         }
 
-        console.log("\t\t\t\t getFileByVersion(): matchingFile=" + matchingFile);
+        //console.log("\t\t\t\t getFileByVersion(): matchingFile=" + matchingFile);
 
         if (!matchingFile) {
             this.error("getFileByVersion(): matching File is undefined!");

@@ -1139,7 +1139,7 @@ class SourceApi extends Base {
      * @param {String} className The name of the class to be processed
      */
     decorateClass(className) {
-        //this.log(`Begin 'SourceApi.decorateClass'`, 'log');
+        this.log(`decorateClass: ${className}`, 'log');
         const {
             options,
             classMap,

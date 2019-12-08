@@ -443,25 +443,30 @@ DocsApp.buildForm = function (target, params) {
         wrapperCodeType = "javascript";
 
         // Find the component class
-        // Class object
-        var componentClassName = "MyExample";
-        var foundClass = /export.?default.?class(.*?)extends/.exec(fiddleCode);
+        // 1. Class object
+        var componentClassName = "App";
+        var foundClass = /class(.*?)extends/.exec(fiddleCode);
         if (foundClass && foundClass[1]) {
             componentClassName = foundClass[1].trim();
         }
-
-        // Function object
+        
+        // OR 1. Function object
         foundClass = /export.*?default.*?function.*?(.*?)\(\)/.exec(fiddleCode);
         if (foundClass && foundClass[1]) {
             componentClassName = foundClass[1].trim();
         }
 
-        // uglify has a problem with template literals ``
-        wrapperCode += "import { launch } from '@sencha/ext-react';\n\n";
+        // NOTE: uglify has a problem with template literals ``, so don't use them
+        // TODO polyfills
+        wrapperCode += "import ReactDOM from 'react-dom';\n";
+        wrapperCode += "\n";
         wrapperCode += fiddleCode;
-        wrapperCode += "\n\nlaunch(<" + componentClassName + "/>);\n";
+        wrapperCode += "\n";
+        wrapperCode += "Ext.onReady(function () {\n";
+        wrapperCode += "   ReactDOM.render(< " + componentClassName + "/>, document.getElementById('my-div-id'));\n";
+        wrapperCode += "});\n";
 
-        htmlCode = "";
+        htmlCode = "<div id='my-div-id'></div>";
 
         params.codes.assets = [{
             name: wrapperCodeFile,

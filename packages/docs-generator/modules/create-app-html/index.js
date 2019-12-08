@@ -576,7 +576,7 @@ class HtmlApp extends AppBase {
    * @param {String} html The markup to process
    * @return {String} The processed HTML
    */
-  processApiHtml(html) {
+  processApiHtml(className, data, html) {
     html = this.decorateExamples(html);
     html = this.processImageTags(html);
     html = this.parseApiLinks(html);
@@ -655,7 +655,7 @@ class HtmlApp extends AppBase {
         this.error("outputApiFile: Could not configure mainTemplate.", e);
       }
 
-      html = this.processApiHtml(html);
+      html = this.processApiHtml(className, data, html);
 
       Fs.writeFile(fileName, html, 'utf8', (err) => {
         if (err) reject(err);

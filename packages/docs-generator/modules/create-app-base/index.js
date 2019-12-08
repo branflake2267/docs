@@ -434,8 +434,8 @@ class AppBase extends SourceGuides {
       theme: toolkit ? (prodObj.theme && prodObj.theme[version] && prodObj.theme[version][toolkit]) : (prodObj.theme && prodObj.theme[version]) || 'neptune'
     };
 
-    // TODO convert extjs examples!!!!
-    if (this.options.prodVerMeta.title != 'Ext JS') {
+    // TODO convert old examples?
+    if (true) {
       out = this.decorateExamples_V2(html);
 
     } else { 
@@ -529,27 +529,35 @@ class AppBase extends SourceGuides {
    * @param {*} html 
    */
   decorateExamples_V2(html) {
-    var $ = cheerio.load(html);
+    let $ = cheerio.load(html);
 
     // Unique list of the pre groups, grouped by `tab: #`
-    var presParentMap = {};
+    let presParentMap = {};
     // All of the pres in the example html
-    var presArray = [];
+    let presArray = [];
+
+    // if (html.includes('Ext.Button')) {
+    //   console.log("test");
+    // }
+    
+    if (html.includes('Ext.ActionSheet')) {
+      console.log("test");
+    }
 
     // Parse pres
-    var parentId;
+    let parentId;
     $('pre').each(function (index, elem) {
-      var preHtml = $(this).html();
-      var examples = preHtml.match(/\@example/g);
-      var hasExample = examples && examples.length > 0;
+      let preHtml = $(this).html();
+      let examples = preHtml.match(/@example/g);
+      let hasExample = examples && examples.length > 0;
 
       // Version 2 @example({options...})
       // @example({...}) - has to have curly brackets
-      var exampleRe = /\@example\((.*?\{.*?\}.*?)\)/.exec(preHtml);
+      let exampleRe = /@example\((.*?\{.*?\}.*?)\)/.exec(preHtml);
 
-      var exampleReOptions;
-      var exampleReOptionsDeocded;
-      var exampleConfig = {};
+      let exampleReOptions;
+      let exampleReOptionsDeocded;
+      let exampleConfig = {};
       if (exampleRe) {
         exampleReOptions = exampleRe[1];
         exampleReOptionsDeocded = entities.decode(exampleReOptions);
@@ -558,7 +566,7 @@ class AppBase extends SourceGuides {
 
       // Parse language from lang-[language]
       if (!exampleConfig.lang) {
-        var lang = /['"]lang\-(.*?)['"]/.exec(preHtml);
+        let lang = /['"]lang\-(.*?)['"]/.exec(preHtml);
         if (lang && lang.length > 0) {
           exampleConfig.lang = lang[1];
         } else {
@@ -566,7 +574,7 @@ class AppBase extends SourceGuides {
         }
       }
 
-      var parsedPre = {
+      let parsedPre = {
         parentId: null,
         id: `pre${index}`,
         index: index,
@@ -575,6 +583,10 @@ class AppBase extends SourceGuides {
         exampleConfig: exampleConfig,
         element: elem
       };
+
+      if (html.includes('Ext.ActionSheet')) {
+        console.log("test");
+      }
 
       if (hasExample && exampleConfig && exampleConfig.tab) {
         if (exampleConfig.tab == 1) {
@@ -589,11 +601,11 @@ class AppBase extends SourceGuides {
     });
 
     // Render the grouped pre examples into tabs
-    var replacePreIndex = -1;
-    var processedParsedPresId = [];
+    let replacePreIndex = -1;
+    let processedParsedPresId = [];
     Object.keys(presParentMap).forEach((parentParsedPreId) => {
-      var tabsHtml = '';
-      var presHtml = '';
+      let tabsHtml = '';
+      let presHtml = '';
       presArray.forEach((parsedPre, index) => {
         // When the framework is defined, compare it with the product being rendered. 
         if (parsedPre.exampleConfig.framework && parsedPre.exampleConfig.framework.replace('-', '') != this.options.product) {
@@ -605,7 +617,7 @@ class AppBase extends SourceGuides {
 
         // Only proccess the grouped pres
         if (parentParsedPreId === parsedPre.parentId) {
-          var parentParsedPre = this.findParsedPre(presArray, parentParsedPreId);
+          let parentParsedPre = this.findParsedPre(presArray, parentParsedPreId);
 
           tabsHtml += this._getTab(parsedPre);
           presHtml += this._getPreContent(parsedPre);
@@ -624,8 +636,10 @@ class AppBase extends SourceGuides {
       });
 
       // Create the html for the tabs
-      let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml, replacePreIndex);
-      $('pre').eq(replacePreIndex).replaceWith(newPreHtml);
+      if (presHtml) {
+        let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml, replacePreIndex);
+        $(parsedPre.element).replaceWith(newPreHtml);
+      }
     });
 
     // Remove the processed pres
@@ -643,7 +657,7 @@ class AppBase extends SourceGuides {
         return;
       }
 
-      if (parsedPre.hasExample) {
+      if (parsedPre.example) {
         let tabsHtml = this._getTab(parsedPre);
         let presHtml = this._getPreContent(parsedPre);
         let newPreHtml = this._getFiddlePreWrapV2(tabsHtml, presHtml);
@@ -656,12 +670,12 @@ class AppBase extends SourceGuides {
       }
     });
 
-    var newHtml = $.html();
+    let newHtml = $.html();
     return newHtml;
   }
 
   findParsedPre(parsedPresArray, id) {
-    var found = parsedPresArray.find(function (el) {
+    let found = parsedPresArray.find(function (el) {
       return el.id === id;
     });
     return found;
@@ -726,7 +740,7 @@ class AppBase extends SourceGuides {
     // Remove @example to \n (TODO if we want multi line example json contents)
     preHtml = preHtml.replace(/@example.*?\n/gm, '');
 
-    var preContentDiv = `<div id="pre-${index}-code-${tabNumber}" tabid="pre${index}-tab-${tabNumber}" class="ace-ct ${disabledCls}" lang='${lang}'><pre>${preHtml}</pre></div>`;
+    let preContentDiv = `<div id="pre-${index}-code-${tabNumber}" tabid="pre${index}-tab-${tabNumber}" class="ace-ct ${disabledCls}" lang='${lang}'><pre>${preHtml}</pre></div>`;
 
     return preContentDiv;
   }

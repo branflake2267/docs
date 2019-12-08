@@ -536,14 +536,6 @@ class AppBase extends SourceGuides {
     // All of the pres in the example html
     let presArray = [];
 
-    // if (html.includes('Ext.Button')) {
-    //   console.log("test");
-    // }
-    
-    if (html.includes('Ext.ActionSheet')) {
-      console.log("test");
-    }
-
     // Parse pres
     let parentId;
     $('pre').each(function (index, elem) {
@@ -583,10 +575,6 @@ class AppBase extends SourceGuides {
         exampleConfig: exampleConfig,
         element: elem
       };
-
-      if (html.includes('Ext.ActionSheet')) {
-        console.log("test");
-      }
 
       if (hasExample && exampleConfig && exampleConfig.tab) {
         if (exampleConfig.tab == 1) {

@@ -139,8 +139,12 @@ class HtmlApp extends AppBase {
         jsonPath = Path.join(__dirname, 'configs', 'components.json');
       }
 
-      let file = Fs.readJsonSync(jsonPath);
-      list = this._componentList = file.components;
+      try {
+        let file = Fs.readJsonSync(jsonPath);
+        list = this._componentList = file.components;
+      } catch (e) {
+        console.log("No components.json file provided. jsonPath=" + jsonPath);
+      }
     }
 
     return list;

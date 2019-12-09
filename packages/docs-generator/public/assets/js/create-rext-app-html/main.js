@@ -491,38 +491,51 @@ DocsApp.buildForm = function (target, params) {
         }
 
         // template `` aren't working with ugflify
-        wrapperCode += "import 'core-js/es7/reflect';\n";
+        
+        // TODO figure class name and pass it to the ngmodule
+
+        // TODO remove / add stable
+        wrapperCode += "//Polyfills\n";
+        wrapperCode += "import 'core-js/stable';\n";
+        wrapperCode += "\n";
+        wrapperCode += "// Angular & Ext JS \n";
         wrapperCode += "import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'; \n";
         wrapperCode += "import { BrowserModule } from '@angular/platform-browser';\n";
         wrapperCode += "import { NgModule } from '@angular/core';\n";
-        wrapperCode += "import { ExtAngularModule } from '@sencha/ext-angular'\n";
+        wrapperCode += "import { ExtAngularModernModule } from '@sencha/ext-angular-modern';\n";
+        wrapperCode += "\n";
         wrapperCode += fiddleCode;
-        wrapperCode += "\n@NgModule({\n";
+        wrapperCode += "\n";
+        wrapperCode += "@NgModule({\n";
         wrapperCode += "  declarations: [\n";
         wrapperCode += "    AppComponent\n";
         wrapperCode += "  ],\n";
         wrapperCode += "  imports: [\n";
-        wrapperCode += "    BrowserModule, ExtAngularModule\n";
+        wrapperCode += "    BrowserModule, ExtAngularModernModule\n";
         wrapperCode += "  ],\n";
         wrapperCode += "  providers: [],\n";
-        wrapperCode += "  bootstrap: [ \n";
-        wrapperCode += "    AppComponent \n";
+        wrapperCode += "  bootstrap: [\n";
+        wrapperCode += "    AppComponent\n";
         wrapperCode += "  ]\n";
         wrapperCode += "})\n";
         wrapperCode += "export class AppModule { }\n";
-        wrapperCode += "platformBrowserDynamic().bootstrapModule(AppModule);\n";
+        wrapperCode += "\n";
+        wrapperCode += "Ext.onReady(() => {\n";
+        wrapperCode += "    platformBrowserDynamic()\n";
+        wrapperCode += "       .bootstrapModule(AppModule)\n";
+        wrapperCode += "       .catch(err => console.error(err));\n";
+        wrapperCode += "});\n";
 
         htmlCode += "<!DOCTYPE html>\n";
         htmlCode += "<html>\n";
         htmlCode += "<head>\n";
-        htmlCode += "<base href='/'>\n";
-        htmlCode += "<meta charset='UTF-8'>\n";
-        htmlCode += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>\n";
-        //htmlCode += "<meta http-equiv='X-UA-Compatible' content='ie=edge'>\n";
-        htmlCode += "<title>Fiddle Example</title>\n";
+        htmlCode += "  <base href='/'>\n";
+        htmlCode += "  <meta charset='UTF-8'>\n";
+        htmlCode += "  <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n";
+        htmlCode += "  <title>Fiddle Example</title>\n";
         htmlCode += "</head>\n";
         htmlCode += "<body>\n";
-        htmlCode += "<" + selector + ">Loading...</" + selector + ">\n";
+        htmlCode += "  <" + selector + ">Loading...</" + selector + ">\n";
         htmlCode += "</body>\n"
         htmlCode += "</html>\n"
 

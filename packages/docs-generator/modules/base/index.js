@@ -1398,18 +1398,36 @@ class Base {
       if (!prepared) {
         return null;
       }
+      
 
       let webComponent = null;
       if (prepared.alias && prepared.alias.includes('widget')) {
-        let aLower = prepared.alias.replace('widget.', '').toLowerCase();
-        let aCapped = aLower.charAt(0).toUpperCase() + aLower.slice(1);
-        if (this.options.prodVerMeta.title == 'ExtAngular') {
-          webComponent = `<Ext${aCapped}/>`;
-        } else if (this.options.prodVerMeta.title == 'ExtReact') { 
-          webComponent = `<Ext${aCapped}/>`;
-        } else if (this.options.prodVerMeta.title == 'ExtWebComponents') { 
-          webComponent = `<ext-${aLower}/>`;
+        
+        let aliases = [];
+        if (prepared.alias.includes(',')) {
+          aliases = prepared.alias.split(',');
+        } else {
+          aliases.push(prepared.alias);
         }
+
+        webComponent = '';
+        aliases.forEach((alias) => {
+          if (webComponent.length > 0) {
+            webComponent += ' ';
+          }
+
+          let aLower = alias.replace('widget.', '').toLowerCase();
+          let aCapped = aLower.charAt(0).toUpperCase() + aLower.slice(1);
+  
+          if (this.options.prodVerMeta.title == 'ExtAngular') {
+            webComponent += `<Ext${aCapped}/>`;
+          } else if (this.options.prodVerMeta.title == 'ExtReact') { 
+            webComponent += `<Ext${aCapped}/>`;
+          } else if (this.options.prodVerMeta.title == 'ExtWebComponents') { 
+            webComponent += `<ext-${aLower}/>`;
+          }
+        });
+
         if (encode) {
           webComponent = entities.encode(webComponent);
         }

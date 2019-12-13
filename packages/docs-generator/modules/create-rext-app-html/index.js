@@ -671,8 +671,9 @@ class OpenToolingHtmlApp extends HtmlApp {
     // FRAMEWORK CHOICE
     let webComponent = this.getWebComponentDeclaration(className);
     if (webComponent) {
-      let wc = webComponent.replace('/','');
-      cls.name = wc + wc.replace('&lt;','&lt;/');
+      //let wc = webComponent.replace('/','');
+      //cls.name = wc + wc.replace('&lt;','&lt;/');
+      cls.name = webComponent;
     }
   }
 

@@ -591,6 +591,7 @@ class AppBase extends SourceGuides {
     // Render the grouped pre examples into tabs
     let replacePreIndex = -1;
     let processedParsedPresId = [];
+    let parentParsedPre;
     Object.keys(presParentMap).forEach((parentParsedPreId) => {
       let tabsHtml = '';
       let presHtml = '';
@@ -605,7 +606,7 @@ class AppBase extends SourceGuides {
 
         // Only proccess the grouped pres
         if (parentParsedPreId === parsedPre.parentId) {
-          let parentParsedPre = this.findParsedPre(presArray, parentParsedPreId);
+          parentParsedPre = this.findParsedPre(presArray, parentParsedPreId);
 
           tabsHtml += this._getTab(parsedPre);
           presHtml += this._getPreContent(parsedPre);
@@ -625,8 +626,8 @@ class AppBase extends SourceGuides {
 
       // Create the html for the tabs
       if (presHtml) {
-        let newPreHtml = this._getFiddlePreWrapV2(parsedPre, tabsHtml, presHtml, replacePreIndex);
-        $(parsedPre.element).replaceWith(newPreHtml);
+        let newPreHtml = this._getFiddlePreWrapV2(parentParsedPre.exampleConfig.packages, tabsHtml, presHtml, replacePreIndex);
+        $(parentParsedPre.element).replaceWith(newPreHtml);
       }
     });
 
@@ -648,7 +649,7 @@ class AppBase extends SourceGuides {
       if (parsedPre.example) {
         let tabsHtml = this._getTab(parsedPre);
         let presHtml = this._getPreContent(parsedPre);
-        let newPreHtml = this._getFiddlePreWrapV2(parsedPre, tabsHtml, presHtml);
+        let newPreHtml = this._getFiddlePreWrapV2(parsedPre.packages, tabsHtml, presHtml);
 
         // Replace the example with the transformed code
         $(parsedPre.element).replaceWith(newPreHtml);
@@ -733,12 +734,11 @@ class AppBase extends SourceGuides {
     return preContentDiv;
   }
 
-  _getFiddlePreWrapV2(parsedPre, tabsHtml, presHtml) {
+  _getFiddlePreWrapV2(packages, tabsHtml, presHtml) {
     let version = this.apiVersion;
     let prodObj = this.options.products[this.apiProduct];
     let toolkit = this.options.toolkit;
 
-    let packages = parsedPre.exampleConfig.packages;
     if (!packages) {
       packages = [];
     }

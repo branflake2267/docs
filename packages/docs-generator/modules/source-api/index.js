@@ -1755,8 +1755,8 @@ class SourceApi extends Base {
             // FRAMEWORK CHOICE
             let webComponent = this.getWebComponentDeclaration(className, false);
             if (webComponent) {
-              webComponent = webComponent.replace('<', '');
-              webComponent = webComponent.replace('/>', '');
+              webComponent = webComponent.replace(/</g, '');
+              webComponent = webComponent.replace(/\/>/g, '');
             }
 
             // record the class name and toolkit

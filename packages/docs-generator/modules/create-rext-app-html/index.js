@@ -713,7 +713,11 @@ class OpenToolingHtmlApp extends HtmlApp {
       if (member.params && member.params.length > 0) {
         let a = [];
         for (let i = 0; i < member.params.length; i++) {
-          a.push(member.params[i].name);
+          let funParam = member.params[i].name;
+          if (funParam == 'this') {
+            funParam = 'sender';
+          }
+          a.push(funParam);
         }
         funParams = a.toString();
         funParams = funParams.replace(/,/g, ', ');
@@ -740,14 +744,43 @@ class OpenToolingHtmlApp extends HtmlApp {
       // Event AST
       let eventHtml = '';
       if (member.$type === 'event') {
-        let fn = `function(${funParams}) { }`;
-
+        
         let funEvent1 = '';
-        funEvent1 += `<${webComponent} on${this.camelize(attrName)}="${fn}" />`;
-
         let funEvent2 = '';
-        funEvent2 += `let element = document.body.querySelector('${webComponent}');\n`;
-        funEvent2 += `element.addEventListener('${member.name}', function(${funParams}) { });`;
+        if (this.options.prodVerMeta.title == 'ExtWebComponents') {
+          // EWC target
+          // <ext-button onTap="function(this, e) { }" /> // TODO
+          // let element = document.body.querySelector('ext-button');
+          // element.addEventListener('tap', function(this, e) { });
+
+          // EWC - TODO wait until it's working
+          //let fn = `function(${funParams}) { }`;
+          //funEvent1 += `<${webComponent} on${this.camelize(attrName)}="${fn}" />`;
+          funEvent2 += `let element = document.body.querySelector('${webComponent}');\n`;
+          funEvent2 += `element.addEventListener('${member.name}', function(${funParams}) { });`;
+
+        } else if (this.options.prodVerMeta.title == 'ExtAngular') {
+          // ExtAngular target
+          // (change)="onChange($event)"
+          // onChange = ({sender, node, prevNode, eOpts}) => { //... };
+
+          let nameCapped = member.name.charAt(0).toUpperCase() + member.name.slice(1);
+          funEvent1 += `// Delcare in template tag\n`;
+          funEvent1 += `(${member.name})="on${nameCapped}($event)"\n`;
+          funEvent2 += `// Declare in class\n`;
+          funEvent2 += `on${nameCapped} = ({ ${funParams} }) => { //... };\n`;
+
+        } else if (this.options.prodVerMeta.title == 'ExtReact') {
+          // ExtReact target
+          // onChange={this.onPathChange}
+          // onPathChange = ({sender, node, prevNode, eOpts}) => { //… };
+
+          let nameCapped = member.name.charAt(0).toUpperCase() + member.name.slice(1);
+          funEvent1 += `// Delcare in template tag\n`;
+          funEvent1 += `${nameCapped}={this.on${nameCapped}}\n`;
+          funEvent2 += `// Declare in class\n`;
+          funEvent2 += `on${nameCapped} = ({ ${funParams} }) => { //... };\n`;
+        }
 
         eventHtml += `<pre class='prettyprint'><code class='lang-html'>${entities.encode(funEvent1)}</code></pre>\n`;
         eventHtml += `<pre class='prettyprint'><code class='lang-javascript'>${entities.encode(funEvent2)}</code></pre>\n`;
@@ -769,12 +802,21 @@ class OpenToolingHtmlApp extends HtmlApp {
           memberValueType = 'function() { }';
         }
 
-        let inlineProperty = `<${webComponent} ${attrName}="${memberValueType}" />`;
+        let bracketLeft = '';
+        let bracketRight = '';
+        if (this.options.prodVerMeta.title == 'ExtAngular' && 
+        ((member.type && member.type.includes('Boolean') || (member.type && member.type.includes('Number'))))) {
+          bracketLeft = '[';
+          bracketRight = ']';
+        }
+
+        let inlineProperty = `<${webComponent} ${bracketLeft}${attrName}${bracketRight}="${memberValueType}" />`;
 
         let propertyReturn = `let ${attrName} = `;
 
         let property = '';
         property += `let element = document.body.querySelector('${webComponent}');\n`
+
         if (funParams) {
           property += `element.${attrName}(${funParams});`;
         } else {

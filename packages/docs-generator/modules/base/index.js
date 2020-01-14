@@ -1416,7 +1416,9 @@ class Base {
             webComponent += ' ';
           }
 
+
           let aLower = alias.replace('widget.', '').toLowerCase();
+          aLower = aLower.replace('-', '_');
           let aCapped = aLower.charAt(0).toUpperCase() + aLower.slice(1);
   
           if (this.options.prodVerMeta.title == 'ExtAngular') {

@@ -777,9 +777,9 @@ class OpenToolingHtmlApp extends HtmlApp {
 
           let nameCapped = member.name.charAt(0).toUpperCase() + member.name.slice(1);
           funEvent1 += `// Delcare in template tag\n`;
-          funEvent1 += `${nameCapped}={this.on${nameCapped}}\n`;
+          funEvent1 += `on${nameCapped}={this._on${nameCapped}}\n`;
           funEvent2 += `// Declare in class\n`;
-          funEvent2 += `on${nameCapped} = ({ ${funParams} }) => { //... };\n`;
+          funEvent2 += `_on${nameCapped} = ({ ${funParams} }) => { //... };\n`;
         }
 
         eventHtml += `<pre class='prettyprint'><code class='lang-html'>${entities.encode(funEvent1)}</code></pre>\n`;

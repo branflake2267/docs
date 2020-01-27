@@ -585,6 +585,19 @@ class HtmlApp extends AppBase {
     html = this.processImageTags(html);
     html = this.parseApiLinks(html);
 
+    // workaround - be sure classNames are correctly stated in the docs for ExtAngular and ExtReact
+    // Since: 7.1.0+
+    if (this.options.prodVerMeta.title == 'ExtAngular' || 
+        this.options.prodVerMeta.title == 'ExtReact') {
+      let webComponent = this.getWebComponentDeclaration(className);
+      if (webComponent) {
+        webComponent = webComponent.replace('&lt;','');
+        webComponent = webComponent.replace('/&gt;','');
+        var regEx = new RegExp(webComponent, "ig");
+        html = html.replace(regEx, webComponent);
+      }
+    } 
+
     return html;
   }
 

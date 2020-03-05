@@ -335,6 +335,7 @@ class HtmlApp extends AppBase {
     let assetType = 'js';
     let mainName = 'main.js';
     let extl = Path.join(this.assetsSrc, 'js', 'ExtL.js');
+    let componentsDir = Path.join(this.assetsSrc, 'components');
     let main = Path.join(this.assetsSrc, 'js', mainName);
     let beautify = Path.join(this.assetsSrc, 'js', 'beautify.js');
     let gsap = Path.join(this.options._execRoot, '/node_modules/gsap/src/minified/TweenMax.min.js');
@@ -372,6 +373,7 @@ class HtmlApp extends AppBase {
       'utf8'
     );
     Fs.copySync(aceFolder, jsDir);
+    Fs.copySync(componentsDir, jsDir);
   }
 
   /**

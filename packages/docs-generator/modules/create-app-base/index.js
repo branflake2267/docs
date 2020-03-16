@@ -292,6 +292,12 @@ class AppBase extends SourceGuides {
 
       // warn if the member is ambiguous - doesn't have a type specified
       if (hash) {
+
+        // TODO fix bug, workaround move # from hash
+        if (hash.includes('#')) {
+          hash = hash.replace('#', '');
+        }
+
         // get the types and add a dash as that's how the link would be
         // constructed
         let types = this.memberTypes.map((type) => {

@@ -143,7 +143,7 @@ class HtmlApp extends AppBase {
         let file = Fs.readJsonSync(jsonPath);
         list = this._componentList = file.components;
       } catch (e) {
-        console.log("No components.json file provided. jsonPath=" + jsonPath);
+        console.error("No components.json file provided. jsonPath=" + jsonPath);
       }
     }
 
@@ -338,8 +338,14 @@ class HtmlApp extends AppBase {
     let componentsDir = Path.join(this.assetsSrc, 'components');
     let main = Path.join(this.assetsSrc, 'js', mainName);
     let beautify = Path.join(this.assetsSrc, 'js', 'beautify.js');
-    let gsap = Path.join(this.options._execRoot, '/node_modules/gsap/src/minified/TweenMax.min.js');
-    let aceFolder = Path.join(this.options._execRoot, '/node_modules/ace-builds/src-min-noconflict');
+
+    // /Users/branflake2267/git/docs/packages/docs-generator/node_modules/gsap/src/minified/TweenMax.min.js 
+    //let gsap = Path.join(this.options._execRoot, '/node_modules/gsap/src/minified/TweenMax.min.js');
+    let gsap = require.resolve('gsap/src/minified/TweenMax.min.js');
+    
+    //let aceFolder1 = Path.join(this.options._execRoot, '/node_modules/ace-builds/src-min-noconflict');
+    let aceFolder = gsap.replace('node_modules/gsap/src/minified/TweenMax.min.js', 'node_modules/ace-builds/src-min-noconflict');
+    
     let jsFileArr = [gsap, extl, beautify, main];
     let codeFilesArr = jsFileArr.concat(this.getAncestorFiles(assetType, mainName));
 

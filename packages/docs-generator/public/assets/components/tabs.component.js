@@ -43,6 +43,16 @@ const htmlTemplate = `
   <div class='tabsBody'></div>
 </div>
 `;
+
+/**
+ <text>
+ <sencha-component-tabs tabsize='100px'>
+  <tab title='tab1'></tab>
+  <tab title='tab2'></tab>
+  <tab title='tab3'></tab>
+ </sencha-component-tabs> 
+ </text>
+*/
 class ComponentTabs extends HTMLElement {
 
   constructor() {

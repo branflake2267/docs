@@ -598,9 +598,9 @@ class OpenToolingHtmlApp extends HtmlApp {
       prepared.styleOverrides = "";
     }
 
-    prepared.styleOverrides += ".classHead { display: none; }\n"; // Don't display the box on the right
-    prepared.styleOverrides += ".alias { display: none; }\n"; // hide the class alias
-    prepared.styleOverrides += "#member-display { display: none; }\n"; // ide the filter of the members, TODO maybe keep this
+    prepared.styleOverrides += ".classHead { display: none; }\n"; // Don't display the box on the right, class index list, requires, and mix ins
+    // prepared.styleOverrides += ".alias { display: none; }\n"; // hide the class alias
+    prepared.styleOverrides += "#member-display { display: none; }\n"; // hide the filter of the members, TODO maybe keep this
     prepared.styleOverrides += ".source-class { display: none; }\n"; // hide the extended class links
 
     if (names.includes(className)) {
@@ -612,7 +612,7 @@ class OpenToolingHtmlApp extends HtmlApp {
       // as the class 'name' and the class name will display as an alias
       if (alias && alias.length) {
         cls.name = this.componentList[name].preferredAlias || alias[0].name;
-        //cls.aliasName = name; // don't show the alias name for bridges
+        cls.aliasName = name;
         delete cls.aliasPrefix;
       }
 

@@ -469,7 +469,7 @@ class OpenToolingHtmlApp extends HtmlApp {
       super.addToApiTree(className, icon, apiTree);
     } else {
       let componentsList = this.componentList,
-        treeCfg = componentsList[className].menuText || componentsList[className];
+        treeCfg = componentsList[className].menuText || className;
 
       super.addToApiTree(treeCfg, icon, apiTree);
       super.addToApiTree(className, icon, this.apiTrees.API, '-placeholder');

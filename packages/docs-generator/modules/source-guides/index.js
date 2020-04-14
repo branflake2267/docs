@@ -661,12 +661,18 @@ class SourceGuides extends SourceApi {
 
     // loop over all guide nodes
     for (; i < len; i++) {
-      let node = flattened[i],
-        content = node.content,
-        path = node.id,
-        filePath = this.getGuideFilePath(path),
-        rootPathDir = Path.parse(filePath).dir,
-        guideRelativePath = Path.relative(rootPathDir, options.outputDir);
+      let node = flattened[i];
+      let content = node.content;
+      let path = node.id;
+
+      if (node.isIndex) {
+        path = Path.join(node.slug, 'index');
+        console.log('index path=' + path);
+      }
+
+      let filePath = this.getGuideFilePath(path);
+      let rootPathDir = Path.parse(filePath).dir;
+      let guideRelativePath = Path.relative(rootPathDir, options.outputDir);
 
       // if the node has content then output the guide file for this node
       if (content) {
@@ -841,6 +847,16 @@ class SourceGuides extends SourceApi {
         node.id = Path.join(rootPath, slug);
         node.iconCls = this.folderNodeCls;
         this.makeGuideDir(path);
+
+        // Check for root index.html
+        let indexMdAbsPath = this.guidePathMap[Path.join(rootPath, slug, 'index')];
+        if (Fs.existsSync(indexMdAbsPath)) {
+          node.isIndex = true;
+          console.log('Has index.md: indexPath=' + indexMdAbsPath);
+          node.href = Path.join('guides', rootPath, slug) + "/";
+          toReadArr.push(this.readGuide(node, rootPath, indexMdAbsPath));
+        }
+
         this.prepareGuides(children, path, toReadArr, navTreeName);
 
         // else decorate the node as leaf = true
@@ -850,7 +866,7 @@ class SourceGuides extends SourceApi {
         node.iconCls = iconClasses[node.toolkit] || iconClasses.universal;
         // if the node isn't simply a link itself then output its guide
 
-        if (!node.link) {
+        if (!node.link) { // link means, external link
           //nodesArr.push(this.outputGuide(node, rootPath));
           node.href = Path.join('guides', rootPath, `${slug}.html`);
           toReadArr.push(this.readGuide(node, rootPath));
@@ -899,11 +915,15 @@ class SourceGuides extends SourceApi {
    * @param {Object} node The guide tree node for the current guide being read
    * @return {Object} Promise
    */
-  readGuide(node) {
+  readGuide(node, rootPath, indexMdAbsPath) {
     return new Promise((resolve, reject) => {
       var path = this.guidePathMap[node.id],
         name = node.name,
         slug = node.slug;
+
+      if (indexMdAbsPath) {
+        path = indexMdAbsPath;
+      }
 
       this.log('\t\t readGuide name=' + name + ' slug=' + slug + ' path=' + path);
 

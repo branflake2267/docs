@@ -666,7 +666,7 @@ class SourceGuides extends SourceApi {
       let path = node.id;
 
       if (node.isIndex) {
-        path = Path.join(node.slug, 'index');
+        path = node.isIndexRelPath;
         console.log('index path=' + path);
       }
 
@@ -852,6 +852,7 @@ class SourceGuides extends SourceApi {
         let indexMdAbsPath = this.guidePathMap[Path.join(rootPath, slug, 'index')];
         if (Fs.existsSync(indexMdAbsPath)) {
           node.isIndex = true;
+          node.isIndexRelPath = Path.join(rootPath, slug, 'index');
           console.log('Has index.md: indexPath=' + indexMdAbsPath);
           node.href = Path.join('guides', rootPath, slug) + "/";
           toReadArr.push(this.readGuide(node, rootPath, indexMdAbsPath));

@@ -122,7 +122,7 @@ class HtmlApp extends AppBase {
     return dir;
   }
 
-  /**
+/**
 * Fetches the component class list object from disk
 * @return {Object} The object of component class names : component tree location
 */
@@ -143,7 +143,8 @@ class HtmlApp extends AppBase {
         let file = Fs.readJsonSync(jsonPath);
         list = this._componentList = file.components;
       } catch (e) {
-        console.error("No components.json file provided. jsonPath=" + jsonPath);
+        console.error("No components.json file provided. jsonPath=" + jsonPath + " error=", e);
+        //throw 'Issue with reading components.json file';
       }
     }
 

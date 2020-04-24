@@ -40,7 +40,7 @@ class SourceGuides extends SourceApi {
    * Default entry point for this module
    */
   run() {
-    this.processGuides();
+    return this.processGuides();
   }
 
   /**
@@ -150,7 +150,7 @@ class SourceGuides extends SourceApi {
       try {
         let compare = CompareVersions(dirs[i], version);
         if (compare <= 0) {
-          this.log("guideDirPaths add dir=" + dirs[i] + " compare to version=" + version + " compare=" + compare);
+          //this.log("guideDirPaths add dir=" + dirs[i] + " compare to version=" + version + " compare=" + compare);
           paths.push(Path.join(me.guidePath, dirs[i]));
         }
       } catch (e) {

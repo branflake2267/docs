@@ -53,8 +53,6 @@ class AppBase extends SourceGuides {
    * Default entry point for this module
    */
   run() {
-
-
     console.log("appBase.run() Started.")
     return this.doRunApi()
       .then(this.outputApiSearch.bind(this))
@@ -64,7 +62,7 @@ class AppBase extends SourceGuides {
         console.log("appBase.run() Completed.")
       })
       .catch((e) => {
-        console.log("error=", e);
+        console.error("error=", e);
       }); // this.error.bind(this)
   }
 
@@ -444,7 +442,7 @@ class AppBase extends SourceGuides {
     if (true) {
       out = this.decorateExamples_V2(html);
 
-    } else { 
+    } else {
       let fiddleWrapPre = this._getFiddlePreWrapV1();
       let fiddleWrapClose = '</div></div>';
 
@@ -589,7 +587,7 @@ class AppBase extends SourceGuides {
         parsedPre['parentId'] = parentId;
         // Save to a group, for easy iteration
         presParentMap[parentId] = index;
-      } 
+      }
 
       presArray[index] = parsedPre;
     });

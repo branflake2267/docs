@@ -589,9 +589,9 @@ class OpenToolingHtmlApp extends HtmlApp {
     super.decorateClass(className);
 
     let classMap = this.classMap,
-    prepared = classMap[className].prepared,
-    cls = prepared.cls,
-    names = this.componentClassNames;
+      prepared = classMap[className].prepared,
+      cls = prepared.cls,
+      names = this.componentClassNames;
 
     // Hide things in the bridges
     if (prepared.styleOverrides == null) {
@@ -744,7 +744,7 @@ class OpenToolingHtmlApp extends HtmlApp {
       // Event AST
       let eventHtml = '';
       if (member.$type === 'event') {
-        
+
         let funEvent1 = '';
         let funEvent2 = '';
         if (this.options.prodVerMeta.title == 'ExtWebComponents') {
@@ -804,8 +804,8 @@ class OpenToolingHtmlApp extends HtmlApp {
 
         let bracketLeft = '';
         let bracketRight = '';
-        if (this.options.prodVerMeta.title == 'ExtAngular' && 
-        ((member.type && member.type.includes('Boolean') || (member.type && member.type.includes('Number'))))) {
+        if (this.options.prodVerMeta.title == 'ExtAngular' &&
+          ((member.type && member.type.includes('Boolean') || (member.type && member.type.includes('Number'))))) {
           bracketLeft = '[';
           bracketRight = ']';
         }

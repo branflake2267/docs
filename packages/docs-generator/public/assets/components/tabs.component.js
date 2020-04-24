@@ -68,10 +68,6 @@ class ComponentTabs extends HTMLElement {
       setTimeout(function() {
         me._renderAttributes();
       }, 0);
-      
-  }
-
-  disconnectedCallback() {
   }
 
   _renderAttributes() {
@@ -80,21 +76,41 @@ class ComponentTabs extends HTMLElement {
       tabSize = '100px';
     }
 
-    let tabs = this.querySelectorAll('tab');
-    for (let i=0; i < tabs.length; i++) {
-      this._renderTab(i, tabs[i], tabSize);
+    this.tabs = this.querySelectorAll('tab');
+    for (let i = 0; i < this.tabs.length; i++) {
+      let renderBodyContent = i == 0;
+      console.log("render i=" + i);
+      this._renderTabBarAndTabContent(i, tabSize, renderBodyContent);
     }
   }
 
-  _renderTab(index, tab, tabSize) {
+  _renderTabBarAndTabContent(index, tabSize, renderBodyContent) {
+    let tab = this.tabs[index];
     let tabBarDiv = this._getTab(index, tab.title, tabSize);
-    let tabBodyDiv = this._getTabBody(index, tab.innerHTML);
-
     let tabsBar = this.shadowRoot.querySelector('.tabsBar');
     tabsBar.appendChild(tabBarDiv);
+    this._renderTabBody(index, renderBodyContent);
+  }
 
+  _renderTabBody(index, renderBodyContent) {
+    let tabBodyDiv = this._getTabBody(index);
     let tabsBody = this.shadowRoot.querySelector('.tabsBody');
     tabsBody.appendChild(tabBodyDiv);
+
+    if (renderBodyContent) {
+      this._renderTabBodyContent(index);
+    }
+  }
+
+  _renderTabBodyContent(index) {
+    let tab = this.tabs[index];
+    if (tab.rendered) {
+      return;
+    }
+    tab.rendered = true;
+
+    let tabBodyEl = this.shadowRoot.querySelector(`.tabsBody div[tabid='${index}']`);
+    tabBodyEl.innerHTML = tab.innerHTML;
   }
 
   _getTab(index, title, tabSize) {
@@ -104,39 +120,41 @@ class ComponentTabs extends HTMLElement {
     }
 
     let style = `width: ${tabSize}`;
-
     let div = document.createElement("div");
     div.setAttribute("tabid", `${index}`);
     div.className = 'tab ' + tabSelected;  
     div.innerHTML = title;
     div.style = style;
+
     div.addEventListener('click', (event) => {
       this._toggleTab(this, index, event);
     });
+
     return div;
   }
 
   _toggleTab(me, index, event) {
     let tabsBar = me.shadowRoot.querySelectorAll('.tabsBar div');
     let tabsBody = me.shadowRoot.querySelectorAll('.tabsBody div');
+    
     for (let i=0; i < tabsBody.length; i++) {
       let tabBar = tabsBar[i];
       let tabBody = tabsBody[i];
       if (i == index) {
         tabBar.classList.add('tabSelected');
-
         tabBody.classList.add('tabBodySelected');
         tabBody.classList.remove('tabBodyHidden');
       } else {
         tabBar.classList.remove('tabSelected');
-
         tabBody.classList.add('tabBodyHidden');
         tabBody.classList.remove('tabBodySelected');
       }
     }
+
+    this._renderTabBodyContent(index);
   }
 
-  _getTabBody(index, content) {
+  _getTabBody(index) {
     let tabSelected = '';
     if (index == 0) {
       tabSelected = 'tabBodySelected';
@@ -147,8 +165,7 @@ class ComponentTabs extends HTMLElement {
     let div = document.createElement("div");  
     div.setAttribute("tabid", `${index}`);
     div.className = 'tabBody ' + tabSelected;
-    div.innerHTML = content;
-    console.log('test', content);
+
     return div;
   }
 

@@ -122,10 +122,10 @@ class HtmlApp extends AppBase {
     return dir;
   }
 
-/**
-* Fetches the component class list object from disk
-* @return {Object} The object of component class names : component tree location
-*/
+  /**
+  * Fetches the component class list object from disk
+  * @return {Object} The object of component class names : component tree location
+  */
   get componentList() {
     let list = this._componentList;
 
@@ -139,13 +139,20 @@ class HtmlApp extends AppBase {
         jsonPath = Path.join(__dirname, 'configs', 'components.json');
       }
 
-      try {
-        let file = Fs.readJsonSync(jsonPath);
-        list = this._componentList = file.components;
-      } catch (e) {
-        console.error("No components.json file provided. jsonPath=" + jsonPath + " error=", e);
-        //throw 'Issue with reading components.json file';
+      console.log("Trying to load a component.json examples list for the api docs at jsonPath=" + jsonPath);
+
+      if (Fs.pathExistsSync(jsonPath)) {
+        try {
+          let file = Fs.readJsonSync(jsonPath);
+          list = this._componentList = file.components;
+        } catch (e) {
+          console.error("There was a problem reading component.json file. jsonPath=" + jsonPath + " error=", e);
+          throw e;
+        }
+      } else {
+        console.warn("There is no file components.json. jsonPath=" + jsonPath);
       }
+
     }
 
     return list;
@@ -343,10 +350,10 @@ class HtmlApp extends AppBase {
     // /Users/branflake2267/git/docs/packages/docs-generator/node_modules/gsap/src/minified/TweenMax.min.js 
     //let gsap = Path.join(this.options._execRoot, '/node_modules/gsap/src/minified/TweenMax.min.js');
     let gsap = require.resolve('gsap/src/minified/TweenMax.min.js');
-    
+
     //let aceFolder1 = Path.join(this.options._execRoot, '/node_modules/ace-builds/src-min-noconflict');
     let aceFolder = gsap.replace('node_modules/gsap/src/minified/TweenMax.min.js', 'node_modules/ace-builds/src-min-noconflict');
-    
+
     let jsFileArr = [gsap, extl, beautify, main];
     let codeFilesArr = jsFileArr.concat(this.getAncestorFiles(assetType, mainName));
 
@@ -596,16 +603,16 @@ class HtmlApp extends AppBase {
 
     // workaround - be sure classNames are correctly stated in the docs for ExtAngular and ExtReact
     // Since: 7.1.0+
-    if (this.options.prodVerMeta.title == 'ExtAngular' || 
-        this.options.prodVerMeta.title == 'ExtReact') {
+    if (this.options.prodVerMeta.title == 'ExtAngular' ||
+      this.options.prodVerMeta.title == 'ExtReact') {
       let webComponent = this.getWebComponentDeclaration(className);
       if (webComponent) {
-        webComponent = webComponent.replace('&lt;','');
-        webComponent = webComponent.replace('/&gt;','');
+        webComponent = webComponent.replace('&lt;', '');
+        webComponent = webComponent.replace('/&gt;', '');
         var regEx = new RegExp(webComponent, "ig");
         html = html.replace(regEx, webComponent);
       }
-    } 
+    }
 
     return html;
   }
@@ -856,7 +863,7 @@ class HtmlApp extends AppBase {
     // default example height
     if (!height) {
       height = '300px';
-    } 
+    }
 
     if (!style) {
       style = `style='height:${height};width:${width};'`;

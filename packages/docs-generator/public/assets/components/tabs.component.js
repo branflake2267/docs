@@ -46,128 +46,137 @@ const htmlTemplate = `
 
 /**
  <text>
- <sencha-component-tabs tabsize='100px'>
+ <sencha-tabs-simple tabsize='100px'>
   <tab title='tab1'></tab>
   <tab title='tab2'></tab>
   <tab title='tab3'></tab>
- </sencha-component-tabs> 
+ </sencha-tabs-simple> 
  </text>
 */
 class ComponentTabs extends HTMLElement {
 
   constructor() {
     super();
+
+    this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
+    this.shadowRoot.innerHTML = htmlTemplate;
+    
     let me = this;
-    let shadowRoot = me.attachShadow({ mode: 'open' });
-
-      shadowRoot.innerHTML = htmlTemplate;
-
-      setTimeout(function() {
-        me._renderAttributes();
-      }, 0);
+    setTimeout(function () {
+      me._render();
+    }, 0);
   }
 
-  _renderAttributes() {
-    let tabSize = this.getAttribute('tabsize');
+  _render() {
+    this.tabs = this.querySelectorAll('tab');
+
+    var tabSize = this.getAttribute('tabsize');
     if (!tabSize) {
       tabSize = '100px';
     }
-
-    this.tabs = this.querySelectorAll('tab');
-    for (let i = 0; i < this.tabs.length; i++) {
-      let renderBodyContent = i == 0;
-      console.log("render i=" + i);
-      this._renderTabBarAndTabContent(i, tabSize, renderBodyContent);
+    
+    for (var i = 0; i < this.tabs.length; i++) {
+      this._renderTabBarAndTabContent(i, tabSize);
     }
   }
 
-  _renderTabBarAndTabContent(index, tabSize, renderBodyContent) {
-    let tab = this.tabs[index];
-    let tabBarDiv = this._getTab(index, tab.title, tabSize);
-    let tabsBar = this.shadowRoot.querySelector('.tabsBar');
+  _renderTabBarAndTabContent(index, tabSize) {
+    this._renderTabBar(index, tabSize);
+    this._renderTabBody(index);
+  }
+
+  _renderTabBar(index, tabSize) {
+    var tab = this.tabs[index];
+    var tabBarDiv = this._getTab(index, tab.title, tabSize);
+    var tabsBar = this.shadowRoot.querySelector('.tabsBar');
     tabsBar.appendChild(tabBarDiv);
-    this._renderTabBody(index, renderBodyContent);
   }
 
-  _renderTabBody(index, renderBodyContent) {
-    let tabBodyDiv = this._getTabBody(index);
-    let tabsBody = this.shadowRoot.querySelector('.tabsBody');
-    tabsBody.appendChild(tabBodyDiv);
-
-    if (renderBodyContent) {
-      this._renderTabBodyContent(index);
-    }
-  }
-
-  _renderTabBodyContent(index) {
-    let tab = this.tabs[index];
-    if (tab.rendered) {
-      return;
-    }
-    tab.rendered = true;
-
-    let tabBodyEl = this.shadowRoot.querySelector(`.tabsBody div[tabid='${index}']`);
-    tabBodyEl.innerHTML = tab.innerHTML;
+  _renderTabBody(index) {
+    var tabBodyDivEl = this._getTabBody(index);
+    
+    var tabsBodyEl = this.shadowRoot.querySelector('.tabsBody');
+    tabsBodyEl.appendChild(tabBodyDivEl);
   }
 
   _getTab(index, title, tabSize) {
-    let tabSelected = '';
+    var tabSelected = '';
     if (index == 0) {
       tabSelected = 'tabSelected';
     }
 
-    let style = `width: ${tabSize}`;
-    let div = document.createElement("div");
+    var style = `width: ${tabSize}`;
+    var div = document.createElement("div");
     div.setAttribute("tabid", `${index}`);
-    div.className = 'tab ' + tabSelected;  
+    div.className = 'tab ' + tabSelected;
     div.innerHTML = title;
     div.style = style;
 
     div.addEventListener('click', (event) => {
-      this._toggleTab(this, index, event);
+      this._toggvarab(this, index, event);
     });
 
     return div;
   }
 
-  _toggleTab(me, index, event) {
-    let tabsBar = me.shadowRoot.querySelectorAll('.tabsBar div');
-    let tabsBody = me.shadowRoot.querySelectorAll('.tabsBody div');
-    
-    for (let i=0; i < tabsBody.length; i++) {
-      let tabBar = tabsBar[i];
-      let tabBody = tabsBody[i];
+  _toggvarab(me, index, event) {
+    var tabsBar = me.shadowRoot.querySelectorAll('.tabsBar div');
+    var tabsBody = me.shadowRoot.querySelectorAll('.tabsBody div');
+
+    for (var i = 0; i < tabsBody.length; i++) {
+      var tabBar = tabsBar[i];
+      var tabBody = tabsBody[i];
       if (i == index) {
         tabBar.classList.add('tabSelected');
         tabBody.classList.add('tabBodySelected');
         tabBody.classList.remove('tabBodyHidden');
+
+        let tab = tabBody.querySelector('tab');
+        this._displayFiddles(tab);
       } else {
         tabBar.classList.remove('tabSelected');
         tabBody.classList.add('tabBodyHidden');
         tabBody.classList.remove('tabBodySelected');
       }
     }
-
-    this._renderTabBodyContent(index);
   }
 
   _getTabBody(index) {
-    let tabSelected = '';
+    var tabSelected = '';
     if (index == 0) {
       tabSelected = 'tabBodySelected';
     } else {
       tabSelected = 'tabBodyHidden';
     }
 
-    let div = document.createElement("div");  
-    div.setAttribute("tabid", `${index}`);
-    div.className = 'tabBody ' + tabSelected;
+    var divEl = document.createElement("div");
+    divEl.setAttribute("tabid", `${index}`);
+    divEl.className = 'tabBody ' + tabSelected;
 
-    return div;
+    var tab = this.tabs[index];
+    tab = this.removeChild(tab);
+    divEl.appendChild(tab);
+
+    if (index == 0) { 
+      this._displayFiddles(tab);
+    }
+
+    return divEl;
+  }
+
+  _displayFiddles(tab) {
+    let fiddles = tab.querySelectorAll('sencha-fiddle');
+    if (!fiddles) {
+      return;
+    }
+    for (let i=0; i < fiddles.length; i++) {
+      let fiddle = fiddles[i];
+      fiddle.show();
+    }
   }
 
 }
-window.customElements.define('sencha-component-tabs', ComponentTabs);
+window.customElements.define('sencha-tabs-simple', ComponentTabs);

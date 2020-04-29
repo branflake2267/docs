@@ -1,48 +1,6 @@
-const htmlTemplate = `
-<!-- Font & Icons -->
-<!-- <link href="https://fonts.googleapis.com/css?family=Material+Icons|Roboto&display=swap" rel="stylesheet"> -->
 
-<style>
-  .tabs {
-  }
 
-  .tab {
-    font-family: 'Roboto', sans-serif;
-    padding: 10px;
-    width: 100px;
-    text-align: center;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  .tabSelected {
-    border-bottom: 2px solid green;
-  }
-
-  .tabsBar {
-    display: flex;
-  }
-
-  .tabsBody {
-    /* border: 1px solid orange; */
-    padding-top: 10px; 
-  }
-
-  .tabBodySelected {
-    display: block;
-  }
-
-  .tabBodyHidden {
-    display: none;
-  }
-  
-</style>
-
-<div class='tabs'>
-  <div class='tabsBar'></div>
-  <div class='tabsBody'></div>
-</div>
-`;
+const htmlTemplate = "<!-- Font & Icons --> <!-- <link href='https://fonts.googleapis.com/css?family=Material+Icons|Roboto&display=swap' rel='stylesheet'> --> <style> .tabs { } .tab { font-family: 'Roboto', sans-serif; padding: 10px; width: 100px; text-align: center; cursor: pointer; white-space: nowrap; } .tabSelected { border-bottom: 2px solid green; } .tabsBar { display: flex; } .tabsBody { /* border: 1px solid orange; */ padding-top: 10px; } .tabBodySelected { display: block; } .tabBodyHidden { display: none; } </style> <div class='tabs'> <div class='tabsBar'></div> <div class='tabsBody'></div> </div>";
 
 /**
  <text>
@@ -108,9 +66,9 @@ class ComponentTabs extends HTMLElement {
       tabSelected = 'tabSelected';
     }
 
-    var style = `width: ${tabSize}`;
+    var style = "width: " + tabSize + ";";
     var div = document.createElement("div");
-    div.setAttribute("tabid", `${index}`);
+    div.setAttribute("tabid", index + "");
     div.className = 'tab ' + tabSelected;
     div.innerHTML = title;
     div.style = style;
@@ -153,7 +111,7 @@ class ComponentTabs extends HTMLElement {
     }
 
     var divEl = document.createElement("div");
-    divEl.setAttribute("tabid", `${index}`);
+    divEl.setAttribute("tabid", index + "");
     divEl.className = 'tabBody ' + tabSelected;
 
     var tab = this.tabs[index];

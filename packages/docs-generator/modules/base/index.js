@@ -1294,7 +1294,7 @@ class Base {
 
         this.log('syncRemote: Cloning repo=' + repo);
         this.log('syncRemote: Cloning remote=' + remote);
-        Shell.exec(`git clone --depth 1 ${remote}`);
+        Shell.exec(`git clone  ${remote}`);
       }
     });
 

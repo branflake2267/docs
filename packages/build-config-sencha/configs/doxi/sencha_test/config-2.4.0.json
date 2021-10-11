@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "profiles": {
+    "js": {
+      "language": "javascript",
+      "builtins": [
+        "Mixed",
+        "Event",
+        "HTMLElement",
+        "undefined",
+        "null",
+        "Window",
+        "Error",
+        "CSSStyleRule",
+        "CSSStyleSheet",
+        "Arguments",
+        "Integer",
+        "XMLElement",
+        "TextNode",
+        "Uint8Array",
+        "NodeList",
+        "XMLHttpRequest",
+        "FileList",
+        "measurement",
+        "Ext.Element",
+        "Ext.view.View",
+        "Ext.Component",
+        "Ext.ux.event.Driver"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "profile": "js",
+      "path": [
+        "{apiSourceDir}/packages/orion-core/serve"
+      ]
+    }
+  ],
+  "outputs": {
+    "all": {
+      "default": true,
+      "depends": [
+        "combo-nosrc",
+        "all-classes",
+        "all-classes-flatten"
+      ]
+    },
+    "combo-nosrc": {
+      "type": "json",
+      "dir": "{apiInputDir}/{product}/{version}/json",
+      "includeSrc": true,
+      "links": true,
+      "flatten": true,
+      "autoLinks": [
+        "text",
+        "deprecatedMessage",
+        "removedMessage"
+      ],
+      "renames": {
+        "number": "Number",
+        "boolean": "Boolean",
+        "string": "String"
+      }
+    },
+    "all-classes": {
+      "type": "json",
+      "dir": "{apiInputDir}/{product}/{version}/json",
+      "file": "api_all-classes.json",
+      "includeSrc": true,
+      "links": true,
+      "flatten": false,
+      "autoLinks": [
+        "text",
+        "deprecatedMessage",
+        "removedMessage"
+      ],
+      "renames": {
+        "number": "Number",
+        "boolean": "Boolean",
+        "string": "String"
+      }
+    },
+    "all-classes-flatten": {
+      "type": "json",
+      "dir": "{apiInputDir}/{product}/{version}/all-classes-flatten",
+      "file": "api_all-classes-flatten.json",
+      "includeSrc": true,
+      "links": true,
+      "flatten": true,
+      "pretty": false,
+      "autoLinks": [
+        "text",
+        "deprecatedMessage",
+        "removedMessage"
+      ],
+      "renames": {
+        "number": "Number",
+        "boolean": "Boolean",
+        "string": "String"
+      }
+    }
+  }
+}

@@ -61,3 +61,12 @@ Check out what the docs generator does for Sencha.
 
 * Contributors read the [instructions here](./CONTRIBUTOR.md).
 
+
+## Debugging
+
+* Create VS Code launcher. Copy one of the existing.
+* Set  "--syncRemote=false", to true.
+* Run the build from VS Code launcher
+* Set  "--syncRemote=false", to false.
+* Make changes in the build/* folder.
+* Copy the changes that were made to guides or docs repo.
